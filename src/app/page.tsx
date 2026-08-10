@@ -1,31 +1,47 @@
-'use client'
+"use client";
+
+import { useAppStore } from "@/lib/stores/app-store";
+import { AppSidebar } from "@/components/layout/app-sidebar";
+import { AppHeader } from "@/components/layout/app-header";
+import { AppFooter } from "@/components/layout/app-footer";
+import { DashboardPage } from "@/components/dashboard/dashboard-page";
+import { ModulePlaceholder } from "@/components/layout/module-placeholder";
+import {
+  SidebarProvider,
+  SidebarInset,
+} from "@/components/ui/sidebar";
+
+function CurrentView() {
+  const { currentView } = useAppStore();
+
+  switch (currentView) {
+    case "dashboard":
+      return <DashboardPage />;
+    case "editor":
+    case "ai-writing":
+    case "methodology":
+    case "articles":
+    case "references":
+    case "thesis-plan":
+    case "ai-tools":
+    case "academic-db":
+      return <ModulePlaceholder />;
+    default:
+      return <DashboardPage />;
+  }
+}
 
 export default function Home() {
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
-      gap: '2rem',
-      padding: '1rem'
-    }}>
-      <div style={{
-        position: 'relative',
-        width: '6rem',
-        height: '6rem'
-      }}>
-        <img
-          src="/logo.svg"
-          alt="Z.ai Logo"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain'
-          }}
-        />
-      </div>
-    </div>
-  )
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset className="flex flex-col min-h-screen">
+        <AppHeader />
+        <main className="flex-1 overflow-y-auto scrollbar-thin">
+          <CurrentView />
+        </main>
+        <AppFooter />
+      </SidebarInset>
+    </SidebarProvider>
+  );
 }

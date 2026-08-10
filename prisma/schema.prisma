@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// ThesisFrame — Prisma Schema v1.0
+// Base de données SQLite pour l'assistant de thèse
 
 generator client {
   provider = "prisma-client-js"
@@ -13,20 +10,260 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+// ═══════════════════════════════════════
+// THÈSE — Structure principale
+// ═══════════════════════════════════════
+
+model Thesis {
+  id            String    @id @default(cuid())
+  title         String
+  subtitle      String?
+  author        String
+  email         String?
+  institution   String?
+  laboratory    String?
+  discipline    String?
+  directorName  String?
+  status        String    @default("draft") // draft | in_progress | review | completed
+  structureMode String    @default("chapters") // chapters | parts
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  chapters      Chapter[]
+  parts         Part[]
+  cadrages      ThesisCadrage[]
+}
+
+model Chapter {
+  id              String    @id @default(cuid())
+  thesisId        String
+  number          Int
+  title           String
+  romanNumeral    String?   // I, II, III, IV, etc.
+  content         String    @default("") // HTML content from Tiptap
+  plainText       String    @default("")
+  wordCount       Int       @default(0)
+  targetWordCount Int       @default(0)
+  status          String    @default("not_started") // not_started | in_progress | draft | review | completed
+  directorFeedback String?
+  parentId        String?
+  sortOrder       Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  thesis          Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+
+  @@index([thesisId])
+  @@index([parentId])
+}
+
+model Part {
+  id        String  @id @default(cuid())
+  thesisId  String
+  title     String
+  sortOrder Int     @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  thesis    Thesis  @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+
+  @@index([thesisId])
+}
+
+// ═══════════════════════════════════════
+// CADRAGE — Cadrage préliminaire
+// ═══════════════════════════════════════
+
+model ThesisCadrage {
+  id          String    @id @default(cuid())
+  thesisId    String
+  label       String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  thesis      Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+  fields      ThesisCadrageField[]
+  versions    ThesisCadrageVersion[]
+
+  @@index([thesisId])
+}
+
+model ThesisCadrageField {
+  id            String   @id @default(cuid())
+  cadrageId     String
+  fieldKey      String   // e.g. "theme", "problématique", "methodologie"
+  label         String
+  value         String?
+  aiSuggestion  String?
+  isLocked      Boolean  @default(false)
+  sortOrder     Int      @default(0)
+
+  cadrage       ThesisCadrage @relation(fields: [cadrageId], references: [id], onDelete: Cascade)
+
+  @@unique([cadrageId, fieldKey])
+  @@index([cadrageId])
+}
+
+model ThesisCadrageVersion {
+  id          String   @id @default(cuid())
+  cadrageId   String
+  label       String?
+  snapshot    String   // JSON snapshot of all fields
+  createdAt   DateTime @default(now())
+
+  cadrage     ThesisCadrage @relation(fields: [cadrageId], references: [id], onDelete: Cascade)
+
+  @@index([cadrageId])
+}
+
+// ═══════════════════════════════════════
+// RÉFÉRENCES BIBLIOGRAPHIQUES
+// ═══════════════════════════════════════
+
+model Reference {
+  id          String   @id @default(cuid())
+  type        String   @default("article") // article | book | thesis | conference | report | web | other
+  authors     String   // Semicolon separated
+  title       String
+  year        Int?
+  journal     String?
+  volume      String?
+  issue       String?
+  pages       String?
+  publisher   String?
+  doi         String?
+  isbn        String?
+  url         String?
+  abstract    String?
+  keywords    String?  // Comma separated tags
+  notes       String?
+  bibtexKey   String?  // Custom BibTeX citation key
+  isFavorite  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([type])
+  @@index([year])
+  @@index([isFavorite])
+}
+
+// ═══════════════════════════════════════
+// CARNET DE RECHERCHE
+// ═══════════════════════════════════════
+
+model ResearchSource {
+  id          String        @id @default(cuid())
+  title       String
+  authors     String?
+  year        Int?
+  type        String        @default("article") // article | book | thesis | report
+  url         String?
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  entries     NotebookEntry[]
+
+  @@index([type])
+}
+
+model NotebookEntry {
+  id          String         @id @default(cuid())
+  sourceId    String?
+  question    String
+  answer      String
+  tags        String?        // Comma separated
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  source      ResearchSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+
+  @@index([sourceId])
+}
+
+// ═══════════════════════════════════════
+// CONFIGURATION IA
+// ═══════════════════════════════════════
+
+model AiToolConfig {
   id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
+  provider  String   @unique // openai | anthropic | mistral | zai | custom
+  apiKey    String?
+  model     String?
+  isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// ═══════════════════════════════════════
+// GESTION AGILE
+// ═══════════════════════════════════════
+
+model AgileSprint {
+  id          String      @id @default(cuid())
+  phase       String      // phase_0 | phase_1 | phase_2 | phase_3 | phase_4
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  status      String      @default("planned") // planned | active | completed
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  stories     AgileStory[]
+
+  @@index([phase])
+  @@index([status])
+}
+
+model AgileStory {
+  id          String      @id @default(cuid())
+  sprintId    String
+  title       String
+  description String?
+  status      String      @default("todo") // todo | in_progress | done
+  priority    String      @default("medium") // low | medium | high | critical
+  storyPoints Int?
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  sprint      AgileSprint @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+
+  @@index([sprintId])
+  @@index([status])
+}
+
+// ═══════════════════════════════════════
+// COMPÉTENCES LIVRES
+// ═══════════════════════════════════════
+
+model CustomBookSkill {
+  id          String   @id @default(cuid())
+  title       String
+  author      String?
+  content     String   // Extracted knowledge text
+  tags        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([title])
+}
+
+// ═══════════════════════════════════════
+// LICENCE (simplifié)
+// ═══════════════════════════════════════
+
+model LicenseKey {
+  id          String   @id @default(cuid())
+  keyHash     String   @unique
+  licenseType String   @default("trial") // trial | standard | academic | premium
+  email       String?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([licenseType])
 }
