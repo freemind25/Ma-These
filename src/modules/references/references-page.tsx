@@ -100,10 +100,12 @@ export function ReferencesPage() {
 
   const createRef = useMutation({
     mutationFn: async (data: Record<string, string>) => {
+      const payload: Record<string, unknown> = { ...data };
+      if (data.year) payload.year = parseInt(data.year, 10);
       const res = await fetch("/api/references", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) {
         const err = await res.json();

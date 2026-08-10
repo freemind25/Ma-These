@@ -5,10 +5,14 @@ import { AppSidebar } from "@/components/layout/app-sidebar";
 import { AppHeader } from "@/components/layout/app-header";
 import { AppFooter } from "@/components/layout/app-footer";
 import { DashboardPage } from "@/components/dashboard/dashboard-page";
-import { ModulePlaceholder } from "@/components/layout/module-placeholder";
 import { EditorPage } from "@/modules/editor/editor-page";
 import { ReferencesPage } from "@/modules/references/references-page";
 import { AiWritingPage } from "@/modules/ai-writing/ai-writing-page";
+import { MethodologyPage } from "@/modules/methodology/methodology-page";
+import { ArticlesPage } from "@/modules/articles/articles-page";
+import { ThesisPlanPage } from "@/modules/thesis-plan/thesis-plan-page";
+import { AiToolsPage } from "@/modules/ai-tools/ai-tools-page";
+import { AcademicDbPage } from "@/modules/academic-db/academic-db-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -27,11 +31,15 @@ function CurrentView() {
     case "references":
       return <ReferencesPage />;
     case "methodology":
+      return <MethodologyPage />;
     case "articles":
+      return <ArticlesPage />;
     case "thesis-plan":
+      return <ThesisPlanPage />;
     case "ai-tools":
+      return <AiToolsPage />;
     case "academic-db":
-      return <ModulePlaceholder />;
+      return <AcademicDbPage />;
     default:
       return <DashboardPage />;
   }

@@ -264,14 +264,14 @@ export function DashboardPage() {
             />
             <ModuleCard
               title="Méthodologie"
-              description="Guides et outils méthodologiques pour structurer votre recherche"
-              status="Planifié"
+              description="Paradigmes, démarche, outils de collecte et checklist méthodologique"
+              status="Prêt"
               onClick={() => setCurrentView("methodology")}
             />
             <ModuleCard
               title="Articles scientifiques"
-              description="Guide IMRaD, checklist de soumission, boîte à outils"
-              status="Planifié"
+              description="Guide IMRaD, checklist de soumission, boîte à outils rédaction"
+              status="Prêt"
               onClick={() => setCurrentView("articles")}
             />
             <ModuleCard
@@ -282,8 +282,8 @@ export function DashboardPage() {
             />
             <ModuleCard
               title="Plan de thèse"
-              description="Générateur de template LaTeX personnalisé"
-              status="Planifié"
+              description="Visualisation du plan, générateur de template LaTeX personnalisé"
+              status="Prêt"
               onClick={() => setCurrentView("thesis-plan")}
             />
             <ModuleCard
@@ -294,8 +294,8 @@ export function DashboardPage() {
             />
             <ModuleCard
               title="Bases de données"
-              description="Ressources académiques en ligne : HAL, Elsevier, Anna's Archive..."
-              status="Planifié"
+              description="27 ressources académiques : HAL, Google Scholar, Persée, CAIRN..."
+              status="Prêt"
               onClick={() => setCurrentView("academic-db")}
             />
           </div>
