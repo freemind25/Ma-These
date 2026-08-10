@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ThesisFrame - Roadmap Strategique</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  @page { size: 794px 1123px; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 794px;
+    height: 1123px;
+    background: #ffffff;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .cover-page {
+    position: relative;
+    width: 794px;
+    height: 1123px;
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  /* Layer 1: Background */
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .cover-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(72, 56, 80, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(72, 56, 80, 0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .cover-accent-block {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 35%;
+    height: 100%;
+    background: linear-gradient(135deg, #483850 0%, #5c4a68 50%, #73607d 100%);
+  }
+
+  .cover-accent-inner-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  .cover-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: #8827b9;
+  }
+
+  /* Layer 2: Structure */
+  .cover-structure {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+
+  .cover-vertical-line {
+    position: absolute;
+    left: 85px;
+    top: 100px;
+    bottom: 120px;
+    width: 6px;
+    background: #483850;
+    border-radius: 3px;
+  }
+
+  .cover-horizontal-divider {
+    position: absolute;
+    left: 145px;
+    top: 610px;
+    width: 340px;
+    height: 1px;
+    background: #c2b7c7;
+  }
+
+  /* Layer 3: Content */
+  .cover-content {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+  }
+
+  .cover-kicker {
+    position: absolute;
+    left: 145px;
+    top: 170px;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #7e7882;
+    opacity: 0.8;
+  }
+
+  .cover-title {
+    position: absolute;
+    left: 145px;
+    top: 260px;
+    max-width: 340px;
+    font-size: 58px;
+    font-weight: 900;
+    line-height: 1.1;
+    color: #1f1d20;
+  }
+
+  .cover-title span {
+    display: block;
+  }
+
+  .cover-subtitle {
+    position: absolute;
+    left: 145px;
+    top: 410px;
+    max-width: 340px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #7e7882;
+  }
+
+  .cover-meta {
+    position: absolute;
+    left: 145px;
+    top: 700px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #7e7882;
+    line-height: 2.2;
+  }
+
+  .cover-meta-item {
+    display: block;
+  }
+
+  /* Right side content on dark block */
+  .cover-right-content {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: right;
+  }
+
+  .cover-version {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 36px;
+  }
+
+  .cover-phase-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .cover-phase-list li {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.35);
+    line-height: 2.0;
+    letter-spacing: 1px;
+  }
+
+  .cover-phase-list li.active {
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+  }
+
+  /* Footer */
+  .cover-footer {
+    position: absolute;
+    left: 145px;
+    bottom: 40px;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #c2b7c7;
+  }
+
+  @media screen {
+    .cover-page {
+      transform-origin: top left;
+      transform: scale(0.5);
+    }
+  }
+</style>
+</head>
+<body>
+<div class="cover-page">
+  <!-- Layer 1: Background -->
+  <div class="cover-bg">
+    <div class="cover-grid"></div>
+    <div class="cover-accent-block">
+      <div class="cover-accent-inner-pattern"></div>
+    </div>
+    <div class="cover-bottom-bar"></div>
+  </div>
+
+  <!-- Layer 2: Structure -->
+  <div class="cover-structure">
+    <div class="cover-vertical-line"></div>
+    <div class="cover-horizontal-divider"></div>
+  </div>
+
+  <!-- Layer 3: Content -->
+  <div class="cover-content">
+    <div class="cover-kicker">Roadmap Strategique de Developpement</div>
+    <div class="cover-title">
+      <span>Thesis</span>
+      <span>Frame</span>
+    </div>
+    <div class="cover-subtitle">Assistant doctoral de redaction academique - Reconstruction modulaire professionnelle suivant les standards Next.js 16 et shadcn/ui</div>
+    <div class="cover-meta">
+      <span class="cover-meta-item">Version 1.0 - Plan de Production</span>
+      <span class="cover-meta-item">Janvier 2025</span>
+    </div>
+
+    <div class="cover-right-content">
+      <div class="cover-version">Phases de Developpement</div>
+      <ul class="cover-phase-list">
+        <li class="active">P0 - Fondations &amp; Audit</li>
+        <li class="active">P1 - Architecture Noyau</li>
+        <li class="active">P2 - Couche Donnees &amp; API</li>
+        <li class="active">P3 - Editeur Central &amp; Workspace</li>
+        <li class="active">P4 - Moteur IA &amp; Assistant</li>
+        <li class="active">P5 - Modules Academiques</li>
+        <li class="active">P6 - Modules Avances</li>
+        <li class="active">P7 - Qualite &amp; Production</li>
+      </ul>
+    </div>
+
+    <div class="cover-footer">ThesisFrame - Plan Strategique 2025</div>
+  </div>
+</div>
+</body>
+</html>
