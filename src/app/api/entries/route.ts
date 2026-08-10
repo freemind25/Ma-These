@@ -1,60 +1,67 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { createReferenceSchema } from "@/lib/api-schemas";
+import { createNotebookEntrySchema } from "@/lib/api-schemas";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
-// GET /api/references — List all references
+// GET /api/entries — List all entries across sources
+// Supports ?search=xxx&tags=xxx
 // ═══════════════════════════════════════
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get("type");
     const search = searchParams.get("search");
-    const favoritesOnly = searchParams.get("favorites") === "true";
+    const tags = searchParams.get("tags");
 
     const where: Record<string, unknown> = {};
-    if (type && type !== "all") where.type = type;
-    if (favoritesOnly) where.isFavorite = true;
     if (search) {
       where.OR = [
-        { title: { contains: search } },
-        { authors: { contains: search } },
-        { keywords: { contains: search } },
+        { question: { contains: search } },
+        { answer: { contains: search } },
       ];
     }
+    if (tags) {
+      where.tags = { contains: tags };
+    }
 
-    const references = await db.reference.findMany({
+    const entries = await db.notebookEntry.findMany({
       where,
       orderBy: { updatedAt: "desc" },
+      include: {
+        source: {
+          select: {
+            id: true,
+            title: true,
+            type: true,
+          },
+        },
+      },
     });
 
     return NextResponse.json({
-      data: references,
-      meta: { count: references.length },
+      data: entries,
+      meta: { count: entries.length },
     });
   } catch (error) {
-    console.error("[GET /api/references] Error:", error);
+    console.error("[GET /api/entries] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la récupération des références" },
+      { error: "Erreur lors de la récupération des notes" },
       { status: 500 }
     );
   }
 }
 
 // ═══════════════════════════════════════
-// POST /api/references — Create a reference
+// POST /api/entries — Create a standalone notebook entry
 // ═══════════════════════════════════════
-
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const validated = createReferenceSchema.parse(body);
+    const validated = createNotebookEntrySchema.parse(body);
 
-    const reference = await db.reference.create({ data: validated });
+    const entry = await db.notebookEntry.create({ data: validated });
 
-    return NextResponse.json({ data: reference }, { status: 201 });
+    return NextResponse.json({ data: entry }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -62,9 +69,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    console.error("[POST /api/references] Error:", error);
+    console.error("[POST /api/entries] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la création de la référence" },
+      { error: "Erreur lors de la création de la note" },
       { status: 500 }
     );
   }

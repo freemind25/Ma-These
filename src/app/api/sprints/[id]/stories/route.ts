@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { createChapterSchema } from "@/lib/api-schemas";
+import { createStorySchema } from "@/lib/api-schemas";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
-// GET /api/thesis/[id]/chapters — List chapters
+// GET /api/sprints/[id]/stories — List stories for a sprint
 // ═══════════════════════════════════════
 export async function GET(
   _request: NextRequest,
@@ -12,29 +12,37 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const chapters = await db.chapter.findMany({
-      where: { thesisId: id },
+
+    // Verify sprint exists
+    const sprint = await db.agileSprint.findUnique({ where: { id } });
+    if (!sprint) {
+      return NextResponse.json(
+        { error: "Sprint non trouvé" },
+        { status: 404 }
+      );
+    }
+
+    const stories = await db.agileStory.findMany({
+      where: { sprintId: id },
       orderBy: { sortOrder: "asc" },
     });
 
     return NextResponse.json({
-      data: chapters,
-      meta: { count: chapters.length },
+      data: stories,
+      meta: { count: stories.length },
     });
   } catch (error) {
-    console.error("[GET /api/thesis/[id]/chapters] Error:", error);
+    console.error("[GET /api/sprints/[id]/stories] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la récupération des chapitres" },
+      { error: "Erreur lors de la récupération des stories" },
       { status: 500 }
     );
   }
 }
 
 // ═══════════════════════════════════════
-// POST /api/thesis/[id]/chapters — Create chapter
+// POST /api/sprints/[id]/stories — Create a story
 // ═══════════════════════════════════════
-
-
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -42,25 +50,34 @@ export async function POST(
   try {
     const { id } = await params;
     const body = await request.json();
-    const validated = createChapterSchema.parse(body);
+    const validated = createStorySchema.parse(body);
 
-    // Determine next chapter number
-    const existingCount = await db.chapter.count({ where: { thesisId: id } });
-    const nextNumber = existingCount + 1;
+    // Verify sprint exists
+    const sprint = await db.agileSprint.findUnique({ where: { id } });
+    if (!sprint) {
+      return NextResponse.json(
+        { error: "Sprint non trouvé" },
+        { status: 404 }
+      );
+    }
 
-    const chapter = await db.chapter.create({
+    // Determine next sort order
+    const existingCount = await db.agileStory.count({
+      where: { sprintId: id },
+    });
+
+    const story = await db.agileStory.create({
       data: {
-        thesisId: id,
-        number: nextNumber,
+        sprintId: id,
         title: validated.title,
-        romanNumeral: validated.romanNumeral,
-        parentId: validated.parentId,
+        description: validated.description,
+        priority: validated.priority,
+        storyPoints: validated.storyPoints,
         sortOrder: validated.sortOrder ?? existingCount,
-        status: "not_started",
       },
     });
 
-    return NextResponse.json({ data: chapter }, { status: 201 });
+    return NextResponse.json({ data: story }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -68,9 +85,9 @@ export async function POST(
         { status: 400 }
       );
     }
-    console.error("[POST /api/thesis/[id]/chapters] Error:", error);
+    console.error("[POST /api/sprints/[id]/stories] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la création du chapitre" },
+      { error: "Erreur lors de la création de la story" },
       { status: 500 }
     );
   }

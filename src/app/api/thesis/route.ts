@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { createThesisSchema } from "@/lib/api-schemas";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
@@ -33,17 +34,6 @@ export async function GET() {
 // ═══════════════════════════════════════
 // POST /api/thesis — Create a new thesis
 // ═══════════════════════════════════════
-const createThesisSchema = z.object({
-  title: z.string().min(1, "Le titre est requis"),
-  subtitle: z.string().optional(),
-  author: z.string().min(1, "L'auteur est requis"),
-  email: z.string().email().optional(),
-  institution: z.string().optional(),
-  laboratory: z.string().optional(),
-  discipline: z.string().optional(),
-  directorName: z.string().optional(),
-});
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

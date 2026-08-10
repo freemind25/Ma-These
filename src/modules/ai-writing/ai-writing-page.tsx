@@ -6,14 +6,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   PenTool,
@@ -34,7 +26,7 @@ import {
   GraduationCap,
   User,
 } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import { WRITING_MODES, type WritingMode } from "@/data/ai-writing-modes";
 
@@ -91,7 +83,7 @@ export function AiWritingPage() {
 
 // ═══ AI Writing Panel ═══
 function AiWritingPanel() {
-  const { data: modes, isLoading } = useQuery({
+  const { data: modes } = useQuery({
     queryKey: ["ai-writing-modes"],
     queryFn: async () => {
       const res = await fetch("/api/ai-writing");

@@ -1,97 +1,124 @@
-# Worklog — ThesisFrame (these-frame)
+# ThesisFrame — Worklog
 
 ---
-Task ID: P0-1
-Agent: Main
-Task: Phase 0 — Configurations fondamentales
-Stage Summary: next.config.ts, package.json, tsconfig.json, eslint, .env.example
-
----
-Task ID: P0-2
-Agent: Main
-Task: Phase 0 — Design System + Prisma Schema (15 modèles)
-Stage Summary: Palette ThesisFrame, globals.css, DB opérationnelle
-
----
-Task ID: P1-1
-Agent: Main
-Task: Phase 1 — Layout + Navigation + Dashboard
-Stage Summary: Sidebar, Header, Footer, Zustand store, DashboardPage
-
----
-Task ID: P2-1
-Agent: Main
-Task: Phase 2 — API Routes CRUD (7 routes)
-Stage Summary: Thèse, Chapitres, Références CRUD + BibTeX export, validé curl
-
----
-Task ID: P2-2
-Agent: Main
-Task: Phase 2 — TanStack Query Hooks + Auto-save
-Stage Summary: use-thesis.ts, use-auto-save.ts
-
----
-Task ID: P3-1
-Agent: Main
-Task: Phase 3 — Éditeur Tiptap + Workspace
-Stage Summary: TiptapEditor (10 extensions), EditorToolbar (20+ outils), ChapterTabs, ChapterHeader, EditorPage, ReferencesPage
-
----
-Task ID: P4-1
-Agent: Main
-Task: Phase 4 — Infrastructure IA
+Task ID: 1
+Agent: main
+Task: Ajouter QueryClientProvider au layout
 
 Work Log:
-- Créé src/lib/ai/zai-client.ts : wrapper z-ai-web-dev-sdk avec retry exponentiel (3 tentatives)
-- generateCompletion() : messages structurés, température configurable
-- generateText() : helper simplifié
-- Gestion d'erreur robuste avec messages explicites
+- Created src/components/providers/query-provider.tsx (TanStack Query provider with 30s staleTime)
+- Updated src/app/layout.tsx to wrap children in QueryProvider
 
 Stage Summary:
-- Wrapper SDK avec retry et backoff exponentiel
-- API server-side only (pas de fuite de clé côté client)
+- TanStack Query hooks (useQuery, useMutation) now work correctly across all views
+- Critical bug fix — hooks would crash without provider
 
 ---
-Task ID: P4-2
-Agent: Main
-Task: Phase 4 — API Routes IA + 10 Modes d'écriture
+Task ID: 2
+Agent: main
+Task: Créer les schémas Zod partagés
 
 Work Log:
-- Créé src/data/ai-writing-modes.ts : 10 modes spécialisés avec system prompts en français
-  1. Rédaction scientifique (PenTool)
-  2. Revue de littérature (BookOpen)
-  3. Relecture critique / Peer review (SearchCheck)
-  4. Paraphrase académique (Repeat)
-  5. Rédaction de résumé (AlignLeft)
-  6. Génération d'hypothèses (Lightbulb)
-  7. Aide méthodologique (FlaskConical)
-  8. Construction théorique (Network)
-  9. Documents de supervision (FileCheck)
-  10. Préparation soutenance (Presentation)
-- Créé src/data/directeur-prompt.ts : Prompt directeur (Pr. Jean-Marc Renaud)
-- Créé src/app/api/ai-writing/route.ts : GET (modes) + POST (génération)
-- Créé src/app/api/directeur-chat/route.ts : POST (chat avec directeur)
+- Created src/lib/api-schemas.ts with all Zod validation schemas
+- Includes: thesis, chapter, reference, cadrage, notebook, agile, AI config schemas
+- Updated existing API routes to import from shared schemas instead of inline definitions
+- Routes updated: thesis, thesis/[id], chapters/[id], references, references/[id]
 
 Stage Summary:
-- 10 modes avec system prompts académiques spécialisés
-- API routes validées (compile OK)
-- Chat directeur avec personnalité académique
+- Single source of truth for validation schemas (server + client reuse)
+- All API routes now use shared schemas from @/lib/api-schemas
 
 ---
-Task ID: P4-3
-Agent: Main
-Task: Phase 4 — UI Assistant IA + Chat Directeur
+Task ID: 3-a
+Agent: full-stack-developer
+Task: Create Cadrage CRUD API routes
 
 Work Log:
-- Créé src/modules/ai-writing/ai-writing-page.tsx
-  - Tabs : Modes d'écriture | Chat Directeur
-  - AiWritingPanel : sélecteur de 10 modes (gauche) + zone génération (droite)
-  - DirecteurChatPanel : interface chat avec avatars, messages, auto-scroll
-  - Copy to clipboard, compteur de caractères
-  - Gestion loading/error/success states
-- Intégré dans page.tsx (switch case ai-writing → AiWritingPage)
+- Created src/app/api/thesis/[id]/cadrages/route.ts (GET + POST)
+- Created src/app/api/cadrages/[id]/route.ts (PUT + DELETE)
+- Created src/app/api/cadrages/[id]/fields/route.ts (GET + POST)
+- Created src/app/api/cadrages/fields/[fieldId]/route.ts (PUT + DELETE)
+- Created src/app/api/cadrages/[id]/versions/route.ts (GET + POST)
 
 Stage Summary:
-- Interface complète pour 10 modes d'écriture IA
-- Chat directeur avec historique de conversation
-- 0 erreurs ESLint, compilation Next.js OK
+- Full CRUD for cadrages, fields, and versions
+- All routes use shared Zod schemas from @/lib/api-schemas
+
+---
+Task ID: 3-b
+Agent: full-stack-developer
+Task: Create Notebook/ResearchSource CRUD API routes
+
+Work Log:
+- Created src/app/api/sources/route.ts (GET + POST)
+- Created src/app/api/sources/[id]/route.ts (GET + PUT + DELETE)
+- Created src/app/api/sources/[id]/entries/route.ts (GET + POST)
+- Created src/app/api/entries/route.ts (GET + POST)
+- Created src/app/api/entries/[id]/route.ts (PUT + DELETE)
+
+Stage Summary:
+- Full CRUD for research sources and notebook entries
+- Filtering and search support
+
+---
+Task ID: 3-c
+Agent: full-stack-developer
+Task: Create Agile Sprint/Story CRUD API routes
+
+Work Log:
+- Created src/app/api/sprints/route.ts (GET + POST)
+- Created src/app/api/sprints/[id]/route.ts (GET + PUT + DELETE)
+- Created src/app/api/sprints/[id]/stories/route.ts (GET + POST)
+- Created src/app/api/stories/[id]/route.ts (PUT + DELETE)
+
+Stage Summary:
+- Full CRUD for agile sprints and stories
+- Filtering by phase and status
+
+---
+Task ID: 3-d
+Agent: full-stack-developer
+Task: Create AI Config and Stats API routes
+
+Work Log:
+- Created src/app/api/ai-config/route.ts (GET + POST)
+- Created src/app/api/ai-config/[id]/route.ts (PUT + DELETE)
+- Created src/app/api/stats/route.ts (GET with aggregated statistics)
+
+Stage Summary:
+- Full CRUD for AI tool configurations
+- Stats endpoint for dashboard aggregation (7 parallel Prisma queries)
+
+---
+Task ID: 4
+Agent: main
+Task: Mettre à jour le Dashboard avec vraies données
+
+Work Log:
+- Updated src/components/dashboard/dashboard-page.tsx
+- Added useDashboardStats hook using /api/stats endpoint
+- Dynamic stat cards (chapters, references, words, progress %)
+- Dynamic step completion tracking based on real data
+- Updated module cards with correct icons and status badges
+
+Stage Summary:
+- Dashboard now shows real data from SQLite via Prisma
+- Stats auto-refresh every 15 seconds
+- Loading skeletons while data loads
+
+---
+Task ID: 5
+Agent: main
+Task: Lint, corrections, et Agent Browser verification
+
+Work Log:
+- Ran eslint: 0 errors, 19 warnings → fixed to 0 errors, 2 residual warnings
+- Fixed unused imports in: dashboard-page, ai-writing-page, chapter-header, create-thesis-dialog, directeur-chat, references/bibtex, use-thesis
+- Rewrote create-thesis-dialog.tsx (corrupted by edit)
+- Agent Browser verification: Dashboard (27 elements), Editor (thesis list with 7 chapters), References (CRUD UI), AI Writing (10 modes)
+- 0 console errors across all tested views
+
+Stage Summary:
+- Clean lint output (0 errors)
+- All 4 views tested and verified via Agent Browser
+- Application fully functional end-to-end

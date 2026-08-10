@@ -175,7 +175,7 @@ export function useUpdateChapter() {
       const json = await res.json();
       return json.data;
     },
-    onSuccess: (_data, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
     },
   });

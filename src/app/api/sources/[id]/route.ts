@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { updateThesisSchema } from "@/lib/api-schemas";
+import { updateResearchSourceSchema } from "@/lib/api-schemas";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
-// GET /api/thesis/[id] — Get a single thesis
+// GET /api/sources/[id] — Get single research source
 // ═══════════════════════════════════════
 export async function GET(
   _request: NextRequest,
@@ -12,40 +12,36 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const thesis = await db.thesis.findUnique({
+
+    const source = await db.researchSource.findUnique({
       where: { id },
       include: {
-        chapters: { orderBy: { sortOrder: "asc" } },
-        parts: { orderBy: { sortOrder: "asc" } },
-        cadrages: {
-          where: { isActive: true },
-          include: { fields: { orderBy: { sortOrder: "asc" } } },
+        entries: {
+          orderBy: { updatedAt: "desc" },
         },
       },
     });
 
-    if (!thesis) {
+    if (!source) {
       return NextResponse.json(
-        { error: "Thèse non trouvée" },
+        { error: "Source de recherche introuvable" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ data: thesis });
+    return NextResponse.json({ data: source });
   } catch (error) {
-    console.error("[GET /api/thesis/[id]] Error:", error);
+    console.error("[GET /api/sources/[id]] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la récupération" },
+      { error: "Erreur lors de la récupération de la source de recherche" },
       { status: 500 }
     );
   }
 }
 
 // ═══════════════════════════════════════
-// PUT /api/thesis/[id] — Update a thesis
+// PUT /api/sources/[id] — Update research source
 // ═══════════════════════════════════════
-
-
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -53,15 +49,14 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const validated = updateThesisSchema.parse(body);
+    const validated = updateResearchSourceSchema.parse(body);
 
-    const thesis = await db.thesis.update({
+    const source = await db.researchSource.update({
       where: { id },
       data: validated,
-      include: { chapters: { orderBy: { sortOrder: "asc" } } },
     });
 
-    return NextResponse.json({ data: thesis });
+    return NextResponse.json({ data: source });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -69,16 +64,17 @@ export async function PUT(
         { status: 400 }
       );
     }
-    console.error("[PUT /api/thesis/[id]] Error:", error);
+    console.error("[PUT /api/sources/[id]] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la mise à jour" },
+      { error: "Erreur lors de la mise à jour de la source de recherche" },
       { status: 500 }
     );
   }
 }
 
 // ═══════════════════════════════════════
-// DELETE /api/thesis/[id] — Delete a thesis
+// DELETE /api/sources/[id] — Delete research source
+// Entries linked via SetNull will have sourceId cleared
 // ═══════════════════════════════════════
 export async function DELETE(
   _request: NextRequest,
@@ -86,12 +82,12 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await db.thesis.delete({ where: { id } });
+    await db.researchSource.delete({ where: { id } });
     return NextResponse.json({ data: { id } });
   } catch (error) {
-    console.error("[DELETE /api/thesis/[id]] Error:", error);
+    console.error("[DELETE /api/sources/[id]] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la suppression" },
+      { error: "Erreur lors de la suppression de la source de recherche" },
       { status: 500 }
     );
   }

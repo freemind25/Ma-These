@@ -7,11 +7,6 @@ import { z } from "zod/v4";
 // POST /api/directeur-chat — Chat with AI thesis director
 // ═══════════════════════════════════════
 
-interface ChatMessage {
-  role: "user" | "assistant";
-  content: string;
-}
-
 const directeurChatSchema = z.object({
   messages: z.array(
     z.object({

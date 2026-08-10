@@ -1,21 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { updateChapterSchema } from "@/lib/api-schemas";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
 // PUT /api/chapters/[id] — Update a chapter
 // ═══════════════════════════════════════
-const updateChapterSchema = z.object({
-  title: z.string().min(1).optional(),
-  content: z.string().optional(),
-  plainText: z.string().optional(),
-  wordCount: z.number().optional(),
-  targetWordCount: z.number().optional(),
-  status: z.string().optional(),
-  directorFeedback: z.string().optional(),
-  sortOrder: z.number().optional(),
-  romanNumeral: z.string().optional(),
-});
+
 
 export async function PUT(
   request: NextRequest,

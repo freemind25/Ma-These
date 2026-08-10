@@ -10,22 +10,77 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAppStore } from "@/lib/stores/app-store";
+import { useQuery } from "@tanstack/react-query";
 import {
   FileText,
   BookOpen,
   Sparkles,
   ArrowRight,
   Plus,
-  Lightbulb,
   Target,
   TrendingUp,
   CheckCircle2,
   Circle,
+  FlaskConical,
+  Newspaper,
+  ListTree,
+  Wrench,
+  Globe,
+  Brain,
 } from "lucide-react";
+
+// ═══ Stats types ═══
+interface DashboardStats {
+  totalTheses: number;
+  totalChapters: number;
+  totalWords: number;
+  totalReferences: number;
+  totalSources: number;
+  completedChapters: number;
+  activeSprints: number;
+  progressPercent: number;
+}
+
+function useDashboardStats() {
+  return useQuery<DashboardStats>({
+    queryKey: ["dashboard-stats"],
+    queryFn: async () => {
+      const res = await fetch("/api/stats");
+      if (!res.ok) throw new Error("Erreur de chargement");
+      const json = await res.json();
+      return json.data as DashboardStats;
+    },
+    staleTime: 15 * 1000,
+  });
+}
+
+// ═══ Module icons map ═══
+const MODULE_ICONS: Record<string, React.ElementType> = {
+  "Éditeur de thèse": FileText,
+  "Assistant IA": Sparkles,
+  "Méthodologie": FlaskConical,
+  "Articles scientifiques": Newspaper,
+  "Références": BookOpen,
+  "Plan de thèse": ListTree,
+  "Outils IA": Wrench,
+  "Bases de données": Globe,
+};
 
 export function DashboardPage() {
   const { setCurrentView } = useAppStore();
+  const { data: stats, isLoading } = useDashboardStats();
+
+  // Determine completed steps
+  const stepsCompleted = [
+    stats && stats.totalTheses > 0,
+    stats && stats.totalChapters > 0,
+    stats && stats.totalWords > 0,
+    stats && stats.totalReferences > 0,
+    stats && stats.completedChapters > 0,
+  ];
+  const completedCount = stepsCompleted.filter(Boolean).length;
 
   return (
     <div className="flex flex-col gap-6 p-6 max-w-6xl mx-auto w-full">
@@ -45,30 +100,50 @@ export function DashboardPage() {
         <StatCard
           icon={FileText}
           label="Chapitres"
-          value="0"
-          description="Aucune thèse chargée"
+          value={isLoading ? "—" : String(stats?.totalChapters ?? 0)}
+          description={
+            stats && stats.totalChapters > 0
+              ? `${stats.completedChapters} terminés`
+              : "Aucune thèse chargée"
+          }
           accent="blue"
+          isLoading={isLoading}
         />
         <StatCard
           icon={BookOpen}
           label="Références"
-          value="0"
-          description="Bibliothèque vide"
+          value={isLoading ? "—" : String(stats?.totalReferences ?? 0)}
+          description={
+            stats && stats.totalReferences > 0
+              ? "Bibliothèque active"
+              : "Bibliothèque vide"
+          }
           accent="emerald"
+          isLoading={isLoading}
         />
         <StatCard
           icon={Sparkles}
-          label="Générations IA"
-          value="0"
-          description="Assistant prêt"
+          label="Mots rédigés"
+          value={isLoading ? "—" : (stats?.totalWords ?? 0).toLocaleString("fr-FR")}
+          description={
+            stats && stats.totalWords > 0
+              ? "Assistant IA prêt"
+              : "Assistant IA prêt"
+          }
           accent="amber"
+          isLoading={isLoading}
         />
         <StatCard
           icon={TrendingUp}
           label="Progression"
-          value="0%"
-          description="Commencez votre thèse"
+          value={isLoading ? "—" : `${stats?.progressPercent ?? 0}%`}
+          description={
+            stats && stats.progressPercent > 0
+              ? `${stats.completedChapters}/${stats.totalChapters} chapitres`
+              : "Commencez votre thèse"
+          }
           accent="teal"
+          isLoading={isLoading}
         />
       </div>
 
@@ -106,10 +181,10 @@ export function DashboardPage() {
               onClick={() => setCurrentView("references")}
             />
             <ActionButton
-              icon={Lightbulb}
-              label="Méthodologie"
-              description="Guides de recherche"
-              onClick={() => setCurrentView("methodology")}
+              icon={Brain}
+              label="Carnet de recherche"
+              description="Sources et notes"
+              onClick={() => setCurrentView("ai-tools")}
             />
           </CardContent>
         </Card>
@@ -125,39 +200,39 @@ export function DashboardPage() {
             <StepItem
               number={1}
               label="Cadrage de la thèse"
-              done={false}
+              done={stepsCompleted[0]}
               onClick={() => setCurrentView("editor")}
             />
             <StepItem
               number={2}
               label="Structurer le plan"
-              done={false}
+              done={stepsCompleted[1]}
               onClick={() => setCurrentView("thesis-plan")}
             />
             <StepItem
               number={3}
               label="Rédiger les chapitres"
-              done={false}
+              done={stepsCompleted[2]}
               onClick={() => setCurrentView("editor")}
             />
             <StepItem
               number={4}
               label="Gérer les références"
-              done={false}
+              done={stepsCompleted[3]}
               onClick={() => setCurrentView("references")}
             />
             <StepItem
               number={5}
               label="Réviser avec l'IA"
-              done={false}
+              done={stepsCompleted[4]}
               onClick={() => setCurrentView("ai-writing")}
             />
             <div className="pt-2">
               <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
                 <span>Progression</span>
-                <span>0 / 5 étapes</span>
+                <span>{completedCount} / 5 étapes</span>
               </div>
-              <Progress value={0} className="h-2" />
+              <Progress value={(completedCount / 5) * 100} className="h-2" />
             </div>
           </CardContent>
         </Card>
@@ -174,7 +249,7 @@ export function DashboardPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <ModuleCard
               title="Éditeur de thèse"
               description="Éditeur riche avec structuration par chapitres et sauvegarde automatique"
@@ -189,14 +264,14 @@ export function DashboardPage() {
             />
             <ModuleCard
               title="Méthodologie"
-              description="7 guides : approche, problématique, variables, collecte de données..."
-              status="Prêt"
+              description="Guides et outils méthodologiques pour structurer votre recherche"
+              status="Planifié"
               onClick={() => setCurrentView("methodology")}
             />
             <ModuleCard
               title="Articles scientifiques"
-              description="Guide IMRaD, checklist de soumission, boîte à outils..."
-              status="Prêt"
+              description="Guide IMRaD, checklist de soumission, boîte à outils"
+              status="Planifié"
               onClick={() => setCurrentView("articles")}
             />
             <ModuleCard
@@ -208,19 +283,19 @@ export function DashboardPage() {
             <ModuleCard
               title="Plan de thèse"
               description="Générateur de template LaTeX personnalisé"
-              status="Prêt"
+              status="Planifié"
               onClick={() => setCurrentView("thesis-plan")}
             />
             <ModuleCard
               title="Outils IA"
-              description="Humanizer, consensus multi-sources, notebook, visualisation"
+              description="Carnet de recherche, consensus multi-sources, visualisation"
               status="IA"
               onClick={() => setCurrentView("ai-tools")}
             />
             <ModuleCard
               title="Bases de données"
-              description="7 ressources académiques : HAL, Elsevier, Anna's Archive..."
-              status="Prêt"
+              description="Ressources académiques en ligne : HAL, Elsevier, Anna's Archive..."
+              status="Planifié"
               onClick={() => setCurrentView("academic-db")}
             />
           </div>
@@ -238,12 +313,14 @@ function StatCard({
   value,
   description,
   accent,
+  isLoading,
 }: {
   icon: React.ElementType;
   label: string;
   value: string;
   description: string;
   accent: string;
+  isLoading?: boolean;
 }) {
   const accentClasses: Record<string, string> = {
     blue: "bg-chart-1/10 text-chart-1",
@@ -260,7 +337,11 @@ function StatCard({
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               {label}
             </span>
-            <span className="text-2xl font-bold tabular-nums">{value}</span>
+            {isLoading ? (
+              <Skeleton className="h-7 w-16" />
+            ) : (
+              <span className="text-2xl font-bold tabular-nums">{value}</span>
+            )}
             <span className="text-xs text-muted-foreground">{description}</span>
           </div>
           <div
@@ -290,7 +371,7 @@ function ActionButton({
   return (
     <Button
       variant={primary ? "default" : "outline"}
-      className={`h-auto w-full justify-start gap-3 p-4 ${primary ? "" : ""}`}
+      className="h-auto w-full justify-start gap-3 p-4"
       onClick={onClick}
     >
       <div
@@ -360,17 +441,22 @@ function ModuleCard({
   status: string;
   onClick: () => void;
 }) {
+  const Icon = MODULE_ICONS[title] || FileText;
+
   return (
     <button
       onClick={onClick}
       className="flex flex-col gap-2 rounded-lg border border-border p-4 text-left hover:bg-muted/50 hover:border-primary/20 transition-all group"
     >
       <div className="flex items-start justify-between gap-2">
-        <span className="text-sm font-medium group-hover:text-primary transition-colors">
-          {title}
-        </span>
+        <div className="flex items-center gap-2">
+          <Icon className="h-4 w-4 text-primary/60" />
+          <span className="text-sm font-medium group-hover:text-primary transition-colors">
+            {title}
+          </span>
+        </div>
         <Badge
-          variant={status === "IA" ? "default" : "secondary"}
+          variant={status === "IA" ? "default" : status === "Prêt" ? "secondary" : "outline"}
           className="shrink-0 text-[10px] h-5"
         >
           {status}

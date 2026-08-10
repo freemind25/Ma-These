@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { updateReferenceSchema } from "@/lib/api-schemas";
+import { updateNotebookEntrySchema } from "@/lib/api-schemas";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
-// PUT /api/references/[id] — Update reference
+// PUT /api/entries/[id] — Update notebook entry
 // ═══════════════════════════════════════
-
-
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -15,14 +13,14 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const validated = updateReferenceSchema.parse(body);
+    const validated = updateNotebookEntrySchema.parse(body);
 
-    const reference = await db.reference.update({
+    const entry = await db.notebookEntry.update({
       where: { id },
       data: validated,
     });
 
-    return NextResponse.json({ data: reference });
+    return NextResponse.json({ data: entry });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -30,16 +28,16 @@ export async function PUT(
         { status: 400 }
       );
     }
-    console.error("[PUT /api/references/[id]] Error:", error);
+    console.error("[PUT /api/entries/[id]] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la mise à jour" },
+      { error: "Erreur lors de la mise à jour de la note" },
       { status: 500 }
     );
   }
 }
 
 // ═══════════════════════════════════════
-// DELETE /api/references/[id] — Delete reference
+// DELETE /api/entries/[id] — Delete notebook entry
 // ═══════════════════════════════════════
 export async function DELETE(
   _request: NextRequest,
@@ -47,12 +45,12 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await db.reference.delete({ where: { id } });
+    await db.notebookEntry.delete({ where: { id } });
     return NextResponse.json({ data: { id } });
   } catch (error) {
-    console.error("[DELETE /api/references/[id]] Error:", error);
+    console.error("[DELETE /api/entries/[id]] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la suppression" },
+      { error: "Erreur lors de la suppression de la note" },
       { status: 500 }
     );
   }

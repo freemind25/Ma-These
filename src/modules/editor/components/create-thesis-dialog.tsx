@@ -15,10 +15,8 @@ import { Label } from "@/components/ui/label";
 import { useCreateThesis } from "../hooks/use-thesis";
 import { useState } from "react";
 import { Plus, GraduationCap } from "lucide-react";
-import { useAppStore } from "@/lib/stores/app-store";
 
 export function CreateThesisDialog() {
-  const { setCurrentView } = useAppStore();
   const createThesis = useCreateThesis();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");

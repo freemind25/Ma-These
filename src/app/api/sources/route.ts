@@ -1,60 +1,64 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { createReferenceSchema } from "@/lib/api-schemas";
+import { createResearchSourceSchema } from "@/lib/api-schemas";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
-// GET /api/references — List all references
+// GET /api/sources — List all research sources
+// Supports ?type=article&search=xxx
 // ═══════════════════════════════════════
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type");
     const search = searchParams.get("search");
-    const favoritesOnly = searchParams.get("favorites") === "true";
 
     const where: Record<string, unknown> = {};
-    if (type && type !== "all") where.type = type;
-    if (favoritesOnly) where.isFavorite = true;
+    if (type && type !== "all") {
+      where.type = type;
+    }
     if (search) {
       where.OR = [
         { title: { contains: search } },
         { authors: { contains: search } },
-        { keywords: { contains: search } },
+        { notes: { contains: search } },
       ];
     }
 
-    const references = await db.reference.findMany({
+    const sources = await db.researchSource.findMany({
       where,
       orderBy: { updatedAt: "desc" },
+      include: {
+        _count: {
+          select: { entries: true },
+        },
+      },
     });
 
     return NextResponse.json({
-      data: references,
-      meta: { count: references.length },
+      data: sources,
+      meta: { count: sources.length },
     });
   } catch (error) {
-    console.error("[GET /api/references] Error:", error);
+    console.error("[GET /api/sources] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la récupération des références" },
+      { error: "Erreur lors de la récupération des sources de recherche" },
       { status: 500 }
     );
   }
 }
 
 // ═══════════════════════════════════════
-// POST /api/references — Create a reference
+// POST /api/sources — Create a research source
 // ═══════════════════════════════════════
-
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const validated = createReferenceSchema.parse(body);
+    const validated = createResearchSourceSchema.parse(body);
 
-    const reference = await db.reference.create({ data: validated });
+    const source = await db.researchSource.create({ data: validated });
 
-    return NextResponse.json({ data: reference }, { status: 201 });
+    return NextResponse.json({ data: source }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -62,9 +66,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    console.error("[POST /api/references] Error:", error);
+    console.error("[POST /api/sources] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la création de la référence" },
+      { error: "Erreur lors de la création de la source de recherche" },
       { status: 500 }
     );
   }

@@ -8,12 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Pencil, Check, X, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type { ThesisChapter } from "@/modules/editor/hooks/use-thesis";
-import { cn } from "@/lib/utils";
 
 interface ChapterHeaderProps {
   chapter: ThesisChapter | null;
@@ -31,13 +29,6 @@ const STATUS_LABELS: Record<string, string> = {
   completed: "Terminé",
 };
 
-const STATUS_VARIANTS: Record<string, string> = {
-  not_started: "secondary",
-  in_progress: "outline",
-  draft: "outline",
-  review: "outline",
-  completed: "default",
-};
 
 export function ChapterHeader({
   chapter,

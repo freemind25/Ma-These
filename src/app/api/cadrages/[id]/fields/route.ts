@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { createChapterSchema } from "@/lib/api-schemas";
+import { createCadrageFieldSchema } from "@/lib/api-schemas";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
-// GET /api/thesis/[id]/chapters — List chapters
+// GET /api/cadrages/[id]/fields — List fields for a cadrage
 // ═══════════════════════════════════════
 export async function GET(
   _request: NextRequest,
@@ -12,29 +12,28 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const chapters = await db.chapter.findMany({
-      where: { thesisId: id },
+
+    const fields = await db.thesisCadrageField.findMany({
+      where: { cadrageId: id },
       orderBy: { sortOrder: "asc" },
     });
 
     return NextResponse.json({
-      data: chapters,
-      meta: { count: chapters.length },
+      data: fields,
+      meta: { count: fields.length },
     });
   } catch (error) {
-    console.error("[GET /api/thesis/[id]/chapters] Error:", error);
+    console.error("[GET /api/cadrages/[id]/fields] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la récupération des chapitres" },
+      { error: "Erreur lors de la récupération des champs" },
       { status: 500 }
     );
   }
 }
 
 // ═══════════════════════════════════════
-// POST /api/thesis/[id]/chapters — Create chapter
+// POST /api/cadrages/[id]/fields — Add a field
 // ═══════════════════════════════════════
-
-
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -42,25 +41,26 @@ export async function POST(
   try {
     const { id } = await params;
     const body = await request.json();
-    const validated = createChapterSchema.parse(body);
+    const validated = createCadrageFieldSchema.parse(body);
 
-    // Determine next chapter number
-    const existingCount = await db.chapter.count({ where: { thesisId: id } });
-    const nextNumber = existingCount + 1;
+    // Determine next sort order
+    const existingCount = await db.thesisCadrageField.count({
+      where: { cadrageId: id },
+    });
 
-    const chapter = await db.chapter.create({
+    const field = await db.thesisCadrageField.create({
       data: {
-        thesisId: id,
-        number: nextNumber,
-        title: validated.title,
-        romanNumeral: validated.romanNumeral,
-        parentId: validated.parentId,
+        cadrageId: id,
+        fieldKey: validated.fieldKey,
+        label: validated.label,
+        value: validated.value,
+        aiSuggestion: validated.aiSuggestion,
+        isLocked: validated.isLocked ?? false,
         sortOrder: validated.sortOrder ?? existingCount,
-        status: "not_started",
       },
     });
 
-    return NextResponse.json({ data: chapter }, { status: 201 });
+    return NextResponse.json({ data: field }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -68,9 +68,9 @@ export async function POST(
         { status: 400 }
       );
     }
-    console.error("[POST /api/thesis/[id]/chapters] Error:", error);
+    console.error("[POST /api/cadrages/[id]/fields] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la création du chapitre" },
+      { error: "Erreur lors de l'ajout du champ" },
       { status: 500 }
     );
   }
