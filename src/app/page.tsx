@@ -8,6 +8,7 @@ import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { ModulePlaceholder } from "@/components/layout/module-placeholder";
 import { EditorPage } from "@/modules/editor/editor-page";
 import { ReferencesPage } from "@/modules/references/references-page";
+import { AiWritingPage } from "@/modules/ai-writing/ai-writing-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -21,9 +22,10 @@ function CurrentView() {
       return <DashboardPage />;
     case "editor":
       return <EditorPage />;
+    case "ai-writing":
+      return <AiWritingPage />;
     case "references":
       return <ReferencesPage />;
-    case "ai-writing":
     case "methodology":
     case "articles":
     case "thesis-plan":

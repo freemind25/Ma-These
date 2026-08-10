@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
+import { Toggle } from "@/components/ui/toggle";
 import {
   Tooltip,
   TooltipContent,
