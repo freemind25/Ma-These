@@ -6,108 +6,93 @@ Agent: Main
 Task: Phase 0 — Configurations fondamentales
 
 Work Log:
-- Mis à jour next.config.ts : retiré ignoreBuildErrors, ajouté serverExternalPackages pour z-ai-web-dev-sdk
-- Mis à jour package.json : renommé en "thesisframe" v1.0.0, ajouté scripts test
-- Mis à jour tsconfig.json : activé noImplicitAny: true
-- Mis à jour eslint.config.mjs : règles intermédiaires (warn au lieu d'off pour les plus critiques)
-- Créé .env.example avec toutes les variables d'environnement nécessaires
-- Créé .editorconfig avec conventions de code
+- Mis à jour next.config.ts, package.json (thesisframe v1.0.0), tsconfig.json (noImplicitAny), eslint.config.mjs
+- Créé .env.example et .editorconfig
 
 Stage Summary:
-- Fondations TypeScript strictes activées
-- 0 erreurs ESLint, 4 warnings mineurs (shadcn files)
-- Pipeline de build propre (ignoreBuildErrors supprimé)
+- Fondations TypeScript strictes, 0 erreurs ESLint
 
 ---
 Task ID: P0-2
 Agent: Main
-Task: Phase 0 — Design System
+Task: Phase 0 — Design System + Schema Prisma
 
 Work Log:
-- Mis à jour globals.css avec palette ThesisFrame (tons slate-bleu professionnels)
-- Ajouté custom properties CSS : --thesis-brand, --thesis-brand-light, --thesis-accent, --thesis-warm
-- Thème clair et sombre avec cohérence visuelle
-- Scrollbar custom styling (scrollbar-thin)
-- Sidebar avec fond coloré ThesisFrame
+- Palette ThesisFrame (slate-teal) dans globals.css avec clair/sombre
+- 15 modèles Prisma créés et poussés vers SQLite
+- Tiptap installé (@tiptap/react + 10 extensions)
 
 Stage Summary:
-- Design system cohérent clair/sombre
-- Palette professionnelle (pas de bleu/indigo pur, tons slate subtils)
-
----
-Task ID: P0-3
-Agent: Main
-Task: Phase 0 — Schéma Prisma complet
-
-Work Log:
-- Créé 15 modèles Prisma : Thesis, Chapter, Part, ThesisCadrage, ThesisCadrageField, ThesisCadrageVersion, Reference, ResearchSource, NotebookEntry, AiToolConfig, AgileSprint, AgileStory, CustomBookSkill, LicenseKey
-- Défini toutes les relations et index
-- Push réussi vers SQLite (db:push)
-- Client Prisma régénéré
-
-Stage Summary:
-- 15 modèles opérationnels couvrant thèse, cadrage, bibliographie, notebook, IA, agile
-- Base de données SQLite fonctionnelle
+- Design system cohérent, DB opérationnelle
 
 ---
 Task ID: P1-1
 Agent: Main
-Task: Phase 1 — Layout racine responsive
+Task: Phase 1 — Layout + Navigation + Dashboard
 
 Work Log:
-- Créé AppSidebar : sidebar shadcn/ui avec navigation 9 items, logo, icônes, badges, thème toggle
-- Créé AppHeader : header avec breadcrumb, SidebarTrigger, dropdowns Aide/Paramètres
-- Créé AppFooter : footer sticky avec branding ThesisFrame
-- Intégré SidebarProvider + SidebarInset pour layout responsive
-- Footer sticky avec mt-auto
+- AppSidebar (9 modules, collapsible, thème toggle)
+- AppHeader (breadcrumb, dropdowns)
+- AppFooter (sticky)
+- Zustand store (navigation, theme, editor state)
+- DashboardPage (stats, actions, guide, modules)
+- Vérifié via Agent Browser : 0 erreur console, 27 éléments interactifs
 
 Stage Summary:
-- Layout responsive avec sidebar collapsible
-- Header avec breadcrumb dynamique
-- Footer sticky au bottom
+- Architecture noyau fonctionnelle
 
 ---
-Task ID: P1-2
+Task ID: P2-1
 Agent: Main
-Task: Phase 1 — Navigation et routing client
+Task: Phase 2 — API Routes CRUD complètes
 
 Work Log:
-- Créé Zustand store (src/lib/stores/app-store.ts) avec navigation state
-- Défini 9 vues : dashboard, editor, ai-writing, methodology, articles, references, thesis-plan, ai-tools, academic-db
-- Navigation par état Zustand (pas de routing Next.js client-side)
-- NAVIGATION_ITEMS exporté avec labels, descriptions, icônes, badges
+- 7 API routes créées :
+  - /api/thesis (GET list, POST create with 7 default chapters)
+  - /api/thesis/[id] (GET, PUT, DELETE)
+  - /api/thesis/[id]/chapters (GET, POST)
+  - /api/chapters/[id] (PUT, DELETE)
+  - /api/references (GET with search/type/favorites filters, POST)
+  - /api/references/[id] (PUT, DELETE)
+  - /api/references/bibtex (GET export .bib)
+- Toutes les routes validées avec Zod
+- Testé via curl : création de thèse avec 7 chapitres OK
 
 Stage Summary:
-- Navigation fonctionnelle entre 9 modules
-- Store persisté en localStorage (theme, aiProvider, sidebarOpen)
+- CRUD complet thése/chapitres/références
+- Export BibTeX fonctionnel
+- Validation Zod sur toutes les entrées
 
 ---
-Task ID: P1-3
+Task ID: P2-2
 Agent: Main
-Task: Phase 1 — Thème clair/sombre
+Task: Phase 2 — TanStack Query Hooks
 
 Work Log:
-- Intégré ThemeProvider (next-themes) dans layout.tsx
-- Toggle sombre/clair dans le footer de la sidebar
-- Changement de langue :fr dans html
-- Metadata mise à jour pour ThesisFrame
+- use-thesis.ts : useTheses, useThesis, useCreateThesis, useUpdateThesis, useDeleteThesis, useUpdateChapter, useCreateChapter, useDeleteChapter
+- use-auto-save.ts : useDebounce + useAutoSave avec status (idle/saving/saved/error)
+- Query keys structurés
 
 Stage Summary:
-- Thème clair/sombre fonctionnel
-- Metadata SEO en français
+- Hooks CRUD complets avec cache invalidation
+- Auto-save avec debounce de 2.5s
 
 ---
-Task ID: P1-4
+Task ID: P3-1
 Agent: Main
-Task: Phase 1 — Page d'accueil tableau de bord
+Task: Phase 3 — Éditeur Tiptap + Workspace
 
 Work Log:
-- Créé DashboardPage avec welcome section, 4 stat cards, actions rapides, démarrage rapide, 8 module cards
-- Créé ModulePlaceholder pour les modules en développement
-- StatCard, ActionButton, StepItem, ModuleCard comme sous-composants
-- page.tsx comme orchestrateur avec SidebarProvider + SidebarInset + CurrentView switch
+- TiptapEditor : éditeur riche avec 10 extensions, compteur mots, barre de statut
+- EditorToolbar : 20+ boutons (titres, gras, italique, souligné, alignement, listes, citation, lien, surligneur)
+- ChapterTabs : onglets horizontaux avec status icons, tooltips, défilement
+- ChapterHeader : titre éditable, selecteur status, compteur mots
+- CreateThesisDialog : formulaire création thèse
+- ThesisListPanel : liste des thèses avec progression
+- EditorPage : orchestrateur complet avec auto-save
+- ReferencesPage : table CRUD + recherche + filtres + export BibTeX
 
 Stage Summary:
-- Dashboard professionnel avec stats, actions, guide de démarrage, aperçu modules
-- Navigation complète entre tous les modules
-- Vérifié via Agent Browser : 0 erreur console, tous les éléments interactifs fonctionnels
+- Éditeur riche opérationnel
+- Gestion complète thèse/chapitres
+- Module références bibliographiques complet
