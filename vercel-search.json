@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://shimmer-from-structure-docs.vercel.app/docs/how-this-works",
+    "name": "How This Works",
+    "snippet": "A structure-aware skeleton loader that mirrors your rendered UI at runtime. Frame Budget Browsers render at 60 frames per second (fps), which means each frame ...",
+    "host_name": "shimmer-from-structure-docs.vercel.app",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://deck.vercel.app",
+    "name": "Next.js by Vercel - The React Framework",
+    "snippet": "Next.js by Vercel is the full-stack React framework for the web . .js enables you to create high-quality web applications with the power of React components.",
+    "host_name": "deck.vercel.app",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://konvertor.vercel.app",
+    "name": "Images to Video Convertor",
+    "snippet": "Convert easily for free your .JPG . This is a server-less app, the conversion occurs directly on your browser. Simply select your image … select the desired ...",
+    "host_name": "konvertor.vercel.app",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://based-mfers-next-three.vercel.app/api/dev",
+    "name": "frame: /api - based mfers - Vercel",
+    "snippet": "Status Code. 200. OK ; Verified. false ; Response Time. 1.38s ; Frame Size. 3.45kb ; Image Size. 39.46kb.",
+    "host_name": "based-mfers-next-three.vercel.app",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://v0-premium-templates.vercel.app",
+    "name": "Free v0 Templates for AI Apps, SaaS, Dashboards  - Vercel",
+    "snippet": "v0 is an AI coding tool by Vercel that generates React, Next.js, and Tailwind CSS code from text prompts or designs. all templates are 100% free.",
+    "host_name": "v0-premium-templates.vercel.app",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

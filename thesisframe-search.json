@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://vercel.com/docs/frameworks",
+    "name": "Frameworks on Vercel",
+    "snippet": "Vercel supports a wide range of the most popular frameworks, optimizing how your application builds and runs no matter what tool you use.",
+    "host_name": "vercel.com",
+    "rank": 0,
+    "date": "Jun 16, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/vercel/vercel",
+    "name": "GitHub - vercel/vercel: Develop. Preview. Ship.",
+    "snippet": "This project uses pnpm to install dependencies and run scripts. You can use the vercel script to run local changes as if you were invoking Vercel CLI. For ...",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://getdesign.md/vercel/design-md",
+    "name": "Design System Analysis: Vercel",
+    "snippet": "Vercel takes frontend deployment as its base, then sharpens it through black and white precision, Geist font. It is a strong fit for developer platforms, ...",
+    "host_name": "getdesign.md",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=o0LoUH8MAxE",
+    "name": "Packing Input Frame Context in Next-Frame Prediction (Apr 2025)",
+    "snippet": "FramePack, a neural network. FramePack compresses input frames to make the transformer context length fixed. This allows processing more frames ...",
+    "host_name": "www.youtube.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://aclanthology.org/2025.findings-acl.921",
+    "name": "Generative Frame Sampler for Long Video Understanding",
+    "snippet": "by L Yao · 2025 · Cited by 40 — this paper introduces Generative Frame Sampler (GenS), a plug-and-play module integrated with VideoLLMs to facilitate efficient lengthy video perception.",
+    "host_name": "aclanthology.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://vercel.com/new",
+    "name": "New Project",
+    "snippet": "Vercel example that serves html content, JSON data and simulates an API route. example tool ready to deploy on Vercel.",
+    "host_name": "vercel.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.npmjs.com/package/@vercel/frameworks?activeTab=dependencies",
+    "name": "vercel/frameworks",
+    "snippet": "Latest version: 3.30.7, last published: 17 days ago. Start using @vercel/frameworks in your project by running `npm i @vercel/frameworks`.",
+    "host_name": "www.npmjs.com",
+    "rank": 6,
+    "date": "Jul 15, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/2504.12626",
+    "name": "[2504.12626] Frame Context Packing and Drift Prevention",
+    "snippet": "by L Zhang · 2025 · Cited by 73 — We present a neural network structure, FramePack, to train next-frame (or next-frame-section) prediction models for video generation. FramePack ...",
+    "host_name": "arxiv.org",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://framecad.com",
+    "name": "FRAMECAD the world-leader of steel framing building",
+    "snippet": "FRAMECAD is the world leader in steel framing innovation, offering efficient end-to-end systems that simplify and optimize construction worldwide.",
+    "host_name": "framecad.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  }
+]
