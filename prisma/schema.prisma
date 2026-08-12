@@ -487,3 +487,93 @@ model RechercheSauvegardee {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 }
+
+// ═══════════════════════════════════════
+// BASE DE CONNAISSANCES — Documents + Chunks (SurfSense-inspired)
+// ═══════════════════════════════════════
+
+model KnowledgeDocument {
+  id          String   @id @default(cuid())
+  title       String
+  fileName    String?
+  fileType    String   @default("text") // text | pdf | markdown | image | audio
+  content     String   // Extracted full text
+  plainText   String   // Normalized plain text for search
+  metadata    String?  // JSON: { authors, year, journal, doi, pages, language }
+  tags        String?  // Comma separated
+  sourceType  String   @default("upload") // upload | url | reference | mendeley
+  sourceRef   String?  // ID of the source (Reference.id, Mendeley doc id, etc.)
+  thesisId    String?  // Optional link to a thesis
+  wordCount   Int      @default(0)
+  chunkCount  Int      @default(0)
+  isIndexed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  chunks      KnowledgeChunk[]
+  citations   Citation[]
+
+  @@index([fileType])
+  @@index([sourceType])
+  @@index([thesisId])
+  @@index([isIndexed])
+}
+
+model KnowledgeChunk {
+  id              String   @id @default(cuid())
+  documentId      String
+  document        KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  content         String   // Chunk text content
+  plainText       String   // Normalized for search
+  chunkIndex      Int      // Position in document
+  charStart       Int      // Start character offset
+  charEnd         Int       // End character offset
+  wordCount       Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  @@index([documentId])
+}
+
+// ═══════════════════════════════════════
+// CITATIONS — Tracking AI response sources
+// ═══════════════════════════════════════
+
+model Citation {
+  id              String   @id @default(cuid())
+  documentId      String?
+  document        KnowledgeDocument? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  chunkId         String?
+  chapterId       String?
+  quotedText      String   // The text being cited
+  context         String?  // Surrounding context
+  citationStyle   String   @default("apa") // apa | mla | chicago | ieee | vancouver
+  referenceText   String?  // Formatted citation string
+  sessionId       String?  // AI conversation session
+  createdAt       DateTime @default(now())
+
+  @@index([documentId])
+  @@index([chapterId])
+  @@index([sessionId])
+}
+
+// ═══════════════════════════════════════
+// MÉMOIRE DE RECHERCHE — Persistent cross-session context
+// ═══════════════════════════════════════
+
+model ResearchMemory {
+  id          String   @id @default(cuid())
+  category    String   // theme | methodologie | problématique | reference | hypothese | cadre | result | note
+  key         String   // Short identifier
+  value       String   // Memory content
+  thesisId    String?
+  importance  Int      @default(5) // 1-10 priority
+  isExpired   Boolean  @default(false)
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([category, key, thesisId])
+  @@index([category])
+  @@index([thesisId])
+  @@index([importance])
+}

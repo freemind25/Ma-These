@@ -317,3 +317,30 @@ Stage Summary:
 - ESLint: 0 errors, 236 warnings (all pre-existing in downloaded files)
 - All tested API endpoints respond correctly with proper HTTP status codes
 - No existing functionality was modified
+
+---
+Task ID: surfsense-features
+Agent: main
+Task: Implement SurfSense-inspired features (Knowledge Base, Research Memory, Citations)
+
+Work Log:
+- Analyzed SurfSense repo (MODSetter/SurfSense) — identified key features adaptable to MaTh-se
+- Phase 1: Extended Prisma schema with 4 new models (KnowledgeDocument, KnowledgeChunk, Citation, ResearchMemory) — db push succeeded
+- Phase 2: Created 4 lib files (document-parser.ts, knowledge-search.ts, research-memory.ts, citation-extractor.ts)
+  - document-parser: Text/markdown/HTML parsing, chunking with overlap (SurfSense Chonkie-inspired)
+  - knowledge-search: Hybrid search (LIKE FTS + keyword scoring with unigram/bigram matching)
+  - research-memory: Persistent cross-session context with auto-extraction from AI responses
+  - citation-extractor: APA/MLA/numbered citation pattern extraction
+- Phase 3: Created 5 API routes (knowledge/documents, knowledge/documents/[id], knowledge/search, memory, citations)
+- Phase 4: Created 2 frontend panels via subagents (knowledge-base-panel.tsx, research-memory-panel.tsx)
+- Phase 5: Added 2 ViewIds (knowledge-base, research-memory) to app-store.ts, lazy imports to page.tsx
+- Fixed 3 issues: Z→z import (zod casing), tokenize/ngrams import (implemented locally), $queryRaw→$queryRawUnsafe
+- All APIs tested and working: GET/POST knowledge/documents (200), GET/POST memory (200), GET citations?stats (200), POST knowledge/search (200)
+
+Stage Summary:
+- 4 Prisma models added (28 total)
+- 4 lib files, 5 API routes, 2 frontend components created
+- 2 new navigation views with "Nouveau" badge
+- ESLint: 0 errors, 239 warnings (all pre-existing)
+- No existing functionality modified
+- All features wrapped in ErrorBoundary for graceful degradation

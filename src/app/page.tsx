@@ -130,6 +130,10 @@ const LicenseAdminPanel = createLazyPanel(() => import("@/components/thesis/lice
 const AuthProviderPanel = createLazyPanel(() => import("@/components/thesis/auth-provider-panel"));
 const MendeleyPanel = createLazyPanel(() => import("@/components/thesis/references-tab"));
 
+// ── SurfSense-inspired panels ──
+const KnowledgeBasePanel = createLazyPanel(() => import("@/components/thesis/knowledge-base-panel"));
+const ResearchMemoryPanel = createLazyPanel(() => import("@/components/thesis/research-memory-panel"));
+
 function CurrentView() {
   const { currentView } = useAppStore();
 
@@ -217,6 +221,12 @@ function CurrentView() {
       return <AuthProviderPanel />;
     case "mendeley":
       return <MendeleyPanel />;
+
+    // ── SurfSense-inspired features ──
+    case "knowledge-base":
+      return <KnowledgeBasePanel />;
+    case "research-memory":
+      return <ResearchMemoryPanel />;
 
     // ── Fallback ──
     default:

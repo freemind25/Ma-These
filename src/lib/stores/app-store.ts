@@ -45,7 +45,9 @@ export type ViewId =
   | "usage-guide"
   | "office-export"
   | "ithy-research"
-  | "auto-edition";
+  | "auto-edition"
+  | "knowledge-base"
+  | "research-memory";
 
 export interface NavigationItem {
   id: ViewId;
@@ -348,6 +350,23 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "PenLine",
     description: "Auto-édition en 8 critères",
     category: "redaction",
+  },
+  // ── CONNAISSANCES (SurfSense-inspired) ──
+  {
+    id: "knowledge-base",
+    label: "Base de connaissances",
+    icon: "Database",
+    description: "Documents, recherche sémantique, citations IA",
+    badge: "Nouveau",
+    category: "ia",
+  },
+  {
+    id: "research-memory",
+    label: "Mémoire recherche",
+    icon: "Brain",
+    description: "Contexte persistant entre les sessions IA",
+    badge: "Nouveau",
+    category: "ia",
   },
 ];
 
