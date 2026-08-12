@@ -344,3 +344,23 @@ Stage Summary:
 - ESLint: 0 errors, 239 warnings (all pre-existing)
 - No existing functionality modified
 - All features wrapped in ErrorBoundary for graceful degradation
+
+---
+Task ID: fiche-synthese
+Agent: main
+Task: Créer la fiche synthèse du projet et consigner rétrospectivement tous les jalons
+
+Work Log:
+- Lu le fichier FICHE_SYNTHESE.md uploadé dans /home/z/my-project/upload/
+- Créé le répertoire /docs/ et placé le fichier FICHE_SYNTHESE.md
+- Consolidé rétrospectivement 8 jalons manquants depuis le worklog (12 entrées)
+- Jalons documentés : Fondation API (QueryProvider, Zod, CRUD), Dashboard dynamique, 5 modules pages, Intégration page.tsx, Analyse comparative, Restauration massive (212 fichiers), 78 route wrappers, Fonctionnalités SurfSense
+- Ajouté la vue d'ensemble de l'architecture actuelle (42 vues, 28 modèles, 8 catégories)
+- Mis à jour les points de vigilance et la dette technique consolidée
+- Vérifié que le bug knowledge-search.ts ($queryRaw) était déjà corrigé ($queryRawUnsafe)
+- Vérifié dev server fonctionnel (HTTP 200) et lint (0 errors, 239 warnings)
+
+Stage Summary:
+- FICHE_SYNTHESE.md créé en /docs/FICHE_SYNTHESE.md avec 8 jalons rétrospectifs + 1 jalon d'amorçage original
+- Discipline de traçabilité activée pour toutes les futures tâches
+- Pas de modification de code existant — seul le fichier de documentation ajouté
