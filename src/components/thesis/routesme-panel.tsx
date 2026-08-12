@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, startTransition } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -102,19 +102,29 @@ export default function RoutesMePanel() {
   }, [])
 
   // Restore from localStorage on mount
+  const initKeyRef = useRef<string | null>(null)
   useEffect(() => {
     if (initialized.current) return
     initialized.current = true
     const savedKey = localStorage.getItem(LS_KEY)
     const savedPlan = localStorage.getItem(LS_PLAN) as 'free' | 'vip' | null
     if (savedKey) {
-      setApiKey(savedKey)
-      setPlan(savedPlan || 'free')
-      setIsConfigured(true)
-      // Auto-load models if key exists
-      loadModels(savedKey)
+      startTransition(() => {
+        setApiKey(savedKey)
+        setPlan(savedPlan || 'free')
+        setIsConfigured(true)
+      })
+      initKeyRef.current = savedKey
     }
-  }, [loadModels]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Load models after init key is set (separate effect to avoid sync setState)
+  useEffect(() => {
+    if (initKeyRef.current) {
+      void loadModels(initKeyRef.current)
+      initKeyRef.current = null
+    }
+  }, [loadModels])
 
   const testConnection = useCallback(async () => {
     if (!apiKey) return

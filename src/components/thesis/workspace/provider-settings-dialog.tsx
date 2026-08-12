@@ -83,7 +83,7 @@ export default function ProviderSettingsDialog({
   const handleRmPlanChange = useCallback((plan: 'free' | 'vip') => {
     setRmPlan(plan)
     setAiBaseUrl(plan === 'vip' ? 'https://routesme.online/v2' : 'https://routesme.online/v1')
-  }, [])
+  }, [setRmPlan, setAiBaseUrl])
 
   const handleRmRefresh = useCallback(() => {
  loadRoutesMeModels(aiApiKey, rmPlan)
