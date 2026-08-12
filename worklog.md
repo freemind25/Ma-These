@@ -390,3 +390,28 @@ Stage Summary:
 - 43 vues au total dans la navigation (42 + resource-gallery)
 - 3 fichiers créés : rb-resources.ts, resource-gallery-page.tsx, 15 images dans public/resources/rb/
 - Aucune fonctionnalité existante modifiée
+
+---
+Task ID: scientific-analysis-skill
+Agent: main
+Task: Intégrer le skill d'analyse documentaire scientifique (12 protocoles Classe A/Q1)
+
+Work Log:
+- Extraction du ZIP files.zip : SKILL.md, grilles-qualite-appraisal.md, integrations-gestionnaires-references.md
+- Stockage du skill dans skills/analyse-documentaire-scientifique/ (SKILL.md + reference/)
+- Création de src/data/scientific-analysis-protocols.ts : interfaces Protocol, ReviewType, DepthLevel + 12 protocoles typés, 4 types de revue, 3 niveaux de profondeur, 18 livrables
+- Création de src/data/quality-appraisal-grids.ts : interfaces QualityDimension, QualityGrid, BiasRiskLevel, CertaintyLevel + 4 grilles (quantitatif, observationnel, qualitatif, revue), 5 niveaux biais, 4 certitudes, 4 règles dégradation
+- Création du module scientific-analysis-page.tsx via subagent (530 lignes)
+  - 4 onglets : Protocoles, Grilles de qualité, Cadrage Phase 0, Livrables
+  - Correction import barrel → individuels
+- Intégration dans app-store.ts (ViewId scientific-analysis, badge Nouveau, catégorie analyse)
+- Intégration dans page.tsx via lazy loading avec named export transform
+- Vérification Agent Browser : 4 onglets fonctionnels, 12 protocoles affichés, 0 erreurs console
+- ESLint : 0 errors, 241 warnings (inchangé)
+- FICHE_SYNTHESE.md et worklog.md mis à jour
+
+Stage Summary:
+- 6 fichiers créés : SKILL.md, 2 reference .md, 2 data .ts, 1 module .tsx
+- 44 vues au total dans la navigation (43 + scientific-analysis)
+- Le skill est un prompt Claude/Z.ai réutilisable — il pourrait être intégré comme system prompt dans l'IA
+- Aucune fonctionnalité existante modifiée

@@ -28,6 +28,44 @@ Cette règle prime sur la rapidité d'exécution : mieux vaut une tâche légèr
 
 ## Journal des jalons
 
+## [2025-07-XX] — Skill Analyse Documentaire Scientifique + Module UI
+
+**Statut :** ✅ terminé
+
+**Objectif de l'étape**
+Intégrer le skill d'analyse documentaire scientifique de niveau Classe A/Q1 (12 protocoles PRISMA + GRADE) dans MaTh-se.
+
+**Ce qui a été fait**
+- Extraction du ZIP : SKILL.md, grilles-qualite-appraisal.md, integrations-gestionnaires-references.md
+- Stockage du skill dans `skills/analyse-documentaire-scientifique/` (SKILL.md + reference/)
+- Création de `src/data/scientific-analysis-protocols.ts` : 12 protocoles typés, types de revue, niveaux de profondeur, structure livrable
+- Création de `src/data/quality-appraisal-grids.ts` : 4 grilles par design (quantitatif, observationnel, qualitatif, revue), 5 niveaux de risque de biais, 4 niveaux de certitude, règles de dégradation
+- Création du module `src/modules/scientific-analysis/scientific-analysis-page.tsx` (530 lignes) via subagent
+  - 4 onglets : Protocoles (12 cartes), Grilles de qualité (4 types + échelles), Cadrage Phase 0 (types de revue + profondeur), Livrables (arborescence)
+- Intégration dans `app-store.ts` (ViewId `scientific-analysis`, badge "Nouveau", catégorie "analyse")
+- Intégration dans `page.tsx` via lazy loading (named export transform)
+- Correction import : barrel import `@/components/ui` → imports individuels par composant
+
+**Décisions techniques prises**
+- Le skill SKILL.md est stocké tel quel dans `skills/` comme référence/approche prompt
+- Les grilles d'appréciation sont paraphrasées (pas de reproduction verbatim de grilles protégées CASP/MMAT/RoB2)
+- Les données structurées (TypeScript) permettent une réutilisation future dans l'IA (system prompt) et l'UI
+
+**Points de vigilance / dette technique**
+- ⚠️ Le skill SKILL.md est un prompt Claude/Z.ai — il pourrait être intégré comme system prompt dans le directeur IA ou l'assistant IA pour guider les analyses
+- ⚠️ Les grilles de qualité sont des repères paraphrasés — pour un usage certifié, consulter les outils originaux
+
+**Comment tester / vérifier que ça marche**
+- Naviguer vers "Analyse documentaire" dans la sidebar (catégorie Analyse)
+- 4 onglets fonctionnels avec contenu structuré
+- 12 protocoles affichés avec badges de statut (Conservé/Renforcé/Ajouté)
+
+**Problèmes rencontrés et solutions**
+- Le subagent a utilisé un barrel import `@/components/ui` qui n'existe pas → corrigé en imports individuels
+- Le composant utilise un named export → transform `.then(m => ({ default: m.ScientificAnalysisPage }))`
+
+---
+
 ## [2025-07-XX] — Ajout des ressources visuelles RB (15 infographies académiques)
 
 **Statut :** ✅ terminé

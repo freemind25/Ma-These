@@ -137,6 +137,9 @@ const ResearchMemoryPanel = createLazyPanel(() => import("@/components/thesis/re
 // ── Resource gallery (RB infographics) ──
 const ResourceGallery = createLazyPanel(() => import("@/modules/resource-gallery/resource-gallery-page").then(m => ({ default: m.ResourceGalleryPage })));
 
+// ── Scientific analysis (12 protocols) ──
+const ScientificAnalysis = createLazyPanel(() => import("@/modules/scientific-analysis/scientific-analysis-page").then(m => ({ default: m.ScientificAnalysisPage })));
+
 function CurrentView() {
   const { currentView } = useAppStore();
 
@@ -234,6 +237,10 @@ function CurrentView() {
     // ── Resource gallery ──
     case "resource-gallery":
       return <ResourceGallery />;
+
+    // ── Scientific analysis ──
+    case "scientific-analysis":
+      return <ScientificAnalysis />;
 
     // ── Fallback ──
     default:

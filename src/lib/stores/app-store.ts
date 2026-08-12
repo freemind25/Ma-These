@@ -48,7 +48,8 @@ export type ViewId =
   | "auto-edition"
   | "knowledge-base"
   | "research-memory"
-  | "resource-gallery";
+  | "resource-gallery"
+  | "scientific-analysis";
 
 export interface NavigationItem {
   id: ViewId;
@@ -377,6 +378,15 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     description: "Infographies — Méthodologie et Urbanisme",
     badge: "Nouveau",
     category: "ressources",
+  },
+  // ── ANALYSE DOCUMENTAIRE ──
+  {
+    id: "scientific-analysis",
+    label: "Analyse documentaire",
+    icon: "FlaskConical",
+    description: "12 protocoles — Synthèse de classe A (PRISMA, GRADE)",
+    badge: "Nouveau",
+    category: "analyse",
   },
 ];
 
