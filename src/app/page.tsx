@@ -134,6 +134,9 @@ const MendeleyPanel = createLazyPanel(() => import("@/components/thesis/referenc
 const KnowledgeBasePanel = createLazyPanel(() => import("@/components/thesis/knowledge-base-panel"));
 const ResearchMemoryPanel = createLazyPanel(() => import("@/components/thesis/research-memory-panel"));
 
+// ── Resource gallery (RB infographics) ──
+const ResourceGallery = createLazyPanel(() => import("@/modules/resource-gallery/resource-gallery-page").then(m => ({ default: m.ResourceGalleryPage })));
+
 function CurrentView() {
   const { currentView } = useAppStore();
 
@@ -227,6 +230,10 @@ function CurrentView() {
       return <KnowledgeBasePanel />;
     case "research-memory":
       return <ResearchMemoryPanel />;
+
+    // ── Resource gallery ──
+    case "resource-gallery":
+      return <ResourceGallery />;
 
     // ── Fallback ──
     default:

@@ -47,7 +47,8 @@ export type ViewId =
   | "ithy-research"
   | "auto-edition"
   | "knowledge-base"
-  | "research-memory";
+  | "research-memory"
+  | "resource-gallery";
 
 export interface NavigationItem {
   id: ViewId;
@@ -367,6 +368,15 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     description: "Contexte persistant entre les sessions IA",
     badge: "Nouveau",
     category: "ia",
+  },
+  // ── RESSOURCES VISUELLES ──
+  {
+    id: "resource-gallery",
+    label: "Ressources visuelles",
+    icon: "Image",
+    description: "Infographies — Méthodologie et Urbanisme",
+    badge: "Nouveau",
+    category: "ressources",
   },
 ];
 

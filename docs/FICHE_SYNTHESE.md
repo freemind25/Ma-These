@@ -28,6 +28,49 @@ Cette règle prime sur la rapidité d'exécution : mieux vaut une tâche légèr
 
 ## Journal des jalons
 
+## [2025-07-XX] — Ajout des ressources visuelles RB (15 infographies académiques)
+
+**Statut :** ✅ terminé
+
+**Objectif de l'étape**
+Intégrer 15 infographies académiques (fichier RB.rar) dans l'application : 6 sur la méthodologie de recherche + 9 sur les approches de l'urbanisme.
+
+**Ce qui a été fait**
+- Extraction du RAR (15 JPG, 4 MB total)
+- Analyse du contenu via VLM (z-ai vision) pour identifier le sujet de chaque image
+- Copie des images dans `public/resources/rb/`
+- Création du data file `src/data/rb-resources.ts` avec métadonnées structurées (titre, description, catégorie)
+- Création du module `src/modules/resource-gallery/resource-gallery-page.tsx` (291 lignes)
+  - Grille responsive (1/2/3 colonnes) avec Cards
+  - Filtre par catégorie (Toutes / Méthodologie / Urbanisme)
+  - Lightbox avec navigation clavier (Escape, ArrowLeft, ArrowRight)
+  - Badges de catégorie colorés (emerald = méthodologie, amber = urbanisme)
+- Intégration dans `app-store.ts` (ViewId `resource-gallery`, badge "Nouveau", catégorie "ressources")
+- Intégration dans `page.tsx` via lazy loading avec correction du named export (`.then(m => ({ default: m.ResourceGalleryPage }))`)
+
+**Décisions techniques prises**
+- Images statiques dans `/public/` (pas de next/image pour les JPGs externes)
+- Named export + transform en default pour compatibilité avec `createLazyPanel`
+- 2 catégories de ressources : méthodologie de recherche (research gaps, literature review, statistical tests, frameworks) + urbanisme (de la cité-jardin 1898 à la smart city XXIe)
+
+**Points de vigilance / dette technique**
+- ⚠️ 2 warnings ESLint `@next/next/no-img-element` (prévisibles pour les `<img>` dans `/public`)
+- ⚠️ Les descriptions sont générées par VLM — elles pourraient être affinées manuellement
+
+**Dépendances et prérequis**
+- Aucune dépendance externe
+
+**Comment tester / vérifier que ça marche**
+- Naviguer vers "Ressources visuelles" dans la sidebar (catégorie Ressources)
+- 15 images affichées en grille, 6 Méthodologie + 9 Urbanisme
+- Filtre catégorie fonctionnel (Toutes=15, Méthodologie=6, Urbanisme=9)
+- Lightbox : clic image → dialogue plein écran, navigation ← →, Escape ferme
+
+**Problèmes rencontrés et solutions**
+- Lazy import échouait car le composant utilisait un named export, pas default → corrigé avec `.then(m => ({ default: m.ResourceGalleryPage }))`
+
+---
+
 ## [2025-07-XX] — Création de la fiche synthèse et consolidation rétrospective
 
 **Statut :** 🟡 partiel — consolidation en cours des jalons passés

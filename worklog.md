@@ -364,3 +364,29 @@ Stage Summary:
 - FICHE_SYNTHESE.md créé en /docs/FICHE_SYNTHESE.md avec 8 jalons rétrospectifs + 1 jalon d'amorçage original
 - Discipline de traçabilité activée pour toutes les futures tâches
 - Pas de modification de code existant — seul le fichier de documentation ajouté
+
+---
+Task ID: rb-resources
+Agent: main
+Task: Intégrer 15 infographies académiques (RB.rar) dans l'application
+
+Work Log:
+- Extraction du fichier RAR (15 JPG, RB-1 à RB-15, 4.2 MB)
+- Analyse du contenu de chaque image via VLM (z-ai vision CLI) pour identifier titre et sujet
+- 2 thèmes identifiés : Méthodologie de recherche (RB-1,2,3,4,5,15) et Approches de l'urbanisme (RB-6 à RB-14)
+- Copie des 15 images dans `public/resources/rb/`
+- Création de `src/data/rb-resources.ts` avec interfaces TypeScript, métadonnées structurées et catégories
+- Création de `src/modules/resource-gallery/resource-gallery-page.tsx` via subagent (291 lignes)
+  - Grille responsive 1/2/3 colonnes, filtre catégorie, lightbox avec navigation clavier
+- Intégration dans app-store.ts (ViewId `resource-gallery`, badge "Nouveau", catégorie "ressources")
+- Intégration dans page.tsx via lazy loading
+- Correction bug : named export incompatibilité avec createLazyPanel → `.then(m => ({ default: m.ResourceGalleryPage }))`
+- Vérification Agent Browser : 15 images, 15 cartes, filtres fonctionnels (15/6/9), lightbox avec navigation, Escape ferme
+- ESLint : 0 errors, 241 warnings (2 nouveaux @next/next/no-img-element prévisibles)
+- FICHE_SYNTHESE.md mis à jour avec ce jalon
+
+Stage Summary:
+- 15 infographies académiques intégrées dans la galerie "Ressources visuelles"
+- 43 vues au total dans la navigation (42 + resource-gallery)
+- 3 fichiers créés : rb-resources.ts, resource-gallery-page.tsx, 15 images dans public/resources/rb/
+- Aucune fonctionnalité existante modifiée
