@@ -257,13 +257,233 @@ model CustomBookSkill {
 // ═══════════════════════════════════════
 
 model LicenseKey {
-  id          String   @id @default(cuid())
-  keyHash     String   @unique
-  licenseType String   @default("trial") // trial | standard | academic | premium
-  email       String?
-  expiresAt   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  keyHash              String   @unique          // SHA-256 hash of the license key
+  keyPrefix            String                     // First 8 chars for admin display
+  licenseType          String   @default("trial") // trial | standard | academic | premium
+  status               String   @default("active")    // active | revoked | expired
+  maxActivations       Int      @default(3)
+  currentActivations   Int      @default(0)
+  note                 String?
+  email                String?
+  expiresAt            DateTime?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  activations          Activation[]
 
   @@index([licenseType])
+  @@index([status])
+}
+
+model Activation {
+  id                String     @id @default(cuid())
+  licenseKeyId      String
+  sessionToken      String     @unique          // Token stored in cookie
+  deviceName        String?
+  deviceFingerprint String?
+  ipAddress         String?
+  activatedAt       DateTime   @default(now())
+  lastSeenAt        DateTime   @default(now())
+  licenseKey        LicenseKey @relation(fields: [licenseKeyId], references: [id], onDelete: Cascade)
+
+  @@index([sessionToken])
+  @@index([licenseKeyId])
+}
+
+// ═══════════════════════════════════════
+// MENDELEY — Intégration bibliographique
+// ═══════════════════════════════════════
+
+model MendeleyConfig {
+  id            String    @id @default(cuid())
+  clientId      String?
+  clientSecret  String?
+  accessToken   String?
+  refreshToken  String?
+  tokenExpiresAt DateTime?
+  connected     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// ═══════════════════════════════════════
+// CLOUD DRIVE — Sauvegarde cloud
+// ═══════════════════════════════════════
+
+model CloudDriveConnection {
+  id             String    @id @default(cuid())
+  provider       String    @default("google_drive") // google_drive | onedrive | dropbox
+  connected      Boolean   @default(false)
+  email          String?
+  displayName    String?
+  accessToken    String?
+  refreshToken   String?
+  tokenExpiresAt  DateTime?
+  lastSyncAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// ═══════════════════════════════════════
+// AUTH — Fournisseurs d'authentification
+// ═══════════════════════════════════════
+
+model AuthProvider {
+  id           String   @id @default(cuid())
+  provider     String   @unique          // "auth0" | "stytch" | "warrant"
+  enabled      Boolean  @default(false)
+  clientId     String?                    // API Key / Client ID
+  clientSecret String?                   // Client Secret
+  domain       String?                    // Auth0 domain, Stytch project URL
+  extraConfig  String?                    // JSON: allowed connections, features, etc.
+  connected    Boolean  @default(false)
+  lastTestedAt DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  accounts     AuthAccount[]
+}
+
+model AuthAccount {
+  id             String       @id @default(cuid())
+  providerId     String
+  provider       AuthProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  providerUserId String                          // External user ID
+  email          String?
+  name           String?
+  avatarUrl      String?
+  accessToken    String?                         // Encrypted
+  refreshToken   String?                         // Encrypted
+  tokenExpiresAt DateTime?
+  metadata       String?                         // JSON: extra provider-specific data
+  lastLoginAt    DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@unique([providerId, providerUserId])
+  @@index([email])
+}
+
+// ═══════════════════════════════════════
+// WARRANT — Politiques d'autorisation
+// ═══════════════════════════════════════
+
+model WarrantPolicy {
+  id           String   @id @default(cuid())
+  policyType   String                      // "feature_gate" | "role" | "resource_access"
+  policyKey    String                       // e.g. "ai_writing", "export_pdf", "admin_panel"
+  licenseTypes String                      // JSON array of license types
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([policyType, policyKey])
+}
+
+// ═══════════════════════════════════════
+// VÉRIFICATION MÉTHODOLOGIQUE
+// ═══════════════════════════════════════
+
+model ElementAnalyse {
+  id            String    @id @default(cuid())
+  nom           String
+  typeElement   String
+  natureElement String
+  sousAnalyse   String?
+  source        String
+  dateSource    DateTime?
+  geojson       String?
+  styleConfig   String?
+  chapitreId    String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([typeElement])
+  @@index([natureElement])
+}
+
+model TypeAnalyseMethodologique {
+  id                 String   @id @default(cuid())
+  discipline         String
+  nom                String
+  elementsAttendus   String
+  promptQuestionneur String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([discipline, nom])
+}
+
+model SessionVerification {
+  id                String   @id @default(cuid())
+  siteEtudeId       String
+  typeAnalyseId     String
+  elementsManquants String
+  questionsPosees   String
+  reponses          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════
+// RECHERCHE — Bibliothèque + Fiches + Veille
+// ═══════════════════════════════════════
+
+model SourceBibliographique {
+  id           String   @id @default(cuid())
+  titre        String
+  auteurs      String   // JSON: [{nom, prenom}]
+  annee        Int?
+  doi          String?
+  type         String   @default("article") // article | ouvrage | these | rapport | chapitre
+  abstract     String?  // résumé original de la source
+  journal      String?
+  volume       String?
+  pages        String?
+  url          String?
+  tags         String?  // JSON: string[]
+  mendeleyId   String?
+  zoteroId     String?
+  chapitres    SourceChapitre[]
+  fichesLecture FicheLecture[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([type])
+  @@index([annee])
+}
+
+model SourceChapitre {
+  sourceId   String
+  source     SourceBibliographique @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  chapitreId String
+  createdAt  DateTime @default(now())
+
+  @@id([sourceId, chapitreId])
+}
+
+model FicheLecture {
+  id             String   @id @default(cuid())
+  sourceId       String
+  source         SourceBibliographique @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  chapitreId     String?
+  problematique  String?
+  methode        String?
+  resultatsCles  String?
+  limites        String?
+  positionnement String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([sourceId])
+  @@index([chapitreId])
+}
+
+model RechercheSauvegardee {
+  id                String    @id @default(cuid())
+  requete           String
+  filtres           String?   // JSON: { discipline, periode, langue, type }
+  alerteActive      Boolean   @default(false)
+  derniereExecution DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }

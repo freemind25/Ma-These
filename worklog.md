@@ -246,3 +246,46 @@ Stage Summary:
 - All 9 views now render real content (0 ModulePlaceholder remaining)
 - Dashboard shows 6 "Prêt" + 2 "IA" + 0 "Planifié" badges
 - Lint: 0 errors, 2 pre-existing warnings
+
+---
+Task ID: compare-repos
+Agent: main
+Task: Compare these-frame (original) vs MaTh-se (current) to identify ALL missing features
+
+Work Log:
+- Explored complete MaTh-se project structure (57 src files, 12 prisma models, 27 API routes, 9 views)
+- Fetched complete these-frame repo tree from GitHub (200+ src files, 20+ prisma models, 80+ API handlers, 40+ components)
+- Read key files from original: prisma schema, page.tsx, tools-sidebar.tsx, zai.ts, data files
+
+Stage Summary:
+- COMPARATIVE ANALYSIS COMPLETE
+- MISSING Prisma Models: MendeleyConfig, CloudDriveConnection, AuthProvider, AuthAccount, WarrantPolicy, Activation, ElementAnalyse, TypeAnalyseMethodologique, SessionVerification, SourceBibliographique, SourceChapitre, FicheLecture, RechercheSauvegardee
+- MISSING Data Files: chapters-structure, academic-databases, academic-phrases-bank, conceptual-framework-guide, latex-template, lr-typology, methodology-guide, publication-tips, research-field-analysis, research-frameworks, resources, slr-protocol-guide, thesis-templates, thesis-writing-guide, usage-guide, verification-referentials, book-skills, fiches-archi-urba, guidance-fiches, journal-reading-checklist, phd-tools, rhetorical-checklist, apa-stats-rules, articles-guide
+- MISSING Lib Files: zai.ts (advanced), ai-router.ts, ai-helpers.ts, conversation-store.ts, license.ts, google-drive.ts, box-drive.ts, cadrage-bridge.ts, cadrage-prompt.ts, chapter-numbering.ts, concurrency.ts, crypto.ts, dictation-prompts.ts, extract-book-text.ts, mock-thesis.ts, rate-limit.ts, retry-with-backoff.ts, routesme.ts, search-cache.ts, thesis-assistant-knowledge.ts, thesis-rag.ts
+- MISSING Components (40+ panels): cadrage, export-pdf, chapter-balance, cloud-drive, literature-search, mendeley, journal-finder, grammar-checker, harper-checker, auto-edition-8c, inline-ai-menu, thesis-assistant-chat, directeur-chat, thesis-search, automation, office-export, writing-unblock, resources, research-resources, research-field-analysis, apa-results-composer, slr-protocol, doctoral-toolkit, box-drive, usage-guide, book-skills, license-activation, license-admin, auth-provider, routesme, verification, recherche, agile-roadmap, ithy-research, excalidraw + all workspace sub-components
+- MISSING API Routes (60+): export-pdf, mendeley/*, academy-db/*, cloud-drive/*, box-drive/*, cadrage/generate|reformulate|validate|verify, directeur, thesis-assistant, grammar-check, harper-lint, humanizer, journal-finder, literature-search/*, guidance, asr/transcribe, dictation, download, generate-latex, ai-aggregate, ai-status, automation/*, office/export-*, consensus/*, apa-compose, verification/*, recherche/*, book-skills/*, routesme/*, thesis-search/*, agile-roadmap
+- Architecture difference: Original is monolithic (single page.tsx with 35+ dialog panels), MaTh-se is modular (separate module pages)
+
+---
+Task ID: restore-missing-features
+Agent: main
+Task: Restore ALL missing features from these-frame into MaTh-se, one by one
+
+Work Log:
+- Analyzed both repos completely: these-frame (200+ src files, 20+ prisma models) vs MaTh-se (57 src files, 12 models)
+- Identified 12 missing Prisma models, 25 missing data files, 29 missing lib files, 50 missing components, 96 missing API routes
+- Phase 1: Added 12 Prisma models (MendeleyConfig, CloudDriveConnection, AuthProvider, AuthAccount, WarrantPolicy, ElementAnalyse, TypeAnalyseMethodologique, SessionVerification, SourceBibliographique, SourceChapitre, FicheLecture, RechercheSauvegardee) + extended LicenseKey/Activation
+- Phase 2: Downloaded 25 data files (chapters-structure, academic-databases, methodology-guide, thesis-writing-guide, usage-guide, resources, etc.)
+- Phase 3: Downloaded 29 lib files (zai.ts, ai-router.ts, conversation-store.ts, license.ts, google-drive.ts, box-drive.ts, thesis-rag.ts, auth-providers/, types/)
+- Phase 4: Downloaded 50 component files (cadrage-panel, export-pdf, chapter-balance, cloud-drive, literature-search, mendeley, journal-finder, grammar-checker, etc.)
+- Phase 5: Downloaded 96 API route handler files (export-pdf, mendeley/*, academy-db/*, cloud-drive/*, verification/*, recherche/*, etc.)
+- Phase 6: Updated app-store.ts with 42 ViewId values organized in 8 categories; Updated app-sidebar.tsx with categorized navigation; Updated page.tsx with lazy loading + ErrorBoundary
+- Phase 7: Fixed 2 ESLint errors (routesme-panel variable declaration order, provider-settings-dialog memoization)
+- Phase 8: Verified via curl (HTTP 200) and agent-browser (42 navigation items visible, dashboard renders correctly)
+
+Stage Summary:
+- 212 total files added/updated without modifying existing functionality
+- 42 navigation views available in 8 categories (Principal, Recherche, Rédaction, IA & Outils, Export & Sauvegarde, Analyse, Ressources, Administration)
+- All restored panels wrapped in ErrorBoundary for graceful degradation during integration
+- Database schema extended from 12 to 24 models
+- Build passes with only ESLint warnings (no errors)
