@@ -7,6 +7,7 @@ import { TiptapEditor } from "@/modules/editor/components/tiptap-editor";
 import { ChapterTabs } from "@/modules/editor/components/chapter-tabs";
 import { ChapterHeader } from "@/modules/editor/components/chapter-header";
 import { ThesisListPanel } from "@/modules/editor/components/thesis-list-panel";
+import { CadrageSidebar } from "@/modules/cadrage/cadrage-sidebar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
@@ -115,6 +116,11 @@ export function EditorPage() {
         activeChapterId={activeChapterId || thesis.chapters[0]?.id || null}
         onSelectChapter={setActiveChapterId}
       />
+
+      {/* Quick-access toolbar */}
+      <div className="flex items-center justify-end h-9 px-4 border-b">
+        <CadrageSidebar />
+      </div>
 
       {/* Chapter header */}
       <ChapterHeader

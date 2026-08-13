@@ -13,11 +13,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreateThesis } from "../hooks/use-thesis";
+import { useAppStore } from "@/lib/stores/app-store";
 import { useState } from "react";
 import { Plus, GraduationCap } from "lucide-react";
 
 export function CreateThesisDialog() {
   const createThesis = useCreateThesis();
+  const setCurrentView = useAppStore((s) => s.setCurrentView);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -29,7 +31,7 @@ export function CreateThesisDialog() {
   const handleSubmit = async () => {
     if (!title.trim() || !author.trim()) return;
 
-    await createThesis.mutateAsync({
+    const thesis = await createThesis.mutateAsync({
       title: title.trim(),
       author: author.trim(),
       subtitle: subtitle.trim() || undefined,
@@ -37,6 +39,10 @@ export function CreateThesisDialog() {
       discipline: discipline.trim() || undefined,
       directorName: directorName.trim() || undefined,
     });
+
+    // Navigate to cadrage view for the new thesis
+    setCurrentView("cadrage");
+    void thesis;
 
     // Reset form
     setTitle("");

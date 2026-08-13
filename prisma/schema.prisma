@@ -75,12 +75,14 @@ model Part {
 // ═══════════════════════════════════════
 
 model ThesisCadrage {
-  id          String    @id @default(cuid())
-  thesisId    String
-  label       String?
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id             String    @id @default(cuid())
+  thesisId       String
+  label          String?
+  isActive       Boolean   @default(true)
+  statut         String    @default("provisoire") // provisoire | valide | revise
+  versionNumber  Int       @default(1) // auto-incremented version
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   thesis      Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
   fields      ThesisCadrageField[]
@@ -96,8 +98,9 @@ model ThesisCadrageField {
   label         String
   value         String?
   aiSuggestion  String?
-  isLocked      Boolean  @default(false)
-  sortOrder     Int      @default(0)
+  isLocked        Boolean  @default(false)
+  isAiSuggestion  Boolean  @default(false)
+  sortOrder       Int      @default(0)
 
   cadrage       ThesisCadrage @relation(fields: [cadrageId], references: [id], onDelete: Cascade)
 

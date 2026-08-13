@@ -765,3 +765,232 @@ Stage Summary:
 - All string values trimmed of leading/trailing spaces
 - All nested quotes properly escaped with backslash
 - No logic or content changed, only syntax fixes
+
+---
+Task ID: 1
+Agent: full-stack-dev
+Task: Update Prisma schema and API schemas for enhanced cadrage module
+
+Work Log:
+- Added statut (String @default("provisoire")) and versionNumber (Int @default(1)) fields to ThesisCadrage model
+- Added isAiSuggestion (Boolean @default(false)) field to ThesisCadrageField model
+- Updated updateCadrageSchema in api-schemas.ts with statut and versionNumber optional fields
+- Updated updateCadrageFieldSchema in api-schemas.ts with isAiSuggestion optional field
+- Ran db:push successfully — database in sync, Prisma Client regenerated
+
+Stage Summary:
+- Prisma schema updated with statut/versionNumber/isAiSuggestion
+- db:push applied successfully
+
+---
+Task ID: 2
+Agent: main
+Task: Créer les définitions de champs et prompts AI pour le module Cadrage préalable
+
+Work Log:
+- Created src/data/cadrage-fields.ts (452 lines)
+  - Defined CadrageFieldType, CadrageSubField, CadrageField TypeScript interfaces
+  - Defined 6 option label maps (TYPE_RECHERCHE_LABELS, TYPE_REVUE_LABELS, TYPE_THESE_LABELS, METHODES_COLLECTE_LABELS, STATUT_VALIDATION_LABELS)
+  - Defined all 13 CADRAGE_FIELDS (§4.1–§4.13) with key, label, section, type, required, description, placeholder, promptAmorce, gardeFou, options, subFields
+  - §4.1 thematique_generale (textarea, required)
+  - §4.2 problematique (textarea, required)
+  - §4.3 questions_recherche (json: principal + secondaires[], required)
+  - §4.4 objectifs (json: general + specifiques[], required)
+  - §4.5 hypotheses (json: string[], optional for qualitative)
+  - §4.6 type_recherche (select: 4 options + subField justification)
+  - §4.7 methodologie (json with 5 subFields: methodes_collecte, unite_analyse, justification_unite_analyse, terrain_corpus, limites_anticipees)
+  - §4.8 type_revue_litterature (select: 5 options + subField justification)
+  - §4.9 cadre_theorique (textarea, gardeFou: never invent authors/references)
+  - §4.10 mots_cles (json: disciplinaires[] + specifiques_projet[])
+  - §4.11 contribution_originalite (textarea, required)
+  - §4.12 type_these (select: 4 options)
+  - §4.13 statut_validation (system type, auto-managed)
+  - Exported CADRAGE_FIELDS_MAP (Record<string, CadrageField>), CADRAGE_SECTIONS, CADRAGE_USER_FIELDS
+- Created src/data/cadrage-prompt.ts (269 lines)
+  - CADRAGE_SYSTEM_PROMPT: role identity, disciplinary vocabulary, 7 absolute rules (no invented refs, hypothetical tone, distinct problématique/questions, insufficiency handling, signal don't autocorrect, JSON-only, no value judgment), strict boundary with directeurThese
+  - CADRAGE_GENERATION_PROMPT: full pitch-to-cadrage procedure, JSON output schema, field-specific JSON formats, context variables (pitch, laboratoire, ecoleDoctorale, discipline)
+  - CADRAGE_REFORMULATE_PROMPT: single-field reformulation with current value + other fields context + gardeFou injection
+  - CADRAGE_CONSISTENCY_PROMPT: 4 coherence rules (problématique/questions alignment, objectives/questions correspondence, type_recherche/méthodologie coherence, hypotheses verification), severity levels, suggestion-only policy
+- Lint: 0 errors (6 pre-existing warnings unchanged)
+
+Stage Summary:
+- Complete field definition layer for the Cadrage module (13 fields, 7 option maps, subFields, gardeFou)
+- Full AI prompt system with 4 prompt types (system, generation, reformulation, consistency)
+- All prompts enforce hypothetical tone, no-invention rule, and strict JSON output
+- Consistency checker follows the 4-rule spec (§5.3) with severity-based reporting
+
+---
+Task ID: 3
+Agent: main
+Task: Create 3 AI cadrage API endpoints (generate, reformulate-field, check-consistency)
+
+Work Log:
+- Created src/app/api/cadrage/ai/generate/route.ts (POST) — generates all field suggestions from a pitch
+  - Zod validates { pitch: string (min 10), thesisContext?: string }
+  - Builds messages with CADRAGE_SYSTEM_PROMPT + pitch-injected CADRAGE_GENERATION_PROMPT
+  - Parses AI JSON response (with markdown fence stripping and fallback for flat objects)
+  - Returns { data: Record<string, { value, isAiSuggestion: true }> }
+- Created src/app/api/cadrage/ai/reformulate-field/route.ts (POST) — reformulates a single field
+  - Zod validates { fieldKey, currentValue?, otherFields: Record<string,string>, thesisContext? }
+  - Looks up field def from CADRAGE_FIELDS_MAP to get gardeFou, label, section, type
+  - Formats other fields as readable context with labels
+  - Returns { data: { fieldKey, value } }
+- Created src/app/api/cadrage/ai/check-consistency/route.ts (POST) — checks coherence across all fields
+  - Zod validates { fields: Record<string, string | object> }
+  - Formats all fields with §section labels using CADRAGE_FIELDS_MAP
+  - Parses AI issues array, normalizes to { severity, fieldKey?, message }
+  - Returns { data: { issues } }
+- All 3 routes: try/catch, ZodError → 400, AI JSON parse failure → 502, generic error → 500
+- Lint: 0 errors, 6 pre-existing warnings (none from new files)
+
+Stage Summary:
+- 3 production-ready POST endpoints for the AI cadrage module
+- Full error handling with Zod validation, JSON parse recovery, and structured error responses
+- Consistent patterns: system prompt + templated user prompt → generateCompletion → parse JSON → transform
+
+---
+Task ID: 4
+Agent: main
+Task: Rewrite cadrage page as 5-step wizard with AI integration
+
+Work Log:
+- Created 3 AI API routes:
+  - src/app/api/cadrage/ai/generate/route.ts (105 lines) — POST: generates all 12 fields from a pitch text
+  - src/app/api/cadrage/ai/reformulate-field/route.ts (93 lines) — POST: reformulates a single field with context
+  - src/app/api/cadrage/ai/check-consistency/route.ts (109 lines) — POST: checks coherence, returns tensions array
+- Created 2 custom hooks:
+  - src/modules/cadrage/hooks/use-cadrage.ts (258 lines) — useCadrage, useCreateCadrage, useUpdateField, useSaveFields, useCreateVersion, useValidateCadrage, useVersions
+  - src/modules/cadrage/hooks/use-cadrage-ai.ts (89 lines) — useGenerateFromPitch, useReformulateField, useCheckConsistency
+- Created 5 step components:
+  - src/modules/cadrage/components/pitch-step.tsx (115 lines) — Step 1: pitch textarea with AI generation + skip option
+  - src/modules/cadrage/components/ai-generation-step.tsx (106 lines) — Step 2: all 12 fields with amber AI markers, editable, accept all
+  - src/modules/cadrage/components/edition-step.tsx (710 lines) — Step 3: full form with 6 section groups, structured sub-forms for JSON fields (questions_recherche, objectifs, hypotheses, methodologie with checkboxes, mots_cles), per-field "Reformuler avec l'IA" button, save + proceed
+  - src/modules/cadrage/components/consistency-step.tsx (196 lines) — Step 4: AI coherence check, tension cards with severity (amber/red), field badges
+  - src/modules/cadrage/components/validation-step.tsx (240 lines) — Step 5: read-only summary, version history, validate button
+- Rewrote main orchestrator:
+  - src/modules/cadrage/cadrage-page.tsx (372 lines) — wizard with step progress indicator (numbered circles + connecting lines), pendingValues local state, auto-create cadrage, batch save, version snapshot on validation
+
+Stage Summary:
+- 11 files created/rewritten (2393 total lines)
+- 5-step wizard: Pitch → Suggestions IA → Édition → Cohérence → Validation
+- 0 TypeScript errors, 0 lint errors (6 pre-existing warnings unchanged)
+- All AI calls use z-ai-web-dev-sdk server-side via existing zai-client.ts wrapper
+- Uses TanStack Query for data fetching, Zustand for app store (activeThesisId), sonner for toasts
+- French language throughout, amber/warning color system for AI suggestions
+- Mobile-first responsive with shadcn/ui components only
+
+---
+Task ID: 8
+Agent: full-stack-dev
+Task: Modify directeurThese module to read cadrage as read-only context
+
+Work Log:
+- Modified src/data/directeur-prompt.ts:
+  - Added optional `cadrageSnapshot` parameter to `buildDirecteurPrompt` with 10 fields (thematique, problematique, questionsRecherche, objectifs, typeRecherche, methodologie, revueLitterature, cadreTheorique, contributionAttendue, typeThese)
+  - When provided, appends a "CADRAGE DU PROJET DE THÈSE" section to the prompt with all non-empty fields
+  - Appends strict read-only reminder: contradictions must be flagged as observations, never corrected
+  - Change is fully backward-compatible (cadrageSnapshot is optional)
+- Modified src/app/api/directeur-chat/route.ts:
+  - Added optional `thesisId` field to request Zod schema
+  - Added `CadrageSnapshotKey` type and `FIELD_KEY_TO_SNAPSHOT_KEY` mapping (10 DB field keys → snapshot keys)
+  - Fetches active cadrage with fields when thesisId is provided (findFirst where isActive: true)
+  - Builds cadrage snapshot from DB fields using the key mapping
+  - Passes snapshot to `buildDirecteurPrompt({ cadrageSnapshot })`
+  - Replaced direct `DIRECTEUR_SYSTEM_PROMPT` import with `buildDirecteurPrompt()` call
+  - Imported `db` from `@/lib/db`
+  - If no thesisId or no active cadrage, directeur works without cadrage context (no error)
+- Verification: `npx tsc --noEmit` passes with 0 errors
+
+Stage Summary:
+- Directeur chat now reads the active cadrage as read-only context when thesisId is provided
+- Cadrage is injected into the system prompt as a reference section with strict read-only instruction
+- Fully backward-compatible: no thesisId → no cadrage fetch → prompt unchanged
+
+---
+Task ID: 7
+Agent: main
+Task: Add export feature to the cadrage module
+
+Work Log:
+- Created src/app/api/cadrage/export/route.ts (GET) — generates a formatted French text export of a cadrage
+  - Query param: `cadrageId` (required)
+  - Fetches cadrage with thesis title/author and all fields from DB (includes thesis relation)
+  - Generates structured text with header (title, date, statut, doctorant, version), 13 numbered sections with decorative separators
+  - JSON fields parsed and formatted nicely: questions_recherche (principal + sous-questions), objectifs (général + spécifiques), hypotheses (list), methodologie (5 sub-fields with METHODES_COLLECTE_LABELS mapping), mots_cles (disciplinaires + spécifiques)
+  - Select fields translated via TYPE_RECHERCHE_LABELS, TYPE_REVUE_LABELS, TYPE_THESE_LABELS
+  - Select fields with sub-fields (type_recherche, type_revue_litterature) show main value + indented sub-field values
+  - All empty fields show "Non renseigné"
+  - JSON parse errors handled gracefully (fallback to raw string)
+  - Footer with MaTh-se branding and export timestamp
+  - Returns as downloadable text file with Content-Disposition header and UTF-8 filename encoding
+  - Filename format: `cadrage-{thesis-slug}-v{version}.txt`
+- Modified src/modules/cadrage/components/validation-step.tsx
+  - Added `cadrageId` prop to ValidationStepProps interface
+  - Added "Exporter en texte" button with Download icon from lucide-react
+  - Button opens `/api/cadrage/export?cadrageId=${cadrageId}` in a new tab
+  - Button disabled when no cadrageId
+  - Export button placed next to "Valider ce cadrage" button in a flex row
+- Modified src/modules/cadrage/cadrage-page.tsx
+  - Passed `cadrageId` prop to ValidationStep component
+- Verification: `npx tsc --noEmit` passes with 0 errors, `bun run lint` passes with 0 errors (9 pre-existing warnings unchanged)
+
+Stage Summary:
+- Export API endpoint produces a well-formatted French text document with all 13 cadrage sections
+- Export button available in the validation step for users to download their cadrage as text
+- JSON fields gracefully formatted with labeled sub-sections; empty fields show "Non renseigné"
+- 3 files created/modified, 0 TypeScript errors, 0 lint errors
+
+
+---
+Task ID: 5
+Agent: main
+Task: Integrate cadrage module into thesis creation flow + add "Cadrage incomplet" badge
+
+Work Log:
+- Modified src/modules/editor/components/create-thesis-dialog.tsx: after successful thesis creation, calls setCurrentView("cadrage") to navigate to cadrage view. setActiveThesisId is already handled by the useCreateThesis hook onSuccess.
+- Modified src/components/layout/app-header.tsx: added useCadrage hook to fetch active cadrage for the active thesis. Shows amber "Cadrage incomplet" Badge next to the breadcrumb nav label when no active cadrage exists or its statut is not "valide"/"revise".
+- Modified src/components/layout/app-sidebar.tsx: added useCadrage hook. Shows a small amber dot (rounded-full bg-amber-500) on the "Cadrage" sidebar nav item when cadrage is incomplete. Dot hides when sidebar is collapsed to icon mode.
+
+Stage Summary:
+- Thesis creation now seamlessly navigates to the cadrage view, integrating the cadrage module into the onboarding flow
+- "Cadrage incomplet" amber badge in header provides persistent visual feedback across all views
+- Amber dot on sidebar Cadrage item draws attention to the incomplete cadrage
+- Both header and sidebar share the same query cache via useCadrage hook (cadrageKeys), avoiding duplicate fetches
+- TypeScript check passes with 0 errors
+
+---
+Task ID: 6
+Agent: main
+Task: Create retractable cadrage sidebar panel accessible from the editor
+
+Work Log:
+- Created src/modules/cadrage/cadrage-sidebar.tsx (287 lines)
+  - Exported `CadrageSidebar` component wrapping a Sheet (slide-in from right, sm:max-w-md)
+  - SheetTrigger renders a standalone Button with Crosshair icon (h-8 w-8, variant="ghost")
+  - Fetches active cadrage via `/api/thesis/${activeThesisId}/cadrages` using useQuery + 30s staleTime
+  - Finds active cadrage (isActive === true) or falls back to first in list
+  - Three empty states: no thesis selected, loading (skeleton), no cadrage defined
+  - Yellow/amber banner with AlertTriangle icon when cadrage.statut !== "valide" ("Cadrage non validé")
+  - Fields grouped by same 6 sections as edition-step (FIELD_GROUPS): Thématique & Problématique, Questions & Objectifs, Hypothèses & Type de recherche, Méthodologie, Revue de littérature & Cadre théorique, Mots-clés/Contribution/Type de thèse
+  - Read-only renderers for each field type:
+    - textarea → plain text (whitespace-pre-wrap)
+    - select → label lookup (TYPE_RECHERCHE_LABELS, TYPE_REVUE_LABELS, TYPE_THESE_LABELS)
+    - json questions_recherche → principal + secondaires list
+    - json objectifs → general + specifiques list
+    - json hypotheses → bullet list
+    - json methodologie → 5 labeled sub-fields with METHODES_COLLECTE_LABELS mapping
+    - json mots_cles → tagged chips for disciplinaires and specifiques_projet
+  - Empty fields (null, blank, "[]", "{}") are hidden from display
+  - ScrollArea with max height for the content area
+- Modified src/modules/editor/editor-page.tsx
+  - Added import of CadrageSidebar from "@/modules/cadrage/cadrage-sidebar"
+  - Added compact toolbar row (h-9, border-b, justify-end) between ChapterTabs and ChapterHeader containing <CadrageSidebar />
+
+Stage Summary:
+- CadrageSidebar is a self-contained Sheet component with read-only cadrage summary
+- Triggered by a Crosshair icon button in the editor toolbar area
+- Fields displayed in the same 6 section groups as the edition step
+- JSON fields intelligently parsed and formatted (lists, sub-fields, chips)
+- Provisoire cadrage shows yellow warning banner
+- No-cadrage state shows French message directing to Cadrage module
+- TypeScript check: 0 errors

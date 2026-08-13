@@ -142,6 +142,8 @@ export const createCadrageSchema = z.object({
 export const updateCadrageSchema = z.object({
   label: z.string().optional(),
   isActive: z.boolean().optional(),
+  statut: z.enum(["provisoire", "valide", "revisé"]).optional(),
+  versionNumber: z.number().int().min(1).optional(),
 });
 
 export const createCadrageFieldSchema = z.object({
@@ -158,6 +160,7 @@ export const updateCadrageFieldSchema = z.object({
   value: z.string().optional(),
   aiSuggestion: z.string().optional(),
   isLocked: z.boolean().optional(),
+  isAiSuggestion: z.boolean().optional(),
   sortOrder: z.number().int().min(0).optional(),
 });
 

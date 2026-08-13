@@ -22,6 +22,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useAppStore, NAVIGATION_ITEMS, NAVIGATION_CATEGORIES } from "@/lib/stores/app-store";
+import { useCadrage } from "@/modules/cadrage/hooks/use-cadrage";
 import {
   Sidebar,
   SidebarContent,
@@ -72,7 +73,15 @@ function NavIcon({ name, className }: { name: string; className?: string }) {
 }
 
 export function AppSidebar() {
-  const { currentView, setCurrentView } = useAppStore();
+  const { currentView, setCurrentView, activeThesisId } = useAppStore();
+
+  // Check cadrage completeness for sidebar indicator
+  const { data: cadragesData } = useCadrage(activeThesisId);
+  const activeCadrage = cadragesData?.data?.find((c) => c.isActive);
+  const isCadrageIncomplete =
+    !!activeThesisId &&
+    (!activeCadrage ||
+      (activeCadrage.statut !== "valide" && activeCadrage.statut !== "revise"));
 
   return (
     <Sidebar collapsible="icon" className="border-r-0">
@@ -122,7 +131,10 @@ export function AppSidebar() {
                       >
                         <NavIcon name={item.icon} />
                         <span className="truncate">{item.label}</span>
-                        {item.badge && (
+                        {isCadrageIncomplete && item.id === "cadrage" && (
+                          <span className="ml-auto h-2 w-2 rounded-full bg-amber-500 shrink-0 group-data-[collapsible=icon]:hidden" />
+                        )}
+                        {!isCadrageIncomplete && item.badge && (
                           <Badge
                             variant="secondary"
                             className="ml-auto h-5 px-1.5 text-[10px] font-semibold bg-sidebar-accent/30 text-sidebar-foreground/80 group-data-[collapsible=icon]:hidden"

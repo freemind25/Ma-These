@@ -3,6 +3,7 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +13,20 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { useAppStore, NAVIGATION_ITEMS } from "@/lib/stores/app-store";
+import { useCadrage } from "@/modules/cadrage/hooks/use-cadrage";
 import { Settings, HelpCircle, ChevronRight } from "lucide-react";
 
 export function AppHeader() {
-  const { currentView } = useAppStore();
+  const { currentView, activeThesisId } = useAppStore();
   const currentNav = NAVIGATION_ITEMS.find((item) => item.id === currentView);
+
+  // Check cadrage completeness
+  const { data: cadragesData } = useCadrage(activeThesisId);
+  const activeCadrage = cadragesData?.data?.find((c) => c.isActive);
+  const isCadrageIncomplete =
+    !!activeThesisId &&
+    (!activeCadrage ||
+      (activeCadrage.statut !== "valide" && activeCadrage.statut !== "revise"));
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-4">
@@ -31,6 +41,11 @@ export function AppHeader() {
         <span className="font-medium text-foreground">
           {currentNav?.label ?? "Tableau de bord"}
         </span>
+        {isCadrageIncomplete && (
+          <Badge className="ml-2 border-amber-300 bg-amber-100 text-amber-800 dark:border-amber-600 dark:bg-amber-900/40 dark:text-amber-300 text-[10px] px-1.5">
+            Cadrage incomplet
+          </Badge>
+        )}
       </nav>
 
       <div className="ml-auto flex items-center gap-2">

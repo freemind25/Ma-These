@@ -117,11 +117,24 @@ ${normesText}
  * @param options - Options de personnalisation
  * @param options.phaseActuelle - Phase actuelle du doctorat (optionnel)
  * @param options.specialisation - Spécialisation disciplinaire (optionnel)
+ * @param options.cadrageSnapshot - Cadrage validé en lecture seule (optionnel)
  * @returns Le prompt système complet
  */
 export function buildDirecteurPrompt(options?: {
   phaseActuelle?: string;
   specialisation?: string;
+  cadrageSnapshot?: {
+    thematique?: string;
+    problematique?: string;
+    questionsRecherche?: string;
+    objectifs?: string;
+    typeRecherche?: string;
+    methodologie?: string;
+    revueLitterature?: string;
+    cadreTheorique?: string;
+    contributionAttendue?: string;
+    typeThese?: string;
+  };
 }): string {
   const contexteSupplementaire: string[] = [];
 
@@ -155,6 +168,28 @@ export function buildDirecteurPrompt(options?: {
 
   const corpusSection = buildCorpusSection();
 
+  // Build cadrage section (read-only reference)
+  let cadrageSection = "";
+  if (options?.cadrageSnapshot) {
+    const snap = options.cadrageSnapshot;
+    const lines: string[] = [
+      "CADRAGE DU PROJET DE THÈSE (dernière version validée — référence en lecture seule) :",
+    ];
+    if (snap.thematique) lines.push(`- Thématique : ${snap.thematique}`);
+    if (snap.problematique) lines.push(`- Problématique : ${snap.problematique}`);
+    if (snap.questionsRecherche) lines.push(`- Question(s) de recherche : ${snap.questionsRecherche}`);
+    if (snap.objectifs) lines.push(`- Objectifs : ${snap.objectifs}`);
+    if (snap.typeRecherche) lines.push(`- Type de recherche : ${snap.typeRecherche}`);
+    if (snap.methodologie) lines.push(`- Méthodologie : ${snap.methodologie}`);
+    if (snap.revueLitterature) lines.push(`- Type de revue de littérature : ${snap.revueLitterature}`);
+    if (snap.cadreTheorique) lines.push(`- Cadre théorique : ${snap.cadreTheorique}`);
+    if (snap.contributionAttendue) lines.push(`- Contribution attendue : ${snap.contributionAttendue}`);
+    if (snap.typeThese) lines.push(`- Type de thèse : ${snap.typeThese}`);
+    lines.push("");
+    lines.push("RAPPELE-TOI : ce cadrage est une référence. Si le texte analysé semble contradictoire avec ce cadrage, signale-le comme une observation (« Le type de recherche déclaré dans le cadrage est 'qualitative' mais le vocabulaire utilisé dans les résultats évoque des statistiques quantitatives. Est-ce intentionnel ? »), mais ne corrige jamais.");
+    cadrageSection = "\n\n" + lines.join("\n");
+  }
+
   const instructionCorpus = `
 🎯 INSTRUCTION D'UTILISATION DU CORPUS :
 Utilise les connaissances en supervision ci-dessus pour :
@@ -171,6 +206,7 @@ Utilise les connaissances en supervision ci-dessus pour :
     "\n" +
     corpusSection +
     contexteSection +
+    cadrageSection +
     instructionCorpus
   );
 }
