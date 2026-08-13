@@ -61,5 +61,6 @@ server.log
 *.dmg
 *.AppImage
 *.deb
-*.yml
+# Block all yml in root EXCEPT electron-builder
+/*.yml
 !electron-builder.yml

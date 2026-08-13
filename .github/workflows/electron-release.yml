@@ -1,0 +1,259 @@
+# ============================================================================
+# ThesisFrame — Electron Build & Release Workflow
+# Builds Windows (.exe), macOS (.dmg), and Linux (.AppImage) installers
+# Triggered on tag push (v*) or manual dispatch
+# Assets are published to GitHub Releases automatically
+# ============================================================================
+
+name: Electron Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag (e.g. v1.1.0)'
+        required: true
+        default: 'v1.1.0'
+
+permissions:
+  contents: write
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  # ─── Build Next.js standalone ────────────────────────────────────────────
+  build-nextjs:
+    name: Build Next.js
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: bun run db:generate
+
+      - name: Push database schema
+        run: bun run db:push
+
+      - name: Build Next.js
+        run: bun run build
+
+      - name: Create empty DB template
+        run: |
+          mkdir -p db
+          touch db/custom.db
+
+      - name: Upload standalone build
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-standalone
+          path: |
+            .next/standalone/
+            .next/static/
+            public/
+            db/
+            node_modules/.prisma/
+            node_modules/@prisma/
+            node_modules/prisma/
+            prisma/
+          retention-days: 1
+
+  # ─── Build Windows installer (NSIS) ────────────────────────────────────
+  build-windows:
+    name: Windows (x64 + arm64)
+    needs: build-nextjs
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Electron deps
+        run: npm install electron@43 electron-builder@26 --save-dev
+
+      - name: Download standalone build
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-standalone
+          path: .
+
+      - name: Create empty DB template
+        run: |
+          if (!(Test-Path "db")) { New-Item -ItemType Directory -Path "db" }
+          if (!(Test-Path "db/custom.db")) { New-Item -ItemType File -Path "db/custom.db" }
+
+      - name: Build Electron app (Windows)
+        run: npx electron-builder --win --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-builds
+          path: release/*.exe
+          retention-days: 7
+
+  # ─── Build macOS installer (DMG) ──────────────────────────────────────
+  build-macos:
+    name: macOS (x64 + arm64)
+    needs: build-nextjs
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Electron deps
+        run: npm install electron@43 electron-builder@26 --save-dev
+
+      - name: Download standalone build
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-standalone
+          path: .
+
+      - name: Create empty DB template
+        run: |
+          mkdir -p db
+          touch db/custom.db
+
+      - name: Build Electron app (macOS)
+        run: npx electron-builder --mac --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-builds
+          path: release/*.dmg
+          retention-days: 7
+
+  # ─── Build Linux AppImage ───────────────────────────────────────────────
+  build-linux:
+    name: Linux (x64)
+    needs: build-nextjs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxss1 libnss3 libasound2t64 libatk-bridge2.0-0 libgtk-3-0
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Electron deps
+        run: npm install electron@43 electron-builder@26 --save-dev
+
+      - name: Download standalone build
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-standalone
+          path: .
+
+      - name: Create empty DB template
+        run: |
+          mkdir -p db
+          touch db/custom.db
+
+      - name: Build Electron app (Linux)
+        run: npx electron-builder --linux --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-builds
+          path: release/*.AppImage
+          retention-days: 7
+
+  # ─── Create GitHub Release with all artifacts ─────────────────────────
+  release:
+    name: Create Release
+    needs: [build-windows, build-macos, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts/
+          pattern: '*-builds'
+
+      - name: List all artifacts
+        run: find release-artifacts/ -type f | head -30
+
+      - name: Determine tag
+        id: tag
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "TAG=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.TAG }}
+          name: "ThesisFrame ${{ steps.tag.outputs.TAG }}"
+          body: |
+            ## ThesisFrame — Assistant intelligent pour la rédaction de thèses
+
+            ### Installation
+
+            **Windows** : Télécharger le fichier `.exe` et lancer l'installation.
+            **macOS** : Télécharger le fichier `.dmg` et glisser dans Applications.
+            **Linux** : Télécharger le fichier `.AppImage`, le rendre exécutable (`chmod +x`) et le lancer.
+
+            ### Notes
+            - L'application inclut un serveur Next.js intégré — aucune dépendance externe requise.
+            - La base de données SQLite est créée automatiquement au premier lancement.
+            - Les mises à jour automatiques sont configurées (vérification toutes les 4h).
+          draft: false
+          prerelease: false
+          files: |
+            release-artifacts/**/*.exe
+            release-artifacts/**/*.dmg
+            release-artifacts/**/*.AppImage
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
