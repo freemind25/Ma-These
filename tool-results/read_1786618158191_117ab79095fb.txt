@@ -1,0 +1,624 @@
+   460→  const handleSaveField = useCallback(
+   461→    (fieldId: string) => {
+   462→      const value = fieldValues[fieldId];
+   463→      if (value === undefined) return;
+   464→      updateFieldMutation.mutate({ fieldId, value });
+   465→    },
+   466→    [fieldValues, updateFieldMutation]
+   467→  );
+   468→
+   469→  const handleAiSuggestion = useCallback(() => {
+   470→    toast.info("Fonctionnalité IA à venir", {
+   471→      description:
+   472→        "La suggestion automatique par intelligence artificielle sera bientôt disponible.",
+   473→    });
+   474→  }, []);
+   475→
+   476→  const handleSaveLabel = useCallback(() => {
+   477→    if (!activeCadrage || !editLabel.trim()) {
+   478→      setIsEditingLabel(false);
+   479→      return;
+   480→    }
+   481→    updateCadrageMutation.mutate({
+   482→      id: activeCadrage.id,
+   483→      label: editLabel.trim(),
+   484→    });
+   485→    setIsEditingLabel(false);
+   486→  }, [activeCadrage, editLabel, updateCadrageMutation]);
+   487→
+   488→  const handleToggleActive = useCallback(() => {
+   489→    if (!activeCadrage) return;
+   490→    updateCadrageMutation.mutate({
+   491→      id: activeCadrage.id,
+   492→      isActive: !activeCadrage.isActive,
+   493→    });
+   494→  }, [activeCadrage, updateCadrageMutation]);
+   495→
+   496→  // Sync editLabel when activeCadrage changes
+   497→  const currentLabel = activeCadrage?.label ?? "Cadrage sans titre";
+   498→  if (activeCadrage && !isEditingLabel && editLabel !== currentLabel) {
+   499→    setEditLabel(currentLabel);
+   500→  }
+   501→
+   502→  // ═══════════════════════════════════════
+   503→  // Render
+   504→  // ═══════════════════════════════════════
+   505→
+   506→  return (
+   507→    <div className="max-w-7xl mx-auto flex flex-col gap-6 p-6">
+   508→      {/* ═══ Header ═══ */}
+   509→      <div>
+   510→        <div className="flex items-center gap-3 mb-1">
+   511→          <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10">
+   512→            <Crosshair className="h-5 w-5 text-primary" />
+   513→          </div>
+   514→          <div>
+   515→            <h1 className="text-2xl font-bold tracking-tight">
+   516→              Cadrage de la thèse
+   517→            </h1>
+   518→            <p className="text-sm text-muted-foreground">
+   519→              Définissez et affinez les éléments fondamentaux de votre
+   520→              recherche
+   521→            </p>
+   522→          </div>
+   523→        </div>
+   524→      </div>
+   525→
+   526→      <Separator />
+   527→
+   528→      {/* ═══ Two-column layout ═══ */}
+   529→      <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-6">
+   530→        {/* ─── Left panel ─── */}
+   531→        <div className="flex flex-col gap-4">
+   532→          {/* Thesis selector */}
+   533→          <Card>
+   534→            <CardHeader className="pb-3">
+   535→              <CardTitle className="text-base font-semibold">
+   536→                Sélection de thèse
+   537→              </CardTitle>
+   538→              <CardDescription>
+   539→                Choisissez la thèse à cadrer
+   540→              </CardDescription>
+   541→            </CardHeader>
+   542→            <CardContent>
+   543→              {thesesLoading ? (
+   544→                <Skeleton className="h-9 w-full" />
+   545→              ) : !theses || theses.length === 0 ? (
+   546→                <div className="flex flex-col items-center gap-2 py-4 text-center">
+   547→                  <AlertCircle className="h-5 w-5 text-muted-foreground" />
+   548→                  <p className="text-xs text-muted-foreground">
+   549→                    Aucune thèse disponible
+   550→                  </p>
+   551→                </div>
+   552→              ) : (
+   553→                <Select
+   554→                  value={selectedThesisId}
+   555→                  onValueChange={(val) => {
+   556→                    setSelectedThesisId(val);
+   557→                    setSelectedCadrageId("");
+   558→                  }}
+   559→                >
+   560→                  <SelectTrigger className="w-full">
+   561→                    <SelectValue placeholder="Sélectionner une thèse" />
+   562→                  </SelectTrigger>
+   563→                  <SelectContent>
+   564→                    {theses.map((t) => (
+   565→                      <SelectItem key={t.id} value={t.id}>
+   566→                        <span className="truncate">{t.title}</span>
+   567→                      </SelectItem>
+   568→                    ))}
+   569→                  </SelectContent>
+   570→                </Select>
+   571→              )}
+   572→            </CardContent>
+   573→          </Card>
+   574→
+   575→          {/* Cadrage list */}
+   576→          <Card className="flex-1">
+   577→            <CardHeader className="pb-3">
+   578→              <div className="flex items-center justify-between">
+   579→                <CardTitle className="text-base font-semibold">
+   580→                  Cadrages
+   581→                </CardTitle>
+   582→                <Dialog
+   583→                  open={createDialogOpen}
+   584→                  onOpenChange={setCreateDialogOpen}
+   585→                >
+   586→                  <DialogTrigger asChild>
+   587→                    <Button
+   588→                      size="sm"
+   589→                      variant="outline"
+   590→                      className="gap-1.5"
+   591→                      disabled={!selectedThesisId}
+   592→                    >
+   593→                      <Plus className="h-3.5 w-3.5" />
+   594→                      Nouveau
+   595→                    </Button>
+   596→                  </DialogTrigger>
+   597→                  <DialogContent>
+   598→                    <DialogHeader>
+   599→                      <DialogTitle>Nouveau cadrage</DialogTitle>
+   600→                      <DialogDescription>
+   601→                        Créez un nouveau cadrage pour votre thèse. Les 8
+   602→                        champs prédéfinis seront ajoutés automatiquement.
+   603→                      </DialogDescription>
+   604→                    </DialogHeader>
+   605→                    <div className="flex flex-col gap-4 py-2">
+   606→                      <div className="flex flex-col gap-1.5">
+   607→                        <label
+   608→                          htmlFor="cadrage-label"
+   609→                          className="text-sm font-medium"
+   610→                        >
+   611→                          Libellé
+   612→                        </label>
+   613→                        <Input
+   614→                          id="cadrage-label"
+   615→                          placeholder="Ex : Cadrage initial v1"
+   616→                          value={newCadrageLabel}
+   617→                          onChange={(e) =>
+   618→                            setNewCadrageLabel(e.target.value)
+   619→                          }
+   620→                        />
+   621→                      </div>
+   622→                      <p className="text-xs text-muted-foreground">
+   623→                        {PREDEFINED_FIELDS.length} champs seront créés :{" "}
+   624→                        {PREDEFINED_FIELDS.map((f) => f.label).join(", ")}
+   625→                      </p>
+   626→                    </div>
+   627→                    <DialogFooter>
+   628→                      <Button
+   629→                        variant="outline"
+   630→                        onClick={() => setCreateDialogOpen(false)}
+   631→                      >
+   632→                        Annuler
+   633→                      </Button>
+   634→                      <Button
+   635→                        onClick={() =>
+   636→                          createCadrageMutation.mutate({
+   637→                            thesisId: selectedThesisId,
+   638→                            label: newCadrageLabel || undefined,
+   639→                          })
+   640→                        }
+   641→                        disabled={createCadrageMutation.isPending}
+   642→                      >
+   643→                        {createCadrageMutation.isPending
+   644→                          ? "Création..."
+   645→                          : "Créer"}
+   646→                      </Button>
+   647→                    </DialogFooter>
+   648→                  </DialogContent>
+   649→                </Dialog>
+   650→              </div>
+   651→            </CardHeader>
+   652→            <CardContent>
+   653→              {!selectedThesisId ? (
+   654→                <div className="flex flex-col items-center gap-3 py-8 text-center">
+   655→                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-muted">
+   656→                    <Crosshair className="h-5 w-5 text-muted-foreground" />
+   657→                  </div>
+   658→                  <p className="text-sm text-muted-foreground">
+   659→                    Sélectionnez une thèse pour voir ses cadrages
+   660→                  </p>
+   661→                </div>
+   662→              ) : cadragesLoading ? (
+   663→                <CadrageListSkeleton />
+   664→              ) : cadrages.length === 0 ? (
+   665→                <div className="flex flex-col items-center gap-3 py-8 text-center">
+   666→                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-muted">
+   667→                    <Plus className="h-5 w-5 text-muted-foreground" />
+   668→                  </div>
+   669→                  <p className="text-sm text-muted-foreground">
+   670→                    Aucun cadrage pour cette thèse
+   671→                  </p>
+   672→                  <p className="text-xs text-muted-foreground">
+   673→                    Créez votre premier cadrage pour commencer.
+   674→                  </p>
+   675→                </div>
+   676→              ) : (
+   677→                <ScrollArea className="max-h-[400px] overflow-y-auto">
+   678→                  <div className="flex flex-col gap-2 pr-2">
+   679→                    {cadrages.map((c) => (
+   680→                      <button
+   681→                        key={c.id}
+   682→                        type="button"
+   683→                        className={
+   684→                          "flex items-center justify-between rounded-lg border p-3 text-left transition-colors w-full " +
+   685→                          (selectedCadrageId === c.id
+   686→                            ? "border-primary bg-primary/5"
+   687→                            : "hover:bg-muted/50")
+   688→                        }
+   689→                        onClick={() => setSelectedCadrageId(c.id)}
+   690→                      >
+   691→                        <div className="flex items-center gap-2 min-w-0">
+   692→                          {c.isActive ? (
+   693→                            <CheckCircle2 className="h-4 w-4 text-chart-1 shrink-0" />
+   694→                          ) : (
+   695→                            <div className="h-4 w-4 rounded-full border border-muted-foreground/30 shrink-0" />
+   696→                          )}
+   697→                          <span className="text-sm font-medium truncate">
+   698→                            {c.label || "Cadrage sans titre"}
+   699→                          </span>
+   700→                        </div>
+   701→                        <div className="flex items-center gap-1.5 shrink-0">
+   702→                          <Badge
+   703→                            variant="outline"
+   704→                            className="text-[10px] tabular-nums"
+   705→                          >
+   706→                            {c.fields.length} champ
+   707→                            {c.fields.length > 1 ? "s" : ""}
+   708→                          </Badge>
+   709→                        </div>
+   710→                      </button>
+   711→                    ))}
+   712→                  </div>
+   713→                </ScrollArea>
+   714→              )}
+   715→            </CardContent>
+   716→          </Card>
+   717→        </div>
+   718→
+   719→        {/* ─── Right panel ─── */}
+   720→        {!activeCadrage ? (
+   721→          <Card className="flex items-center justify-center min-h-[400px]">
+   722→            <div className="flex flex-col items-center gap-3 text-center px-6">
+   723→              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-muted">
+   724→                <Crosshair className="h-6 w-6 text-muted-foreground" />
+   725→              </div>
+   726→              <div>
+   727→                <p className="text-sm font-medium">
+   728→                  Aucun cadrage sélectionné
+   729→                </p>
+   730→                <p className="text-xs text-muted-foreground mt-1">
+   731→                  Sélectionnez un cadrage dans la liste de gauche ou
+   732→                  créez-en un nouveau pour commencer à éditer.
+   733→                </p>
+   734→              </div>
+   735→            </div>
+   736→          </Card>
+   737→        ) : (
+   738→          <Card>
+   739→            <CardHeader className="pb-3">
+   740→              <div className="flex items-center justify-between gap-4">
+   741→                <div className="flex items-center gap-3 min-w-0 flex-1">
+   742→                  {isEditingLabel ? (
+   743→                    <Input
+   744→                      value={editLabel}
+   745→                      onChange={(e) => setEditLabel(e.target.value)}
+   746→                      onBlur={handleSaveLabel}
+   747→                      onKeyDown={(e) => {
+   748→                        if (e.key === "Enter") handleSaveLabel();
+   749→                        if (e.key === "Escape") setIsEditingLabel(false);
+   750→                      }}
+   751→                      className="text-lg font-bold h-8"
+   752→                      autoFocus
+   753→                    />
+   754→                  ) : (
+   755→                    <CardTitle
+   756→                      className="text-lg font-bold cursor-pointer hover:text-primary transition-colors truncate"
+   757→                      onClick={() => {
+   758→                        setEditLabel(
+   759→                          activeCadrage?.label ?? "Cadrage sans titre"
+   760→                        );
+   761→                        setIsEditingLabel(true);
+   762→                      }}
+   763→                      title="Cliquer pour modifier"
+   764→                    >
+   765→                      {activeCadrage.label || "Cadrage sans titre"}
+   766→                    </CardTitle>
+   767→                  )}
+   768→                </div>
+   769→                <div className="flex items-center gap-2 shrink-0">
+   770→                  <Badge
+   771→                    variant={activeCadrage.isActive ? "default" : "outline"}
+   772→                    className={
+   773→                      activeCadrage.isActive
+   774→                        ? "bg-chart-1 text-chart-1-foreground hover:bg-chart-1/90 cursor-pointer"
+   775→                        : "cursor-pointer"
+   776→                    }
+   777→                    onClick={handleToggleActive}
+   778→                    title={
+   779→                      activeCadrage.isActive
+   780→                        ? "Cadrage actif — cliquer pour désactiver"
+   781→                        : "Cadrage inactif — cliquer pour activer"
+   782→                    }
+   783→                  >
+   784→                    {activeCadrage.isActive ? "Actif" : "Inactif"}
+   785→                  </Badge>
+   786→                  <Button
+   787→                    variant="ghost"
+   788→                    size="icon"
+   789→                    className="h-8 w-8 text-destructive hover:text-destructive"
+   790→                    onClick={() =>
+   791→                      deleteCadrageMutation.mutate(activeCadrage.id)
+   792→                    }
+   793→                    disabled={deleteCadrageMutation.isPending}
+   794→                    title="Supprimer ce cadrage"
+   795→                  >
+   796→                    <Trash2 className="h-4 w-4" />
+   797→                  </Button>
+   798→                </div>
+   799→              </div>
+   800→
+   801→              {/* Progress indicator */}
+   802→              <div className="flex flex-col gap-1.5 mt-2">
+   803→                <div className="flex items-center justify-between text-xs">
+   804→                  <span className="text-muted-foreground">
+   805→                    Progression du cadrage
+   806→                  </span>
+   807→                  <span className="font-medium tabular-nums">
+   808→                    {filledFields}/{totalFields} — {progressPercent}%
+   809→                  </span>
+   810→                </div>
+   811→                <Progress value={progressPercent} className="h-2" />
+   812→              </div>
+   813→            </CardHeader>
+   814→
+   815→            <Separator />
+   816→
+   817→            <CardContent className="pt-4">
+   818→              <Tabs defaultValue="editor" className="w-full">
+   819→                <TabsList className="mb-4">
+   820→                  <TabsTrigger value="editor">
+   821→                    Éditeur
+   822→                  </TabsTrigger>
+   823→                  <TabsTrigger value="versions" className="gap-1.5">
+   824→                    <Camera className="h-3.5 w-3.5" />
+   825→                    Versions
+   826→                    {versions.length > 0 && (
+   827→                      <Badge
+   828→                        variant="secondary"
+   829→                        className="text-[10px] h-4 px-1.5 ml-0.5"
+   830→                      >
+   831→                        {versions.length}
+   832→                      </Badge>
+   833→                    )}
+   834→                  </TabsTrigger>
+   835→                </TabsList>
+   836→
+   837→                {/* ─── Editor Tab ─── */}
+   838→                <TabsContent value="editor">
+   839→                  {fieldsLoading ? (
+   840→                    <FieldEditorSkeleton />
+   841→                  ) : fields.length === 0 ? (
+   842→                    <div className="flex flex-col items-center gap-3 py-12 text-center">
+   843→                      <AlertCircle className="h-8 w-8 text-muted-foreground" />
+   844→                      <p className="text-sm text-muted-foreground">
+   845→                        Aucun champ dans ce cadrage
+   846→                      </p>
+   847→                    </div>
+   848→                  ) : (
+   849→                    <ScrollArea className="max-h-[500px] overflow-y-auto">
+   850→                      <div className="flex flex-col gap-5 pr-2">
+   851→                        {fields.map((field, index) => {
+   852→                          const currentValue =
+   853→                            fieldValues[field.id] !== undefined
+   854→                              ? fieldValues[field.id]
+   855→                              : field.value ?? "";
+   856→                          const isFilled = currentValue.trim().length > 0;
+   857→
+   858→                          return (
+   859→                            <div
+   860→                              key={field.id}
+   861→                              className="flex flex-col gap-2"
+   862→                            >
+   863→                              <div className="flex items-center justify-between">
+   864→                                <div className="flex items-center gap-2">
+   865→                                  <span className="flex items-center justify-center h-5 w-5 rounded-full bg-muted text-[10px] font-bold text-muted-foreground">
+   866→                                    {index + 1}
+   867→                                  </span>
+   868→                                  <label
+   869→                                    htmlFor={field.id}
+   870→                                    className="text-sm font-semibold"
+   871→                                  >
+   872→                                    {field.label}
+   873→                                  </label>
+   874→                                  {isFilled ? (
+   875→                                    <CheckCircle2 className="h-3.5 w-3.5 text-chart-1" />
+   876→                                  ) : null}
+   877→                                </div>
+   878→                                <div className="flex items-center gap-1.5">
+   879→                                  <Button
+   880→                                    variant="outline"
+   881→                                    size="sm"
+   882→                                    className="h-7 gap-1 text-xs"
+   883→                                    onClick={handleAiSuggestion}
+   884→                                    title="Suggestion IA"
+   885→                                  >
+   886→                                    <Sparkles className="h-3 w-3 text-chart-2" />
+   887→                                    IA
+   888→                                  </Button>
+   889→                                  <Button
+   890→                                    variant="ghost"
+   891→                                    size="sm"
+   892→                                    className="h-7 gap-1 text-xs"
+   893→                                    onClick={() =>
+   894→                                      handleSaveField(field.id)
+   895→                                    }
+   896→                                    disabled={
+   897→                                      updateFieldMutation.isPending
+   898→                                    }
+   899→                                    title="Sauvegarder ce champ"
+   900→                                  >
+   901→                                    <Save className="h-3 w-3" />
+   902→                                  </Button>
+   903→                                </div>
+   904→                              </div>
+   905→                              <Textarea
+   906→                                id={field.id}
+   907→                                value={currentValue}
+   908→                                onChange={(e) =>
+   909→                                  handleFieldChange(
+   910→                                    field.id,
+   911→                                    e.target.value
+   912→                                  )
+   913→                                }
+   914→                                onBlur={() =>
+   915→                                  handleSaveField(field.id)
+   916→                                }
+   917→                                placeholder={
+   918→                                  "Décrivez votre " +
+   919→                                  field.label.toLowerCase() +
+   920→                                  "..."
+   921→                                }
+   922→                                className={
+   923→                                  "min-h-[80px] resize-y text-sm " +
+   924→                                  (isFilled
+   925→                                    ? "border-chart-1/30 focus-visible:ring-chart-1/20"
+   926→                                    : "")
+   927→                                }
+   928→                              />
+   929→                              {field.aiSuggestion && (
+   930→                                <div className="rounded-md border border-chart-2/20 bg-chart-2/5 p-2.5">
+   931→                                  <p className="text-[11px] font-medium text-chart-2 mb-1">
+   932→                                    <Sparkles className="h-3 w-3 inline mr-1" />
+   933→                                    Suggestion IA
+   934→                                  </p>
+   935→                                  <p className="text-xs text-muted-foreground">
+   936→                                    {field.aiSuggestion}
+   937→                                  </p>
+   938→                                </div>
+   939→                              )}
+   940→                            </div>
+   941→                          );
+   942→                        })}
+   943→                      </div>
+   944→                    </ScrollArea>
+   945→                  )}
+   946→                </TabsContent>
+   947→
+   948→                {/* ─── Versions Tab ─── */}
+   949→                <TabsContent value="versions">
+   950→                  <div className="flex flex-col gap-4">
+   951→                    <div className="flex items-center justify-between">
+   952→                      <p className="text-sm text-muted-foreground">
+   953→                        Historique des instantanés de votre cadrage
+   954→                      </p>
+   955→                      <Dialog
+   956→                        open={versionDialogOpen}
+   957→                        onOpenChange={setVersionDialogOpen}
+   958→                      >
+   959→                        <DialogTrigger asChild>
+   960→                          <Button
+   961→                            size="sm"
+   962→                            variant="outline"
+   963→                            className="gap-1.5"
+   964→                          >
+   965→                            <Camera className="h-3.5 w-3.5" />
+   966→                            Nouvelle version
+   967→                          </Button>
+   968→                        </DialogTrigger>
+   969→                        <DialogContent>
+   970→                          <DialogHeader>
+   971→                            <DialogTitle>
+   972→                              Sauvegarder une version
+   973→                            </DialogTitle>
+   974→                            <DialogDescription>
+   975→                              Un instantané de tous les champs sera créé.
+   976→                              Vous pourrez le consulter ultérieurement.
+   977→                            </DialogDescription>
+   978→                          </DialogHeader>
+   979→                          <div className="flex flex-col gap-4 py-2">
+   980→                            <div className="flex flex-col gap-1.5">
+   981→                              <label
+   982→                                htmlFor="version-label"
+   983→                                className="text-sm font-medium"
+   984→                              >
+   985→                                Libellé de la version
+   986→                              </label>
+   987→                              <Input
+   988→                                id="version-label"
+   989→                                placeholder="Ex : Révision après directeur"
+   990→                                value={newVersionLabel}
+   991→                                onChange={(e) =>
+   992→                                  setNewVersionLabel(e.target.value)
+   993→                                }
+   994→                              />
+   995→                            </div>
+   996→                            <div className="rounded-md border bg-muted/50 p-3">
+   997→                              <p className="text-xs text-muted-foreground">
+   998→                                <span className="font-medium">
+   999→                                  {filledFields}/{totalFields}
+  1000→                                </span>{" "}
+  1001→                                champs remplis — cette version contiendra
+  1002→                                l&apos;état actuel de tous les champs.
+  1003→                              </p>
+  1004→                            </div>
+  1005→                          </div>
+  1006→                          <DialogFooter>
+  1007→                            <Button
+  1008→                              variant="outline"
+  1009→                              onClick={() => setVersionDialogOpen(false)}
+  1010→                            >
+  1011→                              Annuler
+  1012→                            </Button>
+  1013→                            <Button
+  1014→                              onClick={() =>
+  1015→                                createVersionMutation.mutate({
+  1016→                                  cadrageId: selectedCadrageId,
+  1017→                                  label:
+  1018→                                    newVersionLabel || undefined,
+  1019→                                })
+  1020→                              }
+  1021→                              disabled={
+  1022→                                createVersionMutation.isPending
+  1023→                              }
+  1024→                            >
+  1025→                              {createVersionMutation.isPending
+  1026→                                ? "Sauvegarde..."
+  1027→                                : "Sauvegarder"}
+  1028→                            </Button>
+  1029→                          </DialogFooter>
+  1030→                        </DialogContent>
+  1031→                      </Dialog>
+  1032→                    </div>
+  1033→
+  1034→                    <Separator />
+  1035→
+  1036→                    {versionsLoading ? (
+  1037→                      <div className="flex flex-col gap-3">
+  1038→                        {Array.from({ length: 2 }).map((_, i) => (
+  1039→                          <div
+  1040→                            key={i}
+  1041→                            className="flex items-center justify-between rounded-lg border p-3"
+  1042→                          >
+  1043→                            <div className="flex flex-col gap-1">
+  1044→                              <Skeleton className="h-4 w-36" />
+  1045→                              <Skeleton className="h-3 w-24" />
+  1046→                            </div>
+  1047→                            <Skeleton className="h-5 w-16" />
+  1048→                          </div>
+  1049→                        ))}
+  1050→                      </div>
+  1051→                    ) : versions.length === 0 ? (
+  1052→                      <div className="flex flex-col items-center gap-3 py-12 text-center">
+  1053→                        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-muted">
+  1054→                          <Camera className="h-5 w-5 text-muted-foreground" />
+  1055→                        </div>
+  1056→                        <p className="text-sm text-muted-foreground">
+  1057→                          Aucune version sauvegardée
+  1058→                        </p>
+  1059→                        <p className="text-xs text-muted-foreground">
+  1060→                          Créez un instantané pour conserver l&apos;état
+  1061→                          actuel de votre cadrage.
+  1062→                        </p>
+  1063→                      </div>
+  1064→                    ) : (
+  1065→                      <ScrollArea className="max-h-[400px] overflow-y-auto">
+  1066→                        <div className="flex flex-col gap-2 pr-2">
+  1067→                          {versions.map((v) => (
+  1068→                            <VersionRow key={v.id} version={v} />
+  1069→                          ))}
+  1070→                        </div>
+  1071→                      </ScrollArea>
+  1072→                    )}
+  1073→                  </div>
+  1074→                </TabsContent>
+  1075→              </Tabs>
+  1076→            </CardContent>
+  1077→          </Card>
+  1078→        )}
+  1079→      </div>
+  1080→    </div>
+  1081→  );
+  1082→}
+  1083→
