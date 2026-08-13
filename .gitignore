@@ -56,6 +56,10 @@ server.log
 # Electron / electron-builder output
 /release/
 /dist-electron/
+/dist/
+# Build artifacts
+win-unpacked/
+*.7z
 *.blockmap
 *.exe
 *.dmg
@@ -64,3 +68,6 @@ server.log
 # Block all yml in root EXCEPT electron-builder
 /*.yml
 !electron-builder.yml
+
+# Tool output
+/tool-results/
