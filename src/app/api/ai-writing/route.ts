@@ -27,20 +27,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Build messages
-    const messages = [
-      { role: "system" as const, content: mode.systemPrompt },
+    const messages: { role: "system" | "user" | "assistant"; content: string }[] = [
+      { role: "system", content: mode.systemPrompt },
     ];
 
     // Add optional context
     if (validated.context) {
       messages.push({
-        role: "system" as const,
+        role: "system",
         content: `CONTEXTE ADDITIONNEL DE LA THÈSE :\n${validated.context}`,
       });
     }
 
     messages.push({
-      role: "user" as const,
+      role: "user",
       content: validated.prompt,
     });
 

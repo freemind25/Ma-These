@@ -3,15 +3,15 @@
 // Server-side only — encapsulates AI calls with retry logic
 // ═══════════════════════════════════════
 
-import AiSDK from "z-ai-web-dev-sdk";
+import ZAI from "z-ai-web-dev-sdk";
 
-let aiClient: AiSDK | null = null;
+let aiClientPromise: Promise<ZAI> | null = null;
 
-function getClient(): AiSDK {
-  if (!aiClient) {
-    aiClient = new AiSDK();
+async function getClient(): Promise<ZAI> {
+  if (!aiClientPromise) {
+    aiClientPromise = ZAI.create();
   }
-  return aiClient;
+  return aiClientPromise;
 }
 
 export interface AiMessage {
@@ -43,19 +43,15 @@ export interface AiCompletionResult {
 export async function generateCompletion(
   options: AiCompletionOptions
 ): Promise<AiCompletionResult> {
-  const client = getClient();
   const maxRetries = 2;
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const formattedMessages = options.messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
+      const client = await getClient();
 
-      const response = await client.chat({
-        messages: formattedMessages,
+      const response = await client.chat.completions.create({
+        messages: options.messages,
         model: options.model || "default",
         temperature: options.temperature ?? 0.7,
       });

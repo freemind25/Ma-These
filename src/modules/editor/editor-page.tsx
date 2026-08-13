@@ -32,7 +32,7 @@ export function EditorPage() {
     delay: 2500,
     enabled: !!activeChapterId && !!activeThesisId,
     onSave: useCallback(
-      async (data) => {
+      async (data: { chapterId: string | null; content: string }) => {
         if (!data.chapterId) return;
         await updateChapter.mutateAsync({
           id: data.chapterId,

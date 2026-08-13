@@ -6,7 +6,6 @@
 // Enrichis avec les règles de citation Chicago/Turabian
 // Enrichis avec le corpus Publication & Peer Review (Belcher, Pyrczak, PhDone, Sonneveld, Holtom/Fisher, Graustein)
 // Enrichis avec le corpus Recherche assistée par l'IA (Zhou, Bagheri, Johannesson, Belleville & Jackson)
-// Enrichis avec le corpus Recherche assistée par l'IA (Zhou, Bagheri, Johannesson, Belleville & Jackson)
 // ═════════════════════════════════════════════════════════════════════════════════════════════════════════
 
 import {
@@ -42,16 +41,6 @@ import {
   CRITERES_EXCELLENCE_THESE,
   REGLES_REDACTION_PUBLICATION,
 } from "./corpus-publication";
-
-import {
-  PRINCIPES_ETHIQUES_IA,
-  RISQUES_IA_RECHERCHE,
-  OUTILS_IA,
-  TECHNIQUES_PROMPTING,
-  DIRECTIVES_PROMPTING_THESE,
-  SEPT_C_STYLE_ACADEMIQUE,
-  STRATEGIES_SURMONTER_BLOCAGES,
-} from "./corpus-ai-research";
 
 import {
   PRINCIPES_ETHIQUES_IA,
@@ -348,57 +337,7 @@ ${RISQUES_IA_RECHERCHE.map((r) => `  ⚠ ${r}`).join("\n")}`;
 
 /** Construit l'insert des outils IA recommandés par catégorie */
 function insererOutilsIA(): string {
-  const categories = Object.entries(OUTILS_IA) as [
-    [string, readonly { nom: string; usage: string }[]],
-  ][];
-  const blocs = categories.map(([cat, outils]) => {
-    const header = cat === "rédaction" ? "RÉDACTION" : cat === "recherche" ? "RECHERCHE DE LITTÉRATURE" : cat === "analyse" ? "ANALYSE DE DONNÉES" : "COMMUNICATION";
-    return `  ${header} : ${outils.map((o) => `${o.nom} (${o.usage})`).join(" | ")}`;
-  });
-  return `OUTILS IA RECOMMANDÉS PAR CATÉGORIE :
-${blocs.join("\n\n")}`;
-}
-
-/** Construit l'insert des 7 C du style académique */
-function insererSeptCStyle(): string {
-  return `LES 7 C DU STYLE ACADÉMIQUE (Johannesson) :
-${SEPT_C_STYLE_ACADEMIQUE.map((c) => `  - ${c.lettre} = ${c.qualité} (${c.traduction}) : ${c.description}`).join("\n")}`;
-}
-
-/** Construit l'insert des directives de prompting pour thèse */
-function insererDirectivesPromptingThese(): string {
-  return `DIRECTIVES DE PROMPTING POUR LA THÈSE :
-${DIRECTIVES_PROMPTING_THESE.map((d) => `  - ${d}`).join("\n")}`;
-}
-
-/** Construit l'insert des techniques avancées de prompting */
-function insererTechniquesPrompting(): string {
-  return `TECHNIQUES AVANCÉES DE PROMPTING (Bagheri) :
-${TECHNIQUES_PROMPTING.map((t) => `  - ${t.technique} : ${t.description}. Exemple : ${t.exempleRecherche}`).join("\n")}`;
-}
-
-/** Construit l'insert des stratégies de déblocage de rédaction */
-function insererStrategiesDeblocage(): string {
-  return `STRATÉGIES COGNITIVES POUR SURMONTER LES BLOCAGES DE RÉDACTION :
-${STRATEGIES_SURMONTER_BLOCAGES.map((s) => `  - ${s.blocage} (signaux : ${s.signaux.join(", ")}) → ${s.stratégie}`).join("\n")}`;
-}
-
-// ─── Prompt builders utilisant le corpus IA Recherche ───
-
-/** Construit l'avertissement éthique IA pour tous les modes */
-function insererAvertissementEthiqueIA(): string {
-  return `AVERTISSEMENT ÉTHIQUE — UTILISATION DE L'IA EN RECHERCHE :
-${PRINCIPES_ETHIQUES_IA.map((p) => `  - ${p.principe} : ${p.description}`).join("\n")}
-
-RISQUES SPÉCIFIQUES À GARDER EN TÊTE :
-${RISQUES_IA_RECHERCHE.map((r) => `  ⚠ ${r}`).join("\n")}`;
-}
-
-/** Construit l'insert des outils IA recommandés par catégorie */
-function insererOutilsIA(): string {
-  const categories = Object.entries(OUTILS_IA) as [
-    [string, readonly { nom: string; usage: string }[]],
-  ][];
+  const categories = Object.entries(OUTILS_IA) as unknown as [string, { nom: string; usage: string }[]][];
   const blocs = categories.map(([cat, outils]) => {
     const header = cat === "rédaction" ? "RÉDACTION" : cat === "recherche" ? "RECHERCHE DE LITTÉRATURE" : cat === "analyse" ? "ANALYSE DE DONNÉES" : "COMMUNICATION";
     return `  ${header} : ${outils.map((o) => `${o.nom} (${o.usage})`).join(" | ")}`;

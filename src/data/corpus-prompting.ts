@@ -11,7 +11,7 @@
 interface PrincipePrompt {
   id: string;
   titre: string;
-  categorie: "structure" | "clarte" | "specificite" | "contraintes" | "iteration" | "contexte";
+  categorie: "role" | "structure" | "clarte" | "specificite" | "contraintes" | "iteration" | "contexte";
   description: string;
   exempleAvant: string;
   exempleApres: string;

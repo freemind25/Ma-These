@@ -23,14 +23,14 @@ export async function POST(request: NextRequest) {
     const validated = directeurChatSchema.parse(body);
 
     // Build messages array for AI
-    const aiMessages = [
-      { role: "system" as const, content: DIRECTEUR_SYSTEM_PROMPT },
+    const aiMessages: { role: "system" | "user" | "assistant"; content: string }[] = [
+      { role: "system", content: DIRECTEUR_SYSTEM_PROMPT },
     ];
 
     // Add thesis context if provided
     if (validated.thesisContext) {
       aiMessages.push({
-        role: "system" as const,
+        role: "system",
         content: `INFORMATIONS SUR LA THÈSE DU DOCTORANT :\n${validated.thesisContext}`,
       });
     }
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     // Add conversation history
     for (const msg of validated.messages) {
       aiMessages.push({
-        role: msg.role as "user" | "assistant",
+        role: msg.role,
         content: msg.content,
       });
     }

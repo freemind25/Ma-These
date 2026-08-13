@@ -6,6 +6,7 @@ export type CritereQualite = string;
 export type AntiPattern = {
   erreur: string;
   correction: string;
+  exemple?: string;
 };
 
 export type SectionCriteres = {
@@ -352,8 +353,6 @@ REPONDRE AUX COMMENTAIRES :
     "cette decouverte particuliere": "cette decouverte",
     "ce resultat semblerait indiquer que": "ce resultat indique que",
     "que ce soit ou non": "si",
-    "a un rythme rapide": "rapidement",
-    "a une date anterieure": "precedemment",
     "dans le domaine de la chimie": "en chimie",
   } as Record<string, string>,
 

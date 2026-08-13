@@ -73,12 +73,12 @@ export function DashboardPage() {
   const { data: stats, isLoading } = useDashboardStats();
 
   // Determine completed steps
-  const stepsCompleted = [
-    stats && stats.totalTheses > 0,
-    stats && stats.totalChapters > 0,
-    stats && stats.totalWords > 0,
-    stats && stats.totalReferences > 0,
-    stats && stats.completedChapters > 0,
+  const stepsCompleted: boolean[] = [
+    !!(stats && stats.totalTheses > 0),
+    !!(stats && stats.totalChapters > 0),
+    !!(stats && stats.totalWords > 0),
+    !!(stats && stats.totalReferences > 0),
+    !!(stats && stats.completedChapters > 0),
   ];
   const completedCount = stepsCompleted.filter(Boolean).length;
 

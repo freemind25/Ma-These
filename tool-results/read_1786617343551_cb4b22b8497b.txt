@@ -1,0 +1,848 @@
+     1→// ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+     2→// ThesisFrame — AI Writing Modes
+     3→// 10 modes spécialisés avec system prompts en français
+     4→// Enrichis avec les cadres de recherche (RB-2 à RB-5, PRISMA/GRADE)
+     5→// Enrichis avec le corpus Gastel & Day (rédaction scientifique, IMRaD, anti-patterns)
+     6→// Enrichis avec les règles de citation Chicago/Turabian
+     7→// Enrichis avec le corpus Publication & Peer Review (Belcher, Pyrczak, PhDone, Sonneveld, Holtom/Fisher, Graustein)
+     8→// Enrichis avec le corpus Recherche assistée par l'IA (Zhou, Bagheri, Johannesson, Belleville & Jackson)
+     9→// Enrichis avec le corpus Recherche assistée par l'IA (Zhou, Bagheri, Johannesson, Belleville & Jackson)
+    10→// ═════════════════════════════════════════════════════════════════════════════════════════════════════════
+    11→
+    12→import {
+    13→  RESEARCH_FRAMEWORKS,
+    14→  TYPES_LACUNES,
+    15→  SECTIONS_REVUE_LITTERATURE,
+    16→  LOGIQUES_ORGANISATION_SECTION4,
+    17→  CRITERES_QUALITE_REVUE,
+    18→  COMPARAISON_CADRES,
+    19→  REGLES_SELECTION_CADRE,
+    20→  CRITERES_VALIDATION_CADRE,
+    21→  TESTS_STATISTIQUES,
+    22→  REGLES_PRE_ANALYSE,
+    23→  DIMENSIONS_APPRECIATION_PAR_DESIGN,
+    24→  NIVEAUX_CERTITUDE_PREUVES,
+    25→  REGLE_DEGRADATION_CERTITUDE,
+    26→  PROTOCOLES_ANALYSE,
+    27→  CADRAGE_PROTOCOLAIRE,
+    28→} from "./corpus-research-frameworks";
+    29→
+    30→import {
+    31→  CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE,
+    32→} from "./corpus-scientific-writing";
+    33→
+    34→import {
+    35→  PUBLICATION_CORPUS,
+    36→  CRITERES_QUALITE_PUBLICATION,
+    37→  QUESTIONS_EVALUATION_RECHERCHE,
+    38→  NIVEAUX_QUALITE_RECHERCHE,
+    39→  REGLES_EDITION_PROFESSIONNELLE,
+    40→  CRITERES_ACCEPTATION_PROPOSITION,
+    41→  ERREURS_FREQUENTES_PROPOSITION,
+    42→  CRITERES_EXCELLENCE_THESE,
+    43→  REGLES_REDACTION_PUBLICATION,
+    44→} from "./corpus-publication";
+    45→
+    46→import {
+    47→  PRINCIPES_ETHIQUES_IA,
+    48→  RISQUES_IA_RECHERCHE,
+    49→  OUTILS_IA,
+    50→  TECHNIQUES_PROMPTING,
+    51→  DIRECTIVES_PROMPTING_THESE,
+    52→  SEPT_C_STYLE_ACADEMIQUE,
+    53→  STRATEGIES_SURMONTER_BLOCAGES,
+    54→} from "./corpus-ai-research";
+    55→
+    56→import {
+    57→  PRINCIPES_ETHIQUES_IA,
+    58→  RISQUES_IA_RECHERCHE,
+    59→  OUTILS_IA,
+    60→  TECHNIQUES_PROMPTING,
+    61→  DIRECTIVES_PROMPTING_THESE,
+    62→  SEPT_C_STYLE_ACADEMIQUE,
+    63→  STRATEGIES_SURMONTER_BLOCAGES,
+    64→} from "./corpus-ai-research";
+    65→
+    66→export interface WritingMode {
+    67→  id: string;
+    68→  label: string;
+    69→  description: string;
+    70→  icon: string;
+    71→  systemPrompt: string;
+    72→  placeholder: string;
+    73→  temperature: number;
+    74→  category: "writing" | "analysis" | "review" | "generation";
+    75→}
+    76→
+    77→// ─── Prompt builders utilisant le corpus de recherche ──────────────
+    78→
+    79→/** Construit l'insert de la taxonomie des lacunes pour les prompts */
+    80→function insererTaxonomieLacunes(): string {
+    81→  const lignes = TYPES_LACUNES.map(
+    82→    (l) => `  - ${l.label} (${l.categorie}) : ${l.definitionCourte}`
+    83→  );
+    84→  return `TAXONOMIE DES 7 LACUNES DE RECHERCHE :
+    85→${lignes.join("\n")}`;
+    86→}
+    87→
+    88→/** Construit l'insert de la structure en 6 sections du chapitre 2 */
+    89→function insererStructureChapitre2(): string {
+    90→  const lignes = SECTIONS_REVUE_LITTERATURE.map(
+    91→    (s) => `  Section ${s.numero} — ${s.label} : ${s.fonction}`
+    92→  );
+    93→  return `STRUCTURE EN 6 SECTIONS DU CHAPITRE DE REVUE DE LITTÉRATURE :
+    94→${lignes.join("\n")}`;
+    95→}
+    96→
+    97→/** Construit l'insert des logiques d'organisation */
+    98→function insererLogiquesOrganisation(): string {
+    99→  const lignes = LOGIQUES_ORGANISATION_SECTION4.map(
+   100→    (l) => `  - ${l.label} : ${l.description} → utiliser quand : ${l.quandUtiliser}`
+   101→  );
+   102→  return `LOGIQUES D'ORGANISATION POUR LA SECTION REVUE CONNEXE :
+   103→${lignes.join("\n")}`;
+   104→}
+   105→
+   106→/** Construit l'insert de comparaison des cadres théorique vs conceptuel */
+   107→function insererComparaisonCadres(): string {
+   108→  const lignes = COMPARAISON_CADRES.map(
+   109→    (c) => `  - ${c.aspect} : Théorique = ${c.theorique} | Conceptuel = ${c.conceptuel} → Clé : ${c.cleDecision}`
+   110→  );
+   111→  return `COMPARAISON CADRE THÉORIQUE VS CONCEPTUEL (7 aspects) :
+   112→${lignes.join("\n")}`;
+   113→}
+   114→
+   115→/** Construit l'insert des règles de sélection du cadre */
+   116→function insererReglesSelectionCadre(): string {
+   117→  const lignes = REGLES_SELECTION_CADRE.map(
+   118→    (r) => `  - Si ${r.condition} → Cadre ${r.cadre} (${r.justification})`
+   119→  );
+   120→  return `RÈGLES DE SÉLECTION DU TYPE DE CADRE :
+   121→${lignes.join("\n")}`;
+   122→}
+   123→
+   124→/** Construit l'insert de l'arbre de décision statistique */
+   125→function insererArbreStatistique(): string {
+   126→  const lignes = TESTS_STATISTIQUES.map(
+   127→    (t) => `  - ${t.label} : ${t.quandUtiliser}${t.alternativeNonParametrique ? ` [Non param. : ${t.alternativeNonParametrique}]` : ""}`
+   128→  );
+   129→  return `RÉPERTOIRE DES TESTS STATISTIQUES (16 tests) :
+   130→${lignes.join("\n")}`;
+   131→}
+   132→
+   133→/** Construit l'insert des règles pré-analyse */
+   134→function insererReglesPreAnalyse(): string {
+   135→  return `RÈGLES DE VÉRIFICATION PRÉ-ANALYSE :
+   136→${REGLES_PRE_ANALYSE.map((r) => `  - ${r}`).join("\n")}`;
+   137→}
+   138→
+   139→/** Construit l'insert des grilles d'appréciation critique par design */
+   140→function insererGrillesAppreciation(): string {
+   141→  const blocs = DIMENSIONS_APPRECIATION_PAR_DESIGN.map(
+   142→    (d) => `  Design ${d.typeDesign} :
+   143→${d.dimensions.map((dim) => `    • ${dim}`).join("\n")}`
+   144→  );
+   145→  return `DIMENSIONS D'APPRÉCIATION CRITIQUE PAR TYPE DE DESIGN :
+   146→${blocs.join("\n\n")}`;
+   147→}
+   148→
+   149→/** Construit l'insert des niveaux de certitude GRADE */
+   150→function insererCertitudeGRADE(): string {
+   151→  const niveaux = NIVEAUX_CERTITUDE_PREUVES.map(
+   152→    (n) => `  - ${n.niveau} : ${n.description}`
+   153→  );
+   154→  const regles = REGLE_DEGRADATION_CERTITUDE.map(
+   155→    (r) => `  - ${r}`
+   156→  );
+   157→  return `NIVEAUX DE CERTITUDE DES PREUVES (approche GRADE) :
+   158→${niveaux.join("\n")}
+   159→
+   160→RÈGLES DE DÉGRADATION :
+   161→${regles.join("\n")}`;
+   162→}
+   163→
+   164→/** Construit l'insert des critères de validation de cadre */
+   165→function insererCriteresValidationCadre(): string {
+   166→  return `CRITÈRES DE VALIDATION D'UN CADRE :
+   167→${CRITERES_VALIDATION_CADRE.map((c) => `  - ${c}`).join("\n")}`;
+   168→}
+   169→
+   170→/** Construit l'insert des critères qualité de revue */
+   171→function insererCriteresQualiteRevue(): string {
+   172→  return `CRITÈRES DE QUALITÉ D'UNE REVUE DE LITTÉRATURE :
+   173→${CRITERES_QUALITE_REVUE.map((c) => `  - ${c}`).join("\n")}`;
+   174→}
+   175→
+   176→/** Construit l'insert du cadrage protocolaire PRISMA */
+   177→function insererCadragePRISMA(): string {
+   178→  return `CADRAGE PROTOCOLAIRE (Phase 0 PRISMA) :
+   179→${CADRAGE_PROTOCOLAIRE.map((c) => `  - ${c.element} : ${c.options || c.precision}`).join("\n")}
+   180→
+   181→PROTOCOLES D'ANALYSE DOCUMENTAIRE (12 protocoles) :
+   182→${PROTOCOLES_ANALYSE.map((p) => `  - ${p.id} ${p.label} : ${p.description}`).join("\n")}`;
+   183→}
+   184→
+   185→// ─── Prompt builders utilisant le corpus scientifique ──────────
+   186→
+   187→/** Construit l'insert des règles IMRaD complètes */
+   188→function insererReglesIMRaD(): string {
+   189→  return CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.reglesIMRaD;
+   190→}
+   191→
+   192→/** Construit l'insert des critères de qualité du titre et du résumé */
+   193→function insererCriteresTitreResume(): string {
+   194→  const tit = CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.criteresQualiteParSection.titre;
+   195→  const res = CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.criteresQualiteParSection.resume;
+   196→  return `CRITÈRES DE QUALITÉ — TITRE :
+   197→${tit.map((c) => `  - ${c}`).join("\n")}
+   198→
+   199→CRITÈRES DE QUALITÉ — RÉSUMÉ :
+   200→${res.map((c) => `  - ${c}`).join("\n")}`;
+   201→}
+   202→
+   203→/** Construit l'insert des anti-patterns par section */
+   204→function insererAntipatterns(sections?: string[]): string {
+   205→  const ap = CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.antipatterns;
+   206→  const sectionsAInclure = sections ?? (Object.keys(ap) as (keyof typeof ap)[]);
+   207→  const blocs = sectionsAInclure
+   208→    .filter((s) => s in ap)
+   209→    .map((s) => {
+   210→      const section = s as keyof typeof ap;
+   211→      const items = ap[section].map(
+   212→        (a) => `    - ${a.erreur} → ${a.correction}`
+   213→      );
+   214→      return `  ${s.toUpperCase()} :
+   215→${items.join("\n")}`;
+   216→    });
+   217→  return `ANTI-PATTERNS (ERREURS FRÉQUENTES À ÉVITER) :
+   218→${blocs.join("\n\n")}`;
+   219→}
+   220→
+   221→/** Construit l'insert du jargon à éviter */
+   222→function insererJargonAEviter(): string {
+   223→  const entrees = Object.entries(
+   224→    CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.jargonAEviter
+   225→  );
+   226→  const lignes = entrees.map(
+   227→    ([erreur, correction]) => `  - « ${erreur} » → « ${correction} »`
+   228→  );
+   229→  return `EXPRESSIONS JARGON À ÉVITER ET REMPLACEMENTS RECOMMANDÉS :
+   230→${lignes.join("\n")}`;
+   231→}
+   232→
+   233→/** Construit l'insert des règles de citation Chicago/Turabian */
+   234→function insererReglesCitation(): string {
+   235→  return CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.reglesCitationReferences;
+   236→}
+   237→
+   238→/** Construit l'insert des règles de revue de littérature */
+   239→function insererReglesRevueLitterature(): string {
+   240→  return CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.reglesRevueLitterature;
+   241→}
+   242→
+   243→/** Construit l'insert des considérations éthiques */
+   244→function insererEthique(): string {
+   245→  return CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.considerationsEthiques
+   246→    .map((c) => `  - ${c}`)
+   247→    .join("\n");
+   248→}
+   249→
+   250→/** Construit l'insert des règles de tableaux/figures */
+   251→function insererReglesTableauxFigures(): string {
+   252→  return CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.reglesTableauxFigures;
+   253→}
+   254→
+   255→/** Construit l'insert du processus de soumission/évaluation */
+   256→function insererProcessusSoumission(): string {
+   257→  return CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.processusSoumissionEvaluation;
+   258→}
+   259→
+   260→// ─── Prompt builders utilisant le corpus publication ───────────
+   261→
+   262→/** Construit l'insert des critères de qualité publication (Belcher) */
+   263→function insererCriteresQualitePublication(): string {
+   264→  const blocs = CRITERES_QUALITE_PUBLICATION.map(
+   265→    (c) => `  [${c.domaine}] ${c.critere} — Indicateur : ${c.indicateur}`
+   266→  );
+   267→  return `CRITÈRES DE QUALITÉ POUR LA PUBLICATION (Belcher) :
+   268→${blocs.join("\n")}`;
+   269→}
+   270→
+   271→/** Construit l'insert des questions d'évaluation critique (Pyrczak) */
+   272→function insererQuestionsEvaluationPyrczak(): string {
+   273→  const categories = new Map<string, typeof QUESTIONS_EVALUATION_RECHERCHE>();
+   274→  for (const q of QUESTIONS_EVALUATION_RECHERCHE) {
+   275→    if (!categories.has(q.categorie)) categories.set(q.categorie, []);
+   276→    categories.get(q.categorie)!.push(q);
+   277→  }
+   278→  const blocs = Array.from(categories.entries()).map(
+   279→    ([cat, questions]) =>
+   280→      `  ${cat.toUpperCase()} :
+   281→${questions.map((q) => `    ${q.question}\n      → Ce chercher : ${q.ceChercher}`).join("\n")}`
+   282→  );
+   283→  return `GRILLE D'ÉVALUATION CRITIQUE (Pyrczak) :
+   284→${blocs.join("\n\n")}`;
+   285→}
+   286→
+   287→/** Construit l'insert des niveaux de qualité (Pyrczak) */
+   288→function insererNiveauxQualite(): string {
+   289→  const blocs = NIVEAUX_QUALITE_RECHERCHE.map(
+   290→    (n) => `  ${n.niveau} : ${n.description}
+   291→    Signes : ${n.signesDistinctifs.map((s) => `[${s}]`).join(" ")}`
+   292→  );
+   293→  return `NIVEAUX DE QUALITÉ D'UNE RECHERCHE (Pyrczak) :
+   294→${blocs.join("\n\n")}`;
+   295→}
+   296→
+   297→/** Construit l'insert des règles d'édition professionnelle (PhDone) */
+   298→function insererReglesEditionPhDone(): string {
+   299→  const blocs = REGLES_EDITION_PROFESSIONNELLE.map(
+   300→    (r) => `  [${r.categorie}] ${r.regle}
+   301→    Avant : ${r.exempleAvant}
+   302→    Après  : ${r.exempleApres}`
+   303→  );
+   304→  return `RÈGLES D'ÉDITION PROFESSIONNELLE (PhDone) :
+   305→${blocs.join("\n\n")}`;
+   306→}
+   307→
+   308→/** Construit l'insert des critères d'acceptation de proposition (Sonneveld) */
+   309→function insererCriteresAcceptationSonneveld(): string {
+   310→  const blocs = CRITERES_ACCEPTATION_PROPOSITION.map(
+   311→    (c) => `  [${c.poids.toUpperCase()}] ${c.critere} : ${c.description}`
+   312→  );
+   313→  return `CRITÈRES D'ACCEPTATION D'UNE PROPOSITION DE THÈSE (Sonneveld) :
+   314→${blocs.join("\n")}`;
+   315→}
+   316→
+   317→/** Construit l'insert des erreurs fréquentes de proposition (Sonneveld) */
+   318→function insererErreursFrequentionsProposition(): string {
+   319→  return `ERREURS FRÉQUENTES DANS LES PROPOSITIONS DE THÈSE (Sonneveld) :
+   320→${ERREURS_FREQUENTES_PROPOSITION.map((e) => `  - ${e}`).join("\n")}`;
+   321→}
+   322→
+   323→/** Construit l'insert des critères d'excellence de thèse (Graustein) */
+   324→function insererCriteresExcellenceThese(): string {
+   325→  const blocs = CRITERES_EXCELLENCE_THESE.map(
+   326→    (c) => `  [${c.domaine}] ${c.critere} : ${c.description}`
+   327→  );
+   328→  return `CRITÈRES D'EXCELLENCE D'UNE THÈSE (Graustein) :
+   329→${blocs.join("\n")}`;
+   330→}
+   331→
+   332→/** Construit l'insert des règles de rédaction pour publication (Epstein et al.) */
+   333→function insererReglesRedactionPublication(): string {
+   334→  return `RÈGLES DE RÉDACTION POUR PUBLICATION (Epstein, Kenway, Boden) :
+   335→${REGLES_REDACTION_PUBLICATION.map((r) => `  - ${r}`).join("\n")}`;
+   336→}
+   337→
+   338→// ─── Prompt builders utilisant le corpus IA Recherche ──────────
+   339→
+   340→/** Construit l'avertissement éthique IA pour tous les modes */
+   341→function insererAvertissementEthiqueIA(): string {
+   342→  return `AVERTISSEMENT ÉTHIQUE — UTILISATION DE L'IA EN RECHERCHE :
+   343→${PRINCIPES_ETHIQUES_IA.map((p) => `  - ${p.principe} : ${p.description}`).join("\n")}
+   344→
+   345→RISQUES SPÉCIFIQUES À GARDER EN TÊTE :
+   346→${RISQUES_IA_RECHERCHE.map((r) => `  ⚠ ${r}`).join("\n")}`;
+   347→}
+   348→
+   349→/** Construit l'insert des outils IA recommandés par catégorie */
+   350→function insererOutilsIA(): string {
+   351→  const categories = Object.entries(OUTILS_IA) as [
+   352→    [string, readonly { nom: string; usage: string }[]],
+   353→  ][];
+   354→  const blocs = categories.map(([cat, outils]) => {
+   355→    const header = cat === "rédaction" ? "RÉDACTION" : cat === "recherche" ? "RECHERCHE DE LITTÉRATURE" : cat === "analyse" ? "ANALYSE DE DONNÉES" : "COMMUNICATION";
+   356→    return `  ${header} : ${outils.map((o) => `${o.nom} (${o.usage})`).join(" | ")}`;
+   357→  });
+   358→  return `OUTILS IA RECOMMANDÉS PAR CATÉGORIE :
+   359→${blocs.join("\n\n")}`;
+   360→}
+   361→
+   362→/** Construit l'insert des 7 C du style académique */
+   363→function insererSeptCStyle(): string {
+   364→  return `LES 7 C DU STYLE ACADÉMIQUE (Johannesson) :
+   365→${SEPT_C_STYLE_ACADEMIQUE.map((c) => `  - ${c.lettre} = ${c.qualité} (${c.traduction}) : ${c.description}`).join("\n")}`;
+   366→}
+   367→
+   368→/** Construit l'insert des directives de prompting pour thèse */
+   369→function insererDirectivesPromptingThese(): string {
+   370→  return `DIRECTIVES DE PROMPTING POUR LA THÈSE :
+   371→${DIRECTIVES_PROMPTING_THESE.map((d) => `  - ${d}`).join("\n")}`;
+   372→}
+   373→
+   374→/** Construit l'insert des techniques avancées de prompting */
+   375→function insererTechniquesPrompting(): string {
+   376→  return `TECHNIQUES AVANCÉES DE PROMPTING (Bagheri) :
+   377→${TECHNIQUES_PROMPTING.map((t) => `  - ${t.technique} : ${t.description}. Exemple : ${t.exempleRecherche}`).join("\n")}`;
+   378→}
+   379→
+   380→/** Construit l'insert des stratégies de déblocage de rédaction */
+   381→function insererStrategiesDeblocage(): string {
+   382→  return `STRATÉGIES COGNITIVES POUR SURMONTER LES BLOCAGES DE RÉDACTION :
+   383→${STRATEGIES_SURMONTER_BLOCAGES.map((s) => `  - ${s.blocage} (signaux : ${s.signaux.join(", ")}) → ${s.stratégie}`).join("\n")}`;
+   384→}
+   385→
+   386→// ─── Prompt builders utilisant le corpus IA Recherche ───
+   387→
+   388→/** Construit l'avertissement éthique IA pour tous les modes */
+   389→function insererAvertissementEthiqueIA(): string {
+   390→  return `AVERTISSEMENT ÉTHIQUE — UTILISATION DE L'IA EN RECHERCHE :
+   391→${PRINCIPES_ETHIQUES_IA.map((p) => `  - ${p.principe} : ${p.description}`).join("\n")}
+   392→
+   393→RISQUES SPÉCIFIQUES À GARDER EN TÊTE :
+   394→${RISQUES_IA_RECHERCHE.map((r) => `  ⚠ ${r}`).join("\n")}`;
+   395→}
+   396→
+   397→/** Construit l'insert des outils IA recommandés par catégorie */
+   398→function insererOutilsIA(): string {
+   399→  const categories = Object.entries(OUTILS_IA) as [
+   400→    [string, readonly { nom: string; usage: string }[]],
+   401→  ][];
+   402→  const blocs = categories.map(([cat, outils]) => {
+   403→    const header = cat === "rédaction" ? "RÉDACTION" : cat === "recherche" ? "RECHERCHE DE LITTÉRATURE" : cat === "analyse" ? "ANALYSE DE DONNÉES" : "COMMUNICATION";
+   404→    return `  ${header} : ${outils.map((o) => `${o.nom} (${o.usage})`).join(" | ")}`;
+   405→  });
+   406→  return `OUTILS IA RECOMMANDÉS PAR CATÉGORIE :
+   407→${blocs.join("\n\n")}`;
+   408→}
+   409→
+   410→/** Construit l'insert des 7 C du style académique */
+   411→function insererSeptCStyle(): string {
+   412→  return `LES 7 C DU STYLE ACADÉMIQUE (Johannesson) :
+   413→${SEPT_C_STYLE_ACADEMIQUE.map((c) => `  - ${c.lettre} = ${c.qualité} (${c.traduction}) : ${c.description}`).join("\n")}`;
+   414→}
+   415→
+   416→/** Construit l'insert des directives de prompting pour thèse */
+   417→function insererDirectivesPromptingThese(): string {
+   418→  return `DIRECTIVES DE PROMPTING POUR LA THÈSE :
+   419→${DIRECTIVES_PROMPTING_THESE.map((d) => `  - ${d}`).join("\n")}`;
+   420→}
+   421→
+   422→/** Construit l'insert des techniques avancées de prompting */
+   423→function insererTechniquesPrompting(): string {
+   424→  return `TECHNIQUES AVANCÉES DE PROMPTING (Bagheri) :
+   425→${TECHNIQUES_PROMPTING.map((t) => `  - ${t.technique} : ${t.description}. Exemple : ${t.exempleRecherche}`).join("\n")}`;
+   426→}
+   427→
+   428→/** Construit l'insert des stratégies de déblocage de rédaction */
+   429→function insererStrategiesDeblocage(): string {
+   430→  return `STRATÉGIES COGNITIVES POUR SURMONTER LES BLOCAGES DE RÉDACTION :
+   431→${STRATEGIES_SURMONTER_BLOCAGES.map((s) => `  - ${s.blocage} (signaux : ${s.signaux.join(", ")}) → ${s.stratégie}`).join("\n")}`;
+   432→}
+   433→
+   434→// ─── Modes de rédaction ─────────────────────────
+   435→
+   436→export const WRITING_MODES: WritingMode[] = [
+   437→  {
+   438→    id: "scientific-writing",
+   439→    label: "Rédaction scientifique",
+   440→    description: "Rédigez un texte académique selon les normes IMRaD (Gastel & Day, PhDone, Epstein)",
+   441→    icon: "PenTool",
+   442→    category: "writing",
+   443→    temperature: 0.6,
+   444→    placeholder: "Décrivez la section à rédiger (introduction, méthodes, résultats, discussion, titre, résumé)...",
+   445→    systemPrompt: `Tu es un expert en rédaction scientifique académique francophone, formé aux normes de publication dans les revues à comité de lecture. Tu aides les doctorants à rédiger des textes conformes aux standards internationaux de la communication scientifique.
+   446→
+   447→${insererReglesIMRaD()}
+   448→
+   449→${insererCriteresTitreResume()}
+   450→
+   451→${insererAntipatterns(["titre", "resume", "introduction", "methodes", "resultats", "discussion"])}
+   452→
+   453→${insererReglesCitation()}
+   454→
+   455→${insererJargonAEviter()}
+   456→
+   457→${insererReglesTableauxFigures()}
+   458→
+   459→${insererSeptCStyle()}
+   460→
+   461→RÈGLES GÉNÉRALES DE STYLE :
+   462→- Style formel, précis et objectif — ni fleurs ornementales, ni jargon
+   463→- Le meilleur français scientifique est celui qui exprime le sens en le moins de mots courts
+   464→- Phrases de 20-30 mots en moyenne, sauf nécessité contraire
+   465→- Connecteurs logiques explicites (cependant, en revanche, ainsi, par conséquent)
+   466→- Citer les sources entre parenthèses (Auteur, Année)
+   467→- Temps verbal : présent pour la littérature établie, passé pour les méthodes et résultats
+   468→- Définir toute abréviation à la première utilisation
+   469→- Vérifier le bon emploi du « nous » de modestie
+   470→
+   471→${insererReglesEditionPhDone()}
+   472→
+   473→${insererAvertissementEthiqueIA()}
+   474→
+   475→${insererReglesRedactionPublication()}
+   476→
+   477→CONSIDÉRATIONS ÉTHIQUES :
+   478→${insererEthique()}
+   479→
+   480→OUTILS UTILES POUR L'UTILISATEUR :
+   481→${insererOutilsIA()}
+   482→
+   483→FORMAT DE SORTIE : Texte rédigé en français académique, structuré avec des paragraphes clairs. Si l'utilisateur précise une section, adapter le style à cette section.`,
+   484→  },
+   485→  {
+   486→    id: "literature-review",
+   487→    label: "Revue de littérature",
+   488→    description: "Synthétisez et analysez la littérature existante avec la structure académique en 6 sections",
+   489→    icon: "BookOpen",
+   490→    category: "analysis",
+   491→    temperature: 0.5,
+   492→    placeholder: "Décrivez le thème ou les travaux à synthétiser...",
+   493→    systemPrompt: `Tu es un spécialiste de la revue de littérature scientifique francophone. Tu aides à synthétiser et analyser la littérature existante en suivant une structure rigoureuse.
+   494→
+   495→${insererStructureChapitre2()}
+   496→
+   497→${insererLogiquesOrganisation()}
+   498→
+   499→${insererTaxonomieLacunes()}
+   500→
+   501→${insererCriteresQualiteRevue()}
+   502→
+   503→${insererReglesRevueLitterature()}
+   504→
+   505→${insererJargonAEviter()}
+   506→
+   507→RÈGLES DE RÉDACTION :
+   508→- Génère UNE SEULE section à la fois (ne pas tout écrire d'un coup)
+   509→- Pour la Section 4 (Revue connexe), demande à l'utilisateur quelle logique d'organisation utiliser (thématique, chronologique ou méthodologique)
+   510→- Pour la Section 5 (Synthèse critique), compare explicitement les études, identifie les contradictions et classe les lacunes selon la taxonomie des 7 types
+   511→- Pour la Section 6 (Résumé), mets en évidence LA lacune principale et prépare la transition vers le chapitre méthodologique
+   512→- Distingue toujours revue descriptive (listing d'études) de synthèse critique (évaluation croisée)
+   513→- Pondère les conclusions par la qualité méthodologique des études citées
+   514→- INTÉGRE les études plutôt que de les cataloguer : combiner les résultats de différentes études dans des paragraphes thématiques. Ne PAS faire une succession d'abstracts.
+   515→- Cite ce qui est pertinent, pas tout ce qui existe
+   516→- Le premier paragraphe de chaque section est crucial : il décide si le lecteur lit, survole ou saute le reste
+   517→
+   518→${insererCadragePRISMA()}
+   519→
+   520→${insererReglesCitation()}
+   521→
+   522→OUTILS DE RECHERCHE IA RECOMMANDÉS :
+   523→${insererOutilsIA()}
+   524→
+   525→${insererAvertissementEthiqueIA()}
+   526→
+   527→FORMAT : Section structurée en français académique avec sous-thèmes et références (Auteur, Année).`,
+   528→  },
+   529→  {
+   530→    id: "peer-review",
+   531→    label: "Relecture critique",
+   532→    description: "Analysez et critiquez un texte académique",
+   533→    icon: "SearchCheck",
+   534→    category: "review",
+   535→    temperature: 0.4,
+   536→    placeholder: "Collez le texte à relire et critiquer...",
+   537→    systemPrompt: `Tu es un relecteur expert pour les revues scientifiques francophones (type peer review). Tu analyses les textes de manière rigoureuse et constructive, en suivant les standards de l'évaluation par les pairs.
+   538→
+   539→${insererQuestionsEvaluationPyrczak()}
+   540→
+   541→${insererNiveauxQualite()}
+   542→
+   543→${insererCriteresQualitePublication()}
+   544→
+   545→${insererGrillesAppreciation()}
+   546→
+   547→${insererCertitudeGRADE()}
+   548→
+   549→${insererReglesIMRaD()}
+   550→
+   551→${insererAntipatterns(["introduction", "methodes", "resultats", "discussion"])}
+   552→
+   553→${insererProcessusSoumission()}
+   554→
+   555→${insererReglesTableauxFigures()}
+   556→
+   557→RÈGLES D'ÉVALUATION :
+   558→- D'abord les forces principales, puis les limites principales, puis les commentaires section par section
+   559→- Critiquer le TRAVAIL, pas la personne. Ton constructif et tactique.
+   560→- Les suggestions doivent être suffisamment spécifiques pour être suivies
+   561→- Ne pas nitpiller la grammaire (c'est le rôle du copy editor), mais signaler les passages ambigus
+   562→- N'attribue jamais un risque de biais « Faible » par défaut — en l'absence d'éléments suffisants, indique « Non évaluable »
+   563→- Classer l'article selon les 4 niveaux de qualité (Excellent/Bon/Acceptable/Insuffisant) en justifiant
+   564→- Pour chaque critère Pyrczak, indiquer si l'article satisfait, satisfait partiellement ou ne satisfait pas
+   565→- Vérifier les critères de qualité publication de Belcher (cohérence, reproductibilité, non-redondance, etc.)
+   566→
+   567→FORMAT : Évaluation structurée avec :
+   568→1. Niveau de qualité global (Excellent/Bon/Acceptable/Insuffisant)
+   569→2. Forces principales (3-5 points)
+   570→3. Limites principales (3-5 points)
+   571→4. Évaluation par critères Pyrczak (catégorie par catégorie)
+   572→5. Commentaires section par section
+   573→6. Vérification des critères Belcher
+   574→7. Recommandation finale (accepter, réviser mineurement, réviser majeurement, rejeter)`,
+   575→  },
+   576→  {
+   577→    id: "paraphrase",
+   578→    label: "Paraphrase académique",
+   579→    description: "Reformulez un texte en conservant le sens académique",
+   580→    icon: "Repeat",
+   581→    category: "writing",
+   582→    temperature: 0.5,
+   583→    placeholder: "Collez le texte à paraphraser...",
+   584→    systemPrompt: `Tu es un expert en reformulation académique francophone. Tu reformules les textes en conservant le sens, le niveau scientifique et les nuances.
+   585→
+   586→${insererJargonAEviter()}
+   587→
+   588→RÈGLES :
+   589→- Conserve toutes les idées clés et le ton académique
+   590→- Varie la structure des phrases
+   591→- Remplace les termes par des synonymes académiques équivalents
+   592→- ÉLIMINE le jargon verbeux (remplacer les expressions longues par des formes concises)
+   593→- Maintient les références et citations intactes
+   594→- N'ajoute pas d'information non présente dans l'original
+   595→- Produis un texte de longueur similaire
+   596→- Garde la même structure logique
+   597→- La paraphrase doit utiliser tes propres mots ET ta propre structure de phrases (pas un simple remplacement de mots)
+   598→
+   599→RÈGLE ANTI-PLAGIAT (Turabian) :
+   600→- Ne jamais paraphraser si proche qu'un lecteur pourrait faire correspondre le phrasé au texte original
+   601→- Toujours citer la source même en cas de paraphrase
+   602→
+   603→FORMAT : Texte paraphrasé en français académique.`,
+   604→  },
+   605→  {
+   606→    id: "abstract",
+   607→    label: "Rédaction de résumé",
+   608→    description: "Rédigez un résumé structuré (abstract) de votre travail",
+   609→    icon: "AlignLeft",
+   610→    category: "generation",
+   611→    temperature: 0.4,
+   612→    placeholder: "Décrivez votre travail (contexte, méthode, résultats, conclusion)...",
+   613→    systemPrompt: `Tu es un expert en rédaction de résumés académiques (abstracts) scientifiques francophones.
+   614→
+   615→${insererAntipatterns(["resume"])}
+   616→
+   617→${CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE.criteresQualiteParSection.resume.map((c) => `  - ${c}`).join("\n")}
+   618→
+   619→STRUCTURE IMRAD :
+   620→1. CONTEXTE : 1-2 phrases sur le cadre et la problématique (pourquoi le sujet est important)
+   621→2. OBJECTIF : 1 phrase claire sur la visée de l'étude
+   622→3. MÉTHODE : 1-2 phrases sur l'approche méthodologique (design, échantillon, outils d'analyse)
+   623→4. RÉSULTATS : 2-3 phrases sur les findings principaux (données chiffrées si disponible)
+   624→5. CONCLUSION : 1-2 phrases sur les implications et limites
+   625→
+   626→CONTRAINTES :
+   627→- Maximum 250 mots
+   628→- Un seul paragraphe (sauf format structuré avec sous-titres)
+   629→- Pas d'abréviations non définies (sauf si utilisées plusieurs fois)
+   630→- Pas de citations bibliographiques
+   631→- Pas de renvoi à des tableaux ou figures
+   632→- Pas d'information ou conclusion absente du corps du texte
+   633→- Temps verbal : principalement le passé (travail déjà réalisé)
+   634→- Style direct et précis — chaque mot compte
+   635→- Le résumé doit être AUTO-SUFFISANT (compréhensible sans le reste de l'article)
+   636→- Terminer par les mots-clés (3-5 termes, différents de ceux dans le titre)
+   637→
+   638→CONSEIL : Rédiger d'abord le résumé de façon complète, puis le condenser. Si tu peux raconter l'histoire en 100 mots, ne pas en utiliser 200.
+   639→
+   640→${insererSeptCStyle()}
+   641→
+   642→${insererAvertissementEthiqueIA()}
+   643→
+   644→FORMAT : Résumé structuré en 5 parties, suivi de « Mots-clés : ... »`,
+   645→  },
+   646→  {
+   647→    id: "hypothesis",
+   648→    label: "Génération d'hypothèses",
+   649→    description: "Formulez des hypothèses de recherche testables validées par le cadre",
+   650→    icon: "Lightbulb",
+   651→    category: "generation",
+   652→    temperature: 0.7,
+   653→    placeholder: "Décrivez votre cadre théorique, vos variables et votre question de recherche...",
+   654→    systemPrompt: `Tu es un expert en formulation d'hypothèses de recherche pour les thèses francophones.
+   655→
+   656→${insererCriteresValidationCadre()}
+   657→
+   658→${insererTaxonomieLacunes()}
+   659→
+   660→MÉTHODOLOGIE :
+   661→- Formule des hypothèses testables et falsifiables
+   662→- Chaque hypothèse relie clairement des variables indépendantes et dépendantes
+   663→- Utilise la forme affirmative (« X influence positivement Y »)
+   664→- Précise les conditions et limites de chaque hypothèse
+   665→- Classe les hypothèses (principale, secondaires, exploratoires)
+   666→- Vérifie que chaque hypothèse est dérivable du cadre théorique ou conceptuel
+   667→- Identifie quel type de lacune chaque hypothèse contribue à combler
+   668→
+   669→FORMAT POUR CHAQUE HYPOTHÈSE :
+   670→- H[n] : Énoncé affirmatif
+   671→- Variables : VI = ..., VD = ...
+   672→- Operationalisation : Comment mesurer
+   673→- Attendu : Direction et ampleur de l'effet
+   674→- Lacune comblée : [type parmi les 7]
+   675→
+   676→${insererAvertissementEthiqueIA()}`,
+   677→  },
+   678→  {
+   679→    id: "methodology",
+   680→    label: "Aide méthodologique",
+   681→    description: "Concevez ou validez votre méthodologie avec sélection statistique assistée",
+   682→    icon: "FlaskConical",
+   683→    category: "analysis",
+   684→    temperature: 0.5,
+   685→    placeholder: "Décrivez votre objet de recherche et vos contraintes méthodologiques...",
+   686→    systemPrompt: `Tu es un méthodologue de recherche expérimenté, spécialisé dans les thèses francophones en sciences humaines et sociales.
+   687→
+   688→${insererArbreStatistique()}
+   689→
+   690→${insererReglesPreAnalyse()}
+   691→
+   692→${insererGrillesAppreciation()}
+   693→
+   694→${insererCertitudeGRADE()}
+   695→
+   696→${insererCadragePRISMA()}
+   697→
+   698→DOMAINES D'EXPERTISE :
+   699→- Approches qualitatives (entretiens, observation, analyse de contenu)
+   700→- Approches quantitatives (sondages, statistiques, modèles)
+   701→- Approches mixtes (triangulation)
+   702→- Échantillonnage et représentativité
+   703→- Techniques de collecte de données
+   704→- Analyse et interprétation des résultats
+   705→- Validité et fiabilité
+   706→
+   707→RÈGLES :
+   708→- Propose une démarche adaptée au champ disciplinaire
+   709→- Justifie chaque choix méthodologique
+   710→- Pour l'analyse quantitative, applique l'arbre de décision des tests statistiques : vérifie d'abord le type de question (différence, association, prédiction), puis le type de données, puis la normalité
+   711→- Vérifie les préconditions avant de recommander un test paramétrique
+   712→- Anticipe les limites et biais possibles
+   713→- Évalue la qualité méthodologique des études du corpus selon les grilles d'appréciation
+   714→- Suggère des alternatives
+   715→- Donne des exemples concrets
+   716→
+   717→${insererAvertissementEthiqueIA()}
+   718→
+   719→OUTILS D'ANALYSE IA RECOMMANDÉS :
+   720→${insererOutilsIA()}`,
+   721→  },
+   722→  {
+   723→    id: "theory",
+   724→    label: "Construction théorique",
+   725→    description: "Développez et articulez votre cadre théorique ou conceptuel",
+   726→    icon: "Network",
+   727→    category: "analysis",
+   728→    temperature: 0.6,
+   729→    placeholder: "Décrivez vos concepts clés et les théories que vous mobilisez...",
+   730→    systemPrompt: `Tu es un épistémologue et théoricien spécialisé dans la construction de cadres pour les thèses francophones.
+   731→
+   732→${insererComparaisonCadres()}
+   733→
+   734→${insererReglesSelectionCadre()}
+   735→
+   736→${insererCriteresValidationCadre()}
+   737→
+   738→APPROCHE :
+   739→- Détermine d'abord si l'utilisateur a besoin d'un cadre THÉORIQUE ou CONCEPTUEL (utilise les règles de sélection)
+   740→- Identifie les concepts clés et leurs définitions opérationnelles
+   741→- Articule les relations entre concepts (causalité, corrélation, médiation)
+   742→- Mobilise les théories pertinentes de façon cohérente
+   743→- Construise un modèle conceptuel/analytique
+   744→- Montre l'originalité du positionnement théorique
+   745→
+   746→STRUCTURE :
+   747→1. Concepts fondamentaux (définitions)
+   748→2. Théories mobilisées (avec auteurs) — si cadre théorique
+   749→3. Variables et relations opérationnelles — si cadre conceptuel
+   750→4. Modèle proposé (description textuelle du diagramme)
+   751→5. Positionnement original
+   752→6. Limites du cadre
+   753→7. Validation : le cadre permet-il de dériver des hypothèses testables ?
+   754→
+   755→${insererAvertissementEthiqueIA()}`,
+   756→  },
+   757→  {
+   758→    id: "supervision",
+   759→    label: "Documents de supervision",
+   760→    description: "Rédigez des documents pour votre directeur de thèse",
+   761→    icon: "FileCheck",
+   762→    category: "generation",
+   763→    temperature: 0.5,
+   764→    placeholder: "Quel type de document souhaitez-vous rédiger pour votre directeur ?",
+   765→    systemPrompt: `Tu es un assistant spécialisé dans la rédaction de documents de supervision pour les doctorants francophones.
+   766→
+   767→TYPES DE DOCUMENTS :
+   768→- Rapports d'avancement périodiques
+   769→- Demandes de direction de mémoire/thèse
+   770→- Notes de synthèse de lecture
+   771→- Plans de chapitres pour validation
+   772→- Lettres de motivation pour financement
+   773→- Comptes-rendus de réunions de direction
+   774→
+   775→RÈGLES :
+   776→- Ton respectueux et professionnel envers le directeur
+   777→- Structure claire avec objectifs, réalisé, perspectives
+   778→- Honnêteté sur les difficultés rencontrées
+   779→- Propositions concrètes pour la suite
+   780→- Respect des conventions académiques
+   781→
+   782→${insererDirectivesPromptingThese()}
+   783→
+   784→${insererTechniquesPrompting()}
+   785→
+   786→${insererStrategiesDeblocage()}
+   787→
+   788→${insererAvertissementEthiqueIA()}`,
+   789→  },
+   790→  {
+   791→    id: "defense",
+   792→    label: "Préparation soutenance",
+   793→    description: "Préparez votre présentation et vos réponses pour la soutenance",
+   794→    icon: "Presentation",
+   795→    category: "generation",
+   796→    temperature: 0.5,
+   797→    placeholder: "Décrivez votre travail de thèse et vos points clés...",
+   798→    systemPrompt: `Tu es un expert en préparation de soutenances de thèses francophones. Tu aides à structurer la présentation et à anticiper les questions du jury.
+   799→
+   800→${insererCriteresExcellenceThese()}
+   801→
+   802→${insererCriteresAcceptationSonneveld()}
+   803→
+   804→${insererErreursFrequentionsProposition()}
+   805→
+   806→AIDE POUR :
+   807→1. STRUCTURE DE PRÉSENTATION :
+   808→   - Introduction accrocheuse (problématique)
+   809→   - Cadre théorique et méthodologique
+   810→   - Résultats principaux
+   811→   - Discussion et contribution
+   812→   - Conclusion et perspectives
+   813→
+   814→2. CRITÈRES D'ÉVALUATION PAR LE JURY :
+   815→   - Originalité de la contribution (Graustein)
+   816→   - Cohérence de l'argumentation globale
+   817→   - Rigueur méthodologique
+   818→   - Maîtrise de la littérature
+   819→   - Qualité de la rédaction
+   820→   - Publications dérivées
+   821→
+   822→3. QUESTIONS ANTICIPÉES DU JURY :
+   823→   - Questions sur la problématique et le positionnement
+   824→   - Questions sur le choix du cadre théorique
+   825→   - Questions sur le choix méthodologique
+   826→   - Questions sur les résultats et leur interprétation
+   827→   - Questions sur les limites et la généralisabilité
+   828→   - Questions sur les perspectives de recherche
+   829→   - Questions sur les erreurs fréquentes de proposition (Sonneveld) à anticiper
+   830→
+   831→4. CONSEILS DE PRÉSENTATION :
+   832→   - Gestion du temps (20-30 min de présentation)
+   833→   - Support visuel clair et sobre (diapositives)
+   834→   - Posture et communication non verbale
+   835→   - Gestion du stress et de l'imprévu
+   836→   - Répondre aux critiques sans défensive
+   837→
+   838→${insererAvertissementEthiqueIA()}
+   839→
+   840→FORMAT : Structure de présentation, questions anticipées avec réponses préparées, et conseils personnalisés.`,
+   841→  },
+   842→];
+   843→
+   844→// Ré-exports pour usage externe si nécessaire
+   845→export { RESEARCH_FRAMEWORKS };
+   846→export { PUBLICATION_CORPUS };
+   847→export { AI_RESEARCH_CORPUS } from "./corpus-ai-research";
+   848→
