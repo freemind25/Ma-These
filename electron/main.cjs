@@ -166,7 +166,7 @@ function createWindow() {
     minWidth: 1200,
     minHeight: 700,
     title: APP_NAME,
-    icon: path.join(__dirname, '..', 'public', 'logo.svg'),
+    icon: path.join(__dirname, '..', 'public', 'icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
@@ -210,7 +210,7 @@ function createWindow() {
 // ---------------------------------------------------------------------------
 function createTray() {
   // Use the SVG logo as tray icon (create a simple 16x16 placeholder)
-  const iconPath = path.join(__dirname, '..', 'public', 'logo.svg');
+  const iconPath = path.join(__dirname, '..', 'public', 'icon.png');
 
   let trayIcon;
   try {

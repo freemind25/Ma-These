@@ -1,12 +1,12 @@
 {
   "name": "thesisframe",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": false,
   "description": "ThesisFrame — Assistant intelligent pour la rédaction de thèses de doctorat",
   "scripts": {
     "dev": "next dev -p 3000 2>&1 | tee dev.log",
-    "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
-    "start": "NODE_ENV=production bun .next/standalone/server.js 2>&1 | tee server.log",
+    "build": "next build && node -e \"const fs=require('fs'),p=require('path');['static','public'].forEach(d=>{const s=p.join('.next',d),t=d==='static'?p.join('.next/standalone/.next','static'):p.join('.next/standalone','public');fs.cpSync(s,t,{recursive:true,force:true})})\"",
+    "start": "NODE_ENV=production node .next/standalone/server.js",
     "lint": "eslint .",
     "db:push": "prisma db push --accept-data-loss",
     "db:generate": "prisma generate",
@@ -17,12 +17,12 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "electron:dev": "concurrently \"next dev\" \"wait-on http://localhost:3000 && electron .\"",
-    "electron:build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && electron-builder --win",
-    "electron:build:all": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && electron-builder --win --mac --linux"
+    "electron:build": "npm run build && electron-builder --win --publish never",
+    "electron:build:all": "npm run build && electron-builder --win --mac --linux --publish never"
   },
   "main": "electron/main.cjs",
   "author": "ThesisFrame",
-  "homepage": "https://github.com/freemind25/MaTh-se",
+  "homepage": "https://github.com/freemind25/Ma-These",
   "build": {
     "appId": "com.thesisframe.app",
     "productName": "ThesisFrame",
@@ -48,7 +48,7 @@
       }
     ],
     "extraMetadata": {
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "win": {
       "target": [
@@ -60,23 +60,51 @@
           ]
         }
       ],
-      "icon": "public/logo.svg",
+      "icon": "public/icon.png",
       "artifactName": "${productName}-${version}-setup.${ext}"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "installerIcon": "public/logo.svg",
-      "uninstallerIcon": "public/logo.svg",
-      "installerHeaderIcon": "public/logo.svg",
+      "installerIcon": "public/icon.png",
+      "uninstallerIcon": "public/icon.png",
+      "installerHeaderIcon": "public/icon.png",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "ThesisFrame"
     },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.productivity",
+      "icon": "public/icon.png",
+      "artifactName": "${productName}-${version}-mac.${ext}"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "public/icon.png",
+      "category": "Office",
+      "artifactName": "${productName}-${version}-linux.${ext}"
+    },
     "publish": {
       "provider": "github",
       "owner": "freemind25",
-      "repo": "MaTh-se"
+      "repo": "Ma-These"
     }
   },
   "dependencies": {
@@ -149,7 +177,7 @@
     "sharp": "^0.34.3",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-animate": "^1.3.7",
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
     "z-ai-web-dev-sdk": "^0.0.18",

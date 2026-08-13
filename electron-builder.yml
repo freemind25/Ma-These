@@ -1,7 +1,7 @@
 # ============================================================================
 # ThesisFrame — electron-builder Configuration
-# This file contains the electron-builder configuration for packaging
-# the Next.js standalone app into a desktop application.
+# Packages the Next.js standalone app into desktop installers
+# Windows (.exe NSIS), macOS (.dmg), Linux (.AppImage)
 # ============================================================================
 
 appId: com.thesisframe.app
@@ -11,7 +11,6 @@ copyright: Copyright © 2025 ThesisFrame
 directories:
   output: release
 
-# Files to include in the packaged app
 files:
   - .next/standalone/**/*
   - .next/static/**/*
@@ -23,36 +22,32 @@ files:
   - node_modules/prisma/**/*
   - prisma/schema.prisma
 
-# Extra resources to copy alongside the app
 extraResources:
   - from: db/custom.db
     to: db/custom.db
 
 extraMetadata:
-  version: "1.0.0"
+  version: "1.1.0"
 
-# Windows-specific configuration
 win:
   target:
     - target: nsis
       arch:
         - x64
         - arm64
-  icon: public/logo.svg
+  icon: public/icon.png
   artifactName: ${productName}-${version}-setup.${ext}
 
-# NSIS installer configuration
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
-  installerIcon: public/logo.svg
-  uninstallerIcon: public/logo.svg
-  installerHeaderIcon: public/logo.svg
+  installerIcon: public/icon.png
+  uninstallerIcon: public/icon.png
+  installerHeaderIcon: public/icon.png
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: ThesisFrame
 
-# macOS-specific configuration
 mac:
   target:
     - target: dmg
@@ -60,22 +55,20 @@ mac:
         - x64
         - arm64
   category: public.app-category.productivity
-  icon: public/logo.svg
+  icon: public/icon.png
   artifactName: ${productName}-${version}-mac.${ext}
 
-# Linux-specific configuration
 linux:
   target:
     - target: AppImage
       arch:
         - x64
         - arm64
-  icon: public/logo.svg
+  icon: public/icon.png
   category: Office
   artifactName: ${productName}-${version}-linux.${ext}
 
-# Auto-update configuration via GitHub Releases
 publish:
   provider: github
   owner: freemind25
-  repo: MaTh-se
+  repo: Ma-These
