@@ -315,3 +315,110 @@ export const AI_RESEARCH_CORPUS = {
   strategiesBlocages: STRATEGIES_SURMONTER_BLOCAGES,
   reglesSupervision: REGLES_RELATION_SUPERVISION,
 } as const;
+
+// ─── Module 9 : 27 Outils IA pour la recherche (Priyo Das) + workflow 8 étapes ──────────────────────────────
+
+export interface OutilRecherche {
+  nom: string;
+  categorie: string;
+  usage: string;
+  quandUtiliser: string;
+}
+
+export interface EtapeWorkflow {
+  etape: number;
+  titre: string;
+  description: string;
+  outilsRecommandes: string[];
+}
+
+export interface CategorieOutils {
+  categorie: string;
+  description: string;
+  outils: OutilRecherche[];
+}
+
+export const OUTILS_IA_RECHERCHE: CategorieOutils[] = [
+  {
+    categorie: "recherche_litterature",
+    description: "Recherche et découverte de littérature académique",
+    outils: [
+      { nom: "Semantic Scholar", categorie: "recherche_litterature", usage: "Recherche sémantique dans une vaste base de données académiques avec résumés automatiques", quandUtiliser: "Quand on souhaite identifier rapidement des articles pertinents par mot-clé ou par similarité sémantique" },
+      { nom: "Search Smart", categorie: "recherche_litterature", usage: "Comparaison des bases de données académiques pour identifier la plus adaptée à un sujet donné", quandUtiliser: "Quand on débute un sujet et qu'on ne sait pas quelle base de données interroger en priorité" },
+      { nom: "Consensus", categorie: "recherche_litterature", usage: "Synthèse de réponses fondées sur la littérature académique à une question de recherche", quandUtiliser: "Quand on cherche une réponse rapide étayée par des preuves issues d'articles évalués par les pairs" },
+      { nom: "Scinapse", categorie: "recherche_litterature", usage: "Recherche et filtrage d'articles académiques avec classement par pertinence", quandUtiliser: "Quand on a besoin de filtrer et classer les résultats d'une recherche bibliographique" },
+      { nom: "R Discovery", categorie: "recherche_litterature", usage: "Découverte de littérature pertinente avec recommandations personnalisées", quandUtiliser: "Quand on explore un domaine et souhaite des suggestions contextualisées" },
+    ],
+  },
+  {
+    categorie: "cartographie_litterature",
+    description: "Cartographie visuelle des relations entre articles et auteurs",
+    outils: [
+      { nom: "ResearchRabbit", categorie: "cartographie_litterature", usage: "Découverte d'articles connexes et d'auteurs émergents via des connexions visuelles", quandUtiliser: "Quand on veut étendre sa revue de littérature en suivant les réseaux de citations et de co-auteurs" },
+      { nom: "Inciteful", categorie: "cartographie_litterature", usage: "Exploration des relations entre articles académiques et visualisation de la littérature connectée", quandUtiliser: "Quand on cherche à identifier les articles les plus influents et leurs liens structurels" },
+      { nom: "Open Knowledge Maps", categorie: "cartographie_litterature", usage: "Création de cartes visuelles de la littérature scientifique autour d'un sujet", quandUtiliser: "Quand on souhaite une vue d'ensemble topographique d'un champ de recherche" },
+      { nom: "VOSviewer", categorie: "cartographie_litterature", usage: "Création et visualisation de réseaux bibliométriques (mots-clés, citations, co-auteurship)", quandUtiliser: "Quand on réalise une analyse bibliométrique ou scientométrique complète" },
+      { nom: "Connected Papers", categorie: "cartographie_litterature", usage: "Construction de graphes visuels d'articles connexes à partir d'un article de départ", quandUtiliser: "Quand on a trouvé un article clé et veut identifier visuellement ses précurseurs et successeurs" },
+    ],
+  },
+  {
+    categorie: "prise_de_notes",
+    description: "Organisation des notes et des findings de recherche",
+    outils: [
+      { nom: "NotebookLM", categorie: "prise_de_notes", usage: "Structuration thématique des findings de recherche avec organisation automatique", quandUtiliser: "Quand on a accumulé de nombreuses notes et souhaite les organiser par thématiques" },
+      { nom: "Notion", categorie: "prise_de_notes", usage: "Base de données personnalisable pour organiser la recherche, les références et les tâches", quandUtiliser: "Quand on a besoin d'un système flexible combinant notes, suivi de tâches et gestion de projet" },
+      { nom: "Glasp", categorie: "prise_de_notes", usage: "Surlignage et organisation d'informations depuis pages web, PDFs, YouTube et autres sources", quandUtiliser: "Quand on lit en ligne et souhaite capturer des passages clés avec annotation et catégorisation" },
+    ],
+  },
+  {
+    categorie: "analyse_donnees",
+    description: "Analyse statistique et traitement des données de recherche",
+    outils: [
+      { nom: "JASP", categorie: "analyse_donnees", usage: "Analyse statistique via interface conviviale, incluant méthodes fréquentistes et bayésiennes", quandUtiliser: "Quand on réalise des analyses statistiques sans expertise approfondie en programmation R" },
+      { nom: "Simple ML for Sheets", categorie: "analyse_donnees", usage: "Machine learning directement dans Google Sheets (prédiction, valeurs manquantes, détection d'anomalies, prévisions)", quandUtiliser: "Quand on dispose de données tabulaires et souhaite appliquer des modèles ML sans coder" },
+      { nom: "R (R Project)", categorie: "analyse_donnees", usage: "Calcul statistique, analyse de données, visualisation et recherche quantitative avancée", quandUtiliser: "Quand on a besoin d'analyses statistiques avancées et personnalisées nécessitant un langage de programmation" },
+    ],
+  },
+  {
+    categorie: "figures_diagrammes",
+    description: "Création de figures, diagrammes et visuels de recherche",
+    outils: [
+      { nom: "Draw.io / diagrams.net", categorie: "figures_diagrammes", usage: "Création de diagrammes de flux, cadres de recherche et structures visuelles", quandUtiliser: "Quand on construit un schéma méthodologique, un diagramme de processus ou un cadre conceptuel" },
+      { nom: "Inkscape", categorie: "figures_diagrammes", usage: "Éditeur vectoriel libre pour la création et l'édition de figures de recherche", quandUtiliser: "Quand on a besoin de figures haute qualité pour publication (format SVG modifiable)" },
+      { nom: "Meta AI", categorie: "figures_diagrammes", usage: "Génération et édition d'images à partir de descriptions textuelles", quandUtiliser: "Quand on souhaite créer des visuels exploratoires ou des concepts pour illustration" },
+      { nom: "Bing Image Creator", categorie: "figures_diagrammes", usage: "Génération d'images à partir de descriptions textuelles", quandUtiliser: "Quand on a besoin d'illustrations conceptuelles pour des présentations ou des supports visuels" },
+    ],
+  },
+  {
+    categorie: "redaction_proofreading",
+    description: "Édition, relecture et amélioration de la rédaction scientifique",
+    outils: [
+      { nom: "ChatGPT", categorie: "redaction_proofreading", usage: "Édition, reformulation, relecture, explication, restructuration et amélioration de la rédaction scientifique", quandUtiliser: "Quand on a besoin d'aide pour la formulation, la reformulation ou le feedback stylistique" },
+      { nom: "Hemingway Editor", categorie: "redaction_proofreading", usage: "Amélioration de la lisibilité, identification des phrases complexes, rendre l'écriture plus concise", quandUtiliser: "Quand on veut simplifier un texte académique trop dense ou vérifier sa lisibilité" },
+      { nom: "Paraphraser.io", categorie: "redaction_proofreading", usage: "Reformulation de phrases et paragraphes tout en conservant le sens", quandUtiliser: "Quand on doit reformuler un passage sans en modifier le sens pour éviter le plagiat" },
+    ],
+  },
+  {
+    categorie: "gestion_references",
+    description: "Collecte, organisation et gestion des références bibliographiques",
+    outils: [
+      { nom: "Zotero", categorie: "gestion_references", usage: "Collecte, organisation, annotation, citation et gestion des articles de recherche", quandUtiliser: "Quand on construit une bibliothèque de références avec import automatique depuis bases de données" },
+      { nom: "Mendeley", categorie: "gestion_references", usage: "Gestion des références, organisation des articles, génération de citations et bibliographies", quandUtiliser: "Quand on combine gestion de références et lecture annotée de PDFs dans un même outil" },
+      { nom: "JabRef", categorie: "gestion_references", usage: "Organisation d'informations bibliographiques, particulièrement adapté aux workflows BibTeX", quandUtiliser: "Quand on travaille avec LaTeX et a besoin d'un gestionnaire natif BibTeX" },
+    ],
+  },
+];
+
+export const WORKFLOW_RECHERCHE_IA: EtapeWorkflow[] = [
+  { etape: 1, titre: "Trouver les articles", description: "Interroger les bases de données académiques pour identifier la littérature pertinente. En choisir 2-3 outils maximum.", outilsRecommandes: ["Semantic Scholar", "Search Smart", "Consensus"] },
+  { etape: 2, titre: "Étendre la littérature", description: "Utiliser la cartographie visuelle pour découvrir les articles connexes et les développements récents.", outilsRecommandes: ["ResearchRabbit", "Connected Papers"] },
+  { etape: 3, titre: "Cartographier le champ", description: "Construire une vue d'ensemble topographique pour identifier clusters thématiques et auteurs centraux.", outilsRecommandes: ["VOSviewer", "Open Knowledge Maps"] },
+  { etape: 4, titre: "Lire et extraire", description: "Capturer les passages et idées clés, organiser par thématique pour la synthèse.", outilsRecommandes: ["Glasp", "NotebookLM"] },
+  { etape: 5, titre: "Analyser les données", description: "Traiter et analyser les données selon la méthodologie choisie.", outilsRecommandes: ["JASP", "R", "Simple ML for Sheets"] },
+  { etape: 6, titre: "Créer les figures", description: "Concevoir diagrammes méthodologiques et figures de résultats. Formats vectoriels privilégiés.", outilsRecommandes: ["Draw.io / diagrams.net", "Inkscape"] },
+  { etape: 7, titre: "Améliorer la rédaction", description: "Revoir style, clarté, concision. La rédaction reste la responsabilité du doctorant.", outilsRecommandes: ["ChatGPT", "Hemingway Editor"] },
+  { etape: 8, titre: "Gérer les références", description: "Organiser les références, générer la bibliographie, vérifier la cohérence des citations.", outilsRecommandes: ["Zotero", "Mendeley", "JabRef"] },
+];
+
+export const REGLE_BON_USAGE_OUTILS: string =
+  "Ne pas utiliser tous les outils simultanément — construire un workflow séquentiel avec 2-3 outils par étape maximum.";

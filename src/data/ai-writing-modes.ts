@@ -8,6 +8,8 @@
 // Enrichis avec le corpus Recherche assistée par l'IA (Zhou, Bagheri, Johannesson, Belleville & Jackson)
 // ═════════════════════════════════════════════════════════════════════════════════════════════════════════
 
+import { OUTILS_IA_RECHERCHE, WORKFLOW_RECHERCHE_IA, REGLE_BON_USAGE_OUTILS } from "./corpus-ai-research";
+
 import {
   RESEARCH_FRAMEWORKS,
   TYPES_LACUNES,
