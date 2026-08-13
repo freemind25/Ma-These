@@ -5,7 +5,7 @@
   "description": "ThesisFrame — Assistant intelligent pour la rédaction de thèses de doctorat",
   "scripts": {
     "dev": "next dev -p 3000 2>&1 | tee dev.log",
-    "build": "next build && node -e \"const fs=require('fs'),p=require('path');['static','public'].forEach(d=>{const s=p.join('.next',d),t=d==='static'?p.join('.next/standalone/.next','static'):p.join('.next/standalone','public');fs.cpSync(s,t,{recursive:true,force:true})})\"",
+    "build": "next build && node scripts/post-build.js",
     "start": "NODE_ENV=production node .next/standalone/server.js",
     "lint": "eslint .",
     "db:push": "prisma db push --accept-data-loss",
