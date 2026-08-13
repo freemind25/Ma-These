@@ -1169,3 +1169,28 @@ Stage Summary:
 - Total: ~935 lines of new structured knowledge added
 - All changes purely additive — no existing modules modified
 - Build clean: 0 TypeScript errors, 0 lint errors
+
+---
+Task ID: electron-release-ci-cd
+Agent: main
+Task: Configurer GitHub Actions CI/CD pour le packaging Electron desktop
+
+Work Log:
+- Created .github/workflows/electron-release.yml (260 lines)
+  - 5 jobs: Build Next.js → Windows (NSIS x64+arm64) → macOS (DMG x64+arm64) → Linux (AppImage x64) → Create Release
+  - Triggered on tag push (v*) or manual dispatch
+  - Automatic upload of .exe, .dmg, .AppImage to GitHub Releases
+- Fixed .gitignore: /*.yml pattern blocking GitHub workflow files
+- Fixed package.json: MaTh-se → Ma-These, logo.svg → icon.png, version 1.0.0 → 1.1.0
+- Fixed electron-builder.yml: same repo/icon corrections
+- Created public/icon.png (256x256 PNG for Electron)
+- Created scripts/post-build.js for cross-platform static asset copying
+- Fixed tailwindcss-animate version ^1.3.7 → ^1.0.7
+- Removed db:push step from CI (replaced with touch db/custom.db)
+- Pushed tag v1.1.0 to trigger automatic build
+
+Stage Summary:
+- GitHub Actions workflow registered and running
+- Next.js build step passes successfully on CI
+- Electron builds (Win/Mac/Linux) running in parallel on GitHub runners
+- Release v1.1.0 will contain downloadable installers once builds complete
