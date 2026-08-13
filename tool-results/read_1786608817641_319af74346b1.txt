@@ -1,0 +1,402 @@
+   450→   450→�
+   451→   451→�
+   452→   452→�
+   453→   453→
+   454→   454→have a knowledge and understanding of the context within which they are
+   455→   455→supervising doctoral candidates, including recent changes accelerated by the
+   456→   456→Covid-19 pandemic;
+   457→   457→be able to recruit, select and support candidates from diverse populations and
+   458→   458→assist them to be successful and complete on time;
+   459→   459→establish positive and respectful working relationships with them and, where
+   460→   460→appropriate, with co-supervisors;
+   461→   461→support candidates’ research projects;
+   462→   462→assist in their personal development, including their wellbeing and mental health;
+   463→   463→support their professional development, including networking, presentations,
+   464→   464→publications and the acquisition of teaching skills;
+   465→   465→support their career development, including preparation for employment
+   466→   466→inside and outside academia;
+   467→   467→in undertaking the above, to be aware of the beneﬁts of and challenges facing
+   468→   468→non-traditional domestic candidates, international candidates, and those
+   469→   469→studying part-time or off-campus;
+   470→   470→assist candidates through the processes of completion of their thesis or dis­
+   471→   471→sertation or publications or artefacts and ﬁnal examination, including exam­
+   472→   472→ination online; and
+   473→   473→be able to evaluate and enhance their practice and, where appropriate, dis­
+   474→   474→seminate good practice.
+   475→   475→
+   476→   476→In accordance with this model, we have divided the book into seven parts.
+   477→   477→Part I deals with the various contexts of supervision divided into the overall,
+   478→   478→institutional, disciplinary, and programme contexts respectively.
+   479→   479→Part II is concerned with preparing the ground in terms of recruiting and
+   480→   480→selecting candidates, forming working relationships with them, and managing
+   481→   481→relationships with co-supervisors.
+   482→   482→Part III is devoted to supporting the research project, including initiating candidates
+   483→   483→into research, assisting them to get their projects up and running and to overcome any
+   484→   484→initial academic problems, encouraging them to write early and often and giving effective
+   485→   485→feedback, and helping them to keep projects on track while monitoring their progress.
+   486→   486→Part IV is concerned with supporting candidates in a range of ways including
+   487→   487→personal, academic and career development
+   488→   488→Part V is concerned with recognising and responding to domestic and interna­
+   489→   489→tional diversity among the candidate population and diversity in modes of study in
+   490→   490→terms of candidates studying part-time and/or off-campus.
+   491→   491→Part VI is devoted to the ﬁnal stages of the doctorate including drafting and
+   492→   492→submission and examination.
+   493→   493→Part VII is concerned with how doctoral supervisors might go about evaluating
+   494→   494→their practice, and disseminating it, as well as gaining recognition and reward for
+   495→   495→good practice.
+   496→   496→
+   497→   497→4
+   498→   498→
+   499→   499→Introduction
+   500→   500→
+   501→   501→In addition to describing the content of the book, it is also appropriate to
+   502→   502→comment upon the approach adopted in writing it. In order to illustrate effective
+   503→   503→practice, we have included numerous examples drawn from a wide range of sour­
+   504→   504→ces. To enable readers to reﬂect, we have supplied prompts at key points in the
+   505→   505→narrative to encourage readers to interrogate their own practice. Our hope is that,
+   506→   506→through this process, readers will be able to personally engage with their practice
+   507→   507→and, where appropriate, enhance it.
+   508→   508→Finally, it may be noted that all of the links to online materials in the text were
+   509→   509→accessed on 5 December 2023.
+   510→   510→
+   511→   511→Part I
+   512→   512→
+   513→   513→The context
+   514→   514→
+   515→   515→Chapter 1
+   516→   516→
+   517→   517→The overall context
+   518→   518→
+   519→   519→Introduction
+   520→   520→Supervisors tend to be immersed in their busy academic and/or professional lives,
+   521→   521→not to mention their personal ones, and seldom have the time to maintain an
+   522→   522→overview of ongoing developments and research in doctoral education. As a con­
+   523→   523→sequence, many are experiencing new demands without necessarily understanding
+   524→   524→the wider context within which they arise. The purpose of the present chapter is to
+   525→   525→try to set that wider context. It is based on the work of Taylor (2012, 2023) and
+   526→   526→begins with a brief summary of the historical origins and evolution of doctoral
+   527→   527→education from its modern origins through to the 1980s and then looks at sub­
+   528→   528→sequent developments that have transformed the ﬁeld and the context of
+   529→   529→supervision.
+   530→   530→
+   531→   531→The origins and evolution of doctoral education
+   532→   532→Doctorates have their origins in the mediaeval universities when they were used
+   533→   533→primarily as a means of licensing teachers in the professions of medicine, law, and
+   534→   534→theology (Bernstein et al. 2014, Amaral and Carvalho 2020). This paradigm
+   535→   535→remained dominant until, in the early 19th century, a number of eminent
+   536→   536→Enlightenment thinkers in Prussia began to advocate a new kind of university, one
+   537→   537→in which the core mission would be the creation of original knowledge and
+   538→   538→understanding and in which research would be pre-eminent. These advocates
+   539→   539→included Friedrich Schliermacher, Johann Fichte, and Wilhelm von Humboldt
+   540→   540→(see Watson 2010).
+   541→   541→It was von Humboldt who was able to implement this new model when, in
+   542→   542→1809, he became Under-Secretary in the Ministry of the Interior and responsible
+   543→   543→for education in Prussia. Although he was in ofﬁce for a mere 16 months, he
+   544→   544→initiated reforms designed, as Nybom (2003: 152) has put it, ‘to create an entirely
+   545→   545→new type of academic institutional order and a new type of academic’.
+   546→   546→With regard to the former, he took the lead in reorganising the University of
+   547→   547→Berlin which in 1810 became the world’s ﬁrst explicitly research-led university.
+   548→   548→With regard to the latter, the new type of academic was to be engaged both in
+   549→   549→DOI: 10.4324/9781003432159-3
+   550→   550→
+   551→   551→8
+   552→   552→
+   553→   553→The context
+   554→   554→
+   555→   555→extending knowledge and understanding (research) and transmitting it (educa­
+   556→   556→tion/teaching). Under the new university’s statutes training for this role was pro­
+   557→   557→vided by completing a new kind of doctorate to be awarded to a researcher who
+   558→   558→had made a signiﬁcant and original contribution to knowledge and understanding
+   559→   559→in the sciences (see Clark 2006). To signify its academic as opposed to professional
+   560→   560→status, this doctorate was awarded in ‘Die mutter aller Wissenschaften’ (the
+   561→   561→mother of all sciences), namely philosophy.
+   562→   562→The DPhil., or as it subsequently became, the PhD, was intended for a handful
+   563→   563→of the brightest and the best who would become the next generation of aca­
+   564→   564→demics; it was based on a ‘master-apprentice’ model of delivery; supervision was,
+   565→   565→as Park (2005: 15) has put it, viewed as a ‘secret garden or an activity that takes
+   566→   566→place behind closed doors between consenting adults’; candidates had to complete
+   567→   567→a research project, write it up in the form of a thesis, and defend it at an oral
+   568→   568→examination; and because it involved the creation of new knowledge, completion
+   569→   569→took as long as it took (Archbald 2011).
+   570→   570→What subsequently became known as the Humboldtian model of the doctorate
+   571→   571→(see Ash 2006) was copied during the 19th century in a few other countries,
+   572→   572→including France and the Netherlands (see Bogle 2017) and Russia (see Smo­
+   573→   573→lentseva 2007). But if elsewhere the universities of the Old World paid little atten­
+   574→   574→tion to the new degree, it was embraced by those of the New World, the United
+   575→   575→States. There, the ﬁrst doctorate was awarded by Yale in 1861, and the precedent
+   576→   576→was quickly followed by Harvard, Michigan, and Pennsylvania. The Humboldtian
+   577→   577→model was also copied in Japan, where the ﬁrst doctoral programme was established
+   578→   578→in 1887 at the founding of what is now the University of Tokyo (Yamamoto 2020).
+   579→   579→The next extension of the doctorate was during the First World War when it
+   580→   580→became apparent that Germany’s war effort had beneﬁtted signiﬁcantly from the
+   581→   581→strength of the country’s scientiﬁc base. For this reason, as well as concerns about
+   582→   582→candidates seeking doctoral studies elsewhere, the wartime coalition in the UK
+   583→   583→pressed universities to introduce the degree. The ﬁrst was awarded by Oxford in
+   584→   584→1920 and by 1921 the doctorate had been adopted by all of the UK universities.
+   585→   585→(Simpson 1983). In the mid-1920s it was introduced in Ireland (Share 2016) and
+   586→   586→South Africa (Herman 2015). At the end of that decade, Mexico became the ﬁrst
+   587→   587→Latin American country to adopt the degree (see Malo 2007) and in the 1930s
+   588→   588→the ﬁrst doctorates were awarded in Brazil (see Ribeiro 2007). In New Zealand,
+   589→   589→following the initial implementation of the doctorate in the 1920s, it was perma­
+   590→   590→nently reinstated in 1944. After the Second World War, Australia adopted the new
+   591→   591→degree and the ﬁrst doctorate was awarded in 1948 (Dobson 2012).
+   592→   592→By the late 1940s, the PhD had spread throughout the Anglo-American world,
+   593→   593→but it was still resisted in universities across much of Western Europe, which clung
+   594→   594→on to their historical professional licentiates. However, the 1950s and 1960s saw
+   595→   595→research rise to the top of the political agenda as a key to both economic growth
+   596→   596→and defence capability, and the need to train researchers was reﬂected in a rapid
+   597→   597→growth of PhD programmes in Western European countries, with the ﬁnal adop­
+   598→   598→ters being Italy (1988) and Denmark (1989).
+   599→   599→
+   600→   600→The overall context
+   601→   601→
+   602→   602→9
+   603→   603→
+   604→   604→By the late 1980s, the PhD had conquered Western Europe, but not Eastern
+   605→   605→Europe. In most of what was then the ‘Soviet bloc’, there were different arrange­
+   606→   606→ments based on the USSR model of a two-step doctorate which could be taken inside
+   607→   607→or outside the universities, for example in the Academies of Sciences, and in either
+   608→   608→case was subject to state approval (see Connelly 2000). However, the withdrawal of
+   609→   609→the Soviet Union after the ‘velvet revolutions’ at the end of the 1980s and start of the
+   610→   610→1990s was followed in many, although not all, of the newly-liberated countries by a
+   611→   611→re-organisation of graduate education and the establishment or re-establishment of
+   612→   612→the PhD in the universities (see Smolentseva, Huisman, and Froumin 2018, Yekibay
+   613→   613→et al. 2022).
+   614→   614→Further adopters of the doctorate in the third quarter of the 20th century were
+   615→   615→in Asia. In China, the ﬁrst formal programme began in 1978 with 12 doctoral
+   616→   616→candidates; within 20 years there were over 50,000 (see Bao, Kehm, and Ma
+   617→   617→2016, Huang 2017). In the 1980s and 1990s doctoral programmes were also
+   618→   618→established or expanded in many other Asian countries, including Bangladesh,
+   619→   619→India, Malaysia, Pakistan, Thailand, and Singapore (UNESCO 2014, Zhaung,
+   620→   620→Liu, and Ding 2022).
+   621→   621→Therefore, by the 1990s, the PhD had become a qualiﬁcation delivered over a
+   622→   622→large proportion of the globe. In its essentials, it was recognisable as the degree which
+   623→   623→had been introduced at the University of Berlin just under two centuries earlier.
+   624→   624→
+   625→   625→Developments in the doctorate in the late 20th and 21st centuries
+   626→   626→However, over the last three decades or so, as Hammond et al. (2010) have sug­
+   627→   627→gested, the doctorate has been transformed by four major clusters of develop­
+   628→   628→ments, namely formalisation, the growth and diversiﬁcation of the candidate
+   629→   629→population, the diversiﬁcation of modes of study, and the diversiﬁcation of pur­
+   630→   630→poses. Each of these can be disaggregated into a number of sub-headings.
+   631→   631→Formalisation
+   632→   632→Historically, doctoral education was largely left to supervisors and candidates with­
+   633→   633→out external intervention. But it has now been formalised through the processes of
+   634→   634→commodiﬁcation, McDonaldisation, regulation, collectivisation, and structuration.
+   635→   635→Commodiﬁcation
+   636→   636→As Taylor (2012: 122) notes: ‘The traditional model of the relationship between
+   637→   637→students and supervisors was that of master and apprentice whereby the latter
+   638→   638→learned by emulating the former.’ But, in the same way as undergraduate and
+   639→   639→taught postgraduate education has been fashioned by neo-liberal government
+   640→   640→policies into a ‘provider-consumer’ framework, so has doctoral education with
+   641→   641→candidates being encouraged to expect their supervisors to offer a service in
+   642→   642→supporting their research projects (see for example Denicolo, Duke, and
+   643→   643→
+   644→   644→10
+   645→   645→
+   646→   646→The context
+   647→   647→
+   648→   648→Reeves 2020, Bastalich and McCulloch 2022, Hillebrand and Leysinger 2023).
+   649→   649→If the project goes wrong or falls behind schedule, candidates are much more
+   650→   650→likely to look towards their supervisor for assistance and, if this is deemed to
+   651→   651→be inadequate, to take matters further. Supervisors then need to pay particular
+   652→   652→attention to developing and sustaining productive relationships with candidates
+   653→   653→as outlined in Chapter 6 and the development of timelines and milestones set
+   654→   654→out in Chapter 11.
+   655→   655→McDonaldisation
+   656→   656→Historically, neither institutions nor research sponsors took much interest in whe­
+   657→   657→ther doctoral candidates completed their degrees and, if so, how long it was taking
+   658→   658→them. But during the third quarter of the 20th century, governments began
+   659→   659→enquiring more closely about what they were getting in return for funding doc­
+   660→   660→toral research, and the answers, at least in their view, were unsatisfactory. Studies
+   661→   661→of completion rates in Western Europe (see Sadak 2004), the US (Golde 2005),
+   662→   662→Canada (Elgar and Klein 2004), and Australia (Bourke, Hattie, and Anderson
+   663→   663→2004) all suggested that around one half of doctoral students failed to gain their
+   664→   664→degrees and, of those who did, relatively few completed within the allotted time.
+   665→   665→In response, many governments and research sponsors resorted to what amoun­
+   666→   666→ted, in one form or another, to compulsion.
+   667→   667→Such compulsion forced institutions to act to improve submission and qualiﬁ­
+   668→   668→cation rates, which in turn led to pressures on supervisors to ensure that candidates
+   669→   669→submit and qualify within the allotted time span (see Soin and Huber 2021).
+   670→   670→Issues and strategies which supervisors might adopt such as the introduction of
+   671→   671→explicit milestones relating to progress are outlined in Chapter 11.
+   672→   672→Regulation
+   673→   673→Historically, neither research sponsors nor institutions enquired too closely about
+   674→   674→what went on in doctoral education generally or with regard to supervision in
+   675→   675→particular. However, in recent years concerns about the quality of the student
+   676→   676→experience and completion rates and times have led to the widespread introduc­
+   677→   677→tion of regulation. A number of countries now have national codes of practice
+   678→   678→which are replicated at institutional level or institutions have developed their own
+   679→   679→codes (see Bitusikova et al. 2010, Byrne, Jorgensen, and Loukkola 2013, Andres
+   680→   680→et al. 2015, Nerad 2020).
+   681→   681→So supervision has become a heavily regulated area of academic practice (see
+   682→   682→Guccione 2018, Hasgall, Saenan, and Borrell-Damian 2019), and it has become
+   683→   683→important that supervisors are aware of all of the relevant institutional rules and
+   684→   684→regulations, as discussed in Chapters 2, 5, 6, 8 11, and 19.
+   685→   685→A further development with regard to regulation has been in relation to the con­
+   686→   686→duct of supervisors with their candidates. Supervisory relationships are by their very
+   687→   687→nature unequal, with the supervisor being in a position of power over candidates,
+   688→   688→
+   689→   689→The overall context
+   690→   690→
+   691→   691→11
+   692→   692→
+   693→   693→which the vast majority exercise with due restraint and respect. But some have abused
+   694→   694→their position and behaved in ways that are unacceptable, including bullying (see for
+   695→   695→example English, Flaherty, and English 2018), discrimination (see for example
+   696→   696→Spencer 2021), and sexual harassment (see for example Bloom et al. 2021).
+   697→   697→While for many years such misconduct was brushed under the carpet, in recent
+   698→   698→years it has been exposed and in some countries national bodies and/or institu­
+   699→   699→tions have issued codes of conduct for supervisors, of which the latter need to be
+   700→   700→aware. These matters are discussed in Chapters 6, 15 and 16.
+   701→   701→Collectivisation
+   702→   702→The historical model of supervision has been one of research students having a
+   703→   703→single supervisor. However, in recent years in many countries there have been
+   704→   704→moves to collectivise supervision by establishing supervisory teams (see Kalman
+   705→   705→et al. 2022, Wald, Kumar, and Sanderson 2022). While this can yield advan­
+   706→   706→tages, it can also cause problems in so far as the relationship between super­
+   707→   707→visors and students becomes more diffused and potentially subject to conﬂict
+   708→   708→over competing intellectual perspectives, interpretations of projects, personal­
+   709→   709→ities, supervisory roles, and supervisory styles. These issues are discussed further
+   710→   710→in Chapter 7.
+   711→   711→Structuration
+   712→   712→Originally, doctoral education took the form of individual study; the supervisor
+   713→   713→provided guidance, the candidate worked independently on his or her own.
+   714→   714→While that largely remains the case in some countries even today, in many others
+   715→   715→the desire to provide better training for researchers, improve submission and
+   716→   716→completion times, and enhance employability has led institutions to establish
+   717→   717→appropriate structures for doctoral studies. These include various graduate
+   718→   718→schools, doctoral colleges, doctoral research schools, and doctoral training cen­
+   719→   719→tres and partnerships (see Hasgall, Saenan, and Borrell-Damian 2019, Kovacevic,
+   720→   720→Bitusikova, and Dagen2022).
+   721→   721→They have also led to a move toward more structured programmes of study. The
+   722→   722→latter normally include a curriculum in the forms of a taught research training
+   723→   723→component, rigorous monitoring procedures, and a generic skills component relat­
+   724→   724→ing to employability (see Kiley 2014, Gonzalez-Ocampo et al. 2015, Elliot et al.
+   725→   725→2020, European Universities Association/Council for Doctoral Education 2022).
+   726→   726→In these ways, doctoral education has increasingly become structured at both
+   727→   727→institutional and the programme levels (see Bitusikova 2010, Kiley 2011, Andres
+   728→   728→et al. 2015, McGloin and Wynne 2015, Grant et al. 2022, McKenna and van
+   729→   729→Schalwyk 2023). Again, this means that supervisors need not only to understand
+   730→   730→the disciplinary context of doctoral studies (Chapter 3) but the institutional ones
+   731→   731→(Chapter 2) and programme ones (Chapter 4) as well.
+   732→   732→
+   733→   733→12
+   734→   734→
+   735→   735→The context
+   736→   736→
+   737→   737→Growth and diversiﬁcation of the candidate population
+   738→   738→Massiﬁcation
+   739→   739→Up to a few years ago, doctoral candidates were relatively few in number. But over
+   740→   740→the past two decades the numbers registering for doctoral programmes has grown
+   741→   741→rapidly across most of the globe (Pederson 2014, Andres et al. 2015, Bao, Kehm, and
+   742→   742→Ma 2016, Huang 2017, Shin, Kehm, and Jones 2018, Sarrico 2022). However, the
+   743→   743→number of supervisors has not increased pro rata, with the result that supervisors have
+   744→   744→more candidates to supervise. In this context, it is important that they are aware of
+   745→   745→institutional policies relating to supervisory workloads and limits on candidate num­
+   746→   746→bers (see Chapter 2) and of strategies for group supervision (see Chapter 6).
+   747→   747→Domestic diversiﬁcation
+   748→   748→Moreover, this expansion in numbers has been associated with an increase in the
+   749→   749→diversity of the domestic graduate population Traditionally the stereotype doctoral
+   750→   750→candidate was male, young, single, white, heterosexual, and without a disability.
+   751→   751→Now, in many countries a majority of candidates are female, signiﬁcant numbers are
+   752→   752→in their thirties or forties or older and have partners and families. While parity is a
+   753→   753→long way off, in many cases there has been an increasing representation of indigen­
+   754→   754→ous populations and ethnic and racial minority groups. Also, candidates have
+   755→   755→become more diverse in their sexuality, and more have reported disabilities. The
+   756→   756→needs of such candidates have come sharply into focus in recent years, and the
+   757→   757→implications for their supervisory practice are discussed further in Chapters 5 and 15.
+   758→   758→International diversiﬁcation
+   759→   759→A further trend has been the internationalisation of doctoral education in the sense of
+   760→   760→candidates studying for their doctorates in a country other than that of their origin.
+   761→   761→While there is nothing new in this in principle – for example in the 19th century many
+   762→   762→US and UK chemists did their doctoral studies in Germany (Simpson, 1983) – what has
+   763→   763→changed very rapidly in recent years is a large-scale movement to study abroad for doc­
+   764→   764→torates, particularly from the Southern to the Northern hemisphere. While this trend
+   765→   765→was halted or reversed during the Covid-19 pandemic, subsequently it seems to have
+   766→   766→resumed (de Wit and Altbach 2022) and signiﬁcant proportions of doctoral students are
+   767→   767→now from countries other than the one in which they are studying for their degrees.
+   768→   768→They bring huge beneﬁts to their host country, but may face challenges in their doctoral
+   769→   769→studies which supervisors can help them overcome, as outlined in Chapter 16.
+   770→   770→Obligation
+   771→   771→The traditional view was that, as doctoral candidates were adults, they should be
+   772→   772→responsible for their own wellbeing and mental health. However, in recent years a
+   773→   773→
+   774→   774→The overall context
+   775→   775→
+   776→   776→13
+   777→   777→
+   778→   778→substantial volume of evidence (see for example Levecque et al. 2017, Marais et al.
+   779→   779→2017, Mackie and Bates 2018, Metcalfe, Wilson, and Levecque 2018) has accrued
+   780→   780→which suggests that doctoral candidates are signiﬁcantly more likely than compar­
+   781→   781→able groups of the population to suffer from low levels of wellbeing, mental dis­
+   782→   782→tress (usually depression and anxiety), and mental illness (clinically-proven
+   783→   783→depression and anxiety as well as more severe illnesses such as bi-polar and psy­
+   784→   784→chosis). In view of these ﬁndings, institutions have had to accept that they have a
+   785→   785→duty of care for the wellbeing and mental health of doctoral candidates. In part,
+   786→   786→this has devolved upon supervisors as they are in personal contact with students
+   787→   787→and hence most likely to be able to notice distress and direct candidates to sources
+   788→   788→of support, as discussed in Chapter 12.
+   789→   789→Diversiﬁcation of modes of study
+   790→   790→Casualisation
+   791→   791→As Taylor (2012: 121) has noted, ‘Historically, the model has been for doctoral
+   792→   792→students to be full-time. While this largely remains the case in the natural sciences,
+   793→   793→the picture can be very different in the arts, humanities, and social sciences where
+   794→   794→part-time study is becoming much more common’. As a result, part-timers have
+   795→   795→come to comprise a signiﬁcant proportion of the candidate population in a
+   796→   796→number of countries. They are often older with family and employment commit­
+   797→   797→ments which can affect their studies and of which supervisors need to be aware.
+   798→   798→Issues in relation to supervising part-time candidates are discussed in Chapter 17.
+   799→   799→Dislocation
+   800→   800→Traditionally, doctoral candidates studied on campus, but the advances in infor­
+   801→   801→mation and communications technology have meant that they can study at a
+   802→   802→considerable distance from the host institution within a country, or even in
+   803→   803→another country. In such cases, face-to-face contact between supervisors and stu­
+   804→   804→dents may be infrequent and replaced by telephonic and electronic communica­
+   805→   805→tion. The use of such media to supervise doctoral candidates was growing before
+   806→   806→the Covid pandemic, but during the latter online supervision became the norm, as
+   807→   807→did online examination. These developments have left legacies for supervisors
+   808→   808→which are explored in Chapters 17 and 19.
+   809→   809→Diversiﬁcation of purposes of study
+   810→   810→Cross-fertilisation
+   811→   811→Traditionally, doctorates have been undertaken within single disciplines. However,
+   812→   812→tackling many of the major problems and issues in contemporary research often
+   813→   813→involves the cross-fertilisation of insights from two or more disciplines (see Rashid
+   814→   814→
+   815→   815→14
+   816→   816→
+   817→   817→The context
+   818→   818→
+   819→   819→2021), and hence doctoral research projects have become increasingly inter­
+   820→   820→disciplinary. Where supervisors themselves have a mono-disciplinary pedigree,
+   821→   821→operating across two or more can be challenging and the implications of this for
+   822→   822→supervision are discussed in Chapter 3.
+   823→   823→Proliferation
+   824→   824→Whereas the PhD has been the dominant research degree for the past two cen­
+   825→   825→turies, in the last two decades other forms of doctoral degrees have been devel­
+   826→   826→oped, including doctorates by publication, practice-led doctorates, professional
+   827→   827→doctorates, collaborative doctorates, and hybrids involving two or more of these
+   828→   828→variants. The implications of these developments for supervision are considered in
+   829→   829→Chapters 4 and 7.
+   830→   830→Capitalisation
+   831→   831→Historically again, the primary purpose of the doctorate has been to reproduce the
+   832→   832→academic workforce, that is, to train new generations of researchers for the uni­
+   833→   833→versities. However, this has changed, partly reﬂecting a paucity of tenured aca­
+   834→   834→demic posts in some countries, the attractiveness of employment opportunities
+   835→   835→outside academia, and a re-branding of the purpose of the doctorate to supply
+   836→   836→human capital for the knowledge economies.
+   837→   837→For these reasons, there is now a presumption that doctoral programmes will
+   838→   838→include the development of the relevant generic skills to support doctoral gradu­
+   839→   839→ates to gain employment inside or outside academia, So as well as their traditional
+   840→   840→role in supporting candidates to becoming academics, supervisors may be expected
+   841→   841→to support the development of the generic skills needed for them to enter a wider
+   842→   842→range of employments.
+   843→   843→The roles of supervisors in supporting candidates to prepare for academic and
+   844→   844→non-academic roles are discussed in Chapter 14.
+   845→   845→
+   846→   846→Conclusions
+   847→   847→The effect of the changes outlined has been to transform doctoral education vir­
+   848→   848→tually across the globe. What was the last ‘cottage industry’ in higher education
+   849→   849→has become commodiﬁed, McDonaldised, collectivised, regulated, structured, and
+
+[showing lines 450-849 of 1901; use offset=850 with limit to continue reading]

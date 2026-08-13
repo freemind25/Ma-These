@@ -1,0 +1,133 @@
+================================================================================
+RB-5.jpg — VLM Analysis Report
+================================================================================
+
+Source: /home/z/my-project/upload/RB-extract/RB/RB-5.jpg
+Analyzed: 2026-08-13 (VLM-1 agent)
+Model: glm-5v-turbo with thinking
+
+---
+
+TITLE/TYPE
+  THEORETICAL vs CONCEPTUAL FRAMEWORK
+  Subtitle: "Understand the key differences and choose the right foundation
+  for your research."
+  Source: Askpstudyinaustralia
+  Type: Comparative analysis infographic (3-column table)
+
+---
+
+KEY CONCEPTS AND FRAMEWORKS
+
+  SEVEN ASPECTS OF COMPARISON:
+
+  ASPECT 1 — DEFINITION
+    Theoretical:  Broad set of ideas and principles offering a general
+                  perspective on a topic.
+    Conceptual:  Specific concepts and ideas that the researcher applies
+                  directly within the study context.
+
+  ASPECT 2 — BASIS
+    Theoretical:  Grounded in established theories from literature, tested
+                  and validated by other scholars.
+    Conceptual:  Built on key concepts representing main variables and
+                  their relationships in the study.
+
+  ASPECT 3 — NATURE
+    Theoretical:  Conceptual model that guides the study, its assumptions,
+                  and interpretation of results.
+    Conceptual:  Researcher-developed model explaining how concepts interact
+                  and influence one another. May adapt existing theory.
+
+  ASPECT 4 — DEVELOPMENT & ACCEPTANCE
+    Theoretical:  Well-established, widely recognized, accepted within the
+                  academic community.
+    Conceptual:  Developed by researcher specifically for the study, proposed
+                  to address the research problem.
+
+  ASPECT 5 — PURPOSE
+    Theoretical:  Provides broad perspective to understand and position
+                  research within existing body of knowledge.
+    Conceptual:  Shows logical flow of research inquiry and how key concepts
+                  will be examined.
+
+  ASPECT 6 — COMPONENTS
+    Theoretical:  Interrelated theories, constructs, and propositions
+                  derived from prior research.
+    Conceptual:  Core concepts and their connections illustrating the
+                  relationships to be studied.
+
+  ASPECT 7 — USE
+    Theoretical:  Test theories, make predictions, guide research within
+                  wider context.
+    Conceptual:  Build or refine theory, provide practical insight relevant
+                  to specific research context.
+
+  FOOTER KEY TAKEAWAYS:
+    "STRONG RESEARCH STARTS WITH THE RIGHT FRAMEWORK."
+    ✔ Use theory to understand the big picture.
+    ✔ Use concepts to answer your research question.
+
+---
+
+CLASSIFICATION SYSTEM
+
+  DEDUCTIVE vs INDUCTIVE PARADIGM:
+    Theoretical Framework → Deductive (testing existing knowledge)
+    Conceptual Framework → Inductive/Adaptive (building new knowledge)
+
+  SCOPE SPECTRUM:
+    Theoretical: Broad, general, community-validated, theory-based
+    Conceptual: Specific, context-bound, researcher-created, variable-based
+
+---
+
+DERIVED RULES FOR AI PROMPTS
+
+  Rule 1 — SCOPE RULE
+    If goal = general background / big picture → prioritize Theoretical
+    Framework.
+    If goal = define specific variables and interactions → prioritize
+    Conceptual Framework.
+
+  Rule 2 — ORIGIN RULE
+    If user needs pre-existing, cited academic theories → Theoretical.
+    If user needs to synthesize own variable definitions → Conceptual.
+
+  Rule 3 — DIRECTIONALITY RULE
+    Deductive reasoning (testing hypothesis against established truth) →
+    Theoretical Framework.
+    Inductive reasoning (developing new model from observations) →
+    Conceptual Framework.
+
+  Rule 4 — COMPONENT IDENTIFICATION RULE
+    Theoretical: Look for constructs, propositions, validated models
+    (e.g., Maslow's Hierarchy).
+    Conceptual: Look for operationalized variables, flow diagrams,
+    defined relationships specific to user's data.
+
+  Rule 5 — NEW vs OLD RULE
+    Novel/exploratory research area → Default to Conceptual Framework.
+    Mature/well-trodden research area → Default to Theoretical Framework.
+
+  EXAMPLE APPLICATION:
+    "I want to analyze employee motivation using Maslow's theory."
+    → Theoretical Framework approach (established theory)
+
+    "I need to map out how remote work affects my specific team's
+    productivity based on my survey data."
+    → Conceptual Framework approach (building a specific model)
+
+---
+
+ACADEMIC VALUE
+
+  HIGH — Clarifies one of the most confused distinctions in thesis writing.
+  Seven-criteria comparison provides a rigorous decision framework. Directly
+  applicable to:
+  - ThesisFrame's cadrage module (cadre théorique field)
+  - AI writing mode: framework selection assistant
+  - Methodology chapter guidance
+  - Quality checking: "is this a theoretical or conceptual framework?"
+
+================================================================================

@@ -1,0 +1,187 @@
+================================================================================
+RB-4.jpg — VLM Analysis Report
+================================================================================
+
+Source: /home/z/my-project/upload/RB-extract/RB/RB-4.jpg
+Analyzed: 2026-08-13 (VLM-1 agent)
+Model: glm-5v-turbo with thinking
+
+---
+
+TITLE/TYPE
+  STATISTICAL TESTS YOU NEED TO KNOW ABOUT
+  Source: EducationStore (pinned reference guide)
+  Type: Statistical decision tree / taxonomy table
+
+---
+
+KEY CONCEPTS AND FRAMEWORKS
+
+  16 STATISTICAL TESTS in 4-column table:
+  (Statistical Test | When to Use | Description | Example)
+
+  1. DESCRIPTIVE STATISTICS
+     When: Summarize dataset features
+     Desc: Measures of central tendency and variability
+     Example: Average age and standard deviation of students
+
+  2. Z-TEST
+     When: Large samples, known population variance
+     Desc: Compares sample mean to known population mean
+     Example: Testing if average customer spending differs from known pop avg
+
+  3. T-TEST (Student's)
+     When: Smaller samples, unknown population variance
+     Desc: Compares means from two groups
+     Example: Girls' heights vs boys' heights
+
+  4. PAIRED T-TEST
+     When: Comparing two related samples
+     Desc: Assesses difference in means between paired observations
+     Example: Infant weight before and after a feed
+
+  5. WELCH'S T-TEST
+     When: Unequal variances and/or sample sizes
+     Desc: T-test adaptation for unequal variances
+     Example: Test scores between classes with different sizes
+
+  6. CHI-SQUARED TEST
+     When: Categorical data analysis
+     Desc: Tests association between categorical variables
+     Example: Medical school acceptance related to country of birth
+
+  7. FISHER'S EXACT TEST
+     When: Small samples, 2x2 contingency tables
+     Desc: Tests association between classifications
+     Example: Drug effectiveness in small clinical trial
+
+  8. MANN-WHITNEY U TEST
+     When: Non-parametric test for two groups
+     Desc: Compares two independent groups
+     Example: Customer satisfaction scores between product lines
+
+  9. ANOVA
+     When: Comparing means of 3+ groups
+     Desc: Analyzes variance between multiple groups
+     Example: Plasma glucose at 1, 2, or 3 hours after a meal
+
+  10. KRUSKAL-WALLIS TEST
+      When: Non-parametric alternative to ANOVA
+      Desc: Compares 3+ independent samples
+      Example: Satisfaction levels across departments
+
+  11. PEARSON'S CORRELATION
+      When: Measuring association between variables
+      Desc: Assesses linear relationship strength
+      Example: HbA1c vs triacylglyceride in diabetic patients
+
+  12. SPEARMAN'S RANK CORRELATION
+      When: Non-parametric correlation
+      Desc: Measures monotonic relationship strength
+      Example: Education level vs income
+
+  13. SIMPLE LINEAR REGRESSION
+      When: Relationship between two variables
+      Desc: Models linear relationship between variables
+      Example: Peak expiratory flow rate vs height
+
+  14. MULTIPLE REGRESSION
+      When: One dependent, multiple independent variables
+      Desc: Predicts dependent variable from multiple predictors
+      Example: How age, body fat, sodium intake influence blood pressure
+
+  15. LOGISTIC REGRESSION
+      When: Binary dependent variable
+      Desc: Predicts probability of binary outcome
+      Example: Likelihood of heart disease based on health factors
+
+  16. FACTOR ANALYSIS
+      When: Identifying underlying factors
+      Desc: Reduces variables to smaller set of factors
+      Example: Personality traits from survey questions
+
+---
+
+CLASSIFICATION SYSTEMS
+
+  1. PARAMETRIC vs NON-PARAMETRIC:
+     Parametric: Z-Test, T-Tests, ANOVA, Pearson, Regressions
+     Non-Parametric: Mann-Whitney U, Kruskal-Wallis, Spearman
+
+  2. DATA TYPE TAXONOMY:
+     Continuous: Descriptive, Z/T-tests, ANOVA, Regressions, Correlations
+     Categorical/Nominal: Chi-Squared, Fisher's Exact
+     Ordinal/Ranked: Spearman, Mann-Whitney U, Kruskal-Wallis
+
+  3. SAMPLE SIZE & VARIANCE CRITERIA:
+     Large samples + known variance → Z-Test
+     Small samples + unknown variance → Student's T-Test
+     Unequal variances/sizes → Welch's T-Test
+     Small contingency tables → Fisher's Exact Test
+
+  4. GROUP COMPARISON HIERARCHY:
+     2 groups (independent): Student's T-Test / Mann-Whitney U
+     2 groups (paired): Paired T-Test
+     3+ groups: ANOVA / Kruskal-Wallis
+
+  5. RELATIONSHIP ANALYSIS SPECTRUM:
+     Association only → Correlations (Pearson=linear, Spearman=monotonic)
+     Prediction/Causality → Regressions (Simple, Multiple, Logistic)
+     Dimension reduction → Factor Analysis
+
+---
+
+DERIVED RULES FOR AI PROMPTS
+
+  Rule 1 — DATA STRUCTURE FIRST PROTOCOL
+    Always specify data type before requesting analysis.
+    Template: "I have [continuous/categorical/ordinal] data with [n]
+    observations comparing [2/3+] groups with [equal/unequal] variances..."
+
+  Rule 2 — SAMPLE SIZE THRESHOLDS
+    n > 30 and σ known → Z-Test
+    n < 30 and σ unknown → T-Test variants
+    n < 20 in contingency tables → Fisher's Exact over Chi-Squared
+
+  Rule 3 — PARAMETRICITY CHECK
+    Include assumption verification: check normality first. If violated,
+    use non-parametric alternatives (Mann-Whitney instead of T-Test;
+    Kruskal-Wallis instead of ANOVA; Spearman instead of Pearson).
+
+  Rule 4 — RELATIONSHIP vs DIFFERENCE DISTINCTION
+    "Is there a difference?" → Group comparison tests
+    "Is there an association?" → Correlations
+    "Can I predict X from Y?" → Regression models
+
+  Rule 5 — PAIRED vs INDEPENDENT SPECIFICATION
+    Explicitly state study design: separate populations (independent)
+    vs same subjects measured twice (paired).
+
+  Rule 6 — OUTCOME VARIABLE DETERMINATION
+    Continuous outcome → Linear Regression
+    Binary/dichotomous outcome → Logistic Regression
+    Latent constructs → Factor Analysis
+
+  Rule 7 — VARIANCE HOMOGENEITY FLAG
+    If group sizes differ significantly (>20% difference), automatically
+    request Welch's correction rather than standard T-test.
+
+  MASTER TEMPLATE:
+    "Analyze my dataset using appropriate statistical testing:
+    DATA CHARACTERISTICS: Variables [list types], Sample size [n],
+    Groups [number and independence], Distribution [known/unknown]
+    RESEARCH QUESTION: [difference/association/prediction]
+    Please recommend the specific test and provide interpretation."
+
+---
+
+ACADEMIC VALUE
+
+  HIGH — Functions as a complete decision-tree algorithm for statistical
+  test selection. 16 tests organized by data type, sample size, group
+  count, and research question type. Directly applicable to:
+  - ThesisFrame's methodology module (statistical test recommender)
+  - AI writing mode: "which statistical test should I use?"
+  - Methodological rigor checking
+
+================================================================================

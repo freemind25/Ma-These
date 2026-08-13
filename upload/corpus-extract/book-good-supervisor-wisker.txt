@@ -1,0 +1,1809 @@
+Gina Wisker
+
+The Good Supervisor
+Supervising Postgraduate and
+Undergraduate Research for Doctoral
+Theses and Dissertations
+
+Gina Wisker
+
+The Good Supervisor
+Supervising Postgraduate and
+Undergraduate Research for Doctoral
+Theses and Dissertations ·.
+
+The Good Supervisor
+
+Visit our free study skills resource at www.skills4study.com
+Palgrave Study Guides
+Authoring a PhD
+Career Skills
+Critical Thinking Skills
+e-Learning Skills
+Effective Communication for
+Arts and Humanities Students
+Effective Communication for
+Science and Technology
+The Exam Skills Handbook
+The Foundations of Research
+The Good Supervisor
+How to Manage your Arts, Humanities and
+Social Science Degree
+How to Manage your Distance and
+Open learning Course
+How to Manage your Postgraduate Course
+How to Manage your Science and
+Technology Degree
+How to Study Foreign languages
+How to Write Better Essays
+IT Skills for Successful Study
+Making Sense of Statistics
+The Milture Student's Guide to Writing
+The Palgrave Student Planner
+
+The Postgraduate Research Handbook
+Presentation Skills for Students
+The Principles of Writing in Psychology
+Professional Writing
+Research Using IT
+Skills for Success
+The Student life Handbook
+The Student's Guide to Writing (2nd edn)
+The Study Skills Handbook (2nd edn)
+Study Skills for Speakers of English as
+a Second Language
+Studying the Built Environment
+Studying Economics
+Studying History (2nd edn)
+Studying law
+Studying Mathematics and its Applications
+Studying Modern Drama (2nd edn)
+Studying Physics
+Studying Programming
+Studying Psychology
+Teaching Study Skills and Supporting learning
+Work Placements - A Survival Guide for Students
+Write it Right
+
+Palgrave Study Guides: Literature
+General Editors: john Peck and Martin Coyle
+
+How to Begin Studying English Literature
+How to Study Modern Poetry
+(3rd edn)
+How to Study a Novel (2nd edn)
+How to Study a Jane Austen Novel (2nd edn) How to Study a Poet
+How to Study a Charles Dickens Novel
+How to Study a Rena issance Play
+How to Study Chaucer (2nd edn)
+How to Study Romantic Poetry (2nd edn)
+How to Study an E. M. Forster Novel
+How to Study a Shakespeare Play (2nd edn)
+How to Study Television
+How to Study James Joyce
+Practical Criticism
+How to Study Linguistics (2nd edn)
+
+The Good
+Supervisor
+Supervising Postgraduate and
+Undergraduate Research for Doctoral
+Theses and Dissertations
+
+Gina Wisker
+
+C> Gina Wisker 2005
+All rights reserved. No reproduction, copy or transmission of this
+publication may be made without written permission.
+No paragraph of this publication may be reproduced. copied or transmitted
+save with written permission or in accordance with the provisions of the
+Copyright, Designs and Patents Act 1988. or under the terms of any licence
+permitting limited copying issued by the Copyright Licensing Agency.
+90 Tottenham Court Road. London W1T 4LP.
+Any person who does any unauthorised act in relation to this publication
+may be liable to criminal prosecution and civil claims for damages.
+The author has asserted her right to be identified as the author of this
+work in accordance with the Copyright, Designs and Patents Act 1988.
+First published 2005 by
+PALGRAVE MACMILLAN
+Houndmills, Basingstoke, Hampshire RG21 6XS and
+175 Fifth Avenue. New York, N.Y. 10010
+Companies and representatives throughout the world
+PALGRAVE MACMILLAN is the global academic imprint of the Palgrave
+Macmillan division of St. Martin's Press, LLC and of Palgrave Macmillan Ltd.
+Macm illan® is a registered trademark in the United States, United Kingdom
+and other countries. Palgrave is a registered trademark in the European
+Union ;ind other countries.
+ISBN-13: 978- 1- 4039-0395-2
+ISBN-10: 1- 4039-0395- 6
+This book is printed on paper suitable for recycling and made from fully
+managed and sustained forest sources.
+A catalogue record for this book is available from the British Library.
+Library of Congress Cataloging-in-Publication Data
+Wisker. Gina, 1951The good supervisor: supervising postgraduate and undergraduate
+research for doctoral theses and dissertations I Gina Wisker.
+p. cm. - (Palgrave study guides)
+Includes bibliographical references and index.
+ISBN 1-4039-0395-6
+1. Graduate students - supervision of. 2. Faculty advisors.
+3. Dissertations, Academic. 4. Doctor of philosophy degree. I. Title. II. Series.
+LB2371.W57 2004
+378.1 '94046-dc22
+
+10 9 8 7 6 5 4 3
+14 13 12 11 10 09 08 07
+Printed and bound in China
+
+2004051234
+
+Contents
+
+..
+
+Acknow/edge1nents
+
+I
+
+Introduction
+
+Stage 1
+2
+3
+4
+
+VII
+
+First Stages of Research Supervision - Getting Started 13
+
+Supervision Differences
+Supervisors Studying: Development Programmes
+Establishing and Maintaining Good Supervisory Practices
+
+Stage 2
+
+Establishing Research Processes and Practices
+
+15
+30
+
+41
+69
+
+5
+
+Defining Titles, Resc:arch Qut::stions, conceptual Frameworks
+and Developing Proposals
+6 Enabling Students to Carry Out a Successful Literature Review
+and a Theoretical Perspectives Chapter
+7 Methodology, Methods and Ethics
+8 Supervisory Dialogues
+9 Encouraging Good Writing
+
+134
+
+Stage 3
+
+157
+
+Working with Students - Issues for Supervisors
+
+IO Helping Students to Help Themselves and Each Other
+II
+12
+13
+
+14
+15
+16
+
+17
+
+Dealing with Difference: working w ith Different Kinds of
+Learners and Learning Styles
+Supervising International Students
+Study and Support at a Distance
+Gender and Research Studies
+A Little Too Close to Home: Supervising your Colleagues and/ or
+Other Practice/ Professional-based Research
+New Ways: Supervising Creative Research work and the PhD
+by Publication
+Maintaining Momentum
+
+v
+
+71
+92
+I 07
+120
+
+159
+174
+191
+206
+
+213
+230
+
+244
+259
+
+vi
+
+Contents
+
+Stage 4 Managing the Research Process to Completion
+and Beyond
+
+2 75
+
+18
+19
+20
+21
+22
+
+277
+302
+318
+339
+34 7
+
+vVriling Up the Thesis or Dissertation
+The Examination Process and Exan1 iners
+Supporting Students towards a Successful PhD Viva
+Supporting your Student post Viva/Exam
+
+Life after Research
+
+References
+
+366
+
+Index
+
+383
+
+Acknowledgements
+
+This book has only been possible because of all the generous support, tolerance and sharing of my farnily, friends and colleagues. Thanks to Alistair,
+Liarn and Kitt for putting up with the work schedule, Yehuda Ben-Simon,
+Shosh Leshem. Gill Robinson, Miri Shacharn, Dan Shenkar, Avishai Tai,
+Vernon Trafford, all our PhD candidates in the School of Education
+International programme, and the English PhD students. Thanks also to
+generous and thoughtful UK, Australian, New Zealand and University of West
+Indies colleagues with whom I have worked in conferences, supervisory
+development workshops and joint writing exercises. In particular, I would like
+to thank Angela Brew, Margaret Cahill, Linda Conrad, Margaret Kiley, Eric
+Meyer and Margot Pearson.
+Thanks also to Ernrna Creighton. Jaki Lilly and Mark Warr1es for analysing
+much of the underpinning research. Christine Beck, Michelle Bernard,
+Lorraine Silk, Emma Warnes and Tess Youngs have helped me turn it into a
+presentable shape while all my PhD, EdD, Masters and undergraduate
+students have been the guinea-pigs and a great source of elements of practice.
+Many thanks go to Maggi Savin Baden and anonymous reviewers for
+reading and commenting on the text before final revisions.
+Thanks fina lly to Suzannah Burywood and Anita Sethi at Palgrave
+Macmillan for investing their critical patience in the project.
+
+vii
+
+1
+
+Introduction
+
+Rewarding, essential, potentially taken for granted and relatively under-theorised, research supervision plays a key role in higher education in empowering
+students to become researchers. As both undergraduate and postgraduate
+student numbers grow in universities, we are increasingly being invited to
+supervise students' research projects, encouraging, supporting and enabling
+them to develop skills, values and practices essential to learning the roles
+and rules of research. Research is defined here as the crucial element of
+learning - a fascination with questioning the world, ways of enquiring,
+solving problems, creating and innovating and developing discourse, strategies and interpretations. In this dynamic context, there is a clear need for
+sound, supportive and empowering supervision practices for students'
+research study, whether for dissertation. project or thesis. This book bui lds
+on shared experiences of good practice in research supervision at all levels
+{see Delamont et al., 1998; Wisker and Sutcliffe, 1999; Wisker, Robinson and
+Trafford, 2000, 200 I, 2003). and on research (e.g. Pearson. I 999; Brew. 200 I )
+into what makes for effective supervisory practices.
+The Good Supervisor intends to engage supervisors and students in a learning dialogue. It provides supervisors with research -informed suggestions
+about the dimensions of supervisory practice. that is systems and practices
+of working with conceptual frameworks, methods, processes of students'
+research, issues and practices of personal effectiveness in this long-term ,
+interpersonal interaction between supervisor and student. In its conception,
+and through my own extensive personal and workshop interactions with
+supervisors and those supporting the development of students and supervisors alike, it has been absolutely crucial that the book should provide opportunities to engage readers in dialogue between research and experience,
+supervisor and supervisor, supervisor and student. This intends to be a
+useful, non-patronising book. It could not succeed if it tried to talk down to
+or 'train' supervisors. Instead, this book encourages reflection, dialogue and
+an exchange of good practice. Development suggestions are built upon and
+out of these practices. You are invited to engage with research evidencebased practice and reflective and evaluative stories from supervisors.
+1
+
+2
+
+The Good Supervi sor
+
+students and educational developers, in a dialogue w ith your own experience. In each chapter, discussions. suggestions and activities or tasks to
+encourage refl ection and good practice are integrated with experience and
+research.
+Focusing on the role and support demanded of supervisors \.YOrking w i th
+students, the book follows the shape of students' work. It considers how
+supervisors can support and enable students in their research towards,
+writing up and defence of dissertations, projects and theses at undergraduate
+and postgraduate levels. Although primarily intended for supervisors, it
+provides insights and task-oriented developrnental suggestions that
+students could use on their own or in groups, with or w ithout supervision.
+The book takes novice, intermediate and experienced supervisors alike
+through the working life of supervisory relationships with research students.
+It invites the reader to consider the academic and administrative elements of
+enrolment and the development of a proposal. It deals with the development
+of a clear conceptual framework; the choice of appropriate research methodologies; information searches and dialogues \.Yith authors and theorists in the
+field; and the acquisition, management and analysis of information and
+ideas. The book also considers organisation and how to tnaintain momentum; as well as v.;ays to ensure successful supervision and support for
+students through to the later stages of writing up, subn1ission and, where
+appropriate, taking part in a viva. The final chapter looks at what may lie
+beyond completion of the research .
+Issues of equal opportunities, includ ing gender, sexuality, ethn icity, culture,
+power and authority, class, origin, learning style, language and tertiary literacy
+inform the discussion throughout, in terms of choice of learning approaches,
+access. study methods and supervisor- student interactions. Also considered
+are the needs of international students. those studying at a distance or
+'offshore', and candidates studying part-tin1e and/or in professional contexts.
+The supervision of one's colleagues, students undertaking creative research
+and the PhD by publication are also covered. Research and supervision
+involve human interaction and, in this respect, the book invites you to work
+with your student, considering both research ethics and interpersonal skills.
+While those who are relatively new to supervision might And more of use
+in Stages 1, 2 and 4 of the book, established supervisors might find stage 3
+extends their thoughts and practices. There is something here for all of us,
+throughout our supervising careers.
+The Good Supervisor is unusual in that it is designed to support supervisors
+of a variety of research students on a variety of research projects. Ho\.vever,
+what the students all have in common is the research project. The book
+intends to be:
+
+Introduction
+
+•
+
+3
+
+accessible for supervisors and for students; there are exercises and
+discussions of good practice;
+
+•
+•
+
+underpinned by research and by the scholarship of learning and teaching, much of my own work and work from the UK, USA and Australia;
+pitched at undergraduate as well as postgraduate supervision. The scope
+is different, the aulhorily/equalily relationships are different, the length
+and depth of both the work produced and the time il lakes lo produce il
+are different, bul otherwise many of lhe interactions and good practices
+have much in comrnon.
+
+The primary focus is supervising research projects in the social sciences,
+humanities, performing arts, health and related areas, but there is also much
+of relevance to colleagues supervising scientific research.
+The idea for this book came about originally through reflecting on my own
+practice as a student and as a supervisor, both at postgraduate and undergraduate level, and finding there was a dearth of literature and of guidance for
+me in lhe supervisory role. This is nol unusual in educational development,
+especially when a role, somewhat taken for granted and assumed to be an
+everyday activity, suddenly takes centre stage. Postgraduate students have
+been proportionally the greatest growth area in higher education in the UK.
+USA, Europe and Australasia over the lasl ten years. and recent learning and
+teaching agendas increasingly focus on the student as researcher. Research
+into and support for the learning of undergraduate students in greater
+numbers is well established (see Gibbs, 1991). Now the growth in the numbers
+of postgraduates brings with it similar issues of student diversity. Suddenly,
+during the 1990s, there were noticeably more women, more international and
+more distance postgraduates. Additionally, whi le postgraduate full-time study
+was con1mon among younger students in the sciences. where they were often
+joining a research group, an increase v1as laking place amongst more mature
+students, and in the social sciences, lhe arts and humanities. The rise of the
+Educational and Professional Doctorates (EdD, PrD) began to take account of
+differing needs, as did the gradual development of a Masters in Research
+(MRes) and research elements in masters and undergraduate programmes,
+albeit often only single sessions on dissertation planning prior to supervisions.
+After the publication of the Dearing Report ( 1997). ongoing debates about the
+importance of research as an essential learning activity have helped us to
+concentrate on developing research methods and skills in all our students. In
+the light of diversity, change and demand, supervisors and institutions need to
+focus on supervisory developmental needs and practices.
+The role has become visible, and it needs to be clarified and developed,
+recognising differences from one subject to another. one institution to
+
+4
+
+The Good Supervisor
+
+another, one supervisor to another. Initially, like other educational developers, I ran some supervisory development sessions in my own university to
+bring together supervisors. to consider and share our own experiences of
+good practice. I found that many who attended \.Vere already supervising
+undergraduate projects and dissertations, and were hoping to supervise
+postgraduates. Although n1any of us perform this role, there have been few
+opportunities to reflect on, develop. or share good practice with others.
+Supervisor development workshops ' took off'. I found that, nationally and
+internationally, I was being asked to run sessions on supervising generally,
+although specific topics were becon1ing more specialised: the supervision of
+international, offshore and distance students; supervision in the creative and
+performing arts; supervision in professional contexts and issues relating to
+gender and diversity. Supervision is a dernanding and rewarding learning
+and teaching experience that takes place within an international community
+of academ ic practice. Reflecting on and sharing experience of evidencebased good practice strategies can benefit all of us - supervisors and
+students. both postgraduate and undergraduate, at home and abroad.
+In Austral ia and New Zealand, postgraduates now only attract funding if
+they complete a directive. The supervisor has an important role to play here
+(see Chapter 2). As our students increasingly push the boundaries of research
+topics, practices and outcomes, we are invited to explore creative, supportive modes of developing supervision to guide and empower them. This book
+does not pretend to dictate how to carry out the diverse and demanding
+supervisory role, instead it builds on successful development sessions I have
+been part of or have facilitated. Latterly, in researching and studying the role
+further, particularly in relation to my work with colleagues on a successful
+APU Israeli PhD programme, I have been made aware of the differing stories
+we all have to tell of our supervisory experiences and journeys. Indeed, the
+journeying model is one Australian colleagues have used extensively in
+supervisor development programmes (see Chapter 2). Some have developed
+online support, and Geof Hill, Tania Aspland, Coralie McCormack and
+Barbara Pan1philon, among others, use storytelling and journeying. This for
+me accords \.Vith the feminist and action research paradigms from which
+much of my O\Nn work springs. I am grateful to them, and to others, particularly Delamont, Atkinson and Parry ( 1997). whose use of individual case
+studies were the first I read dealing with supervisory role exploration. All of
+these examples are at postgraduate level. A focus on postgraduate supervision, and the current emphasis on students as researchers (Alan Jenkins and
+colleagues). enables us to share and explore the role and bui ld cornmunities
+of good practice. This transfers into all our research supervision, whether it
+be with postgraduates or undergraduates.
+
+Introduction
+
+5
+
+In order to develop students as researchers. we need to help them focus on
+asking research questions and exploring fields of study in critical, problemsolving, creative v.;ays, matching this with a dedication to organisation and
+planning and achieving coherence and clarity of expression. Apart from
+discipline differences, a number of generic issues impact on all students
+undertaking research and success in these areas leads to a variety of postgraduate and undergraduate skills including. among others:
+•
+•
+•
+•
+•
+•
+
+time management
+problem-solving
+conceptualisation
+critical thinking
+conceiving and actualising projects through to successful conclusions
+writing for different audiences
+
+If we consider the development needs of undergraduates and postgraduates,
+we can begin to imagine some of the requirements of supervisors who work
+with them , and so begin to devise supportive, developmental activities and
+programmes. However, there are no fixed behaviours vvhich need to be
+trained - instead the relationship between supervisor and student is more
+like a dance, matching the steps of one to the other, and working together to
+produce a research artwork of quality, creativity and substance.
+
+~
+
+Why are learning and research important?
+
+Learning is essential for hu1nan growth. Research is the fundamental human
+learning activity, involving enquiry, problem solving, diversity, flexibility and
+decision -making. It encourages and enables the development of creative
+thinking, problem-solving strategies and abilities which in turn help others to
+approach everyday life as well as professional . political, local, national and
+international questions and issues.
+'Lifelong learning· (Reeve, Cartwright and Edwards, 2002), 'learning organisations', 'learning societies'. 'learning communities', 'communities of practice', even 'learning cities' are all current buzz words which suggest that
+communities recognise and wish to promote continual learning, reflection.
+awareness, problem-solving and improvement, and intelligent. creative
+responses to the complexities of life and of knowledge generation .
+Research as a form of learning is crucial in societies for energy, motivation. creativity, linking theory and practice, establishing informed habits and
+ski lls for continuing to ask questions and seek information and answers, in
+
+6
+
+The Good Supervisor
+
+con text. One anonymous reviewer shared a definition developed with other
+Australian colleagues:
+Research describes any critical and creative act1v1ty undertaken on a
+systematic, disciplined basis and dedicated lo increasing knowledge. The
+results of research therefore take many forms. Research can contribute to
+knowledge directly through discoveries, or otherwise through innovative
+ideas and techniques, conceptual refinernents, or constructive critiques
+and s;mtheses which extend existing knowledge or its applications.
+The defining characteristics of research include (i) a dependence on
+fonnal, disciplined modes of inquiry. (ii) technical, conceptual or epistemological innovation, (iii) an open, rigorous approach to the testing of
+results, and (iv) a commitment to publication in some form. Publication in
+a general sense is the goal of a research enterprise, but the results of
+research activity can be 'published' in many vvays, from a printed book or
+article, an architectural design, a patent or a con1puter program, to a
+creative composition or artefact in Lhe visual or performing arts which
+adds to the body or range of knowledge or creativity. (Reviewer's
+comn1ents)
+Carrying out an important research project can provide us w ith an intellectual quality of life and an opportunity for e1notional growth and satisfaction.
+
+~
+
+Learning steps
+
+A first piece of research is a major personal and learn ing achievement and
+for many the dissertation is the key moment when they begin to appreciate
+the stages, problems and potentially successful practices of research: from
+interest, to enquiring, question-fonning, design of a study project, activating
+a piece of research through the use of a conceptual framework, underpinning theories, methodologies and methods, handling and analysing data,
+identi fying findings, managing and discussing their significance at factual
+and conceptual levels and finishing a sound piece of research. Alongside
+these, students learn, we hope, the human interaction skills of making the
+most of their supervisor, of other institutional support, and that of family and
+friends. An undergraduate dissertation is a relatively small and timebounded process and product when compared with a PhD, but in essence it
+involves many of the same skills, cast of n1ind and hard \NOrk. When it is
+undertaken, usually the final year of a student's degree, it is also usually the
+longest and possibly, therefore, the most daunting piece of work so far. ln
+
+Introduction
+
+7
+
+this it resembles a master's dissertation and a PhD, with changes in research
+complexity and depth. Each is a learning step. a challenge. a development
+moment. Completion will involve a student immersing themselves in and
+making progress with the discourse and concepts of the subject and with the
+discourse of research. It will enable them to begin to develop a dialogue in
+their academic comrnun ity. Jn addition to subject-specific skills. generic.
+transferable research method skills should be developed at both undergraduate and postgraduate stages. Many undergraduates may already have begun
+to develop research for essays and projects. engaging with the academic
+community through having new (enough) ideas and arguments. Many will
+find they need supervisory guidance to identify subject-specific and research
+skills and then to develop them. Students must be encouraged to reflect on
+these skills. to recognise them. adapt and utilise them in the future.
+As undergraduate dissertations are one of the first formal steps in
+research, supervisors will probably need to structure and guide undergraduates rather more than postgraduates. For many academics. supervising an
+undergraduate dissertation is the first experience of supervising student
+research . Some may develop their own supervisory skills purely through
+dissertation supervision, while others. may develop these skills in the capacity of management. mentoring or ~imilar roles. For some, the guiding of
+research and the kind of interaction necessary could be a developmental
+issue.
+In discussing and sharing developmental ideas and practices in this book,
+we will be drawing on supervisory expertise and research into supervisory
+good practices at a// levels of the studen ts' and our own careers. In the main,
+the focus is on postgraduate supervision because of the length of the supervisory relationship, the complex, conceptual level of the work involved and
+because it is a developmental opportunity. Those undertaking undergraduate
+supervision might well be thinking ahead to postgraduate supervision.
+Differences which relate to the undergraduate and postgraduate levels - in
+scope. time. autonomy, structure and guidance - will be indicated and
+debated throughout, and if there are special issues related to undergraduate
+supervision that arise in the focus of a particular chapter then they will be
+highlighted .
+
+.., The PhD as a learning step
+The PhD is a major academic, professiorial and personal achievement. Upon
+undertaking and then completing a PhD, a student will have made an original and valuable contribution to knowledge. Their work will be read by, built
+
+8
+
+The Good Supervisor
+
+on and used by others - to build theory, to fuel change and encourage
+good practice. The achievement of a PhD is also a beginning - the student
+has made a major entrance into the academic community. By carrying
+out research through the full cycle of planning, actioning, drawing conclusions and com1nunicating. they will have developed a range of valuable
+skills.
+Nor is the PhD an end in itself. The learning never stops. It is essential to
+share \<\/Ork with others in the academic community and beyond. Here I am
+talking about several kinds of sharing. First, vve have shares in others' work
+- sharing and working with others as a learning community as they develop
+their research pre- and post-doctorate. FollO\-ving the achievement of a
+doctorate. students are involved in sharing and communicating, supporting
+and enabling, building on each other's research and learning in learning
+communities (Barnett, 2002). and contribuling towards enlightened learning
+societies (Eagleton, 2000; Gibbons, Limoges and Nowotny cl al.. 1994;
+Halpin, 2003). which make enlightened, creative decisions about fundamental human issues and practices (Squires, 1994; Rudd, 1985). This is essential
+work. It is partly enabled through continuing Lo move forward in learning. It
+is also enabled by transferring learning into professional and practical work
+through disseminating and sharing with others in:
+•
+•
+•
+
+IJIJ..
+
+conferences and symposia
+publications
+consultancies.
+
+Continuing to research and continuing to develop
+research ski ll s
+
+It is important for students to build on the research they have carried out.
+continuing to ask ne\.v questions, extending both old and new boundaries looking at those earlier designated areas 'for future research .. .' or considering where in their own thesis they imagine others taking their work further,
+indicating 'other researchers might .. .'. For many, practical outcomes are a
+1nain research aim so, following the achieve1nent of their PhD, they need to
+
+put research \<\/Ork and its outcomes into practice, researching the effects.
+Carrying out ne\.v research and developing further research skills are also
+important next rnoves.
+Renecting on and identifying the \<\/ea Ith of skills developed during research
+is an irnportant activity both during and alter the research. This identification
+contributes to performance development, personal self-esteem, confidence-
+
+Introduction
+
+9
+
+building and effectiveness. Encouraging and supporting our students in these
+developmental activities are also part of being a supervisor.
+
+.,.. Content and sources of the book
+This introduction establishes the importance of research as a knowledgebuilding, creating and sharing activity, identifying the key role the supervisor
+plays in empowering and enabling students to engage successfully in
+research. It introduces readers to the similarities and differences between
+undergraduate and postgraduate research supervision, and to different
+educational and staff development paradigms underlying the book as a
+whole. The Good Supe1Visor utilises three kinds of sources and paradigms. It
+draws from solid research-based evidence, as appropriate for a book dealing
+with supervising research practices; and from a narrative paradigm. where
+stories and interviews enact theories in practice for sharing and consideration to fuel development. And it uses the logically oriented 'good practice'
+paradigm.
+The book is structured to explore supervisory roles and practices in relation to the development of the student's research project, from identification
+of a possible research area and question through to completion, submission
+and, in the case of PhD students, the viva and beyond. Each chapter
+combines systematically identified explorations and suggestions of good
+practice arising from research and experience with the self-reflective
+·community of practice' mode of sharing and developing your own, owned
+response lo ideas and issues arising. Some researchers or supervisors might
+be more comfortable with one mode of expression, others with another. The
+idea is not to dictate but to engage in a dialogue, exploring suggestions that
+have arisen from sharing experience, undertaking research, and through
+face-to-face sessions with practitioners worldwide. From experiences of
+supervision related to me by students, participants in postgraduate supervisory workshops, colleagues working with undergraduates and postgraduates
+across a wide range of subject areas, and from my own experience as supervisor, educational developer and researcher, I have compiled extracts of
+narratives, interviews and case studies of supervision in action. These repre sent some 'typical' or exemplary cases of supervisor and student experience
+to illustrate issues and particular points. A number of issues are raised in
+each chapter concerning challenges faced by students and supervisors alike
+and how we as supervisors can enable and support students in making
+choices which suit their research, empowering them to be successful
+researchers.
+
+10
+
+The Good Supervisor
+
+As a reader, you are invited to consider ways that m ight inform supervisory
+practice. This active and reflective element is prompted throughout, but
+particularly in a number of boxed tasks and activities. Some tasks and activities are less reflective and are intended to be used or adapted in your interaclions with students. Such involvement is designed to lead to owned
+sel f-development as a supervisor.
+
+..,.. Structure of the book
+
+The book is divided into four parts. Its focus is on the work of the supervisor,
+and development suggestions for that work are mapped onto stages of
+students' research, completion and beyond.
+
+Stage 1: First Stages of Research Supervision - Getting Started
+This stage takes you, as supervisor. through the early stages of \.vorking with
+students, contexts and subjects and of establishing and maintaining effective
+\Vorking relationships. It considers programmes designed to support supervisors in their development of good practice.
+Stage 2 : Establishing Research Processes and Practices
+The second stage concentrates on the construction of the research, helping
+students to develop \VOrkable research questions. conceptual frameworks,
+literature reviews or theoretical perspectives. It discusses methodology and
+methods and the design of the study and proposals as well as considering
+research ethics.
+Stage 3 : Working with Students - I ssues for Supervisors
+The next stage turns to issues of interpersonal relations; overtime; considering roles and supervisory dialogue interactions; helping students to set up
+support groups; dealing with differences, difficulties and practices related lo
+gender, etc.; international students; and distance learning. It looks at the
+variety of research, including relatively new forms - using creativity,
+resea rch degrees by publication, and professional practice-based research. It
+also looks at how, as supervisors, we can support students to get on with
+their work and overcome difficulties, so maintaining momentum.
+Stage 4: Managing the Research Process to Completion and
+Beyond
+The fourth stage looks at \.vriting up; preparing for the exarnination and
+assumptions underlying examining; supporting your student's viva prepara-
+
+Introduction
+
+11
+
+tion; carrying out any necessary post-viva work, and supporting them as they
+head off into their academic lives - conference presentations; publications;
+research; and recognising the skills they have developed .
+
+.
+
+..,. Structure of the chapters
+Each chapter begins with a summary of areas to be covered, raises issues
+and questions in task boxes, and pulls together good practice suggestions
+from research, scholarship and experience for your consideration. The initial
+focus in each chapter is on postgraduate research, although it is assumed
+that the necessary stages of developing research are very similar in kind if
+not in scope to those needed by undergraduates. Where they present as very
+different from postgraduate supervisions, specific sections will look at
+masters and at undergraduate supervision.
+Several chapters contain practical or reflective activities/ tasks for students
+to undertake as part of the process of being supervised and of carrying out
+effective research. Each chapter ends with a summary of the main points
+and, where appropriate, further reading.
+
+The primary readership for this book is anyone who supervises undergraduate or postgraduate research projects and dissertations and theses, although
+students will also find its ideas useful to them in their research. Based both
+on research and experience, this book provides an essential, accessible, yet
+scholarly guide for both new and experienced supervisors.
+
+Stage 1
+First Stages of Research
+Supervision - Getting
+
+Started
+
+2 Supervision Differences
+
+Jn addition to research evidence based information, this book uses the learn ing journeys and interviews of a range of students and supervisors. It is only
+fa ir then that I should start with myself and my research as a learning
+journey to begin debates about the different experiences of being supervised,
+the postgraduate project, undergraduate study, and learning communities that is, fitting supervision into a broader context of support.
+The chapter considers d iscipl inary differences, different supervision
+models for different stages and current trends and tensions in research for
+the PhD in particular.
+
+This chapter considers:
+• being supeNised 011d studying
+• postgraduate and undergraduate supervision
+
+• different forms ofsupervision for different learners in different
+disciplines
+
+"" My experience as a research student
+Undertaking an MA and then a PhD \Vere two of the most important decisions I ever made . Achieving them both was amazing, giving me a real sense
+of progressing in my own learning and boosting niy confidence. In addition,
+although that is not why I undertook either of them, they have proved enormously useful professionally. My MA was part-tirne, Monday evenings, while
+1taught at a local school and then at an FE college. It enabled my brain to get
+into gear. Mine was an English MA ; we looked closely at poetry,
+Shakespeare and modern fiction. There were only a few of us, so we all
+discussed furiously. The tutor was one of the group. we made friends. When
+the teaching stopped, we carried on learning, supported each other, met
+15
+
+16
+
+The Good Supervisor
+
+regularly, socialised, passed on references, looked at work-in-progress and
+discussed critical issues touched on in seminars. Most of us were local, but
+one person commuted for two hours each ...vay.
+Then I undertook a PhD. This was a six-and-a-half-year venture, although
+I certainly had not planned il lo be. To begin with, I experienced loneliness
+and isolation. I had just a vague idea of an area I wanted to look al, no question. Thal emerged later on. I was in an individual learning relationship with
+my supervisor. who was happy to talk about my \vork (sent in advance); on
+one occasion for seven hours non-slop unlil the penny dropped - a fundamental theoretical and conceptual issue engaged in my mind with the actual
+work I was doing - and I rnade a learning leap out of the fog of incomprehension . After that I \NOuld send chapters, drive the 120 miles to reach him,
+talk for an hour about the work. and get on with it. There was no email and
+I rarely phoned. The meetings were special and immensely supportive. When
+I first started, rny supervisor sho\.ved me a w hole filing cabinet drawer of
+students who had never completed. However, apart from archery, long
+distance running was the only sport I ever even thought of doing reasonably
+well and this was certainly a long haul. Thank you, Brian Lee (Nottingham
+University). for sticking the course!
+Another thing my supervisor did 1,vas to suggest that I was part of an academic community, so I went to conferences and contacted experts. One of
+these experts lent me books and introduced me to his research group. Then I
+had friends lo talk with about our \vriters. We punted, ate at each others'
+houses, passed journal articles betvveen us and eventually, after job moves
+and life changes, I finished (this is still a surprise!). My external examiner
+was internationally renowned. He told me, via my supervisor, that I had
+'passed' in advance of the viva. This was so liberating. fl was the equivalent
+to being told, prior to my A levels, and as part of my interview, that I only
+needed an 'E' lo get into university. Sornelhing critical that I've learned from
+this is that taking the pressure off produces the best results with some tense
+candidates. Thank you, Tony Tanner (King's College, Cambridge), my external examiner. we had a collegial. but nonetheless rigorous. hour and a half
+of viva, which I actually enjoyed. 1IO\vever, one reviewer of this book
+commented that this revela tion is expressly forbidden in some universities
+and can be seen to encourage an 'old boys' club' attitude - inviting some
+students in but making others undergo the strains of not knowing. Recent
+experience as an examiner has suggested to me that while ·you've passed!'
+reduces anxiety, it can also lead to unstructured, incoherent discussion and
+some silences (e.g. candidate and examiner).
+My own MA students are mostly local and have developed support groups.
+My PhD students are a mixture, some locally based, one in Africa and several
+
+Supervision Differences
+
+17
+
+in Israel. Some are studying English, some women 's studies, some learning and teaching - related areas.
+Undertaking research means students are entering a dialogue with academic com munities in their subject, eventually contributing in the shape of
+dissertations, theses and conference papers. Setting up academic communities of learning, locally or at a distance, via emai l, supports learning and
+reduces isolation. Likeminded colleagues can act as a research group,
+discussing issues and work-in-progress, contributing ideas, and enthusiasm
+for reading and writing opportunities during and after the long slog that is
+data collection, analysis and writing up (see Chapter 13) . Academics in the
+same field might also be happy to discuss ideas, so putting students in touch
+with them can help nurture dialogues and careers.
+
+..,. The postgraduate project
+
+Postgraduate work needs to be original in some respect, although it does
+not have to be world shattering. Otten postgraduates imagine their MA,
+MPhil or PhD is a huge and unmanageable piece of work. Wel l, it might
+seem so at the start, but the main point is to see it as a 'doable' project,
+recognise not only those gaps in their knowledge (to be addressed) but also
+boundaries to the work. There will be variables the student will not address,
+sub-questions others can ask, and, depending on the subject area, action
+resulting from findings and evaluation that could lie beyond the frame of the
+research. In the sciences, and some social and health sciences, it is not
+unusual to have an experimental model where a problem, question or
+hypothesis leads to experimentation, the design and testing of models,
+producing results that feed into further \.vork beyond the scope of the thesis
+or dissertation. In the arts and humanities, and again some social science
+and health projects, there is exploration, problematising and questioning
+areas of knowledge in writing, music, art, history, etc., to answer speci fic or
+broader questions about values, representations and cultural contexts.
+Models for change would usually lie elsewhere, beyond the research itsel f,
+although in some research designs, models for change are the subjects of
+the study.
+Boundaries are important. Your student cannot research the whole field,
+eve1ything about the subject, or all the questions that interest them, but
+rigidity is also a problem. Planning a piece of work which has a rigid design,
+with questions to which the student already knows the answers, will probably not result in a masters dissertation of real quality and certainly will not
+produce a PhD. Research should be planned, but should also throw up some
+
+18
+
+The Good Supervisor
+
+surprises, extending thoughts in the field in critica l ways. All research, and
+particularly postgraduate research, needs to engage with previous work in a
+dialogue, so lhal whi le it might star t w ith a literature review, this should not
+be a dead list of sum1narised reading, but should comprise a dialogue
+between experts' and the candidate's own research. Undergraduate research
+also needs to be original in its contribution, insofar as students make their
+O\.Yn synthesis of existing research and carry out their own fieldwork, experiment and analysis. The best undergraduate research is very original, and
+creates a good basis for further research. With increases in sludent numbers,
+the length and frequency of undergraduate written work throughout the
+course has tended to be reduced, making the research project or dissertation
+into a daunting learn ing and writing task. However, there are other opportunities for students to develop research skills in, for example. independent
+learning modules if these focus on research skills. Indeed, students should be
+encouraged to start developing sound research skills for their early essays as
+these will stand them in good stead when a long and deep project or dissertation must be tackled.
+
+~
+
+Developing and enabling supervisory relationships
+
+Students need to be able Lo engage with and work with their supervisors
+(often very busy people, who nevertheless benefit from development, experience and the sharing of good supervisory practices). Working in a research
+dialogue w ith a student focusing on areas of n1utual interest, is a most
+reward ing interchange, but it is also a job which, like a concertina, seems to
+expand. Supervisors can worry that they have not been in touch v.iith
+students enough, or that they are doing too much of the work - translating
+ideas into research activities. suggesting reading and clarifying. Students in
+research methods development sessions often laugh at the idea that supervisors could do too rnuch, but it is necessary to guide students into autonomy
+and away from dependence. The supervisory relationsh ip varies with
+subjects, cultural expectations. learning di fferences, gender, distance and
+whether the student is part-time or full -time. Full-time students engaging in
+scientific research alongside their research group and supervisor might meet
+regularly for small amounts of supervisor input, a masterclass, monitoring
+and directive, but then they could find that they are not sure which parts are
+their own work, which decisions they have made and what is rnore properly
+the work of the group and supervisor. These are issues of ownership that
+must be sorted out early on, so students can identify their own research
+progress and achieve their outcomes.
+
+Supervision Differences
+
+19
+
+Many research students work in relative isolation, especially in the arts
+and humanities. Perhaps this avoids the group ownership problem, but there
+are benefits to be gained from developmental dialogue with an academic
+community of practice which both supports research and helps the development and clarification of complex conceptual ideas through the opportunities it offers for arliculation and debate.
+My distance students tend to send me 40-50 pages of revised chapters and
+expect immediate responses. Sometimes their English creates a stumbling
+block to understanding their argument. Students can phone at awkward
+moments with serious concerns, then 'disappear' for months on end, unresponsive to pro1nptings by mail or email. Students working at a distance,
+studying part-time and those whose learning culture background differs from
+that of their supervisor or \A/hose English does not allow them to express all
+their thoughts clearly are in a very different position to those whom we meet
+regularly. My Master's students and I enjoy a study weekend away at the
+seaside. Apart from sharing each other's \Nork and getting to know each
+other. there is ample opportunity to ask questions about their research and
+share research developments. None of this is on offer to students studying
+overseas. Clarity of mutual expectations. ground rules about regularity, the
+type and focus of supervisions and agenda setting are all essential in a good
+supervisor/student relationship. So. too, is the involvement of the student in
+a supportive academic community. This is true of all disciplines, all levels, all
+geographical areas.
+
+... Quality time
+
+Students require specifically focused moments to concentrate on the development of their individual projects. Casual regular meetings or group activities are not focused enough on the individual. For those studying part-time
+and/or at a distance, regular contact times should be arranged. Supervisors
+could ask students to send email drafts of work and comment on these in a
+regular online office hour, send ing back annotations and following this up if
+necessary with phone calls w hen tricky conceptual moments or learning
+leaps arise. For supervisors w ith postgraduates from different cultures, it is
+important that both halves of this relationship work in the context of some
+understanding of each other's cultures, expectations and learning backgrounds (see Chapter 12).
+Supervising at a distance is a difficult skill to learn. It is preferable to meet:
+(I) at the beginning to clarify working arrangements and directions of the
+research; (2) in the middle to maintain rnornentum; and (3) at the end of a
+
+20
+
+The Good Supervisor
+
+large research piece such as a 1nasters o r PhD. As they complete, students
+need support in expressing the coherence of their work; ensuring the
+conceptual framework is clear and that theori sing underpins their work; and
+that theories. arguments and findings weave throughout the research as a
+whole and are finally pulled together in conceptual findings and a conclusion. Students often need guidance to ensure there are clear links between
+chapters and good signposting throughout so that the completed dissertation
+or thesis e1nerges as a cohesive, well-focused contribution to debates in the
+field .
+
+.,. Undergraduate study and supervision
+
+For some reason that I no longer remember, I did not do a dissertation as an
+undergraduate, so the shock of planning, undertaking and \.Yriting a long
+study at masters level was considerable. Some academics would like to
+remove the dissertation from undergraduate courses, arguing that it carries
+too much weight in a degree. As someone who was not required to produce
+one, I disagree tota lly. A dissertation offers students the chance to undertake a piece of research in an area of interest to the1n and to pursue it
+through to completion. Undergraduates present with broad areas of interest
+just like PhD students. Our work together is to define a research question,
+provide a workable title. be exploratory and problematising, but also
+specific, enabling them to avoid trying to cover too much ground, too many
+texts, too many questions Undergraduates are not expected to carry out
+quite the original, creative, problem-solving work that is expected of a PhD
+candidate, or at least not to the sa1ne extent. Their project is much shorter in effect, much more like the kind of research project you meet in a job,
+during your professional life, something manageable of approximately 7000
+words, with the right kind of scholarly apparatus (abstract, references, etc.)
+and research approach. However, now that many students are on modular
+courses writing on ly 1500-2000-word essays, a dissertation feels like a large
+task. It is so much more than the sum of its parts, which themselves could
+be described as four or five short essays (to let it seem manageable in terms
+of length). Actually, the dissertation is a conceptualised, w ell-argued, holistic product with theories, references and themes running fron1 the opening
+pages through to the final and conceptual conclusions. An undergraduate
+dissertation is a first step in research, demanding the development of
+research ski lls. A postgraduate dissertation or thesis is a similar product and
+process, but is much longer, deeper, rnore original and more conceptually
+complex.
+
+Supervision Differences
+
+21
+
+.,.. Making it real
+
+Students need regular supervision to define their research project and undergraduates might need a much tighter rein than a PhD student. It is a shorter
+project in terms of ti1ne as well as length, with none of the potential elasticity of completion time accorded to postgraduate study (although this is
+increasingly less true as completion becomes an institutionalised objective).
+Undergraduate dissertations have to be carried out in less than a year, which
+means they must be well-planned, achievable and capable of being
+completed quickly.
+Undergraduates learn to define a realisable project for their research, to
+plan the timeline and to select and defend methodology and methods. They
+select sarnples and develop a research design, and learn the art of data
+analysis and of keeping good referencing records. They also learn presentation skills, if presenting to peers, and writing skills, such as good expression
+and coherence between abstract, introduction, chapters and conclusion. All
+of this will contribute towards ensuring an organised piece of work and
+establish good working practices for longer projects later. Many will produce
+work which is not staggeringly original, but it:
+•
+
+•
+•
+
+should contain originality, whether this is a combination of arguments
+against which is set the student's own argument and discussions; a new
+combination of areas; or a focus which is explored in depth;
+will avoid plagiarism, using the work of theorists and critics in a dialogue
+with the student's own arguments and findings;
+rnust contain:
+(I) an argument, not just a survey
+(2) good referencing
+(3) development of methods in action
+(4) evidence of working at a conceptual level - making meaning
+(5) recognition of significance, and argument and ideas.
+
+Supervising students carrying out research for postgraduate and undergraduate dissertations or theses is probably the most rewarding teaching we can
+do. At least I have found it so and have met colleagues who agree, both
+locally and internationally, in everyday practice, at educational development
+sessions, and especially in relation to the large cohort-based international
+PhD programme on which I have worked since its inception in 1997. My
+colleagues, the programme director Dr Gillian Robinson, co-tutor Prof.
+Vernon Trafford and latterly three of 'our' post-doctoral colleagues, Dr Shosh
+Leshem, Or l\~iri Shacham and Dr Yehuda Ben Simon, have all contributed to
+
+22
+
+The Good Supervisor
+
+the learning conversations about supervisory practices, and the learning
+conversations that forn1 supervisions for us. It is colleagues al workshops
+and students at PhD, PrD, EDD, Master's and undergraduate levels who have
+produced some of the suggestions about supervisory practices that form the
+bulk of this book. lt is a truisn1, of course, that v-.re learn from our students,
+but nonetheless true for all that! And hO\.Y, we might ask, can undergraduate
+and postgraduate supervisors be rolled together in this way? One of the
+distinct differences is that of the sca le of supervision or the scope of the
+project.
+
+~ The role
+
+The supervision role is n1uch more clearly defined as a professional relationship than that of tutor, friend or colleague and it relies on more than goodwill and spare time. It needs to be, and in 1nany cases is, the focus for
+developrnent and 'training', allhough I don't like the n1echanistic overtones
+of that tenn. Students at all levels need guidance, modelling and managing
+so that they can start to develop as independent researchers. This seems to
+require a rnixture of the specialised, developed skills discussed above developing reliable research questions, conceptual frarneworks, methods
+and analytical skills and tools to enable the research to come to organised
+fruition - and people skills. we wi ll consider here generic research supervision at undergraduate and postgraduate levels, using postgraduate practices
+and perspectives as fundamental underpinning models as well as interpersonal skills. Colleagues I have discussed supervision \Nith confirm my own
+sense that \A.re are alvvays expected to 'tuck' supervision in, lacking focus on
+the very systems and practices of teaching and guidance it requires.
+Currently, increasingly driven by governrnent objectives and quality assurance demands, the role needs to be clarified and supported by expl icit development, recognition and reward. This is particularly so in Australasia where
+postgraduate supervisory practice development is now increasingly compulsory, possibly because funding is attached to postgraduate co1npletion
+(students are funded from the outset, but their completion feeds into funding
+a formula for future students, each completion being worth approximately 50
+per cent for a new student). Supervisory development enables us to discuss
+and adopt good practices \Ne share and develop in such contexts (and the
+horror stories fron1 which we have learned). These feed into all our supervisory work, at every level. We can also now benefit frorn a growing research
+base. The next sections look at research into supervisory practices, models,
+and at supervisor development programmes.
+
+Supervision Differences
+
+23
+
+.,.. Tensions and developments in postgraduate
+research and its supervision
+At the start of a doctoral supervision I make a point of underlining the
+possibility of failure. It has to be c1ystal-clear that enrolling, even as a
+well-qualified student with a good Master's degree, as a doctoral candidate has no implications for success either with the thesis or on the job
+n1arket. Hard facts, but honest ones. By definition, there can be no guarantees that a project will produce an original contribution to knovvledge.
+society needs a contingent of people who have understood that ideas
+cannot be bought, and who resist the creeping managerialism besetting
+intellectual inquiry. Putting 'pure research' (the quest for knowledge) first
+is not the product of an ivory tower; it is deeply political. If we are to be
+defined only in terms of the needs of one profession, how can change
+occur? How will old injustices and prejudices be overcome? Great
+research is original, challenging, and the product of minds able to see
+beyond narrovv, pre-set goals. The current trend towards managing
+research (in theo1y, only its infrastructure and resources) has already led
+to a preference in the funding bodies for neat, well-planned projects,
+commercially contracted in advance, as opposed to 'blue skies' research.
+(Newman. 200 l , p. 16)
+Newman's comments on the dangers, tensions and social context for
+research students in English spell out issues for all disciplines. A manageable
+piece of research might be produced at the expense of real creativity and
+contribution to knowledge. Students can fail. Debates about supervisory
+practices and their development are located right at the centre of such
+tensions.
+Key issues when we consider research supervision are the nature of the
+research process, the aims and scope of the research itself, and the student's
+own self-development. Here a major tension emerges between the managed
+and manageable piece of research and the creativity, arguing and space to
+make mistakes and learning leaps that the research experience offers.
+Leonard (2001, p. 39) acknowledges the tensions between the usefulness
+of postgraduate training courses, JCT to aid doctoral learning and supervision, and the current over-bureaucratisation of the supervision process - a
+possible problem for developing a creative atmosphere. Of importance here
+is the argument that the culture of emphasising co1npletion could lose us the
+exploration, creativity, problem-solving and sheer originality of research,
+especially at PhD level.
+In the UK, the ESRC's pressures to complete match those in Australia and
+New Zealand to link funding to completion: 'a powerful mechanism for
+
+24
+
+The Good Supervisor
+
+research steerage' (Ozga, I 998). This could lead to a different kind of thesis
+at PhD level, one which could be more time-managed, feasible, boundaried,
+planned and achieved - but alternatively could be less creative, less involved
+in r isk-taking or originality.
+The PhD thesis used to be conceived as a major piece of work on which
+authors could draw for their first n1onograph and several important articles. Increasingly, however, even in the humanities (where the AHRB has
+still not made a requirement for taught courses) all doctorates are becoming 'Kentucky fast research'. That is to say. they 'should' all now be
+pitched at a 'manageable level' , \Nith the capacity to succeed under pressure, and time 1nanagement, of paramount irnportance - rather than a
+PhD at least tackling an issue of irnportance to the discipline and the individual student, hovvever long it takes. In the natural sciences, more original work has always waited till postdoctoral level. but research here has
+been steered towards 'more boring but patentable paths'. (Power, I 997.
+p. I 00)
+The conveyer belt version could threaten creativity. Students are now being
+m ore explicitly encouraged to see even the PhD as an opportunity to develop
+a w ide variety of research skills for future use in researching and other areas
+of professional practice. Vital elements are:
+learning to exercise disciplinary judgement. that is to say acquiring the
+academic equivalent of 'good taste': knovving \.vhen an experiment has
+·worked', how best to gain access to a research site, hO\¥ to evaluate
+sources, how best to choose theories and critical cases, what there is to be
+seen in the data, when a reading is plausible and an analysis correct, how
+to construct an argument, and how to write and present a good paper.
+(Leonard, 200 I, p. 4 I)
+Supervisors play a key role here - model ling, advising and supervision are
+part of our own development process:
+Ne\.vcomers need neither to be left lo reinven t the wheel nor to have
+didactic teaching. Rather they need a practicum . with supervisors who can
+demonstrate, advise, observe performance. detect errors of application
+and point out correct responses. This is the induction \.Vhich students find
+exciting and the reason \·vhy they subrnit to many years of (often unpaid)
+work. It is also vvhy it is essential for acadernics to combine teaching and
+research - not to acquire a knowledge base, but to have a feel for the
+process of construction of disciplinary knowledge. (Leonard, 200 I , p. 42)
+
+Supervision Differences
+
+25
+
+Cramming the PhD into only two or three years of work could result in the
+loss of a creative element. Leonard and others suggest that important postgraduate research skills could be learned either in a period as a postdoctoral
+student, as in the sciences, or in an initial period of employment before
+'tenure· is granted, as in the American system. Alternatively, the widespread
+development of the Master's in research could enable students to learn skills
+before embarking on a PhD. Some supervisors of research argue that instead
+of enhancing research, the focus on skills could result in a decline in
+research standards.
+People undertake research for a variety of reasons. For many undergraduates it is a compulsory part of their degrees; for some postgraduates it is an
+opportunity to engage in work that informs their professional practice. For
+many, this is not mutually exclusive - it is a chance for personal growth and
+intellectual development.
+So why is research worth the effort? Undertaking research in any subject
+consists of problematising whatever is given, putting enquiry into action and
+learning hO\.v to develop an evidence base for knowledge claims and contributions. Research is U1e essential learning process, cast of mind and set of
+skills.
+
+..,. Different sorts of supervision for different
+disciplines and learners
+
+Supervising research demands that we too, as supervisors, develop a range
+of research related and interpersonal skil ls: we must align our practices and
+learning behaviours with those of our students, nurture, prod, push, support.
+encourage, insist and guide them, and then encourage independence. It's a
+tough job, but endlessly rewarding.
+Delamont et al. (l 997) note that all supervision is a self-conscious rather
+than intuitive activity: 'good, pleasurable supervision is based on selfconsciousness, not intuition or nying by the seat of your pants' (p. I).
+Supervising is partly a set of skills that can be learned and improved with
+practice. Like other studies suggesting good supervisory practice, the
+Delamont et al. study arises from research, the earliest example of which was
+the Spencer Foundation's 1987 three-year research programme in five countries (Clark, 1993). In taking into account the effects of mass higher education, the labour market demand for advanced education, knowledge
+expansion and an increased government role in the patronage and supervision of research, Clark { 1993) discovered greater similarities within than
+betv.1een disciplines in terms of supervisors' needs, despite national differ-
+
+26
+
+The Good Supervisor
+
+ences. In effect, Japanese historians had more in common with the ways
+other historians went about their research than they did with Japanese biologists, for instance.
+Clark argued 'the future of British acadernic science is quite problematic'
+( 1993, p. 369), because the 'tension between university and state is great' (p.
+369). Becher Cl al. ( 1994), contributing to a book on global aspects of
+research in graduate education (Clark, 1993). went on to publish the British
+chapter as a separate monograph. Following concern about poor completion
+rates (Blume, 1986, pp. 217- 22), the British ESRC launched a research initiative on the social science PhD (Burgess, 1994). Two ESRC-funded projects on
+science PhD students and their supervisors followed, so that by 1995, the UK
+had developed a substantial body of data on doctoral study.
+•
+International comparisons reveal differences in postgraduate education:
+France has the CNRS system, as well as the 1984 reform of the doctoral
+degrees, \Vhich led to the single doctorate followed by the habililalion. The
+USA has the largest and most diverse system. (Delamont c l al.. 1997,
+pp. 8-9)
+However, the overwhelming effects of supervisory cultures and provision for
+research are more significant than national differences.
+The supervisory cultures and the existence or absence of a laboratory
+setting for research are rnore important for the life of the individual
+student than the particular nation state, despite Traweek's findings on
+physics. (Traweek 1988, in Delamont cl al., 1997, p. 9)
+Different disciplines niight demand different kinds of research paradigms
+and behaviours (Conrad, 1999). Parry et al. (1992) note that anthropology
+students require immersion in the field, while Gumpert (1993) and Becher
+(I 993) indicate that historians are expected to be independent practitioners,
+in contrast with students in the physical sciences. Acker, Hills and Black
+(1994) use interviews with supervisors and students to define strategies and
+styles of supervision contributing towards students' successful research
+practices and cornpletion in relation to disciplina1y differences, considering
+different stages of supervisions and matching different stages of the
+students' work. Acker el al. ( 1994) con1ment on the social sciences alone,
+considering two subjects, education and psychology, in three different
+universities, which conceptualise knowledge and v1Jays of undertaking
+research in their fields in ralher differenl ways. They also suggest two modes
+of supervision: 'The technical rationality model gives priority to issues of
+
+Supervision Differences
+
+27
+
+procedure or technique, while the negotiated order model conceptualizes
+supervision as a process open to negotiation and change' (Acker et al., 1994,
+p. 483) . These are based on contrasting beliefs about learning and the
+student /supervisor relationship. Of the 'techn ical ration ality' model they say:
+The PhD can be either a training exercise or an original contribution to
+scholarship; the student an apprentice to a faculty member or an independent scholar; the goal scholarly crea tivity or speedy completion. The
+discussion to follow considers another such tension. (Acker et al., 1994,
+p. 484)
+In contrast to the 'technical rationality' model:
+The negotiated order model, alternatively, derives from the interpretive or
+interactionist approach to organizational cultures and the student career
+in higher. usually professional, education (Becker, 1970; Oleson and
+Whittaker, 1968; Strauss and Corbin. 1985; Woods, 1990). Actions of
+students and supervisors are based on perspectives derived from their
+past and present experiences. interactions with others, and interpretations
+of situations. Situations are characteri zed by uncertainty, uniqueness and
+value connict (Schon. 1987, p . 6) making the application of technical rational solutions unrealistic. Mutual expectations between supervisors and
+students are subject to negotiation and change over time. The student,
+like the supervisor, participates fully in negotiating and interpreting meanings. (Acker et al.. 1994, p. 485)
+Built on emotional intelligence, differing from more didactic, scientific,
+established rnethods, the model is rnore natural Lo and possibly best suited to
+professional interactions possible wi th students w ho are career professionals
+themselves or likely to move into professional roles.
+Acker et al. ( 1994) scrutinised 67 students' transcripts, 56 supervisors and
+14 other rel ated persons such as administrators. tutors in charge of research,
+heads of departments and secretaries. They found differences of opinion and
+exper iences with regards to stock elements of supervision ranging from: (I)
+tutorials where agendas were seen as set by students or supervisors or as
+negotiated; and (2) work consisting of reporting or guiding or nurturing.
+Several students found it difficult to take responsibility in tutor ials. There
+was enough agreement as to the conduct of a good tutorial to provide acadernic guidance on running one.
+Different supervisors had style preferences. Some were directive and taskoriented; some seem ed too busy to give the time to the students. Supervisors
+saw students as differing in the amount and kind of direction and supervi-
+
+28
+
+The Good Supervisor
+
+sion they needed, some modifying practices aller the ESRC's directive on
+completion .
+Dimensions of the relationships between supervisor and learner w ere also
+discussed. Some supervisors preferred to be close, inviting their student to
+dinner, having international students to stay for Christmas, for instance;
+while others retained a distance. Students responded to differences in supervisors by adapting their O\vn styles (although some could not):
+Several students indicated that infrequent supervision had taught them
+ho1;v to be assertive, perhaps seeking help elsewhere, or to be better
+organised. Some thought that their supervisor had intended this outcome.
+(Acker et al., 1994. p. 494)
+One major problematic issue indicated in the study is that supervisors who
+are pressed for completion rates move towards the 'technical rationality' and
+directive rnodels while rnost have been seen to prefer lo work in the 'negotiated order' model, and indeed this latter model seems to better fit the
+demands of a broad range of supervisors and students.
+Kiely ( 1982) and Bargar and Duncan ( 1982) argue that supervision should
+be devoted to the fostering of student creativity. Doctoral research should be
+a 'lived, integrated experience of creative problem-solving' {Kiely, 1982, p. 5).
+The supervisor's task becon1es o ne of facilitating rather than directing.
+Blanton ( 1983) terms this 'midwifing the dissertation'.
+Burgess et al. ( 1993) suggest that the business studies supervisor was likely
+to start out as 'project manager' and end up as a 'critical friend'. Some
+researchers indicate that more 'direct' supervisions get good results, while
+others prefer negotiation. Culture, discipline, study stage and personality
+probably pl ay equal parts in this. Wright and Lodwick ( 1989) use factor
+analysis for interviews with 43 supervisors to identify six styles of supervi sion, finding that supervisors who were 'outstanding' in terms of completion
+rates used ' intellectually nurturing' and ·nexible' styles - negotiated, nexible
+styles n1oving between the directive and the nurturing at different times have
+more likelihood of enabling students lo work towards completion. Certainly
+this claim fits in with the supervision paradigms which I and colleagues
+(Wisker, Robinson and Trafford, 2003) have discovered in our own work with
+cohorts of Israeli PhD students. Whether supervisors are acting as midwives,
+critical and creative friends, rnanagers or directors will affect the differing
+work responses of students, but so too will the students' kinds of research.
+Recent studies (Brew and Peseta, 2004) identify a range of styles accompanying different stages in the student's work as much as differences in
+disciplines.
+
+Supervision Differences
+
+29
+
+Delamont et al. ( 1997) highlight clashes:
+
+2
+
+students needing more carefully organised direction when a supervisor
+has a more casual approach
+supervisors feeling that students need their hands holding while they
+should be encouraging independent thought.
+
+Apprenticeship models, more common in the sciences. probably encourage
+less initial autono1ny or authority questioning in the student. It could be
+argued that some international students, for instance, expecting the apprenticeship model and finding a 'negotiated order' model would need careful
+induction into the very different kinds of expectations and interactions it
+encourages.
+Along this continuum there are many potentially successful matches and
+an equally large potential for misrnatch. IL is the mismatches that result in
+unhappy students and non-cornpleted work.
+We will return later (in Chapter 8) to consider supervisory roles and supervisory dialogues. Both research and supervision are becoming more professionalised in practice. As students are increasingly expected to undertake
+research training and developrnent (see Chapter 3), it is not surprising that
+universities expect supervisors to engage with support and development
+programmes, and to become more renective and professional in their roles.
+Increased research student numbers and national pressure to improve
+completion rates have all contributed towards the innovation and enhancernent of supervisor development programmes. The next chapter explores
+and discusses some of these programmes with a specific emphasis on
+programmes in Australia and the UK, and on my own supervisor development workshops .
+
+.,.. Further Reading
+
+Acker, S., Hills, T. and Black, E. ( 1994) 'Thesis superv1s1on in the social
+sciences: managed or negotiated?', 1-Jigher Education, 28, 483- 98.
+Delamont, S., Atkinson, P. and Parry, 0. (1997) Supervising the PhD: A Guide to
+Success (Buckingham: Open University Press).
+Leonard, O. (200 1) A Women's Guide to Doctoral Studies (Buckingham: Open
+University Press) .
+Newrnan, J. (2001) 'The shape of graduate studies in English'. Issues in English:
+Doctor' Doctor! Doctoral Studies in English in Twenty-first Century Britain, I
+pp. 15- 24.
+
+3
+
+Supervisors Studying:
+Development
+Programmes
+
+The policy in Australasia is for postgraduates to be funded upon completion
+rather than registration of their studies. In the UK, recent publications (e.g.
+the Metcalfe report, Metcalfe et al., 2002), have shifted attention to the need
+for development programmes or opportunities for supervisors to support
+thern in focusing on irnproving research supervision so that research
+students can benefit and, hopefully, complete in greater numbers.
+
+This chapter considers:
+• supervisor development programmes - workshops and online
+
+Metcalfe et al. (2002) identify the proportion of UK universities training and
+developing supervisors, insisting on the improvement of the extent of provision, v;hile recognising institutional differences:
+Training should be specified by the institution and compulsory for [ncw1
+supervi sors. !\II supervisors, whatever their level of experience should
+have regular training.
+57% require training of new supervisors
+24% require training for all supervisors
+Specify the rncans by \vhich a supervisor can seek independent advice on
+supervisory issues, especially if they have concerns about a student's
+ability or application to the study progran1me. (Metcal fe et al., 2002, p.
+46)
+As professionals, supervisors can benefit from development models enabling
+30
+
+Supervisors Studying: Development Programmes
+
+31
+
+the sharing of good practice. Workshops, accredited programmes. online
+supporl and opportunities to enhance practice using narratives are the
+models favoured by UK, Australasian and other colleagues. we will explore
+examples of each.
+I have run a number of traditional workshops on postgraduate supervision
+(see the boxed example of a three-day programme, held at the University of
+the west Indies in 2003 and 2004). At such workshops, colleagues from a
+variely of disciplines, some very experienced, some relatively new to supervision. work together Lo explore case studies, exchange good practice. and
+consider ways to enhance their own supervisory practice. I wish to thankthem and workshop colleagues from other universities for insights.
+
+Progra m me Example
+
+PhD Supervis ion: A Supervisor Development workshop
+Professor Gina Wisker PhD
+
+Day 1
+Establishing good supervisory practices for a successful PhD
+Welcome and introductions
+
+Outcomes for the workshop
+I.
+2.
+3.
+4.
+5.
+
+Deciding who to supervise; what to supervise; and being
+supported in your supervisory development
+Establishing and maintaining good supervisory practices
+Starting to supervise - defining titles, developing proposals, the
+importance of the conceptual framework
+Concepts of research : an introduction to choosing research
+methodologies and methods
+Supervisory roles and dialogues - empowerment? challenge?
+
+Day2
+Maintaining momentum and successful learning/ supervisory practices
+I.
+
+Dealing with difference; working with different learners and learning styles
+
+32
+
+The Good Supervisor
+
+2.
+3.
+4.
+5.
+6.
+
+Developing critical thinking and good writing habits
+Gender and other differences in the supervisory relationship
+Supervising cross culturally, at a distance and offshore
+Helping students to help themselves and each other
+Writing transfer and progress documents
+Day 3
+
+Completing and achieving the PhD
+
+2.
+3.
+4.
+
+Dealing with difficulties: (I) in the research and development of
+the dissertation. project or thesis
+Dealing with difficulties: (2) in the supervisory relationship
+Writing up and submitting
+Getting ready for the viva. mock vivas. the viva process
+
+5.
+
+During and afterwards
+
+I.
+
+l?cview and close
+
+Models of supervisory development programmes range from training and
+instructional to narrative storytelling and sharing (McCormack and
+Pamphilon. 2004). Some programmes are workshop-orientated, some
+online, and some are mixed mode (Wisker. Robinson and Trafford, 2003) .
+Those using renective practice and online case studies exist at both
+Queensland Uni versity of Technology (Aspland et al.. 2002) and the
+Un iversity of Sydney, where, in the light of the new research training agenda
+in Australia, Angela Brew and Tai Peseta (2004) run a research supervision
+development programme, the ' Recognition Module', inviting research supervisors to produce an online case study of their own supervisory practice for
+supervisory development.
+Since 1993. approximately 400 supervisors have had some relationship to
+the University of Sydney Recognition Module, which provides an opportunity
+for colleagues involved in research supervision to draw together their work.
+building on workshops, and utilising scholarly reading on research supervision. The developn1ent of an informed case study moves supervisors on frorn
+their own established practice, oll:en modelled on how they were supervised,
+encouraging awareness of this and how they incorporate research information on good practice. Case studies show reflection and development. The
+tutor team provide feedback and the case goes online as a resource.
+Participants are invited to focus on the stages of research development,
+differences in learning, culture, distance, gender and subject area, and differ-
+
+Supervisors Studying: Development Programmes
+
+33
+
+ent research paradigms within which students are working, whether they are
+undertaking research related to professional practice or more thematically
+based disciplinary or interdisciplinary research.
+Case studies depict incidents of teaching and learning and raise pedagogical issues and prompt discussion of them (Hutchings, 1991. p. I).
+Renective practice is enhanced if a case study contains four dimensions.
+1
+2
+3
+
+4
+
+Authentic - the issue must be anchored in real-life experience.
+Concrete detail - sufficiently rich in context so readers can make decisions about how to proceed.
+Cases are most effective when written in narrative form - so the reader
+
+identifies with the issues and characters, and has some emotional
+investment in how the action unfolds.
+Open-ended - 'open to various interpretations and not suggestive of a
+particular or correct course of action'. (Brew and Peseta, 2004, p. 9)
+
+Brew and Peseta (2004), McCormack and Pamphilon (2002), Aspland et al.
+{2002) and Delamont et al. {1997) all use case studies. Examples include
+extracts from narratives, interviews and short real life case studies for
+consideration. These help to develop and share ideas on good practice in
+supervision.
+Writing case studies as a form of scholarly and professional development
+within the context we have outlined is our attempt to engage with what
+Boud, Cohen and Walker (1993, p. 9) call 'moving colleagues beyond their
+experience and what they observe around them into new worlds of practice'. Ottewill et al. (2002) point to seven ways in which case studies can
+inform educational development in this way:
+I.
+2.
+3.
+4.
+5.
+6.
+7.
+
+By arousing curiosity thus preparing the way for experimentation.
+By disseminating good practice.
+By moving the emphasis from how to do something to how it has
+been done by others.
+By stimulating ideas and discussion and reflective practice.
+By helping to develop learning communities.
+By providing legitimacy for variety in educational practice.
+By providing a basis for generalisation on the basis of collective experience.
+(Brew and Peseta, 2004, p. IO)
+
+The intention of larger case studies is to encourage reflection, rich practice
+descriptions, and to identify recurring themes, motifs and metaphors.
+
+34
+
+The Good Supervisor
+
+..,. Stories and narrative-based supervi sory
+development
+
+McCormack and Pamphilon (2002, 2004) use narratives in workshops as well
+as self-study for supervisors. They comment:
+Bruner ( 1986) has argued that narrative is one of only t\VO primary knowledge forms, the other being the paradigmatic form typified by scientific
+logic. To narrate a life experience is to tell a story and to create a story, in
+a way that is coherent to both the narrator and the audience. By appropri
+ating, interpreting and retelling the past from the perspective of the
+present, the self constructs itself (Kerby, 199 1). Further, this personal
+sense making must be ackno•vledged as a dialectic engaging the person
+within her/his cultural location. As people interact with the popular and
+rnarginal narratives of their culture, they learn ho•N to regard themselves
+and how to make themselves intelligible to others. (McCormack and
+Pamphilon, 2004. p. 25)
+McCormack and Pamphilon's workshop manual (2002) provides a wellresearched argurnent for the use of narratives and storytelling for persona l
+and professional development purposes. In their workshops with postgraduate supervisors. they base group \.vork and individual reflection around
+typical scenarios or stories of postgraduate supervision and postgraduate
+research, constructed from discussions and interviews with others. individu
+ally or in groups. It is important to involve those seeking development in the
+construction of their own stories, their own versions of supervisory activities
+arising from renection upon examples. Reflection and deliberation enable
+supervisors to interpret, question, develop and own values and good practice
+for postgraduate supervision. The articulation of ideas and practice forma tion arise from storytelling and sharing.
+Inviting people to share their stories as a way of understanding experience
+is a well-established procedure in group work. Naming experience (Linden,
+1999) and the extensive analysis of stories over several sessions in collective
+memory work (Haug, 1987; Lee and Williams, 1999; McCormack, 1998) are
+examples of this. Storytelling, as McCormack and Pamphilon tell us, is ·a
+strategy used by therapists' (White, 1997; While and Epston, 1990). It has
+parallels with the feminist consciousness-raising groups of the 1970s and
+1980s.
+her / his story may be appropriate or problematic, functional or dysfunctional. However at the centre of most approaches is the belief that the
+
+Supervisors Studying: Development Programmes
+
+35
+
+individual rnust learn how to change her /his story to a better one. By
+locating the problem within the individual no account is taken of the
+discursive locations of that person and the impact of contradictory and
+competing discourses on the individual. A post-modern understanding of
+the issue allows a more complex awareness of the individual to emerge.
+(McCormack and Pamphilon. 2002, p. 26)
+This is suitable in group work that addresses the needs of a variety of individual supervisors. Postmodern use of storytelling does not aim to help find
+'the Truth' and any single 'right' way to carry out supervision. Instead. using
+storytelling as a basis for identifying varieties of the role and good practice
+enables acknowledgement that supervision takes place in a cultural, histori
+cal. economic context related to the subject area and mode of supervisory
+relationships.
+
+~
+
+Using stories and narratives built from experience
+
+Stories open an individual (and group participants) to the possibility of re
+storying their life because such narratives have the potential to reveal
+both t11e 1nd1vidual and the collective nature of expt!rit:nce (McConnack
+and Pamphilon. 1998; Richardson. 1990. 1997). Stories act as a mirror \Ve learn about ourselves - but also as a window - a way of looking into
+the past, present and future experiences of others (Jalongo. !senberg and
+Gerbracht. 1995). Searching for the individual and the collective aspects in
+stories encourages readers to examine and question their own experiences. (McCormack and Pamphilon, 2004, pp. 3-4)
+Boud. Keogh and Walker (l 985) suggest that a three-part process of describing the experience. attending to feelings and interrogating the story enables
+readers or participants in group processes lo turn experience into learning.
+Questioning and reinterpreting enables consideration of ·new perspectives
+on an experience· leading to 'changes in behaviour· (p. 34). I hope you could
+use a similar structured questioning process to take you through the chapters
+and onto suggestions for good practice that have arisen from workshops on
+good supervisory practice in a variety of contexts. tn the process you could
+uncover your own assumptions and constructs (myths) about what you do as
+a supervisor, what you feel is successful, what might work in other contexts,
+what is less successful, what needs some development, and where you
+might move to next in your practice. Following a reflective questioning
+process is helpful (see the box on p. 36).
+
+36
+
+The Good Supervisor
+
+Levels of reflective questioning
+Describe the experience
+
+•
+•
+•
+
+What, in your words, is the story being told here?
+What is the point of the story?
+To whal extent is this also your story?
+
+•
+
+In what ways is it different from your story?
+
+Attend to feelings
+
+•
+•
+
+What feelings did the sto1y trigger?
+What do those feelings reveal about your experience of the story teller?
+
+•
+
+\"/hat do those feelings reveal about your experience?
+
+•
+•
+•
+•
+•
+
+\"/hat positive responses are in the story?
+How do you feel about these responses?
+Are sorne responses not present? Which ones?
+Why might they be absent?
+How do you feel about their absence?
+
+Interrogate the story
+
+•
+•
+•
+•
+•
+
+Are there vvords or concepts that suggest a particular world view?
+Which cultural values are elevated in this story?
+\tVhat ways of being have been elevated in this story?
+What might be the history of these w ays of th inking?
+What other ways of being and thinking are made invisible by this
+vvay of thinking?
+
+Source: McCormack and Pamphilon (2004) using Boud et al. ( 1993) pp. 7- 8
+
+Brew and Peseta's (2004) have drawn up a list of criteria for good supervisory practice, developed from online work and accompanying research (see
+the box on p. 37).
+At Anglia Polytechnic University (APU) a workshop programme is now
+augmented by online 'blended' support in line with Australian examples.
+Colleagues can visit the site and/or undertake a newly validated MA module
+in postgraduate supervision. based on working through the Online
+programme.
+Our sense al APU was that, because of the likely academic track record
+and position of supervisors, as well as their varied bul often extensive expe-
+
+Supervisors Studying: Development Programmes
+
+37
+
+Criteria for good supervisory practice
+
+2
+
+3
+
+4
+
+5
+6
+
+7
+
+8
+
+9
+
+l0
+
+Interest in and enthusiasm for the supervision of postgraduate
+research students.
+Appreciation of a range of good practice approaches to supervision and an understanding of what constitutes a productive
+research learning environment.
+Establishment, for and with students, of clear goats and expectations in the light of up to-date knowledge of the University's
+requirements.
+Productive and regular meetings held with students, which
+provide them with sympathetic, responsive and effective academic, professional and personal support and guidance.
+Careful management of the supervisory process to achieve timely
+and successful completion of the thesis.
+Development of a partnership with students that takes account of
+the need to assist them to develop a range of generic attributes
+and to introduce them to the research community.
+Open communications establ ished with students with timely feed back, which is both supportive and challenging, given on
+progress.
+Utilisation of a repertoire of supervisory strategies to take account
+of the differing and diverse needs of individual students, including
+assisting students from equity groups and those off-campus to
+achieve success in their study.
+Evidence of systematic evaluation of competency in supervisory
+skills and of critical renection and engagement with salient and
+emergent issues in their own field of research, to improve supervisory practice.
+Use, by the supervisor, of the literature on the scholarship of
+supervision pedagogy, and of relevant policy issues in research
+
+education lo enhance the postgraduate research experience of
+their students.
+source: Brew and Peseta (2004)
+
+rience, a developrnental forum that enabled reflection, aided identification
+and the sharing of good practice, making the implicit explicit, would be most
+appropriate. beneficial and likely to encourage supervisor 'buy-in', while a
+more structured and didactic programme would not. There is a precedent in
+
+38
+
+The Good Supervisor
+
+terms of resources and provocative thoughts Online in the UK: Pat Cryer's
+website: http:/ / ww\v.cryer.freeserve.co.uk/supervisors.hlm. This is a 'one
+stop' web resource for information and advice on research supervision; a
+resource rather than a course. Jn Australia, the FIRST progran1me is a developed online site maintained by Jo MacKenzie at the University of Technology
+in Sydney (UTS), \Vhich pulls together specifically rewritten materials for
+supervisory development online.
+Peter Kand lbinder and Tai Peseta {2000a) have launched an on line and
+workshop support rnodel so that:
+supervisors could choose to complete the programme as nexibly as their
+schedules perm itted. Sorrie supervisors completed just the vJeb-based
+modules, some only attended the 1,vorkshop programme, while others
+elected for a combination of both. (Kandlbinder and Peseta, 2000a,
+
+p. I)
+They built a flexible learning programme of three interrelated elerrients: webbased resources, workshops and supervisor case studies. Self-study enabled
+supervisors to work through the prograrnme in a variety of ways, or to
+access just the elements they felt they needed when they wanted to. A key
+element is an online discussion forum aimed at encouraging reflection.
+Similarly. Geoff Hill and colleagues at the Queensland University of
+Technology (QUT) use 'journeying postgraduate supervision', tapping into
+the narralives of postgraduates and supervisors, developing their practice,
+identifying with journeys, experiences and the case studies of others and
+reflecting on implications for their own practice.
+In the UK, the Open University (OU) EdD supervisory forum uses First Class
+to promote onl ine discussion of supervisory issues and practice, part of the
+OU's support for postgraduates, undergraduates and supervisors ('First Class'
+is an online messaging and discussion environment which is passwordprotected). Supervisors have a staff room on a virtual campus with bulletin
+boards, chat rooms and a supervisor development forum . J e-moderated a
+six-week long discussion in 2002. The OU have the infrastructure to support
+a complex development; at APU, they do not. The activity there was necessarily going to be srrialler.
+The idea of an on line supervisors' developrnent forum for APU supervisors
+came about from my experience of supervising Israeli, Arab, Chinese and
+African postgraduates at a distance. As a supervisor and 'guard ian supervisor' of the Israeli PhD programme, I felt I needed to discover and share
+examples of good practice between myself and other colleagues in a similar
+situation. Distance supervision is a rather lonely, sometimes troubling role,
+
+Supervisors Studying: Development Programmes
+
+39
+
+although as students begin to develop their clarity of thought and writing
+skills, it is also a very rewarding cultural experience. r was convinced that
+supervisors needed some support for their own role development. Since
+January 2003 I have been interviewing students, post docs and supervisors
+about their supervision experiences. They all have stories to tell - mostly
+
+very positive - about their relationship with their students and supervisors at
+a distance. However it can be difficult to get in touch with supervisor
+colleagues living far away, but establishing an online supervisory development forum can go some way towards facilitating the sharing of practice and
+support.
+The programme had to be designed to augment face-to-face provision;
+specifically to address the needs of distance supervising affected by cultural
+difference; bring together groups of supervisors spread widely around the
+country; provide a discussion forum and means of keeping in touch with
+supervisors; and provide a staff room in which to exchange and develop
+good practice. This dovetailed with an opportunity to produce an accredited
+MA Learning and Teaching module for supervisors. Our intentions were to
+produce an online supervisory development provision that could provide
+developmental support and the option of an accredited programme for both
+new and well-established supervisors.
+Our development was fed by our different experiences and by ongoing
+discussions with both students and supervisors on the programme. Some of
+these we felt were rather more analytical and specific to the programme
+itself and others generic to supervision . Supervisor /student interactions,
+worki ng w ith international students, learning styles, supervising at a
+distance (see Chapter 13) have all formed discussion and development
+topics. Strategies developed to address these include ensuring that distance
+supervision encourages the appropriate critical, reflective, developmental
+and research-as-learning practices .
+
+..,. Why an online support and development
+programme?
+We wished to build a community of practice and so an online and face -toface (blended) mode suited us best.
+It is assumed that supervisors would find a variety of online provision
+differently suited to their needs and interests at different times. To this end, a
+team of six put together a WEB CT-, then ANET-based online supervisory
+support and development programme comprising:
+
+

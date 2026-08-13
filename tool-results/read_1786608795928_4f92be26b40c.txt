@@ -1,0 +1,2002 @@
+     1→HOW TO GET A PhD
+     2→A handbook for students and their supervisors
+     3→
+     4→FOURTH
+     5→
+     6→EDITION
+     7→
+     8→Worldwide
+     9→
+    10→Bestseller
+    11→
+    12→Reviews of the third edition:
+    13→
+    14→This is an excellent book. Its style is racy and clear…an impressive
+    15→array of information, useful advice and comment gleaned from the
+    16→authors’ systematic study and experience over many years…should
+    17→be required reading not only for those contemplating doctoral study
+    18→but also for supervisors, new and experienced.
+    19→Higher Education
+    20→Since the first edition of this innovative book appeared in 1987 it has
+    21→become a worldwide bestseller. Through it many thousands of students
+    22→in all faculties and disciplines have been helped to gain their PhDs.
+    23→
+    24→How to get a PhD
+    25→
+    26→This remains the best general…introduction to working on the PhD.
+    27→It is well worth consulting by anyone considering the PhD as a route
+    28→to take, either part-time combined with employment, or full time as
+    29→a route into academia.
+    30→Social Research Association
+    31→
+    32→How to get a
+    33→
+    34→PhD
+    35→A handbook for students and their supervisors
+    36→
+    37→Practical and clear, this book examines everything students need to
+    38→know about getting a PhD through research in any subject. It also helps
+    39→supervisors and examiners to better understand their role in the process.
+    40→
+    41→• Completely updated throughout
+    42→• New section on increasingly popular professional doctorates such as
+    43→EdD, DBA and D.Eng
+    44→• New material for overseas, part-time and mature students, and their
+    45→supervisors
+    46→• New diagnostic questionnaire for students to self-monitor progress
+    47→• Takes in the impact of the new Code of Practice of the Quality
+    48→Assurance Agency
+    49→Includes stories of other PhD students, problems they encountered and
+    50→how they dealt with them!
+    51→
+    52→How to get a PhD is the essential handbook for doctoral students!
+    53→
+    54→Phillips and Pugh
+    55→
+    56→New to this edition:
+    57→
+    58→Dr Estelle M. Phillips is an independent educational consultant.
+    59→She specializes in giving advice on appropriate provision for research
+    60→students, and in conducting training for doctoral students and
+    61→supervisors.
+    62→Professor Derek S. Pugh is Emeritus Professor of International
+    63→Management of the Open University Business School. He has
+    64→considerable experience in the design of doctoral programmes and
+    65→the successful supervision of PhD students.
+    66→Cover illustration: Chris Madden
+    67→Cover design: Kate Prentice
+    68→ISBN 0-335-21685-4
+    69→
+    70→9 780335 216857
+    71→
+    72→Estelle M. Phillips and Derek S. Pugh
+    73→
+    74→I
+    75→
+    76→I
+    77→
+    78→HOW TO GET A PhD
+    79→Fourth edition
+    80→I
+    81→
+    82→I
+    83→
+    84→I
+    85→
+    86→I
+    87→
+    88→HOW TO GET A PhD
+    89→A handbook for students
+    90→and their supervisors
+    91→I
+    92→
+    93→I
+    94→
+    95→FOURTH EDITION
+    96→revised and updated
+    97→ESTELLE M. PHILLIPS
+    98→and
+    99→DEREK S. PUGH
+   100→
+   101→Open University Press
+   102→
+   103→Open University Press
+   104→McGraw-Hill Education
+   105→McGraw-Hill House
+   106→Shoppenhangers Road
+   107→Maidenhead
+   108→Berkshire
+   109→England
+   110→SL6 2QL
+   111→email: enquiries@openup.co.uk
+   112→world wide web: <www.openup.co.uk>
+   113→and Two Penn Plaza, New York, NY 10121-2289, USA
+   114→
+   115→First published 1987
+   116→Reprinted 1988 (twice), 1989, 1990, 1991, 1992, 1993
+   117→Second edition first published 1994
+   118→Reprinted 1994, 1995, 1996, 1998, 1999
+   119→Third edition first published 2000
+   120→Reprinted 2000, 2001, 2002, 2003, 2005
+   121→First published in this fourth edition 2005
+   122→Copyright © Estelle M. Phillips and Derek S. Pugh 2005
+   123→All rights reserved. Except for the quotation of short passages for the purpose of criticism and
+   124→review, no part of this publication may be reproduced, stored in a retrieval system, or
+   125→transmitted, in any form, or by any means, electronic, mechanical, photocopying, recording
+   126→or otherwise, without the prior written permission of the publisher or a licence from the
+   127→Copyright Licensing Agency Limited. Details of such licences (for reprographic reproduction)
+   128→may be obtained from the Copyright Licensing Agency Ltd of 90 Tottenham Court Road,
+   129→London, W1T 4LP.
+   130→A catalogue record of this book is available from the British Library
+   131→ISBN–10: 0 335 21684 6 (pb) 0 335 21685 4 (hb)
+   132→ISBN–13: 978 0 335 21684 6 (pb) 978 0 335 21685 7 (hb)
+   133→Library of Congress Cataloging-in-Publication Data
+   134→CIP data applied for
+   135→Typeset by RefineCatch Limited, Bungay, Suffolk
+   136→Printed in the UK by Bell & Bain Ltd, Glasgow
+   137→
+   138→Dedicated to
+   139→SHELDON, JEROME AND BRADLEY REBACK
+   140→and
+   141→THE PUGHS and THE ARIELS
+   142→
+   143→I
+   144→
+   145→I
+   146→
+   147→CONTENTS
+   148→I
+   149→
+   150→Preface to the fourth edition
+   151→
+   152→I
+   153→
+   154→xiii
+   155→
+   156→1 On becoming a research student
+   157→The nature of doctoral education
+   158→The psychology of being a research student
+   159→The aims of this book
+   160→Action summary
+   161→
+   162→1
+   163→2
+   164→4
+   165→5
+   166→5
+   167→
+   168→2 Getting into the system
+   169→Choosing the institution and field of study
+   170→The scientific research programme
+   171→Eligibility
+   172→Grants and research support
+   173→Distance supervision?
+   174→Choosing your work context
+   175→Selecting your supervisor
+   176→Starting out as a research student
+   177→Myths and realities of the system
+   178→The ‘ivory tower’
+   179→Personal relationships
+   180→Teamworking
+   181→Action summary
+   182→
+   183→7
+   184→7
+   185→9
+   186→10
+   187→11
+   188→12
+   189→13
+   190→14
+   191→16
+   192→17
+   193→17
+   194→17
+   195→18
+   196→19
+   197→
+   198→3 The nature of the PhD qualification
+   199→The meaning of a doctorate
+   200→Becoming a fully professional researcher
+   201→
+   202→20
+   203→20
+   204→22
+   205→
+   206→viii
+   207→
+   208→I
+   209→
+   210→HOW TO GET A PhD
+   211→
+   212→Differences between the MPhil and the PhD
+   213→Aims of students
+   214→Aims of supervisors
+   215→Aims of examiners
+   216→Aims of universities and research councils
+   217→Mismatches and problems
+   218→Action summary
+   219→4 How not to get a PhD
+   220→Not wanting a PhD
+   221→Not understanding the nature of a PhD by overestimating
+   222→what is required
+   223→Not understanding the nature of a PhD by underestimating
+   224→what is required
+   225→Not having a supervisor who knows what a PhD requires
+   226→Losing contact with your supervisor
+   227→Not having a thesis
+   228→Taking a new job before finishing
+   229→Action summary
+   230→
+   231→24
+   232→25
+   233→26
+   234→28
+   235→29
+   236→30
+   237→31
+   238→33
+   239→33
+   240→35
+   241→37
+   242→39
+   243→40
+   244→41
+   245→43
+   246→44
+   247→
+   248→5 How to do research
+   249→Characteristics of research
+   250→Intelligence-gathering – the ‘what’ questions
+   251→Research – the ‘why’ questions
+   252→Characteristics of good research
+   253→Research is based on an open system of thought
+   254→Researchers examine data critically
+   255→Researchers generalize and specify the limits on their
+   256→generalizations
+   257→Hypothetico–deductive method
+   258→Basic types of research
+   259→Exploratory research
+   260→Testing-out research
+   261→Problem-solving research
+   262→Which type of research for the PhD?
+   263→The craft of doing research
+   264→Action summary
+   265→
+   266→46
+   267→46
+   268→47
+   269→48
+   270→48
+   271→48
+   272→49
+   273→
+   274→6 The form of a PhD thesis
+   275→Understanding the PhD form
+   276→Background theory
+   277→Focal theory
+   278→Data theory
+   279→Contribution
+   280→
+   281→56
+   282→56
+   283→57
+   284→58
+   285→58
+   286→59
+   287→
+   288→49
+   289→50
+   290→51
+   291→51
+   292→52
+   293→52
+   294→52
+   295→54
+   296→55
+   297→
+   298→CONTENTS
+   299→
+   300→I
+   301→
+   302→ix
+   303→
+   304→Detailed structure and choice of chapter headings
+   305→The concept of originality
+   306→Writing the thesis
+   307→Writing as a process of rewriting
+   308→Different types of writers
+   309→Getting down to it
+   310→The thesis itself
+   311→Alternative thesis styles
+   312→To publish or not to publish prior to submission?
+   313→Action summary
+   314→
+   315→60
+   316→61
+   317→63
+   318→63
+   319→64
+   320→65
+   321→66
+   322→67
+   323→68
+   324→70
+   325→
+   326→7 The PhD process
+   327→Psychological aspects
+   328→Enthusiasm
+   329→Isolation
+   330→Increasing interest in work
+   331→Transfer of dependence from the supervisor to the work
+   332→Boredom
+   333→Frustration
+   334→A job to be finished
+   335→Euphoria
+   336→Others ‘getting in first’
+   337→Practical aspects
+   338→Time management
+   339→The duration of the process
+   340→The stages of the process
+   341→Redefining long-term and short-term goals
+   342→The importance of deadlines
+   343→Self-help and peer support groups
+   344→Internet groups
+   345→Teaching while studying for a PhD
+   346→Casual teaching
+   347→Teaching assistantships
+   348→Action summary
+   349→
+   350→71
+   351→71
+   352→71
+   353→72
+   354→73
+   355→74
+   356→76
+   357→76
+   358→77
+   359→78
+   360→79
+   361→80
+   362→80
+   363→82
+   364→82
+   365→86
+   366→87
+   367→89
+   368→90
+   369→91
+   370→91
+   371→92
+   372→93
+   373→
+   374→8 How to manage your supervisors
+   375→The supervisory team
+   376→The supervisory team’s limitations
+   377→What supervisors expect of their doctoral students
+   378→Supervisors expect their students to be independent
+   379→Supervisors expect their students to produce written work that is
+   380→not just a first draft
+   381→Supervisors expect to have regular meetings with their research
+   382→students
+   383→
+   384→94
+   385→94
+   386→95
+   387→97
+   388→97
+   389→98
+   390→99
+   391→
+   392→x
+   393→
+   394→I
+   395→
+   396→HOW TO GET A PhD
+   397→
+   398→Supervisors expect their research students to be honest when
+   399→reporting on their progress
+   400→Supervisors expect their students to follow the advice that they
+   401→give, especially when it has been given at the request of the
+   402→postgraduate
+   403→Supervisors expect their students to be excited about their work,
+   404→able to surprise them and fun to be with!
+   405→The need to educate your supervisors
+   406→How to reduce the communication barrier
+   407→Improving tutorials
+   408→Changing supervisors
+   409→Inappropriate personal relationships in supervision
+   410→Action summary
+   411→
+   412→101
+   413→103
+   414→105
+   415→105
+   416→108
+   417→110
+   418→111
+   419→
+   420→9 How to survive in a predominantly British, white, male,
+   421→full-time, heterosexual academic environment
+   422→Part-time students
+   423→Overseas students
+   424→Settling in to Britain
+   425→Expressing yourself in English
+   426→The culture of British doctoral education
+   427→Ethnic minorities
+   428→Racial harassment
+   429→Women students
+   430→Difficulties concerning legitimacy of topics and methodology
+   431→Problems of communication, debate and feedback
+   432→Scarcity of academic role models
+   433→Sexual harassment and exploitation
+   434→Gay, lesbian, bisexual and trans-gender students
+   435→Heterosexist harassment
+   436→Mature students
+   437→Students with disabilities
+   438→Disability legislation
+   439→Harassment of people with a disability
+   440→Action summary
+   441→
+   442→112
+   443→112
+   444→114
+   445→115
+   446→116
+   447→117
+   448→119
+   449→120
+   450→121
+   451→122
+   452→123
+   453→124
+   454→125
+   455→127
+   456→128
+   457→129
+   458→130
+   459→130
+   460→131
+   461→131
+   462→
+   463→10 The examination system
+   464→Upgrading to doctoral student status
+   465→Giving notice of submission
+   466→The appointment of examiners
+   467→Submitting the thesis
+   468→The oral examination – the ‘viva’
+   469→Preparing for the viva
+   470→The results of the examination
+   471→
+   472→135
+   473→135
+   474→136
+   475→136
+   476→136
+   477→137
+   478→138
+   479→140
+   480→
+   481→100
+   482→
+   483→101
+   484→
+   485→CONTENTS
+   486→The appeals procedures
+   487→Litigation
+   488→Action summary
+   489→11 How to supervise and examine
+   490→What students expect of their supervisors
+   491→Students expect to be supervised
+   492→Students expect supervisors to read their work well in advance
+   493→Students expect their supervisors to be available when needed
+   494→Students expect their supervisors to be friendly, open and
+   495→supportive
+   496→Students expect their supervisors to be constructively critical
+   497→Students expect their supervisors to have a good knowledge of the
+   498→research area
+   499→Students expect their supervisors to structure the tutorial so that
+   500→it is relatively easy to exchange ideas
+   501→Students expect their supervisors to have sufficient interest in
+   502→their research to put more information in the students’ path
+   503→Students expect supervisors to be sufficiently involved in their
+   504→success to help them get a good job at the end of it all!
+   505→Establishing a role model
+   506→Teaching the craft of research
+   507→Giving effective feedback
+   508→Introducing a structured ‘weaning’ programme
+   509→Maintaining a helpful ‘psychological contract’
+   510→Encouraging students’ academic role development
+   511→Supervising non-traditional students
+   512→Part-time students
+   513→Problems of access
+   514→Organizing work
+   515→Overseas students
+   516→Ethnic minorities
+   517→Women students
+   518→Gay, lesbian, bisexual and trans-gender students
+   519→Mature students
+   520→Disabled students
+   521→Supervising your research assistant
+   522→Outcomes of good supervision
+   523→Training for supervision
+   524→How to examine
+   525→The oral examination
+   526→Action summary
+   527→
+   528→I
+   529→
+   530→xi
+   531→142
+   532→144
+   533→144
+   534→145
+   535→145
+   536→145
+   537→147
+   538→148
+   539→149
+   540→150
+   541→151
+   542→151
+   543→153
+   544→153
+   545→154
+   546→154
+   547→155
+   548→160
+   549→162
+   550→164
+   551→165
+   552→165
+   553→165
+   554→166
+   555→166
+   556→169
+   557→170
+   558→171
+   559→172
+   560→173
+   561→173
+   562→174
+   563→175
+   564→175
+   565→178
+   566→179
+   567→
+   568→xii
+   569→
+   570→I
+   571→
+   572→HOW TO GET A PhD
+   573→
+   574→12 Institutional responsibilities
+   575→University responsibilities
+   576→A university-wide graduate school for doctoral students
+   577→Participation in a regional hub
+   578→Support for students
+   579→Facilities for departments to support doctoral research activity
+   580→A university-wide structured induction procedure
+   581→A handbook for university research degree students
+   582→English language support where necessary
+   583→Support for non-traditional students
+   584→Resources for supervisors
+   585→The training of supervisors
+   586→Teaching credit for doctoral supervision
+   587→Faculty/departmental doctoral research tutor
+   588→Providing appropriate regulations
+   589→Selection of doctoral students
+   590→Monitoring of students’ progress
+   591→Upgrading from MPhil to PhD registration
+   592→Appointment of external examiners
+   593→A forum for review of the PhD
+   594→The PhD as a series of projects
+   595→Intellectual copyright and appropriate recognition for doctoral
+   596→students’ work
+   597→The PhD in a practice-based discipline
+   598→Professional doctorates
+   599→Departmental responsibilities
+   600→The departmental research tutor
+   601→Improving the selection of students into the department
+   602→Selection of supervisors
+   603→Guidelines on appropriate supervisory behaviour
+   604→Support groups for research students
+   605→A departmental doctoral programme
+   606→The doctoral cohort system
+   607→Action summary
+   608→Conclusion
+   609→
+   610→181
+   611→183
+   612→183
+   613→183
+   614→184
+   615→184
+   616→185
+   617→186
+   618→186
+   619→187
+   620→187
+   621→187
+   622→188
+   623→189
+   624→189
+   625→189
+   626→190
+   627→191
+   628→192
+   629→192
+   630→192
+   631→
+   632→Appendix
+   633→References
+   634→Index
+   635→
+   636→207
+   637→211
+   638→215
+   639→
+   640→193
+   641→195
+   642→196
+   643→198
+   644→198
+   645→200
+   646→201
+   647→202
+   648→203
+   649→204
+   650→205
+   651→206
+   652→206
+   653→
+   654→I
+   655→
+   656→I
+   657→
+   658→PREFACE TO THE FOURTH
+   659→EDITION
+   660→I
+   661→
+   662→I
+   663→
+   664→The gratifying response to the previous editions of this book testifies to the
+   665→need of research students and their supervisors to understand the processes
+   666→of effective doctoral education. The number of translations into other
+   667→languages – Reformed Chinese, Spanish, Portuguese, Classical Chinese,
+   668→Russian, Arabic and Korean (in chronological order) – demonstrates that
+   669→the issues covered here are highly relevant in many countries. This need to
+   670→understand is reinforced by the considerable institutional change taking
+   671→place in the higher education system in the UK. Since our first edition in
+   672→1987 opened up the subject for debate, many of the developments we have
+   673→advocated have come about: greater university recognition and support
+   674→for doctoral students, effective monitoring of student progress, training
+   675→for supervisors in teaching the craft of research and so on. And the changes
+   676→are continuing apace. It is therefore appropriate to offer a fourth edition,
+   677→revised and updated to the present situation.
+   678→One comment made in the generally favourable reviews of the first edition deserves attention here. In our analysis of the complex tasks of PhD
+   679→study, we describe the difficulties which may be encountered. This is in
+   680→order to enable both students and supervisors to avoid such problems or to
+   681→overcome them. It has been suggested that this inevitably gives too great a
+   682→focus on the ‘pathologies’ of the doctoral process. We fear that this may be
+   683→true, and so we should like to reiterate here the positive aspects of being a
+   684→PhD student. The joys of doing research are considerable, and anyone in a
+   685→position to carry out research is indeed privileged. Feelings of exploration,
+   686→excitement, challenge, involvement and passion are frequent and are
+   687→commented on in this book. The enormous feeling of achievement on the
+   688→award of the degree lasts for many throughout their whole lives. Clearly
+   689→
+   690→xiv
+   691→
+   692→I
+   693→
+   694→HOW TO GET A PhD
+   695→
+   696→the process is very rewarding, otherwise so many would not have carried it
+   697→through to success.
+   698→Similarly it has been pointed out to us that our discussion of the particular issues concerning women, part-time and minority group students,
+   699→which looks realistically at the special problems that these groups face and
+   700→how they may be ameliorated when they occur, may give the impression
+   701→that discrimination is the norm. This, of course, is not so, and as we note,
+   702→many universities have procedures for dealing with any that occurs –
+   703→although it is not possible to be complacent about the situation.
+   704→This book has grown out of EMP’s own PhD research, a continuing series
+   705→of studies of research students, our experience of supervising and examining doctoral students and the seminar on the process of PhD-getting conducted by DSP for a number of years at the London Business School and
+   706→subsequently by both of us at the Open University. We should like to
+   707→acknowledge the help of all those who contributed to those activities over
+   708→the years and who, together with those who currently participate in our
+   709→seminars, form the ‘cast of characters’ in this book. We learned a lot from
+   710→all of them and we are most grateful.
+   711→For the fourth edition we received much information, suggestions and
+   712→constructive criticism from Hilary Burgess (Open), Iain Cameron (EPSRC),
+   713→Linda Conrad (Griffith, Australia), Chris France (Surrey), Jackie Green
+   714→(Leeds Metropolitan), Graham Hankinson (London Metropolitan), James
+   715→Hartley (Keele), Craig Johnson (Bradford), Shalom Lappin (KCL), Hugh
+   716→Matthews (Northampton), John Sparrow (York), Wendy Stainton-Rogers
+   717→(Open), Alison Struselis (Northampton), Emma Wakelin (AHRB), Robert
+   718→Westaway (Brunel) and Robert White (Southampton). Shona Mullen, our
+   719→publisher at Open University Press, gave her usual stalwart support. We are
+   720→grateful to them all.
+   721→We should like to thank Janet Metcalfe and the UK GRAD Programme,
+   722→who are the joint holders of the copyright with DSP, for permission to
+   723→reproduce the ‘Self-evaluation questionnaire on research student progress’
+   724→on pp. 207ff.
+   725→Finally, DSP would like to thank EMP for her generous hospitality
+   726→during the writing of this edition of the book.
+   727→
+   728→I
+   729→
+   730→1
+   731→
+   732→I
+   733→
+   734→ON BECOMING A RESEARCH
+   735→STUDENT
+   736→I
+   737→
+   738→I
+   739→
+   740→This book is a handbook and a survival manual for PhD students. If you are
+   741→intending to embark on a research degree it will introduce you to the
+   742→system and, by increasing your understanding, help you to improve your
+   743→choice of university, college, department and supervisor.
+   744→If you have just picked this book up and you are already a research
+   745→student, then you should read it thoroughly – and hang on to it so that
+   746→you can refer to it frequently. You will need to do this because we shall be
+   747→discussing the skills and processes that are crucial to obtaining the PhD
+   748→degree.
+   749→If you are a supervisor, or contemplating becoming one, the book is
+   750→highly relevant to you too, because it deals with the educational processes
+   751→that it is your responsibility to encourage for the successful completion of
+   752→your students’ research degrees.
+   753→If you are a senior academic administrator, the relevance of this book is
+   754→that it provides a guide to procedures and systems concerned with research
+   755→degrees which will enable you to evaluate the adequacy of the provision
+   756→your university is making for research students.
+   757→The book focuses on process issues which are not discipline-specific. It
+   758→cannot help you to design an investigation or an experiment as these
+   759→activities require professional knowledge of your particular field. Similarly
+   760→it does not deal with the financial difficulties of doctoral students, which
+   761→will vary considerably depending on your circumstances. Nor does it consider factors impinging on you after you have completed your course such
+   762→as the employment options available to PhDs. (Delamont and Atkinson
+   763→2004 discuss developing a postdoctoral research career.)
+   764→But the book does suggest that you ponder on some basic questions
+   765→
+   766→2
+   767→
+   768→I
+   769→
+   770→HOW TO GET A PhD
+   771→
+   772→before embarking on a course of study leading to the PhD degree. Do you
+   773→want to spend three to four years of your life doing research on one topic?
+   774→Will you be satisfied to live on a student grant for that time? Are you
+   775→committed to a PhD or would a professional doctorate (e.g. EdD, EngD)
+   776→suit you better? (The differences are discussed on pp. 196ff. of this book.)
+   777→Are you able to tolerate regular periods of intellectual loneliness when
+   778→only you are responsible for producing ‘creative thoughts’? It is vital that
+   779→you give a firm ‘yes’ in answer to all those questions. You must make the
+   780→decision to study and work for your doctorate based on the sure knowledge that it is the right thing for you. If what you really want is to write a
+   781→bestseller, then conducting research for a thesis is not the optimum way to
+   782→go about it. Perhaps you don’t really know what you want to do with the
+   783→rest of your life and continuing in the university system seems a good way
+   784→of putting off that decision. If this is so then you have chosen an extremely
+   785→difficult way of solving your particular problem.
+   786→
+   787→I
+   788→
+   789→The nature of doctoral education
+   790→
+   791→Acquiring the skills and understanding the processes necessary for success
+   792→cannot be done at a single reading. As a research student you need continually to use the ideas in this book to develop your own insight into your
+   793→own situation. In this way your professional learning will develop as it
+   794→should – under your own management.
+   795→‘Under your own management’ is the key to the nature of doctoral education. In undergraduate education a great deal, in academic terms, is
+   796→organized for the student. It may not have seemed like that to you at the
+   797→time, because you were required to do a considerable amount of work, but,
+   798→for example, syllabuses were laid down, textbooks were specified, practical
+   799→sessions were designed, the examinations were organized to cover a set
+   800→range of topics in questions of a known form, and so on. You could quite
+   801→reasonably have complained if asked about an extraneous subject, ‘But no
+   802→one told me that I was supposed to learn that topic (or methodology or
+   803→theory or historical period).’ For the most part you were following an
+   804→academic course set by your teachers.
+   805→In doctoral education, you have to take responsibility for managing
+   806→your learning and for getting yourself a PhD. Of course, there will be
+   807→people around to help you: – your supervisor(s), other academics in your
+   808→department, fellow students and so on. Some of them will even tell you
+   809→what, in their opinion, you have to do to obtain the degree, but the
+   810→responsibility for determining what is required, as well as for carrying it
+   811→out, remains firmly with you. And if it turns out that you need a particular
+   812→topic or theory for your work, then it is no excuse to say, ‘But nobody told
+   813→me it was relevant.’ It is your responsibility.
+   814→
+   815→ON BECOMING A RESEARCH STUDENT
+   816→
+   817→I
+   818→
+   819→3
+   820→
+   821→So you will not be traversing a set course laid out by others. You will be
+   822→expected to initiate discussions, ask for the help that you need, argue
+   823→about what you should be learning, and so on. You are under selfmanagement, so it is no use sitting around waiting for somebody to tell
+   824→you what to do next or, worse, complaining that nobody is telling you
+   825→what to do next; in the postgraduate world these are opportunities, not
+   826→deficiencies.
+   827→The overall university framework for research students ensures that
+   828→there is a basic similarity for all doctoral candidates as they progress
+   829→through their studies. But there are also some notable differences between
+   830→the research cultures of university disciplines, particularly between the
+   831→culture of the laboratory-based sciences and that of the humanities and
+   832→social sciences. To a considerable extent they stem from the large capital
+   833→investment in equipment and materials required in scientific research.
+   834→Supervisors in science have to take the lead in obtaining the physical
+   835→resources and the research personnel required. A studentship may be allocated and a doctoral student recruited specifically to work on a designated
+   836→line of research. In this situation the ‘apprenticeship’ aspect of being a
+   837→doctoral student is emphasized. The student’s research topic will be clearly
+   838→defined to fit in with the innovative thrust of the supervisor’s research
+   839→programme, and this will set limits to the level of research creativity that
+   840→can be shown. The student will be required to do ‘dogsbody’ work in the
+   841→laboratory or on the computer as part of professional training. In these
+   842→situations there develops what might be called a ‘joint ownership’ of the
+   843→doctoral research between supervisors and the students. Supervisors will
+   844→have a strong interest in getting the research work done and using the
+   845→results obtained. Joint papers will be the norm. The danger to watch for in
+   846→this culture is the exploitation of the student, leading to the feeling of
+   847→being just an extra pair of hands for the supervisors’ research. It must be
+   848→remembered that there has to be a sufficient amount of autonomy for
+   849→the student to be able to make an original contribution. It is this which
+   850→justifies the award of the PhD degree.
+   851→In contrast, in the humanities and the social sciences students often
+   852→come with their own topics within the field in which the supervisor is
+   853→expert, and academics give a service of research supervision. Being busy
+   854→people, supervisors often have to ration the amount of attention they can
+   855→give. Research supervision has to compete with the supervisor’s own current research (which can be considerably different), undergraduate teaching and administration. Supervisors will have only a general interest in the
+   856→results of the student’s research, and will act more as role models than as
+   857→apprentice-masters. The danger to watch for in this culture is the neglect
+   858→of the student for long periods of weeks, months, even years. It must be
+   859→remembered that students need the regular support of supervisors if they
+   860→are to develop sufficiently to achieve the PhD degree.
+   861→
+   862→4
+   863→
+   864→I
+   865→
+   866→HOW TO GET A PhD
+   867→
+   868→These descriptions are of extreme situations; there are many shades of
+   869→grey in between. There are scientists who give an individual service to their
+   870→doctoral students and social scientists who build up a team of students all
+   871→working on related aspects of the same topic. You must work to understand the situation into which you are entering.
+   872→In recent years universities have found that it is not in a student’s best
+   873→interest to rely on only one supervisor for each student. Supervisory teams
+   874→with two or three members are being established in many departments,
+   875→with a lead (or main) supervisor and one or two associate supervisors. This
+   876→team must contain a subject specialist and someone responsible for pastoral support. The team system can allow for new supervisors to learn how
+   877→to supervise more effectively under the guidance of an experienced member of the department. Others involved in supervision, perhaps at times of
+   878→upgrading or controversy, might be the departmental head and the
+   879→research tutor.
+   880→
+   881→I
+   882→
+   883→The psychology of being a research student
+   884→
+   885→New research students enter the system determined to make an outstanding contribution to their subject. By the time they start the final stages of
+   886→thesis-writing for the degree they are determined to ‘get it and forget it!’
+   887→During the intervening years their enthusiasm has been dampened by the
+   888→demands of having to concentrate on a specific topic and conduct routine
+   889→and repetitive tasks in an atmosphere where nobody seems either to
+   890→understand or to care about their work.
+   891→They come into the university or college knowing precisely who they
+   892→are: successful and intelligent holders of well-earned qualifications. It is
+   893→not long before they lose their initial confidence and begin to question
+   894→their own self-image. This is the result of contacts (no matter how sporadic
+   895→or from what distance) with academic discourse. Such contacts could
+   896→come from members of staff, postgraduates who are further into their
+   897→research than the first-year students, and papers published in journals or
+   898→presented at conferences. These challenge the assumptions and conceptions that the young graduates had accepted as inviolable. From this
+   899→period of self-doubt and questioning, the successful postgraduates emerge
+   900→with a new identity as competent professionals, able to argue their viewpoint with anybody regardless of status, confident of their own knowledge
+   901→but also aware of its boundaries. This new identity permits them to ask for
+   902→information when they are aware that they don’t know something and to
+   903→express a lack of understanding when this is necessary, instead of pretending that there is no difficulty for fear of being thought stupid. To arrive
+   904→at this point is what being a postgraduate research student is really all
+   905→about.
+   906→
+   907→ON BECOMING A RESEARCH STUDENT
+   908→I
+   909→
+   910→I
+   911→
+   912→5
+   913→
+   914→The aims of this book
+   915→
+   916→The necessity for personal academic initiative is the key cultural change
+   917→that doctoral students will encounter compared with their undergraduate
+   918→days. It requires a different style of operation, which is why it is not sufficient just to state the issue as we did in the previous sections. Students
+   919→need information and insights to develop the capacity to operate successfully in the postgraduate environment. We have seen many students take
+   920→long periods (one year or even two!) in adjusting to the environment, at
+   921→considerable jeopardy to the achievement of their doctorates. Some
+   922→students never come to terms with it and go away indignant, bitter – and
+   923→without PhDs.
+   924→All new postgraduates have to be prepared to unlearn and rethink many
+   925→of the doctrines which they have had to accept up to this point in their
+   926→student career. A vital aspect of this rethinking is to take the initiative in
+   927→discussing with your supervisor the whole range of your ideas, including
+   928→any that might even appear to be ‘off-beat’ or ‘illegitimate’ but may in fact
+   929→turn out to be surprisingly useful leads.
+   930→The first aim of this book is to explore such issues in a realistic way in
+   931→order to help you understand and achieve the tasks necessary to complete
+   932→the PhD successfully. Our second complementary aim is to help supervisory practice in managing the process better. The third aim is to put the
+   933→whole activity in its context, since the recognition by universities of their
+   934→institutional responsibilities in improving the effectiveness of doctoral
+   935→education is a key factor in promoting necessary change.
+   936→In attempting to achieve these aims we shall be drawing on our experience in doctoral supervision and our systematic research into PhD education. We give real-life examples of students and their supervisors. The ratio
+   937→of men to women in the illustrations is consistent with that in higher
+   938→education today and covers a range of faculties including Arts, Business
+   939→Studies, Science, Social Science, and Technology. We shall be examining
+   940→the characteristics of the educational system, the nature of the PhD qualification, psychological aspects of the PhD process, and how to manage
+   941→your supervisor, among many other practical topics.
+   942→On pp. 207ff at the end of the book we have included a self-diagnostic
+   943→questionnaire on student progress to help you focus on issues that are
+   944→relevant to you.
+   945→
+   946→I
+   947→
+   948→Action summary
+   949→
+   950→1
+   951→
+   952→Be aware that in doctoral education you are under your own
+   953→management and have the responsibility for determining what is
+   954→required as well as for carrying it out.
+   955→
+   956→6
+   957→
+   958→I
+   959→
+   960→2
+   961→
+   962→You will experience periods of self-doubt which you must come
+   963→through with the clear aim of becoming a competent professional
+   964→researcher.
+   965→Read this book for insights into the PhD research learning process, to
+   966→help you manage it better.
+   967→
+   968→3
+   969→
+   970→HOW TO GET A PhD
+   971→
+   972→I
+   973→
+   974→2
+   975→
+   976→I
+   977→
+   978→GETTING INTO THE SYSTEM
+   979→I
+   980→
+   981→I
+   982→
+   983→Once you have decided to continue within the higher education system
+   984→and conduct research for a higher degree, you have other decisions to
+   985→make. First you have to be accepted by a university department to work in
+   986→your chosen area of study. But which university? In what area? And how to
+   987→apply?
+   988→
+   989→I
+   990→
+   991→Choosing the institution and ﬁeld of study
+   992→
+   993→If you are a postgraduate who is a candidate for a research studentship, the
+   994→offer of such a studentship is likely to be the determining factor in
+   995→your choice of institution and field of study. You should, though, satisfy
+   996→yourself on two important counts:
+   997→1 That the research discipline or area in which the studentship is offered is
+   998→genuinely one on which you can see yourself concentrating very closely
+   999→for the next three or four years of your life and maybe more. Many PhD
+  1000→students have come unstuck simply because they have lost interest or
+  1001→belief in the area that they are investigating.
+  1002→2 That the university department in which you are being offered the studentship has an established reputation in research and a real commitment to the development of doctoral students. You should not hesitate
+  1003→to ask about these issues, so important to your success, when you go to a
+  1004→department for interview. You should collect whatever literature is
+  1005→available about the department, the staff engaged in research and the
+  1006→precise nature of that research. Find out the departmental rating in the
+  1007→
+  1008→8
+  1009→
+  1010→I
+  1011→
+  1012→HOW TO GET A PhD
+  1013→
+  1014→British University Research Assessment Exercise, and how the department intends to develop research in the future. Obtain copies of
+  1015→research papers and discover as much as you can about the scope of
+  1016→existing work being done by staff and doctoral students and the possibilities of developing that work into areas of interest to you. Ask to speak
+  1017→to current doctoral students and obtain from them a description of the
+  1018→adequacy of the set-up from their point of view.
+  1019→Accept a studentship only if you are optimistic on both counts – of the
+  1020→suitability of the institution and of the field of study. This optimism will
+  1021→fade soon enough as we shall see later on in this book, so it is important to
+  1022→have some to start off with.
+  1023→If you are not dependent on a studentship (or if you are fortunate
+  1024→enough to be offered more than one and have to choose) then you have
+  1025→a wider range of options, but you will have to work harder to acquaint
+  1026→yourself with the available possibilities.
+  1027→One direct way of finding out about the relevant academic activities is to
+  1028→go to a university library (or look on the Internet) and systematically
+  1029→review the current issues of journals in your subject. This allows you to
+  1030→locate the researchers who are publishing relevant work. Remember, all
+  1031→libraries in higher education will allow readers to have access to their stock
+  1032→for use on the premises; you just have to ask for permission. You can
+  1033→obtain good preliminary information through the Internet by using your
+  1034→search engine to explore the general introductions to a variety of relevant
+  1035→topics. All universities have websites and all departments have web pages
+  1036→describing the research that they are currently undertaking.
+  1037→It is always a good idea, once you have narrowed down your options to a
+  1038→few departments that appeal to you, to contact those who seem most
+  1039→likely to be able to discuss your own plans in the light of what they know
+  1040→to be happening in their unit. You can initiate this contact by letter or
+  1041→email, followed by a telephone call and – if you are still interested – an
+  1042→arrangement to meet at the university. You will find that most academics
+  1043→will be happy to discuss research issues with you. A good way to make
+  1044→contact with different people and departments is to take advantage of the
+  1045→open days that so many universities now advertise.
+  1046→Having got this far, your top priority should be defining more clearly
+  1047→your field of study. To do this you need to give some thought to your own
+  1048→interests and how they interact with what you have found out about the
+  1049→work of the department you are visiting. While it is premature at this stage
+  1050→to have a complete project worked out, you will need to be able to talk
+  1051→convincingly about the type of research that appeals to you and why you
+  1052→are considering applying to that particular department. If you are considering creating a draft proposal, it may be that the department to which
+  1053→you are applying may be prepared to give you some help in developing it.
+  1054→
+  1055→GETTING INTO THE SYSTEM
+  1056→
+  1057→I
+  1058→
+  1059→9
+  1060→
+  1061→Other issues to be borne in mind at this point have to do with the
+  1062→mechanics of getting the work done, for example, access to laboratory
+  1063→equipment (and what kind of equipment), computers, library facilities,
+  1064→potential samples and their availability and ease of access, amount of
+  1065→support from secretarial staff (if any), photocopying facilities and, in the
+  1066→case of survey research, the potential for help with postage, etc. In
+  1067→addition, the compatibility of the people with whom you will be working
+  1068→is an important component in your choice.
+  1069→If you are contemplating part-time doctoral research, perhaps due to
+  1070→family responsibilities, essential work commitments or are otherwise subject to geographical constraints in your choice, remember that nowadays
+  1071→most regions have several institutions of higher learning where research
+  1072→degrees can be taken. For example, in the West Midlands conurbation
+  1073→there are at least six universities. You should also consider that you can do
+  1074→a PhD under the Open University system, which has considerable geographical flexibility. In Chapter 9 we look in more detail at the situation of
+  1075→part-time research students.
+  1076→Other universities too offer opportunities for students to conduct
+  1077→research without having to be resident. They normally require a number of
+  1078→visits to the campus during a year and even, in some cases, attendance at
+  1079→residential weekends. Email and Internet technologies have encouraged
+  1080→the development of more flexible registration arrangements. For these
+  1081→reasons you must explore thoroughly the range of provision which might
+  1082→be available for you.
+  1083→
+  1084→I
+  1085→
+  1086→The scientiﬁc research programme
+  1087→
+  1088→If you are a scientist you should consider whether participating as a doctoral student in a major scientific research programme would suit you.
+  1089→Research students in such a programme are treated as the most junior level
+  1090→of employee contributing to the overall work, in fact as junior research
+  1091→assistants. The director of the programme sets very clear constraints on the
+  1092→work that is to be carried out and submitted for the doctorate and the
+  1093→student’s contribution is correspondingly restricted in range.
+  1094→Viewed in educational terms, this type of programme has both advantages and limitations. The three major advantages over the position of the
+  1095→individual research student are that: the environment continually demonstrates that research matters – a great benefit as compared with the situation of students who have supervisors for whom research cannot be the
+  1096→top priority; the laboratory is well funded; and the training in professional
+  1097→practice and the academic issues tackled will be state-of-the-art.
+  1098→These programmes do have limitations though. First, supervisors tend
+  1099→to discount the necessity for tutorial support as distinct from managerial
+  1100→
+  1101→10
+  1102→
+  1103→I
+  1104→
+  1105→HOW TO GET A PhD
+  1106→
+  1107→supervision, since they believe that much of that support is being given by
+  1108→the group. The close contact that they have with the students in the
+  1109→laboratory on a day-to-day managerial basis leads many supervisors to
+  1110→neglect the educational practices that we advocate throughout this book.
+  1111→Second, directors of research programmes and other senior members
+  1112→tend to accept the illusory picture of teams of happy researchers working
+  1113→together toward a common end. This view takes no account of the
+  1114→students’ competitiveness and their fear of having their ideas or results
+  1115→stolen by one of their colleagues working on a very closely related problem. The tensions and distrust that can arise among such a group of
+  1116→beginning professionals – physically close but psychologically isolated –
+  1117→can be very unsettling.
+  1118→
+  1119→I
+  1120→
+  1121→Eligibility
+  1122→
+  1123→The first question here is: do you have the academic qualifications to be
+  1124→accepted as a student for a research degree? Most universities require first
+  1125→or upper second-class honours in a relevant British undergraduate degree;
+  1126→some universities will accept lower seconds. If you already have a master’s
+  1127→degree it is usually acceptable, whatever the class of your undergraduate
+  1128→degree.
+  1129→These are the general requirements which will allow you to go through
+  1130→straightforwardly. If you do not have them it does not mean that you will
+  1131→not be accepted, only that a special case has to be made, which will require
+  1132→the strong backing of your potential supervisor. For example, if you do not
+  1133→have a British degree, the university will have to satisfy itself that your
+  1134→overseas degree is of a standard equivalent to a British one. Or you may
+  1135→have a non-degree professional qualification plus considerable practical
+  1136→experience, on which a special case could be made for your acceptance.
+  1137→In general we would say that you should not be immediately deterred if
+  1138→you do not have the typical formal qualifications for acceptance. Always
+  1139→explore with potential supervisors whether a special case can be made. It
+  1140→may be, for example, that you could be accepted subject to doing certain
+  1141→extra study, or passing a qualifying examination. Remember too that if
+  1142→one institution rejects you, it does not mean that all will. However, if you
+  1143→have had several rejections it may not be wise to pursue registration. You
+  1144→may need to review your likelihood of success and come to a more realistic
+  1145→estimate of your abilities.
+  1146→The second question is: what degree are you going to be registered for? If
+  1147→you are a beginner in research and do not already have an MPhil or an
+  1148→MRes (i.e., a master’s degree awarded for research) you will, in the first
+  1149→place, be registered as a general research student or for an MPhil degree.
+  1150→You will often be required to take some taught courses before embarking
+  1151→
+  1152→GETTING INTO THE SYSTEM
+  1153→
+  1154→I
+  1155→
+  1156→11
+  1157→
+  1158→on your thesis work. You may be required to complete successfully a oneyear taught programme leading to the award of the MRes degree. The
+  1159→decision on formal registration for the PhD is then taken after the first year
+  1160→of your research when there is some indication that the work is progressing satisfactorily. You and your supervisor(s) must, therefore, be in close
+  1161→contact to ensure that the case can be made for full PhD registration. At
+  1162→this stage a title for the thesis and the intended programme of research are
+  1163→presented.
+  1164→The third question is concerned with the limits of the period allowed
+  1165→between registration and submission. For full-time students there will be a
+  1166→formal minimum time (three or four years) and a formal maximum (four
+  1167→or five years) after which registration will lapse and a special (and very
+  1168→persuasive) case will need to be made for reinstatement. Because of this
+  1169→maximum limit, if you are having to abandon your research work temporarily but intend to return to it, you should obtain a formal suspension of
+  1170→the period of study.
+  1171→For part-time students the time limits are set roughly pro rata: four to
+  1172→five years minimum, seven to eight years maximum. Don’t forget that if
+  1173→you are employed by your institution as, say, a research assistant, you may
+  1174→find that you can be counted as a full-time student even if you are working
+  1175→only part-time on your PhD. This fudge is allowed because the basic nature
+  1176→of the PhD is as a professional training, and research assistants get a great
+  1177→deal of this training as part of their jobs.
+  1178→When registration has been completed you should be informed formally
+  1179→of: your supervisor(s); the topic or field of study for which you have been
+  1180→accepted; the minimum length of study time required before submission
+  1181→of your thesis.
+  1182→Continuing registration in succeeding years is usually dependent on
+  1183→adequate progress being made each year, and a report to this effect has
+  1184→to be submitted by your supervisor. Do ensure that it is sent at the
+  1185→appropriate time.
+  1186→
+  1187→I
+  1188→
+  1189→Grants and research support
+  1190→
+  1191→It may be that you will qualify for a grant from the government, a university or a private foundation. The availability of grants is variable, and
+  1192→the regulations on eligibility detailed. Nevertheless if you are British or
+  1193→from the EU or have lived in the UK for three years or more, it would be
+  1194→worth your while investigating the possibilities. You may find that you fall
+  1195→into a category for whom special grants are available. The best place to
+  1196→start to explore these possibilities would be with your university careers
+  1197→service who will help you to discover what may be available. There is a
+  1198→Grants and Trusts Directory (which includes benevolent funds) to look at,
+  1199→
+  1200→12
+  1201→
+  1202→I
+  1203→
+  1204→HOW TO GET A PhD
+  1205→
+  1206→and the website <www.funderfinder.org.uk> is a useful starting point for further exploration. If you find that you meet their criteria, you would be well
+  1207→advised to apply far in advance of their advertised cut-off date. However,
+  1208→do not build up too much hope at this stage because many of these grants
+  1209→are very specific indeed and can be quite small.
+  1210→You must obtain and study the regulations of the formal system concerned with these topics. You should also be aware that exceptions can be
+  1211→made, and this may be worth exploring. Your financial situation should be
+  1212→part of your initial discussion with your potential supervisor.
+  1213→If you are awarded a studentship, it will be for a set period (three or four
+  1214→years). There are considerable variations in the operation of grants. Some
+  1215→are tied to specific research projects, some come from research councils
+  1216→and may require you to take particular courses in the first year (which may
+  1217→lead to an MRes, the so-called ‘1+3 system’), some are linked to industrial
+  1218→collaboration. Remember that in certain circumstances it may be possible
+  1219→to obtain an extension of the grant. You have to keep your supervisor
+  1220→aware of this possibility and make sure that a strongly supported
+  1221→application is made at the appropriate time.
+  1222→Grants are quite low in value, and it may be that you will be hoping for
+  1223→some casual work. Try to obtain some professional work which helps your
+  1224→academic development if at all possible. It is much better to tutor your
+  1225→subject than to work long hours serving behind a bar.
+  1226→While academic institutions are no longer regarded as being in loco
+  1227→parentis, they may act as quasi-employers if you have a grant that they
+  1228→administer. Some, like any good employer, will make small short-term
+  1229→loans to cover an urgent financial problem. These can be repaid by
+  1230→instalments.
+  1231→Find out from your university what you are statutorily entitled to in the
+  1232→way of research resources. These might include a desk, lab space, equipment and consumable resources (for example, chemicals for your project). You should ensure (via your supervisor, if necessary) that you have
+  1233→them. You also need to be aware that there are often discretionary
+  1234→opportunities available. You may be able to call on technical support
+  1235→from departmental technicians and computer staff, and you may be
+  1236→entitled to apply for financial support for travel to conferences or to visit
+  1237→other institutions.
+  1238→
+  1239→I
+  1240→
+  1241→Distance supervision?
+  1242→
+  1243→There have always been people who, while wishing to study for a higher
+  1244→degree by research, are unable physically to attend regularly at a university. These include potential students who live in areas with no university provision, people with disabilities, carers and those with young
+  1245→
+  1246→GETTING INTO THE SYSTEM
+  1247→
+  1248→I
+  1249→
+  1250→13
+  1251→
+  1252→children who are able to work in their own environment but would be
+  1253→unable to attend university at regular required times.
+  1254→With the growth of IT (information technology) it is becoming increasingly possible for research work to be carried out from your own home.
+  1255→Libraries can be accessed from home, the Internet carries vast information
+  1256→loads. You can be in communication with your supervisor, academics in
+  1257→your field, and fellow students from any university by email. Students may
+  1258→expect a much better level of supervision than would have been the case
+  1259→previously if they have to go abroad for any reason during the course of
+  1260→their studies (e.g., the fieldwork period for anthropology and geology
+  1261→students).
+  1262→This is not to suggest that the doctoral supervision process can be carried
+  1263→out entirely at a distance, however. The regular interaction needed with
+  1264→the supervisor must inevitably take place face to face in order for student
+  1265→and supervisor to spark ideas off each other. It is this process which moves
+  1266→the research forward creatively. While IT can help the supervisory process
+  1267→to become more effective, it cannot completely replace personal interaction. All British universities insist on a certain period of attendance on
+  1268→campus during the course of study. It is therefore not realistic for a potential student to consider applying to work for a PhD degree completely at a
+  1269→distance.
+  1270→
+  1271→I
+  1272→
+  1273→Choosing your work context
+  1274→
+  1275→An important aspect of the quality of your working life as a research student is your work context. Where precisely will you be spending most of
+  1276→your time in the next few years? If you are in a position to make a choice of
+  1277→research institutions, you should certainly find out about the physical
+  1278→facilities offered and take them into account.
+  1279→Some universities provide study cubicles for postgraduates, some a student common room and some give their research students a desk in a
+  1280→small shared room similar to those used by members of staff. Since personal computers, email and Internet technologies are such an integral part
+  1281→of research activity, it is important to discover what arrangements are
+  1282→made in this area. Some universities are in a position to offer the use of a
+  1283→PC (personal computer) to all doctoral students. If they do not, and you do
+  1284→not already have a machine, you must buy one. It is a key tool of your
+  1285→work. All universities should offer you participation in their email network
+  1286→and access to the Internet.
+  1287→There are universities which make little or no physical provision for
+  1288→doctoral students. They are expected to work at home when not in
+  1289→libraries, laboratories, other organizations or away on field trips.
+  1290→It may be that you prefer the congenial company of others in a similar
+  1291→
+  1292→14
+  1293→
+  1294→I
+  1295→
+  1296→HOW TO GET A PhD
+  1297→
+  1298→situation and like the idea of being able to find a corner in a large room set
+  1299→aside solely for the use of research students. On the other hand, you may
+  1300→find it irritating having to interact with others and listen to what they
+  1301→have to say about their own progress (or lack of it) whenever you want to
+  1302→use the common room as a base from which to get on with your own work.
+  1303→Perhaps you are a loner and enjoy the discipline of long hours spent
+  1304→poring over books or documents when not engaged in experimentation or
+  1305→other forms of data collection. You favour a clear dividing line between
+  1306→working hours and time spent socializing and are able to organize this
+  1307→division of activity satisfactorily yourself. Once again, you may discover
+  1308→that the isolation this type of work context imposes on you results in
+  1309→feelings of alienation and a lack of contact with others who could
+  1310→stimulate discussion and collaborate in the production of new ideas.
+  1311→Some people believe that being given a desk in a room shared by only
+  1312→one or two other research students is an ideal arrangement. They have
+  1313→their own personal corner where they can keep their books and writing
+  1314→materials, interview others and chat with their room-mates, as well as
+  1315→having easy and constant access to their supervisors and other members of
+  1316→staff. However, the reality is not always like that, and you may find that
+  1317→you are thrown into close contact with people whom you find quite
+  1318→intolerable for some reason or other. Perhaps one of them leaves chewing
+  1319→gum all over the place, while another is constantly talking or entertaining
+  1320→friends when you wish to concentrate on your work. One is very untidy
+  1321→and continually ‘borrows’ your possessions without returning them, as
+  1322→well as spreading items that do not belong to you all over your designated
+  1323→work area. Another is intrusive in other ways: perhaps there are too many
+  1324→questions about your personal life or too much discussion of others’
+  1325→problems and successes.
+  1326→In addition, your presence and absence are easily noted by others, and
+  1327→you may have to account for your movements rather more than you
+  1328→would wish. Also, your supervisor ‘just along the corridor’ may not be
+  1329→quite as accessible as at first appears.
+  1330→
+  1331→I
+  1332→
+  1333→Selecting your supervisor
+  1334→
+  1335→This is probably the most important step you will have to take. In general
+  1336→students do not select their supervisors: their supervisors are allocated by
+  1337→the department or, in fewer cases, their supervisors may have selected
+  1338→them.
+  1339→However, it is not impossible to influence the selection yourself and you
+  1340→should certainly attempt to do so. There is certain basic information that
+  1341→you need in order to be confident that a particular academic is an
+  1342→appropriate person to supervise you. The key factor is whether they have
+  1343→
+  1344→GETTING INTO THE SYSTEM
+  1345→
+  1346→I
+  1347→
+  1348→15
+  1349→
+  1350→an established research record and are continuing to contribute to the
+  1351→development of their discipline. The questions you need to ask yourself
+  1352→include the following: Have they published research papers recently? Do
+  1353→they hold research grants or contracts? Is the lab efficiently organized? Are
+  1354→they invited to speak at conferences in Britain and abroad? Positive
+  1355→answers to at least some of these questions are desirable.
+  1356→Another important aspect that you should be considering when
+  1357→selecting your supervisor is: how close a relationship do you want? The
+  1358→supervisor–student relationship is one of the closest that you will ever be
+  1359→involved in. Even marriage partners do not spend long hours every day in
+  1360→close contact with each other, but this could be the case with a student and
+  1361→a supervisor. Some people need to have their supervisors around a lot
+  1362→(especially in the beginning), while others feel it oppressive to be asked
+  1363→what they are doing, and to be told continually what they should be
+  1364→getting on with next.
+  1365→There are at least two patterns from which to choose with regard to
+  1366→working with your supervisor. The first has already been mentioned: the
+  1367→student needs constant support and reassurance, and the supervisor needs
+  1368→continual feedback in order to give instruction, thus providing direction
+  1369→for the research. The second pattern is a relationship in which the student
+  1370→needs time to think about the work to be done and needs the freedom to
+  1371→make mistakes during early attempts to get started, before discussing what
+  1372→has been happening with the supervisor. In this relationship the supervisor must feel relaxed about giving the student time to learn by trial and
+  1373→error. Such supervisors are content to give guidance at regular intervals
+  1374→rather than the direction provided by those who stay much closer to the
+  1375→students and their work.
+  1376→Research has shown (Phillips 1994a) that when a student who needs
+  1377→time to plan work and to continue unhurriedly until satisfied that there is
+  1378→something interesting to impart is paired with a supervisor who constantly asks for worthwhile results, the student becomes irritated and feels
+  1379→that the standards required are unattainable. The supervisor feels that the
+  1380→postgraduate is too cautious and unable to work alone. Conversely, when
+  1381→a student who needs constant feedback and encouragement is paired with
+  1382→a supervisor who wants to be kept informed of progress and ideas only at
+  1383→intervals that allow for some development to have occurred, the student
+  1384→feels neglected and the supervisor resents the student’s demands for
+  1385→attention (if the student is actually confident enough to ask for more
+  1386→time).
+  1387→Good communication and rapport between students and their supervisors are the most important elements of supervision. Once the personal
+  1388→relationship has been well-established, all else falls into place. If interpersonal compatibility is missing everything else to do with being a
+  1389→research student is perceived negatively. Therefore, it cannot be stressed
+  1390→
+  1391→16
+  1392→
+  1393→I
+  1394→
+  1395→HOW TO GET A PhD
+  1396→
+  1397→too strongly that you should discuss this relationship at the very earliest
+  1398→opportunity, and a tentative agreement about working together should be
+  1399→reached.
+  1400→
+  1401→I
+  1402→
+  1403→Starting out as a research student
+  1404→
+  1405→In general, universities put very limited efforts into induction procedures
+  1406→for newcomers into the higher degree system or into the role of research
+  1407→student. Those who have recently attained a high-quality first degree share
+  1408→with their peers who have returned to university after some years of working the confusion and disorientation that comes from not quite knowing
+  1409→what is expected of them.
+  1410→Often new research students have the idea that people who possess a
+  1411→PhD degree are outstandingly brilliant. This idea inhibits their own development as they are equally sure that they are not outstandingly brilliant,
+  1412→and therefore cannot really expect to be awarded a PhD. Similarly, if they
+  1413→actually read any completed theses (this is not the norm and will be discussed in detail later) they often emerge convinced that they would never
+  1414→be able to write anything even remotely resembling such a document
+  1415→either in length or quality.
+  1416→The world that the new research student enters, classically portrayed as
+  1417→an ‘ill-defined limbo’ (Wason 1974) involves making a traumatic intellectual transition. It also involves the phenomenon of ‘unlearning existing expertise’ and having to start from the very beginning in order to
+  1418→discover slowly what one is supposed to be doing. During this period
+  1419→students might question the whole point of their being in the university.
+  1420→You should, therefore, make every effort to mitigate these unpleasant
+  1421→beginnings by agreeing a small initial project with definite deadlines at an
+  1422→early interview with your supervisor. The agreement should include the
+  1423→understanding that, once the work has been completed, you will discuss
+  1424→with your supervisor both the work itself and your feelings about it. This
+  1425→exercise will help to clarify any doubts about your ability to undertake
+  1426→research and written work. It will also help to reveal the evolutionary
+  1427→process (corrections, drafts, rewritings, etc.) inevitably involved in the
+  1428→production of theses, articles and books to publication standard which
+  1429→you have just read with such admiration.
+  1430→It is also a good idea to talk to other research students about their experience of the role as well as their work. Sharing apprehensions helps to
+  1431→resolve them through the knowledge that the problem is not an individual
+  1432→one, but one that is inbuilt into a less than perfect system. There are
+  1433→indeed guidelines which universities are advised to follow in providing
+  1434→support for their doctoral students. Your student representative can help
+  1435→you in accessing these should it ever be necessary.
+  1436→
+  1437→GETTING INTO THE SYSTEM
+  1438→I
+  1439→
+  1440→I
+  1441→
+  1442→17
+  1443→
+  1444→Myths and realities of the system
+  1445→
+  1446→The ‘ivory tower’
+  1447→One of the commonest misconceptions about research is that it is an ‘ivory
+  1448→tower’ activity, far removed from reality and from social contact with
+  1449→others. If you say you are doing research, people will often talk to you as
+  1450→though you had decided to spend a number of years in solitary confinement from which, in due course, you will emerge with your new
+  1451→discoveries.
+  1452→It is not like that at all. Although there are considerable periods when
+  1453→you will be working on your own (thinking and writing, for example) this
+  1454→is not the whole story. There is also a considerable academic network of
+  1455→people with whom, as an active researcher, you must interact. These
+  1456→include your supervisors, other academics in your department, the general
+  1457→library staff, the specialist librarian who deals with computer-based literature searches, visiting academics giving seminars, colleagues giving papers
+  1458→at conferences – the list is very considerable. To be an effective research
+  1459→student you must make use of all the opportunities offered. Research is
+  1460→an interactive process and requires the development of social, as well as
+  1461→academic, skills.
+  1462→
+  1463→Personal relationships
+  1464→Another popular misconception, this time of supervisors, is to believe that
+  1465→so long as they are on first-name terms with their research students everything is fine and the student knows that they are friends. Some supervisors
+  1466→even invite their students to their homes or take them to the pub for a
+  1467→drink in order to reinforce this camaraderie. But no matter how far the
+  1468→supervisors may go to assure new students that their relationship is that of
+  1469→friendly colleagues, the reality is that students take a considerable amount
+  1470→of time to become comfortable about this degree of informality. This is as
+  1471→true of mature students as of the more traditional new graduate.
+  1472→The reason for the students’ difficulty is that the supervisors already
+  1473→have that which the students most want – the PhD. They have the title of
+  1474→‘Dr’ and are acknowledged experts in the chosen field of their research
+  1475→students. The students have admired the supervisors’ work during their
+  1476→undergraduate days, having come into contact with it through lectures or
+  1477→reading, or having heard reference made to it by others. They feel privileged to be working so closely with such individuals, and are aware of the
+  1478→supervisors’ authority in the subject and power in the relationship.
+  1479→You may be in a department with many research students or perhaps
+  1480→you are the only one in your discipline. Either way you will probably meet
+  1481→others at an induction seminar, introductory lecture or other meeting for
+  1482→new higher degree students arranged by your university or student union.
+  1483→
+  1484→18
+  1485→
+  1486→I
+  1487→
+  1488→HOW TO GET A PhD
+  1489→
+  1490→Even if the people you meet are in different faculties, working on topics far
+  1491→removed from your own, it will be helpful for you to have contact with
+  1492→them. Since they are at the same stage as you, they have some understanding of your own experience. Make it one of your first tasks to get the names
+  1493→and email addresses of a few of your peers. Use this list to get in touch with
+  1494→them to form a mutually beneficial support group. Throughout the whole
+  1495→of your course this group will enable you to compare not only how your
+  1496→research is progressing, but also your feelings about it. The reality of this
+  1497→situation is that all personal relationships within the academic community, as elsewhere, have to be worked at and take time to develop.
+  1498→
+  1499→Teamworking
+  1500→‘I work alone in a lab, full of people, all research students, all working
+  1501→alone.’ This quotation is from Diana, a student in biochemistry, who was
+  1502→part of a ‘team’ of research students who were all engaged in the search for
+  1503→an effective anti-cancer drug. It exemplifies the situation in scientific
+  1504→research in which a large programme is being funded and the professors
+  1505→who hold the grants gather around them several research students. Each
+  1506→student is working on a specific problem. Each problem is closely linked to
+  1507→all the others. In theory there is a free exchange of information and the
+  1508→whole group works in harmony. In some programmes though, research
+  1509→students take care to guard closely the work for which they are responsible
+  1510→because they occasionally fear that one of the others may discover something that will render their own research unworthy of continuation.
+  1511→The PhD is awarded for original work. Postgraduates working on a programme such as the one described have two worries: first, that another
+  1512→student’s work so closely borders on their own that it will make their work
+  1513→unoriginal or second past the post; second, that somebody else will demonstrate something (for which that other person will be awarded a PhD)
+  1514→that will at the same time show their own line of research to be false.
+  1515→What is needed is collaboration, not competition, between people who
+  1516→should be making each other’s work more comprehensible and less alienating. In well managed laboratories there are regular group meetings to
+  1517→ensure that there is a general knowledge of the work that is being undertaken, and good communication about the issues and difficulties
+  1518→involved. Yet often students experience alienation and isolation as the
+  1519→overriding themes of their postgraduate days. The strange thing about this
+  1520→is that sometimes the science students appear to feel the isolation more
+  1521→strongly than their counterparts in the Social Sciences or Arts faculties.
+  1522→This is because within the sciences there is the illusion of companionship,
+  1523→and the expectations of new postgraduates are that they will be part of a
+  1524→group of friends, as well as a work group. In other faculties new research
+  1525→students expect to be working alone in libraries or at home, reading,
+  1526→
+  1527→GETTING INTO THE SYSTEM
+  1528→
+  1529→I
+  1530→
+  1531→19
+  1532→
+  1533→writing and thinking rather than experimenting. Any socializing that may
+  1534→take place as a result of a seminar, shared room or organized event is
+  1535→perceived as a bonus.
+  1536→
+  1537→I
+  1538→
+  1539→Action summary
+  1540→
+  1541→1
+  1542→
+  1543→Get as much information as you can before choosing your academic
+  1544→institution. Use the Internet and visit the places beforehand to talk
+  1545→to potential supervisors. Find out about the research culture: is it
+  1546→programme based or individually orientated? Ask to see around the
+  1547→area in which your work will be carried out to determine whether it
+  1548→would suit you.
+  1549→Find out about a potential supervisor’s research experience, publishing record and supervisory management style before making your
+  1550→decision.
+  1551→Ensure that you understand the eligibility requirements both for
+  1552→entry into the research degree programme of the university and of
+  1553→grant-awarding bodies. Know whether you conform to them or can
+  1554→make a special case for exceptional treatment.
+  1555→Very early on, arrange with your main supervisor to carry out a small
+  1556→initial project with definite deadlines to get you into the system. On
+  1557→completion and writing up, discuss not only the results but also how
+  1558→you went about it and what you can learn about the process.
+  1559→Work at personal relationships with your supervisor(s) and fellow
+  1560→doctoral students. Set limited goals and achieve them.
+  1561→
+  1562→2
+  1563→
+  1564→3
+  1565→
+  1566→4
+  1567→
+  1568→5
+  1569→
+  1570→I
+  1571→
+  1572→3
+  1573→
+  1574→I
+  1575→
+  1576→THE NATURE OF THE PhD
+  1577→QUALIFICATION
+  1578→I
+  1579→
+  1580→I
+  1581→
+  1582→In this chapter we shall discuss the nature of a PhD. We shall consider
+  1583→the objectives of the process, the part that it plays in the academic system,
+  1584→and the inevitably different aims the students, the supervisors and the
+  1585→examiners bring to it.
+  1586→
+  1587→I
+  1588→
+  1589→The meaning of a doctorate
+  1590→
+  1591→We are going to start with some historical background and present in a
+  1592→schematic way the meaning of the degree structure of a British university.
+  1593→ⵧ A bachelor’s degree traditionally meant that the recipient had obtained
+  1594→a general education (specializing at this level is a relatively recent
+  1595→nineteenth-century development).
+  1596→ⵧ A master’s degree is a licence to practise. Originally this meant to
+  1597→practise theology, that is, to take a living in the Church, but now there
+  1598→are master’s degrees across a whole range of disciplines: business
+  1599→administration, soil biology, computing, applied linguistics and so on.
+  1600→The degree marks the possession of advanced knowledge in a specialist
+  1601→field.
+  1602→ⵧ A doctor’s degree historically was a licence to teach – meaning to teach
+  1603→in a university as a member of a faculty. Nowadays this does not mean
+  1604→that becoming a lecturer is the only reason for taking a doctorate, since
+  1605→the degree has much wider career connotations outside academia and
+  1606→many of those with doctorates do not have academic teaching posts.
+  1607→The concept stems, though, from the need for a faculty member to be
+  1608→
+  1609→THE NATURE OF THE PhD QUALIFICATION
+  1610→
+  1611→I
+  1612→
+  1613→21
+  1614→
+  1615→an authority, in full command of the subject right up to the boundaries
+  1616→of current knowledge, and able to extend them. As the highest degree
+  1617→that can be awarded, it proclaims that the recipient is worthy of being
+  1618→listened to as an equal by the appropriate university faculty.
+  1619→Traditionally the doctorates of British universities have been named for
+  1620→the particular faculty, for example: DD (Divinity), MD (Medicine), LLD
+  1621→(Law), DMus (Music), DSc (Science), DLitt (Letters, i.e. Arts). These socalled ‘higher doctorates’ are awarded as a recognition of a substantial
+  1622→contribution to the discipline by published work. In British universities
+  1623→the Doctor of Philosophy degree is a comparatively recent concept – an
+  1624→early twentieth-century import from the United States. Some universities
+  1625→abbreviate the title to DPhil (e.g., Oxford, Sussex, York) but most use the
+  1626→designation PhD, which we use throughout this book. Whatever the
+  1627→abbreviation, the degree is the same. It represents a more restricted
+  1628→achievement than the higher doctorates since it envisages a limited
+  1629→amount of academic work (three years or so), but it still embodies the
+  1630→concept that the holder of the PhD is in command of the field of study and
+  1631→can make a worthwhile contribution to it.
+  1632→There are a number of exceptions to these descriptions of the meaning
+  1633→of the degree titles, since British universities pride themselves on their
+  1634→independence. Traditionally, once an institution had become a university
+  1635→there were no laws that specified which degrees could be awarded, by
+  1636→which institutions, to whom and on what basis, as was the case in Continental Europe. This has now changed, as the Government has decided to
+  1637→designate certain Higher Education Colleges as ‘Teaching Universities’,
+  1638→without giving them the right to award research degrees.
+  1639→Historically this independence has allowed, for example, the arts faculties of traditional Scottish universities to use the MA title for their first
+  1640→degree, but the science faculties use BSc. Traditionally there was no extra
+  1641→examination for an MA degree at Oxford and Cambridge, only a requirement to continue attendance at a college for a further two years. Nowadays this has been reduced to paying a registration fee after two years and
+  1642→obtaining the degree without attendance. In medicine the practice is even
+  1643→stranger: general medical practitioners are given the honorary title of
+  1644→Doctor although they do not have a doctorate from their universities.
+  1645→Indeed, on the basis of their university course they are credited with two
+  1646→bachelor’s degrees, although having a licence to practise they exemplify
+  1647→the concept of a master’s degree. There are, of course, good historical
+  1648→reasons for these anomalies.
+  1649→
+  1650→22
+  1651→
+  1652→I
+  1653→
+  1654→I
+  1655→
+  1656→Becoming a fully professional researcher
+  1657→
+  1658→HOW TO GET A PhD
+  1659→
+  1660→Thus the holder of a PhD is someone who is recognized as an authority by
+  1661→the appropriate faculty and by fellow academics and scientists outside the
+  1662→university. In modern terms it is useful to think of this as becoming a fully
+  1663→professional researcher in your field. Let us try to spell out what becoming
+  1664→a full professional means:
+  1665→1 At the most basic level it means that you have something to say that
+  1666→your peers want to listen to.
+  1667→2 In order to do this you must have a command of what is happening in
+  1668→your subject so that you can evaluate the worth of what others are
+  1669→doing.
+  1670→3 You must have the astuteness to discover where you can make a useful
+  1671→contribution.
+  1672→4 You must be aware of the ethics of your profession and work within
+  1673→them.
+  1674→5 You must have mastery of appropriate techniques that are currently
+  1675→being used, and also be aware of their limitations.
+  1676→6 You must be able to communicate your results effectively in the
+  1677→professional arena.
+  1678→7 All this must be carried out in an international context; your professional peer group is worldwide. (It always was, of course, but the rate of
+  1679→diffusion is infinitely faster than it used to be and with the World Wide
+  1680→Web is still accelerating.) You must be aware of what is being discovered,
+  1681→argued about, written and published by your academic community
+  1682→across the world.
+  1683→This list clearly represents quite a tall order, not least because, as you will
+  1684→have spotted, most of the list concerns the learning of skills, not knowledge. The crucial distinction is between ‘knowing that’ and ‘knowing
+  1685→how’, as the philosopher Gilbert Ryle put it. It is not enough for someone
+  1686→to tell you that this is a fruitful area for study, that this technique is available for use, that you should write a clear paper communicating your
+  1687→contribution. You have to be able to carve out a researchable topic, to
+  1688→master the techniques required and put them to appropriate use, and to
+  1689→cogently communicate your findings.
+  1690→So there are craft skills involved in becoming a full professional, which,
+  1691→like any skills, have to be learned by doing the task in practice situations
+  1692→under supervision. The skills required cannot easily be stated by other
+  1693→professionals, though many aspects can be learned from them – some
+  1694→consciously, others unconsciously. But there have to be the twin elements
+  1695→of exploration and practice, which are basic to all learning of skills. This is
+  1696→why the PhD takes time.
+  1697→As though this were not enough, there is a further complication. When
+  1698→
+  1699→THE NATURE OF THE PhD QUALIFICATION
+  1700→
+  1701→I
+  1702→
+  1703→23
+  1704→
+  1705→you are doing a PhD, you are playing in a game where the goalposts are
+  1706→continually being moved. Obviously, what is good professional practice
+  1707→today may tomorrow be inadequate. What is a reasonable contribution to
+  1708→a new topic now might be old hat by next year. So a final and crucial skill
+  1709→which professionals must acquire is the ability to evaluate and re-evaluate
+  1710→their own work and that of others in the light of current developments.
+  1711→They need to be able to grow with their discipline.
+  1712→It is these skills that you are trying to acquire when you embark on a
+  1713→PhD, and the purpose of the exercise is to become a fully professional
+  1714→researcher and to be able to demonstrate that you are one. It is important
+  1715→to keep this professional concept in mind because it orientates everything
+  1716→that you have to do. For example, you are not doing research in order to do
+  1717→research; you are doing research in order to demonstrate that you have
+  1718→learned how to do research to fully professional standards (more about the
+  1719→implications of this later in this chapter).
+  1720→You are not writing a review of your field of study because that would be
+  1721→an interesting thing to do, or because ‘everybody does one’ (although both
+  1722→of these may be true). You are writing a review because it gives you an
+  1723→opportunity to demonstrate that you have learned how to take command
+  1724→of the material with the maturity and grasp of the full professional (more
+  1725→about this in Chapter 6).
+  1726→Notice that the key concept is to demonstrate that your learning is to
+  1727→professional standards. How will you know whether it is? This is probably
+  1728→the most crucial thing that you have to learn – from your supervisor and
+  1729→from published work in your field. It is indeed a vital responsibility of your
+  1730→supervisor to ensure that you are given every opportunity to become
+  1731→familiar with appropriate professional standards. It is only through this
+  1732→familiarity that you will be able to recognize and achieve them.
+  1733→One thing is clear: you cannot get a PhD unless you do know what the
+  1734→standards are. This is because of the aims of the whole doctoral process.
+  1735→These are not just to allow you in due course to have the title ‘Doctor’,
+  1736→pleasant though this is and proud though your family will be. When the
+  1737→examiners, on behalf of the university and the academic community,
+  1738→award the degree and recognize you as a fully professional researcher, what
+  1739→they are primarily concerned with is that you should ‘join the club’ and
+  1740→continue your contribution to developing your discipline through
+  1741→research and scholarship throughout your career. They hope that you will
+  1742→publish papers from your doctoral thesis and continue to research and
+  1743→publish in the field to establish your academic authority, so that, in due
+  1744→course, you will supervise and examine other people’s PhD theses.
+  1745→This is in fact the aim of the whole exercise: to get you to the level where
+  1746→you can supervise and examine others’ PhDs with authority. Thus clearly
+  1747→you must have the professional skills and you must know the standards
+  1748→that are required. Two immediate corollaries of this fact are:
+  1749→
+  1750→24
+  1751→
+  1752→I
+  1753→
+  1754→HOW TO GET A PhD
+  1755→
+  1756→ⵧ Quite early on in the process you must begin to read other PhD theses
+  1757→in your field so that you can discover what the standards are. How else
+  1758→will you know what standard you ought to aim for?
+  1759→ⵧ If you have to go along to your supervisor after you have done your
+  1760→work and ask if it is good enough, you are clearly not ready for a PhD,
+  1761→which is awarded as a recognition that you are able to evaluate research
+  1762→work (including your own) to fully professional standards.
+  1763→
+  1764→I
+  1765→
+  1766→Differences between the MPhil and the PhD
+  1767→
+  1768→The MPhil is clearly a less advanced qualification than the PhD in which
+  1769→the student is expected to master a content area and can be completed in
+  1770→two years’ full-time study. The MPhil dissertation is normally shorter than
+  1771→the PhD thesis. It is often used as a training course in advanced research
+  1772→work, and can be a preliminary stage for the PhD where it is necessary to
+  1773→learn the fundamentals of research and acquire new techniques, although
+  1774→more and more the newly introduced MRes is being used for this purpose. The MPhil is also a legitimate higher degree qualification in its own
+  1775→right.
+  1776→As with the PhD, it is not possible to spell out in bureaucratic detail what
+  1777→is required to obtain the MPhil in your subject now. You need to read
+  1778→successful dissertations in order to discover the standards expected. Here,
+  1779→but only in very general terms, are some ways in which the MPhil has been
+  1780→held to differ from the PhD.
+  1781→A candidate for an MPhil must undertake an investigation but, compared to the PhD, the work may be limited in scope and the degree of
+  1782→originality. Considerably more emphasis is put on original work in the
+  1783→PhD and the PhD thesis involves greater depth than an MPhil dissertation. Greater synthesis and critical ability and also a more detailed
+  1784→investigation of any practical illustrations are expected from doctoral
+  1785→candidates.
+  1786→The MPhil can be limited to the replication of research already published. It is also acceptable for secondary sources to be used. This means
+  1787→that for an MPhil it is legitimate to quote some authority quoting somebody else, for example, ‘Francis gives several definitions of originality
+  1788→(Phillips and Pugh 2005)’. This would not be acceptable for a PhD thesis
+  1789→where the candidate for the degree would be expected to have read and
+  1790→evaluated Francis in the original publication.
+  1791→In addition, although a full summary of literature is required, it does not
+  1792→have to be an evaluative review as in the PhD. The difference here is in the
+  1793→breadth and depth of the review as well as in the amount of critical
+  1794→appreciation that is expected. In a high quality MPhil, evidence is required
+  1795→of the ability to test ideas; understand appropriate techniques; make use of
+  1796→
+  1797→THE NATURE OF THE PhD QUALIFICATION
+  1798→
+  1799→I
+  1800→
+  1801→25
+  1802→
+  1803→published work and source material; and show familiarity with different
+  1804→theories and empirical studies.
+  1805→Each university will have its own regulations concerning the MPhil
+  1806→degree and you must study carefully those which apply to you.
+  1807→
+  1808→I
+  1809→
+  1810→Aims of students
+  1811→
+  1812→There are many reasons why people decide to work towards a PhD. One of
+  1813→the most common aims at the beginning is the wish to make a significant
+  1814→contribution to the chosen field. In these cases students have become particularly interested in a topic during the course of their undergraduate
+  1815→degrees (or perhaps while working in their profession) and wish to add
+  1816→something to the current state of knowledge. For example Adam, who
+  1817→after graduating in architecture, had spent some years both teaching and
+  1818→working as an architect, explained why he had returned to university in
+  1819→the following way:
+  1820→I wanted to do more theoretical work as my interests were with the
+  1821→value problems in designing a building. How does the architect make
+  1822→decisions about features that will affect the behaviour of those using
+  1823→the building without ever having a consultation with the prospective
+  1824→users? This interest was an extension of my direction as an undergraduate and my observations during my working career. I saw it as a
+  1825→serious problem and a major issue in professional practice.
+  1826→Greg, a history student, said he wanted to gain a PhD because:
+  1827→It was an opportunity to continue research I had started for my MA.
+  1828→To me a PhD means that the candidate has made some new contribution to his field and that’s really what I want to do. Up until now I’ve
+  1829→never really considered doing the next degree until I had almost
+  1830→finished the previous one. I don’t need the PhD for my work – it
+  1831→might even be a disadvantage.
+  1832→Greg’s sentiments are not echoed by all research students, as another
+  1833→important aim for many postgraduates is to enhance career opportunities
+  1834→and future earning capacity through possession of the PhD degree. Some
+  1835→decide on this course of action when considering plans for the future.
+  1836→Others, like Freddy, who was studying industrial chemistry, decide on
+  1837→research when they find it more difficult than they had expected to get a
+  1838→job in industry straight from university:
+  1839→The head of department where I did my first degree offered me a
+  1840→research post, so I agreed after he gave me an outline of the research
+  1841→area.
+  1842→
+  1843→26
+  1844→
+  1845→I
+  1846→
+  1847→HOW TO GET A PhD
+  1848→
+  1849→There are other career reasons for wanting to take a doctorate. Some
+  1850→students find that they are being called ‘Dr’ by people coming in to the
+  1851→laboratory or hospital department where they work and feel guilty at
+  1852→accepting the title they have not yet achieved. Others feel that relationships with their medical colleagues may be easier if they too have the title.
+  1853→Some are embarrassed at being alone in their academic group without a
+  1854→title and succumb to their feelings of peer pressure in order to conform.
+  1855→Another reason for undertaking a research degree after doing well at
+  1856→undergraduate level is simply taking up the offer of a studentship as a form
+  1857→of employment and without having any real career aims. All of these
+  1858→motives are far removed from the idealistic view of the PhD student as
+  1859→somebody dedicated to advancing knowledge and potentially worthy of
+  1860→becoming an undisputed expert in a given field.
+  1861→These diverse aims of students do not remain the same throughout the
+  1862→period of registration for the higher degree, however, not even for those
+  1863→students who do start because of the intrinsic satisfaction of actually doing
+  1864→research and because of their interest in the work for its own sake. The
+  1865→following description of his decision to work for the PhD was given by
+  1866→Bradley, who was studying in the English department of a university:
+  1867→I couldn’t think of a more fulfilling or pleasurable way of spending
+  1868→my time. It’s almost instinctive. I haven’t weighed up the pros and
+  1869→cons, it was an emotional decision really.
+  1870→As we discuss fully in Chapter 7 on the PhD process, all these students,
+  1871→together with very many more enthusiastic new recruits, change their way
+  1872→of talking about their PhD as the years of learning to do research and
+  1873→become a full professional pass by. Towards the end their aims become
+  1874→narrower: simply to reach the goal of the PhD – ‘got to get it’ – or else to
+  1875→complete an unfinished task – ‘must finish’.
+  1876→It is important that research students eventually realize that it is
+  1877→determination and application, rather than brilliance, that are needed.
+  1878→The sooner you learn this the better. Conducting a piece of research to a
+  1879→successful conclusion is a job of work that has to be done just like any
+  1880→other job of work. Also, just like any other job of work, an important
+  1881→objective should be to make a success of what you have set out to do.
+  1882→
+  1883→I
+  1884→
+  1885→Aims of supervisors
+  1886→
+  1887→In the same way that students begin a PhD for a variety of different
+  1888→reasons, so too supervisors undertake supervision with different aims in
+  1889→mind. There are those who wish to add to their reputation for having a
+  1890→large number of successful research students of high calibre. With each
+  1891→additional success their own professional status is raised. Of course, the
+  1892→
+  1893→THE NATURE OF THE PhD QUALIFICATION
+  1894→
+  1895→I
+  1896→
+  1897→27
+  1898→
+  1899→converse is also true: it is possible for academics to go down in the estimation of their peers by having a succession of students who drop out, do
+  1900→work of poor quality or take an exceptional amount of time to complete
+  1901→their theses. But those supervisors who have one or more ex-research
+  1902→students who are now professors speak of the achievements of these
+  1903→graduates as though they were their own.
+  1904→There are at least two kinds of supervisor. Some supervisors believe that
+  1905→postgraduates should be encouraged to become autonomous researchers.
+  1906→Others believe they should be encouraged to become extremely efficient
+  1907→research assistants. Some supervisors have not really thought about this
+  1908→matter specifically but nevertheless treat their research students in such a
+  1909→way that it is relatively simple to deduce which implicit theory of doctoral
+  1910→education and training they hold.
+  1911→Some supervisors are dedicated to developing their favoured area of
+  1912→research by having several people exploring different, but related, problems. These people aim to build centres of excellence around themselves,
+  1913→which will attract visiting academics from other universities and other
+  1914→countries. In this way they are able to spend some time discussing their
+  1915→work with other specialists. They may also be able to arrange an occasional
+  1916→seminar given by a well-known expert. Students of these academics are
+  1917→likely to find that they are given small, well-defined problems that closely
+  1918→border the research problems being pursued by other researchers attached
+  1919→to their supervisor.
+  1920→There are also those few senior academics who aim to become eligible
+  1921→for a Nobel prize or other senior honour. What this means for their students is that they will be treated as research assistants and expected to do
+  1922→the work set out for them by the professor, in the limited manner of a
+  1923→subordinate.
+  1924→As well as those who wish to get the work done as speedily and efficiently as possible, there are those supervisors who are genuinely interested in producing more and better researchers. They are prepared to offer
+  1925→a service of supervision to research students in the same way as they offer a
+  1926→service of teaching to undergraduate students. What this means for students is that they will be expected to develop their own topics for research
+  1927→and to operate in a more individual manner. This approach gives more
+  1928→autonomy but entails a more restricted academic peer group.
+  1929→Thus supervisors have many different reasons for agreeing to add to
+  1930→work already being undertaken by engaging in the supervision of research
+  1931→students. Not all of these aims are mutually exclusive. It is necessary, however, for students to discover which approach a prospective supervisor
+  1932→favours in order to evaluate the implications for what will be expected of
+  1933→them.
+  1934→It is also important for incoming doctoral students to be clear whether
+  1935→they wish to become autonomous researchers or superior research
+  1936→
+  1937→28
+  1938→
+  1939→I
+  1940→
+  1941→HOW TO GET A PhD
+  1942→
+  1943→assistants, as well as for supervisors to become aware of which type of
+  1944→researcher is best suited to help them further their own aims.
+  1945→Of course, we realize that it will be difficult for you, as a beginning
+  1946→research student, to understand fully the implications of this discussion. It
+  1947→will be even more difficult to act on such considerations. Two things that
+  1948→you could do are: talk to other research students in the department about
+  1949→their experience of supervision, and introduce into the preliminary discussions with any potential supervisor an exploration of their preferred
+  1950→way of working with their students.
+  1951→
+  1952→I
+  1953→
+  1954→Aims of examiners
+  1955→
+  1956→External examiners are academics from universities other than your own
+  1957→and are used to ensure that, within a given discipline, standards of quality
+  1958→for which the PhD degree is awarded are uniform across universities. Some
+  1959→examiners see the aims of the PhD to be a training for a career in research,
+  1960→some as an introduction to writing books, some as preparation for the
+  1961→academic life and some, as we have suggested, to become a fully rounded
+  1962→professional.
+  1963→Whether examiners are more interested in the research, the thesis or the
+  1964→performance of the candidate in the oral examination, they are looking for
+  1965→a command of the subject area (or context) of the research, as well as the
+  1966→specific topic. The British PhD is awarded for an original contribution to
+  1967→knowledge. Yet, as we shall see in Chapter 6, originality in the PhD is a
+  1968→complex concept which has not yet been adequately defined. Nevertheless, examiners need to be satisfied that the work has a degree of originality
+  1969→and that it is the genuine work of the candidate.
+  1970→Examiners acquire reputations for their performance in this role. Some
+  1971→become known as difficult to please while others are prepared to take the
+  1972→supervisor’s evaluation of the work almost without question. Some examiners make the oral examination a real test of professional knowledge and
+  1973→exposition, while others allow it to be more of a relaxed conversation
+  1974→between friends.
+  1975→The reputations that the examiners acquire do sometimes affect their
+  1976→selection, especially when it is left to the supervisor to choose. Some candidates find that their external examiners have been chosen on the basis of
+  1977→how highly their supervisors regard the students’ work. For example, if a
+  1978→supervisor thinks that a particular student will only just satisfy requirements, a less exacting examiner may be chosen. If, on the other hand, the
+  1979→supervisor considers the student’s work to be of considerable merit a tough
+  1980→examiner is chosen and the student then has the advantage of being
+  1981→passed by somebody who adds prestige to the new PhD’s success. However,
+  1982→such a system is far from universal and can be extremely unpopular.
+  1983→
+  1984→THE NATURE OF THE PhD QUALIFICATION
+  1985→
+  1986→I
+  1987→
+  1988→29
+  1989→
+  1990→Dr George, a supervisor who also has special responsibility for research
+  1991→students in his department said: ‘I’m against the practice of getting a lesser
+  1992→academic, or a friend, for a weaker student but I know it happens and it has
+  1993→happened here.’
+  1994→
+  1995→I
+  1996→
+  1997→Aims of universities and research councils
+  1998→
+  1999→Government-funded research councils provide studentships for British
+  2000→full-time doctoral students in science and social science, as does the British
+
+[showing lines 1-2000 of 2285; use offset=2001 with limit to continue reading]

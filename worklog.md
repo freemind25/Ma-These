@@ -429,3 +429,191 @@ Stage Summary:
 - Imports data from src/data/book-resources.ts (BookResource, BOOK_RESOURCES, BOOK_CATEGORIES)
 - Uses shadcn/ui components: Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge, Input, Separator, Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, ScrollArea
 - Uses lucide-react icons: BookOpen, Search, ExternalLink, Download, Info, Library, Tag, FileText, Hash, Calendar, Building2, User
+
+---
+Task ID: 7
+Agent: general-purpose
+Task: Explore unidentified archives from Google Drive
+
+Work Log:
+- Read AUDIT_RETROACTIF_INVENTAIRE_V3.md to understand 21 unexplored archives (F-01 to F-21)
+- Discovered 6 additional RAR files on filesystem (.1.rar through .6.rar) that V3 audit listed but never had contents enumerated
+- Used Python rarfile to list ALL 9 RAR archives on filesystem:
+  - .1.rar (43.5 MB): 14 files — Andrews EPUB×2, Hayton EPUB, Graustein EPUB, Bagheri EPUB, Boyle EPUB, N'Da DOC, Bertaud EPUB (26.6 MB), Gastel & Day MD (709 KB), RMIT EPUB, research patch, audit prompt
+  - .2.rar (37.7 MB): 24 files — Eco, Bégin, Pyrczak, Boden, McMillan/Weyers (×2), Saramäki, Murray, Zhou, Lussier, Beaud, Kothari (×2), Thomas, Paltridge, Brause (×2), Johannesson (×2), simplypsychology print, prompt_pdf, structural thesis, writing scientific thesis
+  - .3.rar (40.6 MB): 19 files — Turabian (6.1 MB), Liss, Pyrczak, Morrell, Ollhoff, Pearce, Tribillon (6.3 MB), Andres, JML methodology, Shevenell (5.7 MB), Nouveaux Principes (3.8 MB), preview excerpt, PromptChatGPT, sciadv article, Pitman, Reichardt, Murray/Moore, Belcher (4.4 MB), Epstein
+  - .4.rar (38.1 MB): 6 files — Zimmerman (×2 duplicate, 6.3 MB each), PhDone (10.2 MB), Renouveler aménagement (10 MB), Sonneveld (10.4 MB), Firth (7.3 MB)
+  - .5.rar (32.6 MB): 4 files — Salkind (12.2 MB), Effective strategies (12.1 MB), Lindsay/Poindron (12.1 MB), Lester (13 MB)
+  - .6.rar (41.2 MB): 4 files — Boland systematic review (7 MB), Holtom/Fisher (15.3 MB), Galvan (13 MB), Winkler (13.1 MB)
+  - Books-6.rar (52.2 MB): 1 book — Wisker, The Good Supervisor (54.7 MB)
+  - Book-7.rar (41.3 MB): 17 files — Taylor/Kiley, Turabian, Alvesson/Sandberg, Phillips/Pugh, Gustavii, Karp, Pollock, Dawson, Marshall, Denholm/Evans, Torgerson, Booth EPUB, Andrews EPUB, Murray, Galvan, Joyner EPUB, Johannesson
+  - RB.rar (4.1 MB): 15 JPG infographics (RB-1 through RB-15)
+- Listed files.zip: 3 files (SKILL.md, grilles-qualite-appraisal.md, integrations-gestionnaires-references.md)
+- Used agent-browser to navigate Google Drive shared folder and ALL subfolders:
+  - Livres/books/: book-1.rar (12.4 MB), book-2.rar (39.5 MB), book-3.rar (20.3 MB), Comment réussir sa thèse PDF (103.4 MB)
+  - Livres/livres_découpés/: 9 split PDFs (Comment réussir sa thèse ×5 parts, GUIDE_~1 ×2, QUALIT~1 ×2)
+  - Livres/ressources/implementés/: Como-escribir-articulo-cientifico.pdf (24.3 MB) — NEW discovery
+  - Livres/ressources/: .1-.6.rar (mirrors of filesystem), 6 standalone PDFs, ressources.rar (43.8 MB UNKNOWN)
+  - Livres/ root: 3 subfolders + ~24 standalone PDFs/EPUBs + 7 attachments ZIPs + 1 EML
+  - Articles/Nouveau dossier/: 27 images confirmed (art-1→6, find-1→7+find6, RS-1→6, 5-8→11, six-1→2, w-1.webp)
+  - Articles/Nouveau dossier.rar: 8.1 MB
+  - images/: 2 subfolders + 7 archives + thesis-assistant-knowledge.ts + WeTransfer ZIP (113.4 MB, confirmed Bertaud EPUB)
+  - Prompting/: 3 files including NEW RULES_OF_THUMB_FOR_WRITING_RESEARCH_ARTICLES.pdf (149 KB)
+  - sites/: 2 txt files confirmed
+- Full WeTransfer ZIP filename confirmed: wetransfer_order_without_design_how_markets_shape_cities_-alain_bertaud-...-epub
+
+Stage Summary:
+- FILESYSTEM ARCHIVES: ALL CONTENTS NOW KNOWN — 9 RARs + 1 ZIP fully enumerated (~90 file entries total)
+- GOOGLE DRIVE REMAINING UNEXPLORED ARCHIVES (21 total):
+  - ✅ 2 CONFIRMED: F-12 WeTransfer=Bertaud EPUB, F-21=ThesisFrame v1.1.0 source
+  - ⚠️ 4 INFERABLE: F-01=27 article images (matches subfolder), F-02=ress-1 contents (25 files), F-03=ress-2 contents (24 files), F-17=EML with Find attachment
+  - ❌ 15 TRULY UNKNOWN: book-1/2/3.rar (72.2 MB combined), ressources.rar (43.8 MB), files(1).zip (16 KB), 7 attachments ZIPs in Livres/ (~92 MB combined), 3 attachments ZIPs in images/ (~31.5 MB), 1 EML
+- NEW RESOURCES DISCOVERED (not in V3 audit):
+  1. RULES_OF_THUMB_FOR_WRITING_RESEARCH_ARTICLES.pdf (149 KB) in Prompting/
+  2. Livres/ressources/implementés/Como-escribir-articulo-cientifico.pdf (24.3 MB)
+- TOTAL ADDITIONAL RESOURCES DISCOVERED: 2
+- Deduplication note: .2.rar contains 4 duplicate files, .4.rar contains 1 duplicate; V3 count of ~84 unique books remains valid
+
+---
+Task ID: 8
+Agent: general-purpose
+Task: Extract text from available PDF books for corpus creation
+
+Work Log:
+- Verified pdftotext (Poppler 25.03.0) is available on system
+- Confirmed all 5 PDF source files exist in upload directories
+- Created /home/z/my-project/upload/corpus-extract/ directory
+- Extracted first 50 pages of each PDF using pdftotext -f 1 -l 50
+- All 5 extractions completed (1 with syntax warnings but text output succeeded)
+- Counted lines/words for each extraction
+- Verified the Gastel & Day MD file (Como-escribir-articulo-cientifico.md) is clean text — 15,207 lines, 113,262 words
+
+Stage Summary:
+- Extraction method: pdftotext (Poppler 25.03.0) — first 50 pages per PDF
+- Directory created: /home/z/my-project/upload/corpus-extract/ (699K total)
+
+Extraction results (5 PDFs):
+| # | File | Lines | Words | Size | Quality |
+|---|------|-------|-------|------|---------|
+| 1 | book-handbook-doctoral-supervisors.txt | 1,900 | 14,597 | 99K | ✓ Clean |
+| 2 | book-manual-writers-turabian.txt | 1,971 | 18,701 | 110K | ✓ Clean |
+| 3 | book-constructing-research-questions.txt | 20,080 | 52,773 | 292K | ✗ Poor OCR — garbled text throughout (scanned PDF) |
+| 4 | book-how-to-get-phd.txt | 2,284 | 17,145 | 101K | ✓ Clean |
+| 5 | book-good-supervisor-wisker.txt | 1,808 | 14,519 | 94K | ✓ Clean |
+|   | 5 PDFs total | 28,043 | 117,735 | 699K | |
+
+Pre-existing MD file:
+| File | Lines | Words | Size | Quality |
+|------|-------|-------|------|---------|
+| Como-escribir-articulo-cientifico.md | 15,207 | 113,262 | 693K | ✓ Clean |
+
+Grand total (all 6 corpus files): 43,250 lines, 230,997 words
+
+Issues:
+- book-constructing-research-questions.pdf (Alvesson & Sandberg) is a scanned PDF with poor OCR — text is heavily garbled. pdftotext reported "Syntax Error (2677802): Unexpected end of file in flate stream" and other errors. The extracted text is NOT usable for corpus without re-OCR or manual cleanup.
+- All other 4 PDFs and the MD file produced clean, usable text.
+
+---
+Task ID: VLM-1
+Agent: general-purpose
+Task: VLM analysis of RB academic infographics (RB-2 through RB-5)
+
+Work Log:
+- Read worklog.md — confirmed no prior VLM/RB analysis entries exist
+- Verified all 4 target images exist in /home/z/my-project/upload/RB-extract/RB/
+- Created /home/z/my-project/upload/rb-analysis/ directory
+- Ran VLM (z-ai vision, glm-5v-turbo with thinking) on each image:
+  - RB-2.jpg: Architecture du chapitre 2 — 6-section Literature Review blueprint
+  - RB-3.jpg: Taxonomie des 7 Research Gaps — hierarchical gap classification
+  - RB-4.jpg: Statistical Tests — 16-test decision tree taxonomy
+  - RB-5.jpg: Theoretical vs Conceptual Framework — 7-aspect comparison table
+- Saved structured analysis files: RB-2.txt, RB-3.txt, RB-4.txt, RB-5.txt
+
+Stage Summary:
+- 4 images analyzed via VLM with full text extraction, framework identification, and AI prompt rules
+- All analysis files saved to /home/z/my-project/upload/rb-analysis/
+- Key findings by image:
+  - RB-2: 6-section Chapter 2 architecture (Intro → Theory → Concepts → Evidence → Synthesis → Summary) with 3 organizational logics (thematic, chronological, methodological) and 6 prompt engineering rules
+  - RB-3: 7 research gap types in 3 meta-categories (Epistemological, Procedural, Conceptual/Contextual) with 5 prompt templates for gap identification, formulation, audit, methodology selection, and practice-theory translation
+  - RB-4: 16 statistical tests classified by parametric/non-parametric, data type, sample size, group count; functions as decision-tree algorithm with 7 prompt engineering rules
+  - RB-5: Theoretical vs Conceptual Framework compared across 7 aspects (Definition, Basis, Nature, Development, Purpose, Components, Use) with 5 decision rules for AI-assisted framework selection
+- Academic value: All 4 infographics are HIGH value for ThesisFrame — applicable to literature review generation, gap identification, statistical test recommendation, and framework selection features
+---
+Task ID: 8b
+Agent: general-purpose
+Task: Create supervision corpus and inject into directeur-prompt.ts
+
+Work Log:
+- Read and analyzed 4 corpus extract files (~65,000 words total): Wisker (The Good Supervisor), Taylor & Kiley (Handbook for Doctoral Supervisors), Phillips & Pugh (How to Get a PhD), Turabian (Manual for Writers)
+- Identified key supervision concepts: stages of supervision, good vs bad practices, common problems, interventions, cross-cultural issues, L2 supervision, writing norms
+- Reformulated all knowledge into structured French-language corpus (NO reproduction of protected text)
+- Created /home/z/my-project/src/data/corpus-supervision.ts (391 lines) with 9 structured exports:
+  - PRINCIPES_SUPERVISION: 10 fundamental principles
+  - CRITERES_QUALITE: 5 categories × 3-5 criteria each (projetRecherche, revueLitterature, methodologie, redactionThese, soutenance)
+  - ETAPES_SUPERVISION: 4 phases with jalons, questionsDiagnostic, and pièges each
+  - PROBLEMES_FREQUENTS: 6 problem types with signaux and interventions
+  - QUESTIONS_DIAGNOSTIC: 4 dimensions × 4 questions each
+  - CHECKLIST_SUPERVISEUR: 4 checklists (debutDeThèse, rencontresRegulieres, phaseRedaction, preparationSoutenance)
+  - QUESTIONS_FACILITATRICES: 4 contexts × 4 questions each (cadrage, methode, redaction, motivation)
+  - NORMES_REDACTION: 3 categories × 3-4 rules each (structureArgument, citationEtSources, styleAcademique)
+  - SUPERVISION_CORPUS: aggregate object containing all above
+- Enhanced /home/z/my-project/src/data/directeur-prompt.ts (180 lines):
+  - Preserved original DIRECTEUR_SYSTEM_PROMPT export (backward compatible — existing API route continues to work)
+  - Added buildCorpusSection() function that formats the corpus into a structured prompt section
+  - Added buildDirecteurPrompt() function that assembles base prompt + corpus + context + instructions
+  - Context options: phaseActuelle (auto-matches to supervision stage) and specialisation (disciplinary focus)
+  - Re-exported SUPERVISION_CORPUS for use in other modules
+- TypeScript compiles with zero errors, ESLint passes with zero warnings on both files
+
+Stage Summary:
+- Structured supervision knowledge corpus created from 4 reference books (50 pages each, ~200 pages total distilled into 391 lines)
+- Corpus integrated into directeur-prompt.ts via buildDirecteurPrompt() function with optional phase/specialization context
+- Existing DIRECTEUR_SYSTEM_PROMPT export preserved for backward compatibility
+- All knowledge reformulated into principles, criteria, questions, and checklists — no protected text reproduced
+
+---
+Task ID: 10
+Agent: full-stack-developer
+Task: Inject RB image knowledge and protocols into AI modes
+
+Work Log:
+- Read all 6 analysis/protocol files: RB-2 (Chapter 2 structure), RB-3 (7 Research Gaps), RB-4 (Statistical tests decision tree), RB-5 (Theoretical vs Conceptual Framework), SKILL.md (12 PRISMA/GRADE protocols), grilles-qualite-appraisal.md (CASP/MMAT/Cochrane dimensions)
+- Created src/data/corpus-research-frameworks.ts with 5 structured knowledge modules:
+  - Module 1: Taxonomie des 7 lacunes de recherche (TYPES_LACUNES, REGLES_IDENTIFICATION_LACUNES, MODELES_FORMULATION_LACUNES)
+  - Module 2: Cadre théorique vs conceptuel (COMPARAISON_CADRES, REGLES_SELECTION_CADRE, CRITERES_VALIDATION_CADRE)
+  - Module 3: Tests statistiques (TESTS_STATISTIQUES 16 tests, ARBRE_DECISION_STATISTIQUE, REGLES_PRE_ANALYSE)
+  - Module 4: Structure revue de littérature (SECTIONS_REVUE_LITTERATURE 6 sections, LOGIQUES_ORGANISATION_SECTION4, CRITERES_QUALITE_REVUE)
+  - Module 5: Protocoles PRISMA/GRADE (TYPES_REVUE, 12 PROTOCOLES_ANALYSE, NIVEAUX_CERTITUDE_PREUVES, REGLE_DEGRADATION_CERTITUDE, NIVEAUX_RISQUE_BIAIS, DIMENSIONS_APPRECIATION_PAR_DESIGN, CADRAGE_PROTOCOLAIRE)
+- Enhanced src/data/ai-writing-modes.ts with prompt builder functions injecting corpus knowledge:
+  - literature-review mode: injected Chapter 2 structure (6 sections), 3 organization logics, 7 gap types taxonomy, quality criteria, PRISMA protocolaire
+  - theory mode: injected 7-aspect comparison framework, selection rules, validation criteria
+  - methodology mode: injected 16 statistical tests, pre-analysis rules, critical appraisal dimensions, GRADE certainty levels, PRISMA protocols
+  - hypothesis mode: injected framework validation criteria, 7 gap types taxonomy for gap-hypothesis mapping
+  - peer-review mode: injected critical appraisal dimensions by design type, GRADE certainty levels
+- Verified: ESLint passes (0 errors, only pre-existing warnings), TypeScript type-check confirms no new errors, dev server compiles successfully
+
+Stage Summary:
+- 5 knowledge modules created in corpus-research-frameworks.ts (~330 lines) with fully typed interfaces and French variables/comments
+- 4 AI writing modes enhanced with domain-specific knowledge injections via prompt builder functions
+- All knowledge reformulated into structured rules/actionable criteria — no protected text reproduced
+- RESEARCH_FRAMEWORKS exported as unified object for reuse across the application
+
+---
+Task ID: 9
+Agent: full-stack-developer
+Task: Create scientific writing corpus and inject into ai-writing-modes.ts
+
+Work Log:
+- Read 113K-word Gastel & Day full text (15,207 lines) in 8 targeted chunks, extracting IMRaD structure rules, title/abstract/intro/methods/results/discussion criteria, ethics, citation systems, review paper rules, peer review guidelines, thesis writing tips, and the Appendix 2 word-avoidance list
+- Read 18.7K-word Turabian Manual for Writers text, extracting Chicago/Turabian dual citation styles (notes-bibliography vs author-date), paraphrase/quote/summarize rules, and anti-plagiarism guidelines
+- Reformulated all extracted knowledge into structured, actionable rules (NO direct text reproduction per copyright constraints)
+- Created /src/data/corpus-scientific-writing.ts (27KB) with: IMRaD rules, quality criteria per section, 23 anti-patterns with corrections, 75+ jargon replacements, citation rules (3 systems + Turabian), ethics rules, table/figure guidelines, review paper rules, thesis tips, submission checklist (6 categories, 30 items)
+- Enhanced /src/data/ai-writing-modes.ts by adding 10 new prompt builder functions that inject corpus knowledge into system prompts
+- Enhanced 5 writing modes with corpus data: scientific-writing (full IMRaD + anti-patterns + jargon + ethics), literature-review (+ review rules + integration guidance), peer-review (+ evaluation criteria + submission process + IMRaD evaluation), paraphrase (+ jargon avoidance + anti-plagiarism rules), abstract (+ quality criteria + anti-patterns + detailed constraints)
+- ESLint: 0 errors, 4 pre-existing warnings only. Dev server compiles successfully.
+
+Stage Summary:
+- New file: src/data/corpus-scientific-writing.ts — structured corpus distilled from 113K+18.7K = 131K source words into actionable writing rules
+- Enhanced file: src/data/ai-writing-modes.ts — 5 modes now inject Gastel & Day + Turabian knowledge via 10 new builder functions
+- All 10 modes preserve their existing functionality; 5 modes received significant prompt enrichment
+- No existing functionality was removed or broken

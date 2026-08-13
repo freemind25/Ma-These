@@ -1,0 +1,1972 @@
+     1→A Manual for Writers of Research Papers, Theses, and
+     2→Dissertations
+     3→
+     4→On Writing, Editing, and Publishing
+     5→Jacques Barzun
+     6→Tricks of the Trade
+     7→Howard S. Becker
+     8→Writing for Social Scientists
+     9→Howard S. Becker
+    10→Permissions, A Survival Guide: Blunt Talk about Art as Intellectual Property
+    11→Susan M. Bielstein
+    12→The Craft of Translation
+    13→John Biguenet and
+    14→Rainer Schulte, editors
+    15→The Craft of Research
+    16→Wayne C. Booth,
+    17→Gregory G. Colomb, and
+    18→Joseph M. Williams
+    19→Glossary of Typesetting Terms
+    20→Richard Eckersley,
+    21→Richard Angstadt,
+    22→Charles M. Ellerston,
+    23→Richard Hendel,
+    24→Naomi B. Pascal, and
+    25→Anita Walker Scott
+    26→Writing Ethnographic Fieldnotes
+    27→Robert M. Emerson,
+    28→Rachel I. Fretz, and
+    29→
+    30→www.itpub.net
+    31→
+    32→Linda L. Shaw
+    33→Legal Writing in Plain English
+    34→Bryan A. Garner
+    35→From Dissertation to Book
+    36→William Germano
+    37→Getting It Published
+    38→William Germano
+    39→A Poet's Guide to Poetry
+    40→Mary Kinzie
+    41→The Chicago Guide to Collaborative Ethnography
+    42→Luke Eric Lassiter
+    43→Doing Honest Work in College
+    44→Charles Lipson
+    45→How to Write a BA Thesis
+    46→Charles Lipson
+    47→Cite Right
+    48→Charles Lipson
+    49→The Chicago Guide to Writing about Multivariate Analysis
+    50→Jane E. Miller
+    51→The Chicago Guide to Writing about Numbers
+    52→Jane E. Miller
+    53→Mapping It Out
+    54→Mark Monmonier
+    55→The Chicago Guide to Communicating Science
+    56→Scott L. Montgomery
+    57→
+    58→Indexing Books
+    59→Nancy C. Mulvany
+    60→Getting into Print
+    61→Walter W. Powell
+    62→Tales of the Field
+    63→John Van Maanen
+    64→Style
+    65→Joseph M. Williams
+    66→A Handbook of Biological Illustration
+    67→Frances W. Zweifel
+    68→
+    69→Chicago Style for Students and Researchers
+    70→
+    71→Kate L. Turabian
+    72→
+    73→Revised by Wayne C. Booth, Gregory G. Colomb, Joseph M.
+    74→Williams, and University of Chicago Press Editorial Staff
+    75→The University of Chicago Press
+    76→Chicago and London
+    77→
+    78→www.itpub.net
+    79→
+    80→Publisher's note: Given the complex formatting of this work, its presentation on an electronic device may differ
+    81→slightly from the print book. Every care has been taken to ensure that readers of this eBook will be able to
+    82→navigate the content easily and effectively.
+    83→Portions of this book have been adapted from The Craft of Research, 2nd edition, by Wayne C. Booth, Gregory
+    84→G. Colomb, and Joseph M. Williams, © 1995, 2003 by The University of Chicago; and from The Chicago
+    85→Manual of Style, 15th edition, © 1982, 1993, 2003 by The University of Chicago.
+    86→The University of Chicago Press, Chicago 60637
+    87→The University of Chicago Press, Ltd., London
+    88→© 2007 by The University of Chicago
+    89→All rights reserved. Published 2007
+    90→Printed in the United States of America
+    91→16 15 14 13 12 11 10 09 08 07
+    92→
+    93→1 2 3 4 5
+    94→
+    95→ISBN-13: 978-0-226-82338-6 (electronic)
+    96→ISBN-13: 978-0-226-82336-2 (cloth)
+    97→ISBN-13: 978-0-226-82337-9 (paper)
+    98→ISBN-10: 0-226-82336-9 (cloth)
+    99→ISBN-10: 0-226-82337-7 (paper)
+   100→Library of Congress Cataloging-in-Publication Data
+   101→Turabian, Kate L.
+   102→A manual for writers of research papers, theses, and dissertations : Chicago style for students and
+   103→researchers / Kate L. Turabian; revised by Wayne C. Booth, Gregory G. Colomb, Joseph M. Williams, and
+   104→University of Chicago Press editorial staff.—7th ed.
+   105→p. cm.
+   106→“Portions of this book have been adapted from The Craft of Research, 2nd edition, by Wayne C. Booth,
+   107→Gregory G. Colomb, and Joseph M. Williams, © 1995, 2003 by The University of Chicago; and from The
+   108→Chicago Manual of Style, 15th edition, © 1982, 1993, 2003 by The University of Chicago.”
+   109→Includes bibliographical references and index.
+   110→ISBN-13: 978-0-226-82336-2 (cloth : alk. paper)
+   111→ISBN-13: 978-0-226-82337-9 (pbk. : alk. paper)
+   112→ISBN-13: 978-0-226-82338-6 (electronic)
+   113→ISBN-10: 0-226-82336-9 (cloth : alk. paper)
+   114→ISBN-10: 0-226-82337-7 (pbk. : alk. paper)
+   115→1. Dissertations, Academic—Handbooks, manuals, etc. 2. Academic writing—Handbooks, manuals, etc. I.
+   116→Title.
+   117→LB2369.T8 2007
+   118→808.02—dc22
+   119→
+   120→2006025443
+   121→The paper used in this publication meets the minimum requirements of the American National Standard for
+   122→Information Sciences—Permanence of Paper for Printed Library Materials, ANSI Z39.48-1992.
+   123→
+   124→Contents
+   125→A Note to Students
+   126→Preface
+   127→Acknowledgments
+   128→
+   129→Part I Research and Writing: From Planning to Production
+   130→Wayne C. Booth, Gregory G. Colomb, and Joseph M. Williams
+   131→Overview of Part I
+   132→1 What Research Is and How Researchers Think about It
+   133→1.1 How Researchers Think about Their Aims
+   134→1.2 Three Kinds of Questions That Researchers Ask
+   135→2 Moving from a Topic to a Question to a Working Hypothesis
+   136→2.1 Find a Question in Your Topic
+   137→2.2 Propose Some Working Answers
+   138→2.3 Build a Storyboard to Plan and Guide Your Work
+   139→2.4 Organize a Writing Support Group
+   140→3 Finding Useful Sources
+   141→3.1 Understand the Kinds of Sources Readers Expect You to Use
+   142→3.2 Record Your Sources Fully, Accurately, and Appropriately
+   143→3.3 Search for Sources Systematically
+   144→3.4 Evaluate Sources for Relevance and Reliability
+   145→3.5 Look beyond the Usual Kinds of References
+   146→4 Engaging Sources
+   147→4.1 Read Generously to Understand, Then Critically to Engage and Evaluate
+   148→4.2 Take Notes Systematically
+   149→4.3 Take Useful Notes
+   150→4.4 Write as You Read
+   151→4.5 Review Your Progress
+   152→4.6 Manage Moments of Normal Panic
+   153→5 Planning Your Argument
+   154→5.1 What a Research Argument Is and Is Not
+   155→5.2 Build Your Argument around Answers to Readers' Questions
+   156→5.3 Turn Your Working Hypothesis into a Claim
+   157→5.4 Assemble the Elements of Your Argument
+   158→5.5 Distinguish Arguments Based on Evidence from Arguments Based on Warrants
+   159→5.6 Assemble an Argument
+   160→6 Planning a First Draft
+   161→6.1 Avoid Unhelpful Plans
+   162→6.2 Create a Plan That Meets Your Readers' Needs
+   163→6.3 File Away Leftovers
+   164→7 Drafting Your Report
+   165→7.1 Draft in the Way That Feels Most Comfortable
+   166→7.2 Develop Productive Drafting Habits
+   167→
+   168→www.itpub.net
+   169→
+   170→7.3 Use Your Key Terms to Keep Yourself on Track
+   171→7.4 Quote, Paraphrase, and Summarize Appropriately
+   172→7.5 Integrate Quotations into Your Text
+   173→7.6 Use Footnotes and Endnotes Judiciously
+   174→7.7 Interpret Complex or Detailed Evidence before You Offer It
+   175→7.8 Be Open to Surprises
+   176→7.9 Guard against Inadvertent Plagiarism
+   177→7.10 Guard against Inappropriate Assistance
+   178→7.11 Work through Chronic Procrastination and Writer's Block
+   179→8 Presenting Evidence in Tables and Figures
+   180→8.1 Choose Verbal or Visual Representations
+   181→8.2 Choose the Most Effective Graphic
+   182→8.3 Design Tables and Figures
+   183→8.4 Communicate Data Ethically
+   184→9 Revising Your Draft
+   185→9.1 Check Your Introduction, Conclusion, and Claim
+   186→9.2 Make Sure the Body of Your Report Is Coherent
+   187→9.3 Check Your Paragraphs
+   188→9.4 Let Your Draft Cool, Then Paraphrase It
+   189→10 Writing Your Final Introduction and Conclusion
+   190→10.1 Draft Your Final Introduction
+   191→10.2 Draft Your Final Conclusion
+   192→10.3 Write Your Title Last
+   193→11 Revising Sentences
+   194→11.1 Focus on the First Seven or Eight Words of a Sentence
+   195→11.2 Diagnose What You Read
+   196→11.3 Choose the Right Word
+   197→11.4 Polish It Off
+   198→11.5 Give It Up and Print It Out
+   199→12 Learning from Your Returned Paper
+   200→12.1 Find General Principles in Specific Comments
+   201→12.2 Talk to Your Instructor
+   202→13 Presenting Research in Alternative Forums
+   203→13.1 Plan Your Oral Presentation
+   204→13.2 Design Your Presentation to Be Listened To
+   205→13.3 Plan Your Poster Presentation
+   206→13.4 Plan Your Conference Proposal
+   207→14 On the Spirit of Research
+   208→Part II Source Citation
+   209→
+   210→15 General Introduction to Citation Practices
+   211→15.1 Reasons for Citing Your Sources
+   212→15.2 The Requirements of Citation
+   213→15.3 Two Citation Styles
+   214→15.4 Citation of Electronic Sources
+   215→15.5 Preparation of Citations
+   216→15.6 A Word on Citation Software
+   217→16 Notes-Bibliography Style: The Basic Form
+   218→16.1 Basic Patterns
+   219→16.2 Bibliographies
+   220→16.3 Notes
+   221→16.4 Short Forms for Notes
+   222→17 Notes-Bibliography Style: Citing Specific Types of Sources
+   223→17.1 Books
+   224→17.2 Journal Articles
+   225→17.3 Magazine Articles
+   226→17.4 Newspaper Articles
+   227→17.5 Additional Types of Published Sources
+   228→17.6 Unpublished Sources
+   229→17.7 Informally Published Electronic Sources
+   230→17.8 Sources in the Visual and Performing Arts
+   231→17.9 Public Documents
+   232→17.10 One Source Quoted in Another
+   233→18 Parenthetical Citations–Reference List Style: The Basic Form
+   234→18.1 Basic Patterns
+   235→18.2 Reference Lists
+   236→18.3 Parenthetical Citations
+   237→19 Parenthetical Citations–Reference List Style: Citing Specific Types of Sources
+   238→19.1 Books
+   239→19.2 Journal Articles
+   240→19.3 Magazine Articles
+   241→19.4 Newspaper Articles
+   242→19.5 Additional Types of Published Sources
+   243→19.6 Unpublished Sources
+   244→19.7 Informally Published Electronic Sources
+   245→19.8 Sources in the Visual and Performing Arts
+   246→19.9 Public Documents
+   247→19.10 One Source Quoted in Another
+   248→Part III Style
+   249→20 Spelling
+   250→
+   251→www.itpub.net
+   252→
+   253→20.1 Plurals
+   254→20.2 Possessives
+   255→20.3 Compounds and Words Formed with Prefixes
+   256→20.4 Line Breaks
+   257→21 Punctuation
+   258→21.1 Period
+   259→21.2 Comma
+   260→21.3 Semicolon
+   261→21.4 Colon
+   262→21.5 Question Mark
+   263→21.6 Exclamation Point
+   264→21.7 Hyphen and Dashes
+   265→21.8 Parentheses and Brackets
+   266→21.9 Slashes
+   267→21.10 Quotation Marks
+   268→21.11 Multiple Punctuation Marks
+   269→22 Names, Special Terms, and Titles of Works
+   270→22.1 Names
+   271→22.2 Special Terms
+   272→22.3 Titles of Works
+   273→23 Numbers
+   274→23.1 Words or Numerals?
+   275→23.2 Plurals and Punctuation
+   276→23.3 Date Systems
+   277→23.4 Numbers Used outside the Text
+   278→24 Abbreviations
+   279→24.1 General Principles
+   280→24.2 Names and Titles
+   281→24.3 Geographical Terms
+   282→24.4 Time and Dates
+   283→24.5 Units of Measure
+   284→24.6 The Bible and Other Sacred Works
+   285→24.7 Abbreviations in Citations and Other Scholarly Contexts
+   286→25 Quotations
+   287→25.1 Quoting Accurately and Avoiding Plagiarism
+   288→25.2 Incorporating Quotations into Your Text
+   289→25.3 Modifying Quotations
+   290→26 Tables and Figures
+   291→26.1 General Issues
+   292→26.2 Tables
+   293→26.3 Figures
+   294→
+   295→Appendix: Paper Format and Submission
+   296→A.1 General Format Requirements
+   297→A.2 Format Requirements for Specific Elements
+   298→A.3 Submission Requirements
+   299→Bibliography
+   300→Authors
+   301→Index
+   302→
+   303→A Note to Students
+   304→Now in its seventh edition, A Manual for Writers of Research Papers, Theses, and
+   305→Dissertations has helped generations of students successfully research, write, and submit their
+   306→papers. Most commonly known to its dedicated users as “Turabian,” the name of the original
+   307→author, A Manual for Writers is the authoritative student resource on “Chicago style.”
+   308→If you are writing a research paper, you may be told to follow Chicago style for citations
+   309→and for issues of mechanics, such as capitalization and abbreviations. Chicago style is widely
+   310→used by students in all disciplines. For citations, you may use one of two styles recommended
+   311→by Chicago. In the humanities and some social sciences, you will likely use notesbibliography style, while in the natural and physical sciences (and some social sciences) you
+   312→may use parenthetical citations–reference list (or “author-date”) style. A Manual for Writers
+   313→explains and illustrates both styles.
+   314→In addition to detailed information on Chicago style, this seventh edition includes a new
+   315→part by Wayne C. Booth, Gregory G. Colomb, and Joseph M. Williams that covers every step
+   316→of the research and writing process. This section provides practical advice to help you
+   317→formulate the right questions, read critically, build arguments, and revise your draft.
+   318→
+   319→Preface
+   320→Students writing research papers, theses, and dissertations in today's colleges and universities
+   321→inhabit a world filled with electronic technologies that were unimagined in 1937—the year
+   322→Kate L. Turabian, University of Chicago's dissertation secretary, assembled a booklet of
+   323→guidelines for student writers. The availability of Internet sources and word-processing
+   324→software has changed the way students conduct research and write up the results. But these
+   325→technologies have not altered the basic task of the student writer: doing well-designed
+   326→research and presenting it clearly and accurately, while following accepted academic
+   327→standards for citation, style, and format.
+   328→Turabian's 1937 booklet reflected guidelines found in A Manual of Style, 10th edition—an
+   329→already classic resource for writers and editors published by the University of Chicago Press.
+   330→The Press began distributing Turabian's booklet in 1947 and first published the work in book
+   331→form in 1955, under the title A Manual for Writers of Term Papers, Theses, and Dissertations.
+   332→Turabian revised the work twice more, updating it to meet students' needs and to reflect the
+   333→
+   334→www.itpub.net
+   335→
+   336→latest recommendations of the Manual of Style. In time, Turabian's book has become a
+   337→standard reference for students of all levels at universities and colleges across the country.
+   338→Turabian died in 1987 at age ninety-four, a few months after publication of the fifth edition.
+   339→For that edition, as well as the sixth (1996), the Press invited editorial staff to carry out the
+   340→revisions.
+   341→For this seventh edition, Wayne C. Booth, Gregory G. Colomb, and Joseph M. Williams
+   342→have expanded the focus of the book. The new part 1, “Research and Writing: From Planning
+   343→to Production,” is adapted from their Craft of Research (Chicago: University of Chicago
+   344→Press, 2003). This part offers a step-by-step guide to the process of research and its reporting,
+   345→a topic not previously covered in this manual but inseparable from source citation, writing
+   346→style, and the mechanics of paper preparation. Among the topics covered are the nature of
+   347→research, finding and engaging sources, taking notes, developing an argument, drafting and
+   348→revising, and presenting evidence in tables and figures. Also included is a discussion of
+   349→presenting research in alternative forums. In this part, the authors write in a familiar, collegial
+   350→voice to engage readers in a complex topic. Students undertaking research projects at all
+   351→levels will benefit from reading this part, though advanced researchers may wish to skim
+   352→chapters 1–4.
+   353→The rest of the book covers the same topics as past editions, but has been extensively
+   354→revised to follow the recommendations in The Chicago Manual of Style, 15th edition (2003),
+   355→to incorporate current technology as it affects all aspects of student writing, to provide
+   356→updated examples, and to be easier to read and use.
+   357→Reflecting the close connection between the research process and the need for careful and
+   358→appropriate citation form, “Source Citation” now appears as part 2 of the manual. In this part,
+   359→chapter 15 offers an overview of scholarly citation, including its relationship not just to good
+   360→research practices but to the ethics of research. Students using notes-bibliography style for
+   361→citations (common in the humanities and some social sciences) should then read chapter 16
+   362→for a discussion of the basic form for citations and consult chapter 17 as needed for a wide
+   363→range of source examples. Students using parenthetical citations–reference list style (common
+   364→in most social sciences and in the natural and physical sciences) will find the same types of
+   365→information in chapters 18 and 19. Both sets of chapters include updated examples and new
+   366→coverage of how to cite online and other electronic sources.
+   367→Part 3, “Style,” addresses issues that occupied the first half of previous editions of the
+   368→manual. Coverage of spelling and punctuation has been divided into separate chapters, as has
+   369→treatment of numbers and abbreviations. The chapter on names, special terms, and titles of
+   370→works has been expanded. The final two chapters in this section treat the mechanics of using
+   371→quotations and graphics (tables and figures), topics that are discussed from a rhetorical
+   372→perspective in part 1. Student writers may wish to read these chapters in their entirety or
+   373→consult them for guidance on particular points.
+   374→The recommendations in parts 2 and 3 diverge in a few instances from those in The
+   375→Chicago Manual of Style, but the differences are matters of degree, not substance. In certain
+   376→cases, this manual recommends just one editorial style where CMOS recommends two or
+   377→more. Sometimes the choice is a matter of simplicity (as in the rules for headline-style
+   378→capitalization presented in chapter 22); other times it reflects what is appropriate for student
+   379→papers, as opposed to published works (as in the requirement of access dates with all citations
+   380→from online sources). The chapters on citation include new types of sources, such as Weblogs,
+   381→
+   382→that have emerged since 2003 and thus are not treated in the current edition of CMOS.
+   383→These recommendations logically extend principles set forth in CMOS.
+   384→The appendix gathers in one place the material on paper format and submission that formed
+   385→the core of Kate Turabian's original booklet. In the years since, this material has become the
+   386→primary authority for dissertation offices throughout the nation. In revising this material, the
+   387→Press sought the advice of dissertation officials at a variety of public and private universities,
+   388→including those named in the acknowledgments section. While continuing to emphasize the
+   389→importance of consistency, the guidelines now allow more flexibility in matters such as the
+   390→placement of page numbers and the typography of titles, reflecting the capabilities of current
+   391→word-processing software. The sample pages presented are new and are adapted from
+   392→exemplary dissertations submitted to the University of Chicago since 2000. This appendix is
+   393→intended primarily for students writing PhD dissertations and master's and undergraduate
+   394→theses, but the sections on format requirements and electronic file preparation also apply to
+   395→those writing class papers.
+   396→The guidelines in this manual offer practical solutions to a wide range of issues
+   397→encountered by student writers, but they may be supplemented—or even overruled—by the
+   398→conventions of specific disciplines or the preferences of particular institutions or departments.
+   399→All of the chapters on style and format remind students to review the requirements of their
+   400→university, department, or instructor, which take precedence over the guidelines presented
+   401→here. The expanded bibliography, organized by subject area, lists sources for research and
+   402→style issues specific to particular disciplines.
+   403→
+   404→Acknowledgments
+   405→Revising a book that has been used by millions of students over seventy years is no small
+   406→task. The challenge of bringing Kate Turabian's creation into the twenty-first century was
+   407→taken up first by Linda J. Halvorson, then editorial director for reference books at the
+   408→University of Chicago Press, who recognized how the needs of the student writer had changed
+   409→since the publication of the sixth edition in 1996 and developed a revision plan to address
+   410→those changing needs.
+   411→The key to this plan was assembling a revision team that understood how the Turabian
+   412→tradition could be reshaped for students researching and writing papers in an electronic age.
+   413→Wayne C. Booth, Gregory G. Colomb, and Joseph M. Williams contributed their expertise
+   414→both as teachers and as authors of numerous books on the subject of research and writing,
+   415→including The Craft of Research. The Press's editorial staff was represented on the revision
+   416→team first by Margaret Perkins, now director of manuscript editing at the New England
+   417→Journal of Medicine, and later by Mary E. Laur, senior project editor for reference books.
+   418→Both had played critical roles in the preparation of The Chicago Manual of Style, 15th edition,
+   419→from which parts 2 and 3 of this book are adapted.
+   420→Throughout the revision process, the manuscript (partial and complete) benefited from the
+   421→advice of reviewers with expertise in various aspects of student research and writing,
+   422→including Susan Allan (American Journal of Sociology), Christopher S. Allen (international
+   423→affairs, University of Georgia), Anna Nibley Baker (HealthInsight), Howard Becker (San
+   424→Francisco), Paul S. Boyer (history, University of Wisconsin–Madison), Christopher Buck
+   425→
+   426→www.itpub.net
+   427→
+   428→(writing, rhetoric, and American cultures, Michigan State University), David Campbell
+   429→(political science, University of Notre Dame), Erik Carlson (University of Chicago Press),
+   430→Michael D. Coogan (religious studies, Stonehill College), Daniel Greene (U.S. Holocaust
+   431→Memorial Museum), Anne Kelly Knowles (geography, Middlebury College), Lewis Lancaster
+   432→(East Asian languages and cultures, University of California–Berkeley), Luke Eric Lassiter
+   433→(humanities, Marshall University Graduate College), James Leloudis (history, University of
+   434→North Carolina–Chapel Hill), Kurt Mosser (philosophy, University of Dayton), Gerald
+   435→Mulderig (English, DePaul University), Emily S. Rosenberg (history, University of
+   436→California–Irvine), Anita Samen (University of Chicago Press), Paul Stoller (anthropology
+   437→and sociology, West Chester University), Anne B. Thistle (biological science, Florida State
+   438→University), and Richard Valelly (political science, Swarthmore College).
+   439→The successors of Kate Turabian at a variety of public and private universities offered
+   440→valuable insights on dissertation preparation and submission. Reviewers of the appendix
+   441→included Philippa K. Carter from the University of Pittsburgh; Matthew Hill from the
+   442→University of Maryland, College Park; Elena Hsiao-ching Hsu from the University of
+   443→Wisconsin–Madison; Johanna E. D. Parker from the University of Illinois at UrbanaChampaign; and Christine Quigley from Georgetown University. The current occupant of
+   444→Turabian's own position at the University of Chicago, Colleen Mullarkey, reviewed the
+   445→manuscript in its entirety and also helped identify the exemplary dissertations from which the
+   446→sample pages in the appendix are drawn. The authors of these dissertations, who granted
+   447→permission for their text to be used, are identified in the captions of the relevant figures.
+   448→Turning the manuscript into a book required the efforts of another team at the Press. Carol
+   449→Fisher Saller edited the manuscript, Randolph Petilos proofread the pages, and Victoria Baker
+   450→prepared the index. Michael Brehm provided the design, while Sylvia Mendoza Hecimovich
+   451→supervised the production. Christopher Rhodes offered editorial assistance throughout the
+   452→project. Carol Kasper, Ellen Gibson, and Laura Anderson brought the finished product to
+   453→market.
+   454→The loss of Wayne Booth when the manuscript was nearly complete touched everyone
+   455→involved with the project, which will stand as his last new work.
+   456→
+   457→PART I
+   458→Research and Writing
+   459→From Planning to Production
+   460→Wayne C. Booth, Gregory G. Colomb, and Joseph M. Williams
+   461→
+   462→Overview of Part I
+   463→We know how challenged you can feel when you start a substantial research project, whether
+   464→it's a PhD dissertation, a BA or master's thesis, or just a long class paper. But you can handle
+   465→any project if you break it into its parts, then work on them one step at a time. This part shows
+   466→you how to do that.
+   467→
+   468→We first discuss the aims of research and what readers will expect of any research report.
+   469→Then we focus on how to find a research question whose answer is worth your time and your
+   470→readers' attention; how to find and use information from sources to back up your answer; then
+   471→how to plan, draft, and revise your report so your readers will think your answer is based on
+   472→sound reasoning and reliable evidence.
+   473→Several themes run through this part.
+   474→You can't plunge into a project blindly; you must plan it, then keep the whole process in
+   475→mind as you take each step. So think big, but break the process down into small goals that
+   476→you can meet one at a time.
+   477→Your best research will begin with a question that you want to answer. But you must then
+   478→imagine readers asking a question of their own: So what if you don't answer it? Why should
+   479→I care?
+   480→From the outset, you should try to write every day, not just to take notes on your sources
+   481→but to clarify what you think of them. You should also write down your own developing
+   482→ideas to get them out of the cozy warmth of your head into the cold light of day, where you
+   483→can see if they still make sense. You probably won't use much of this writing in your final
+   484→draft, but it is essential preparation for it.
+   485→No matter how carefully you do your research, readers will judge it by how well you
+   486→report it, so you must know what they will look for in a clearly written report that earns
+   487→their respect.
+   488→If you're an advanced researcher, skim chapters 1–4. You will see there much that's
+   489→familiar, but if you're also teaching, it may help you explain what you know to your students
+   490→more effectively. (Many experienced researchers report that chapters 5–12 have helped them
+   491→not only explain to others how to do research and report it, but also to draft and revise their
+   492→own reports more quickly and effectively.)
+   493→If you're just starting your career in research, you'll find every chapter of part 1 useful.
+   494→Skim it all for an overview of the process; then as you work through your project, reread
+   495→chapters relevant to your immediate task.
+   496→You may feel that the steps described here are too many to remember, but you can manage
+   497→them if you take them one at a time, and as you do more research, they'll become habits of
+   498→mind. Don't think, however, that you must follow these steps in exactly the order we present
+   499→them. Researchers regularly think ahead to future steps as they work through earlier ones and
+   500→revisit earlier steps as they deal with a later one. (That explains why we so often refer you
+   501→ahead to anticipate a later stage in the process and back to revisit an earlier one.) And even the
+   502→most systematic researcher has unexpected insights that send her off in a new direction. Work
+   503→from a plan, but be ready to depart from it, even to discard it for a new one.
+   504→If you're a very new researcher, you may also think that some matters we discuss are
+   505→beyond your immediate needs. We know that a ten-page class paper differs from a PhD
+   506→dissertation. But both require a kind of thinking that even the newest researcher can start
+   507→practicing. You begin your journey toward full competence when you not only know what lies
+   508→
+   509→www.itpub.net
+   510→
+   511→ahead but can also start practicing the skills that experienced researchers began to learn
+   512→when they were where you are now.
+   513→No book can prepare you for every aspect of a research project. And this one won't help
+   514→you with the specific methodologies in fields such as psychology, economics, or philosophy,
+   515→much less physics, chemistry, or biology. Nor does it tell you how to adapt what you learn
+   516→about academic research to business or professional settings.
+   517→But it does provide an overview of the processes and habits of mind that underlie all
+   518→research, wherever it's done, and of the plans you must make to assemble a report, draft it, and
+   519→revise it. With that knowledge and help from your teachers, you'll come to feel in control of
+   520→your projects, not intimidated by them, and eventually you'll learn to manage even the most
+   521→complex projects on your own, in both the academic and the professional worlds.
+   522→The first step in learning the skills of sound research is to understand how experienced
+   523→researchers think about its aims.
+   524→
+   525→1 What Research Is and How Researchers
+   526→Think about It
+   527→1.1
+   528→
+   529→How Researchers Think about Their Aims
+   530→
+   531→1.2
+   532→
+   533→Three Kinds of Questions That Researchers Ask
+   534→1.2.1
+   535→
+   536→Conceptual Questions: What Should We Think?
+   537→
+   538→1.2.2
+   539→
+   540→Practical Questions: What Should We Do?
+   541→
+   542→1.2.3
+   543→
+   544→Applied Questions: What Must We Understand before We Know What to Do?
+   545→
+   546→1.2.4
+   547→
+   548→Choosing the Right Kind of Question
+   549→
+   550→1.2.5
+   551→
+   552→The Special Challenge of Conceptual Questions: Answering So What?
+   553→
+   554→You do research every time you ask a question and look for facts to answer it, whether the
+   555→question is as simple as finding a plumber or as profound as discovering the origin of life.
+   556→When only you care about the answer or when others need just a quick report of it, you
+   557→probably won't write it out. But you must report your research in writing when others will
+   558→accept your claims only after they study how you reached them. In fact, reports of research
+   559→tell us most of what we can reliably believe about our world—that once there were dinosaurs,
+   560→that germs cause disease, even that the earth is round.
+   561→
+   562→You may think your report will add little to the world's knowledge. Maybe so. But done
+   563→well, it will add a lot to yours and to your ability to do the next report. You may also think
+   564→that your future lies not in scholarly research but in business or a profession. But research is
+   565→as important outside the academy as in, and in most ways it is the same. So as you practice the
+   566→craft of academic research now, you prepare yourself to do research that one day will be
+   567→important at least to those you work with, perhaps to us all.
+   568→As you learn to do your own research, you also learn to use—and judge—that of others. In
+   569→every profession, researchers must read and evaluate reports before they make a decision, a
+   570→job you'll do better only after you've learned how others will judge yours. This book focuses
+   571→on research in the academic world, but every day, we read or hear about research that can
+   572→affect our lives. Before we believe those reports, though, we must think about them critically
+   573→to determine whether they are based on evidence and reasoning that we can trust.
+   574→To be sure, we can reach good conclusions in ways other than through reasons and
+   575→evidence: we can rely on tradition and authority or on intuition, spiritual insight, even on our
+   576→most visceral emotions. But when we try to explain to others not just why we believe our
+   577→claims but why they should too, we must do more than just state an opinion and describe our
+   578→feelings.
+   579→That is how a research report differs from other kinds of persuasive writing: it must rest on
+   580→shared facts that readers accept as truths independent of your feelings and beliefs. They must
+   581→be able to follow your reasoning from evidence that they accept to the claim you draw from it.
+   582→Your success as a researcher thus depends not just on how well you gather and analyze data,
+   583→but on how clearly you report your reasoning so that your readers can test and judge it before
+   584→making your claims part of their knowledge and understanding.
+   585→
+   586→1.1 How Researchers Think about Their Aims
+   587→All researchers gather facts and information, what we're calling data. But depending on their
+   588→aims and experience, they use those data in different ways. Some researchers gather data on a
+   589→topic—stories about the Battle of the Alamo, for example—just to satisfy a personal interest
+   590→(or a teacher's assignment).
+   591→Most researchers, however, want us to know more than just facts. So they don't look for
+   592→just any data on a topic; they look for specific data that they can use as evidence to test and
+   593→support an answer to a question that their topic inspired them to ask, such as Why has the
+   594→Alamo story become a national legend?
+   595→Experienced researchers, however, know that they must do more than convince us that their
+   596→answer is sound. They must also show us why their question was worth asking, how its
+   597→answer helps us understand some bigger issue in a new way. If we can figure out why the
+   598→Alamo story has become a national legend, we might then answer a larger question: How
+   599→have regional myths shaped our national character?
+   600→You can judge how closely your thinking tracks that of an experienced researcher by
+   601→describing your project in a sentence like this:
+   602→
+   603→www.itpub.net
+   604→
+   605→1. I am working on the topic of X (stories about the Battle of the Alamo),
+   606→2. because I want to find out Y (why its story became a national legend),
+   607→3. so that I can help others understand Z (how such regional myths have shaped our national
+   608→character).
+   609→
+   610→That sentence is worth a close look because it describes not just the progress of your research
+   611→but your personal growth as a researcher.
+   612→1. “I am working on the topic of . . . ” Researchers often begin with a simple topic like the
+   613→Battle of the Alamo, either because it was assigned, because something about it puzzles
+   614→them, or because it merely sparks an interest. But inexperienced researchers too often stop
+   615→there, leaving themselves with nothing but a topic to guide their work. They mound up
+   616→hundreds of notes, but have no way to decide what data to keep and what to discard. When
+   617→it comes time to write, they dump everything into a report that reads like a grab bag of
+   618→random facts. If those facts are new to readers who happen to be interested in the topic,
+   619→they might read the report. But even those readers will want to know what those facts add
+   620→up to.
+   621→2. “ . . . because I want to find out how or why . . . ” More experienced researchers usually
+   622→begin not with just a topic but with a research question, such as Why has the story of the
+   623→Alamo become a national legend? And they know that readers will think their facts add up
+   624→to something only when those facts serve as evidence to support its answer. Indeed, only
+   625→with a question can a researcher know which facts to look for and which to keep—not just
+   626→those that support an answer, but also those that test or even discredit it. When he thinks he
+   627→has enough evidence to support his answer and can respond to data that seem to contradict
+   628→it, he writes a report first to test his own thinking, then to share his answer with others so
+   629→that they can test it too.
+   630→3. “ . . . so that I can help others understand . . . ” The most successful researchers,
+   631→however, realize that readers want to know not only that an answer is sound but why the
+   632→question was worth asking. So they anticipate that readers will ask a question of their own:
+   633→So what? Why should I care why the Alamo story has become a legend? That So what? can
+   634→vex even the most experienced researcher, but every researcher must try to answer it
+   635→before it's asked: If we can find that out, we might better understand the bigger question of
+   636→how such stories shape our national character.
+   637→But a shrewd researcher doesn't stop there. She anticipates her readers' asking So what?
+   638→again by looking for another, still larger answer: And if we can understand what has shaped
+   639→our national character, we might understand better who we Americans think we are. And
+   640→before you ask, when we know that, we might better understand why others in the world judge
+   641→us as they do. The most successful researchers know that readers care about a question only
+   642→when they think that its answer might encourage them to say not So what? but That's worth
+   643→knowing!
+   644→In short, not all questions are equally good. We might ask how many cats slept in the
+   645→Alamo the night before the battle, but so what if we find out? It is hard to see how an answer
+   646→would help us think about any larger issue worth understanding, so it's a question that's
+   647→probably not worth asking (though as we'll see, we could be wrong about that).
+   648→
+   649→1.2 Three Kinds of Questions That Researchers Ask
+   650→Experienced researchers also know that different readers expect them to ask and answer
+   651→different kinds of questions. The most common questions in academic work are conceptual.
+   652→The ones most common in the professions are practical.
+   653→1.2.1 Conceptual Questions: What Should We Think?
+   654→A question is conceptual when your answer to So what? doesn't tell readers what to do, but
+   655→helps them understand some issue:
+   656→1. I am working on the topic of X,
+   657→2. because I want to find out how/why/whether Y, (So what if you do?)
+   658→3. so that I can help others understand how/why/whether Z.
+   659→
+   660→If you were explaining your research, the conversation might go like this:
+   661→I'm working on the topic of risk evaluation.
+   662→Why?
+   663→Because I want to find out how ordinary people evaluate the risk that they will be hurt by terrorism.
+   664→So what if you do?
+   665→Once I do, we might better understand the bigger question of how emotional and rational factors interact to
+   666→influence the way ordinary thinkers think about risk.
+   667→
+   668→Researchers in the humanities and the social and natural sciences work mostly on
+   669→conceptual questions, such as How did Shakespeare's political environment influence his
+   670→plays? What caused the extinction of most large North American mammals? What are comets
+   671→made of? The answers to those questions don't tell us how to change the world, but they do
+   672→help us understand it better.
+   673→To be sure, the answer to a conceptual question often turns out to be unexpectedly relevant
+   674→to solving a practical problem. And before we can solve any important practical problem, we
+   675→usually must do conceptual research to understand it better. But in most of the academic
+   676→world, the primary aim of most researchers is only to improve our understanding.
+   677→1.2.2 Practical Questions: What Should We Do?
+   678→You pose a different kind of question—call it a practical one—when your answer to So what?
+   679→tells readers what to do to change or fix some troublesome or at least improvable situation:
+   680→1. I am working on the topic of X,
+   681→2. because I want to find out Y, (So what if you do?)
+   682→3. so that I can tell readers what to do to fix/improve Z.
+   683→
+   684→You would explain your work on a practical question like this:
+   685→
+   686→www.itpub.net
+   687→
+   688→I'm working on the topic of communicating risk effectively.
+   689→Why?
+   690→Because I want to find out what psychological factors cause ordinary Americans to exaggerate their personal risk
+   691→from a terrorist attack.
+   692→So what if you do?
+   693→Then I can tell the government how to counteract those factors when they communicate with the public about the
+   694→real risk of terrorism.
+   695→
+   696→Practical questions are most common outside the academic world, especially in business. In
+   697→academic fields such as health care and engineering, researchers sometimes ask practical
+   698→questions, but more often they ask a third kind of question that's neither purely practical nor
+   699→purely conceptual: call it an applied research question.
+   700→1.2.3 Applied Questions: What Must We Understand before We Know What to Do?
+   701→Often, we know we must do something to solve a practical problem, but before we can know
+   702→what that is, we must do research to understand the problem better. We can call that kind of
+   703→research applied. With this middle kind of question, the third step raises a question whose
+   704→answer is not the solution to a practical problem, but only a step toward it.
+   705→I want to find out how Americans have changed their daily lives in response to the terrorist attacks on 9/11.
+   706→So what if you do?
+   707→Then we can understand the psychological factors that cause ordinary Americans to exaggerate their personal
+   708→risk from a terrorist attack.
+   709→So what if you do?
+   710→Then we can understand how to reduce the effects of those psychological factors.
+   711→So what if you do?
+   712→Then perhaps the government can use that information to communicate more effectively the real risk from
+   713→terrorism.
+   714→
+   715→Applied questions are common in academic fields such as business, engineering, and
+   716→medicine and in companies and government agencies that do research to understand what
+   717→must be known before they can solve a problem.
+   718→1.2.4 Choosing the Right Kind of Question
+   719→Some new researchers dislike purely conceptual research questions because they think they're
+   720→too “theoretical” or irrelevant to the “real” world. So they try to cobble an implausible
+   721→practical use onto a conceptual answer: When we know how race shaped the political impact
+   722→of the Alamo stories, we can understand how racism has been used to foster patriotism and
+   723→thereby eliminate racist appeals to patriotism in relation to conflicts in the Middle East.
+   724→
+   725→That impulse is understandable. But unless you've been assigned an applied or practical
+   726→problem, resist it. You are unlikely to solve any significant practical problem in a class paper,
+   727→and in any case, most of the academic world sees its mission not as fixing the problems of the
+   728→world directly, but as understanding them better (which may or may not help fix them).
+   729→1.2.5 The Special Challenge of Conceptual Questions: Answering So What?
+   730→With most practical questions, we don't have to answer So what? because the benefit is
+   731→usually obvious. Even most applied questions imply the practical benefits of their answers:
+   732→few readers would question why a researcher is trying to understand what causes Alzheimer's.
+   733→With conceptual questions, however, the answer to So what? is often not obvious at all, even
+   734→to an experienced researcher: So what if Shakespeare had Lady Macbeth die offstage rather
+   735→than on? So what if some cultures use masks in their religious rituals and others don't? Why
+   736→is it important to know that?
+   737→For a research paper in an introductory course, your instructor may be satisfied with any
+   738→plausible answer to So what? So if early in your research career you find yourself struggling
+   739→with that question, don't take it as a sign of failure, much less as evidence that you're not ready
+   740→to do the work. In fact, you might not discover the answer to So what? until you've drafted
+   741→your report, maybe not even until you've finished it. And even then, maybe the answer will
+   742→matter only to you.
+   743→But if your project is a thesis or dissertation, it's not just an advisor that you have to satisfy.
+   744→Your answer must also satisfy those in your field (represented by your advisor) who will
+   745→judge your work not just by the quality of your answer, but by the significance of your
+   746→question. Experienced researchers know that some readers, perhaps many, will read their
+   747→report and think I don't agree. They accept that as an inevitable part of sharing research on
+   748→significant issues. What they can't accept is I don't care.
+   749→So as hard as it will be, the more often you imagine others asking So what? and the more
+   750→often you try to answer it, if only to your own satisfaction, the more confident you can be that
+   751→eventually you'll learn to succeed at every experienced researcher's toughest task—to
+   752→convince your readers that your report is worth their time. (In chapter 10, we discuss how to
+   753→write an introduction that motivates your readers at least to start reading your report.)
+   754→
+   755→2 Moving from a Topic to a Question to a
+   756→Working Hypothesis
+   757→2.1
+   758→
+   759→Find a Question in Your Topic
+   760→2.1.1
+   761→
+   762→Search Your Interests
+   763→
+   764→2.1.2
+   765→
+   766→Make Your Topic Manageable
+   767→
+   768→www.itpub.net
+   769→
+   770→2.2
+   771→
+   772→2.3
+   773→
+   774→2.4
+   775→
+   776→2.1.3
+   777→
+   778→Question Your Topic
+   779→
+   780→2.1.4
+   781→
+   782→Evaluate Your Questions
+   783→
+   784→Propose Some Working Answers
+   785→2.2.1
+   786→
+   787→Decide on a Working Hypothesis
+   788→
+   789→2.2.2
+   790→
+   791→Beware the Risks in a Working Hypothesis
+   792→
+   793→2.2.3
+   794→
+   795→If You Can't Find an Answer, Argue for Your Question
+   796→
+   797→Build a Storyboard to Plan and Guide Your Work
+   798→2.3.1
+   799→
+   800→State Your Question and Working Hypotheses
+   801→
+   802→2.3.2
+   803→
+   804→State Your Reasons
+   805→
+   806→2.3.3
+   807→
+   808→Sketch in the Kind of Evidence You Should Look For
+   809→
+   810→2.3.4
+   811→
+   812→Look at the Whole
+   813→
+   814→Organize a Writing Support Group
+   815→
+   816→A research project is more than collecting data. You start it before you log on to the Internet
+   817→or head for the library, and you continue it long after you have all the data you think you need.
+   818→In that process, you face countless specific tasks, but they all aim at just five general goals.
+   819→You must do the following:
+   820→Ask a question worth answering.
+   821→Find an answer that you can support with good reasons.
+   822→Find reliable evidence to support your reasons.
+   823→Draft a report that makes a good case for your answer.
+   824→Revise that draft until readers will think you met the first four goals.
+   825→
+   826→You might even post those five goals in your workspace.
+   827→Research projects would be easy if you could march straight through those steps. But as
+   828→you've discovered (or soon will), research and its reporting are never straightforward. As you
+   829→do one task, you'll have to look ahead to others or revisit an earlier one. You'll change topics
+   830→as you read, search for more data as you draft, perhaps even discover a new question as you
+   831→revise. Research is looping, messy, and unpredictable. But it's manageable if you have a plan,
+   832→even when you know you'll depart from it.
+   833→
+   834→2.1 Find a Question in Your Topic
+   835→Researchers begin projects in different ways. Many experienced ones begin with a question
+   836→that others in their field want to answer: What caused the extinction of most large North
+   837→American mammals? Others begin with just a vague intellectual itch that they have to scratch.
+   838→They might not know what puzzles them about giant sloths and mastodons, but they're willing
+   839→to spend time finding out whether they can translate their itch into a question worth
+   840→answering.
+   841→They know, moreover, that the best research question is not one whose answer others want
+   842→to know just for its own sake; it is one that helps them understand some larger issue (So what?
+   843→again). For example, if we knew why North American sloths disappeared, we might be able to
+   844→answer a larger question that puzzles many historical anthropologists: Did early Native
+   845→Americans live in harmony with nature, as some believe, or did they hunt its largest creatures
+   846→to extinction? (And if we knew that, then we might also understand. . . .)
+   847→Then there are those questions that just pop into a researcher's mind with no hint of where
+   848→they'll lead, sometimes about matters so seemingly trivial that only the researcher thinks
+   849→they're worth answering: Why does a coffee spill dry up in the form of a ring? Such a question
+   850→might lead nowhere, but you can't know that until you see its answer. In fact, the scientist
+   851→puzzled by coffee rings made discoveries about the behavior of fluids that others in his field
+   852→thought important—and that paint manufacturers found valuable. So who knows where you
+   853→might go with a question like How many cats slept in the Alamo the night before the battle?
+   854→You can't know until you get there.
+   855→In fact, a researcher's most valuable ability is the knack of being puzzled by ordinary
+   856→things: like the shape of coffee rings; or why Shakespeare has Lady Macbeth die offstage
+   857→rather than on; or why your eyebrows don't grow as long as the hair on your head. Cultivate
+   858→the ability to see what's odd in the commonplace and you'll never lack for research projects, as
+   859→either a student or a professional.
+   860→If you have a topic, skip to 2.1.3 to find questions in it. If you already have a question or
+   861→two, skip to 2.1.4 to test them by the criteria listed there. If you're still looking for a topic,
+   862→here's a plan to help you search for one.
+   863→2.1.1 Search Your Interests
+   864→
+   865→www.itpub.net
+   866→
+   867→If you can pick any topic appropriate to your field, ask these questions:
+   868→What topics do you already know something about? You can learn more.
+   869→What would you like to know more about? A place? A person? A time? An object? An
+   870→idea? A process?
+   871→Can you find a discussion list on the Web about issues that interest you?
+   872→What issues in your field have you debated with others, then found that you couldn't back
+   873→up your views with good reasons and evidence?
+   874→What issues do people outside your field misunderstand?
+   875→What topic is your instructor working on? Would she like you to explore a part of it?
+   876→Don't be too shy to ask.
+   877→Does your library have rich resources in some field? Ask your instructor or a librarian.
+   878→What other courses will you take in your field or out of it? Find a textbook, and skim it
+   879→for study questions.
+   880→If you have a job in mind, what kind of research report might help you get it? Employers
+   881→often ask for samples of an applicant's work.
+   882→You can also consult print sources for ideas:
+   883→Skim the topics in specialized indexes in your field such as Philosopher's Index,
+   884→Geographical Abstracts, Women's Studies Abstracts, and so on (in the bibliography, see
+   885→items in category 2 in your field).
+   886→Skim a journal that reviews the year's work in your field (in the bibliography, see items
+   887→in category 2 in your field).
+   888→Academic research is meant to be shared, but the understanding it brings is also valuable to
+   889→you alone. So think ahead: look for a project that might help you a year from now. Keep in
+   890→mind, though, that you may be in for a long relationship with your topic. If so, be sure it
+   891→interests you enough to get you through the inevitable rocky stretches.
+   892→2.1.2 Make Your Topic Manageable
+   893→If you pick a topic whose name sounds like an encyclopedia entry—bridges, birds, masks—
+   894→you'll find so many sources that you could spend a lifetime reading them. You must carve out
+   895→of your topic a manageable piece. You can start before you head to the library by limiting
+   896→your topic to reflect a special interest in it: What is it about, say, masks that made you choose
+   897→them? What particular aspect of them interests or puzzles you? Think about your topic in a
+   898→context that you know something about, then add words and phrases to reflect that
+   899→
+   900→knowledge:
+   901→masks in religious ceremonies
+   902→masks as symbols in Hopi religious ceremonies
+   903→mudhead masks as symbols of sky spirits in Hopi fertility ceremonies
+   904→
+   905→You might not be able to focus your topic until after you start reading about it. That takes
+   906→time, so start early (you can do much of this preliminary work online):
+   907→Begin with an overview of your topic in a general encyclopedia (in the bibliography, see
+   908→items in category 2 in the general references); then read about it in a specialized one (see
+   909→items in category 2 in your field).
+   910→Skim a survey of your topic (encyclopedia entries usually cite a few).
+   911→Skim subheads under your topic in an annual bibliography in your field (in the
+   912→bibliography, see items in category 4 in your field). That will also give you a start on a
+   913→reading list.
+   914→Search the Internet for the topic (but be cautious about what you find; see 3.4.3).
+   915→Especially useful are topics that spark debate: Fisher claims that Halloween masks reveal
+   916→children's archetypal fears, but do they? Even if you can't resolve the debate, you can learn
+   917→how such debates are conducted (for more on this, see 3.1.2).
+   918→2.1.3 Question Your Topic
+   919→Do this not just once, early on, but throughout your project. Ask questions as you read,
+   920→especially how and why (see also 4.1.1–4.1.2). Try the following kinds of questions (the
+   921→categories are loose and overlap, so don't worry about keeping them distinct).
+   922→1. Ask how the topic fits into a larger context (historical, social, cultural, geographic,
+   923→functional, economic, and so on):
+   924→How does your topic fit into a larger story? What came before masks? How did masks
+   925→come into being? Why? What changes have they caused in other parts of their social or
+   926→geographic setting? How and why did that happen? Why have masks become a part of
+   927→Halloween? How and why have masks helped make Halloween the biggest American
+   928→holiday after Christmas?
+   929→How is your topic a functioning part of a larger system? How do masks reflect the
+   930→values of specific societies and cultures? What roles do masks play in Hopi dances? In
+   931→scary movies? In masquerade parties? For what purposes are masks used other than
+   932→disguise? How has the booming market for kachina masks influenced traditional
+   933→designs?
+   934→How does your topic compare to and contrast with other topics like it? How do masks
+   935→
+   936→www.itpub.net
+   937→
+   938→in Native American ceremonies differ from those in Africa? What do Halloween masks
+   939→have to do with Mardi Gras masks? How are masks and cosmetic surgery alike?
+   940→2. Ask questions about the nature of the thing itself, as an independent entity:
+   941→How has your topic changed through time? Why? What is its future? How have
+   942→Halloween masks changed? Why? How have Native American masks changed? Why?
+   943→How do the parts of your topic fit together as a system? What parts of a mask are
+   944→most significant in Hopi ceremonies? Why? Why do some masks cover only the eyes?
+   945→Why do so few masks cover just the bottom half of the face?
+   946→How many different categories of your topic are there? What are the different kinds of
+   947→Halloween masks? What are the different qualities of masks? What are the different
+   948→functions of Halloween masks?
+   949→3. Turn positive questions into a negative ones: Why have masks not become a part of
+   950→Christmas? How do Native American masks not differ from those in Africa? What parts of
+   951→masks are typically not significant in religious ceremonies?
+   952→4. Ask speculative questions: Why are masks common in African religions but not in
+   953→Western ones? Why are children more comfortable wearing Halloween masks than are
+   954→most adults? Why don't hunters in camouflage wear masks?
+   955→5. Ask What if? questions: How would things be different if your topic never existed,
+   956→disappeared, or were put into a new context? What if no one ever wore masks except for
+   957→safety reasons? What if everyone wore masks in public? What if movies and TV were like
+   958→Greek plays and all the actors wore masks? What if it were customary to wear masks on
+   959→blind dates? In marriage ceremonies? At funerals?
+   960→6. Ask questions that reflect disagreements with a source: If a source makes a claim you
+   961→think is weakly supported or even wrong, make that disagreement a question (see also
+   962→4.1.2). Martinez claims that carnival masks uniquely allow wearers to escape social
+   963→norms. But I think religious masks also allow wearers to escape from the material realm to
+   964→the spiritual. Is there a larger pattern of all masks creating a sense of alternative forms of
+   965→social or spiritual life?
+   966→7. Ask questions that build on agreement: If a source offers a claim you think is persuasive,
+   967→ask questions that extend its reach (see also 4.1.1). Elias shows that masked balls became
+   968→popular in eighteenth-century London in response to anxiety about social mobility. Is the
+   969→same anxiety responsible for similar developments in other European capitals? You can
+   970→also ask a question that supports the same claim with additional evidence. Elias supports
+   971→his claim about masked balls entirely with published sources. Is it also supported by
+   972→evidence from unpublished sources such as letters and diaries?
+   973→8. Ask questions analogous to those that others have asked about similar topics. Smith
+   974→analyzed the Battle of Gettysburg from an economic point of view. What would an
+   975→economic analysis of the Battle of the Alamo turn up?
+   976→
+   977→9. Look for questions that other researchers pose but don't answer. Many journal articles
+   978→end with a paragraph or two about open questions, ideas for more research, and so on. You
+   979→might not be able to do all the research they suggest, but you might carve out a piece of it.
+   980→10. Find a Web discussion list on your topic, then “lurk,” just reading the exchanges to
+   981→understand the kinds of questions those on the list discuss. If you can't find a list using a
+   982→search engine, ask a teacher or visit the Web site of professional organizations in your
+   983→field. Look for questions that spark your interest. You can even ask a question of the list so
+   984→long as it is very specific and narrowly focused, but wait until you see whether questions
+   985→from students are welcomed.
+   986→2.1.4 Evaluate Your Questions
+   987→Not all answers are equally useful, so evaluate your questions and scrap those that are
+   988→unlikely to yield interesting answers. Reconsider when the following is true.
+   989→1. You can answer the question too easily.
+   990→You can look it up: What masks are used in Navajo dances?
+   991→You can summarize a source: What does Fisher say about masks and fears?
+   992→2. You can't find good evidence to support the answer.
+   993→No relevant facts exist: Are Mayan masks modeled on space aliens?
+   994→The question is based on preference or taste: Are Balinese or Mayan masks more
+   995→beautiful?
+   996→You must read too many sources: How are masks made? You don't want to plow
+   997→through countless reports to find the best evidence (this usually results from a question
+   998→that's too broad).
+   999→You can't get the sources that your readers think are crucial. In even moderately
+  1000→advanced projects, you'll be expected to work with the best sources available; for a
+  1001→thesis and dissertation, they're essential. If you can't obtain those sources, find another
+  1002→question.
+  1003→3. You can't plausibly disprove the answer.
+  1004→The answer seems self-evident because the evidence overwhelmingly favors one
+  1005→answer. How important are masks in Inuit culture? The answer is obvious: Very. If you
+  1006→can't imagine disproving a claim, then proving it is pointless. (On the other hand, worldclass reputations have been won by those who questioned a claim that seemed selfevidently true—for instance, that the sun went around the earth—and dared to disprove
+  1007→it.)
+  1008→
+  1009→www.itpub.net
+  1010→
+  1011→Don't reject a question because you think someone must already have asked it. Until you
+  1012→know, pursue its answer as if you asked first. Even if someone has answered it, you might
+  1013→come up with a better answer or at least one with a new slant. In fact, in the humanities and
+  1014→social sciences the best questions usually have more than one good answer. You can also
+  1015→organize your project around comparing and contrasting competing answers and supporting
+  1016→the best one (see 6.2.5).
+  1017→The point is to find a question that you want to answer. Too many students, both graduate
+  1018→and undergraduate, think that the aim of education is to memorize settled answers to someone
+  1019→else's questions. It is not. It is to learn to find your own answers to your own questions. To do
+  1020→that, you must learn to wonder about things, to let them puzzle you, particularly about things
+  1021→that seem most commonplace.
+  1022→
+  1023→2.2 Propose Some Working Answers
+  1024→Before you get deep into your project, try one more step. It is one that some beginners resist
+  1025→but that experienced researchers usually attempt. Once you have a question, imagine some
+  1026→plausible answers, no matter how sketchy or speculative. At this stage, don't worry whether
+  1027→they're right. That comes later.
+  1028→For example, suppose you ask, Why do some religions use masks in ceremonies while
+  1029→others don't? You might speculate,
+  1030→Maybe cultures with many spirits need masks to distinguish them.
+  1031→Maybe masks are common in cultures that mix religion and medicine.
+  1032→Maybe religions originating in the Middle East were influenced by the Jewish prohibition against idolatry.
+  1033→
+  1034→Even a general answer can suggest something worth studying:
+  1035→Maybe it has to do with the role of masks in nonreligious areas of a culture.
+  1036→
+  1037→Try to imagine at least one plausible answer, no matter how tentative or speculative. If after
+  1038→lots of research you can't confirm it, you can organize your report around why that answer
+  1039→seemed reasonable at the time but turned out to be wrong, and so isn't worth the time of other
+  1040→researchers. That in itself can be a valuable contribution to the conversation on your topic.
+  1041→(See 10.1.1–10.1.2 for how to use an apparently good idea that turns out to be wrong.)
+  1042→In fact, look for two or three plausible answers. Even if you prefer one, you can improve it
+  1043→by testing it against the others, and in any event, you can't show that an answer is right if you
+  1044→can't also show why others are wrong. Even early in the project, write out your answers as
+  1045→clearly and as fully as you can. It is too easy to think that you have a clear idea when you
+  1046→don't. Putting a foggy idea into words is the best way to clarify it, or to discover that you can't.
+  1047→2.2.1 Decide on a Working Hypothesis
+  1048→If one answer seems promising, call it your working hypothesis and use it to guide your
+  1049→
+  1050→research. You can, of course, look for evidence with no more than a question to guide you,
+  1051→because any question limits the number of plausible answers. But even the most tentative
+  1052→working hypothesis helps you to think ahead, especially about the kind of evidence that you'll
+  1053→need to support it. Will you need numbers? quotations? observations? images? historical
+  1054→facts? More important, what kind of evidence would disprove your hypothesis? Answer those
+  1055→questions, and you know the kind of data to watch for and to keep. In fact, until you have a
+  1056→hypothesis, you can't know whether any data you collect are relevant to any question worth
+  1057→asking.
+  1058→If you can't imagine any working hypothesis, reconsider your question. Review your list of
+  1059→exploratory questions to find one that you can answer; if you skipped that step, go back to
+  1060→2.1.3. You may even decide to start over with a new topic. That costs time in the short run,
+  1061→but it may save you from a failed project. If you're working on a thesis or dissertation, you can
+  1062→wait longer to firm up a hypothesis while you read and ponder, but don't get deeply into your
+  1063→project without at least the glimmer of a possible answer.
+  1064→Under no circumstances put off thinking about a hypothesis until you begin drafting your
+  1065→report or, worse, until you've almost finished it. You might not settle on the best answer to
+  1066→your question until you've written your last page: writing, even revising, is itself an act of
+  1067→discovery. Just don't wait until that last page to start thinking about some answer.
+  1068→2.2.2 Beware the Risks in a Working Hypothesis
+  1069→It is a bad idea to settle on a final answer too soon. But many new researchers and some
+  1070→experienced ones are afraid to consider any working hypothesis early in their project, even
+  1071→one they hold lightly, because they fear it might bias their thinking. There is some risk of that,
+  1072→but a working hypothesis need not close your mind to a better one. Even the most objective
+  1073→scientist devises an experiment to test for just a few predicted outcomes, often just one. In
+  1074→fact, researchers who don't state a hypothesis usually have one in mind, but don't want to seem
+  1075→publicly committed to it, lest it turn out wrong.
+  1076→A working hypothesis is a risk only if it blinds you to a better one or if you can't give it up
+  1077→when the evidence says you should. So as in all relationships, don't fall too hard for your first
+  1078→hypothesis: the more you like it, the less easily you'll see its flaws. Despite that risk, it's better
+  1079→to start with a flawed hypothesis than with none at all.
+  1080→2.2.3 If You Can't Find an Answer, Argue for Your Question
+  1081→We have focused on questions so much that you might think that your project fails if you can't
+  1082→answer yours. In fact, much important research explains why a question no one has asked
+  1083→should be, even though the researcher can't answer it: Do turtles dream? Why is yawning
+  1084→contagious but being sleepy isn't? Or is it? Such reports focus on why the question is
+  1085→important and what a good answer might look like. Or you may find that someone has
+  1086→answered your question, but incompletely or even, if you're lucky, incorrectly. If you can't
+  1087→find the right answer, you help readers by showing that a widely accepted one is wrong. (See
+  1088→10.1.2 for how to use this plan in your introduction.)
+  1089→
+  1090→www.itpub.net
+  1091→
+  1092→Only when you ask question after question will you develop the critical imagination you'll
+  1093→need in any profession you follow. In fact, as experienced researchers know, most issues have
+  1094→few, if any, final answers, because there are no final questions. They know that it's as
+  1095→important to ask a new question as it is to answer an old one, and that one day their new
+  1096→question will become old and yield to a newer researcher's still newer one.
+  1097→Your job is to become that newer researcher.
+  1098→
+  1099→2.3 Build a Storyboard to Plan and Guide Your Work
+  1100→For a short paper, you might not need a detailed plan—a sketch of an outline might do. But
+  1101→for a long project, you'll usually need more, especially for one as long as a thesis or
+  1102→dissertation. The first plan that comes to mind is usually an outline, with its I's and II's and A's
+  1103→and B's and so on (see 23.4.2). If you prefer an outline, use one, especially if your project is
+  1104→relatively short. The problem is that an outline can force you to specify too much too soon and
+  1105→so lock up a final form before you've done your best thinking.
+  1106→To avoid that risk, many researchers, including those outside the academic world, plan long
+  1107→reports on a storyboard. A storyboard is like an outline spread over several pages, with lots of
+  1108→space for adding data and ideas as you go. It is more flexible than an outline: it can help you
+  1109→plan your search for evidence, organize your argument, write a first draft, and test a final one.
+  1110→As opposed to lines in an outline, you can physically move storyboard pages around without
+  1111→having to print a new plan every time you try out a new organization. You can spread its
+  1112→pages across a wall, group related pages, and put minor sections below major ones to create a
+  1113→“picture” of your project that shows you at a glance the design of the whole and your
+  1114→progress through it.
+  1115→2.3.1 State Your Question and Working Hypotheses
+  1116→To start a storyboard, state at the top of its first page your question and working hypothesis as
+  1117→exactly as you can. Then add plausible alternatives to help you see more clearly its limits and
+  1118→strengths. Add new hypotheses as you think of them, and cross off those you prove wrong.
+  1119→But save them, because you might be able to use one of them in your introduction (see
+  1120→10.1.1).
+  1121→2.3.2 State Your Reasons
+  1122→Put at the top of separate pages each reason that might support your best hypothesis, even if
+  1123→you have only one or two (for more on reasons, see 5.4.2). Imagine explaining your project to
+  1124→a friend. You say, I want to show that Alamo stories helped develop a unique Texan identity,
+  1125→and your friend asks, Why do you think so? Your reasons are the general statements that you
+  1126→offer to support your answer: Well, first, the stories distorted facts to emphasize what became
+  1127→central to Texan identity; second, the stories were first used to show that Texas (and the Wild
+  1128→West) was a new kind of frontier; third, . . . and so on.
+  1129→
+  1130→If you can think of only one or two reasons (you'll usually need more), put placeholders at
+  1131→the tops of pages: Reason 3: Something about Alamo stories making Texans feel special. If
+  1132→you know only how you want a reason to support your answer, state that: Reason 4:
+  1133→Something to show that Alamo stories were more than just myth. Each reason, of course,
+  1134→needs support, so for each reason, ask Why do I think that? What evidence will I need to prove
+  1135→it? That will help you focus your search for evidence (see 2.3.3 and 5.4.2).
+  1136→If you're new to your topic or early in your project, your reasons may be only educated
+  1137→guesses that you'll change; if you don't, you might not be self-critical enough. But a list of
+  1138→reasons, no matter how speculative, is the best framework to guide your research and focus
+  1139→your thinking, and certainly better than no reasons at all.
+  1140→2.3.3 Sketch in the Kind of Evidence You Should Look For
+  1141→Every field prefers its own kinds of evidence—numbers, quotations, observations, historical
+  1142→facts, images, and so on. So for each reason, sketch the kind of evidence that you think you'll
+  1143→need to support it. Even imagine what the most convincing evidence would look like. If you
+  1144→can't imagine the kind of evidence you'll need, leave that part of the page blank, then read
+  1145→secondary sources to find out the kind of evidence that researchers in your field favor (see
+  1146→3.1.2).
+  1147→2.3.4 Look at the Whole
+  1148→Lay the pages on a table or tape them on a wall. Then step back and look at their order. When
+  1149→you plan a first draft, you must put its parts in some order, so you might as well think about
+  1150→one now. Can you see a logic in your order? cause and effect? narrative time? relative
+  1151→importance? complexity? length? (See 6.2.5 for more principles of order.) Try out different
+  1152→orders. This storyboard isn't your final plan; it's only a tool to guide your thinking and
+  1153→organize what you find.
+  1154→When you fill a page, try drafting that section, because writing out your ideas can improve
+  1155→your thinking at every stage of your project.
+  1156→Someday, you may have the leisure to amble through sources, reading just what interests
+  1157→you. Such random browsing has opened up important lines of research. But if your report is
+  1158→due in a month or so, you can't wait for lightning to strike; you need a plan. A storyboard is a
+  1159→simple and reliable device to help you create one.
+  1160→
+  1161→2.4 Organize a Writing Support Group
+  1162→A down side of scholarly research is its isolation. Except for group projects, you'll read, think,
+  1163→and write mostly alone. But it doesn't have to be that way, at least not entirely. Look for
+  1164→someone other than your instructor or advisor who will talk with you about your progress,
+  1165→review your drafts, even pester you about how much you have written. That might be a
+  1166→generous friend, but look first for another writer so that you can comment on each other's
+  1167→
+  1168→www.itpub.net
+  1169→
+  1170→ideas and drafts.
+  1171→Better yet is a writing group of four or five people working on their own projects who meet
+  1172→regularly to discuss one another's work. Early on, start each meeting with a summary of each
+  1173→person's project in that three-part sentence: I'm working on the topic of X, because I want to
+  1174→find out Y, so that I (and you) can better understand Z. As your projects develop, start with an
+  1175→“elevator story,” a short summary of your research that you might give someone in the
+  1176→elevator on the way to the meeting. It should include that three-part sentence, a working
+  1177→hypothesis, and the major reasons supporting it (see 13.4).
+  1178→In later stages, the group shares outlines and drafts so that they can serve as surrogate
+  1179→readers to anticipate how your final readers will respond. If your group has a problem with
+  1180→your draft, so will your final readers. They can even help you brainstorm when you bog down.
+  1181→But for most writers, a writing group is most valuable for the discipline it imposes. It is easier
+  1182→to meet a schedule when you know you must report your progress to others.
+  1183→Writing groups are standard practice for theses or dissertations. But the rules may differ for
+  1184→a class paper. Some teachers think that a group or writing partner might provide more help
+  1185→than is appropriate, so be clear with your instructor what your group will do. If you don't, she
+  1186→may decide the assistance you have received is inappropriate (see 7.10).
+  1187→
+  1188→3 Finding Useful Sources
+  1189→3.1
+  1190→
+  1191→3.2
+  1192→
+  1193→3.3
+  1194→
+  1195→Understand the Kinds of Sources Readers Expect You to Use
+  1196→3.1.1
+  1197→
+  1198→Consult Primary Sources for Evidence
+  1199→
+  1200→3.1.2
+  1201→
+  1202→Read Secondary Sources to Learn from Other Researchers
+  1203→
+  1204→3.1.3
+  1205→
+  1206→Read Tertiary Sources for Introductory Overviews
+  1207→
+  1208→Record Your Sources Fully, Accurately, and Appropriately
+  1209→3.2.1
+  1210→
+  1211→Determine Your Citation Style
+  1212→
+  1213→3.2.2
+  1214→
+  1215→Record Bibliographic Data
+  1216→
+  1217→Search for Sources Systematically
+  1218→3.3.1
+  1219→
+  1220→Look for Someone Who Knows Something about Your Topic
+  1221→
+  1222→3.4
+  1223→
+  1224→3.5
+  1225→
+  1226→3.3.2
+  1227→
+  1228→Skim the Internet
+  1229→
+  1230→3.3.3
+  1231→
+  1232→Talk to Reference Librarians
+  1233→
+  1234→3.3.4
+  1235→
+  1236→Browse in Your Reference Area
+  1237→
+  1238→3.3.5
+  1239→
+  1240→Skim a Few Specialized Reference Works
+  1241→
+  1242→3.3.6
+  1243→
+  1244→Search Your Library Catalog
+  1245→
+  1246→3.3.7
+  1247→
+  1248→Search Guides to Periodical Literature
+  1249→
+  1250→3.3.8
+  1251→
+  1252→Browse the Shelves
+  1253→
+  1254→3.3.9
+  1255→
+  1256→For Advanced Projects, Follow Bibliographic Trails
+  1257→
+  1258→Evaluate Sources for Relevance and Reliability
+  1259→3.4.1
+  1260→
+  1261→Evaluate the Relevance of Sources
+  1262→
+  1263→3.4.2
+  1264→
+  1265→Evaluate the Reliability of Print Sources
+  1266→
+  1267→3.4.3
+  1268→
+  1269→Evaluate the Reliability of Online Sources
+  1270→
+  1271→Look beyond the Usual Kinds of References
+  1272→
+  1273→Once you have at least a question and perhaps a working hypothesis along with a few
+  1274→tentative reasons for supporting it, you can start looking for the data you'll need to support
+  1275→your reasons and test your hypothesis. In this chapter we explain how to find those data and in
+  1276→the next how to work with them. But don't think of finding sources and reading them as
+  1277→separate steps. Once you have a promising source, read it to find other sources. And as you
+  1278→fill your storyboard with notes, you'll discover gaps and new questions that only more sources
+  1279→can fill. So while we discuss finding and using sources as two steps, you'll more often do
+  1280→them repeatedly and simultaneously.
+  1281→
+  1282→3.1 Understand the Kinds of Sources Readers Expect You to Use
+  1283→
+  1284→www.itpub.net
+  1285→
+  1286→Depending on your experience, readers will expect you to use different levels of sources,
+  1287→called primary, secondary, and tertiary (think first-, second-, and thirdhand). These aren't
+  1288→sharply defined categories, but they roughly characterize how researchers think about most
+  1289→sources.
+  1290→3.1.1 Consult Primary Sources for Evidence
+  1291→In fields such as literary studies, the arts, and history, primary sources are original works—
+  1292→diaries, letters, manuscripts, images, films, film scripts, recordings, and musical scores created
+  1293→by writers, artists, composers, and so on. Those sources provide data—the words, images, and
+  1294→sounds that you use as evidence to support your reasons. Data can also be objects: coins,
+  1295→clothing, tools, and other artifacts from the period or belonging to a person you're studying.
+  1296→In fields such as economics, psychology, chemistry, and so on, researchers typically collect
+  1297→data through observation and experiment. In others, researchers gather evidence through
+  1298→interviews. (To conduct effective interviews, you must use reliable methods for eliciting and
+  1299→recording the information you collect.) In such fields, evidence consists of the data that
+  1300→researchers collect. The primary sources for those collected data are the publications that first
+  1301→publish them, ranging from government and commercial databases to scholarly journals.
+  1302→Experienced researchers look for data in primary sources first. If, for example, you were
+  1303→writing on Alamo stories, you'd try to find sources written at the time—letters, diaries,
+  1304→eyewitness reports, and so on.
+  1305→3.1.2 Read Secondary Sources to Learn from Other Researchers
+  1306→Secondary sources are books and articles that analyze primary sources, usually written by and
+  1307→for other researchers. A report in a scholarly journal analyzing Alamo stories would be a
+  1308→secondary source for researchers working on those stories. Secondary sources also include
+  1309→specialized encyclopedias and dictionaries that offer essays written by scholars in a field. You
+  1310→use secondary sources for three purposes:
+  1311→1. To Keep Up with Current Research. Researchers read secondary sources to keep up with
+  1312→the work of other researchers, to inform and refine their thinking, and to motivate their
+  1313→own work by adding to a published line of research.
+  1314→2. To Find Other Points of View. A research report is not complete until the researcher
+  1315→acknowledges and responds to the views of others and to his readers' predictable questions
+  1316→and disagreements (see 5.4.3). You can find most of those other points of view in
+  1317→secondary sources. What alternatives to your ideas do they offer? What evidence do they
+  1318→cite that you must acknowledge? Some new researchers think they weaken their case if
+  1319→they mention any view opposing their own. The truth is the opposite. When you
+  1320→acknowledge competing views, you show readers that you not only know those views but
+  1321→can confidently respond to them (for more on this, see 5.4.3).
+  1322→More important, you must use those competing views to improve your own. You can't
+  1323→
+  1324→understand what you think until you understand why a rational person might think
+  1325→differently. So as you look for sources, don't look just for those that support your views. Be
+  1326→alert as well for those that contradict them.
+  1327→3. To Find Models for Your Own Research and Analysis. You can use secondary sources
+  1328→to find out not just what others have written about your topic, but how they have written
+  1329→about it, as models for the form and style of your own report. Imagine a secondary source
+  1330→as a colleague talking to you about your topic. As you respond, you'd want to sound like
+  1331→someone who knows the field, and so you'd try to learn how she reasons, the language she
+  1332→uses, the kinds of evidence she offers, and the kinds she rarely or never uses. The
+  1333→“conversation” would be in writing, so you'd even imitate stylistic details such as whether
+  1334→she writes in long paragraphs or breaks up her pages with subheads and bullet points
+  1335→(common in the social sciences, less common in the humanities).
+  1336→You can also use a secondary source as a model for your conceptual analysis. If, for
+  1337→example, you were analyzing Alamo stories, you might study how a source treats Custer's
+  1338→Last Stand. Is its approach psychological, social, historical, political? Its particular reasons or
+  1339→evidence will probably be irrelevant to your project, but you might support your answer with
+  1340→the same kinds of data and reasoning, perhaps even following the same organization.
+  1341→So if you come across a source that's not exactly on your topic but treats one like it, skim it
+  1342→to see how that researcher thinks about his material and presents it. (You don't have to cite
+  1343→that source if you use only its general logic, but you may cite it to give your own approach
+  1344→more authority.)
+  1345→Researchers use data reported in secondary sources only when they can't find them in
+  1346→primary sources. Then they're cautious about using those secondary sources, because
+  1347→secondhand reports of data have a high error rate. If you're doing very advanced work, check
+  1348→the accuracy of important quotations, facts, or numbers from secondary sources. Those who
+  1349→publish in respected places rarely misreport deliberately, but they make careless mistakes
+  1350→more often than nonexperts think or experts admit.
+  1351→Of course, if you were studying how the Alamo story has been analyzed, then secondary
+  1352→sources offering those analyses would be your primary sources.
+  1353→If you're new to a field, you may find secondary sources hard to read: they assume a lot of
+  1354→background knowledge, and many aren't clearly written (see 11.2). If you're working on a
+  1355→topic new to you, you might begin with an overview in a specialized encyclopedia or reliable
+  1356→tertiary source.
+  1357→3.1.3 Read Tertiary Sources for Introductory Overviews
+  1358→Tertiary sources are based on secondary sources, usually written for non-specialists. They
+  1359→include general encyclopedias and dictionaries, as well as newspapers and magazines like
+  1360→Time and the Atlantic Monthly and commercial books written for a general audience. Welledited general encyclopedias offer a quick overview of many topics. Beware, however, of
+  1361→online encyclopedias, such as Wikipedia, that rely on anonymous contributions rather than on
+  1362→carefully edited entries written by established researchers. Wikipedia has proved to be
+  1363→
+  1364→www.itpub.net
+  1365→
+  1366→relatively accurate in the sciences, but overall it is uneven and sometimes wrong. Never cite it
+  1367→as an authoritative source.
+  1368→Be similarly cautious about using magazine and newspaper articles. Some describe research
+  1369→reported in secondary sources reliably, but most oversimplify, or worse, misreport it. You
+  1370→would, of course, treat such a source as primary if you were studying how it deals with a
+  1371→topic, such as gender bias in the Encyclopedia Britannica or hoaxes in Wikipedia.
+  1372→Once you understand kinds of sources, you can begin looking for them.
+  1373→
+  1374→3.2 Record Your Sources Fully, Accurately, and Appropriately
+  1375→Before you look for sources, you should know how to cite the ones you find. Your readers
+  1376→will trust your report only if they trust your evidence, and they won't trust your evidence if
+  1377→they can't find your sources. Your first obligation as a researcher is to cite your sources
+  1378→accurately and fully so that your readers can find them.
+  1379→3.2.1 Determine Your Citation Style
+  1380→Most fields require a specific citation style. The two most common ones are described in
+  1381→detail in part 2:
+  1382→notes-bibliography style (or simply bibliography style), used widely in the humanities and
+  1383→in some social sciences (see chapters 16 and 17)
+  1384→parenthetical citations–reference list style (or simply reference list style), used in most
+  1385→social sciences and in the natural sciences (see chapters 18 and 19)
+  1386→If you are uncertain which style to use, consult your instructor. Before you start compiling
+  1387→your list of sources, read the general introduction to citations in chapter 15, then depending on
+  1388→the citation style you are required to use, read the introduction to bibliography style (chapter
+  1389→16) or reference list style (chapter 18).
+  1390→3.2.2 Record Bibliographic Data
+  1391→To save time and avoid errors, record all the citation information you will need when you first
+  1392→find a source. Most of this information appears on the title page of a book or at the head of a
+  1393→journal article. The specific information you need depends on the type of source, but for each
+  1394→source, record at least the following:
+  1395→Who wrote or assembled the source?
+  1396→author(s)
+  1397→editor(s)
+  1398→
+  1399→translator(s)
+  1400→What data identify the source?
+  1401→title and subtitle
+  1402→title and subtitle of any larger work that contains the source (such as a collection,
+  1403→journal, or newspaper)
+  1404→page numbers if the source appears in a larger work
+  1405→volume number
+  1406→issue number
+  1407→edition number
+  1408→URL and date you accessed the material, for online sources
+  1409→Who published the source and when?
+  1410→publisher's name
+  1411→place of publication
+  1412→date of publication
+  1413→For your own use, you might record Library of Congress call numbers. You don't include
+  1414→them in bibliographic citations, but you may find them helpful if you must consult the source
+  1415→again.
+  1416→At some point, you'll need to format this bibliographic information into your required
+  1417→citation style, so you should record your sources in that style now. You can find templates and
+  1418→examples for bibliography style in figure 16.1 and chapter 17; for reference list style, refer to
+  1419→figure 18.1 and chapter 19.
+  1420→As you record these data, you'll be tempted to take shortcuts, because it's boring work, and
+  1421→rules about periods, commas, and parentheses can feel like nit-picking. But nothing labels you
+  1422→a beginner faster than citations that are inappropriate, or worse, incomplete or inaccurate. So
+  1423→get in the habit of recording bibliographic data for a source fully, accurately, and
+  1424→appropriately the moment you handle it. There are computer programs that automatically
+  1425→format citations for you. They are useful aids, but they cannot substitute for your own
+  1426→knowledge of proper citation forms and methods, and not all of the software works perfectly.
+  1427→
+  1428→3.3 Search for Sources Systematically
+  1429→As you search for sources, you must be knowledgeably systematic, because if you miss an
+  1430→
+  1431→www.itpub.net
+  1432→
+  1433→important one, you'll lose credibility.
+  1434→3.3.1 Look for Someone Who Knows Something about Your Topic
+  1435→You might start by asking around to find someone who knows something about your topic
+  1436→and standard reference works on it: advanced students, faculty, even people outside the
+  1437→academic community. You might look up your topic in the yellow pages of the phonebook.
+  1438→You won't always find someone, but you might get lucky.
+  1439→3.3.2 Skim the Internet
+  1440→Before college, many students do research only on the Web, because their high school
+  1441→libraries are small and they need to find only a few sources. In college, you can still do some
+  1442→preliminary work with a scholarly search engine such as Google Scholar. It will give you a
+  1443→rough idea of the kinds of sources available. If your library catalog is online, you can also
+  1444→start there (see 3.3.6 below). But if you search just the Internet, you'll miss important sources
+  1445→that you'll find only by poking around in your library. Once again, you'll work most
+  1446→efficiently if you have a plan.
+  1447→3.3.3 Talk to Reference Librarians
+  1448→If you don't know how to find what you need, ask a librarian. Most college libraries offer
+  1449→tours of reference rooms and special collections, and short seminars on how to search the
+  1450→catalog, databases, and other sources of information. If you're a new researcher, seize every
+  1451→opportunity to learn online search techniques in your field.
+  1452→You can also talk to librarians who specialize in your area. They won't find sources for you,
+  1453→but they will help you look for them. If you have a research question, share it: I'm looking for
+  1454→data on X because I want to find out. . . . If you have a working hypothesis and reasons, share
+  1455→them too: I'm looking for data to show Y [your reason] because I want to claim Z [your
+  1456→hypothesis]. Rehearse your questions to avoid wasting your time and theirs.
+  1457→3.3.4 Browse in Your Reference Area
+  1458→Researchers in all fields share common values and habits of thought, but every field has its
+  1459→own ways of doing things. To learn about the ways of your field, browse the shelves in your
+  1460→library's reference room that hold guides to your field's particular research methods,
+  1461→databases, and special resources (in the bibliography, see items in category 3 in your field). At
+  1462→least familiarize yourself with the following resources (in the bibliography, see category 4 for
+  1463→lists of sources in your field; many are also online):
+  1464→a bibliography of works published each year in your field, such as Philosopher's Index or
+  1465→Education Index
+  1466→summary bibliographies of works on a specific topic collected over several years
+  1467→
+  1468→(Bibliographic Index is a bibliography of bibliographies)
+  1469→collections of abstracts that summarize articles in newspapers and in professional
+  1470→journals
+  1471→reviews of the year's work; look for a title in your field beginning with Reviews in . ..
+  1472→for new fields, Web sites maintained by individuals or scholarly associations
+  1473→If you know even a little of the secondary literature on your topic, you can begin looking for
+  1474→more substantive sources (skip to 3.3.7–3.3.8). If you don't, you might start with some
+  1475→specialized reference works.
+  1476→3.3.5 Skim a Few Specialized Reference Works
+  1477→Start by looking up your topic in a relevant specialized encyclopedia or dictionary such as the
+  1478→Encyclopedia of Philosophy or the Concise Oxford Dictionary of Literary Terms, where you
+  1479→may find an overview of your topic and often a list of standard primary and secondary sources
+  1480→(in the bibliography, see items in categories 1 and 2 in your field).
+  1481→3.3.6 Search Your Library Catalog
+  1482→SUBJECT HEADINGS IN BOOKS. As soon as you find one recent book relevant to your topic,
+  1483→
+  1484→look it up in your library's online catalog to find its Library of Congress subject headings;
+  1485→they will be at the bottom of the entry. For example, the online entry for this book includes
+  1486→these two topics:
+  1487→1. Dissertations, Academic. 2. Academic writing.
+  1488→
+  1489→You can click on the subject headings to find other books on the same topics. Many of those
+  1490→sources will have still more subject headings that can lead you to still more sources; it can
+  1491→turn into an endless trail.
+  1492→KEYWORDS. Also search your online catalog using keywords from your question or working
+  1493→
+  1494→hypothesis—Alamo, Texas independence, James Bowie. If you find too many titles, start with
+  1495→those published in the last ten years by well-known university presses. For a wider selection,
+  1496→search WorldCat if your library subscribes. Otherwise, search the Library of Congress catalog
+  1497→at http://www.loc.gov. It has links to large university catalogs. Start early if you expect to get
+  1498→books on interlibrary loan.
+  1499→ARTICLES. If most sources on your topic are articles, locate a recent one in your library's
+  1500→
+  1501→online databases. Its database entry will include a list of keywords. Search for them to find
+  1502→more articles on your topic. In most cases, you can just click on them. Some databases also
+  1503→provide abstracts of journal articles. Use these keywords to search the library catalog, as well.
+  1504→3.3.7 Search Guides to Periodical Literature
+  1505→
+  1506→www.itpub.net
+  1507→
+  1508→If you've done research before, you're probably familiar with annual guides such as Readers'
+  1509→Guide to Periodical Literature, which cites sources such as magazines and newspapers. Most
+  1510→specialized fields also have yearly guides to secondary sources, such as Art Abstracts,
+  1511→Historical Abstracts, and Abstracts in Anthropology (in the bibliography, see items in
+  1512→category 4 in your field). Most are available online or on CDs.
+  1513→All those resources will direct you to more sources, but none of them can substitute for the
+  1514→kind of in-library search that turns up an unexpectedly useful source.
+  1515→3.3.8 Browse the Shelves
+  1516→You might think that online research is faster than walking around your library. But it can be
+  1517→slower, and if you work only online, you may miss crucial sources that you'll find only in the
+  1518→library. More important, you'll miss the benefits of serendipity—a chance encounter with a
+  1519→source that you find only in person.
+  1520→If you're allowed in the stacks (where all the books that you can check out are kept), find
+  1521→the shelf with books on your topic. Then scan the titles on that shelf and the ones above,
+  1522→below, and on either side. Then turn around and skim titles behind you; you never know.
+  1523→When you spot a promising title, especially on a university press book with a new binding,
+  1524→skim its table of contents, then its index for keywords related to your question or its answer.
+  1525→Then skim its bibliography for titles that look relevant to your project. You can do all that
+  1526→faster with books on a shelf than you can online.
+  1527→If the book looks promising, skim its preface or introduction. If it still looks promising, set
+  1528→it aside for a closer look. Even if it doesn't seem relevant, record its Library of Congress call
+  1529→number and bibliographic data (author, title, publisher, date of publication and so on; see part
+  1530→2 of this manual for the details), and in a few words summarize what the book seems to be
+  1531→about. A month later, you might realize that it's more useful than you thought.
+  1532→You can check tables of contents for many journals online, but browsing in the journals
+  1533→area of a library can be more productive. Find the journals that have promising articles. Skim
+  1534→tables of contents for the prior ten years. Most volumes include a yearly summary table of
+  1535→contents. Then take a quick look at the journals shelved nearby. Skim their most recent tables
+  1536→of contents. You will be surprised at how often you find a relevant article that you would have
+  1537→missed had you done your work entirely online.
+  1538→If you are new to a field, you can get a rough impression of the academic quality of a
+  1539→journal by its look. If it's on glossy paper with lots of illustrations, even advertisements, it
+  1540→might be more journalistic than scholarly. Those are not infallible signs of unreliable
+  1541→scholarship, but they are worth considering.
+  1542→3.3.9 For Advanced Projects, Follow Bibliographic Trails
+  1543→If you're into advanced work, use the bibliographies in your sources to find new sources and
+  1544→use their bibliographies in turn to find more. Do this:
+  1545→
+  1546→Skim bibliographies of recent books on your topic; look at any work mentioned in all or
+  1547→most of them, along with other publications by its author.
+  1548→If you find a source useful, skim its index for authors mentioned on four or more pages.
+  1549→Look for reviews of research in the first few paragraphs of journal articles.
+  1550→Look for recent PhD dissertations even marginally on your topic. Almost every
+  1551→dissertation reviews research in its first or second chapter.
+  1552→New sources are best, but you may discover an old one with data long neglected.
+  1553→
+  1554→3.4 Evaluate Sources for Relevance and Reliability
+  1555→You will probably find more sources than you can use, so you must evaluate their usefulness
+  1556→by skimming quickly for two criteria: relevance and reliability.
+  1557→3.4.1 Evaluate the Relevance of Sources
+  1558→Once you decide a book might be relevant, skim it systematically:
+  1559→If its index lists keywords related to your question or its answers, skim the pages on
+  1560→which those words occur.
+  1561→Skim its introduction, especially its last page, where writers often outline their text.
+  1562→Skim its last chapter, especially the first and last six or seven pages.
+  1563→If you have time, do the same for chapters that look relevant, especially those for which
+  1564→the index lists many of your keywords.
+  1565→If the source is a collection of articles, skim the editor's introduction.
+  1566→(Be sure that you're looking at a book's most recent edition. Over time, researchers change
+  1567→their views, refining them, even rejecting earlier ones.) If you're doing advanced work, read
+  1568→book reviews of promising sources (see section 4 of the bibliography of resources in your
+  1569→field).
+  1570→If your source is a journal article, do this:
+  1571→Read its abstract, if any.
+  1572→Skim the last two or three paragraphs of the introduction (or other opening section) and
+  1573→all of any section called “Conclusion.”
+  1574→If the article has no separate introduction or conclusion, skim its first and last few
+  1575→
+  1576→www.itpub.net
+  1577→
+  1578→paragraphs.
+  1579→Skim the first paragraph or two after each subhead, if any.
+  1580→If your source is online, do this:
+  1581→If it looks like a printed article, follow the steps for a journal article.
+  1582→Skim any section labeled “Introduction,” “Overview,” “Summary,” or the like. If there is
+  1583→none, look for a link labeled “About the Site” or something similar.
+  1584→If the site has a link labeled “Site Map” or “Index,” follow it and check the list, looking
+  1585→for keywords related to your question or its answers. Click to skim those pages.
+  1586→If the site has a “search” resource, type in keywords from your topic.
+  1587→3.4.2 Evaluate the Reliability of Print Sources
+  1588→You can't judge a source until you read it, but there are signs of its reliability:
+  1589→1. Is the author a reputable scholar? Most publications cite an author's academic
+  1590→credentials; you can find more with a search engine. Most established scholars are reliable,
+  1591→but be cautious if the topic is a contested social issue such as gun control or abortion. Even
+  1592→reputable scholars can have axes to grind, especially if their research is supported by a
+  1593→special interest group.
+  1594→2. Is the source current? Many reputable scholars write books and articles popularizing the
+  1595→research of others. But by the time you read them, these tertiary sources may be out of
+  1596→date. How fast a source dates varies by subject, so check with someone who knows your
+  1597→field. For journal articles in the social sciences, more than ten years is pushing the limit.
+  1598→For books, figure fifteen or so. Publications in the humanities have a longer life span.
+  1599→3. Is the source published by a reputable press? You can trust most university presses,
+  1600→especially those at well-known schools. Before they publish a manuscript, they ask experts
+  1601→to review it (a process called peer review). You can also trust some commercial presses in
+  1602→some fields, such as Norton in literature, Ablex in sciences, or West in the law. Be
+  1603→skeptical of a commercial book that makes sensational claims, even if its author has a PhD
+  1604→after his name.
+  1605→4. Was the article peer-reviewed? Most scholarly journals, both print and online, publish
+  1606→only peer-reviewed articles. Few commercial magazines use peer review, and fewer still
+  1607→check an author's facts. If a report hasn't been peer-reviewed, use it cautiously.
+  1608→5. Has the source received good reviews? If the source is a book published more than a
+  1609→year ago, it may have been reviewed in a journal in the field. Many fields have indexes to
+  1610→published reviews that tell you how others evaluate a source. (See the bibliography.)
+  1611→6. Has the source been frequently cited by others? You can roughly estimate how
+  1612→
+  1613→influential a source is by how often others cite it. To determine that, consult a citation
+  1614→index (in the bibliography, see section 4 in your field).
+  1615→Those signs don't guarantee that a source is reliable, but they should give you reasonable
+  1616→confidence in it. If you can't find reliable sources, acknowledge the limits of the ones you
+  1617→have. Of course, you may find an exciting research problem when you discover that a source
+  1618→thought to be reliable is not.
+  1619→3.4.3 Evaluate the Reliability of Online Sources
+  1620→Evaluate online sources as you do those in print, but more cautiously. The number of reliable
+  1621→Web sources grows every day, but they are still islands in a swamp of misinformation. If you
+  1622→find data available only on the Web, look for sites or online publications with these signs of
+  1623→reliability:
+  1624→1. The site is sponsored by a reputable organization. Some sites supported by individuals
+  1625→are reliable; most are not.
+  1626→2. It is related to a reliable professional journal.
+  1627→3. It supplements reliable print sources. Some journals use the Web to host discussions
+  1628→among authors and readers, to offer data too new to be in libraries, to archive data not in
+  1629→articles, or to present illustrations too expensive to print. Many government and academic
+  1630→databases are only online.
+  1631→4. It avoids heated advocacy for or against a contested social issue.
+  1632→5. It does not make wild claims, attack other researchers, use abusive language, or make
+  1633→errors of spelling, punctuation, and grammar.
+  1634→6. It indicates when the site was last updated. If it has no date, be cautious.
+  1635→Trust a site only if careful readers would trust those who maintain it. If you don't know who
+  1636→maintains it, be skeptical.
+  1637→Online services now provide reliable editions of many older texts. You'll also find welledited texts at many university sites. It's “one-stop shopping”; you never have to move from
+  1638→your chair. Online services are, however, far less complete than most university libraries, and
+  1639→using them will teach you nothing about doing research in a real library. Some day,
+  1640→everything ever printed will be available online (a future that gives some researchers mixed
+  1641→feelings). But until then, surfing the Web doesn't replace prowling the stacks.
+  1642→
+  1643→3.5 Look beyond the Usual Kinds of References
+  1644→If you are writing a class paper, you'll usually have to focus narrowly on the kinds of sources
+  1645→typically used in your field. But if you are doing an advanced project such as an MA thesis or
+  1646→PhD dissertation, find an opportunity to search beyond them. If, for example, you were doing
+  1647→
+  1648→www.itpub.net
+  1649→
+  1650→a project on the economic effects of agricultural changes on London grain markets in 1600,
+  1651→you might read some Elizabethan plays, look at pictures of working-class life, or look for
+  1652→commentary by religious figures on social behavior. Conversely, if you were working on
+  1653→visual representations of daily life in London, you might work up the economic history of the
+  1654→period and place. You can't do this in the limited time you have for short papers, but when
+  1655→you have months to work on a major project, try to look beyond the standard kinds of
+  1656→references relevant to your question. When you do, you enrich not only your specific analysis
+  1657→but your range of intellectual reference and your ability to synthesize diverse kinds of data, a
+  1658→crucial competence of an inquiring mind.
+  1659→
+  1660→4 Engaging Sources
+  1661→4.1
+  1662→
+  1663→4.2
+  1664→
+  1665→4.3
+  1666→
+  1667→4.4
+  1668→
+  1669→Read Generously to Understand, Then Critically to Engage and Evaluate
+  1670→4.1.1
+  1671→
+  1672→Look for Creative Agreement
+  1673→
+  1674→4.1.2
+  1675→
+  1676→Look for Creative Disagreement
+  1677→
+  1678→Take Notes Systematically
+  1679→4.2.1
+  1680→
+  1681→Create Templates for Notes
+  1682→
+  1683→4.2.2
+  1684→
+  1685→Know When to Summarize, Paraphrase, or Quote
+  1686→
+  1687→4.2.3
+  1688→
+  1689→Guard against Inadvertent Plagiarism
+  1690→
+  1691→Take Useful Notes
+  1692→4.3.1
+  1693→
+  1694→Use Note-Taking to Advance Your Thinking
+  1695→
+  1696→4.3.2
+  1697→
+  1698→Take Notes Relevant to Your Question and Working Hypothesis
+  1699→
+  1700→4.3.3
+  1701→
+  1702→Record Relevant Context
+  1703→
+  1704→4.3.4
+  1705→
+  1706→Categorize Your Notes for Sorting
+  1707→
+  1708→Write as You Read
+  1709→
+  1710→4.5
+  1711→
+  1712→4.6
+  1713→
+  1714→Review Your Progress
+  1715→4.5.1
+  1716→
+  1717→Search Your Notes for an Answer
+  1718→
+  1719→4.5.2
+  1720→
+  1721→Invent the Question
+  1722→
+  1723→4.5.3
+  1724→
+  1725→Re-sort Your Notes
+  1726→
+  1727→Manage Moments of Normal Panic
+  1728→
+  1729→Once you find a source worth a close look, don't read it mechanically, just mining it for data
+  1730→to record. Note-taking is not clerical work. When you take notes on a source thoughtfully, you
+  1731→engage not just its words and ideas, but its implications, consequences, shortcomings, and
+  1732→new possibilities. Engage your source as if its writer were sitting with you, eager for a
+  1733→conversation (it's how you should imagine your readers engaging you).
+  1734→
+  1735→4.1 Read Generously to Understand, Then Critically to Engage and Evaluate
+  1736→For an advanced project, take the time to read your most promising sources twice, first
+  1737→quickly and generously to understand them on their own terms. If you disagree too soon, you
+  1738→can misunderstand or exaggerate a weakness.
+  1739→Then reread them slowly and critically, as if you were amiably but pointedly questioning a
+  1740→friend; imagine his or her answers, then question them. If you disagree, don't just reject a
+  1741→source: read it in ways that will encourage your own original thinking.
+  1742→You probably won't be able to engage your sources fully until after you've done some
+  1743→reading and developed a few ideas of your own. But from the outset, be alert for ways to read
+  1744→your sources not passively, as a consumer, but actively and creatively, as an engaged partner.
+  1745→At some point, better earlier than later, you must look for ways to go beyond your sources,
+  1746→even when you agree with them.
+  1747→4.1.1 Look for Creative Agreement
+  1748→It is a happy moment when a source confirms your views. But if you just passively agree, you
+  1749→won't develop any of your own ideas. So try to extend what your source claims: What new
+  1750→cases might it cover? What new insights can it provide? Is there confirming evidence your
+  1751→source hasn't considered? Here are some ways to agree creatively.
+  1752→OFFER ADDITIONAL SUPPORT. You have new evidence to support a source's claim.
+  1753→Smith uses anecdotal evidence to show that the Alamo story had mythic status beyond Texas, but a study of bigcity newspapers offers better evidence.
+  1754→
+  1755→www.itpub.net
+  1756→
+  1757→1. Source supports a claim with old evidence, but maybe you can offer new evidence.
+  1758→2. Source supports a claim with weak evidence, but maybe you can offer stronger
+  1759→evidence.
+  1760→CONFIRM UNSUPPORTED CLAIMS. You can prove something that a source has only assumed
+  1761→
+  1762→or speculated.
+  1763→
+  1764→Smith recommends visualization to improve sports performance, but a study of the mental activities of athletes
+  1765→shows why that is good advice.
+  1766→
+  1767→1. Source only speculates that X might be true, but maybe you can offer evidence to show
+  1768→that it definitely is.
+  1769→2. Source assumes that X is true, but maybe you can prove it.
+  1770→APPLY A CLAIM MORE WIDELY. You can extend a position to new areas.
+  1771→Smith has shown that medical students learn physiological processes better when they are explained with many
+  1772→metaphors rather than by just one. The same appears to be true for engineers learning physical processes.
+  1773→
+  1774→1. Source correctly applies his claim to one situation, but maybe it can apply to new ones.
+  1775→2. Source claims that X is true in a specific situation, but maybe it's true in general.
+  1776→4.1.2 Look for Creative Disagreement
+  1777→It is even more important to note when you disagree with a source, because that might suggest
+  1778→a working hypothesis for your whole report. So instead of just noting that you disagree with
+  1779→its views, use that disagreement to encourage your own productive thinking. Here are some
+  1780→kinds of disagreement (these aren't sharply defined categories; many overlap).
+  1781→CONTRADICTIONS OF KIND. A source says something is one kind of thing, but maybe it's
+  1782→
+  1783→another kind.
+  1784→
+  1785→Smith says that certain religious groups are considered “cults” because of their strange beliefs, but those beliefs
+  1786→are no different in kind from standard religions.
+  1787→
+  1788→1. Source claims that X is a kind of Y (or like it), but maybe it's not.
+  1789→2. Source claims that X always has Y as one its features or qualities, but maybe it doesn't.
+  1790→3. Source claims that X is normal/good/significant/useful/moral/interesting/. . ., but maybe
+  1791→it's not.
+  1792→(You can reverse those claims and the ones that follow to state the opposite: though a source
+  1793→says X is not a kind of Y, you can show that it is.)
+  1794→
+  1795→PART-WHOLE CONTRADICTIONS. You can show that a source mistakes how the parts of
+  1796→
+  1797→something are related.
+  1798→
+  1799→Smith has argued that sports are crucial to an educated person, but in fact athletics has no place in college.
+  1800→
+  1801→1. Source claims that X is a part of Y, but maybe it's not.
+  1802→2. Source claims that part of X relates to another of its parts in a certain way, but maybe it
+  1803→doesn't.
+  1804→3. Source claims that every X has Y as one of its parts, but maybe it doesn't.
+  1805→DEVELOPMENTAL OR HISTORICAL CONTRADICTIONS.
+  1806→
+  1807→mistakes the origin and development of a topic.
+  1808→
+  1809→You can show that a source
+  1810→
+  1811→Smith argues that the world population will continue to rise, but it will not.
+  1812→
+  1813→1. Source claims that X is changing, but maybe it's not.
+  1814→2. Source claims that X originated in Y, but maybe it didn't.
+  1815→3. Source claims that X develops in a certain way, but maybe it doesn't.
+  1816→EXTERNAL CAUSE-EFFECT CONTRADICTIONS. You can show that a source mistakes a
+  1817→
+  1818→causal relationship:
+  1819→
+  1820→Smith claims that juveniles can be stopped from becoming criminals by “boot camps.” But evidence shows that
+  1821→it makes them more likely to become criminals.
+  1822→
+  1823→1. Source claims that X causes Y, but maybe it doesn't.
+  1824→2. Source claims that X causes Y, but maybe they are both caused by Z.
+  1825→3. Source claims that X is sufficient to cause Y, but maybe it's not.
+  1826→4. Source claims that X causes only Y, but maybe it also causes Z.
+  1827→Most contradictions don't change a conceptual
+  1828→framework, but when you can contradict a standard view of things, you urge others to think in
+  1829→a new way.
+  1830→CONTRADICTIONS OF PERSPECTIVE.
+  1831→
+  1832→Smith assumes that advertising is a purely economic function, but it also serves as a laboratory for new art forms.
+  1833→
+  1834→1. Source discusses X in the context of or from the point of view of Y, but maybe a new
+  1835→context or point of view reveals a new truth (the new or old context can be social, political,
+  1836→philosophical, historical, economic, ethical, gender specific, etc.).
+  1837→2. Source analyzes X using theory/value system Y, but maybe you can analyze X from a
+  1838→new point of view and see it in a new way.
+  1839→
+  1840→www.itpub.net
+  1841→
+  1842→As we said, you probably won't be able to engage sources in these ways until after you've
+  1843→read enough to form some views of your own. But if you keep these ways of thinking in mind
+  1844→as you begin to read, you'll engage your sources sooner and more productively.
+  1845→Of course, once you discover that you can productively agree or disagree with a source, you
+  1846→should then ask So what? So what if you can show that while Smith claims that Easterners did
+  1847→not embrace the story of the Alamo enthusiastically, in fact many did?
+  1848→
+  1849→4.2 Take Notes Systematically
+  1850→Like the other steps in a research project, note-taking goes better with a plan.
+  1851→
+  1852→4.2.1 Create Templates for Notes
+  1853→You will take notes more reliably if you set up a system that encourages you to think beyond
+  1854→the mere content of your sources by analyzing and organizing that content into useful
+  1855→categories. A few instructors still recommend taking notes in longhand on 3 × 5 cards, as in
+  1856→figure 4.1. A card like that may seem old-fashioned, but it provides a template for efficient
+  1857→note-taking, even if you take notes on a laptop. (Start a new page for each general idea or
+  1858→claim that you record from a source.) Here is a plan for such a template:
+  1859→At the top of each new page, create a space for bibliographic data (author, short title,
+  1860→page number).
+  1861→Create another space at the top for keywords (see upper right above). Those words will
+  1862→later will let you sort and re-sort your notes by subject matter (for more on keywords, see
+  1863→4.3.4).
+  1864→Create different places on each new page for different kinds of notes. You might even
+  1865→
+  1866→label the places (see fig. 4.1, with places for a Claim, Data, and My Qs).
+  1867→In particular, create a section specifically dedicated to your own responses, agreements,
+  1868→disagreements, speculations, and so on. That will encourage you to do more than simply
+  1869→record the content of what you read.
+  1870→When you quote the words of a source, record them in a distinctive color or font size and
+  1871→style so that you can recognize quotations at a glance, and enclose them in large quotation
+  1872→marks in case the file loses its formatting.
+  1873→When you paraphrase a passage (see 4.2.2), record the paraphrase in a distinctive color or
+  1874→font so that you can't possibly mistake it for your own ideas, and enclose it in curly
+  1875→brackets (in case the file loses its formatting).
+  1876→If you can't take notes directly on a computer, make paper copies of the template.
+  1877→4.2.2 Know When to Summarize, Paraphrase, or Quote
+  1878→It would take you forever to transcribe the exact words of every source you might want to use,
+  1879→so you must know when not to quote, but to summarize or paraphrase.
+  1880→Summarize when you need only the general point of a passage, section, or even whole
+  1881→article or book. Summary is useful for general context or related but not specifically relevant
+  1882→data or views. A summary of a source never serves as good evidence (see 5.4.2 for more on
+  1883→evidence).
+  1884→Paraphrase when you can represent what a source says more clearly or pointedly than it
+  1885→does. Paraphrase doesn't mean just changing a word or two. You must use your own words
+  1886→and your own phrasing to replace most of the words and phrasing of the passage (see 7.9.2). A
+  1887→paraphrase is never as good evidence as a direct quotation.
+  1888→Record exact quotations when they serve these purposes:
+  1889→The quoted words constitute evidence that backs up your reasons. If, for example, you
+  1890→wanted to claim that different regions responded to the Battle of the Alamo differently, you
+  1891→would quote exact words from different newspapers. You would paraphrase them if you
+  1892→needed only their general sentiments.
+  1893→The words are from an authority who backs up your view.
+  1894→They are strikingly original.
+  1895→They express your ideas so compellingly that the quotation can frame the rest of your
+  1896→discussion.
+  1897→They state a view that you disagree with, and to be fair you want to state that view
+  1898→exactly.
+  1899→
+  1900→www.itpub.net
+  1901→
+  1902→If you don't record important words now, you can't quote them later. So copy or photocopy
+  1903→passages more often than you think you'll need (for more on photocopying, see 4.3.1). Never
+  1904→abbreviate a quotation thinking you can accurately reconstruct it later. You can't. If you
+  1905→misquote, you fatally undermine your credibility, so double check your quote against the
+  1906→original. Then check it again.
+  1907→4.2.3 Guard against Inadvertent Plagiarism
+  1908→Sloppy note-taking has caused grief for students and professionals alike, ranging from ridicule
+  1909→for trivial errors to professional exile for inadvertent plagiarism. To avoid that risk, commit to
+  1910→heart these two iron rules for recording information in notes:
+  1911→Always unambiguously identify words and ideas from a source so that weeks or months
+  1912→later you cannot possibly mistake them for your own. As recommended above, record
+  1913→quotations and paraphrases with quotation marks, as well as in a font that unambiguously
+  1914→distinguishes them from your own ideas.
+  1915→Never paraphrase a source so closely that a reader can match the phrasing and sense of
+  1916→your words with those in your source (see 7.9.2).
+  1917→In fact, rather than retyping quotations of more than a few lines, download or photocopy
+  1918→them. Add to the top of the downloaded or photocopied page the name of the source and
+  1919→keywords for sorting.
+  1920→This is important: never assume that you can use what you find online without citing its
+  1921→source, even if it's free and publicly available. Nothing releases you from the duty to
+  1922→acknowledge your use of anything you did not personally create yourself. (For more on
+  1923→plagiarism, see 7.9.)
+  1924→
+  1925→4.3 Take Useful Notes
+  1926→Readers will judge your report not just by the quality of your sources and how accurately you
+  1927→report them, but also by how deeply you engage them. To do that, you must take notes in a
+  1928→way that not only reflects but encourages a growing understanding of your project.
+  1929→4.3.1 Use Note-Taking to Advance Your Thinking
+  1930→Many inexperienced researchers think that note-taking is a matter of merely recording data.
+  1931→Once they find a source, they download or photocopy pages or write down exactly what's on
+  1932→them. Recording and photocopying can help you quote or paraphrase accurately, but if that's
+  1933→all you do, if you don't engage your sources actively, you will simply accumulate a lot of inert
+  1934→data that are likely to be equally inert in your report.
+  1935→If you photocopy lots of text, annotate it in a way that engages your critical thinking. Start
+  1936→by picking out those sentences that express crucial elements in a chapter or article (its claim,
+  1937→
+  1938→major reasons, and so on). Highlight or label them in the margin. Then mark ideas or data
+  1939→that you expect to include in your report. (If you use a highlighter, use different colors to
+  1940→indicate these different elements.)
+  1941→Then on the back of the photocopied pages, summarize what you've highlighted or sketch a
+  1942→response to it, or make notes in the margin that help you interpret the highlighting. The more
+  1943→you write about a source now, the better you will understand and remember it later.
+  1944→4.3.2 Take Notes Relevant to Your Question and Working Hypothesis
+  1945→To make your notes most useful, record not just the facts that you think you can use as
+  1946→evidence, but data that help you explain those facts and their relationship to your claim. You
+  1947→can create a notes template to help you remember to look for several different kinds of
+  1948→information (see 4.2.1).
+  1949→The first three items are directly relevant to your working hypothesis:
+  1950→reasons that support your hypothesis or suggest a new one
+  1951→evidence that supports your reasons
+  1952→views that undermine or even contradict your hypothesis
+  1953→Do not limit your notes to supporting data. You will need to respond to data that qualify or
+  1954→even contradict your hypothesis when you make your case in support of it (see 5.4.3).
+  1955→These next items might not support or challenge your hypothesis, but they may help you
+  1956→explain its context or simply make your report more readable:
+  1957→historical background of your question, what authorities have said about it, particularly
+  1958→earlier research (see 6.2.2 and 10.1.1)
+  1959→historical or contemporary context that explains the importance of your question
+  1960→important definitions and principles of analysis
+  1961→analogies, comparisons, and anecdotes that might not directly support your hypothesis
+  1962→but do explain or illustrate complicated issues or simply make your analysis more
+  1963→interesting
+  1964→strikingly original language relevant to your topic
+  1965→4.3.3 Record Relevant Context
+  1966→Those who misreport sources deliberately are dishonest, but an honest researcher can mislead
+  1967→inadvertently if she merely records words and ignores their role or qualifications. To guard
+  1968→against misleading your reader, follow these guidelines:
+  1969→
+  1970→www.itpub.net
+  1971→
+  1972→

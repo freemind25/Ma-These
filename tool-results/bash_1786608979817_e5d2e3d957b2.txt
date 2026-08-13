@@ -1,0 +1,555 @@
+=== CHAPTER 12: Results ===
+3650: “Having completed the study, the bacteria were of no further interest.” Again,
+3651: ```
+3652: we doubt that the bacteria “completed the study”; if they did, their lack of
+3653: ```
+3654: “further interest” was certainly an act of ingratitude.
+3655: “Blood samples were taken from 48 informed and consenting patients . . .
+3656: ```
+3657: the subjects ranged in age from 6 months to 22 years” (Pediatr. Res. 6:26, 1972).
+3658: ```
+3659: There is no grammatical problem with that sentence, but the lack of detail
+3660: leaves the reader wondering just how the 6-month-old infants gave informed
+3661: consent.
+3662: And, of course, always watch for spelling errors, both in the manuscript
+3663: and in the proofs. We are not astronomers, but we suspect that a word is mis-
+3664: spelled in the following sentence: “We rely on theatrical calculations to give
+3665: ```
+3666: the lifetime of a star on the main sequence” (Annu. Rev. Astron. Astrophys.
+3667: ```
+3668: ```
+3669: 1:100, 1963). Although they might have been done with a flourish, presumably
+3670: ```
+3671: the calculations were theoretical, not theatrical.
+3672: Be aware that a spell-checker can introduce such errors and therefore can-
+3673: not substitute for careful proofreading. One recent example: A spell-checker
+3674: converted “pacemakers in dogs” to “peacemakers in dogs.” We have known
+3675: some dogs that could benefit from peacemakers, but we rightly suspected that
+3676: this wording was not intended in writing about canine cardiology.
+3677: 77
+3678: Results! Why, man, I have gotten a lot of results. I know several thousand
+3679: things that won’t work.
+3680: —Thomas A. Edison
+3681: CONTENT OF THE RESULTS
+3682: So now we come to the core of a paper—the data. This part of the paper is
+3683: called the results section.
+3684: Contrary to popular belief, you shouldn’t start the results section by describ-
+3685: ing methods that you inadvertently omitted from the materials and methods
+3686: section. The results section usually has two ingredients. First, you should give
+3687: some kind of overall description of the experiments, providing the big picture
+3688: without repeating the experimental details previously provided in materials and
+3689: methods. Second, you should present the data. Your results should be presented
+3690: ```
+3691: in the past tense. (See the section “Tense in Scientific Writing” in Chapter 30.)
+3692: ```
+3693: Of course, it isn’t quite that easy. How do you present the data? A simple
+3694: transfer of data from laboratory notebook to manuscript will hardly do.
+3695: As elsewhere in a scientific paper, good organization is crucial. Chrono-
+3696: logical organization often works well. So does topic-by-topic organization,
+3697: ```
+3698: with headings parallel to those in the methods section (if any). Another option
+3699: ```
+3700: is to present the most important results first, followed by results of decreasing
+3701: importance. In some fields, and for some types of studies, conventions exist as
+3702: to which types of results to present in which order. Consult any guidelines
+3703: from the journal or elsewhere, perhaps see how results were reported in
+3704: articles on research similar to yours, and consider in what order you could
+3705: most logically present your results.
+3706: CHAPTER 12
+3707: How to Write the Results
+3708: 78 How to Write and Publish a Scientific Paper
+3709: Importantly, in the manuscript you should present representative data
+3710: rather than endlessly repetitive data. The fact that you could perform the same
+3711: experiment 100 times without significant divergence in results might be of
+3712: considerable interest to your professor, but editors, not to mention readers,
+3713: ```
+3714: prefer a little bit of predigestion. Aaronson (1977, p. 10) said it another way:
+3715: ```
+3716: “The compulsion to include everything, leaving nothing out, does not prove
+3717: ```
+3718: that one has unlimited information; it proves that one lacks discrimination.”
+3719: ```
+3720: Exactly the same concept, and it is an important one, was stated almost a cen-
+3721: tury earlier by John Wesley Powell, a geologist who served as president of the
+3722: American Association for the Advancement of Science in 1888. In Powell’s
+3723: ```
+3724: words: “The fool collects facts; the wise man selects them.”
+3725: ```
+3726: HOW TO HANDLE NUMBERS
+3727: If one determination or only a few determinations are to be presented, the
+3728: ```
+3729: determination(s) should be reported in the text. Repetitive determinations
+3730: ```
+3731: should be given in tables or graphs.
+3732: Any determinations, repetitive or otherwise, should be meaningful. Suppose
+3733: ```
+3734: that in a particular group of experiments, a number of variables were tested (one
+3735: ```
+3736: ```
+3737: at a time, of course). Those variables that affect the reaction become determina-
+3738: ```
+3739: tions or data, and if extensive, they are tabulated or graphed. Those variables that
+3740: ```
+3741: do not seem to affect the reaction need not be tabulated or presented; however,
+3742: ```
+3743: it is often important to note even the negative aspects of your experiments.
+3744: Knowing what did not occur can be as important as knowing what did.
+3745: If statistics are used to describe the results, they should be meaningful. A
+3746: prominent journal editor told of a paper that reputedly read: “33 1/3% of the
+3747: ```
+3748: mice used in this experiment were cured by the test drug; 33 1/3% of the test
+3749: ```
+3750: population were unaffected by the drug and remained in a moribund condi-
+3751: ```
+3752: tion; the third mouse got away.”
+3753: ```
+3754: Beware of including overly many decimal places when reporting percent-
+3755: ages. If 17 of 59 squirrels showed a given response, it is not meaningful to say
+3756: ```
+3757: that 28.8136% percent of squirrels did so; saying 29% would be more appro-
+3758: ```
+3759: priate. Just because your calculator can show it doesn’t mean you should
+3760: say it.
+3761: STRIVE FOR CLARITY
+3762: ```
+3763: The results should be short and sweet, without verbiage. Mitchell (1968) quoted
+3764: ```
+3765: Einstein as having said, “If you are out to describe the truth, leave elegance to
+3766: the tailor.” Although the results section is the most important part of the paper,
+3767: How to Write the Results 79
+3768: it is often the shortest, particularly if it is preceded by a well-written materials
+3769: and methods section and followed by a well-written discussion.
+3770: The results need to be clearly and simply stated because it is the results that
+3771: constitute the new knowledge that you are contributing to the world. The ear-
+3772: ```
+3773: lier parts of the paper (introduction and materials and methods) are designed
+3774: ```
+3775: ```
+3776: to tell why and how you got the results; the later part of the paper (discussion)
+3777: ```
+3778: is designed to tell what they mean. Obviously, therefore, the whole paper must
+3779: stand or fall on the basis of the results. Thus, the results must be presented
+3780: with crystal clarity.
+3781: AVOID REDUNDANCY
+3782: Do not be guilty of redundancy in the results. The most common fault is the
+3783: repetition in words of what is already apparent to the reader from examining
+3784: the figures and tables. Even worse is the actual presentation, in the text, of all
+3785: or many of the data shown in the tables or figures. This grave sin is committed
+3786: so frequently that it is commented on at length, with examples, in the chapters
+3787: ```
+3788: on how to prepare tables and illustrations (Chapters 16 and 17).
+3789: ```
+3790: Do not be verbose in citing figures and tables. Do not say, “It is clearly
+3791: shown in Table 1 that nocillin inhibited the growth of N. gonorrhoeae.” Say,
+3792: ```
+3793: “Nocillin inhibited the growth of N. gonorrhoeae (Table 1).” The latter format
+3794: ```
+3795: has multiple benefits. Because it is briefer, it helps authors comply with jour-
+3796: nals’ word limits. It also is more readable. Further, it directs attention to what
+3797: is most important: the findings, not the table or figure.
+3798: Some writers go too far in avoiding verbiage, however. In particular,
+3799: they often fail to provide clear antecedents for the pronoun “it.” Here is an
+3800: item from a medical manuscript: “The left leg became numb at times and
+3801: she walked it off. . . . On her second day, the knee was better, and on the
+3802: third day it had completely disappeared.” In both instances, the antecedent
+3803: of “it” is presumably “the numbness,” but the wording seems a result of
+3804: dumbness.
+3805: A SUPPLEMENT ON SUPPLEMENTARY MATERIAL ONLINE
+3806: Increasingly, journals are electronically posting material that is supplemen-
+3807: tary to papers being published. Although sometimes this material is about
+3808: methods, most commonly it provides information about the results. For
+3809: example, additional data may be posted, or additional tables and figures may
+3810: be provided online. Whether authors may submit such supplementary
+3811: material, and if so how, varies among journals. Also, norms regarding what
+3812: 80 How to Write and Publish a Scientific Paper
+3813: supplementary materials to provide online vary among research fields. If you
+3814: think that providing supplementary material for online posting would be
+3815: desirable, consult the instructions to authors given by your target journal. If
+3816: possible, also see what papers analogous to yours have done in this regard.
+3817: Keep in mind, too, that the journal editor may ask you to place some of your
+3818: material in an online supplement.
+3819: 81
+3820: Free and fair discussion will ever be found the firmest friend to truth.
+3821: —George Campbell
+3822: DISCUSSION AND VERBIAGE
+3823: The discussion is harder to define than the other sections. Thus, it is usually
+3824: the hardest section to write. And, whether you know it or not, many papers are
+3825: rejected by journal editors because of a faulty discussion, even though the data
+3826: of the paper might be both valid and interesting. Even more likely, the true
+3827: meaning of the data may be obscured by the interpretation presented in the
+3828: discussion, again resulting in rejection.
+3829: Many, if not most, discussion sections are too long and verbose. As Doug
+3830: Savile said, “Occasionally, I recognize what I call the squid technique: the
+3831: author is doubtful about his facts or his reasoning and retreats behind a pro-
+3832: ```
+3833: tective cloud of ink” (Tableau, September 1972). Another reason some discus-
+3834: ```
+3835: sions are long and hard to follow is that many authors think they must avoid
+3836: using the first person. If you mean “I found that . . .” or “We conclude that, . . .,”
+3837: say so. Try to avoid wordier, and sometimes more ambiguous, constructions
+3838: such as “It was found in the present investigation that . . .” and “It is con-
+3839: cluded that . . .”
+3840: Some discussion sections remind one of the diplomat, described by Allen
+3841: ```
+3842: Drury in Advise and Consent (Garden City, NY: Doubleday, 1959, p. 47), who
+3843: ```
+3844: characteristically gave “answers which go winding and winding off through
+3845: the interstices of the English language until they finally go shimmering away
+3846: altogether and there is nothing left but utter confusion and a polite smile.”
+3847: CHAPTER 13
+3848: How to Write the Discussion
+3849: 82 How to Write and Publish a Scientific Paper
+3850: COMPONENTS OF THE DISCUSSION
+3851: What are the essential features of a good discussion? The following advice will
+3852: help ensure that all main components are present:
+3853: • Try to present the principles, relationships, and generalizations shown by
+3854: the results. And bear in mind that in a good discussion, you discuss—you
+3855: do not recapitulate—the results.
+3856: • Point out, and reflect on, any exceptions or any lack of correlation and
+3857: define unsettled points. Never take the high-risk alternative of trying to
+3858: cover up or fudge data that do not quite fit into your paper.
+3859: ```
+3860: • Show how your results and interpretations agree (or contrast) with previ-
+3861: ```
+3862: ously published work. Consider reasons for discrepancies.
+3863: ```
+3864: • Don’t be shy; discuss the theoretical implications of your work, as well as
+3865: ```
+3866: possible practical applications.
+3867: • State your conclusions as clearly as possible.
+3868: • Summarize your evidence for each conclusion. Or, as the wise old scien-
+3869: tist will tell you, “Never assume anything except a low-interest mortgage.”
+3870: Much as the methods and the results should correspond to each other, the
+3871: introduction and the discussion should function as a pair. At least implicitly,
+3872: the introduction should have posed one or more questions. The discussion
+3873: should indicate what the findings say about the answers. The failure to address
+3874: the initial questions commonly afflicts discussions. Be sure that the discus-
+3875: sion answers what the introduction asked.
+3876: Whereas the content of the introduction commonly moves from the gen-
+3877: eral topic to your specific research, in sort of a funnel format, the discussion
+3878: ```
+3879: tends to do largely the reverse, much like an inverted funnel (Figure 13.1).
+3880: ```
+3881: For example, a well-structured discussion may first restate the main find-
+3882: ings, then discuss how they relate to findings of previous research, then note
+3883: the implications and applications, then identify limitations of the current
+3884: study, and perhaps finally identify unanswered questions well suited for
+3885: future research. In the introduction, you invited readers into your research
+3886: ```
+3887: venue; in the discussion, you usher them out, now well informed about your
+3888: ```
+3889: research and its meaning.
+3890: NOTING STRENGTHS AND LIMITATIONS
+3891: The discussion is a place to note substantial strengths and limitations of the
+3892: research being reported. Some authors feel awkward about including such
+3893: content. However, doing so can aid readers, and it can make the case to editors
+3894: ```
+3895: and referees (peer reviewers) that your work is publishable.
+3896: ```
+3897: How to Write the Discussion 83
+3898: Some authors consider it immodest to note the strengths of their work—
+3899: for example, superior experimental techniques, a large sample size, or long
+3900: follow-up. However, such information can aid readers in determining how
+
+=== CHAPTER 13: Discussion (lines 3900-4200) ===
+3900: follow-up. However, such information can aid readers in determining how
+3901: definitive the findings are.
+3902: What if the research has significant limitations—such as difficulties with a
+3903: technique, a relatively small sample size, or relatively short follow-up? Some
+3904: authors might try to hide such limitations. However, doing so runs counter to the
+3905: openness that should characterize science. And astute reviewers, editors, or read-
+3906: ers might well notice the limitations anyway—and assume, either to themselves
+3907: or in writing, that you were too naive to notice them. It is better, therefore, to iden-
+3908: tify limitations yourself. In doing so, you may be able to discuss what impact, if
+3909: any, the limitations are likely to have on the conclusions that can be drawn.
+3910: Not every discussion needs to discuss strengths or limitations of the
+3911: research. However, if a study has strengths or limitations major enough to be
+3912: worthy of note, consider addressing them in the discussion.
+3913: SIGNIFICANCE OF THE PAPER
+3914: Too often, the significance of the results is not discussed or not discussed ade-
+3915: quately. If readers of the paper finds themselves asking “So what?” after read-
+3916: ing the discussion, the chances are that the authors became so engrossed with
+3917: ```
+3918: Figure 13.1. (Created with BioRender.com)
+3919: ```
+3920: 84 How to Write and Publish a Scientific Paper
+3921: ```
+3922: the trees (the data) that they didn’t really notice how much sunshine had
+3923: ```
+3924: appeared in the forest.
+3925: The discussion should end with a short summary or conclusion regarding
+3926: ```
+3927: the significance of the work. We like the way Anderson and Thistle (1947) said
+3928: ```
+3929: ```
+3930: it: “Finally, good writing, like good music, has a fitting climax. Many a paper
+3931: ```
+3932: loses much of its effect because the clear stream of the discussion ends in a
+3933: swampy delta.” Or, in the words of T. S. Eliot, many scientific papers end “Not
+3934: with a bang but a whimper.”
+3935: CONCLUSIONS
+3936: Some journals require or allow papers to end with a conclusions section rather
+3937: ```
+3938: than providing conclusions at the end of the discussion. Such a section (or the
+3939: ```
+3940: ```
+3941: conclusion of a discussion) commonly consists of a single paragraph recapping
+3942: ```
+3943: what was done, then what was found, and finally what the findings imply. Although
+3944: a conclusions paragraph appears last, some readers read it first. Whenever they
+3945: read it, they should easily come away with the paper’s take-home message.
+3946: Speaking of reading the conclusions first: In writing or revising your scien-
+3947: tific paper, be aware that, quite likely, the sections will be read in different
+3948: ```
+3949: orders by different people or in different circumstances. (Have you ever jumped
+3950: ```
+3951: straight to the methods section? Begun by looking at the tables and figures? Or
+3952: ```
+3953: maybe started by skimming the discussion?) Each part should therefore be
+3954: ```
+3955: clear in and of itself. Such clarity can require some redundancy from part to
+3956: part. But it can help greatly in communicating your research to readers—
+3957: which, after all, is why you are writing and publishing a scientific paper.
+3958: DEFINING SCIENTIFIC TRUTH
+3959: In showing the relationships among observed facts, you do not need to reach
+3960: ```
+3961: cosmic conclusions. Seldom will you be able to illuminate the whole truth;
+3962: ```
+3963: more often, the best you can do is shine a spotlight on one area of the truth.
+3964: ```
+3965: Your one area of truth can be illuminated by your data; if you extrapolate to a
+3966: ```
+3967: bigger picture than that shown by your data, you may appear foolish to the
+3968: point that even your data-supported conclusions are cast into doubt.
+3969: One of the more meaningful thoughts in poetry was expressed by Sir Rich-
+3970: ard Burton in The Kasidah:
+3971: ```
+3972: All Faith is false, all Faith is true;
+3973: ```
+3974: Truth is the shattered mirror strown
+3975: ```
+3976: In myriad bits; while each believes
+3977: ```
+3978: His little bit the whole to own.
+3979: How to Write the Discussion 85
+3980: So exhibit your little piece of the mirror, or shine a spotlight on one area of
+3981: the truth. The “whole truth” is a subject best left to the ignoramuses, who
+3982: loudly proclaim its discovery every day.
+3983: When you describe the meaning of your little bit of truth, do it simply. The
+3984: ```
+3985: simplest statements evoke the most wisdom; verbose language and fancy tech-
+3986: ```
+3987: nical words are used to convey shallow thought.
+3988: 86
+3989: Life is not so short but that there is always time enough for courtesy.
+3990: —Ralph Waldo Emerson
+3991: INGREDIENTS OF THE ACKNOWLEDGMENTS
+3992: The main text of a scientific paper is usually followed by two additional
+3993: sections—namely, the acknowledgments and the references.
+3994: As to the acknowledgments, two possible ingredients require consideration.
+3995: First, you should acknowledge any significant technical help you received
+3996: from individuals in your research group or elsewhere. These individuals may
+3997: ```
+3998: include both fellow scientists (and scientists-in-training) and others who
+3999: ```
+4000: helped with your research and its reporting—for example, librarians, statisti-
+4001: ```
+4002: cians, and any editors who refined your paper before submission. (The listed
+4003: ```
+4004: individuals, however, should be only those providing professional assistance.
+4005: Unlike in a thesis or book, you should not acknowledge the support of your
+4006: ```
+4007: family, friends, or pets.) You should also acknowledge the source of special
+4008: ```
+4009: equipment, cultures, or other materials.
+4010: Second, it is commonly in the acknowledgments that you should note any
+4011: ```
+4012: outside financial assistance, such as grants, contracts, or fellowships. (In this
+4013: ```
+4014: ```
+4015: time of scarce funding, we can be especially appreciative of such support.)
+4016: ```
+4017: An acknowledgments section might include, for example, a statement such
+4018: as “We thank J. Gomez for assistance with the experiments and R. Liao for
+4019: ```
+4020: valuable discussion.” (Of course, most of us who have been around for a while
+4021: ```
+4022: recognize that this is simply a thinly veiled way of admitting that Gomez did
+4023: ```
+4024: the work and Liao explained what it meant.)
+4025: ```
+4026: CHAPTER 14
+4027: How to State the Acknowledgments
+4028: How to State the Acknowledgments 87
+4029: BEING COURTEOUS
+4030: As well as providing transparency, acknowledgments show courtesy. There
+4031: isn’t anything really scientific about this section of a scientific paper. The same
+4032: rules that would apply in any other area of civilized life should apply here. If
+4033: ```
+4034: you borrowed a neighbor’s lawn mower, you would (we hope) remember to
+4035: ```
+4036: express thanks for it. If your neighbor gave you a really good idea for landscap-
+4037: ```
+4038: ing your property and you then put that idea into effect, you would (we hope)
+4039: ```
+4040: ```
+4041: remember to say thank you. It is the same in science; if your neighbor (your
+4042: ```
+4043: ```
+4044: colleague) provided important ideas, important supplies, or important equip-
+4045: ```
+4046: ment, you should thank him or her. And you must say thanks in print, because
+4047: that is how scientific landscaping is presented to its public.
+4048: ```
+4049: (“Piled Higher and Deeper” by Jorge Cham. www.phdcomics.com)
+4050: ```
+4051: 88 How to Write and Publish a Scientific Paper
+4052: A word of caution is in order. Before mentioning someone in an acknowl-
+4053: edgment, obtain permission to do so. Often, it is wise to show the proposed
+4054: wording to the person whose help you are acknowledging. State specifically
+4055: what is being acknowledged, lest the person seem to be endorsing the entire
+4056: paper.
+4057: We wish that the word wish would disappear from acknowledgments. Wish
+4058: is a perfectly good word when you mean wish, as in “I wish you success.” How-
+4059: ever, if you say, “I wish to thank John Jones,” you are wasting words. You may
+4060: also be introducing the implication that “I wish that I could thank John Jones
+4061: for his help, but it wasn’t all that helpful.” “I thank John Jones” is sufficient.
+4062: 89
+4063: Manuscripts containing innumerable references are more likely a sign of inse-
+4064: curity than a mark of scholarship.
+4065: —William C. Roberts
+4066: RULES TO FOLLOW
+4067: There are two rules to follow in the references section, just as in the acknowl-
+4068: edgments section.
+4069: First, list only, or almost only, significant published references. References
+4070: to unpublished data, abstracts, theses, and other secondary materials should
+4071: not clutter up the references or literature-cited section. If such a reference
+4072: seems essential, you may add it parenthetically or, in some journals, as a
+4073: footnote in the text. A paper that has been accepted for publication can be
+4074: listed in the literature cited, citing the name of the journal, followed by “in
+4075: press” or “forthcoming.” Increasingly, journals have been allowing preprints
+4076: to be cited. If, however, a published version of the paper exists, it should be
+4077: cited instead.
+4078: Second, ensure that all parts of every reference are accurate. Doing so may
+4079: entail checking every reference against the original publication before the
+4080: manuscript is submitted, and perhaps again at the proof stage. Take it from an
+4081: erstwhile librarian: There are far more mistakes in the references section of a
+4082: paper than anywhere else.
+4083: Authors sometimes ask whether they can cite their own work. The answer:
+4084: Yes, when relevant. Do not cite your own work, or that of friends and colleagues,
+4085: to inflate your or others’ citation counts or egos. However, if the work is
+4086: CHAPTER 15
+4087: How to Cite the References
+4088: 90 How to Write and Publish a Scientific Paper
+4089: relevant, it should indeed be cited. A good guideline is as follows: If you would
+4090: ```
+4091: cite the paper if it had other authors, cite it; otherwise, don’t. Whether to cite a
+4092: ```
+4093: paper should be based on what the paper said, not who said it.
+4094: Don’t forget, as a final check, to ensure that all references cited in the text
+4095: are indeed listed in the literature cited, and that all references listed in the
+4096: literature cited are indeed cited somewhere in the text.
+4097: CHECKING AGAINST THE ORIGINAL
+4098: ```
+4099: Some authors (certainly not you) may be tempted to state a fact referenced in
+4100: ```
+4101: another paper and copy the bibliographic reference without looking at the
+4102: source originally cited. Beware of doing so. Sometimes authors have inaccu-
+4103: rately stated what the original source said. And sometimes references contain
+4104: errors. Thus, such copying has perpetuated errors in the literature. Obtain
+4105: the original source, check its content, and note the correct bibliographic
+4106: information.
+4107: What if the paper you want isn’t immediately accessible online? If you have
+4108: access to an academic or other library, it may well have the journal of interest.
+4109: Even if the library lacks the journal, quite likely it can obtain the wanted paper
+4110: through interlibrary loan. Some authors’ websites contain some of their
+4111: ```
+4112: papers; ditto for online repositories at their institutions. Papers normally list
+4113: ```
+4114: ```
+4115: corresponding authors (remember those?); you generally can request from the
+4116: ```
+4117: corresponding author a copy of the paper for personal scholarly use. Thus,
+4118: with a little perseverance, you can obtain almost any paper. If, despite your
+4119: best efforts, you still cannot obtain a paper you need, the safest tack is to iden-
+4120: tify the fact as “as cited in” and list in your references the source where you
+4121: found it.
+4122: ELECTRONIC AIDS TO CITATION
+4123: Checking that every reference is accurate and that all cited items appear in the
+4124: reference list has become much easier in the electronic era. Common word-
+4125: processing programs include features for tasks such as creating, numbering,
+4126: and formatting footnotes and endnotes. These features can aid in citing refer-
+4127: ences and developing reference lists. Some journals, however, say not to use
+4128: these features, which can interfere with their publishing process. Check the
+4129: journal’s instructions to authors in this regard.
+4130: Perhaps more notably, citation-management software programs such as
+4131: EndNote, RefWorks, and Zotero let a researcher develop a database of refer-
+4132: ences and use it to create reference lists in the formats of many journals.
+4133: How to Cite the References 91
+4134: Rather than keying in the information for each reference, you may be able to
+4135: import it from bibliographic databases. Once the information is accurately
+4136: entered, it should remain correct whenever it appears in a reference. Do, how-
+4137: ever, still check references. Electronic gremlins sometimes lurk. So does
+4138: ```
+4139: human error; if somehow you indicated the wrong reference, the wrong refer-
+4140: ```
+4141: ence will appear.
+4142: If you are not using reference-management software, consider looking into
+4143: doing so. Using such software can save you time, especially if you will cite
+4144: some of the same references in multiple publications or if journals in your
+4145: field have a variety of reference styles. If you study or work at a university or
+4146: other research institution, you might easily be able to obtain such software
+4147: through it. Also, some reference-management software, such as Zotero, is
+4148: available for free. Conveniently, some university libraries provide instruction
+4149: in using reference-management software. Consider checking whether you
+4150: have access to such instruction.
+4151: CITATIONS IN THE TEXT
+4152: Many authors use slipshod methods in citing literature. A common offender
+4153: is the “handwaving reference,” in which the reader is glibly referred to “Smith’s
+4154: elegant contribution” without any hint of what Smith reported or how Smith’s
+4155: results relate to the present author’s results. If a reference is worth citing, the
+4156: reader should be told why.
+4157: Even worse is the nasty habit some authors have of insulting the authors of
+4158: ```
+4159: previous studies. It is probably all right to say, “Smith (2015) did not study. . . .”
+4160: ```
+4161: ```
+4162: But it is not all right to say, “Smith (2015) totally overlooked, . . .,” “Smith
+4163: ```
+4164: ```
+4165: (2015) ignored, . . .,” or “Smith (2015) failed to. . . .”
+4166: ```
+4167: Some authors get into the habit of putting all citations at the end of sen-
+4168: tences. This is wrong. The reference should be placed at that point in the
+4169: ```
+4170: sentence to which it applies. Michaelson (1990, p. 92) gave this example:
+4171: ```
+4172: We have examined a digital method of spread-spectrum modulation
+4173: for multiple-access satellite communication and for digital mobile
+4174: radiotelephony.1,2
+4175: Note how much clearer the citations become when the sentence is recast as
+4176: ```
+4177: follows:
+4178: ```
+4179: We have examined a digital method of spread-spectrum modulation for
+4180: use with Smith’s development of multiple-access communication1 and
+4181: with Brown’s technique of digital mobile radiotelephony.2
+4182: 92 How to Write and Publish a Scientific Paper
+4183: REFERENCE STYLES
+4184: Journals vary considerably in their style of handling references. O’Connor
+4185: ```
+4186: (1978) looked at 52 scientific journals and found 33 different styles for listing
+4187: ```
+4188: references. Some journals include article titles within references, and some do
+4189: ```
+4190: not. Some insist on inclusive pagination (listing of the full page range),
+4191: ```
+4192: whereas others print the numbers of first pages only.
+4193: If you use an electronic reference management system, and if that system
+4194: includes the styles of all the journals in which you might like to publish, you
+4195: might not need to concern yourself in detail with differences among reference
+4196: styles. In that case, perhaps just skim—or even skip—the sections of this
+4197: chapter that discuss formats for citing and listing references. If, however, you
+4198: might at least occasionally be preparing and citing references by traditional
+4199: means, we advise you to read these sections.
+4200: Whether electronically or otherwise, smart authors retain full information

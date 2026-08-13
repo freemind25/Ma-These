@@ -1,0 +1,141 @@
+================================================================================
+RB-2.jpg — VLM Analysis Report
+================================================================================
+
+Source: /home/z/my-project/upload/RB-extract/RB/RB-2.jpg
+Analyzed: 2026-08-13 (VLM-1 agent)
+Model: glm-5v-turbo with thinking
+
+---
+
+TITLE/TYPE
+  Core Elements of Chapter Two With Examples: Literature Review
+  Type: Academic writing structure guide (infographic)
+  Running example: "executive loneliness in the workplace"
+
+---
+
+KEY CONCEPTS AND FRAMEWORKS
+
+  1. SIX-SECTION ARCHITECTURE FOR LITERATURE REVIEW (Chapter 2):
+
+     Section 1 — INTRODUCTION
+       Function: Restate research problem, objectives, or questions.
+               Outline how the chapter is structured.
+       Example: "This chapter reviews the existing literature on executive
+       loneliness in the workplace. It begins by examining theoretical
+       perspectives on solitude, followed by empirical studies on workplace
+       well-being, and concludes with the identification of research gaps
+       that inform this study."
+
+     Section 2 — THEORETICAL FRAMEWORK
+       Function: Present and explain theories guiding the research.
+               Justify why these frameworks are suitable.
+       Example: Uses Job Demands-Resources (JD-R) Model and Social Support
+       Theory to frame the study.
+
+     Section 3 — CONCEPTUAL FRAMEWORK
+       Function: Define main concepts and how they relate to each other.
+               Often illustrated with a diagram.
+       Example: Illustrates relationship between executive roles,
+       organizational culture, perceived loneliness, and coping strategies.
+
+     Section 4 — REVIEW OF RELATED LITERATURE
+       Function: Organize past studies thematically, chronologically, or
+               methodologically. Critically analyze what is known and unknown.
+       Possible Subsections:
+         - Historical Background
+         - Current Trends and Debates
+         - Empirical Studies (local and international)
+         - Methodological Insights (approaches, strengths/limitations)
+       Example themes: Loneliness & Leadership, Workplace Mental Health,
+       Coping Mechanisms.
+
+     Section 5 — CRITICAL REVIEW AND SYNTHESIS
+       Function: Compare and contrast studies. Identify strengths, weaknesses,
+               contradictions, and gaps. Show where your study fits.
+       Example: Highlights lack of focus on African/Sub-Saharan contexts.
+
+     Section 6 — SUMMARY OF LITERATURE REVIEW
+       Function: Pull together key insights. Highlight research gap(s).
+               Prepare readers for the next chapter (Methodology).
+       Example: Summarizes influences and transitions to methodological
+       choices for the next chapter.
+
+  2. THREE ORGANIZATIONAL LOGICS for Section 4:
+     - Thematic: Grouping by topic
+     - Chronological: Ordering by date of publication
+     - Methodological: Grouping by research approach (qualitative vs quantitative)
+
+  3. KEY DISTINCTION:
+     - Review = listing studies
+     - Critical Review/Synthesis = evaluating studies against each other
+
+---
+
+METHODOLOGIES / CLASSIFICATION SYSTEMS
+
+  - Linear but iterative flow: Introduction → Theory → Concepts →
+    Evidence → Synthesis → Conclusion
+  - Gap identification as central methodological goal (geographic, cultural,
+    methodological gaps)
+  - Synthesis vs. Summary as quality criterion for literature reviews
+
+---
+
+DERIVED RULES FOR AI PROMPTS
+
+  Rule 1 — ROLE & CONTEXT SETTING
+    Assign the AI the role of academic researcher; provide the specific
+    research topic immediately.
+    Template: "Act as an expert academic researcher. My topic is [Insert
+    Topic]. Write the Introduction for my Chapter 2..."
+
+  Rule 2 — STRUCTURAL SEGMENTATION
+    Do NOT ask for the whole chapter at once. Use the 6 sections as
+    separate prompts for depth and adherence.
+    Template: "Now, write the Theoretical Framework section. Use [Theory
+    Name] and justify its suitability for explaining [Phenomenon]."
+
+  Rule 3 — EXPLICIT ORGANIZATIONAL LOGIC
+    When asking for Section 4, specify which method (Thematic,
+    Chronological, or Methodological).
+    Template: "Provide a Thematic Review of recent literature on [Topic].
+    Create subheadings for [Theme A], [Theme B], and [Theme C]."
+
+  Rule 4 — CRITICAL SYNTHESIS INSTRUCTION
+    Explicitly instruct AI to compare, contrast, and find contradictions.
+    Template: "Write a Critical Review and Synthesis. Compare the strengths
+    and weaknesses of these studies. Identify specific contradictions
+    regarding [Variable X] and explain where my study fits."
+
+  Rule 5 — GAP IDENTIFICATION FOCUS
+    Force the AI to look for what is missing (geography, methodology,
+    population).
+    Template: "In the Summary, highlight the research gap. Emphasize the
+    lack of studies in [Specific Region/Context] regarding [Specific
+    Aspect]."
+
+  Rule 6 — BRIDGING FUNCTION
+    For the final summary, link the literature review forward to the
+    methodology chapter.
+    Template: "Conclude with a Summary that transitions into Chapter 3.
+    Explain how identified gaps will dictate methodological choices."
+
+  MASTER TEMPLATE:
+    "Using the 'Core Elements of Chapter Two' framework, generate the
+    [Section Number: Section Name] for a literature review on [Your Topic].
+    Ensure it [Insert specific function from infographic]. Use the
+    following example as a tone and style reference: [Paste example]."
+
+---
+
+ACADEMIC VALUE
+
+  HIGH — This infographic provides a complete, actionable blueprint for
+  writing Chapter 2 (Literature Review) of a thesis. It defines exact
+  section functions, provides concrete examples, and offers three
+  organizational strategies. Directly applicable to ThesisFrame's AI
+  writing modes for literature review generation.
+
+================================================================================

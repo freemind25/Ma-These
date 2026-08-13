@@ -1,0 +1,1901 @@
+A Handbook for Doctoral Supervisors
+
+Based on the latest research and covering key recent developments in supervisory
+practice, the third edition of A Handbook for Doctoral Supervisors is designed to
+support new and established supervisors in reviewing how they may make their
+supervision practice more effective day to day. This new edition is fully updated
+and extended to provide guidance on all aspects of the supervisory role, including:
+�
+�
+�
+�
+�
+
+Recruitment and selection, including placing greater emphasis on candidate
+diversity;
+Establishing and managing research projects, from initial conception through
+to completion and examination;
+Relationships with candidates and co-supervisors, and the implementation of
+an explicit respect agenda in relationships with candidates;
+Providing personal, professional, and career advice, including monitoring the
+wellbeing and mental health of doctoral candidates;
+The implications for supervisors of the rapid adoption of online supervision
+and examination.
+
+With a self-interrogatory style which enables supervisors to reﬂect upon and,
+where appropriate, consider how to enhance their practice, this key handbook is a
+crucial read for those directly involved in doctoral supervision, those who manage
+supervisors, as well as policy-makers, administrators, and scholars within the ﬁeld
+of doctoral education.
+Stan Taylor is an Honorary Professor in the School of Education, Durham Uni­
+versity, UK. He is the author of the UK Council for Graduate Education's Fra­
+mework for Good Supervisory Practice and was the founding Chair of its Research
+Supervisors Network.
+Margaret Kiley holds an adjunct position in the Research School of Humanities
+and Arts at the Australian National University, Canberra.
+
+A Handbook for Doctoral
+Supervisors
+
+Third Edition
+
+Stan Taylor and Margaret Kiley
+
+Designed cover image: Getty Images
+Third edition published 2025
+by Routledge
+4 Park Square, Milton Park, Abingdon, Oxon OX14 4RN
+and by Routledge
+605 Third Avenue, New York, NY 10158
+Routledge is an imprint of the Taylor & Francis Group, an informa business
+© 2025 Stan Taylor and Margaret Kiley
+The right of Stan Taylor and Margaret Kiley to be identiﬁed as authors of this work
+has been asserted in accordance with sections 77 and 78 of the Copyright, Designs
+and Patents Act 1988.
+All rights reserved. No part of this book may be reprinted or reproduced or
+utilised in any form or by any electronic, mechanical, or other means, now known
+or hereafter invented, including photocopying and recording, or in any information
+storage or retrieval system, without permission in writing from the publishers.
+Trademark notice: Product or corporate names may be trademarks or registered
+trademarks, and are used only for identiﬁcation and explanation without intent to
+infringe.
+First edition published by Routledge 2005
+Second edition published by Routledge 2018
+British Library Cataloguing-in-Publication Data
+A catalogue record for this book is available from the British Library
+ISBN: 978-1-032-55774-8 (hbk)
+ISBN: 978-1-032-55773-1 (pbk)
+ISBN: 978-1-003-43215-9 (ebk)
+DOI: 10.4324/9781003432159
+Typeset in Galliard
+by Taylor & Francis Books
+
+To the memory of Dr Nigel Beasley 1942–2021
+
+Contents
+
+Acknowledgements
+
+ix
+
+Introduction
+
+1
+
+PART I
+
+The context
+
+5
+
+1 The overall context
+
+7
+
+2 The institutional context
+
+20
+
+3 The disciplinary context
+
+38
+
+4 The programme context
+
+51
+
+PART II
+
+Preparing the ground
+
+65
+
+5 Recruitment and selection
+
+67
+
+6 Working relationships: 1. Candidates
+
+82
+
+7 Working relationships: 2. Co-supervisors
+
+100
+
+PART III
+
+Supporting the research project
+
+115
+
+8 Academic advice and support: Approaching research
+
+117
+
+9 Academic guidance and support: The research project
+
+130
+
+10 Encouraging writing and giving feedback
+
+145
+
+viii
+
+Contents
+
+11 Keeping the research on track and monitoring progress
+
+160
+
+PART IV
+
+Supporting the candidate
+
+171
+
+12 Pastoral support
+
+173
+
+13 Supporting professional knowledge and skills
+
+186
+
+14 Supporting preparation for careers
+
+198
+
+PART V
+
+Supporting diversity
+
+213
+
+15 Supporting diversity: 1. Non-traditional candidates
+
+215
+
+16 Supporting diversity: 2. International candidates
+
+230
+
+17 Supporting diversity: 3. Part-time and off-campus candidates
+
+246
+
+PART VI
+
+Completion and examination
+
+263
+
+18 Drafting and submission
+
+265
+
+19 Examination
+
+279
+
+PART VII
+
+Enhancing practice
+
+295
+
+20 Evaluation, reﬂection, recognition, and dissemination
+
+297
+
+Conclusions
+
+312
+
+Index
+
+316
+
+Acknowledgements
+
+We gratefully acknowledge the following for permission to reproduce copyright
+material:
+Australian Council for Graduate Research for an extract from AGCR Good
+Practice Guidelines for Aboriginal and Torres Strait Research Education.
+Elly Grossman and Nigel Crother for an extract from Grossman, E. and Crowther,
+N. (2015) Co-supervision in postgraduate training: ensuring the right hand knows
+what the left hand is doing. South African Journal of Science, 111(11–12): 104–111.
+Erica McWilliam for an extract from McWilliam, E. (2004) On being accoun­
+table: risk-consciousness and the doctoral supervisor. Paper submitted for full
+refereeing for the Australian Association for Research in Education Conference,
+Melbourne 28 November–2 December 2004.
+Eva Brodin and Anders Sonesson for an extract from the Lund University Doc­
+toral Supervision Syllabus.
+Emerald Publishing Ltd. for an extract from Kuzhabekova, A. and Temer­
+bayeva, A. (2018) The role of conferences in doctoral student socialization. Stu­
+dies in Graduate and Postdoctoral Education, 9(2): 181–196.
+Kay Guccione for an extract from Difﬁcult Conversation Planner for Supervisors.
+Margaret Kiley for permission to reproduce Kiley, M. (2015). Possible Issues to
+Discuss with Co-supervisors.
+Martin McAndrew of the Postgraduate Advisory Service and Joanna Kesika,
+Student Counselling Service, Trinity College Dublin, Ireland for extracts from
+their original presentation on ‘Staying Well’ at the Irish Universities Association
+conference on Research Supervision: Growing Excellence held at University College,
+Dublin, 19 May 2023.
+Monash University, Australia, for an extract from the Supervision Framework.
+Robin Humphrey and Bob Simpson for an extract from Humphrey, R. and
+Simpson, B. (2013) Negotiating a ‘scary gap’: doctoral candidates, ‘writing up’
+qualitative data and the contemporary supervisory relationship. Journal of Educa­
+tion and Training Studies, 1(1): 1–10.
+Springer for extracts from: Salminen-Karlsson, M. and Wallgren, L. (2008) The
+interaction of academic and industrial supervisors in graduate education. Higher
+Education, 56: 77–93 and Warnock, D. and Appel, S. (2012) Learning the
+
+x
+
+Acknowledgements
+
+unwritten rules: working class students in graduate school. Innovations in Higher
+Education, 37: 307–321.
+Taylor and Francis for extracts from:
+Donelan, H. (2016) Social media for professional development and networking
+opportunities in academia. Journal of Further and Higher Education, 40(5): 706–
+729; Feather, D. and McDermott, K. (2014) The role of new doctoral supervisors in
+higher education – a reﬂective view of literature and experience using two case stu­
+dies. Research in Post-Compulsory Education, 19(2): 165–176; Gardner, S. (2008)
+‘What’s too much and what’s too little’: The process of becoming an independent
+researcher in doctoral education. Journal of Higher Education, 79(3): 326–350;
+Gurr, G. (2001) Negotiating the ‘rackety bridge’ – a dynamic model for aligning
+supervisory style with research student development. Higher Education Research and
+Development, 20(1): 81–92; Halse, C. (2011) Becoming a supervisor: the impact of
+doctoral supervision on supervisors’ learning. Studies in Higher Education, 36(5):
+557–570; Halse, C. and Malfoy, J. (2010) Retheorising doctoral advising as profes­
+sional work. Studies in Higher Education, 35(1): 79–92; Hughes, C. (2011) Plea­
+sure, change and values in doctoral pedagogy. Studies in Higher Education, 36(6):
+621–635; Johnson, L., Lee, A., and Green, B. (2000) The PhD and the autonomous
+self: gender, rationality and postgraduate pedagogy. Studies in Higher Education, 25
+(2): 135–147; Kidman, J., Manathunga, C., and Cornforth. S. (2017) Intercultural
+PhD supervision: exploring the hidden curriculum in a social science faculty doctoral
+programme. Higher Education Research and Development; Lee, A. and McKenzie, J.
+(2011) Evaluating doctoral supervision: tensions in eliciting students’ perspectives.
+Innovations in Education and Teaching International, 48(1): 69–78; Lines, L.
+(2016) Substantive editing as a form of plagiarism among postgraduate students in
+Australia. Assessment and Evaluation in Higher Education. DOI: 10.1080/
+02602938.2015.1013919; Maher, M., Feldon, D., Timmerman, B., and Chao, J.
+(2014) Faculty perceptions of common challenges encountered by novice doctoral
+writers. Higher Education Research and Development, 33(4): 699–711; Mason, S.
+and Merga, M. (2018) Integrating publications in the social science doctoral thesis by
+publication. Higher Education Research & Development. DOI: 10.1080/
+07294360.2018.1498641; McAlpine, L. (2013) Doctoral supervision: not an indi­
+vidual but a collective institutional responsibility. Infancia y Aprendizaje Journal for
+the Study of Education and Development, 36(3): 259–280; Ostrove, J., Stewart, A.,
+and Curtin, N. (2011) Social class and belonging: implications for graduate students.
+The Journal of Higher Education, 82(6): 748–774; Robertson, M. (2017) Team
+modes and power: supervision of doctoral students. Higher Education Research and
+Development. DOI: 10.1080/07294360.2016.1208157. Trudgett, M. (2014)
+Supervision provided to Indigenous Australian doctoral students: a black and white
+issue. Higher Education Research & Development, 33(5): 1035–1048; Wisker, G. and
+Robinson, G. (2013) Doctoral ‘orphans’: nurturing and supporting the success of
+postgraduates who have lost their supervisors. Higher Education Research and
+Development, 32(2): 300–313.
+Macquarie University, Australia, for an extract from Academic Promotions.
+
+Acknowledgements
+
+xi
+
+Jannie Roed for extracts from Roed. J. (2012) Labour of Love: Emotions and
+Identities in Doctoral Supervision. EdD Thesis, University of Sussex.
+Stellenbosch University, South Africa for an extract from Postgraduate Ofﬁce,
+Division for Research Development, Memorandum of Understanding.
+The Institute of Professional Editors, Australia, for an extract from Guidelines
+for Editing Research Theses.
+The Publications Ofﬁce of the European Union for an extract from The Eur­
+opean Qualiﬁcations Framework for Lifelong Learning.
+The University of Adelaide, Australia, for an extract from the Research Student
+Handbook: Supervisor Responsibilities.
+The University of Birmingham, UK for an extract from the Supervision Record.
+The University of Cumbria, UK. for an extract from Philpott, C. (2015) Rea­
+sons for doctoral non-completion: one non-completing doctoral student’s voice
+on limitations in the academic literature. Practitioner Research in Higher Educa­
+tion, 9(1): 67–72.
+The University of Edinburgh, UK, for an extract from the Code of Practice for
+Supervisors and Research Students.
+The University of Newcastle upon Tyne, UK, for an extract from the University
+Handbook for Examiners of Research Degrees by Thesis.
+The University of Otago, New Zealand, for extracts from the Induction Check­
+list for Supervisors and Peer Review of Teaching and Supervision.
+The University of Queensland, Australia, for an extract from advertisement for
+Aboriginal and Torres Strait Islander Scholarships.
+The University of Western Australia, for an extract from the Graduate School:
+Examiners’ Recommendation Form: Degree of Doctor of Philosophy.
+The UK Council for Graduate Education for an extract from D. Halliday and G.
+Clark (eds) Proceedings of the 2nd International Conference on Developments in
+Doctoral Education and Training. Lichﬁeld, UK Council for Graduate Education:
+10–17.
+Universities Australia, National Tertiary Education Union, Council of Aus­
+tralian Postgraduate Associations, and Australian Council of Graduate Research
+for an extract from Principles for Respectful Supervisory Relationships.
+University College Dublin, Ireland, for an extract from Policy on Inter-Institu­
+tional Co-Supervisory Agreements (including Cotutelle) for PhD Students.
+Finally, we would like to thank Professor Alexander Easton, Director of the
+Institute for Advanced Studies of the University of Durham, for providing facilities
+in the magniﬁcent setting of Cosin’s Hall for us to meet and ﬁnalise the drafting
+of the book. We are also very grateful to the Manager of the Institute, Linda
+Crowe, for looking after us so well.
+
+Introduction
+
+In 2005, Routledge published the ﬁrst edition of A Handbook for Doctoral
+Supervisors written by Stan Taylor and the late Nigel Beasley, to whose memory
+this edition is dedicated. The book was well received and was widely used as a
+textbook and a source for professional development by supervisors across the
+globe. Over time, it became out of date and Routledge commissioned a second
+edition written by Stan Taylor, Margaret Kiley, and Robin Humphrey which was
+published in 2018.
+It is a measure of the pace of change in doctoral education that, six years later,
+there is a need for a further edition. This reﬂects the fact that, in the relatively
+short space of time since the second edition was published, there have been sig­
+niﬁcant developments. These include variously; a much stronger focus on ensuring
+equality of opportunity in access, particularly for indigenous populations and other
+ethnic and racial minorities; a greater emphasis on ‘respect’ in supervisory-candi­
+date relationships; a move towards online supervision and online examination; an
+increased realisation of the need to offer doctoral candidates appropriate personal
+support during their studies, particularly in relation to their wellbeing and mental
+health; and a heightened awareness of the importance of assisting them to prepare
+them for careers outside as well as inside academia.
+These developments pre-dated the Covid-19 outbreak of 2020–2022 but in
+many cases their importance was dramatically ampliﬁed during the pandemic,
+leaving a legacy that is still continuing. All of them have impacted the roles of
+supervisors, particularly in terms of recruiting and selecting candidates, managing
+working relationships, offering academic advice and support in the online envir­
+onment, and providing personal, professional, and career support. These changes
+have attracted a considerable amount of attention from researchers in the ﬁeld of
+doctoral education, and this has been reﬂected in a rapid growth in published
+research.
+The aims of this new edition are to incorporate these changes in the roles of
+supervisors into the content of the Handbook and to bring the latter up to date
+with the latest research. This has involved a substantial re-writing of many of the
+original chapters to incorporate new themes and new materials.
+DOI: 10.4324/9781003432159-1
+
+2
+
+Introduction
+
+It has also involved a change of co-authors; Robin Humphrey has now retired,
+and indicated, with regret, that he would not be involved in a third edition. This
+version has then been co-authored by Stan Taylor and Margaret Kiley.
+As with the ﬁrst and second editions, the third is aimed at the potential or
+established supervisor/advisor facing the changing world of doctoral super­
+vision and considering what makes for effective supervision in their day-to-day
+practice.
+We are aware that, while there is no hard and fast rule, the term ‘supervisor’
+tends to be used in most of Europe, the UK, and Oceania. Elsewhere, parti­
+cularly in the United States and countries with systems based upon that model,
+the more common term is ‘advisor’. We are also aware that this is not just a
+matter of style but also of substance; ‘supervisor’ implies a wider range of
+intervention with regard to the candidate and to the research project than
+‘advisor’. But, while we have written this book for supervisors (and used the
+term throughout) we believe that most, if not all, of it is also relevant to
+advisors, that is, in covering the roles of the former we are also covering those
+of the latter.
+With regard to ‘supervision’, it may be noted that our use of this term is pri­
+marily conﬁned to the supervision of the candidate’s research project. It does not
+include any taught components, but we do think it is important that, particularly
+in the case of more structured doctorates, supervisors are aware of the whole
+doctoral programme in order that they can, where appropriate, advise candidates
+how to build upon their previous studies.
+With regard to ‘effective’, this could be taken as meaning simply getting the
+candidate over the line to a doctorate. But we believe there is more to it than that
+in terms of both ‘outcomes’ and ‘outputs’. With regard to the former, ‘effective­
+ness’ means a high-quality submission, completion on time or as near as possible,
+and dissemination to the subject community; with regard to the latter, it means
+that the candidate has successfully developed the creative, critical, and analytical
+skills and knowledge of a researcher and laid the basis for their future career inside,
+or increasingly outside, academia.
+So, in our view, an effective supervisor is one who supports candidates to:
+�
+�
+�
+�
+�
+�
+�
+�
+
+where appropriate, initiate and plan a research project;
+acquire the research skills to undertake it and gain adequate access to
+resources;
+complete it on time;
+produce a high-quality submission;
+be successful in examination;
+disseminate the results of their research;
+develop the creative, critical, and analytical skills and knowledge of a
+researcher;
+lay the basis for their future career.
+
+Introduction
+
+3
+
+We believe that, in order to be effective as deﬁned above, supervisors need to:
+�
+�
+�
+�
+�
+�
+�
+�
+�
+�
+
+have a knowledge and understanding of the context within which they are
+supervising doctoral candidates, including recent changes accelerated by the
+Covid-19 pandemic;
+be able to recruit, select and support candidates from diverse populations and
+assist them to be successful and complete on time;
+establish positive and respectful working relationships with them and, where
+appropriate, with co-supervisors;
+support candidates’ research projects;
+assist in their personal development, including their wellbeing and mental health;
+support their professional development, including networking, presentations,
+publications and the acquisition of teaching skills;
+support their career development, including preparation for employment
+inside and outside academia;
+in undertaking the above, to be aware of the beneﬁts of and challenges facing
+non-traditional domestic candidates, international candidates, and those
+studying part-time or off-campus;
+assist candidates through the processes of completion of their thesis or dis­
+sertation or publications or artefacts and ﬁnal examination, including exam­
+ination online; and
+be able to evaluate and enhance their practice and, where appropriate, dis­
+seminate good practice.
+
+In accordance with this model, we have divided the book into seven parts.
+Part I deals with the various contexts of supervision divided into the overall,
+institutional, disciplinary, and programme contexts respectively.
+Part II is concerned with preparing the ground in terms of recruiting and
+selecting candidates, forming working relationships with them, and managing
+relationships with co-supervisors.
+Part III is devoted to supporting the research project, including initiating candidates
+into research, assisting them to get their projects up and running and to overcome any
+initial academic problems, encouraging them to write early and often and giving effective
+feedback, and helping them to keep projects on track while monitoring their progress.
+Part IV is concerned with supporting candidates in a range of ways including
+personal, academic and career development
+Part V is concerned with recognising and responding to domestic and interna­
+tional diversity among the candidate population and diversity in modes of study in
+terms of candidates studying part-time and/or off-campus.
+Part VI is devoted to the ﬁnal stages of the doctorate including drafting and
+submission and examination.
+Part VII is concerned with how doctoral supervisors might go about evaluating
+their practice, and disseminating it, as well as gaining recognition and reward for
+good practice.
+
+4
+
+Introduction
+
+In addition to describing the content of the book, it is also appropriate to
+comment upon the approach adopted in writing it. In order to illustrate effective
+practice, we have included numerous examples drawn from a wide range of sour­
+ces. To enable readers to reﬂect, we have supplied prompts at key points in the
+narrative to encourage readers to interrogate their own practice. Our hope is that,
+through this process, readers will be able to personally engage with their practice
+and, where appropriate, enhance it.
+Finally, it may be noted that all of the links to online materials in the text were
+accessed on 5 December 2023.
+
+Part I
+
+The context
+
+Chapter 1
+
+The overall context
+
+Introduction
+Supervisors tend to be immersed in their busy academic and/or professional lives,
+not to mention their personal ones, and seldom have the time to maintain an
+overview of ongoing developments and research in doctoral education. As a con­
+sequence, many are experiencing new demands without necessarily understanding
+the wider context within which they arise. The purpose of the present chapter is to
+try to set that wider context. It is based on the work of Taylor (2012, 2023) and
+begins with a brief summary of the historical origins and evolution of doctoral
+education from its modern origins through to the 1980s and then looks at sub­
+sequent developments that have transformed the ﬁeld and the context of
+supervision.
+
+The origins and evolution of doctoral education
+Doctorates have their origins in the mediaeval universities when they were used
+primarily as a means of licensing teachers in the professions of medicine, law, and
+theology (Bernstein et al. 2014, Amaral and Carvalho 2020). This paradigm
+remained dominant until, in the early 19th century, a number of eminent
+Enlightenment thinkers in Prussia began to advocate a new kind of university, one
+in which the core mission would be the creation of original knowledge and
+understanding and in which research would be pre-eminent. These advocates
+included Friedrich Schliermacher, Johann Fichte, and Wilhelm von Humboldt
+(see Watson 2010).
+It was von Humboldt who was able to implement this new model when, in
+1809, he became Under-Secretary in the Ministry of the Interior and responsible
+for education in Prussia. Although he was in ofﬁce for a mere 16 months, he
+initiated reforms designed, as Nybom (2003: 152) has put it, ‘to create an entirely
+new type of academic institutional order and a new type of academic’.
+With regard to the former, he took the lead in reorganising the University of
+Berlin which in 1810 became the world’s ﬁrst explicitly research-led university.
+With regard to the latter, the new type of academic was to be engaged both in
+DOI: 10.4324/9781003432159-3
+
+8
+
+The context
+
+extending knowledge and understanding (research) and transmitting it (educa­
+tion/teaching). Under the new university’s statutes training for this role was pro­
+vided by completing a new kind of doctorate to be awarded to a researcher who
+had made a signiﬁcant and original contribution to knowledge and understanding
+in the sciences (see Clark 2006). To signify its academic as opposed to professional
+status, this doctorate was awarded in ‘Die mutter aller Wissenschaften’ (the
+mother of all sciences), namely philosophy.
+The DPhil., or as it subsequently became, the PhD, was intended for a handful
+of the brightest and the best who would become the next generation of aca­
+demics; it was based on a ‘master-apprentice’ model of delivery; supervision was,
+as Park (2005: 15) has put it, viewed as a ‘secret garden or an activity that takes
+place behind closed doors between consenting adults’; candidates had to complete
+a research project, write it up in the form of a thesis, and defend it at an oral
+examination; and because it involved the creation of new knowledge, completion
+took as long as it took (Archbald 2011).
+What subsequently became known as the Humboldtian model of the doctorate
+(see Ash 2006) was copied during the 19th century in a few other countries,
+including France and the Netherlands (see Bogle 2017) and Russia (see Smo­
+lentseva 2007). But if elsewhere the universities of the Old World paid little atten­
+tion to the new degree, it was embraced by those of the New World, the United
+States. There, the ﬁrst doctorate was awarded by Yale in 1861, and the precedent
+was quickly followed by Harvard, Michigan, and Pennsylvania. The Humboldtian
+model was also copied in Japan, where the ﬁrst doctoral programme was established
+in 1887 at the founding of what is now the University of Tokyo (Yamamoto 2020).
+The next extension of the doctorate was during the First World War when it
+became apparent that Germany’s war effort had beneﬁtted signiﬁcantly from the
+strength of the country’s scientiﬁc base. For this reason, as well as concerns about
+candidates seeking doctoral studies elsewhere, the wartime coalition in the UK
+pressed universities to introduce the degree. The ﬁrst was awarded by Oxford in
+1920 and by 1921 the doctorate had been adopted by all of the UK universities.
+(Simpson 1983). In the mid-1920s it was introduced in Ireland (Share 2016) and
+South Africa (Herman 2015). At the end of that decade, Mexico became the ﬁrst
+Latin American country to adopt the degree (see Malo 2007) and in the 1930s
+the ﬁrst doctorates were awarded in Brazil (see Ribeiro 2007). In New Zealand,
+following the initial implementation of the doctorate in the 1920s, it was perma­
+nently reinstated in 1944. After the Second World War, Australia adopted the new
+degree and the ﬁrst doctorate was awarded in 1948 (Dobson 2012).
+By the late 1940s, the PhD had spread throughout the Anglo-American world,
+but it was still resisted in universities across much of Western Europe, which clung
+on to their historical professional licentiates. However, the 1950s and 1960s saw
+research rise to the top of the political agenda as a key to both economic growth
+and defence capability, and the need to train researchers was reﬂected in a rapid
+growth of PhD programmes in Western European countries, with the ﬁnal adop­
+ters being Italy (1988) and Denmark (1989).
+
+The overall context
+
+9
+
+By the late 1980s, the PhD had conquered Western Europe, but not Eastern
+Europe. In most of what was then the ‘Soviet bloc’, there were different arrange­
+ments based on the USSR model of a two-step doctorate which could be taken inside
+or outside the universities, for example in the Academies of Sciences, and in either
+case was subject to state approval (see Connelly 2000). However, the withdrawal of
+the Soviet Union after the ‘velvet revolutions’ at the end of the 1980s and start of the
+1990s was followed in many, although not all, of the newly-liberated countries by a
+re-organisation of graduate education and the establishment or re-establishment of
+the PhD in the universities (see Smolentseva, Huisman, and Froumin 2018, Yekibay
+et al. 2022).
+Further adopters of the doctorate in the third quarter of the 20th century were
+in Asia. In China, the ﬁrst formal programme began in 1978 with 12 doctoral
+candidates; within 20 years there were over 50,000 (see Bao, Kehm, and Ma
+2016, Huang 2017). In the 1980s and 1990s doctoral programmes were also
+established or expanded in many other Asian countries, including Bangladesh,
+India, Malaysia, Pakistan, Thailand, and Singapore (UNESCO 2014, Zhaung,
+Liu, and Ding 2022).
+Therefore, by the 1990s, the PhD had become a qualiﬁcation delivered over a
+large proportion of the globe. In its essentials, it was recognisable as the degree which
+had been introduced at the University of Berlin just under two centuries earlier.
+
+Developments in the doctorate in the late 20th and 21st centuries
+However, over the last three decades or so, as Hammond et al. (2010) have sug­
+gested, the doctorate has been transformed by four major clusters of develop­
+ments, namely formalisation, the growth and diversiﬁcation of the candidate
+population, the diversiﬁcation of modes of study, and the diversiﬁcation of pur­
+poses. Each of these can be disaggregated into a number of sub-headings.
+Formalisation
+Historically, doctoral education was largely left to supervisors and candidates with­
+out external intervention. But it has now been formalised through the processes of
+commodiﬁcation, McDonaldisation, regulation, collectivisation, and structuration.
+Commodiﬁcation
+As Taylor (2012: 122) notes: ‘The traditional model of the relationship between
+students and supervisors was that of master and apprentice whereby the latter
+learned by emulating the former.’ But, in the same way as undergraduate and
+taught postgraduate education has been fashioned by neo-liberal government
+policies into a ‘provider-consumer’ framework, so has doctoral education with
+candidates being encouraged to expect their supervisors to offer a service in
+supporting their research projects (see for example Denicolo, Duke, and
+
+10
+
+The context
+
+Reeves 2020, Bastalich and McCulloch 2022, Hillebrand and Leysinger 2023).
+If the project goes wrong or falls behind schedule, candidates are much more
+likely to look towards their supervisor for assistance and, if this is deemed to
+be inadequate, to take matters further. Supervisors then need to pay particular
+attention to developing and sustaining productive relationships with candidates
+as outlined in Chapter 6 and the development of timelines and milestones set
+out in Chapter 11.
+McDonaldisation
+Historically, neither institutions nor research sponsors took much interest in whe­
+ther doctoral candidates completed their degrees and, if so, how long it was taking
+them. But during the third quarter of the 20th century, governments began
+enquiring more closely about what they were getting in return for funding doc­
+toral research, and the answers, at least in their view, were unsatisfactory. Studies
+of completion rates in Western Europe (see Sadak 2004), the US (Golde 2005),
+Canada (Elgar and Klein 2004), and Australia (Bourke, Hattie, and Anderson
+2004) all suggested that around one half of doctoral students failed to gain their
+degrees and, of those who did, relatively few completed within the allotted time.
+In response, many governments and research sponsors resorted to what amoun­
+ted, in one form or another, to compulsion.
+Such compulsion forced institutions to act to improve submission and qualiﬁ­
+cation rates, which in turn led to pressures on supervisors to ensure that candidates
+submit and qualify within the allotted time span (see Soin and Huber 2021).
+Issues and strategies which supervisors might adopt such as the introduction of
+explicit milestones relating to progress are outlined in Chapter 11.
+Regulation
+Historically, neither research sponsors nor institutions enquired too closely about
+what went on in doctoral education generally or with regard to supervision in
+particular. However, in recent years concerns about the quality of the student
+experience and completion rates and times have led to the widespread introduc­
+tion of regulation. A number of countries now have national codes of practice
+which are replicated at institutional level or institutions have developed their own
+codes (see Bitusikova et al. 2010, Byrne, Jorgensen, and Loukkola 2013, Andres
+et al. 2015, Nerad 2020).
+So supervision has become a heavily regulated area of academic practice (see
+Guccione 2018, Hasgall, Saenan, and Borrell-Damian 2019), and it has become
+important that supervisors are aware of all of the relevant institutional rules and
+regulations, as discussed in Chapters 2, 5, 6, 8 11, and 19.
+A further development with regard to regulation has been in relation to the con­
+duct of supervisors with their candidates. Supervisory relationships are by their very
+nature unequal, with the supervisor being in a position of power over candidates,
+
+The overall context
+
+11
+
+which the vast majority exercise with due restraint and respect. But some have abused
+their position and behaved in ways that are unacceptable, including bullying (see for
+example English, Flaherty, and English 2018), discrimination (see for example
+Spencer 2021), and sexual harassment (see for example Bloom et al. 2021).
+While for many years such misconduct was brushed under the carpet, in recent
+years it has been exposed and in some countries national bodies and/or institu­
+tions have issued codes of conduct for supervisors, of which the latter need to be
+aware. These matters are discussed in Chapters 6, 15 and 16.
+Collectivisation
+The historical model of supervision has been one of research students having a
+single supervisor. However, in recent years in many countries there have been
+moves to collectivise supervision by establishing supervisory teams (see Kalman
+et al. 2022, Wald, Kumar, and Sanderson 2022). While this can yield advan­
+tages, it can also cause problems in so far as the relationship between super­
+visors and students becomes more diffused and potentially subject to conﬂict
+over competing intellectual perspectives, interpretations of projects, personal­
+ities, supervisory roles, and supervisory styles. These issues are discussed further
+in Chapter 7.
+Structuration
+Originally, doctoral education took the form of individual study; the supervisor
+provided guidance, the candidate worked independently on his or her own.
+While that largely remains the case in some countries even today, in many others
+the desire to provide better training for researchers, improve submission and
+completion times, and enhance employability has led institutions to establish
+appropriate structures for doctoral studies. These include various graduate
+schools, doctoral colleges, doctoral research schools, and doctoral training cen­
+tres and partnerships (see Hasgall, Saenan, and Borrell-Damian 2019, Kovacevic,
+Bitusikova, and Dagen2022).
+They have also led to a move toward more structured programmes of study. The
+latter normally include a curriculum in the forms of a taught research training
+component, rigorous monitoring procedures, and a generic skills component relat­
+ing to employability (see Kiley 2014, Gonzalez-Ocampo et al. 2015, Elliot et al.
+2020, European Universities Association/Council for Doctoral Education 2022).
+In these ways, doctoral education has increasingly become structured at both
+institutional and the programme levels (see Bitusikova 2010, Kiley 2011, Andres
+et al. 2015, McGloin and Wynne 2015, Grant et al. 2022, McKenna and van
+Schalwyk 2023). Again, this means that supervisors need not only to understand
+the disciplinary context of doctoral studies (Chapter 3) but the institutional ones
+(Chapter 2) and programme ones (Chapter 4) as well.
+
+12
+
+The context
+
+Growth and diversiﬁcation of the candidate population
+Massiﬁcation
+Up to a few years ago, doctoral candidates were relatively few in number. But over
+the past two decades the numbers registering for doctoral programmes has grown
+rapidly across most of the globe (Pederson 2014, Andres et al. 2015, Bao, Kehm, and
+Ma 2016, Huang 2017, Shin, Kehm, and Jones 2018, Sarrico 2022). However, the
+number of supervisors has not increased pro rata, with the result that supervisors have
+more candidates to supervise. In this context, it is important that they are aware of
+institutional policies relating to supervisory workloads and limits on candidate num­
+bers (see Chapter 2) and of strategies for group supervision (see Chapter 6).
+Domestic diversiﬁcation
+Moreover, this expansion in numbers has been associated with an increase in the
+diversity of the domestic graduate population Traditionally the stereotype doctoral
+candidate was male, young, single, white, heterosexual, and without a disability.
+Now, in many countries a majority of candidates are female, signiﬁcant numbers are
+in their thirties or forties or older and have partners and families. While parity is a
+long way off, in many cases there has been an increasing representation of indigen­
+ous populations and ethnic and racial minority groups. Also, candidates have
+become more diverse in their sexuality, and more have reported disabilities. The
+needs of such candidates have come sharply into focus in recent years, and the
+implications for their supervisory practice are discussed further in Chapters 5 and 15.
+International diversiﬁcation
+A further trend has been the internationalisation of doctoral education in the sense of
+candidates studying for their doctorates in a country other than that of their origin.
+While there is nothing new in this in principle – for example in the 19th century many
+US and UK chemists did their doctoral studies in Germany (Simpson, 1983) – what has
+changed very rapidly in recent years is a large-scale movement to study abroad for doc­
+torates, particularly from the Southern to the Northern hemisphere. While this trend
+was halted or reversed during the Covid-19 pandemic, subsequently it seems to have
+resumed (de Wit and Altbach 2022) and signiﬁcant proportions of doctoral students are
+now from countries other than the one in which they are studying for their degrees.
+They bring huge beneﬁts to their host country, but may face challenges in their doctoral
+studies which supervisors can help them overcome, as outlined in Chapter 16.
+Obligation
+The traditional view was that, as doctoral candidates were adults, they should be
+responsible for their own wellbeing and mental health. However, in recent years a
+
+The overall context
+
+13
+
+substantial volume of evidence (see for example Levecque et al. 2017, Marais et al.
+2017, Mackie and Bates 2018, Metcalfe, Wilson, and Levecque 2018) has accrued
+which suggests that doctoral candidates are signiﬁcantly more likely than compar­
+able groups of the population to suffer from low levels of wellbeing, mental dis­
+tress (usually depression and anxiety), and mental illness (clinically-proven
+depression and anxiety as well as more severe illnesses such as bi-polar and psy­
+chosis). In view of these ﬁndings, institutions have had to accept that they have a
+duty of care for the wellbeing and mental health of doctoral candidates. In part,
+this has devolved upon supervisors as they are in personal contact with students
+and hence most likely to be able to notice distress and direct candidates to sources
+of support, as discussed in Chapter 12.
+Diversiﬁcation of modes of study
+Casualisation
+As Taylor (2012: 121) has noted, ‘Historically, the model has been for doctoral
+students to be full-time. While this largely remains the case in the natural sciences,
+the picture can be very different in the arts, humanities, and social sciences where
+part-time study is becoming much more common’. As a result, part-timers have
+come to comprise a signiﬁcant proportion of the candidate population in a
+number of countries. They are often older with family and employment commit­
+ments which can affect their studies and of which supervisors need to be aware.
+Issues in relation to supervising part-time candidates are discussed in Chapter 17.
+Dislocation
+Traditionally, doctoral candidates studied on campus, but the advances in infor­
+mation and communications technology have meant that they can study at a
+considerable distance from the host institution within a country, or even in
+another country. In such cases, face-to-face contact between supervisors and stu­
+dents may be infrequent and replaced by telephonic and electronic communica­
+tion. The use of such media to supervise doctoral candidates was growing before
+the Covid pandemic, but during the latter online supervision became the norm, as
+did online examination. These developments have left legacies for supervisors
+which are explored in Chapters 17 and 19.
+Diversiﬁcation of purposes of study
+Cross-fertilisation
+Traditionally, doctorates have been undertaken within single disciplines. However,
+tackling many of the major problems and issues in contemporary research often
+involves the cross-fertilisation of insights from two or more disciplines (see Rashid
+
+14
+
+The context
+
+2021), and hence doctoral research projects have become increasingly inter­
+disciplinary. Where supervisors themselves have a mono-disciplinary pedigree,
+operating across two or more can be challenging and the implications of this for
+supervision are discussed in Chapter 3.
+Proliferation
+Whereas the PhD has been the dominant research degree for the past two cen­
+turies, in the last two decades other forms of doctoral degrees have been devel­
+oped, including doctorates by publication, practice-led doctorates, professional
+doctorates, collaborative doctorates, and hybrids involving two or more of these
+variants. The implications of these developments for supervision are considered in
+Chapters 4 and 7.
+Capitalisation
+Historically again, the primary purpose of the doctorate has been to reproduce the
+academic workforce, that is, to train new generations of researchers for the uni­
+versities. However, this has changed, partly reﬂecting a paucity of tenured aca­
+demic posts in some countries, the attractiveness of employment opportunities
+outside academia, and a re-branding of the purpose of the doctorate to supply
+human capital for the knowledge economies.
+For these reasons, there is now a presumption that doctoral programmes will
+include the development of the relevant generic skills to support doctoral gradu­
+ates to gain employment inside or outside academia, So as well as their traditional
+role in supporting candidates to becoming academics, supervisors may be expected
+to support the development of the generic skills needed for them to enter a wider
+range of employments.
+The roles of supervisors in supporting candidates to prepare for academic and
+non-academic roles are discussed in Chapter 14.
+
+Conclusions
+The effect of the changes outlined has been to transform doctoral education vir­
+tually across the globe. What was the last ‘cottage industry’ in higher education
+has become commodiﬁed, McDonaldised, collectivised, regulated, structured, and
+increasingly collaborative; from being mono-disciplinary, many doctoral research
+projects are interdisciplinary: as well as the traditional PhD, there are numerous
+other types of doctorates; the precocious few candidates have become the diverse
+many; obligations have come to the fore with regard to supervisors’ conduct
+towards candidates and their responsibilities for their welfare; increasingly instead
+of only studying on campus, candidates may be studying at a distance and being
+examined online; doctoral studies have become increasingly directed towards
+projects which are seen to have potential for a wider impact than academia; and,
+
+The overall context
+
+15
+
+rather than becoming academics, doctoral graduates are increasingly engaged in
+other forms of employment.
+These changes have profoundly affected doctoral supervision, and there is some
+evidence that this has been recognised by supervisors themselves. So, for example,
+when Halse and Malfoy (2010: 80) conducted a survey of experienced doctoral
+supervisors, they found that all of their respondents:
+testiﬁed to the changes in their work. They described doctoral supervision
+between the 1970s and the 1990s as an intellectual and social enterprise,
+where personal boundaries were sometimes blurred but the roles of super­
+visors and students were clear: the supervisor provided oversight and gui­
+dance; the doctoral student was responsible for producing a seminal thesis that
+would secure his or her place as an authority within the ﬁeld … all super­
+visors … conceptualised their current work with doctoral students as sig­
+niﬁcantly different from their former experiences. They spoke of actively
+fashioning students’ development to address deﬁcits in expertise; deliberately
+intervening to ensure timely completion; purposeful provision of tutoring or
+research assistance to minimise the risk of ﬁnancial distress and withdrawal;
+and the deployment of personal networks to facilitate completion and ensure
+post-graduation employment.
+The remainder of this book then seeks to assist supervisors in engaging with these
+challenges and, where appropriate, to consider how to enhance their practice.
+
+References
+Amaral A. and Carvalho, T. (2020) From the mediaeval dissertation to the graduate school.
+In S. Cardoso, O. Tavares, C. Sin, and T. Carvalho (eds) Structural and Institutional
+Transformations in Doctoral Education. Palgrave-Macmillan, e-publication, 143–173.
+Andres, L., Bengtsen, S., Castana, L., Crossouard, B. Keefer, J., and Pyhalto, K. (2015)
+Drivers and interpretations of doctoral education today: National comparisons. Frontline
+Learning Research, 3 (3): 1–18.
+Archbald, D. (2011) The emergence of the nontraditional doctorate: A historical overview.
+New Directions for Adult and Continuing Education, 2011 (129): 8–19.
+Ash, M. (2006) Bachelor of what, master of whom? The Humboldt Myth and historical
+transformations of higher education in German-speaking Europe and the US. European
+Journal of Education, 41 (2): 245–267.
+Bao, Y., Kehm, B., and Ma, Y. (2016) From product to process: The reform of doctoral
+education in Europe and China. Studies in Higher Education. doi:10.1080/
+03075079.2016.1182481.
+Bastalich, W. and McCulloch, A. (2022) The ideal research supervisor ‘can play any role’:
+Rethinking Institutional orientation and induction for commencing doctoral students. Inno­
+vations in Education and Teaching International. doi:10.1080/14703297.2022.2158117.
+Bernstein, B., Evans, B., Fyffe, J., Halai, N., Hall, F., Jensen, H.-S., Marsh, H., and
+Ortega, S. (2014) The continuing evolution of the research doctorate. In M. Nerad and
+
+16
+
+The context
+
+B. Evans (eds) Globalization and Its Impacts on the Quality of PhD Education. Rotter­
+dam:Sense, 5–30.
+Bogle, D. (2017) 100 years of the PhD in the UK. Available online at www.vitae.ac.uk/
+news/vitae-blog/100-years-of-the-phd-by-prof-david-bogle.
+Bitusikova, A. (2010) Doctoral education in Europe: Trends and perspectives. Communications
+in Agriculture and Applied Biological Sciences, 75 (1): 23–28.
+Bitusikova, J., Bohrer, I. Boroši´c, I., Costes, N., Edinsel, K., Holländer, K., Jacobsson, G.,
+Jakopovi´c, M-L., Kearney, F. Mulder., J., Négyesi, M., and Pietzonka, M. (2010)
+Quality Assurance in Postgraduate Education. Helsinki: European Association for Qual­
+ity Assurance in Higher Education.
+Bloom, B., Raine Sorin, C., Wagman, J., and Oaks, L. (2021) Employees, advisees and
+emerging scholars: A qualitative analysis of graduate students’ roles and experiences of
+sexual violence and sexual harassment on college campuses. Sexuality and Culture, 25:
+1653–1672. https//doi.org/10.1007/s12119-021-909841-w.
+Bourke, S. Hattie, J., and Anderson, L. (2004) Predicting examiner recommendations on
+PhD theses. International Journal of Educational Research, 41 (2): 178–194.
+Byrne, J., Jorgensen, T., and Loukkola, T. (2013) Quality Assurance in Doctoral Educa­
+tion – Results of the ARDE Project. Brussels: European University Association.
+Clark, W. (2006) Academic Charisma and the Origins of the Research University. London:
+University of Chicago Press.
+Connelly, J. (2000) The Sovietisation of East German, Czech and Polish Higher Education
+1945–56. Chapel Hill: University of North Carolina Press.
+Denicolo, P., Duke, D., and Reeves, J. (2020) Delivering Inspiring Doctoral Assessment.
+Sage:London.
+de Wit, H. and Altbach, P. (2022) Optimism trumps ethics in student recruitment ‘come­
+back’. University World News, 3 December. Available online at www.universityworldnews.
+com/post.php?story=20221129103238406.
+Dobson, I. (2012) PhDs in Australia, from the beginning. Australian Universities Review, 54
+(1): 94–100.
+Elgar, R. and Klein, R. (2004) What you don’t know: Graduate deans’ knowledge of
+doctoral completion rates. Higher Education Policy, 17 (3): 325–336.
+Elliot, D., Bengstsen, S., Guccione, K., and Kobayashi, S. (2020) The Hidden Curriculum
+in Doctoral Education. Palgrave-Macmillan, e-book. Available at https://doi.org,10.
+1007/978-3-030-41497-9.
+English, S., Flaherty, A., and English A. (2018) Gaslit: An examination of bullying on
+doctoral students. Perspectives on Social Work, 13 (1): 20–32.
+European Universities Association/ Council for Doctoral Education (2022) Building the
+Foundations of Research: A Vision for the Future of Doctoral Education in Europe.
+EUACDE. Available online at www.eua-cde.org/news/909:new-eua-cde-publication­
+building-the-foundations-of-research-%E2%80%93-a-vision-for-the-future-of-doctoral­
+education-in-europe.html.
+Golde, C. (2005) The role of the department and discipline in doctoral student attrition:
+Lessons from four departments. Journal of Higher Education 76 (6): 669–700.
+Guccione, K. (2018) Trust me! Building and breaking professional trust in doctoral student
+supervisor relations. London:Leadership Foundation. Available online at https://eprints.
+gla.ac.uk/258878/.
+
+The overall context
+
+17
+
+Gonzalez-Ocampo, G., Kiley, M., Lopes, A., Malcolm, J., Menezes, I., Morais, R., and
+Virtanen, V. (2015) The curriculum question in doctoral education. Frontline Learning
+Research, 3 (3): 19–34.
+Grant., B., Nerad, M., Balaban, C., Deem, R., Grund, M., Herman, C., Kanjuo Mrcela, A.,
+Porter, S., Rutledge, J., and Strugnell, R. (2022) The doctoral education context in the
+twenty-ﬁrst century: Change at every level. In M. Nerad, D. Bogle, U. Kohl, C.
+O’Carroll, C. Peters, and B. Scholz (eds) Towards a Global Core Value System in Doc­
+toral Education. London: UCL Press, 18–42. https://discovery.ucl.ac.uk/id/eprint/
+10154799/1/Towards-a-Global-Core-Value-System-in-Doctoral-Education.pdf.
+Halse, C. and Malfroy, J. (2010)Retheorising doctoral advising as ‘professional work’.
+Studies in Higher Education, 35(1): 79–92.
+Hammond, J., Ryland, K., Tennant, M., and Boud, D. (2010) Building Research Super­
+vision and Training across Australian Universities. Australian Learning and Teaching
+Council. Available online at https://opus.lib.uts.edu.au/handle/10453/16817.
+Hasgall, A., Saenan, B., and Borrell-Damian, L. (2019) Doctoral Education in Europe
+Today: Approaches and Institutional Structures. Geneva: European Universities Associa­
+tion. Available online at www.eua.eu/resources/publications/809:doctoral-education-i
+n-europe-today-approaches-and-institutional-structures.html.
+Herman, C. (2015) Looking back at doctoral education in South Africa. Studies in Higher
+Education. doi:10.1080/03075079.2015.1101756.
+Hillebrand, H. and Leysinger, C. (2023) LERU’s View on Holistic Doctoral Supervision.
+League of European Research Universities, Advance Paper No. 29. Available online at
+www.leru.org/ﬁles/Publications/2023.02.28_LERU-view-holistic-Doctoral-Supervision­
+full-paper.pdf.
+Huang, F. (2017) From the former Soviet patters towards the US model? Changes in
+Chinese doctoral education. Centre for Global Higher Education Working Papers, No,
+12. London: University College London Institute of Education.
+Kalman, O., Horvath, L., Kardos, D., Kozma, B, Feylsa, M., and Ronay, Z. (2022) Review
+of beneﬁts and challenges of co-supervision in doctoral education. European Journal of
+Education, 00: 1–17. https://doi.org.101111/ejed.12518.
+Kiley, M. (2011) Government policy and research degree higher education. Journal of
+Higher Education Policy and Management 33 (6): 629–640.
+Kiley, M. (2014) Coursework in Australian Doctoral Education: What’s Happening, Why
+and Future Directions?Canberra: Australian Government Ofﬁce for Learning and
+Teaching, Australian National University.
+Kovacevic, M., Bitusikova, A., and Dagen, T. (2022) Emergence of current European
+thinking and policies on doctoral education. European Journal of Education, 00: 1–14.
+https://doi.org/101111/ejed.12515.
+Levecque, K., Anseel, F. DeBeuckelear, A. Van der Hayden, J., and Gisle, L. (2017) Work
+organization and mental health problems in PhD students. Research Policy, 46: 868–879.
+Malo, S. (2007) Doctoral education in Mexico. In S. Powell and H. Green (eds) The Doc­
+torate Worldwide. Maidenhead: Society for Research into Higher Education and Open
+University Press, 194–104.
+Mackie, S. and Bates, G. (2018) Contribution of the doctoral education environment to
+PhD candidates’ mental health problems: a scoping review . Higher Education Research
+and Development. https://doi.org/10.1080/07/294360.2018.1556620.
+
+18
+
+The context
+
+Marais, G., Shankland, R., Haag, P., Fiault, R., and Juniper. B. (2017) A Positive Psychology
+Study and Intervention on the Well-being of French PhD Students in Biology. Retrieved
+from psyarxiv.com/rht94.
+McKenna, S. and van Schalkwyk, S. (2023) A scoping review of the changing landscape of
+doctoral education. Compare: A Journal of Comparative and International Education.
+doi:10.1080/03057925.2023.2168121.
+Metcalfe, J., Wilson, S., and Levecque, K. (2018) Exploring Wellbeing and Mental Health
+and Associated Support Services for Postgraduate Researchers. Cambridge: Vitae, Careers
+Research and Advisory Centre Ltd. Available online at https://re.ukri.org/documents/
+2018/mental-health-report/.
+McGloin, R. and Wynne, C. (2015) Structural Changes in Doctoral Education in the UK:
+A Review of Graduate Schools and the Development of Doctoral Colleges. Lichﬁeld, UK:
+Council for Graduate Education.
+Nerad, M. (2020) Doctoral Education Worldwide: Three Decades of Change. In M.
+Yudkevich, P. Altbach, and H. de Wit (eds) Trends and Issues in Doctoral Education: A
+Global Perspective. Sage:London, 33–52.
+Nybom, T. (2003) The Humboldt legacy: Reﬂections on the past, present and future of
+the European university. Higher Education Policy, 16 (2): 141–159.
+Park, C. (2005) New variant PhD: The changing nature of the doctorate in the UK.
+Journal of Higher Education Policy and Management, 27 (2): 189–207.
+Pederson, H. (2014) New doctoral graduates in the knowledge economy: Trends and key
+issues. Journal of Higher Education Policy and Management, 36 (6): 632–645.
+Rashid, R. (2021) Updating the PhD: Making the case for interdisciplinarity in twenty-ﬁrst
+century doctoral education. Teaching in Higher Education, 26 (3): 508–517.
+Ribeiro, R. (2007) Doctoral education in Brazil. In S. Powell and H. Green (eds) The
+Doctorate Worldwide. Maidenhead: Society for Research into Higher Education and
+Open University Press, 55–167.
+Sadak, J. (ed.) (2004) Doctoral Studies and Qualiﬁcations in Europe and the US: Status and
+Prospects. Bucharest: UNESCO.
+Sarrico, C. (2022) The expansion of higher education and the changing nature and pur­
+pose of the doctorate. Higher Education, 84: 1299–1315. https??doi.org/1997/
+s19734-022-00946-1.
+Share, M. (2016) The PhD Viva: A space for academic development. International Journal
+for Academic Development, 21 (3): 178–193.
+Simpson, R. (1983). How the PhD Came to Britain. Guildford: Society for Research into
+Higher Education.
+Shin, J. C., Kehm, B., and Jones, G. (2018) The increasing importance, growth and evo­
+lution of doctoral education. In J. C. Shin, B. Kehm, and G. Jones (eds) Doctoral Edu­
+cation for the Knowledge Society. e-book, Springer, 1–12.
+Smolentseva, A. (2007) The changing status of the PhD degree in Russia: An academic
+attribute to the non-academic labor market. European Education, 39 (3): 81–201.
+Smolentseva, A., Huisman, J., and Froumin, I. (2018) Transformation of higher education
+institutional landscape in post Soviet countries: From Soviet model to where?. In A.
+Smolentseva, J. Huisman, and I. Froumin (eds) 25 Years of Transformations of Higher
+Education Systems in Post-Soviet Countries. Cham:Palgrave Macmillan, 1–44. Available
+online at www.palgrave.com/gb/book/9783319529790.
+
+The overall context
+
+19
+
+Soin, K. and Huber, C. (2021) Compliance and resistance: How performance measures
+make and unmake universities. Organization, 30 (5): 1130–1151. https://doi.org/10.
+1177/13505084211066810.
+Spencer, B. (2021) The psychological costs of experiencing racial discrimination in the
+ivory tower: The untold stories of black men enrolled in science, technology, engineer­
+ing and mathematics (STEM) doctoral programs. Sociological Forum, 36 (3): 776–798.
+Taylor, S. (2012) Changes in doctoral education: Implications for supervisors in developing
+early career researchers. International Journal of Researcher Development, 3 (2): 1–22.
+Taylor, S. (2023) The changing landscape of doctoral education: A framework for analysis
+and an introduction to the special issue. Innovations in Education and Teaching Inter­
+national, 60 (5). doi:10.1080/14703297.2023.2237962.
+UNESCO (United Nations Educational Scientiﬁc and Cultural Organization) (2014)
+Higher Education in Asia: Expanding Out, Expanding Up. Montreal, Canada:
+UNESCO Institute for Statistics.
+Watson, P. (2010) The German Genius. London: Simon and Schuster.
+Yamamoto. S. (2020) Japan. In S. Taylor, M. Kiley, and K.A. Holley (eds) The Making of
+Doctoral Supervisors. London:Routledge, 108–115.
+Yekibay, M., Karabassitova, L., Mukhatayev, Z., and Yermukhambetova, A. (2022) The
+perception and the experience of young researchers in doctoral programmes in the con­
+text of recent reforms in Kazakhstan. European Journal of Education, 57: 484–496.
+Wald, N., Kumar, V., and Sanderson, L. (2022) Enhancing co-supervision practice by setting
+expectations in structured discussion using a research-informed tool. Higher Education
+Research and Development, 42 (3): 757–769. doi:10.1080/07294360.2022.2082390.
+Zhaung, T., Liu, B., and Ding, R. (2022) University insiders’ perceptions of doctoral
+education development in ﬁve East and Southeast Asian countries: An institutional logics
+perspective. European Journal of Education, 57: 469–483.
+
+Chapter 2
+
+The institutional context
+
+Introduction
+The developments in doctoral education described in the previous chapter are
+often only apparent to supervisors in their translation into the broad setting in
+which they work, namely their institutions. It is the latter, of course, that ulti­
+mately award doctoral degrees and are responsible for the standards of awards, for
+setting expectations of supervisors, for deciding who is eligible to supervise, and
+for providing the support necessary for them to supervise effectively.
+Institutions can and do vary in all of these matters, and for this reason it is
+important that supervisors do not simply rely upon their own experience to inform
+their practice but make efforts to understand the institutional context within
+which they are supervising.
+
+The standards of doctoral awards
+The ultimate object of the exercise is for the candidate to gain a doctorate, which
+involves them meeting the standards set for the award. In order to supervise can­
+didates to achieve those standards, supervisors obviously need to know what the
+standards are. If they do not, then it effectively means that both are operating in
+the dark, and this can be a recipe for disaster.
+Of course, nearly all supervisors will have a doctorate themselves, and on this
+basis they will have some understanding of the standards for the award. But,
+bearing in mind that this is only a sample of one and may have been gained in a
+different institution or a different doctoral programme or in a different higher
+education system, they need to consult the formal deﬁnition.
+In some countries with relatively centralised higher education systems, the
+standards of doctorates are legally deﬁned by the state, as for example in France
+(Batteau 2021) and Japan (Yamamoto 2021), but in others they are deﬁned by
+institutions, and are usually set out in their regulations or ordinances.
+Historically, these have not necessarily been the most enlightening sources of
+information, but in recent years, institutions have been required by external
+
+DOI: 10.4324/9781003432159-4
+
+The institutional context
+
+21
+
+developments to be much more explicit about the standards of qualiﬁcations,
+including doctorates.
+
+Example
+In Europe the Bologna process has led to the establishment of a Framework
+for Qualiﬁcations of the European Higher Education Area (FQEEHA)
+(European Higher Education Area 2005: 3). ‘Third-cycle’ doctoral qualiﬁ­
+cations are awarded to candidates who:
+�
+�
+�
+�
+�
+�
+
+have demonstrated a systematic understanding of a ﬁeld of study and
+mastery of the skills and methods of research associated with that ﬁeld;
+have demonstrated the ability to conceive, design, implement, and
+adapt a substantial process of research with scholarly integrity;
+have made a contribution through original research that extends the
+frontier of knowledge by developing a substantial body of work, some
+of which merits national or international refereed publication;
+are capable of critical analysis, evaluation, and synthesis of new and
+complex ideas;
+can communicate with their peers, the larger scholarly community, and
+with society in general about their areas of expertise;
+can be expected to be able to promote, within academic and profes­
+sional contexts, technological, social, or cultural advancement in a
+knowledge-based society.
+
+The European Framework has informed the development of national frameworks
+in many Western European countries. There have been similar developments else­
+where including Australia (Australian Qualiﬁcations Framework Council 2013),
+Malaysia (Malaysian Qualiﬁcations Agency, 2017), New Zealand (New Zealand
+Qualiﬁcations Authority 2011), South Africa (South African Qualiﬁcations Author­
+ity 2012), Uganda (National Council for Higher Education 2016), and the United
+Kingdom (Quality Assurance Agency 2014).
+In response to these qualiﬁcations frameworks, institutions have been required
+to specify explicit standards for their awards, including their doctoral ones. In
+many cases, they have chosen to adopt national deﬁnitions. So, for example,
+research by Taylor (2022) has shown that nearly all of the 131 UK institutions
+with doctorate awarding powers have adopted the deﬁnition set out in the
+national framework, either verbatim or in rephrased form.
+So, rather than relying upon implicit interpretations of regulations, supervisors
+should now be able to consult explicit institutional deﬁnitions to understand what
+is required for the award. But it should be noted that this is not just helpful, but
+necessary; while institutional deﬁnitions will have common core elements, they
+may still vary in other respects.
+
+22
+
+The context
+
+And of course they will differ between the conventional PhD by thesis, and
+other types of doctoral programmes. Where institutions have a portfolio of
+doctoral programmes, they will deﬁne the standards for each one that they
+offer and supervisors will need to be familiar with the standards governing
+those as well.
+
+Example
+The University of Newcastle upon Tyne in the UK deﬁnes the standards of
+submissions in the ﬁne arts and digital cultures and in music not covered by
+the normal PhD regulations as:
+1
+
+Fine Art and Digital Cultures practice-based PhD
+
+In the ﬁeld of Fine Art and Digital Cultures, candidates whose submission is
+not covered by the normal PhD regulations will undertake the following:
+Research in creative Fine Art and Digital Cultures practice, leading to a
+ﬁnal submission of a substantial body of creative art work which
+demonstrates coherence and originality and constitutes a recognisable
+contribution to the development of contemporary Fine Art and Digital
+Cultures practice, and
+A critical commentary normally between 20,000 and 50,000 words. In
+this, the candidate will document and demonstrate in relation to the
+issues and questions identiﬁed and examined in the research project, a
+critical and reﬂective understanding of his/her creative processes, and
+demonstrate a critical and informed understanding of the contexts in
+which the artwork has been made. It will explain how this ﬁeld has been
+expanded or developed through the candidate’s research. This compo­
+nent of the submission will also include thorough visual documentation
+of the creative work.
+Music practice-based PhD …
+University of Newcastle upon Tyne (2023) University Handbook for
+Examiners of Research Degrees by Thesis: 19. Available online at https://
+blogs.ncl.ac.uk/icmpgr/ﬁles/2017/11/ExaminerHandbook1617.pdf
+
+Finally, for candidates whose studies were affected by the massive disruption to
+research activities caused by the Covid-19 pandemic of 2020–2021, supervisors
+(and examiners) may need to be familiar with guidance on the interpretation of
+standards in the light of the difﬁculties of collecting and analysing data (see for
+example Quality Assurance Agency, 2021).
+
+The institutional context
+
+23
+
+Interrogating practice
+On the basis of your own experience as a doctoral candidate, what do you
+think the standards are for the award?
+How does your institution deﬁne the standards for awards, including
+where appropriate across the range of doctoral programmes offered?
+Are you conﬁdent that you know the institutional standards of the award
+which you are supervising?
+
+Institutional expectations of supervisors
+Once supervisors have a ﬁrm grip on the standards for the award, they also need
+to know what their institution expects of them. Institutional expectations will
+usually be set out in handbooks and/or codes of practice or conduct.
+
+Example
+The University of Adelaide in Australia has a detailed list of the responsi­
+bilities of supervisors that addresses the different stages of candidature and
+provides a detailed set of examples with a few of them shown below. The
+full list is available from the University’s website.
+Responsibilities of the supervisors
+Supervisors have responsibilities that include …
+Commitment to providing high quality supervision
+(i)
+
+becoming familiar with and abiding by the University’s Academic
+Program Rules and the policies and procedures governing research
+degrees … [13 listed]
+(ii) maintaining membership of the supervisor register and participating in
+on-going training in supervision as directed by the school or Dean of
+Graduate Studies, which may include one or more of the following: [For
+example]
+�
+�
+
+facilitating or attending University-based workshops or seminars on
+supervision
+serving as a Postgraduate Coordinator … [six more noted]
+
+(iii) providing academic guidance to students at all stages of candidature.
+
+24
+
+The context
+
+Communication [examples of four responsibilities]
+(i)
+
+before discussing/offering supervision to an applicant or prospective
+applicant, ensuring that the category and level of membership to the
+Supervisor Register and available capacity to supervise, is sufﬁcient to
+do so.
+(ii) discussing any plans to enrol in a HDR program with the relevant
+stakeholders and seeking the relevant approval from the Dean of
+Graduate Studies prior to commencement.
+At the beginning of candidature, [examples from the total of six responsibilities]
+(i) arranging a meeting with the student at the commencement of can­
+didature to clarify their respective roles, responsibilities and expecta­
+tions throughout the candidature …
+(ii) determining a program of research and study in consultation with the
+student that is capable of being completed by a competent and wellsupervised Doctoral or Masters research student …
+(iii) ensuring that international students in the mixed research and cour­
+sework stream of the Master of Philosophy/Master of Clinical Sci­
+ence are appropriately directed to undertake any core IBP-R courses
+stipulated by the IBP-R Coordinator …
+During candidature [examples of 11 responsibilities]
+(i)
+
+meeting with, or otherwise contacting the student at least once per
+fortnight …
+(ii) providing appropriate academic support throughout the candidature
+to enable the student to achieve his/her highest standard.
+(iii) ensuring that the research methods and outcomes of students under
+their supervision are appropriate and valid …
+During the later stages of candidature
+(i)
+
+commenting on the content and on drafts of the thesis in a timely
+manner.
+(ii) advising the head of school and the Dean of Graduate Studies, of the
+names, addresses and credentials of suitable examiners …
+(iii) advising the head of school and the Dean of Graduate Studies, of
+additional suitable examiners … in the event that they are required to
+complete the examination process.
+(iv) providing career advice and assistance to the student as appropriate.
+
+The institutional context
+
+25
+
+At the time of submission
+Certifying that:
+(i)
+
+(ii)
+(iii)
+(iv)
+
+(v)
+
+the thesis is prima facie worthy of examination both in terms of its
+content and its presentation relative to the standards speciﬁed in the
+Academic Program Rules for the degree.
+the student has satisfactorily completed any coursework requirements.
+the thesis is within the maximum allowable word length for the
+program.
+the student has abided by the University’s policies with regard to
+assistance and editing and the inclusion of appropriate acknowl­
+edgements within the thesis.
+the student has lodged all the original data or primary research
+materials associated with their research with the School, as
+required under the Australian Code for the Responsible Conduct
+of Research …
+
+University of Adelaide (2022–2023) Research Student Handbook: Appendix
+2, Responsibilities. Available online at: www.adelaide.edu.au/publications/
+ua/media/120/res-handbook.pdf
+
+For doctoral education systems with oral examinations, this list would also
+include supporting candidates to prepare for the oral component and perhaps
+arranging the date, time, and venue.
+Overall with regard to expectations, it is important that supervisors, parti­
+cularly experienced ones, consult the most recent documentation which incor­
+porates any changes or additions made during or as a result of the Covid-19
+pandemic. In particular, there has been a heightened focus on supporting
+candidates in terms of their wellbeing and mental health (as will be seen in
+Chapter 12), on supervision in the online environment (Chapter 17), and
+online examination (Chapter 19).
+
+Interrogating practice
+What does your institution expect of its doctoral supervisors:
+Before candidature?
+Early in candidature?
+During candidature?
+At the time of submission?
+Have expectations changed as a result of the Covid-19 pandemic? If so, how?
+
+26
+
+The context
+
+Eligibility to supervise
+In a few countries, eligibility to supervise is deﬁned by the state. So, for example,
+in China academic staff must normally be full professors and have been pro­
+moted to a higher grade in order to supervise (Lin and Liu, 2021). In France
+(see Batteau 2021) and Poland (Kweik 2021) supervisors must by law have a
+higher doctorate, the ‘habilitation’. In Sweden, it has been mandatory since
+2004 for at least one supervisor to have attended the relevant institutional
+training programme (Emilsson and Johnsson 2007).
+In most countries, however, it is ultimately up to institutions to deﬁne who is
+eligible to supervise doctoral students. Usually, it is a requirement that supervisors
+themselves have a doctorate, although in some circumstances – particularly in
+disciplines where the doctorate has been a relatively recent innovation – the
+requirement may be for them to have equivalent research experience. A further
+requirement in most cases that they are research active (see Taylor, Kiley, and
+Holley 2021).
+In many institutions, as well as the above, as will be seen in the next section,
+there may be a further requirement that new supervisors undertake appropriate
+initial professional development in the form of a course or training programme.
+Additionally, some institutions may require supervisors to initially act as a
+second/associate or junior supervisor in a team rather than as a primary supervisor.
+Here, the normal requirement is to complete at least one supervisory cycle as a
+second/associate supervisor under the wing of a more experienced senior super­
+visor before becoming eligible to be a primary supervisor.
+Finally, institutions may vary the number of candidates who can be supervised
+on the basis of experience of successful completions; the more of the latter, the
+more candidates can be supervised.
+
+Example
+Monash University in Australia uses a range of eligibility criteria to deﬁne
+levels of accreditation for supervision. These are:
+Registered status – this allows staff members or adjunct appointments
+individuals to be an associate supervisor with a 10–25% supervisory load for
+up to three students. To qualify, they need to have a doctorate or equivalent
+research experience, and have completed required training.
+Accredited status – this allows staff members or adjunct appointments to be
+a main supervisor for up to eight candidates and an associate supervisor for a
+further eight with a 10% to 90% supervisory load per student. To qualify, they
+need to have a doctorate, at least one year’s full-time equivalent experience in
+supervising a doctoral student or students, meet Faculty-speciﬁc quality and
+research active criteria, and to have completed required training.
+Accredited Emeritus status – this allows staff allows staff approaching
+retirement to complete any current supervisions but not take on new
+
+The institutional context
+
+27
+
+candidates as a main supervisor although they may act as associate super­
+visors. To qualify, staff have to be currently accredited supervisors and hold
+a Monash Emeritus Professor appointment.
+External status - this allows individuals who are not current staff or adjuncts
+to be supervisors with a 10–25% load per student for up to three graduate
+research students. To qualify, the requirement is to have a doctorate.
+Monash University (2020) Supervision Framework Available online at
+www.monash.edu/graduate-resbearch/supervision/framework
+
+Many institutions which have formal eligibility requirements have instituted a
+register of those of their academic staff who have met these requirements, and
+only those whose names are on the register are entitled to supervise. This is par­
+ticularly the case for many institutions in Australia (Kiley 2021) and New Zealand
+(Carton 2021).
+
+Interrogating practice
+Do you need to have a doctorate yourself to supervise doctoral candidates in
+your institution?
+Do you need to be research active and do you appreciate what this requires?
+Are there other eligibility requirements in terms of professional development
+and/or completions? If so, what are they?
+
+Support for supervisors
+Support for supervisors may include initial professional development at the start of
+their supervisory careers, opportunities for being mentored while acting as a
+second supervisor, and opportunities for continuing professional development.
+Additionally, institutions may also provide support in the event of difﬁculties in the
+relationship with candidates, of which supervisors also need to be aware.
+Initial professional development
+Left to their own devices new supervisors tend to rely heavily upon their own
+experiences as doctoral candidates to inform their practice (see for example
+Amundsen and McAlpine 2009; Guerin, Kerr, and Green 2015, Fulgence, 2019,
+Gonzalez-Ocampo and Castello 2019, Whittington, Barnes, and Lee 2021).
+Where these experiences are good, they tend to emulate whatever their own
+supervisors did; where they are poor, often they do the exact opposite. But neither
+emulation nor rejection based on personal experience is likely to offer a sound
+pedagogical basis upon which to be a successful supervisor, and there is evidence
+(see for example Lovitts 2008, Wadesango and Machingambi 2011, Van de
+
+28
+
+The context
+
+Schoot et al. 2013, Litalien and Guay 2015) that the quality of supervision is a
+major factor in explaining delayed and non-completion of candidature.
+Primarily for this reason many, if by no means all, institutions have estab­
+lished mandatory initial professional development programmes for academic
+staff who are new to supervision. This is almost universal in Australia (see Kiley
+2021), Ireland (see Carton 2021), Sweden (see Brodin, Sonesson, and Ahlberg
+2021), and the UK (Taylor 2018) but much patchier in other countries, for
+example France (see Batteau 2021) or Germany (see Brentel 2021). In other
+cases, there may be voluntary opportunities for professional development in
+supervisory practice.
+As Kiley (2021), Guerin et al. (2017) and Taylor (2018) have shown, there are
+considerable variations in the duration and substance of initial professional devel­
+opment programmes. The most basic generally lasts two or three hours and has a
+focus on what might be described as compliance. In these sessions staff new to
+research supervision are taken through the main rules and procedures relating to
+being a supervisor at the particular institution, but not otherwise equipped for
+their roles.
+
+Example
+Feather and McDermott (2014: 169) commented on a supervisor training
+course they had been required to attend and reported that:
+although [it] was insightful and engaging, we did not learn much more
+than we already knew. The programme dealt mainly with the mechanics
+(form-ﬁlling, administration, recording of attendance, and other
+administrative tasks) of supervising PhDs, but not the realities of
+supervision: that is, the emotions, the mentoring of students (both
+domestic and international) and the softer issues of dealing with stu­
+dents and their needs. So this left both of us with anxieties and ques­
+tions concerning the supervision of doctoral students; more so as every
+member of staff was expected to take on more doctoral students by the
+school and the university.
+
+Perhaps a more common format is the one-day introductory workshop/online
+modules which, when completed, allow a staff member to take on a supervisory
+role, although generally as a second/associate supervisor with a more experienced
+colleague managing or chairing the overall supervisory team. Such programmes
+may contain pedagogical elements, but often leave out other aspects of supervisory
+responsibilities (see Taylor 2018).
+In other cases, initial professional development programmes are much more
+comprehensive.
+
+The institutional context
+
+Example
+Lund University in Sweden has a course for academic staff new to supervision,
+which takes four days of contact time and ten days of studying.
+Learning outcomes
+Upon successful completion, the participant should be able to:
+�
+�
+�
+�
+�
+�
+
+deﬁne his or her role and responsibility within doctoral education;
+relate knowledge of doctoral student learning to modes of supervision
+and to other elements of doctoral education;
+relate doctoral education and supervision to relevant laws, regulations,
+and policy;
+reﬂect of ethical issues related to the practice of supervision;
+introduce the doctoral student to his or her rights and responsibilities,
+and to other resources available for help and support;
+together with the student design an individual study plan that is attuned
+to the intended learning outcomes and to local conditions for doctoral
+education.
+
+Content
+The course deals with the supervisor role, student learning, and the pedagogy
+of supervision in relation to rules and regulations, local circumstances and
+Lund University’s policy. Supervision is discussed both in theory as in
+practice. Equal opportunities in doctoral education are also discussed, as is
+power and ethics.
+Course realisation
+Classroom meetings are comprised of lectures, discussions and sharing of
+experiences. Between meetings, ﬁve assignments should be completed. The
+ﬁrst one, a short presentation of one’s expectations on the course and one’s
+experiences of doctoral supervision, should be completed before the course
+starts. Together, the ﬁrst three assignments relate to themes in the class­
+room meetings and form the basis for group discussions. The fourth
+assignment is a paper on a topic of one’s own choice but related to doctoral
+student learning. Assignment four is discussed in a special seminar (in
+smaller groups). The ﬁnal assignment is to be handed in after the last
+meeting and includes a reﬂection on supervision and an optional course
+evaluation.
+
+29
+
+30
+
+The context
+
+Assessment
+Passed assignments one to ﬁve.
+Active participation in the scheduled meetings (2 full days and 4 half days).
+Lund University. Available online at www.ahu.lu.se/ﬁleadmin/user_uploa
+d/ahu/PDF/Syllabus_doctoralsupervision_2021.pdf Accessed 27 July 2023.
+
+However, while they may be comprehensive in meeting the needs of supervisors
+engaged in supervising traditional PhDs, they may not necessarily meet the needs of
+those who engaged in supervising other types, including practice-led and professional
+doctorates. As will be seen in Chapter 4, supervising candidates on such programmes
+can make signiﬁcant additional demands upon supervisors, but few institutions seem to
+provide dedicated support (see Hamilton and Carson 2015, Fillery-Travis et al. 2017).
+It may be noted that, even where excellent professional development opportunities
+are available, some new supervisors are highly resistant on the traditional grounds
+that, by dint of achieving their own doctorate, they must by deﬁnition be capable of
+supervising others to do the same (see Spiller, Byrnes, and Ferguson 2013) and/or
+because they see doctoral supervision as a craft which can only be learned by actually
+doing it (see Hockey 1997). But supervisors who are left to get on with it may end up
+feeling out of their depth and unable to cope with the result it becomes a highly
+stressful experience for them and for their candidates (see Hammond et al. 2010,
+McAlpine 2013, Turner 2015). Moreover, there is some evidence that supervisor
+development programmes can have a positive impact both upon supervisory practice
+(see Bitzer 2010; Guerin, Kerr, and Green 2017; McCulloch and Loeser 2016,
+Haven et al. 2022) and upon the student experience (see Brew and Peseta 2009).
+This is not to say that initial professional development is a panacea for all of the issues
+faced by new supervisors but it can help them to ﬁnd their feet in what is now a very
+complex and demanding part of academic practice.
+
+Interrogating practice
+What initial professional development does your institution offer to new
+doctoral supervisors?
+Is it a requirement to complete it?
+How far do you think this will equip you to begin to supervise?
+Does it cover supervision of non-traditional doctorates?
+
+Mentoring
+As brieﬂy noted earlier, many institutions now require that staff new to doctoral
+supervision act as a second/associate supervisor usually for one successful cycle of
+a doctorate while being mentored by an experienced supervisor.
+
+The institutional context
+
+31
+
+If institutions do have such a requirement, it is important that mentors are
+selected on the basis of a reputation for good practice; otherwise, it can backﬁre.
+As one of the respondents to the survey by Hammond et al. (2010: 71) put the
+matter:
+Mentoring has a role, but I worry about passing on bad habits … You can …
+if you put your ear to the ground … hear all this terrible practice going on.
+There really is a great danger of bad practice being passed on.
+(Research leader, regional university)
+It is also vital that there should be clear deﬁnitions of the roles and responsibilities
+of the participants and statements of the desired outcomes of the process. As a
+professor interviewed by Robertson (2019: 70) put it:
+There is a general assumption that principal supervisors have a sort of men­
+toring role with junior colleagues. We don’t give them any guidelines, or any
+support in terms of what’s involved in mentoring … We’re setting up expec­
+tations but the expectations aren’t even articulated.
+(Prof A)
+If not, it may be appropriate to negotiate them, perhaps using a checklist for
+mentors and mentees.
+
+Example
+Grossman and Crowther (2015: 5) have produced an extensive checklist for
+mentors which includes:
+The mentor should:
+�
+�
+�
+�
+�
+�
+�
+�
+�
+�
+�
+
+Establish goals for the novice supervisor …
+Assist the novice with engagement with the student.
+Provide referencing and library assistance.
+Provide networking opportunities within the academic context.
+Critique drafts …
+Provide positive feedback on co-supervisory performance.
+Clarify the novice supervisor’s role relative to the experienced one.
+Encourage the novice to attend a supervision course.
+Ensure the novice has knowledge of the university administrative
+requirements for higher degrees …
+Keep watch to ensure the postgraduate, under instruction from the
+novice, complies with [the] rules …
+Encourage the novice to have an independent research and publishing
+career.
+
+32
+
+The context
+
+�
+�
+�
+
+�
+
+Monitor time management of the novice and the supervisory process …
+Encourage active acquisition of new research skills and extend knowl­
+edge outside the novice supervisor’s specialist research ﬁeld.
+Assist the novice in establishing a supervisory style preference … [and]
+ensure the novice is well acquainted with different supervisory approa­
+ches, is able to critically evaluate educational assumptions and has a
+good understanding of when and which supervisory roles to apply to
+fully meet the needs of individual research students at any given time.
+Ensure the novice is aware of funding and grant opportunities and
+procedures.
+
+In addition, it can be helpful for the mentee to maintain a record of what he
+or she has learned, that is, a reﬂective log. This will stand them in good stead
+when they become a senior supervisor in their own right, provide a basis for
+continuing development over their careers as supervisors, enable them to eval­
+uate their practice, and, where appropriate, disseminate it, and perhaps con­
+tribute to applications for promotion or awards (see Chapter 19).
+
+Interrogating practice
+Does your institution have any requirements that you serve initially as a
+second/associate supervisor while being mentored by a more experienced one?
+If so, is there a formal deﬁnition of the roles and responsibilities of the par­
+ticipants and the desired outcomes of the process? If not, can you negotiate
+them with your co-supervisor?
+Would it be worth recording your learning in a reﬂective log and, if so, how?
+
+Continuing professional development
+Whereas initial professional development programmes and apprenticeship/
+mentoring for new supervisors are increasingly becoming part of the super­
+visory landscape, provision is often lacking for continuing professional devel­
+opment for experienced supervisors (Wichmann-Hansen, Godskesen, and Kiley
+2019).
+In view of the fact that they have already successfully supervised a number of
+candidates, experienced supervisors can be very sceptical about continuing
+professional development (see Spiller, Byrnes, Ferguson 2013).
+While this reluctance is understandable, as Chapter 1 has shown doctoral edu­
+cation has changed rapidly and fundamentally over the past two decades or so and,
+to quote Hammond et al. (2010: 12):
+
+The institutional context
+
+33
+
+A consequence of this … is the decreasing relevance of supervisors’ own
+supervisory experiences for supervision in the 21st century and hence the need
+for supervisors to develop new supervisory practices.
+For this reason, a number of institutions have established requirements that, to
+remain in good standing as supervisors, the latter have to complete a short
+refresher course at a prescribed interval.
+
+Example
+Queen Mary University of London requires supervisors to undertake update
+training every two years. The training covers:
+�
+�
+�
+
+Regulations updates
+Giving excellent feedback
+The PhD cycle, including interruptions and extensions guidance
+
+At the end, supervisors are required to complete the Supervisor Update
+Training Quiz, which has a pass mark of 80%.
+Queen Mary University (2023) Supervisor Training. Available online at
+www.qmul.ac.uk/doctoralcollege/supervisors/training/
+
+But, even where it is not a requirement, experienced supervisors can engage in
+ongoing professional development through voluntarily attending updating courses
+and/or engaging in other relevant activities.
+
+Example
+The Julich Research Centre in Germany has a Supervisors’ Forum which is
+‘both a physical place, in that it convenes approximately twice per year,
+and a virtual place where people exchange information and messages both
+by e-mail and a dedicated chat line’. In 2023 it offered a range of activities
+for supervisors including virtual information events on challenges of inter­
+national collaborations, transferable skills, and research data management,
+workshops covering communication and conﬂict resolution and super­
+visory culture, tutorials on monitoring student progress, advice in super­
+vision conﬂicts, peer to peer discussion of challenging situations and how
+to resolve them, and support in term of recruitment, equal opportunities,
+and counselling. Julich Forschuungszentrum (2023) Support for Super­
+visors. Available online at www.fz-juelich.de/en/judocs/support-for-sup
+ervisors
+
+34
+
+The context
+
+Interrogating practice
+Does your institution require you to undertake ongoing professional devel­
+opment to remain in good standing as a registered supervisor? If so, what
+does this involve?
+Are there any workshops on new developments that could beneﬁt your
+practice?
+What opportunities are there for you to share your practice or experience
+with colleagues and, in the process, perhaps learn from them as well?
+
+Conclusions
+Hopefully, the present chapter has indicated the importance of supervisors being
+aware of the institutional framework within which they are operating in terms of
+standards, expectations, eligibility, and support. Often, these matters are covered
+in induction or initial professional development workshops for new supervisors
+who are thereby made aware of them at the time that they begin their supervisory
+careers. But is worth noting that, as doctoral education itself is changing and is
+impacted by events such as the Covid-19 pandemic, institutions are having to
+follow suit, with the result that frameworks are constantly being modiﬁed and
+updated. So deﬁnitions of the doctorate are being modiﬁed by the appearance of
+new supra-national and national frameworks; expectations are constantly expand­
+ing, for example through the new agendas of timely submission and completion,
+the quality of the candidate experience, and employability; eligibility is becoming
+more rigorous through the professionalisation of supervision; and support is
+becoming more extensive, particularly in terms of professional development.
+The point here is that it is not enough for supervisors to be aware of the insti­
+tutional framework at whatever time they were taken through it in the past; they
+need to keep up to date on current developments and, where appropriate, embody
+them in their practice.
+
+References
+Amundsen, C. and McAlpine, L. (2009) ‘Learning supervision’: Trial by ﬁre. Innovations
+in Education and Teaching International, 46 (3): 331–342.
+Australian Qualiﬁcations Framework Council (2013) Australian Qualiﬁcations Framework.
+2nd Ed. South Australia: Australian Qualiﬁcations Framework Council.
+Batteau. P. (2021) France. In S. Taylor, M. Kiley, and K.A. Holley (eds) The Making of
+Doctoral Supervisors. London:Routledge, 51–59.
+Bitzer, E. (2010) Postgraduate research supervision: More at stake than research training.
+Acta Academica Supplementum (1): 23–56.
+Brentel, H. (2021) Germany. In S. Taylor, M. Kiley, and K.A. Holley (eds) The Making of
+Doctoral Supervisors. London:Routledge, 88–97.
+
+The institutional context
+
+35
+
+Brew, A. and Peseta, T. (2009) Supervision development and recognition in a reﬂexive
+space. In D. Boud and A. Lee (eds) Changing Practices of Doctoral Education. London:
+Routledge, 126–114.
+Brodin, E., Sonesson, A., and Ahlberg, A. (2021) Sweden. In S. Taylor, M. Kiley and K.A.
+Holley (eds) The Making of Doctoral Supervisors. London:Routledge, 164–174.
+Carton, J. (2021) Ireland. In S. Taylor, M. Kiley, and K.A. Holley (eds) The Making of
+Doctoral Supervisors. London:Routledge, 88–97.
+Emilsson, U.M. and Johnsson, E. (2007) Supervision of supervisors: On developing supervision
+in postgraduate education. Higher Education Research and Development, 26 (2): 163–179.
+European HigherEducation Area (2005) The Framework for Qualiﬁcations in the European
+Higher Education Area. Available online at www.ehea.info/Upload/document/minis
+terial_declarations/EHEAParis2018_Communique_AppendixIII_952778.pdf.
+Feather, D. and McDermott, K. (2014) The role of new doctoral supervisors in higher
+education – A reﬂective view of literature and experience using two case studies.
+Research in Post-Compulsory Education, 19 (2): 165–176.
+Fillery-Travis, A, Maguire, K., Pizzolatti, N., Robinson, L., Lowley, A. Stel, N., Mans, P,
+van Wijk, J., Prodi, E., Sprerotti, F., Dobrinnski, C., Peacock, J., Taylor, R., and Vitale,
+T. (2017) A Handbook for Supervisors of Modern Doctoral Candidates. SuperProfDoc.
+Available online at http://superprofdoc.eu/?page_id=71.
+Fulgence, K. (2019) A theoretical perspective on how doctoral supervisors develop super­
+vision skills. International Journal of Doctoral Studies, 14: 721–739.
+Gonzalez-Ocampo, G., and Castello, M. (2019) Supervisors were ﬁrst students: Analysing
+supervisors’ perceptions as doctoral students versus doctoral supervisors. Innovations in
+Education and Teaching International, 56 (6): 711–725.
+Grossman, E. and Crowther, N. (2015) Co-supervision in postgraduate training: Ensuring
+the right hand knows what the left hand is doing. South African Journal of Science, 111
+(11–12): 104–111.
+Guerin, C., Kerr, H., and Green, I. (2015) Supervision pedagogies: Narratives from the
+ﬁeld. Teaching in Higher Education, 20 (1): 107–118.
+Guerin, C., Walker, R., Aitchison, C., Laming, M., Padmanabhan, M., and James, B. (2017)
+Doctoral supervisor development in Australian universities: Preparing research supervisors
+to teach writing. Journal of Academic Language and Learning, 11 (1): 88–103.
+Hamilton, J. and Carson, S. (2015) Speaking of supervision: A dialogic approach to building
+higher degree research supervision capacity in the creative arts. Educational Philosophy and
+Theory, 47 (12): 1348–1366.
+Hammond, J., Ryland, K., Tennant, M., and Boud, D. (2010) Building Research Supervision
+and Training across Australian Universities. Strawberry Hills, New South Wales: Australian
+Learning and Teaching Council.
+Haven, T., Bouter, L., Mennen, L., and Tijdink (2022) Superb supervision: A pilot study
+on training supervisors to convey responsible research practices onto their PhD candi­
+dates. Accountability in Research. doi:10.1080/08989621,2022.2971153.
+Hockey, J. (1997) A complex craft: UK PhD supervision in the social sciences. Research in
+Post-Compulsory Education, 2 (1): 45–70.
+Kiley, M. (2021) Australia. In S. Taylor, M. Kiley, and K.A. Holley (eds) The Making of
+Doctoral Supervisors. London:Routledge, 1–12.
+Kweik, M. (2021) Poland. In S. Taylor, M. Kiley, and K.A. Holley (eds) The Making of
+Doctoral Supervisors. London:Routledge, 51–59.
+
+36
+
+The context
+
+Litalien, D. and Guay, F. (2015) Dropout intentions in PhD studies: A comprehensive
+model based on interpersonal relationships and motivational resources. Contemporary
+Educational Psychology, 41: 218–231.
+Lin, H. and Liu, S. (2021) China. In S. Taylor, M. Kiley, and K.A. Holley (eds.) The
+Making of Doctoral Supervisors. London:Routledge, 31–40.
+Lovitts, B.E. (2008) The transition to independent research: Who makes it, who doesn’t
+and why. The Journal of Higher Education, 79 (3): 296–325.
+Malaysian Qualiﬁcations Agency (2017) Malaysian Qualiﬁcations Framework. 2nd Ed.
+Available online at www.mqa.gov.my/pv4/mqf.cfm.
+McAlpine, L. (2013) Doctoral supervision: Not an individual but a collective institutional
+responsibility. Journal for the Study of Education and Development, 36 (3): 259–280.
+McCulloch, A. and Loeser, C. (2016) Does research degree supervisor training work? The
+impact of a professional development induction workshop on supervision practice.
+Higher Education Research and Development. doi:10.1080/07294360.2016.1139547.
+National Council for Higher Education (2016) The Uganda Higher Education Qualiﬁca­
+tions Framework. Available online at https://iuea.ac.ug/sitepad-data/uploads//2021/
+03/Uganda-Higher-Education-Qualiﬁcations-Framework-2016.pdf.
+New Zealand Qualiﬁcations Authority (2011) The New Zealand Qualiﬁcations Framework.
+Available online at www.nzqa.govt.nz/assets/Studying-in-NZ/New-Zealand-Qualiﬁca
+tion-Framework/requirements-nzqf.pdf.
+Quality Assurance Agency (2014) UK Quality Code for Higher Education. Part A: Setting
+and Maintaining Academic Standards. The Frameworks for Higher Educational Qualiﬁ­
+cations of UK Degree-Awarding Bodies. Available online at www.qaa.ac.uk/docs/qaa/
+quality-code/qualiﬁcations-frameworks.pdf.
+Quality Assurance Agency (2021) Advice on Doctoral Standards for Research Students and
+Supervisors. Available online at www.qaa.ac.uk/docs/qaa/guidance/advice-on-doctora
+l-standards-for-research-students-and-supervisors.pdf.
+Robertson, M. (2019) Power and Doctoral Supervision Teams. London:Routledge.
+Spiller, D., Byrnes, G., and Ferguson, P. (2013) Enhancing postgraduate supervision
+through a process of conversational inquiry. Higher Education Research and Develop­
+ment, 32 (5): 833–845.
+The South African Qualiﬁcations Authority (2012) Level Descriptors for the South African
+National Qualiﬁcations Framework. Available online at www.saqa.org.za/level-descrip
+tors-for-the-south-african-national-qualiﬁcations-framework/.
+Taylor, S. (2018) Eligibility to Supervise: A Study of UK Institutions. UK Council for
+Graduate Education. Available online at https://ukcge.ac.uk/resources/resource-libra
+ry/eligibility-to-supervise-a-study-of-uk-institutions.
+Taylor, S., Kiley M., and Holley. K.A. (2021) Conclusions. In S. Taylor, M. Kiley, and K.
+A. Holley (eds) The Making of Doctoral Supervisors. London:Routledge, 2014–2212.
+Taylor, S. (2022) Developments in Doctoral Examination in the UK. UK Council for
+Graduate Education. Available online at https://ukcge.ac.uk/assets/resources/Devel
+opments-in-the-Doctoral-Examination-in-the-UK-Taylor-UKCGE-2022.pdf.
+Turner, G. (2015) Learning to Supervise: Four Journeys. Innovations in Education and
+Teaching International, 52 (1): 86–98.
+Van de Schoot, R., Yerkes, M., Mouw, J., and Sonnevald, H. (2013) What took them so
+long? Explaining PhD delays among doctoral candidates. PLoS ONE 8 (7): e68839.
+doi:10.1371/journal.pone.0068839.
+
+The institutional context
+
+37
+
+Wadesango, N. and Machingambi, S. (2011) Post graduate students’ experiences with
+research supervisors. Journal of Sociology and Social Anthropology, 2 (1): 31–37.
+Wichmann-Hansen, G., Godskesen, M. and Kiley, M. (2019) Successful development
+programs for experienced supervisors – What does it take? International Journal for
+Academic Development. DO1: 10.1080/1360144X.2019.1663352.
+Whittington, K., Barnes, S., and Lee, A. (2021) What inﬂuences how we supervise? In A. Lee
+and R. Bongaardt (eds) The Future of Doctoral Research. London:Routledge, 209–223.
+Yamamoto, S. (2021) Japan. In S. Taylor, M. Kiley, and K.A. Holley (eds.) The Making of
+Doctoral Supervisors. London:Routledge, 108–115.
+
+

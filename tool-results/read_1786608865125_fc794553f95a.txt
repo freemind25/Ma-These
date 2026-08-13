@@ -1,0 +1,2002 @@
+   550→Hale, Duanduan Han, Daniel Limonta Velázquez, Arkady Mak, Corley-Ann
+   551→Parker, Nancy Day Sakaduski, and Roberto Tuda Rivas read recent editions or
+   552→parts thereof and offered thoughtful suggestions. Editors and production staff
+   553→brought the work to publication. We thank all these people. We also thank our
+   554→families for their support, encouragement, and counsel.
+   555→Acknowledgments
+   556→This page intentionally left blank
+   557→PART I
+   558→Some Preliminaries
+   559→This page intentionally left blank
+   560→3
+   561→State your facts as simply as possible, even boldly. No one wants flowers of
+   562→eloquence or literary ornaments in a research article.
+   563→—R. B. McKerrow
+   564→THE SCOPE OF SCIENTIFIC WRITING
+   565→The term scientific writing commonly denotes the reporting of original research
+   566→in journals through scientific papers that follow a standard format. In its broader
+   567→sense, scientific writing also includes communication about science through
+   568→other types of journal articles, such as review papers summarizing and integrat-
+   569→ing previously published research. And in a still broader sense, it includes other
+   570→types of professional communication by scientists—for example, grant propos-
+   571→als, oral presentations, and poster presentations. Related endeavors include
+   572→writing about science for the public, sometimes called science writing.
+   573→THE NEED FOR CLARITY
+   574→The key characteristic of scientific writing is clarity. Successful scientific
+   575→experimentation is the result of a clear mind attacking a clearly stated problem
+   576→and producing clearly stated conclusions. Ideally, clarity should be a character-
+   577→```
+   578→istic of any type of communication; however, when something is being said for
+   579→```
+   580→the first time, clarity is essential. Most scientific papers, those published in our
+   581→primary research journals, are accepted for publication precisely because they
+   582→contribute new knowledge. Hence, we should demand absolute clarity in sci-
+   583→entific writing.
+   584→CHAPTER 1
+   585→What Is Scientific Writing?
+   586→4 How to Write and Publish a Scientific Paper
+   587→RECEIVING THE SIGNALS
+   588→Many people have no doubt heard this question: If a tree falls in the forest and
+   589→there is no one there to hear it fall, does it make a sound? The correct answer
+   590→is no. Sound is more than pressure waves, and indeed there can be no sound
+   591→without someone to hear it.
+   592→Similarly, scientific communication is a two-way process. Just as a signal of
+   593→```
+   594→any kind is useless unless it is perceived, a published scientific paper (signal)
+   595→```
+   596→is useless unless it is both received and understood by its intended audience.
+   597→Thus we can restate the axiom of science as follows: A scientific experiment is
+   598→not complete until the results have been published and understood. A pub-
+   599→lished paper is no more than pressure waves unless it is understood. Too
+   600→many scientific papers fall silently in the woods.
+   601→UNDERSTANDING THE SIGNALS
+   602→Scientific writing is the transmission of a clear signal to a recipient. The words
+   603→of the signal should be as clear, simple, and well ordered as possible. In
+   604→scientific writing, there is little need for ornamentation. Flowery literary
+   605→embellishments—metaphors, similes, idiomatic expressions—are very likely
+   606→to cause confusion and should seldom be used in research papers.
+   607→Science is simply too important to be communicated in anything other
+   608→than words that have a certain meaning. And the meaning should be clear and
+   609→certain not just to peers of the authors, but also to students just embarking on
+   610→their careers, to scientists reading outside their own narrow disciplines, and
+   611→```
+   612→especially to those readers (most readers today) whose native language is other
+   613→```
+   614→than English.
+   615→Many kinds of writing are designed for entertainment. Scientific writing
+   616→has a different purpose: to communicate new scientific findings. Scientific
+   617→writing should be as clear and simple as possible.
+   618→UNDERSTANDING THE CONTEXT
+   619→What is clear to a recipient depends both on what is transmitted and how the
+   620→recipient interprets it. Therefore, communicating clearly requires awareness
+   621→of what the recipient brings. What is the recipient’s background? What is the
+   622→recipient seeking? How does the recipient expect the writing to be organized?
+   623→Clarity in scientific writing requires attentiveness to such questions. As
+   624→communication professionals advise, know your audience. Also know the
+   625→What Is Scientific Writing? 5
+   626→conventions, and thus the expectations, for structuring the type of writing that
+   627→you are doing.
+   628→ORGANIZATION AND LANGUAGE IN SCIENTIFIC WRITING
+   629→Effective organization is key to communicating clearly and efficiently in sci-
+   630→ence. Such organization includes following the standard format for a scientific
+   631→paper. It also includes organizing ideas logically within that format.
+   632→In addition to organization, the second principal ingredient of a scientific
+   633→paper should be appropriate language. This book keeps emphasizing proper
+   634→use of English because many scientists have trouble in this area. All scientists
+   635→```
+   636→must learn to use the English language with precision. A book (Day and Saka-
+   637→```
+   638→```
+   639→duski 2011) wholly concerned with English for scientists is available.
+   640→```
+   641→If scientifically determined knowledge is at least as important as any other
+   642→knowledge, it must be communicated effectively, clearly, and in words with a
+   643→certain meaning. The scientist, to succeed in this endeavor, must therefore be
+   644→literate. David B. Truman, when he was dean of Columbia College, said it well:
+   645→“In the complexities of contemporary existence the specialist who is trained
+   646→but uneducated, technically skilled but culturally incompetent, is a menace.”
+   647→Given that the ultimate result of scientific research is publication, it is sur-
+   648→prising that many scientists neglect the responsibilities involved with this
+   649→aspect. Scientists will spend months or years of hard work to secure data and
+   650→then unconcernedly let much of their findings’ value be lost because of their
+   651→lack of interest in the communication process. The same scientists who will
+   652→overcome tremendous obstacles to carry out a measurement to the fourth
+   653→decimal place will be in deep slumber while a typographical error changes
+   654→micrograms to milligrams.
+   655→English need not be difficult. In scientific writing, we say, “The best English
+   656→```
+   657→is that which gives the sense in the fewest short words” (a dictum printed for
+   658→```
+   659→```
+   660→some years in the Journal of Bacteriology’s instructions to authors). Literary
+   661→```
+   662→devices, such as metaphors, divert attention from substance to style. They
+   663→should be used rarely in scientific writing.
+   664→6
+   665→I imagine the early scientists of the Royal Society involved in creating the first
+   666→```
+   667→journals: If they came forward to 2020, everything in our world would shock
+   668→```
+   669→and terrify them, but they’d find deep comfort in scientific journals.
+   670→—Michael Eisen
+   671→THE EARLY HISTORY
+   672→Human beings have been able to communicate for thousands of years. Yet
+   673→scientific communication as we know it today is relatively new. The first jour-
+   674→```
+   675→nals were published about 350 years ago, and the IMRAD (introduction, meth-
+   676→```
+   677→```
+   678→ods, results, and discussion) organization of scientific papers has developed
+   679→```
+   680→within about the past century.
+   681→Knowledge, scientific or otherwise, could not be communicated effectively
+   682→until appropriate mechanisms of communication became available. Prehis-
+   683→toric people could communicate orally, of course, but each new generation
+   684→started from essentially the same baseline because without written records to
+   685→refer to, knowledge was lost almost as rapidly as it was found.
+   686→Cave paintings and inscriptions carved onto rocks were among the first
+   687→human attempts to leave records for succeeding generations. In a sense, today
+   688→we are lucky that our early ancestors chose such media because some of these
+   689→early “messages” have survived, whereas messages on less-durable materials
+   690→```
+   691→would have been lost. (Perhaps many have been.) On the other hand, commu-
+   692→```
+   693→nication via such media was incredibly difficult. Think, for example, of the
+   694→distributional problems that the U.S. Postal Service would have today if the
+   695→```
+   696→medium of correspondence were 100-lb (about 45-kg) rocks. It has enough
+   697→```
+   698→```
+   699→troubles with 1-oz (about 28-g) letters.
+   700→```
+   701→CHAPTER 2
+   702→Historical Perspectives
+   703→Historical Perspectives 7
+   704→The earliest book we know of is a Chaldean account of the Flood. This story
+   705→was inscribed on a clay tablet in about 4000 BCE, antedating Genesis by some
+   706→```
+   707→2,000 years (Tuchman 1980).
+   708→```
+   709→A medium of communication that was lightweight and portable was
+   710→```
+   711→needed. The first successful medium was papyrus (sheets made from the
+   712→```
+   713→papyrus plant and glued together to form a roll sometimes 20 to 40 ft [6–12 m]
+   714→```
+   715→long, fastened to a wooden roller), which came into use about 2000 BCE. In
+   716→```
+   717→```
+   718→190 BCE, parchment (made from animal skins) came into use. The Greeks
+   719→```
+   720→```
+   721→assembled large libraries in Ephesus and Pergamum (in what is now Turkey),
+   722→```
+   723→as well as in Alexandria. According to Plutarch, the library in Pergamum con-
+   724→```
+   725→tained 200,000 volumes in 40 BCE (Tuchman 1980).
+   726→```
+   727→In 105 CE, the Chinese invented paper, the dominant medium of written
+   728→communication in modern times—at least until the internet era. However,
+   729→because there was no effective way of duplicating communications, scholarly
+   730→knowledge could not be widely disseminated.
+   731→Perhaps the greatest single technical invention in the intellectual history of
+   732→the human race was the printing press. Although movable type was invented
+   733→```
+   734→in China in about 1100 CE (Tuchman 1980), the Western world gives credit to
+   735→```
+   736→Johannes Gutenberg, who printed his 42-line-per-page Bible from movable
+   737→type on a printing press in 1455 CE. Gutenberg’s invention was immediately
+   738→and effectively put to use throughout Europe. By the year 1500, thousands of
+   739→copies of hundreds of books were printed.
+   740→The first scientific journals appeared in 1665, when two journals, the Jour-
+   741→nal des Sçavans in France and the Philosophical Transactions of the Royal Society
+   742→of London in England, began publication. Since then, journals have served as
+   743→the primary means of communication in the sciences. As of late 2021, there
+   744→were over 48,000 peer-reviewed scholarly journals, of which over 35,000 were
+   745→in English. The number of articles published per year appeared to exceed
+   746→4 million. The number of journals, the number of articles submitted, and the
+   747→```
+   748→number of articles published all have been increasing from year to year (STM
+   749→```
+   750→```
+   751→2021, pp. 15–17).
+   752→```
+   753→THE ELECTRONIC ERA
+   754→When many older scientists began their careers, they wrote their papers in
+   755→pen or pencil and then typed them on a typewriter or had a secretary do so.
+   756→They or a scientific illustrator drew graphs by hand. They or a scientific pho-
+   757→tographer took photographs on film. They then carefully packaged several cop-
+   758→ies of the manuscript and sent them via postal service to a journal. The journal
+   759→```
+   760→then mailed copies to the referees (peer reviewers) for evaluation, and the
+   761→```
+   762→referees mailed them back with comments. The editor then mailed a decision
+   763→8 How to Write and Publish a Scientific Paper
+   764→letter to the scientists. If the paper was accepted, the scientists made the
+   765→needed revisions and mailed back a final version of the manuscript. A copy
+   766→editor edited the paper by hand, and a compositor rekeyboarded the manu-
+   767→script. Once the paper was typeset, a copy was mailed to the scientists, who
+   768→checked for typographical errors and mailed back corrections. Before the
+   769→```
+   770→paper was published, the scientists ordered reprints (freestanding printed cop-
+   771→```
+   772→```
+   773→ies) of the paper, largely for fellow scientists who lacked access to libraries
+   774→```
+   775→containing the journal or who lacked access to a photocopier.
+   776→Today the process has changed greatly. Word processors, graphics pro-
+   777→grams, digital photography, and the internet have facilitated the preparation
+   778→and dissemination of scientific papers. Journals throughout the world have
+   779→online systems for manuscript submission and peer review. Editors and
+   780→authors communicate electronically. Manuscript editors edit papers online,
+   781→and authors receive typeset proofs of their papers electronically for inspection.
+   782→Journals are available online as well as in print—and sometimes instead of in
+   783→```
+   784→print; increasingly, accepted papers become available individually online
+   785→```
+   786→before appearing in journal issues. At some journals, electronic extras, such as
+   787→appendixes and video clips, supplement online papers. Many journals are
+   788→openly accessible online, either starting at the time of publication or after a lag
+   789→period. In addition, readers often can access papers through the authors’ web-
+   790→sites or through resources at the authors’ institutions, or the readers can
+   791→request electronic reprints. Some of the changes have increased the technical
+   792→demands on authors, but overall, the changes have hastened and eased the
+   793→publication process and improved service to readers.
+   794→Major trends in recent years have included the increasing use of preprint
+   795→servers—in other words, openly accessible online repositories or archives to
+   796→```
+   797→which authors post manuscripts before (or sometimes instead of) submitting
+   798→```
+   799→them to peer-reviewed journals. In physics and related fields, researchers have
+   800→long posted preprints to the open-access archive now called arXiv, which
+   801→```
+   802→observed its 30th birthday in 2021 (Celebrating arXiv’s 30th Anniversary
+   803→```
+   804→```
+   805→2021). More recently, substantial numbers of researchers in biological fields
+   806→```
+   807→```
+   808→have posted preprints, for example in bioRxiv (Kaiser 2017). The trend acceler-
+   809→```
+   810→ated with the advent of COVID-19 and the impetus to share research about it
+   811→```
+   812→quickly (Kupferschmidt 2020). Related developments have included the advent
+   813→```
+   814→```
+   815→of overlay journals, which are compilations of preprints (and sometimes other
+   816→```
+   817→```
+   818→online items) that, after peer review, been chosen for inclusion (Alves 2021).
+   819→```
+   820→Like circulating drafts to colleagues, posting manuscripts in preprint serv-
+   821→ers can aid in sharing information, obtaining feedback, and establishing prior-
+   822→ity. It does not, however, substitute for publication in a peer-reviewed journal
+   823→or the equivalent. Fellow researchers, members of the public, and the media
+   824→should be aware that items in preprint servers have not received the scrutiny
+   825→of formal peer review.
+   826→Historical Perspectives 9
+   827→Whereas much regarding the mechanics of publication has changed, much
+   828→else has stayed the same. Items that persist include the basic structure of a
+   829→scientific paper, the basic process by which scientific papers are accepted for
+   830→publication, the basic ethical norms in scientific publication, and the basic
+   831→features of good scientific prose. In particular, in many fields of science, the
+   832→IMRAD structure for scientific papers remains dominant.
+   833→THE IMRAD STORY
+   834→The early journals published papers that we call descriptive. Typically, a scien-
+   835→tist would report, “First, I saw this, and then I saw that,” or “First, I did this,
+   836→and then I did that.” Often the observations were in simple chronological
+   837→order.
+   838→This descriptive style was appropriate for the kind of science then being
+   839→reported. In fact, this straightforward style of reporting still is sometimes used
+   840→in “letters” journals, case reports in medicine, geological surveys, and other
+   841→publications.
+   842→By the second half of the nineteenth century, science was beginning to move
+   843→fast and in increasingly sophisticated ways. Microbiology serves as an example.
+   844→Especially through the work of Louis Pasteur, who confirmed the germ theory
+   845→of disease and developed pure-culture methods of studying microorganisms,
+   846→both science and the reporting of science made great advances.
+   847→At this time, methodology became all-important. To quiet his critics, many
+   848→of whom were fanatic believers in the theory of spontaneous generation, Pas-
+   849→teur found it necessary to describe his experiments in exquisite detail. Because
+   850→reasonably competent peers could reproduce Pasteur’s experiments, the prin-
+   851→ciple of reproducibility of experiments became a fundamental tenet of the phi-
+   852→losophy of science, and a separate methods section led the way toward the
+   853→highly structured IMRAD format.
+   854→The work of Pasteur was followed, in the early 1900s, by the work of Paul
+   855→```
+   856→Ehrlich and, in the 1930s, by the work of Gerhard Domagk (sulfa drugs).
+   857→```
+   858→```
+   859→World War II prompted the development of penicillin (first described by Alex-
+   860→```
+   861→```
+   862→ander Fleming in 1929). Streptomycin was reported in 1944, and soon after
+   863→```
+   864→World War II, the mad but wonderful search for “miracle drugs” produced
+   865→tetracyclines and dozens of other effective antibiotics.
+   866→As these advances were pouring out of medical research laboratories after
+   867→World War II, it was logical that investment in research would greatly increase.
+   868→In the United States, this positive inducement to support science was soon
+   869→```
+   870→(in 1957) joined by a negative factor when the Soviets flew Sputnik around the
+   871→```
+   872→```
+   873→Earth. In the following years, the U.S. government (and others) poured
+   874→```
+   875→additional billions of dollars into scientific research.
+   876→10 How to Write and Publish a Scientific Paper
+   877→Money produced science, and science produced papers. Mountains of
+   878→```
+   879→them. The result was powerful pressure on the existing (and the many new)
+   880→```
+   881→journals. Journal editors, in self-defense if for no other reason, began to
+   882→demand that manuscripts be concisely written and well organized. Journal
+   883→space became too precious to be wasted on verbosity or redundancy. The
+   884→IMRAD format, which had been slowly progressing since the latter part of the
+   885→nineteenth century, now came into almost universal use in research journals.
+   886→Some editors espoused IMRAD because they became convinced that it was the
+   887→simplest and most logical way to communicate research results. Other editors,
+   888→perhaps not convinced by the simple logic of IMRAD, nonetheless hopped on
+   889→```
+   890→the bandwagon because the rigidity of IMRAD did indeed save space (and
+   891→```
+   892→```
+   893→expense) in the journals, and because IMRAD made life easier for editors and
+   894→```
+   895→referees by indexing the major parts of a manuscript.
+   896→```
+   897→The logic of IMRAD can be defined in question form: What question (prob-
+   898→```
+   899→```
+   900→lem) was studied? The answer is the introduction. How was the problem stud-
+   901→```
+   902→ied? The answer is the methods. What were the findings? The answer is the
+   903→results. What do these findings mean? The answer is the discussion.
+   904→It now seems clear that the simple logic of IMRAD does help the author
+   905→organize and write the manuscript, and IMRAD provides an easy road map for
+   906→editors, referees, and ultimately readers to follow in reading the paper.
+   907→Although the IMRAD format is widely used, it is not the only format for
+   908→scientific papers. For example, in some journals, the methods section appears
+   909→at the end of papers. In some journals, there is a combined results and discus-
+   910→sion section. In some, a conclusions section appears at the end. In papers
+   911→about research in which results of one experiment determine the approach
+   912→taken in the next, methods sections and results sections can alternate. In some
+   913→papers, especially in the social sciences, a long literature review section may
+   914→appear near the beginning of the paper. Thus, although the IMRAD format is
+   915→often the norm, other possibilities include IRDAM, IMRDRDRD, IMRADC,
+   916→IMRMRMRD, ILMRAD, and more.
+   917→Later in this book, we discuss components of a scientific paper in the order
+   918→in which they appear in the IMRAD format. However, most of our advice on
+   919→each component is relevant regardless of the structure used by the journal to
+   920→which you will submit your paper. Before writing your paper, of course, be
+   921→sure to determine which structure is appropriate for the journal. To do so, read
+   922→the journal’s instructions to authors and look at papers similar to yours that
+   923→have appeared in the journal. These actions are parts of approaching a writing
+   924→project—the subject of the next chapter.
+   925→11
+   926→Writing is easy. All you do is stare at a blank sheet of paper until drops of blood
+   927→form on your forehead.
+   928→—Gene Fowler
+   929→ESTABLISHING THE MINDSET
+   930→The thought of preparing a piece of scientific writing can intimidate even the
+   931→best writers. However, establishing a suitable mindset and taking an appropri-
+   932→ate approach can make the task manageable. Perhaps most basic, remember
+   933→that you are writing to communicate, not to impress. Readers of scientific
+   934→```
+   935→papers want to know what you did, what you found, and what it means; they
+   936→```
+   937→are not seeking great literary merit. If you do good research and present it
+   938→clearly, you will please and satisfy readers. Indeed, in scientific writing, read-
+   939→ers should notice mainly the content, not the style.
+   940→Realize that those reading your work want you to do well—they are not out
+   941→```
+   942→to thwart you. Journal editors are delighted to receive good papers; ditto for the
+   943→```
+   944→```
+   945→scientists they enlist as referees (peer reviewers) to help evaluate your work.
+   946→```
+   947→Likewise, if you are a student, professors want you to do well. Yes, these people
+   948→often give constructive criticism. But they are not doing so because they dislike
+   949→```
+   950→you; rather, they do so because they want your work to succeed. Do not be
+   951→```
+   952→paralyzed by the prospect of criticism. Rather, feel fortunate that you will
+   953→receive feedback that can help your writing to be its best.
+   954→CHAPTER 3
+   955→Approaching a Writing Project
+   956→12 How to Write and Publish a Scientific Paper
+   957→PREPARING TO WRITE
+   958→In the laboratory, careful preparation helps experiments proceed smoothly
+   959→and efficiently. Much the same is true of scientific writing. By preparing care-
+   960→fully before you start to compose a manuscript, you can make writing rela-
+   961→tively easy and painless. Of course, in our unbiased view, preparing to write
+   962→```
+   963→should include reading this book and keeping it on hand to consult. (Our
+   964→```
+   965→publisher suggests buying a copy for your office or lab, a copy to use at home,
+   966→```
+   967→and maybe one to keep in your car or boat.) But using this book is only a start.
+   968→```
+   969→The following also can help.
+   970→Good writing is largely a matter of effective imitation. Therefore, obtain cop-
+   971→ies of highly regarded scientific papers in your research area, including papers
+   972→in the journal to which you plan to submit your current work. Notice how these
+   973→papers are written. For example: What sections do they include, and in what
+   974→order? How long do the various sections tend to be? How do the sections tend to
+   975→be structured? What types of subheadings, if any, tend to be included? How
+   976→many figures and tables, and what types thereof, are typical? Especially if you are
+   977→a nonnative speaker of English, what seem to be some standard phrases that you
+   978→could use in presenting your own work? Using published papers as models, and
+   979→```
+   980→perhaps using detailed outlines of them to help structure your own paper (Gray
+   981→```
+   982→```
+   983→2020), can prepare you to craft a manuscript that will be suitable to submit.
+   984→```
+   985→Successful writing also entails following instructions. Essentially every sci-
+   986→entific journal posts instructions to authors. Following these instructions
+   987→takes much of the guesswork out of writing and can save you the unpleasant
+   988→task of rewriting a paper because it did not meet the journal’s specifications
+   989→```
+   990→(or finding that the editor simply rejected your paper without comment). If
+   991→```
+   992→```
+   993→instructions are long (some journals’ instructions run the equivalent of several
+   994→```
+   995→```
+   996→pages or more), underline or highlight the key points to remember. Alterna-
+   997→```
+   998→tively, you may list the points most relevant to the paper you will write. Also,
+   999→consider bookmarking on your computer the journal’s instructions to authors.
+  1000→For more detailed guidance—for instance, on nomenclature, reference for-
+  1001→mats, and grammar—instructions for authors often refer readers to standard
+  1002→style manuals. Among style manuals commonly used in the sciences are the
+  1003→```
+  1004→following:
+  1005→```
+  1006→The ACS [American Chemical Society] Guide to Scholarly Communication
+  1007→```
+  1008→(Banik et al. 2020–)
+  1009→```
+  1010→```
+  1011→AMA [American Medical Association] Manual of Style, 11th edition (Chris-
+  1012→```
+  1013→```
+  1014→tiansen et al. 2020)
+  1015→```
+  1016→```
+  1017→The Chicago Manual of Style, 17th edition (2017)
+  1018→```
+  1019→Publication Manual of the American Psychological Association, 7th edition
+  1020→```
+  1021→(2020)
+  1022→```
+  1023→Approaching a Writing Project 13
+  1024→```
+  1025→Scientific Style and Format, 8th edition (Style Manual Subcommittee, Coun-
+  1026→```
+  1027→```
+  1028→cil of Science Editors 2014)
+  1029→```
+  1030→New editions of these manuals come out from time to time. Between editions,
+  1031→updates commonly are posted on the manuals’ websites. And increasingly,
+  1032→such manuals are available in continually updated online versions, as well as
+  1033→in print. Indeed, the ACS Guide to Scholarly Communication, which succeeds
+  1034→```
+  1035→the ACS Style Guide (Coghill and Garson 2006), exists only as such a version.
+  1036→```
+  1037→Look for the most recent edition of the style manual you will use. Commonly,
+  1038→you can find such style manuals in academic and other libraries. If you lack
+  1039→easy access, consider investing in the style manuals most commonly used in
+  1040→your research field. In any case, be ready to consult such manuals.
+  1041→If you do not have reference-management software—for example, End-
+  1042→Note, RefWorks, or Zotero—now may be a good time to obtain it. Many uni-
+  1043→versities make such software readily available and provide instruction in its
+  1044→use. Further information about using such software appears in Chapter 15.
+  1045→While you are gathering scientific content, ideas for your paper may occur
+  1046→to you. For example, you may think of a point to include in the discussion, or
+  1047→```
+  1048→you may come up with a good way to structure a table. Write down these ideas;
+  1049→```
+  1050→for each section of your paper, consider creating a file in which to place them.
+  1051→Not only will recording your ideas keep them from escaping your memory, but
+  1052→having such ideas readily available can get your writing off to a quick start.
+  1053→Once you have gathered and analyzed your data, speaking can be a fine
+  1054→transition to writing. If possible, present your work at a departmental seminar
+  1055→or local research day. Perhaps give an oral or poster presentation at a confer-
+  1056→ence. Preparing to speak can help you with formulating your article. Also,
+  1057→questions from listeners can help you to shape what you will write.
+  1058→Research typically is a team endeavor. So is reporting on research. In the
+  1059→writing, as in the research, different team members commonly take different
+  1060→roles. Sometimes one member drafts the whole paper and the others review
+  1061→and revise it. Other times, different members draft different parts of the paper
+  1062→and then circulate them to the others for review. Whatever the case, clarify
+  1063→beforehand who will do what, and perhaps set a timetable. Maybe consider
+  1064→what software, if any, you will use to facilitate collaboration. Will you share
+  1065→drafts via Dropbox? Will you use Google Docs? Will you use software designed
+  1066→specifically for academic collaboration? Discuss such matters before starting
+  1067→to write.
+  1068→To facilitate writing, do lots of prewriting. For example, stack copies of pub-
+  1069→lished papers in the order in which you plan to cite them. List points you wish
+  1070→to make in a given section, and sort and re-sort them until you are pleased
+  1071→with the order. Perhaps make a formal outline. By doing much of the thinking
+  1072→and organizing beforehand, you can lower the activation energy needed to
+  1073→14 How to Write and Publish a Scientific Paper
+  1074→write a paper. In fact, such prewriting can catalyze the writing process so well
+  1075→that you find yourself eager to write.
+  1076→In preparing to write, realize that sometimes ideas must percolate for a
+  1077→while. If, for example, you cannot come up with an effective way to begin your
+  1078→paper or to structure a section, take a break. Exercise for a while, take a nap, or
+  1079→maybe discuss your work with someone. A solution may then occur to you.
+  1080→The physicist Wolfgang Pauli reportedly stated, “I don’t mind your thinking
+  1081→```
+  1082→slowly; I mind your publishing faster than you think” (Mackay and Ebison
+  1083→```
+  1084→```
+  1085→1977, p. 117). Take the time to reflect and plan before you write and publish.
+  1086→```
+  1087→DOING THE WRITING
+  1088→Doing the writing means making time to do it. Most of us in science are busy.
+  1089→If writing must wait until we have extra time, it might never get done. There-
+  1090→fore, block out times to write. Indicate in your calendar or personal organizer
+  1091→the times that you have reserved for specific writing projects. Except in emer-
+  1092→gencies, do not let other tasks impinge on those times. Also, set deadlines. For
+  1093→example, promise yourself that you will draft a given section by Thursday. Or
+  1094→make clear to yourself that you will not leave for vacation until you have sub-
+  1095→mitted a given item.
+  1096→One highly published professor advocates the following approach
+  1097→```
+  1098→(Zerubavel 1999): On a page showing your weekly schedule hour by hour,
+  1099→```
+  1100→cross out the times that you are regularly unavailable—for example, times that
+  1101→you teach, have laboratory meetings, or have personal commitments. Then
+  1102→choose from the remaining times some slots to reserve for writing. In doing
+  1103→so, consider what times of day you tend to write most effectively. For example,
+  1104→if you are a night person, block out some evenings during which to write each
+  1105→```
+  1106→week; perhaps save some morning time for more routine writing-related tasks,
+  1107→```
+  1108→such as checking references. If you are a morning person, do the reverse.
+  1109→Also, consider where and how you work best. Do you write most produc-
+  1110→tively in an office, or is the library, a coffee shop, or the couch most conducive
+  1111→to your best writing? Do you need quiet, or does music help you work? Is it
+  1112→most effective for you to write for a brief time every day, or do longer, less fre-
+  1113→quent stints produce your finest work? Do your ideas flow best when you set
+  1114→fingers to keyboard, or does writing by hand with your favorite pen yield the
+  1115→most favorable work? Contrary to what some may claim, there is no one best
+  1116→set of writing habits. Whatever works for you is fine. To thine own functioning
+  1117→be true.
+  1118→When writing, you can start with whatever part of a manuscript you find
+  1119→```
+  1120→easiest; there is no rule that you must write the introduction first. Many
+  1121→```
+  1122→researchers like to begin by drafting the methods section, which tends to be
+  1123→Approaching a Writing Project 15
+  1124→the most straightforward to write. Many like to begin by drafting the figures
+  1125→and tables. Some like to start by drafting a preliminary reference list—or even
+  1126→the acknowledgments. And many authors leave until last finalizing the title
+  1127→and abstract. Rough-drafting the title and abstract, though, can be an excellent
+  1128→way to gain needed focus when starting to write a paper.
+  1129→Once you have drafted one section, the momentum that you have estab-
+  1130→lished can facilitate writing the others. Feel free to draft the remaining sec-
+  1131→tions in whatever order works best for you. Although the structure of Part II of
+  1132→this book parallels that of a scientific paper—with the first chapter addressing
+  1133→“How to Prepare the Title” and the last “How to Cite the References”—you can
+  1134→```
+  1135→draft the parts of a scientific paper (and read these chapters) in whatever order
+  1136→```
+  1137→works best for you.
+  1138→Once you have established momentum, beware of dissipating it by inter-
+  1139→rupting your writing to search for small details. Rather, make notes to find
+  1140→```
+  1141→the missing information later; to identify them easily, type them in boldface,
+  1142→```
+  1143→highlight them, or use the “comment” feature in Microsoft Word. Also, if a
+  1144→manuscript will take more than one session to draft, consider how best to
+  1145→maintain your momentum from session to session. Some authors like to
+  1146→stop in the middle of a section while still going strong. Before ending their
+  1147→writing session, they jot down the next few points they wish to make. Thus,
+  1148→at their next writing session, they can start quickly. Consider taking this
+  1149→approach.
+  1150→Starting with whatever part you find easiest and taking breaks while still
+  1151→going strong can help combat or prevent writer’s block at various phases of a
+  1152→writing project. If you nevertheless experience writer’s block, here are some
+  1153→additional remedies to consider:
+  1154→• Break the writing task into small, manageable pieces—for example, sub-
+  1155→sections of each part of a scientific paper.
+  1156→• To bolster your confidence, read something you have successfully
+  1157→written.
+  1158→• To help get into the proper voice and rhythm, read a well-written example
+  1159→of the type of writing you will do.
+  1160→• Start by voice-recording your ideas or telling them to someone.
+  1161→• Write a rough draft in a comfortable, informal format, such as that of an
+  1162→email message.
+  1163→• Set a timer for 15 or 20 minutes, and throughout that time, write without
+  1164→editing. To prevent editing, try writing with the computer monitor turned
+  1165→off.
+  1166→• If all else fails, bribe yourself. The promise of a favorite snack, a wanted
+  1167→small purchase, or some preferred recreation can help ensure that you
+  1168→complete the task.
+  1169→16 How to Write and Publish a Scientific Paper
+  1170→Other ways to help ensure that you start—and finish—your writing include
+  1171→taking a writing course and following a schedule designed by a writing expert.
+  1172→As well as supplying instruction, courses where class members write and revise
+  1173→journal articles section by section provide structure and incentive for complet-
+  1174→ing one’s paper. Indeed, some researchers have taken such courses more than
+  1175→once in order to obtain that structure. Such structure also can come from exter-
+  1176→nally designed writing plans. For example, the workbook Writing Your Journal
+  1177→```
+  1178→Article in 12 Weeks (Belcher 2019) presents a detailed, week-by-week plan for
+  1179→```
+  1180→producing an article. Although intended primarily for students in the humani-
+  1181→ties and related areas, the plan can be adapted for writing scientific papers.
+  1182→```
+  1183→Writing groups (also called writing clubs) can promote productivity and qual-
+  1184→```
+  1185→ity in writing. Simply put, writing groups are groups of people who meet
+  1186→periodically to discuss their writing. They can meet in person, electronically,
+  1187→```
+  1188→(ScienceCartoonsPlus.com)
+  1189→```
+  1190→Approaching a Writing Project 17
+  1191→or both. And they can focus on the writing process, the written product, or
+  1192→some of each. As well as offering psychological support, writing groups can
+  1193→benefit members in other ways. They can offer accountability by having mem-
+  1194→bers regularly report on their progress. They can aid in problem-solving, for
+  1195→example by giving feedback on members’ drafts and discussing obstacles
+  1196→members encounter in writing and publication. They can educate members,
+  1197→for instance through readings or speakers. And they can supply professional
+  1198→networking and social interaction. A related option is to have a writing partner
+  1199→and regularly check in on each other’s progress, brainstorm about difficulties,
+  1200→and review drafts. Many research settings have writing groups, and online
+  1201→options that span settings exist. If you lack access to a writing group and think
+  1202→that you would find such interaction helpful, consider starting one or recruit-
+  1203→ing a writing partner or partners.
+  1204→Much like doing a piece of scientific research, crafting a scientific paper
+  1205→typically entails solving a series of problems in order to achieve the overall
+  1206→objective. In writing, as in research, often the problems have more than one
+  1207→reasonable solution, each with advantages and disadvantages. Yet writers
+  1208→```
+  1209→sometimes worry that there is “one right way” (Becker 2020). Just how should
+  1210→```
+  1211→a given item be worded? In just what format should a given illustration appear?
+  1212→How should a given part of the paper be organized? Often, such questions
+  1213→have more than one good answer. Find one that seems reasonable and go with
+  1214→it. If it seems inadequate, or if a better solution occurs to you, you can make
+  1215→changes when you revise your manuscript.
+  1216→REVISING YOUR WORK
+  1217→Good writing tends to be largely a matter of good revising. No one will see
+  1218→```
+  1219→your early drafts, and no one cares how rough they are (a comforting thought
+  1220→```
+  1221→```
+  1222→to those facing writer’s block). The important thing is to revise your writing
+  1223→```
+  1224→until it works well. First, revise your writing yourself. Then show it to others
+  1225→and, using their feedback, revise your writing some more.
+  1226→Revision is not just for students or other beginners. Researchers who have
+  1227→long enjoyed great success in publishing revise the papers they write. After a
+  1228→presentation to a scientific-writing class, a well-known scientist and journal
+  1229→editor was asked, “Do you revise your work?” He answered: “If I’m lucky, only
+  1230→about 10 times.”
+  1231→In revising your work, ask yourself questions such as the following:
+  1232→• Does the manuscript include all the information it should?
+  1233→• Should any content be deleted?
+  1234→• Is all the information accurate?
+  1235→• Is all the reasoning sound?
+  1236→18 How to Write and Publish a Scientific Paper
+  1237→• Is the content consistent throughout?
+  1238→• Is everything logically organized?
+  1239→• Is everything clearly worded?
+  1240→• Have you stated your points briefly, simply, and directly? In other words,
+  1241→is everything concise?
+  1242→• Are grammar, spelling, punctuation, and word use correct throughout?
+  1243→• Are all figures and tables well designed?
+  1244→• Does the manuscript comply with the instructions?
+  1245→Information that can aid in answering some of these questions appears in
+  1246→later chapters of the book. For example, Chapters 10 through 13 describe the
+  1247→appropriate content and organization of the main sections of a scientific paper,
+  1248→and Chapters 30 through 34 address word usage and related subjects. In addi-
+  1249→tion to reading these chapters before you write, consider consulting them as
+  1250→you revise your manuscript. Also, for further guidance, please see Chapter 41,
+  1251→which focuses mainly on editing one’s own work.
+  1252→Once your manuscript is nearly the best you can make it, show it to others
+  1253→and request their feedback. Years ago, scientists were advised, “Show your
+  1254→manuscript to a guy in your lab, a guy in a lab down the hall, and your wife.”
+  1255→These days, such advice would rightly be viewed as inaccurate and sexist. Yet
+  1256→the concept remains valid. So, consider following this advice: Show your man-
+  1257→uscript to an expert in your research specialty, who can help identify technical
+  1258→problems. Also, show it to someone in your general field, who can note items
+  1259→that may be unclear to readers and other issues. And show it to an intelligent
+  1260→general reader—for instance, a friend in the humanities—who may identify
+  1261→problems that those interested mainly in the content tend to miss. In addition,
+  1262→consider also showing your manuscript to a professional scientific editor, as
+  1263→discussed in Chapter 41.
+  1264→After receiving feedback from those reviewing your manuscript, consider
+  1265→how to apply it. Of course, follow those suggestions that you find useful. Even
+  1266→if a suggestion seems unsuitable, keep it in mind. Although you may disagree
+  1267→with it, it may alert you to a problem. For example, if a reader misinterpreted
+  1268→a point, you may try to state it more clearly. Comparing the various readers’
+  1269→comments may aid in this regard. If only one reader had difficulty understand-
+  1270→ing an item, you might dismiss it as a fluke. If, however, multiple readers did
+  1271→so, improvement probably is needed.
+  1272→Revise your writing thoroughly. But avoid the temptation to keep revising it
+  1273→forever. No manuscript is perfect. Be satisfied with mere excellence. Journal
+  1274→editors and others will be pleased to receive the fine manuscripts that you will
+  1275→prepare by following the advice in this chapter and the rest of this book.
+  1276→19
+  1277→Without publication, science is dead.
+  1278→—Gerard Piel
+  1279→DEFINITION OF A SCIENTIFIC PAPER
+  1280→A scientific paper is a written and published report describing original research
+  1281→results. That short definition must be qualified, however, by noting that a sci-
+  1282→entific paper must be written in a certain way, as defined by tradition, editorial
+  1283→practice, scientific ethics, and the interplay of printing and publishing
+  1284→procedures.
+  1285→To properly define a “scientific paper,” we must define the mechanism that
+  1286→```
+  1287→creates a scientific paper—namely, valid (that is, primary) publication.
+  1288→```
+  1289→Abstracts, theses, conference reports, and many other types of literature are
+  1290→published, but such pieces do not normally meet the test of valid publication.
+  1291→Further, even if a scientific paper meets all the other tests, it is not validly pub-
+  1292→lished if it is published in the wrong place. That is, a relatively poor research
+  1293→report, but one that meets the tests, is validly published if accepted and pub-
+  1294→```
+  1295→lished in the right place (a primary journal or other primary publication); a
+  1296→```
+  1297→superbly prepared research report is not validly published if published in the
+  1298→wrong place. Most of the government literature and conference literature, as
+  1299→well as institutional bulletins and other ephemeral publications, do not qualify
+  1300→as primary literature.
+  1301→Many people have struggled with the definition of primary publication
+  1302→```
+  1303→(valid publication), from which is derived the definition of a scientific paper.
+  1304→```
+  1305→```
+  1306→The Council of Biology Editors (CBE), now the Council of Science Editors
+  1307→```
+  1308→CHAPTER 4
+  1309→What Is a Scientific Paper?
+  1310→20 How to Write and Publish a Scientific Paper
+  1311→```
+  1312→(CSE), arrived at the following definition (Council of Biology Editors 1968,
+  1313→```
+  1314→p. 2):
+  1315→An acceptable primary scientific publication must be the first disclosure
+  1316→```
+  1317→containing sufficient information to enable peers (1) to assess observa-
+  1318→```
+  1319→```
+  1320→tions, (2) to repeat experiments, and (3) to evaluate intellectual processes;
+  1321→```
+  1322→moreover, it must be susceptible to sensory perception, essentially per-
+  1323→manent, available to the scientific community without restriction, and
+  1324→available for regular screening by one or more of the major recognized
+  1325→```
+  1326→secondary services (e.g., currently, Biological Abstracts, Chemical
+  1327→```
+  1328→Abstracts, Index Medicus, Excerpta Medica, Bibliography of Agriculture,
+  1329→```
+  1330→etc., in the United States and similar services in other countries).
+  1331→```
+  1332→At first reading, this definition may seem excessively complex, or at least
+  1333→verbose. But those who had a hand in drafting it weighed each word carefully
+  1334→and doubted that an acceptable definition could be provided in appreciably
+  1335→fewer words. Because it is important that students, authors, editors, and all
+  1336→others concerned understand what a scientific paper is and what it is not, it
+  1337→may be helpful to work through this definition to see what it really means.
+  1338→“An acceptable primary scientific publication” must be “the first disclo-
+  1339→sure.” Certainly, first disclosure of new research data often takes place via oral
+  1340→presentation at a scientific meeting. But the thrust of the CBE statement is
+  1341→```
+  1342→that disclosure is more than disgorgement by the author; effective first disclo-
+  1343→```
+  1344→sure is accomplished only when the disclosure takes a form that allows the
+  1345→```
+  1346→peers of the author (either now or in the future) to fully comprehend and use
+  1347→```
+  1348→that which is disclosed.
+  1349→Thus, sufficient information must be presented so that potential users of the
+  1350→```
+  1351→data can (1) assess observations, (2) repeat experiments, and (3) evaluate intel-
+  1352→```
+  1353→```
+  1354→lectual processes. (Are the author’s conclusions justified by the data?) Then, the
+  1355→```
+  1356→disclosure must be “susceptible to sensory perception.” This may seem an awk-
+  1357→```
+  1358→ward phrase because in normal practice, it simply means to be published; how-
+  1359→```
+  1360→ever, this definition provides for disclosure not just in terms of printed visual
+  1361→```
+  1362→materials (printed journals and the no longer widely used media called micro-
+  1363→```
+  1364→```
+  1365→film and microfiche), but also in nonprint, nonvisual forms. For example, “pub-
+  1366→```
+  1367→lication” in the form of audio recordings, if that publication met the other tests
+  1368→provided in the definition, would constitute effective publication. And electronic
+  1369→journals certainly meet the definition of valid publication. What about material
+  1370→```
+  1371→posted on a website (for example, preprints)? Views have varied and can depend
+  1372→```
+  1373→on the nature of the material posted. For the most current information, consult
+  1374→materials from professional organizations and journals in your field.
+  1375→Regardless of the form of publication, that form must be essentially perma-
+  1376→```
+  1377→nent. Therefore, scientific papers receive digital object identifiers (DOIs):
+  1378→```
+  1379→What Is a Scientific Paper? 21
+  1380→```
+  1381→(“Types of Scientific Paper” by xkcd [xkcd.com]. Used by permission.)
+  1382→```
+  1383→22 How to Write and Publish a Scientific Paper
+  1384→internet addresses that persist even if, for example, a journal’s URL changes
+  1385→or the journal ceases publication. Primary scientific publications also must be
+  1386→```
+  1387→made available to the scientific community without restriction (for example, in
+  1388→```
+  1389→a journal that is openly accessible online or to which subscriptions are avail-
+  1390→```
+  1391→able), and they must be made available to information-retrieval services (for
+  1392→```
+  1393→```
+  1394→example, Biological Abstracts, Chemical Abstracts, and MEDLINE). Thus,
+  1395→```
+  1396→publications such as newsletters, corporate publications, and controlled-
+  1397→circulation journals, many of which are of value for their news or other fea-
+  1398→tures, generally cannot serve as repositories for scientific knowledge.
+  1399→To restate the CBE definition in simpler but not more accurate terms, pri-
+  1400→```
+  1401→mary publication is (1) the first publication of original research results, (2) in
+  1402→```
+  1403→a form whereby peers of the author can repeat the experiments and test the
+  1404→```
+  1405→conclusions, and (3) in a journal or other source document readily available
+  1406→```
+  1407→within the scientific community. To understand this definition, however, we
+  1408→must add an important caveat. The part of the definition that refers to “peers
+  1409→of the author” is accepted as meaning prepublication peer review. Thus, by
+  1410→definition, scientific papers are published in peer-reviewed publications.
+  1411→This question of definition has been belabored here for two reasons. First,
+  1412→the entire community of science long labored with an inefficient, costly sys-
+  1413→```
+  1414→tem of scientific communication precisely because it (that is, authors, editors,
+  1415→```
+  1416→```
+  1417→and publishers) has been unable or unwilling to define primary publication.
+  1418→```
+  1419→As a result, much of the literature has been buried in meeting abstracts,
+  1420→obscure conference reports, government documents, or books or journals of
+  1421→minuscule circulation. Other papers, in the same or slightly altered form, have
+  1422→```
+  1423→been published more than once; occasionally, this is due to the lack of defini-
+  1424→```
+  1425→```
+  1426→tion as to which conference reports, books, and compilations are (or should
+  1427→```
+  1428→```
+  1429→be) primary publications and which are not. Redundancy and confusion result.
+  1430→```
+  1431→Second, a scientific paper is, by definition, a particular kind of document
+  1432→containing specific kinds of information, typically in a prescribed order. If the
+  1433→```
+  1434→graduate student or the budding scientist (and even some scientists who have
+  1435→```
+  1436→```
+  1437→already published many papers) can fully grasp the significance of this defini-
+  1438→```
+  1439→tion, the writing task might be a great deal easier. Confusion results from an
+  1440→amorphous task. The easy task is the one in which you know exactly what
+  1441→must be done and in exactly what order it must be done.
+  1442→ORGANIZATION OF A SCIENTIFIC PAPER
+  1443→A scientific paper is organized to meet the needs of valid publication. It is, or
+  1444→should be, highly stylized, with distinctive and clearly evident component
+  1445→parts. The most common labeling of the component parts, in the basic sci-
+  1446→```
+  1447→ences, is introduction, methods, results, and discussion (hence the acronym
+  1448→```
+  1449→What Is a Scientific Paper? 23
+  1450→```
+  1451→IMRAD). Actually, the heading “Materials and Methods” may be more com-
+  1452→```
+  1453→mon than the simpler “Methods,” but the latter form was used in the acro-
+  1454→nym.
+  1455→Some of us have taught and recommended the IMRAD approach for many
+  1456→years. The tendency toward uniformity has increased since the IMRAD system
+  1457→was prescribed as a standard by the American National Standards Institute,
+  1458→```
+  1459→first in 1972 and again in 1979 (American National Standards Institute 1979a).
+  1460→```
+  1461→Some journals use a variation of IMRAD in which the methods section appears
+  1462→last rather than second. Perhaps we should call this IRDAM. In some journals,
+  1463→details regarding methods commonly appear in figure captions.
+  1464→The basic IMRAD order is so eminently logical that, increasingly, it is used
+  1465→for many other types of expository writing. Whether one is writing an article
+  1466→about chemistry, archaeology, economics, or crime in the streets, the IMRAD
+  1467→format is often the best choice.
+  1468→This point is generally true for papers reporting laboratory studies and
+  1469→other experiments. There are, of course, exceptions. As examples, reports of
+  1470→field studies in the earth sciences and many clinical case reports in the medi-
+  1471→cal sciences do not readily lend themselves to this kind of organization. How-
+  1472→ever, even in these descriptive papers, the same logical progression from
+  1473→problem to solution is often appropriate.
+  1474→Occasionally, the organization of laboratory papers must differ. If a number
+  1475→of methods were used to achieve directly related results, it might be desirable
+  1476→to combine the materials and methods and the results into an integrated
+  1477→experimental section. In some fields and for some types of results, a combined
+  1478→results and discussion section is usual or desirable. In addition, many primary
+  1479→journals publish notes or short communications in which the IMRAD organi-
+  1480→zation is modified.
+  1481→Various types of organization are used in descriptive areas of science. To
+  1482→determine how to organize such papers and which general headings to use,
+  1483→refer to the instructions to authors of your target journal and look at analogous
+  1484→papers that the journal has published. Also, you can obtain general informa-
+  1485→tion from appropriate source books. For example, types of medical papers are
+  1486→```
+  1487→described by Huth (1999), Peat and others (2002), Taylor (2018), and contribu-
+  1488→```
+  1489→```
+  1490→tors to a multiauthor guide (Hall 2013); types of engineering papers and
+  1491→```
+  1492→```
+  1493→reports are outlined by Michaelson (1990) and by Beer and McMurrey (2019).
+  1494→```
+  1495→Indeed, even if a paper will appear in the IMRAD format, books on writing in
+  1496→one’s own discipline can be worth consulting. Examples of such books include
+  1497→```
+  1498→those in biomedical science by Zeiger (2000); the health sciences by Lang
+  1499→```
+  1500→```
+  1501→(2010); chemistry by Ebel, Bliefert, and Russey (2004); and psychology by
+  1502→```
+  1503→```
+  1504→Sternberg and Sternberg (2016).
+  1505→```
+  1506→In short, the preparation of a scientific paper has less to do with literary
+  1507→skill than with organization. A scientific paper is not literature. The preparer of
+  1508→24 How to Write and Publish a Scientific Paper
+  1509→a scientific paper is not an author in the literary sense. As an international col-
+  1510→league noted, this fact can comfort those writing scientific papers in other
+  1511→than their native language.
+  1512→Some old-fashioned colleagues think that scientific papers should be litera-
+  1513→ture, the style and flair of an author should be clearly evident, and variations
+  1514→in style encourage the interest of the reader. Scientists should indeed be inter-
+  1515→ested in reading literature, and perhaps even in writing literature, but the
+  1516→communication of research results is a more prosaic procedure. As Booth
+  1517→```
+  1518→(1981) put it, “Grandiloquence has no place in scientific writing.”
+  1519→```
+  1520→Today, the average scientist, to keep up with a field, must examine the data
+  1521→reported in very many papers. Also, English, the international language of
+  1522→```
+  1523→science, is a second language for many scientists. Therefore, scientists (and, of
+  1524→```
+  1525→```
+  1526→course, editors) must demand a system of reporting data that is uniform, con-
+  1527→```
+  1528→cise, and readily understandable.
+  1529→SHAPE OF A SCIENTIFIC PAPER
+  1530→Imagine that a friend visits your laboratory or office. The friend is unfamiliar
+  1531→with your research and wants to know about it. To orient your friend, first you
+  1532→identify your general research area and say why it is important. Then you state
+  1533→the specific focus of your research, summarize how you gathered your data,
+  1534→and say what you found. Finally, you discuss the broader significance of your
+  1535→```
+  1536→Figure 4.1. (Created with BioRender.com)
+  1537→```
+  1538→What Is a Scientific Paper? 25
+  1539→findings. The friend now has a new understanding—and, if you are lucky, the
+  1540→friend might buy you lunch.
+  1541→Although intended for readers who are more knowledgeable, a scientific
+  1542→paper should take much the same approach: first provide a broad orientation,
+  1543→next focus narrowly on the specific research, and then consider the findings in
+  1544→a wider context. Some have likened this shape for a scientific paper to an hour-
+  1545→```
+  1546→glass: broad, then narrow, then broad. Keeping this overall structure in mind
+  1547→```
+  1548→can aid when writing the individual parts of a paper and integrating them into
+  1549→a coherent whole.
+  1550→OTHER DEFINITIONS
+  1551→If scientific paper is the term for an original research report, how should this be
+  1552→distinguished from research reports that are not original, are not scientific, or
+  1553→somehow do not qualify as scientific papers? Some specific terms are com-
+  1554→```
+  1555→monly used: review paper (or review article), conference report, and meeting abstract.
+  1556→```
+  1557→A review paper typically reviews the recent work in a defined subject area.
+  1558→Thus, it is designed to summarize, analyze, evaluate, and synthesize informa-
+  1559→```
+  1560→tion that has already been published (research reports in primary journals).
+  1561→```
+  1562→Although much or all of the material in a review paper has previously been
+  1563→```
+  1564→published, the problem of dual publication (duplicate publication of original
+  1565→```
+  1566→```
+  1567→data) does not normally arise because the review nature of the work is usually
+  1568→```
+  1569→obvious—often from the title of the periodical, such as Microbiology and Molec-
+  1570→ular Biology Reviews or Annual Review of Astronomy and Astrophysics. Do not
+  1571→assume, however, that reviews contain nothing new. From the best review
+  1572→papers come new syntheses, new ideas and theories, and even new paradigms.
+  1573→A conference report is a paper published in a book or journal as part of the
+  1574→proceedings of a symposium, national or international congress, workshop,
+  1575→roundtable, or similar meeting. Such conferences commonly are not designed
+  1576→for the definitive presentation of original data, and the resultant proceedings
+  1577→```
+  1578→(in a book or journal) do not qualify as primary publications. Conference pre-
+  1579→```
+  1580→sentations often are review papers, presenting reviews of the recent work of
+  1581→particular scientists or recent work in particular laboratories. Material at some
+  1582→```
+  1583→conferences (especially the exciting ones) takes the form of preliminary reports
+  1584→```
+  1585→in which new, original data are presented, often accompanied by interesting
+  1586→speculation. But usually, these preliminary reports do not qualify, nor are they
+  1587→intended to qualify, as scientific papers. Later, often much later, such work
+  1588→```
+  1589→may be validly published in a primary journal; by this time, the loose ends
+  1590→```
+  1591→have been tied down, essential experimental details have been described
+  1592→```
+  1593→(so that a competent worker could repeat the experiments), and previous spec-
+  1594→```
+  1595→ulation has matured into conclusions.
+  1596→26 How to Write and Publish a Scientific Paper
+  1597→Therefore, the vast conference literature that appears normally is not pri-
+  1598→mary. If original data are presented in such contributions, the data can and
+  1599→```
+  1600→should be published (or republished) in an archival (primary) journal. Other-
+  1601→```
+  1602→wise, the information may essentially be lost. If publication in a primary jour-
+  1603→nal follows publication in a conference report, permission from the original
+  1604→```
+  1605→publisher may be needed to reprint figures and other items (see Chapter 19,
+  1606→```
+  1607→```
+  1608→“Rights and Permissions”); however, the more fundamental problem of dual
+  1609→```
+  1610→publication normally does not and should not arise.
+  1611→Meeting abstracts may be brief or relatively extensive. Although they can
+  1612→and generally do contain original information, they are not primary publica-
+  1613→tions. Therefore, publication of an abstract should not preclude publication of
+  1614→the full report later.
+  1615→Traditionally, there was little confusion regarding the typical one-paragraph
+  1616→abstracts published as part of the program or distributed along with the pro-
+  1617→gram at a national meeting or international congress. It was usually under-
+  1618→stood that many of the papers presented at these meetings would later be
+  1619→submitted for publication in primary journals. Sometimes conference orga-
+  1620→```
+  1621→nizers request extended abstracts (or synoptics). The extended abstract can
+  1622→```
+  1623→```
+  1624→supply almost as much information as a full paper; mainly it lacks the experi-
+  1625→```
+  1626→mental detail. However, precisely because it lacks experimental detail, it
+  1627→cannot qualify as a scientific paper.
+  1628→Those involved with publishing these materials should see the importance
+  1629→of carefully defining the various types of papers. More and more publishers,
+  1630→conference organizers, and individual scientists have agreed on these basic
+  1631→definitions, and their general acceptance can greatly clarify both primary and
+  1632→secondary communication of scientific information.
+  1633→27
+  1634→[A]ll scientists have an unwritten contract with their contemporaries and
+  1635→those whose work will follow to provide observations honestly obtained,
+  1636→recorded, and published.
+  1637→—CBE Style Manual Committee
+  1638→ETHICS AS A FOUNDATION
+  1639→Before writing a scientific paper and submitting it to a journal—and indeed,
+  1640→before embarking on your research—you should know the basic ethical norms
+  1641→for scientific conduct and scientific publishing. Some of these norms may be
+  1642→obvious, others not. Therefore, a basic overview is provided in this chapter.
+  1643→Graduate students and others seeking further information on ethics in scien-
+  1644→tific publishing, and more broadly in science, may do well to consult On Being
+  1645→```
+  1646→a Scientist: Responsible Conduct in Research (Committee on Science, Engineer-
+  1647→```
+  1648→```
+  1649→ing, and Public Policy 2009) and Doing Global Science: A Guide to Responsible
+  1650→```
+  1651→```
+  1652→Conduct in the Global Research Enterprise (Interacademy Partnership 2016),
+  1653→```
+  1654→which contain both guidance and case studies. Other resources include ethics
+  1655→chapters in style manuals in the sciences.
+  1656→AUTHENTICITY AND ACCURACY
+  1657→The fact that research reported in a journal should actually have been per-
+  1658→formed may seem too obvious to mention. Yet cases exist in which an author
+  1659→simply made up data in a paper, without ever doing the research. Clearly, such
+  1660→CHAPTER 5
+  1661→Ethics in Scientific Publishing
+  1662→28 How to Write and Publish a Scientific Paper
+  1663→“dry-labbing,” or fabrication, is unethical. Fiction can be a grand pursuit, but it
+  1664→has no place in a scientific paper.
+  1665→More subtle, and probably more common, are lesser or less definite devia-
+  1666→tions from accuracy: omitting outlying points from the data reported, prepar-
+  1667→ing figures in ways that accentuate the findings misleadingly, or doing other
+  1668→tweaking. Where to draw the line between editing and distortion may not
+  1669→always be apparent. If in doubt, seek guidance from a more experienced scien-
+  1670→tist in your field—perhaps one who edits a journal.
+  1671→The advent of digital imaging has given unethical researchers new ways to
+  1672→```
+  1673→falsify findings. (Journal editors, though, have procedures to detect cases in
+  1674→```
+  1675→```
+  1676→which such falsification of images seems probable.) And ethical researchers
+  1677→```
+  1678→may rightly wonder what manipulations of digital images are and are not
+  1679→valid. Sources of advice in this regard include sets of guidelines for using and
+  1680→```
+  1681→manipulating scientific digital images (Cromey 2010, 2012).
+  1682→```
+  1683→For research that includes statistical analysis, reporting accurately includes
+  1684→using appropriate statistical procedures, not those that may distort the find-
+  1685→ings. If in doubt, obtain the collaboration of a statistician. Enlist the statisti-
+  1686→cian early, while you are still planning the research, to help ensure that you
+  1687→collect appropriate data. Otherwise, ethical problems may include wasting
+  1688→```
+  1689→resources and time. In the words of R.A. Fisher (1938), “To consult the statisti-
+  1690→```
+  1691→cian after an experiment is finished is often merely to ask him to conduct a
+  1692→post mortem examination.”
+  1693→ORIGINALITY
+  1694→As discussed in Chapter 4, the findings in a scientific paper must be new. Except
+  1695→in rare and highly specialized circumstances, they cannot have appeared else-
+  1696→where in the primary literature. In the few instances in which republication of
+  1697→data may be acceptable—for example, in a more extensive case series or if a paper
+  1698→is republished in another language—the original article must be clearly cited, lest
+  1699→readers erroneously conclude that the old observations are new. To republish a
+  1700→```
+  1701→paper (either in another language or for readers in another field), permission
+  1702→```
+  1703→normally must be obtained from the journal that originally published it.
+  1704→Beginning scientists sometimes wonder whether they may submit the
+  1705→same manuscript to two or more journals simultaneously. After all, a candi-
+  1706→date can apply to several graduate programs at once and then choose among
+  1707→those offering acceptance. An analogous situation does not hold for scientific
+  1708→papers, however. Simultaneous submission wastes resources and is consid-
+  1709→ered unethical. Therefore, begin by submitting your paper only to your first-
+  1710→choice journal. If that journal does not accept your paper, you can then proceed
+  1711→to the next journal on your list.
+  1712→Ethics in Scientific Publishing 29
+  1713→```
+  1714→Originality also means avoiding “salami science” (or, for vegetarians,
+  1715→```
+  1716→```
+  1717→“cucumber science”)—that is, thinly slicing the findings of a research project,
+  1718→```
+  1719→as one might slice a sausage or cuke, in order to publish several papers instead
+  1720→```
+  1721→of one (or, in the case of a large research project, many papers instead of a
+  1722→```
+  1723→```
+  1724→few). Good scientists respect the integrity of their research and do not divide it
+  1725→```
+  1726→excessively for publication. Likewise, good hiring committees and promotion
+  1727→committees look at the content of publications, rather than only the number,
+  1728→and so are not fooled by salami science.
+  1729→CREDIT
+  1730→Good scientists build on each other’s work. They do not, however, take credit
+  1731→for others’ work.
+  1732→If your paper includes information or ideas that are not your own, be sure
+  1733→to cite the source. Likewise, if you use others’ wording, remember to place it
+  1734→```
+  1735→in quotation marks (or to indent it, if the quoted material is long) and to cite a
+  1736→```
+  1737→reference. Otherwise, you will be guilty of plagiarism, which the U.S. National
+  1738→```
+  1739→(ScienceCartoonsPlus.com)
+  1740→```
+  1741→30 How to Write and Publish a Scientific Paper
+  1742→Institutes of Health defines as “the appropriation of another person’s ideas,
+  1743→```
+  1744→processes, results, or words without giving appropriate credit” (National Insti-
+  1745→```
+  1746→```
+  1747→tutes of Health 2010). To avoid inadvertent plagiarism, be sure to include
+  1748→```
+  1749→information about the source when you copy or download materials that
+  1750→others have written. To avoid the temptation to use others’ wording exces-
+  1751→sively, consider drafting paragraphs without looking directly at the source
+  1752→```
+  1753→materials; then look at the materials to check for accuracy.
+  1754→```
+  1755→In journal articles in most fields of science, it is unusual to include quota-
+  1756→tions from others’ work. Rather, authors paraphrase what others have said.
+  1757→```
+  1758→Doing so entails truly presenting the ideas in one’s own way; making minor
+  1759→```
+  1760→changes does not constitute paraphrasing. To take an example, imagine that
+  1761→you wish to express the following idea, which appears later in this book:
+  1762→```
+  1763→“Leave your shyness behind when you accompany a poster.” (Gastel and
+  1764→```
+  1765→```
+  1766→Day, 2022)
+  1767→```
+  1768→The following would not constitute adequate paraphrasing:
+  1769→Be sure to leave your shyness behind you when you present a poster.
+  1770→```
+  1771→(Gastel and Day, 2022)
+  1772→```
+  1773→```
+  1774→When you accompany a poster, leave your shyness behind you. (Gastel
+  1775→```
+  1776→```
+  1777→and Day, 2022)
+  1778→```
+  1779→Examples of sufficient paraphrasing include the following:
+  1780→```
+  1781→Poster presenters should not be shy. (Gastel and Day, 2022)
+  1782→```
+  1783→```
+  1784→Gastel and Day (2022) say not to be shy when presenting a poster.
+  1785→```
+  1786→```
+  1787→Avoid shyness when presenting a poster. (Gastel and Day, 2022)
+  1788→```
+  1789→```
+  1790→If you are presenting a poster, you should not act shy. (Gastel and Day, 2022)
+  1791→```
+  1792→On rare occasions—for example, when an author has expressed a concept
+  1793→extraordinarily well—quoting the author’s own phrasing may be justified. If
+  1794→you are unsure whether to place in quotation marks a series of words from a
+  1795→publication, do so. If the quotation marks are unnecessary, an editor at the
+  1796→journal can easily remove them. If, however, they are missing but should have
+  1797→```
+  1798→been included, the editor might not discover that fact (until, perhaps, a reader
+  1799→```
+  1800→```
+  1801→later does), or the editor might suspect the fact and send you an inquiry that
+  1802→```
+  1803→requires a time-consuming search. Be cautious, and thus save yourself from
+  1804→embarrassment or extra work.
+  1805→Resources to educate oneself about plagiarism, and thus learn better how to
+  1806→```
+  1807→avoid it, include a tutorial from Indiana University (Frick et al. 2021), an online
+  1808→```
+  1809→```
+  1810→guide to ethical writing (Roig 2015), and a variety of materials posted on
+  1811→```
+  1812→the websites of university writing centers. Another resource to consider is
+  1813→Ethics in Scientific Publishing 31
+  1814→plagiarism-checking software. Such software helps identify passages of writ-
+  1815→```
+  1816→ing that seem suspiciously similar to text elsewhere; one can then see whether
+  1817→```
+  1818→it does indeed appear to be plagiarized. Such software, such as Turnitin, is
+  1819→available at many academic institutions. Free plagiarism checkers, of varied
+  1820→```
+  1821→quality, also exist (Warner 2021). Many journal publishers screen submissions
+  1822→```
+  1823→with similarity-detection software. Consider prescreening your work yourself
+  1824→to detect and remove inadvertent plagiarism.
+  1825→Occasionally, substantial similarity between text in different papers can be
+  1826→appropriate. For example, if different studies use some of the same standard
+  1827→methods, parts of their methods sections can rightly include similar wording.
+  1828→Likewise, if a group does a research project so extensive or long-lasting that it
+  1829→yields multiple papers, the methods sections of the different papers might well
+  1830→say some of the same things in the same way. Guidance on when and how
+  1831→```
+  1832→authors can appropriately reuse sections of their own text (Hall, Moskovitz,
+  1833→```
+  1834→```
+  1835→and Pemberton 2021) is available through the Text Recycling Research Project
+  1836→```
+  1837→```
+  1838→(textrecycling.org).
+  1839→```
+  1840→Also be sure to list as an author of your paper everyone who qualifies for
+  1841→```
+  1842→authorship. (See Chapter 8 for more in this regard.) Remember as well to
+  1843→```
+  1844→include in the acknowledgments those sources of help or other support that
+  1845→```
+  1846→should be listed (see Chapter 14).
+  1847→```
+  1848→ETHICAL TREATMENT OF HUMANS AND ANIMALS
+  1849→If your research involves human subjects or animals, the journal to which you
+  1850→submit your paper will almost certainly require documentation that they were
+  1851→treated ethically. Before beginning your study, obtain all needed permissions
+  1852→```
+  1853→with regard to human or animal research. (In the United States, doing so
+  1854→```
+  1855→entails having your research protocol reviewed by a designated committee,
+  1856→```
+  1857→generally at your institution.) Then, in your paper, provide the needed state-
+  1858→```
+  1859→ments in this regard. For guidance, see the instructions to authors for the
+  1860→journal to which you are submitting your paper, and use papers similar to
+  1861→yours that have appeared in the journal as models. You may also find it useful
+  1862→to consult relevant sections of style manuals in the sciences. If in doubt, check
+  1863→with the publication office of the journal.
+  1864→DISCLOSURE OF CONFLICTS OF INTEREST
+  1865→Authors of scientific papers sometimes have conflicts of interest—that is, outside
+  1866→involvements that could, at least in theory, interfere with their objectivity in the
+  1867→research being reported. For example, they may own stock in the company mak-
+  1868→ing the product being studied, or they may be consultants to the company.
+  1869→32 How to Write and Publish a Scientific Paper
+  1870→Journals commonly require authors to report such conflicts of interest.
+  1871→Some have checklists for doing so, and others ask more generally for disclo-
+  1872→sure. Journals have varied in the degree to which they note conflicts of interest
+  1873→```
+  1874→along with published papers (Clark 2005).
+  1875→```
+  1876→Ethics requires honest reporting of conflicts of interest. More important,
+  1877→ethics demands that such involvements not interfere with the objectivity of
+  1878→your research. Some scientists avoid all such involvements to prevent even the
+  1879→appearance of bias.
+  1880→33
+  1881→I’ve always been in the right place and time. Of course, I steered myself there.
+  1882→—Bob Hope
+  1883→DECIDE EARLY, DECIDE WELL
+  1884→Too often, authors write scientific papers and then consider where to publish
+  1885→them. The decision, however, is best made early, before the writing begins.
+  1886→```
+  1887→That way, the paper can be geared appropriately to the audience (for example,
+  1888→```
+  1889→readers of a general scientific journal, a journal in your discipline as a whole, or
+  1890→```
+  1891→a journal in your specialized research field). Also, you can initially prepare
+  1892→```
+  1893→your manuscript in keeping with the journal’s requirements rather than hav-
+  1894→ing to revise it accordingly. Of course, if your first-choice journal does not
+  1895→accept your paper, you might need to revise your manuscript to suit another
+  1896→journal. But at least you will have avoided one round of revision.
+  1897→In addition to deciding early on your first-choice journal, decide well.
+  1898→Choosing a journal carefully helps you to reach the most suitable audience,
+  1899→gain appropriate recognition, and avoid needless difficulties with publication.
+  1900→The decision of where to submit the manuscript is important. Because of
+  1901→poor choices, some papers are delayed in publication, fail to receive sound
+  1902→review and revision, or lie buried in inappropriate journals. If you submit
+  1903→your manuscript to a poor choice of journal, one of three things can happen—
+  1904→all bad.
+  1905→First, your manuscript may simply be returned to you with the comment
+  1906→that your work “is not suitable for this journal.” Sometimes, however, this
+  1907→judgment is not made until after review of the manuscript. A “not suitable”
+  1908→notice after weeks or months of delay is not likely to make you happy.
+  1909→CHAPTER 6
+  1910→Where to Submit Your Manuscript
+  1911→34 How to Write and Publish a Scientific Paper
+  1912→Second, if the journal is borderline in relation to your work, your manuscript
+  1913→```
+  1914→may receive a poor or unfair review because the reviewers (and editors) of that
+  1915→```
+  1916→journal may be only vaguely familiar with your specialty area. You may be sub-
+  1917→jected to the trauma of rejection even though the manuscript would be acceptable
+  1918→to the right journal. Or you could end up with a hassle over suggested revisions
+  1919→that you do not agree with and that do not improve your manuscript. And if your
+  1920→manuscript really does have deficiencies, you would not be able to benefit from
+  1921→the sound criticism that would come from the editors of the right journal.
+  1922→Third, even if your paper is accepted and published, your glee will be short-
+  1923→lived if you later find that your work is virtually unknown because it is buried
+  1924→in a publication that few in your intended audience read. Talking with col-
+  1925→leagues can help prevent this situation.
+  1926→```
+  1927→(PEANUTS © 1982 Peanuts Worldwide LLC. Dist. By ANDREWS MCMEEL
+  1928→```
+  1929→```
+  1930→SYNDICATION. Reprinted with permission. All rights reserved.)
+  1931→```
+  1932→Where to Submit Your Manuscript 35
+  1933→Think about the appropriate readership. If, for example, you are reporting a
+  1934→fundamental study in physics, of course you should try to get your paper pub-
+  1935→lished in a prestigious international journal. On the other hand, suppose that
+  1936→your study concerns the management of a disease found only in Latin America.
+  1937→In that situation, publication in Nature will not reach your audience—the audi-
+  1938→ence that needs and can use your information. You should publish in an appro-
+  1939→priate Latin American journal, probably one in Spanish.
+  1940→To start identifying journals to consider, recall what journals have published
+  1941→work similar to yours. The journals publishing the papers that you will cite are
+  1942→often journals to consider. Perhaps ask colleagues to suggest potential publica-
+  1943→tion sites. Also, consider using online journal selection tools—such as Jane
+  1944→```
+  1945→(jane.biosemantics.org), JournalGuide (www.journalguide.com/), and Edanz
+  1946→```
+  1947→```
+  1948→Journal Selector (www.edanz.com/journal-selector). Based on information that
+  1949→```
+  1950→one enters about one’s work, these tools generate lists of journals to consider. To
+  1951→help determine whether a journal indeed seems to be a possibility, look at the
+  1952→journal’s website for statements describing its purpose and scope. Look at some
+  1953→recent issues of the journal to see whether it publishes research such as yours
+  1954→and whether the papers are of the type you envision writing.
+  1955→PRESTIGE AND IMPACT
+  1956→If several journals seem suitable, does it matter which one you choose? Per-
+  1957→haps it shouldn’t matter, but it does. There is the matter of prestige. Maybe
+  1958→```
+  1959→progress in your career (job offers, promotions, grants, etc.) will be determined
+  1960→```
+  1961→largely by how many papers you publish. But not necessarily. It may well be
+  1962→that a wise old bird sitting on the faculty committee or the grant review panel
+  1963→will recognize and appreciate quality factors. A paper published in a “garbage”
+  1964→journal simply does not equal a paper published in a prestigious journal. In
+  1965→```
+  1966→fact, the wise old bird (and there are quite a few of these in science) may be
+  1967→```
+  1968→more impressed by the candidate with one or two solid publications in presti-
+  1969→gious journals than by the candidate with 10 or more publications in second-
+  1970→or third-rate journals.
+  1971→How do you tell the difference? It isn’t easy, and of course there are many
+  1972→gradations. In general, however, you can form reasonable judgments by doing
+  1973→just a bit of bibliographic research. You will certainly know the important
+  1974→papers that have recently been published in your field. Make it your business
+  1975→to determine where they were published. If most of the real contributions in
+  1976→your field were published in Journal A, Journal B, and Journal C, you should
+  1977→probably limit your choices to those three journals. If Journals D, E, and F,
+  1978→upon inspection, contain only the lightweight papers, each could be elimi-
+  1979→nated as your first choice, even if the scope is right.
+  1980→36 How to Write and Publish a Scientific Paper
+  1981→You may then choose among Journals A, B, and C. Suppose that Journal A
+  1982→is an attractive new journal published by a commercial publisher as a com-
+  1983→```
+  1984→mercial venture, with no sponsorship by a society or other organization; Jour-
+  1985→```
+  1986→nal B is an old, well-known small journal published by a famous university,
+  1987→```
+  1988→hospital, or museum; and Journal C is a large journal published by the princi-
+  1989→```
+  1990→```
+  1991→pal scientific society in your field. In general (although there are many excep-
+  1992→```
+  1993→```
+  1994→tions), Journal C (the society journal) is probably the most prestigious. It will
+  1995→```
+  1996→```
+  1997→also have the largest circulation (partly because of quality factors and partly
+  1998→```
+  1999→because society journals tend to be less expensive than others, at least to soci-
+  2000→```
+  2001→ety members). By publication in such a journal, your paper may have its best
+  2002→```
+  2003→chance to make an impact on the community of scholars at whom you are
+  2004→aiming. Journal B might have almost equal prestige, but it might have a very
+  2005→```
+  2006→limited circulation, which would be a minus; it might also be very difficult to
+  2007→```
+  2008→```
+  2009→get into if most of its space is reserved for in-house material. Journal A (the
+  2010→```
+  2011→```
+  2012→commercial journal) might well have the disadvantage of low circulation
+  2013→```
+  2014→```
+  2015→(because of its comparatively high price, which is the result of both the profit
+  2016→```
+  2017→motivation of the publisher and the lack of backing by a society or institution
+  2018→```
+  2019→with a built-in subscription list). Publication in such a journal may result in a
+  2020→```
+  2021→somewhat restricted distribution of your paper.
+  2022→```
+  2023→Be wary of new journals, especially those not sponsored by a society. (In
+  2024→```
+  2025→```
+  2026→particular, avoid predatory journals, which are discussed later in this chapter.)
+  2027→```
+  2028→The circulation may be minuscule, and the journal might fail before it, and
+  2029→your paper, become known to the scientific world. Be wary of publishing in
+  2030→journals that are solely electronic unless you know that those evaluating your
+  2031→work for purposes such as promotion consider those journals sufficiently
+  2032→prestigious. On the other hand, also be wary of publishing in the increasingly
+  2033→few journals that appear only in print, as scientists today expect important
+  2034→scientific literature to be accessible online.
+  2035→One tool for estimating the relative prestige of journals in a given field is
+  2036→the electronic resource Journal Citation Reports, commonly available through
+  2037→academic libraries. With this resource, you can determine which journals have
+  2038→recently been cited most frequently, both in total and in terms of the average
+  2039→```
+  2040→number of citations per article published, or the impact factor (Garfield 1999).
+  2041→```
+  2042→Although not all good journals have impact factors computed, impact factor
+  2043→can be worth considering in judging the prominence of journals. If, in a given
+  2044→field, the average paper in Journal A is cited twice as frequently as the average
+  2045→paper in Journal B, it is likely that researchers find Journal A the more impor-
+  2046→tant journal.
+  2047→In some countries and institutions, the criteria considered when candi-
+  2048→dates are evaluated for promotion include the impact factors of journals in
+  2049→which their papers appear. However, limitations of the impact factor also
+  2050→should be noted. The impact factor indicates how much the papers in a journal
+  2051→Where to Submit Your Manuscript 37
+  2052→```
+  2053→(ScienceCartoonsPlus.com)
+  2054→```
+  2055→are cited on average—not how much your paper will be cited if it appears in the
+  2056→journal. It does not indicate how much impact, other than on citation, the
+  2057→papers in a journal have—for example, how much they influence policy or
+  2058→clinical practice. And because different scientific fields have different citation
+  2059→practices, impact factors should not be used to compare the importance of
+  2060→journals in different fields. For instance, in biochemistry and molecular biol-
+  2061→ogy, in which papers tend to cite many recent papers, the impact factor of the
+  2062→top-cited journal was 53.4 in the year 2020, but in geology it was 5.4. In short,
+  2063→although knowing a journal’s impact-factor ranking in its field can help you
+  2064→assess its scientific importance, the impact factor does not say everything
+  2065→about the journal’s quality or its suitability for your work. In journal selection,
+  2066→as in much else in life, a multidimensional concept cannot validly be reduced
+  2067→to a single number.
+  2068→Increasingly, experts have emphasized the need to include indicators other
+  2069→than impact factor when assessing the importance of a person’s research. For
+  2070→```
+  2071→example, the San Francisco Declaration on Research Assessment (2012), com-
+  2072→```
+  2073→monly called DORA, calls for using more varied approaches in evaluating
+  2074→research output. These approaches include—in addition to, most importantly,
+  2075→evaluating the scientific content of the article—using multiple journal-based
+  2076→```
+  2077→metrics (rather than only impact factor) and looking at article-level metrics.
+  2078→```
+  2079→38 How to Write and Publish a Scientific Paper
+  2080→Examples of the latter include how many times an article has been viewed,
+  2081→```
+  2082→downloaded, or bookmarked; how much attention it has received in social
+  2083→```
+  2084→```
+  2085→media and mass media; and how many times and where it has been cited
+  2086→```
+  2087→```
+  2088→(Tananbaum 2013). Noticing which journals’ articles in your field tend to
+  2089→```
+  2090→receive such attention can aid in identifying suitable journals for your papers.
+  2091→ACCESS
+  2092→Other items to consider when choosing journals can include open access—that
+  2093→is, the provision of articles online free of charge to all who may be interested.
+  2094→One consideration is whether to choose an open-access journal, a journal that
+  2095→immediately provides open access to all its content. At such journals, which do
+  2096→not have subscriptions and thus lack this source of income, the costs typically
+  2097→are defrayed, at least in part, by fees charged to authors. In some countries,
+  2098→```
+  2099→these fees commonly are paid from grant funds; it can be wise to consider
+  2100→```
+  2101→expected publication costs when preparing the budget for a grant. When
+  2102→authors, such as those in developing countries, cannot afford to pay the fees,
+  2103→```
+  2104→the journal may waive or reduce them; if you cannot afford the normal publi-
+  2105→```
+  2106→cation fee for an open-access journal in which you hope to publish, contact the
+  2107→journal directly. Some research funders now require that recipients of their
+  2108→grants publish the resulting papers in open-access journals or otherwise make
+  2109→them freely accessible.
+  2110→Access-related considerations for publishing in traditional journals can
+  2111→include whether to seek a journal for which the electronic version, initially
+  2112→```
+  2113→available only to subscribers, becomes openly accessible relatively fast (for
+  2114→```
+  2115→```
+  2116→example, in a few months). Also, some journals give authors the option of
+  2117→```
+  2118→making their articles freely accessible upon publication in return for paying a
+  2119→fee. Another consideration when publishing in a traditional journal is whether
+  2120→the journal allows rapid posting of articles on authors’ or their institutions’
+  2121→```
+  2122→websites. The website Sherpa Romeo (v2.sherpa.ac.uk/romeo/) provides
+  2123→```
+  2124→information about journals’ policies on open access and related matters. To
+  2125→ensure that you have the most complete and current information, consulting
+  2126→the journal itself can be advisable as well.
+  2127→AVOIDING PREDATORY JOURNALS
+  2128→As noted, open-access journals typically charge authors fees, as these journals
+  2129→lack income from subscriptions. Some dishonest people take advantage of this
+  2130→model by claiming to publish valid journals while instead just trying to get
+  2131→authors’ money. For example, these publishers of predatory journals may post
+  2132→Where to Submit Your Manuscript 39
+  2133→all the papers that they receive, without peer review or editing. Or they might
+  2134→take authors’ money and publish nothing. Submitting papers to such journals
+  2135→advances neither science nor one’s career.
+  2136→Such journals often market themselves vigorously, filling researchers’
+  2137→email boxes with invitations to submit papers. How can you recognize, and
+  2138→thus avoid, predatory journals? Clues that a journal might be predatory include
+  2139→```
+  2140→promises that seem too good to be true (for example, a guarantee to publish all
+  2141→```
+  2142→```
+  2143→submissions within a week), a website with many typographical and other
+  2144→```
+  2145→```
+  2146→errors, inclusion of what seem to be fake metrics (such as an “impact index”),
+  2147→```
+  2148→```
+  2149→and lack of good articles (or any articles at all) on the journal’s website.
+  2150→```
+  2151→On the other hand, indications that a journal is likely to be valid include pub-
+  2152→lication of good articles that you already have seen, indexing of the journal by
+  2153→major bibliographic databases, and inclusion of the journal in academic libraries.
+  2154→```
+  2155→The website Think.Check.Submit. (thinkchecksubmit.org) features guidance on
+  2156→```
+  2157→assessing whether a journal or publisher appears credible. Other resources in
+  2158→```
+  2159→this regard include an article (Elmore and Weston 2020) listing tips and resources
+  2160→```
+  2161→for identifying predatory journals. Also, if you think that a journal might be pred-
+  2162→atory, consider checking with a research librarian at your institution, as the library
+  2163→community has taken the lead in identifying fraudulent journals.
+  2164→Especially if you are inexperienced in publishing, perhaps consult a mentor
+  2165→or senior colleague if you think a journal that you are considering might be
+  2166→predatory or otherwise questionable. In fact, in any case, such consultation
+  2167→can be wise before finalizing one’s choice of journal.
+  2168→OTHER FACTORS TO CONSIDER
+  2169→In choosing a journal, other factors also can merit consideration. If you might
+  2170→want to post your article on a preprint server before submitting it for publica-
+  2171→tion, it may behoove you to check the relevant policies of the journals that you
+  2172→are considering. Whereas many journals are glad to receive articles that have
+  2173→been posted as preprints, or even require such posting, some journals do not
+  2174→want such articles or have restrictions relating to preprints. It’s best to know
+  2175→in advance.
+  2176→Another factor for possible consideration is the speed of publication.
+  2177→Increasingly, journals have been publishing papers individually online before
+  2178→they appear in print or are compiled into an online issue. You may find it
+  2179→worthwhile to check whether a journal publishes individual articles online
+  2180→first and, if so, how quickly it does so.
+  2181→The time from acceptance to publication in a journal issue reflects in part
+  2182→the frequency of the journal. For a monthly journal, the time from article sub-
+  2183→mission to publication, including the time for editorial review, commonly
+  2184→40 How to Write and Publish a Scientific Paper
+  2185→runs several months. Assuming equivalent review times, articles in a quar-
+  2186→terly journal tend to take longer to publish. Remember that many journals
+  2187→have backlogs. It sometimes helps to ask colleagues what their experience has
+  2188→been with the journals you are considering. If a journal publishes “received for
+  2189→publication” dates, you can determine for yourself the average lag time. Some
+  2190→journals also post such information on their websites.
+  2191→Even in this electronic age, quality of printing can be a consideration. In
+  2192→biology, the journals published by the American Society for Microbiology and
+  2193→by the Rockefeller University Press traditionally have been especially noted for
+  2194→their high standards in this respect. Whatever your field, look at the reproduc-
+  2195→tion quality of the journal if it will be important to you.
+  2196→Finally, consider the likelihood of acceptance. Clearly, not every paper is
+  2197→important enough and of broad enough interest to appear in Science or
+  2198→Nature. Rather, most papers belong in journals in their disciplines or subdis-
+  2199→ciplines. Even within specific fields, some papers are of great enough impor-
+  2200→tance for publication in first-line journals, whereas many others can better
+  2201→find homes elsewhere. In initially submitting your paper, aim high, generally
+  2202→for the broadest and most prestigious journal in which your paper seems to
+  2203→have a realistic chance of publication. To decide on that journal, perhaps look
+  2204→again at candidate journals and consult colleagues. Choosing a journal that is
+  2205→appropriate with regard to subject matter, audience, prestige, access, selectiv-
+  2206→ity, and other factors can help ensure that your paper will be published with-
+  2207→out undue delay—and that it will be read and recognized by those it should
+  2208→reach.
+  2209→USING INSTRUCTIONS TO AUTHORS
+  2210→In considering where to submit your paper, you might have looked at some
+  2211→journals’ instructions to authors to learn more about their scopes, audiences,
+  2212→or requirements. If you have not yet obtained the instructions for the journal
+  2213→you chose, do so before starting to write your paper. These instructions should
+  2214→appear on the website of the journal. In addition, instructions from more than
+  2215→6,000 biomedical journals can be accessed through the website Instructions to
+  2216→```
+  2217→Authors in the Health Sciences (mulford.utoledo.edu/instr). This site also
+  2218→```
+  2219→includes links to sets of guidelines that many medical journals follow.
+  2220→If you do not find instructions to authors immediately on a journal’s web-
+  2221→site, keep looking. Sometimes their location is not initially apparent. Also,
+  2222→instructions to authors can have a variety of other names, such as “informa-
+  2223→tion for authors,” “guide for authors,” and “submission instructions.” If, after
+  2224→careful searching, you still do not find the instructions, perhaps ask a more
+  2225→experienced researcher or a librarian for help or contact the office of the
+  2226→Where to Submit Your Manuscript 41
+  2227→journal. Also, if there is a true lack of instructions, that can be a clue that a
+  2228→journal is predatory rather than legitimate.
+  2229→Read the instructions for authors thoroughly before starting to prepare
+  2230→your paper. Among the questions these instructions may answer are the
+  2231→```
+  2232→following:
+  2233→```
+  2234→• Does the journal include more than one category of research article? If
+  2235→so, in what category would yours fit?
+  2236→• What is the maximum length of articles? What is the maximum length of
+  2237→abstracts?
+  2238→• Does the journal have a template for articles? If so, how can it be accessed?
+  2239→• Does the journal post supplementary material online? If so, how should
+  2240→this material be provided?
+  2241→• What sections should the article include? What guidelines should be
+  2242→followed for each?
+  2243→• What guidelines should be followed regarding writing style?
+  2244→• How many figures and tables are allowed? What requirements does the
+  2245→journal have for figures and tables?
+  2246→• In what format should references appear? Is there a maximum number
+  2247→of references?
+  2248→• In what electronic format should the paper be prepared? Should figures
+  2249→and tables be inserted within the text, or should they appear at the end or
+  2250→be submitted as separate files? Is there an online submission system to
+  2251→use?
+  2252→Underline, highlight, or otherwise note key points to remember. Then con-
+  2253→sult the instructions to authors as you prepare the paper. Following the instruc-
+  2254→tions from the outset will save you time overall.
+  2255→```
+  2256→(“Piled Higher and Deeper” by Jorge Cham. www.phdcomics.com)
+  2257→```
+  2258→42 How to Write and Publish a Scientific Paper
+  2259→Also, look at some recent papers in the journal—especially those present-
+  2260→ing research analogous to yours. Viewing such examples can clarify points
+  2261→from the instructions to authors. It also can help you see more generally what
+  2262→is suitable for the journal.
+  2263→Journals vary in their strictness of formatting requirements for submis-
+  2264→sions. Many journals want all submitted manuscripts to adhere closely to a
+  2265→specified style regarding items such as literature citation, headings and sub-
+  2266→headings, and tables and figures. For initial submissions, however, some other
+  2267→```
+  2268→journals are flexible about such items; only if a paper is accepted for publica-
+  2269→```
+  2270→tion must the author revise it to comply in detail with the journal’s format.
+  2271→Normally, the instructions for authors will either state the format require-
+  2272→ments or say that the submission policy is format-neutral.
+  2273→In any event, authors should know that unless the journal specifies other-
+  2274→wise, they should not submit manuscripts that look like typeset papers in that
+  2275→journal. Rather, the authors submit text and any tables and figures, and the
+  2276→journal does the layout.
+  2277→Shortly before submitting your manuscript, check the instructions to
+  2278→authors again and ensure that they have been followed. If the instructions
+  2279→include a checklist, use it. By following the instructions carefully, you will
+  2280→facilitate publication of your manuscript from the time you begin to draft it.
+  2281→PART II
+  2282→Preparing the Text
+  2283→This page intentionally left blank
+  2284→45
+  2285→```
+  2286→First impressions are strong impressions; a title ought therefore to be well stud-
+  2287→```
+  2288→ied, and to give, so far as its limits permit, a definite and concise indication of
+  2289→what is to come.
+  2290→—T. Clifford Allbutt
+  2291→IMPORTANCE OF THE TITLE
+  2292→In preparing a title for a paper, you would do well to remember one salient
+  2293→```
+  2294→fact: This title will be read by thousands of people. Perhaps few people, if any,
+  2295→```
+  2296→will read the entire paper, but many people will read the title, either in the
+  2297→```
+  2298→original journal, in one of the secondary (abstracting and indexing) databases,
+  2299→```
+  2300→in a search engine’s output, or somewhere else. Therefore, all the words in the
+  2301→title should be chosen with great care, and their association with one another
+  2302→must be carefully managed. Perhaps the most common error in defective
+  2303→titles, and certainly the most damaging one in terms of comprehension, is
+  2304→```
+  2305→faulty syntax (word order).
+  2306→```
+  2307→What is a good title? We define it as the fewest possible words that ade-
+  2308→quately describe the contents of the paper.
+  2309→Remember that the indexing and abstracting services depend heavily on
+  2310→the accuracy of the title, as do individual computerized literature-retrieval sys-
+  2311→tems. An improperly titled paper may be virtually lost and never reach its
+  2312→intended audience.
+  2313→Some authors mistakenly sacrifice clarity in an attempt to be witty. The title
+  2314→of a paper need not, and generally should not, be clever. It must, however, be
+  2315→```
+  2316→clear. An example (adapted from Halm and Landon 2007): “Association
+  2317→```
+  2318→Between Diuretic Use and Cardiovascular Mortality” could be an adequate
+  2319→CHAPTER 7
+  2320→How to Prepare the Title
+  2321→46 How to Write and Publish a Scientific Paper
+  2322→title. The authors of this paper should resist the temptation to use instead
+  2323→“Dying to Pee.”
+  2324→LENGTH OF THE TITLE
+  2325→Occasionally, titles are too short. A paper was submitted to the Journal of
+  2326→Bacteriology with the title “Studies on Brucella.” Obviously, such a title was not
+  2327→very helpful to the potential reader. Was the study taxonomic, genetic, bio-
+  2328→chemical, or medical? We would certainly want to know at least that much.
+  2329→Much more often, titles are too long. Ironically, long titles are often less
+  2330→meaningful than short ones. Over a century or so ago, when science was less
+  2331→specialized, titles tended to be long and nonspecific, such as, “On the addition
+  2332→to the method of microscopic research by a new way of producing colour-
+  2333→contrast between an object and its background or between definite parts of the
+  2334→```
+  2335→object itself” (Rheinberg J. 1896. J. R. Microsc. Soc. 373). That certainly sounds
+  2336→```
+  2337→```
+  2338→like a poor title; perhaps it would make a good abstract.
+  2339→```
+  2340→Not only scientists have written rambling titles. Consider this one from the
+  2341→year 1705: A Wedding Ring Fit for the Finger, or the Salve of Divinity on the Sore
+  2342→of Humanity with directions to those men that want wives, how to choose them, and
+  2343→to those women that have husbands, how to use them. Ironically, this title appeared
+  2344→```
+  2345→on a miniature book (Bernard 1995).
+  2346→```
+  2347→Without question, most excessively long titles contain “waste” words. Often,
+  2348→these waste words—such as “Studies on,” “Investigations on,” and “Observa-
+  2349→tions on”—appear at the start of the title. An opening A, An, or The is also a
+  2350→waste word. Certainly, such words are useless for indexing purposes.
+  2351→NEED FOR SPECIFIC TITLES
+  2352→Let us analyze a sample title: “Action of Antibiotics on Bacteria.” Is it a good
+  2353→```
+  2354→title? In form it is; it is short and carries no excess baggage (waste words).
+  2355→```
+  2356→Certainly, it would not be improved by changing it to “Preliminary Observa-
+  2357→tions on the Effect of Certain Antibiotics on Various Species of Bacteria.”
+  2358→```
+  2359→However (and this brings us to the next point), most titles that are too short
+  2360→```
+  2361→are too short because they include general rather than specific terms.
+  2362→We can safely assume that the study introduced by this title did not test the
+  2363→effect of all antibiotics on all kinds of bacteria. Therefore, the title is essentially
+  2364→meaningless. If only one or a few antibiotics were studied, they should be indi-
+  2365→vidually listed in the title. If only one or a few organisms were tested, they should
+  2366→be individually listed in the title. If the number of antibiotics or organisms was
+  2367→How to Prepare the Title 47
+  2368→awkwardly large for listing in the title, perhaps a group name could have been
+  2369→substituted. Examples of more acceptable titles are the following:
+  2370→“Action of Streptomycin on Mycobacterium tuberculosis.”
+  2371→“Action of Streptomycin, Neomycin, and Tetracycline on Gram-Positive
+  2372→Bacteria.”
+  2373→“Action of Polyene Antibiotics on Plant-Pathogenic Bacteria.”
+  2374→“Action of Various Antifungal Antibiotics on Candida albicans and Aspergil-
+  2375→lus fumigatus.”
+  2376→Although these titles are more acceptable than the sample, they are not
+  2377→especially good because they are still too general. If the “Action of” can be
+  2378→defined easily, the meaning might be clearer. For example, the first title might
+  2379→have been phrased “Inhibition of Growth of Mycobacterium tuberculosis by
+  2380→Streptomycin.”
+  2381→Long ago, Antonie van Leeuwenhoek used the word animalcules, a descrip-
+  2382→tive but not very specific word. In the 1930s, Howard Raistrick published an
+  2383→important series of papers under the title “Studies on Bacteria.” A similar
+  2384→paper today would have a much more specific title. If the study featured an
+  2385→organism, the title would give the genus and species, and possibly even the
+  2386→strain. If the study featured an enzyme in an organism, the title would not be
+  2387→anything like “Enzymes in Bacteria.” It would be something like “Dihydrofolate
+  2388→Reductase Produced by Bacillus subtilis.”
+  2389→IMPORTANCE OF SYNTAX
+  2390→In titles, be especially careful of syntax. Most of the grammatical errors in
+  2391→titles are matters of faulty word order.
+  2392→A paper was submitted to the Journal of Bacteriology with the title
+  2393→“Mechanism of Suppression of Nontransmissible Pneumonia in Mice Induced
+  2394→by Newcastle Disease Virus.” Unless this author had somehow managed to
+  2395→demonstrate spontaneous generation, it must have been the pneumonia that
+  2396→```
+  2397→was induced, not the mice. (The title should have read: “Mechanism of Sup-
+  2398→```
+  2399→pression of Nontransmissible Pneumonia Induced in Mice by Newcastle Dis-
+  2400→```
+  2401→ease Virus.”)
+  2402→```
+  2403→If you no longer believe that babies result from a visit by the stork, we offer
+  2404→```
+  2405→this title (Am. J. Clin. Pathol. 52:42, 1969): “Multiple Infections Among New-
+  2406→```
+  2407→```
+  2408→borns Resulting from Implantation with Staphylococcus aureus 502A.” (Is this
+  2409→```
+  2410→```
+  2411→the “Staph of Life”?)
+  2412→```
+  2413→```
+  2414→Another example (Clin. Res. 8:134, 1960): “Preliminary Canine and Clinical
+  2415→```
+  2416→Evaluation of a New Antitumor Agent, Streptovitacin.” When that dog gets
+  2417→48 How to Write and Publish a Scientific Paper
+  2418→through evaluating streptovitacin, we’ve got some work we’d like it to review.
+  2419→A grammatical aside: Please be careful when you use using. The word using
+  2420→might well be the most common dangling participle in scientific writing.
+  2421→Either there are some more smart dogs, or using is misused in this sentence
+  2422→from a manuscript: “Using a fiberoptic bronchoscope, dogs were immunized
+  2423→with sheep red blood cells.”
+  2424→Dogs aren’t the only smart animals. A manuscript was submitted to the
+  2425→Journal of Bacteriology under the title “Isolation of Antigens from Monkeys
+  2426→Using Complement-Fixation Techniques.”
+  2427→Even bacteria are smart. A manuscript was submitted to the Journal of Clin-
+  2428→ical Microbiology under the title “Characterization of Bacteria Causing Mastitis
+  2429→by Gas-Liquid Chromatography.” Isn’t it wonderful that bacteria can use GLC?
+  2430→THE TITLE AS LABEL
+  2431→The title of a paper is a label. It normally is not a sentence. Because it is not a
+  2432→sentence, with the usual subject-verb-object arrangement, it is simpler than a
+  2433→```
+  2434→sentence (or, at least, shorter), but the order of the words becomes even more
+  2435→```
+  2436→important.
+  2437→Actually, a few journals do permit a title to be a sentence. An example of
+  2438→such a title: “Babbling in a Vocal Learning Bat Resembles Human Infant Bab-
+  2439→```
+  2440→bling” (Fernandez et al. 2021). One might object to such a title because pres-
+  2441→```
+  2442→```
+  2443→ence of a verb (in this case, resembles) makes the title seem like a loud assertion.
+  2444→```
+  2445→Such a title may sound dogmatic because we are not accustomed to seeing
+  2446→authors present their results in the present tense, for reasons that are dis-
+  2447→```
+  2448→cussed in Chapter 30. Rosner (1990, p. 108) gave the name “assertive sentence
+  2449→```
+  2450→```
+  2451→title (AST)” to this kind of title and presented a number of reasons why such
+  2452→```
+  2453→titles should not be used. In particular, ASTs are “improper and imprudent”
+  2454→because “in some cases the AST boldly states a conclusion that is then stated
+  2455→more tentatively in the summary or elsewhere” and “ASTs trivialize a scientific
+  2456→report by reducing it to a one-liner.”
+  2457→The meaning and order of the words in the title are important to the poten-
+  2458→tial reader who sees the title in the journal table of contents. But these consid-
+  2459→erations are equally important to all potential users of the literature, including
+  2460→```
+  2461→those (probably a majority) who become aware of the paper via secondary
+  2462→```
+  2463→sources. Thus, the title should be useful as a label accompanying the paper
+  2464→itself, and it also should be in a form suitable for the machine-indexing sys-
+  2465→tems used by Chemical Abstracts, MEDLINE, and others. In short, the terms
+  2466→in the title should be those that highlight the significant content of the paper.
+  2467→As an aid to readers, journals commonly print running titles or running
+  2468→heads at the top of each page. Often the title of the journal or book is given at
+  2469→How to Prepare the Title 49
+  2470→the top of left-facing pages and the article or chapter title is given at the top of
+  2471→```
+  2472→right-facing pages (as in this book). Usually, a short version of the title is
+  2473→```
+  2474→```
+  2475→needed because of space limitations. (The maximum character count is likely
+  2476→```
+  2477→```
+  2478→to be stated in the journal’s instructions to authors.) It can be wise to suggest
+  2479→```
+  2480→an appropriate running title on the title page of the manuscript.
+  2481→ABBREVIATIONS AND JARGON
+  2482→Titles should almost never contain abbreviations, chemical formulas, propri-
+  2483→```
+  2484→etary (rather than generic) names, jargon, and the like. In designing the title,
+  2485→```
+  2486→the author should ask: “How would I look for this kind of information in an
+  2487→index?” If the paper concerns an effect of hydrochloric acid, should the title
+  2488→include the words hydrochloric acid, or should it contain the much shorter and
+  2489→readily recognizable HCl? The answer seems obvious. Most of us would look
+  2490→```
+  2491→under hy in an index, not under hc. Furthermore, if some authors used (and
+  2492→```
+  2493→```
+  2494→journal editors permitted) HCl and others used hydrochloric acid, the user of
+  2495→```
+  2496→the bibliographic services might locate only part of the published literature,
+  2497→not noting that additional references are listed under another, abbreviated
+  2498→entry. Actually, the larger secondary services have computer programs that can
+  2499→bring together entries such as deoxyribonucleic acid, DNA, and even ADN
+  2500→```
+  2501→(acide deoxyribonucleique). However, by far the best rule for authors (and edi-
+  2502→```
+  2503→```
+  2504→tors) is to avoid abbreviations in titles. And the same rule should apply to
+  2505→```
+  2506→proprietary names, jargon, and unusual or outdated terminology.
+  2507→MORE ABOUT TITLE FORMAT
+  2508→Many editors are opposed to main title–subtitle arrangements and to hanging
+  2509→```
+  2510→titles. The main title–subtitle (series) arrangement (example: “Studies on Bac-
+  2511→```
+  2512→```
+  2513→teria. IV. Cell Wall of Staphylococcus aureus”) was common decades ago. Today,
+  2514→```
+  2515→editors generally believe that it is important, especially for the reader, that each
+  2516→published paper be sufficient by itself. Thus, series titles now are rare.
+  2517→```
+  2518→The hanging title (similar to a series title but with a colon instead of a
+  2519→```
+  2520→```
+  2521→roman numeral) is considerably better. Some journals, especially in the social
+  2522→```
+  2523→```
+  2524→sciences (Hartley 2007), seem to favor hanging titles, perhaps to get the most
+  2525→```
+  2526→```
+  2527→important words of the title up to the front. (Example: “Debunking Misinfor-
+  2528→```
+  2529→mation About Genetically Modified Food Safety on Social Media: Can Heuris-
+  2530→```
+  2531→tic Cues Mitigate Biased Assimilation?” Science Communication 43:460, 2021).
+  2532→```
+  2533→Hanging titles may sometimes aid the reader, but they may appear pedantic,
+  2534→emphasize the general term rather than a more significant term, require
+  2535→punctuation, and scramble indexes. Views also vary as to whether questions
+  2536→50 How to Write and Publish a Scientific Paper
+  2537→are appropriate to include in titles, as in the example just given. Looking at
+  2538→titles in the journal to which you will submit your paper can help in discerning
+  2539→what forms of titles are acceptable to it.
+  2540→Use of a straightforward title does not lessen the need for proper syntax,
+  2541→however, or for the proper form of each word in the title. For example, a title
+  2542→reading “New Color Standard for Biology” would seem to indicate the develop-
+  2543→ment of color specifications for use in describing plant and animal specimens.
+  2544→```
+  2545→However, the title “New Color Standard for Biologists” (Bioscience 27:762,
+  2546→```
+  2547→```
+  2548→1977) makes us wonder whether the new standard might help in distinguish-
+  2549→```
+
+[showing lines 550-2549 of 15208; use offset=2550 with limit to continue reading]

@@ -1,0 +1,432 @@
+     1→     1→# ThesisFrame — Worklog
+     2→     2→
+     3→     3→---
+     4→     4→Task ID: 1
+     5→     5→Agent: main
+     6→     6→Task: Ajouter QueryClientProvider au layout
+     7→     7→
+     8→     8→Work Log:
+     9→     9→- Created src/components/providers/query-provider.tsx (TanStack Query provider with 30s staleTime)
+    10→    10→- Updated src/app/layout.tsx to wrap children in QueryProvider
+    11→    11→
+    12→    12→Stage Summary:
+    13→    13→- TanStack Query hooks (useQuery, useMutation) now work correctly across all views
+    14→    14→- Critical bug fix — hooks would crash without provider
+    15→    15→
+    16→    16→---
+    17→    17→Task ID: 2
+    18→    18→Agent: main
+    19→    19→Task: Créer les schémas Zod partagés
+    20→    20→
+    21→    21→Work Log:
+    22→    22→- Created src/lib/api-schemas.ts with all Zod validation schemas
+    23→    23→- Includes: thesis, chapter, reference, cadrage, notebook, agile, AI config schemas
+    24→    24→- Updated existing API routes to import from shared schemas instead of inline definitions
+    25→    25→- Routes updated: thesis, thesis/[id], chapters/[id], references, references/[id]
+    26→    26→
+    27→    27→Stage Summary:
+    28→    28→- Single source of truth for validation schemas (server + client reuse)
+    29→    29→- All API routes now use shared schemas from @/lib/api-schemas
+    30→    30→
+    31→    31→---
+    32→    32→Task ID: 3-a
+    33→    33→Agent: full-stack-developer
+    34→    34→Task: Create Cadrage CRUD API routes
+    35→    35→
+    36→    36→Work Log:
+    37→    37→- Created src/app/api/thesis/[id]/cadrages/route.ts (GET + POST)
+    38→    38→- Created src/app/api/cadrages/[id]/route.ts (PUT + DELETE)
+    39→    39→- Created src/app/api/cadrages/[id]/fields/route.ts (GET + POST)
+    40→    40→- Created src/app/api/cadrages/fields/[fieldId]/route.ts (PUT + DELETE)
+    41→    41→- Created src/app/api/cadrages/[id]/versions/route.ts (GET + POST)
+    42→    42→
+    43→    43→Stage Summary:
+    44→    44→- Full CRUD for cadrages, fields, and versions
+    45→    45→- All routes use shared Zod schemas from @/lib/api-schemas
+    46→    46→
+    47→    47→---
+    48→    48→Task ID: 3-b
+    49→    49→Agent: full-stack-developer
+    50→    50→Task: Create Notebook/ResearchSource CRUD API routes
+    51→    51→
+    52→    52→Work Log:
+    53→    53→- Created src/app/api/sources/route.ts (GET + POST)
+    54→    54→- Created src/app/api/sources/[id]/route.ts (GET + PUT + DELETE)
+    55→    55→- Created src/app/api/sources/[id]/entries/route.ts (GET + POST)
+    56→    56→- Created src/app/api/entries/route.ts (GET + POST)
+    57→    57→- Created src/app/api/entries/[id]/route.ts (PUT + DELETE)
+    58→    58→
+    59→    59→Stage Summary:
+    60→    60→- Full CRUD for research sources and notebook entries
+    61→    61→- Filtering and search support
+    62→    62→
+    63→    63→---
+    64→    64→Task ID: 3-c
+    65→    65→Agent: full-stack-developer
+    66→    66→Task: Create Agile Sprint/Story CRUD API routes
+    67→    67→
+    68→    68→Work Log:
+    69→    69→- Created src/app/api/sprints/route.ts (GET + POST)
+    70→    70→- Created src/app/api/sprints/[id]/route.ts (GET + PUT + DELETE)
+    71→    71→- Created src/app/api/sprints/[id]/stories/route.ts (GET + POST)
+    72→    72→- Created src/app/api/stories/[id]/route.ts (PUT + DELETE)
+    73→    73→
+    74→    74→Stage Summary:
+    75→    75→- Full CRUD for agile sprints and stories
+    76→    76→- Filtering by phase and status
+    77→    77→
+    78→    78→---
+    79→    79→Task ID: 3-d
+    80→    80→Agent: full-stack-developer
+    81→    81→Task: Create AI Config and Stats API routes
+    82→    82→
+    83→    83→Work Log:
+    84→    84→- Created src/app/api/ai-config/route.ts (GET + POST)
+    85→    85→- Created src/app/api/ai-config/[id]/route.ts (PUT + DELETE)
+    86→    86→- Created src/app/api/stats/route.ts (GET with aggregated statistics)
+    87→    87→
+    88→    88→Stage Summary:
+    89→    89→- Full CRUD for AI tool configurations
+    90→    90→- Stats endpoint for dashboard aggregation (7 parallel Prisma queries)
+    91→    91→
+    92→    92→---
+    93→    93→Task ID: 4
+    94→    94→Agent: main
+    95→    95→Task: Mettre à jour le Dashboard avec vraies données
+    96→    96→
+    97→    97→Work Log:
+    98→    98→- Updated src/components/dashboard/dashboard-page.tsx
+    99→    99→- Added useDashboardStats hook using /api/stats endpoint
+   100→   100→- Dynamic stat cards (chapters, references, words, progress %)
+   101→   101→- Dynamic step completion tracking based on real data
+   102→   102→- Updated module cards with correct icons and status badges
+   103→   103→
+   104→   104→Stage Summary:
+   105→   105→- Dashboard now shows real data from SQLite via Prisma
+   106→   106→- Stats auto-refresh every 15 seconds
+   107→   107→- Loading skeletons while data loads
+   108→   108→
+   109→   109→---
+   110→   110→Task ID: 5
+   111→   111→Agent: main
+   112→   112→Task: Lint, corrections, et Agent Browser verification
+   113→   113→
+   114→   114→Work Log:
+   115→   115→- Ran eslint: 0 errors, 19 warnings → fixed to 0 errors, 2 residual warnings
+   116→   116→- Fixed unused imports in: dashboard-page, ai-writing-page, chapter-header, create-thesis-dialog, directeur-chat, references/bibtex, use-thesis
+   117→   117→- Rewrote create-thesis-dialog.tsx (corrupted by edit)
+   118→   118→- Agent Browser verification: Dashboard (27 elements), Editor (thesis list with 7 chapters), References (CRUD UI), AI Writing (10 modes)
+   119→   119→- 0 console errors across all tested views
+   120→   120→
+   121→   121→Stage Summary:
+   122→   122→- Clean lint output (0 errors)
+   123→   123→- All 4 views tested and verified via Agent Browser
+   124→   124→- Application fully functional end-to-end
+   125→   125→
+   126→   126→---
+   127→   127→Task ID: 5-d
+   128→   128→Agent: main
+   129→   129→Task: Créer la page Bases de données académiques
+   130→   130→
+   131→   131→Work Log:
+   132→   132→- Created src/modules/academic-db/academic-db-page.tsx
+   133→   133→- Defined 27 academic databases across 5 categories with real URLs and French descriptions
+   134→   134→- Categories: Archives ouvertes (5), Moteurs de recherche (4), Éditeurs & Bases (7), Bibliothèques numériques (5), Outils spécialisés (6)
+   135→   135→- Search bar filters databases by name or description
+   136→   136→- Category filter via Select dropdown
+   137→   137→- Each database card shows: name, description, category badge, access type badge (Gratuit/Abonnement/Open Access with color coding), country, and "Visiter" button opening in new tab
+   138→   138→- Responsive grid layout (1/2/3 columns)
+   139→   139→- Empty state with Globe icon when no results
+   140→   140→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   141→   141→
+   142→   142→Stage Summary:
+   143→   143→- AcademicDbPage component follows existing module pattern (ReferencesPage)
+   144→   144→- All UI text in French, uses shadcn/ui components only
+   145→   145→- Client-side filtering with useMemo for performance
+   146→   146→
+   147→   147→---
+   148→   148→Task ID: 5-a
+   149→   149→Agent: main
+   150→   150→Task: Créer la page Méthodologie de recherche
+   151→   151→
+   152→   152→Work Log:
+   153→   153→- Created src/modules/methodology/methodology-page.tsx
+   154→   154→- 5 Accordion sections with first section open by default (type="multiple", defaultValue=["paradigms"])
+   155→   155→- Section 1 — Paradigmes de recherche: 3 Cards (Qualitatif, Quantitatif, Mixte) each with badge, description, forces/limites lists, and examples
+   156→   156→- Section 2 — Démarche méthodologique: 7-step vertical stepper with numbered circles connected by a vertical line (Problématique → Revue littérature → Cadre théorique → Collecte → Analyse → Discussion → Conclusion)
+   157→   157→- Section 3 — Outils de collecte: 4 Cards with icons (MessageSquare, ClipboardList, Eye, FileSearch), descriptions, and "Conseils" tip lists with Lightbulb icon
+   158→   158→- Section 4 — Techniques d'analyse: 4 Cards (Analyse thématique, Analyse de contenu, Analyse statistique, Grounded theory) with badges and details
+   159→   159→- Section 5 — Checklist méthodologique: 10 interactive checkboxes with useState, Progress bar showing percentage, checked items highlighted with chart-1 color
+   160→   160→- All UI text in French, uses shadcn/ui Accordion, Card, Badge, Checkbox, Progress, Separator
+   161→   161→- Responsive layout: stacks on mobile, side-by-side grids on desktop (md: breakpoint)
+   162→   162→- Uses oklch color tokens (chart-1, chart-2, chart-4) — no blue/indigo
+   163→   163→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   164→   164→
+   165→   165→Stage Summary:
+   166→   166→- MethodologyPage component follows existing module pattern (max-w-6xl mx-auto, flex flex-col gap-6 p-6)
+   167→   167→- Interactive checklist with real-time progress tracking
+   168→   168→- All content blocks use Card/CardHeader/CardTitle/CardDescription pattern from design system
+   169→   169→
+   170→   170→---
+   171→   171→Task ID: 5-b
+   172→   172→Agent: main
+   173→   173→Task: Créer la page Articles scientifiques
+   174→   174→
+   175→   175→Work Log:
+   176→   176→- Created src/modules/articles/articles-page.tsx
+   177→   177→- 3-tab layout using shadcn/ui Tabs: Guide IMRaD, Boîte à outils, Checklist de soumission
+   178→   178→- Tab 1 (Guide IMRaD): Accordion with 4 sections (Introduction, Méthodologie, Résultats, Discussion), each containing 3 Cards with 4 substantive bullet points
+   179→   179→- Tab 2 (Boîte à outils): 2-column grid of 4 Cards (Structurer un abstract, Rédiger une introduction efficace, Présenter des résultats, Formuler une conclusion) with 6 tips each
+   180→   180→- Tab 3 (Checklist de soumission): Interactive checkboxes with 4 categories (Avant soumission, Format, Contenu, Finalisation) in 2-column grid, Progress bar with percentage badge, line-through styling on checked items
+   181→   181→- All content in French with substantive doctoral-level advice
+   182→   182→- Uses: Tabs, TabsList, TabsTrigger, TabsContent, Accordion, AccordionItem, AccordionTrigger, AccordionContent, Card, CardHeader, CardTitle, CardContent, Checkbox, Progress, Badge, Label from shadcn/ui
+   183→   183→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   184→   184→
+   185→   185→Stage Summary:
+   186→   186→- ArticlesPage component with full IMRaD writing guide, practical writing tools, and interactive submission checklist
+   187→   187→- Follows existing module pattern (ReferencesPage layout conventions)
+   188→   188→- Named export: export function ArticlesPage()
+   189→   189→
+   190→   190→---
+   191→   191→Task ID: 6
+   192→   192→Agent: main
+   193→   193→Task: Créer le module Outils IA (ai-tools-page.tsx)
+   194→   194→
+   195→   195→Work Log:
+   196→   196→- Created src/modules/ai-tools/ai-tools-page.tsx
+   197→   197→- 3-tab layout using shadcn/ui Tabs: Carnet de recherche, Consensus IA, Visualisation
+   198→   198→- Tab 1 (Carnet de recherche): Fetches sources from GET /api/sources and entries from GET /api/entries via useQuery. Sources displayed in responsive grid of Cards (title, authors, year, type badge with color coding, notes preview, entry count). Entries displayed as Q&A Cards with question (bold), answer (text), tags (badges), source link. "Ajouter une source" and "Ajouter une entrée" buttons open Dialog forms. CRUD operations via useMutation with invalidateQueries and toast notifications. Delete buttons on cards.
+   199→   199→- Tab 2 (Consensus IA): Textarea for prompt, 3 selectable AI modes (Rédaction, Revue critique, Suggestion) with toggle buttons, "Comparer" button that sequentially calls POST /api/ai-writing for each selected mode. Results displayed side-by-side in Cards. "Synthèse" section with comparative overview of all results. Skeleton loading states during comparison.
+   200→   200→- Tab 3 (Visualisation): Placeholder with Brain icon, "Bientôt disponible" badge, feature preview skeleton showing 3 upcoming features (Carte conceptuelle, Réseau d'auteurs, Chronologie thématique). Info card with tip to populate research notebook first.
+   201→   201→- All UI text in French, follows existing module pattern (max-w-6xl mx-auto, flex flex-col gap-6 p-6)
+   202→   202→- Uses: Tabs, Dialog, Select, Card, Badge, Skeleton, Separator, Textarea, Input, Button from shadcn/ui
+   203→   203→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   204→   204→
+   205→   205→Stage Summary:
+   206→   206→- AiToolsPage component with research notebook CRUD, AI consensus comparison, and visualization placeholder
+   207→   207→- Named export: export function AiToolsPage()
+   208→   208→- Connected to existing API routes: /api/sources, /api/entries, /api/ai-writing
+   209→   209→
+   210→   210→---
+   211→   211→Task ID: 5-c
+   212→   212→Agent: main
+   213→   213→Task: Créer la page Plan de thèse
+   214→   214→
+   215→   215→Work Log:
+   216→   216→- Created src/modules/thesis-plan/thesis-plan-page.tsx
+   217→   217→- Header with ListTree icon, title "Plan de thèse", subtitle "Structurez et visualisez votre plan"
+   218→   218→- Two-column layout (lg:grid-cols-[350px_1fr]):
+   219→   219→  - Left panel ("Structure actuelle"): Fetches thesis list via useTheses() hook (GET /api/thesis), displays first thesis chapters in a tree structure. Each chapter row shows: roman numeral Badge, title, color-coded status Badge (not_started=outline, in_progress=amber, draft=secondary, review=sky, completed=emerald), word count vs target with Progress bar. Thesis summary shows total chapters, word count, and completed count. Empty state with AlertCircle icon and link to editor.
+   220→   220→  - Right panel ("Générateur de template"): Card with form containing Discipline Select (8 French academic disciplines), Nombre de chapitres number Input (1-15), Mode de structure Select ("classique" / "par parties"). "Générer le template" button generates LaTeX template string. Output displayed in ScrollArea with <pre> block. Copy button with clipboard API and sonner toast.
+   221→   221→- LaTeX template generation: generateLatexTemplate() produces complete French academic thesis template with documentclass, packages (babel[french], geometry, natbib, fancyhdr, etc.), title page, Remerciements, Résumé/Abstract, table of contents, chapters (classic or by-parts structure), Conclusion Générale, bibliography, and annexes. "par parties" mode groups chapters into 3 parts with \part commands.
+   222→   222→- ChapterListSkeleton component for loading state
+   223→   223→- Responsive: stacks on mobile, side-by-side on lg
+   224→   224→- All UI text in French
+   225→   225→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   226→   226→
+   227→   227→Stage Summary:
+   228→   228→- ThesisPlanPage component with chapter tree visualization and LaTeX template generator
+   229→   229→- Named export: export function ThesisPlanPage()
+   230→   230→- Uses useTheses() from existing hooks, no new API routes needed
+   231→   231→
+   232→   232→---
+   233→   233→Task ID: integrate
+   234→   234→Agent: main
+   235→   235→Task: Intégrer les 5 modules dans page.tsx et mettre à jour le Dashboard
+   236→   236→
+   237→   237→Work Log:
+   238→   238→- Updated src/app/page.tsx: replaced ModulePlaceholder for all 5 views with actual module imports (MethodologyPage, ArticlesPage, ThesisPlanPage, AiToolsPage, AcademicDbPage)
+   239→   239→- Updated src/components/dashboard/dashboard-page.tsx: changed module status badges from "Planifié" to "Prêt" for Méthodologie, Articles scientifiques, Plan de thèse, Bases de données
+   240→   240→- Fixed bug in references-page.tsx: year field sent as string but Zod schema expects number — added parseInt conversion in createRef mutation
+   241→   241→- Agent Browser verification: all 9 views render correctly, 0 console errors
+   242→   242→- CRUD reference creation tested end-to-end (POST /api/references 201)
+   243→   243→- LaTeX template generation tested successfully
+   244→   244→
+   245→   245→Stage Summary:
+   246→   246→- All 9 views now render real content (0 ModulePlaceholder remaining)
+   247→   247→- Dashboard shows 6 "Prêt" + 2 "IA" + 0 "Planifié" badges
+   248→   248→- Lint: 0 errors, 2 pre-existing warnings
+   249→   249→
+   250→   250→---
+   251→   251→Task ID: 3
+   252→   252→Agent: main
+   253→   253→Task: Create Mendeley panel module (mendeley-page.tsx)
+   254→   254→
+   255→   255→Work Log:
+   256→   256→- Created src/modules/mendeley/mendeley-page.tsx
+   257→   257→- ConnectionStatusCard: fetches /api/mendeley/status to check OAuth connection. Connected state shows user name, document count, "Synchroniser" and "Se déconnecter" buttons. Disconnected state shows warning Alert with OAuth explanation + "Connecter Mendeley" button (links to /api/mendeley/auth) + "Portail développeur Mendeley" external link.
+   258→   258→- DocumentsTab: Search input to filter documents by title, author, year, or type. Fetches from /api/mendeley/documents via useQuery. Grid of document Cards (1/2/3 cols responsive) showing title, authors (truncated with "et al."), year Badge, type Badge (color-coded), source Badge, abstract preview (line-clamp-2). Skeleton loading (6 cards), error Alert, empty state, and filtered-empty state handled. Results count displayed.
+   259→   259→- SearchTab: Search input + "Rechercher" button with Enter key support. Loading skeleton state on search. Placeholder results area: "Recherche dans la base Mendeley" with "Fonctionnalité à venir" badge. Initial empty state with instructions.
+   260→   260→- SettingsTab: Explanation Card with 6-step OAuth setup guide (numbered list with dev.mendeley.com link, .env.local code snippet). Environment variables status Card fetching /api/mendeley/env-status — 3 env vars (MENDELEY_CLIENT_ID, MENDELEY_CLIENT_SECRET, MENDELEY_REDIRECT_URI) each with name, description, CheckCircle2/AlertCircle icon, and Badge ("Configuré" in chart-4 / "Non configuré" in chart-1). Security Alert about server-side-only credentials.
+   261→   261→- Main MendeleyPage: max-w-7xl container with BookMarked header, ConnectionStatusCard, 3-tab Tabs (Documents, Recherche, Paramètres) with hidden sm:inline text labels and icon-only on mobile.
+   262→   262→- All UI text in French, oklch color tokens (chart-1 through chart-5), no blue/indigo.
+   263→   263→- Lint: 0 errors, 2 pre-existing warnings unchanged.
+   264→   264→
+   265→   265→Stage Summary:
+   266→   266→- MendeleyPage component with OAuth connection status, document library, search placeholder, and settings configuration
+   267→   267→- Named export: export function MendeleyPage()
+   268→   268→- Gracefully handles missing API endpoints with skeleton loading and error states
+   269→   269→- Follows existing module pattern (max-w-7xl mx-auto, flex flex-col gap-6 p-6)
+   270→   270→
+   271→   271→---
+   272→   272→Task ID: 5
+   273→   273→Agent: main
+   274→   274→Task: Create Box Drive panel module (box-drive-page.tsx)
+   275→   275→
+   276→   276→Work Log:
+   277→   277→- Created src/modules/box-drive/box-drive-page.tsx
+   278→   278→- Connection status card: fetches /api/box-drive/status via useQuery, shows CheckCircle2 (connected) or AlertCircle (disconnected) with color-coded Badge, displays user_name and enterprise_id when connected, connect button (links to /api/box-drive/connect), disconnect button (POST /api/box-drive/disconnect with toast)
+   279→   279→- Files tab: list view with folder/file icons (FolderOpen/File), each row shows name, size, modified date, shared link Badge. ScrollArea with max-h-[500px]. Upload button creates file input for multi-file upload (POST /api/box-drive/files with FormData). Download button fetches /api/box-drive/files/[id]/download as blob. Share2 button per file to create shared link (POST /api/box-drive/links). Skeleton loading (5 rows), empty state with FolderOpen icon.
+   280→   280→- Shared Links tab: fetches /api/box-drive/links via useQuery, list of links with file_name, truncated URL, access Badge (Ouvert/Entreprise/Collaborateurs with color-coded variants). Copy link button using clipboard API with toast. "Créer un lien" header button with toast info. Skeleton (3 rows), empty state with Link2 icon.
+   281→   281→- Settings tab: 4 env var cards in 2-column responsive grid (BOX_CLIENT_ID, BOX_CLIENT_SECRET with type=password, BOX_REDIRECT_URI, BOX_ENTERPRISE_ID), each with Lock/Link2/Package icon, readOnly Input with placeholder, description text. Alert about server-side-only credentials. 5-step setup guide (numbered list referencing Box Developer Console, OAuth 2.0, redirect URI, .env.local, restart).
+   282→   282→- All UI text in French, oklch color tokens (chart-1/160 green for connected state and primary actions, chart-1/25 red for disconnected, chart-1/60 amber for folders), no blue/indigo.
+   283→   283→- Uses: Package (fallback for Box icon), FolderOpen, File, Upload, Download, Share2, Link2, Unlink, AlertCircle, CheckCircle2, Lock from lucide-react.
+   284→   284→- Uses: Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Input, Badge, Separator, Tabs, ScrollArea, Skeleton, Alert, AlertDescription from shadcn/ui.
+   285→   285→- Responsive layout: tab labels hidden on mobile (icon-only), 1/2 column grid for settings on mobile/desktop.
+   286→   286→- Lint: 0 errors, 2 pre-existing warnings unchanged.
+   287→   287→
+   288→   288→Stage Summary:
+   289→   289→- BoxDrivePage component with OAuth connection status, file browser, shared links manager, and API settings
+   290→   290→- Named export: export function BoxDrivePage()
+   291→   291→- Gracefully handles missing API endpoints with skeleton loading and empty/disconnected states
+   292→   292→- Follows existing module pattern (max-w-7xl mx-auto, flex flex-col gap-6 p-6)
+   293→   293→
+   294→   294→---
+   295→   295→Task ID: 6
+   296→   296→Agent: main
+   297→   297→Task: Create IA & Assistants panel module (ia-assistants-page.tsx)
+   298→   298→
+   299→   299→Work Log:
+   300→   300→- Created src/modules/ia-assistants/ia-assistants-page.tsx
+   301→   301→- 5 sub-assistants as tabs with default tab "Directeur de thèse":
+   302→   302→  1. Directeur de thèse: Chat interface with ScrollArea messages, Textarea input, Send button, typing indicator (Loader2 + "Le directeur réfléchit…"), system message. Uses POST /api/directeur-chat with full conversation history. Enter key to send (Shift+Enter for newline). Oklch chart-1 color.
+   303→   303→  2. Assistant thèse: Context selector (Select: Chapitre actuel, Problématique, Méthodologie, Bibliographie), Textarea for question, "Poser la question" button, formatted response Card. Uses POST /api/ai-writing mode="assistant". Oklch chart-2 color.
+   304→   304→  3. Vérification linguistique: Large Textarea, "Analyser" button, parsed correction list (original → suggested with strikethrough/colored text), severity icons (AlertTriangle/CheckCircle), stats cards (errors/warnings/suggestions with color-coded borders). Uses POST /api/ai-writing mode="correction" with parseGrammarResult helper. Oklch chart-3 color.
+   305→   305→  4. Vérification stylistique: Textarea, "Vérifier le style" button, style issues with category badges (Passe, Actif, Concordance, Redondance, etc.), severity indicators (error/warning/info with color-coded backgrounds), suggestions. Uses POST /api/ai-writing mode="harper" with parseStyleIssues helper. Oklch chart-4 color.
+   306→   306→  5. Humanisateur: Textarea for AI-generated text, "Humaniser" button, before/after comparison view (side-by-side md:grid-cols-2, stacked on mobile), "Copier le résultat" button with clipboard API. Uses POST /api/ai-writing mode="humanize". Oklch chart-5 color.
+   307→   307→- All panels: loading skeletons during API calls, error handling with toast notifications, user-friendly French error messages.
+   308→   308→- All 5 panels use useMutation from TanStack Query with onSuccess/onError toasts.
+   309→   309→- All UI text in French, responsive layout, no blue/indigo colors.
+   310→   310→- Icons: GraduationCap, Brain, SpellCheck, Palette, User, Send, Bot, AlertTriangle, CheckCircle, Copy, Loader2 from lucide-react.
+   311→   311→- Tabs trigger labels truncated on mobile (icon-only), full labels on sm+.
+   312→   312→- Named export: export function IaAssistantsPage()
+   313→   313→- Lint: 0 errors, 6 pre-existing warnings unchanged (1 removed from new file: unused Input import).
+   314→   314→
+   315→   315→Stage Summary:
+   316→   316→- IaAssistantsPage component with 5 AI-powered sub-assistants (Directeur chat, Assistant, Grammar check, Style check, Humanizer)
+   317→   317→- Connected to existing API routes: /api/directeur-chat, /api/ai-writing (modes: assistant, correction, harper, humanize)
+   318→   318→- Parsed AI responses for grammar corrections and style issues with structured display
+   319→   319→- Follows existing module pattern (max-w-7xl mx-auto, flex flex-col gap-6 p-6)
+   320→   320→
+   321→   321→---
+   322→   322→Task ID: 2
+   323→   323→Agent: full-stack-developer
+   324→   324→Task: Create Cadrage panel module (cadrage-page.tsx)
+   325→   325→
+   326→   326→Work Log:
+   327→   327→- Created src/modules/cadrage/cadrage-page.tsx
+   328→   328→- Two-column responsive layout (lg:grid-cols-[350px_1fr]):
+   329→   329→  - Left column: Thesis selector dropdown (loads from GET /api/thesis via useQuery) + cadrage list (loads from GET /api/thesis/[id]/cadrages). Each cadrage item shows active/inactive indicator (CheckCircle2 or empty circle), label, and field count Badge. Selected cadrage highlighted with primary border.
+   330→   330→  - Right column: Cadrage editor card with editable label (click-to-edit Input), isActive toggle Badge (chart-1 color when active), delete button, and progress bar showing filled/total fields percentage.
+   331→   331→- Editor tab: Loads fields from GET /api/cadrages/[id]/fields. Each field has numbered label, CheckCircle2 icon when filled, AI suggestion button (placeholder toast "Fonctionnalité IA à venir"), save button, Textarea with auto-save on blur via PUT /api/cadrages/fields/[fieldId]. Filled fields get chart-1 border accent. AI suggestion display panel with chart-2 styling.
+   332→   332→- Versions tab: Lists snapshots from GET /api/cadrages/[id]/versions. Each version row shows label, formatted date, filled/total fields Badge. "Nouvelle version" button opens Dialog with label input, creates snapshot via POST /api/cadrages/[id]/versions.
+   333→   333→- Create cadrage dialog: Label input, auto-creates 8 predefined fields (theme, problematique, methodologie, hypothese, cadre_theorique, terrain, resultats_attendus, originalite) via POST /api/thesis/[id]/cadrages.
+   334→   334→- All CRUD operations via useMutation with query invalidation and toast notifications.
+   335→   335→- Empty states for no thesis, no cadrages, no fields, no versions — all with appropriate icons and French text.
+   336→   336→- Loading skeletons: CadrageListSkeleton (3 items), FieldEditorSkeleton (4 fields), version skeleton.
+   337→   337→- Query keys organized with cadrageKeys factory.
+   338→   338→- All UI text in French, oklch color tokens (chart-1, chart-2), no blue/indigo.
+   339→   339→- Lint: 0 errors, 2 pre-existing warnings unchanged.
+   340→   340→
+   341→   341→Stage Summary:
+   342→   342→- CadragePage component with thesis selector, cadrage list, field editor with progress tracking, and version management
+   343→   343→- Named export: export function CadragePage()
+   344→   344→- Connected to existing API routes: /api/thesis, /api/thesis/[id]/cadrages, /api/cadrages/[id], /api/cadrages/[id]/fields, /api/cadrages/fields/[fieldId], /api/cadrages/[id]/versions
+   345→   345→- Follows existing module pattern (max-w-7xl mx-auto, flex flex-col gap-6 p-6)
+   346→   346→
+   347→   347→---
+   348→   348→Task ID: 4
+   349→   349→Agent: main
+   350→   350→Task: Create Cloud Drive (Google Drive) panel module (cloud-drive-page.tsx)
+   351→   351→
+   352→   352→Work Log:
+   353→   353→- Created src/modules/cloud-drive/cloud-drive-page.tsx
+   354→   354→- Named export: export function CloudDrivePage()
+   355→   355→- Connection status card: fetches /api/cloud-drive/status via useQuery, shows connected/disconnected state with email, connect button links to /api/cloud-drive/connect, disconnect to /api/cloud-drive/disconnect, loading skeleton state
+   356→   356→- Files tab: breadcrumb-style path navigation, search Input with Search icon for client-side filtering via useMemo, folders listed first with amber FolderOpen icon and click-to-navigate, files with File icon, color-coded type Badge (PDF=red, DOCX=sky, XLSX=emerald, PPTX=amber, Image=purple, Text=stone), modified date, size, Download button, Refresh button with spin animation, Upload placeholder button, empty state, error Alert, Skeleton loading rows, ScrollArea max-h-96
+   357→   357→- Backup tab: "Sauvegarder la thèse" button calling POST /api/cloud-drive/backup, auto-backup Switch toggle (placeholder), mock backup history (3 entries) with file name, thesis name, date, size Badge, Download button
+   358→   358→- Settings tab: 5-step setup guide, 3 env var cards with copy-to-clipboard, OAuth scopes info Alert
+   359→   359→- All UI text in French, oklch color tokens, no blue/indigo
+   360→   360→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   361→   361→
+   362→   362→Stage Summary:
+   363→   363→- CloudDrivePage with connection status, file browser with search, backup management, and configuration guide
+   364→   364→- Files & Backups tabs gated by connection status; Settings tab always accessible
+   365→   365→
+   366→   366→---
+   367→   367→Task ID: integrate-missing-modules
+   368→   368→Agent: main
+   369→   369→Task: Integrate all 5 new modules into app-store, sidebar, and page.tsx
+   370→   370→
+   371→   371→Work Log:
+   372→   372→- Updated app-store.ts: expanded ViewId from 9 to 14 views, added categories (principal, recherche, redaction, ia, stockage), added NAVIGATION_CATEGORIES
+   373→   373→- Updated app-sidebar.tsx: categorized navigation with 5 groups (Principal, Recherche, Rédaction, IA & Outils, Stockage), expanded ICON_MAP with all icons
+   374→   374→- Updated page.tsx: added lazy loading for all 11 non-core modules via createLazyPanel(), added ErrorBoundary + Suspense wrapper, added PanelLoader skeleton
+   375→   375→- All named exports properly mapped with .then(m => ({ default: m.NamedExport })) pattern
+   376→   376→- ESLint: 0 errors, 2 pre-existing warnings unchanged
+   377→   377→- Agent Browser verification: all 14 navigation buttons visible, all 5 new modules open correctly (Cadrage, Mendeley, Cloud Drive, Box Drive, Assistants IA), 0 console errors
+   378→   378→
+   379→   379→Stage Summary:
+   380→   380→- 14 views now available in 5 navigation categories
+   381→   381→- 5 new modules fully functional: Cadrage, Mendeley, Cloud Drive, Box Drive, IA & Assistants
+   382→   382→- Lazy loading + ErrorBoundary for graceful degradation
+   383→   383→- All modules created by subagents and integrated in a single session
+   384→   384→
+   385→   385→---
+   386→   386→Task ID: 1
+   387→   387→Agent: main
+   388→   388→Task: Créer la page Configuration IA (ai-config-page.tsx)
+   389→   389→
+   390→   390→Work Log:
+   391→   391→- Created src/modules/ai-config/ai-config-page.tsx
+   392→   392→- Active provider selector card at top with radio-style buttons for all 5 providers (Z.ai, OpenAI, Anthropic, Mistral, Custom), each with oklch color tokens (chart-1 through chart-5), CheckCircle2 indicator on selected provider, calls useAppStore().setAiProvider() on click and auto-creates/activates config in DB
+   393→   393→- Provider cards tab: responsive grid (1/2/3 cols) of 4 predefined provider cards (Z.ai, OpenAI, Anthropic, Mistral) — each showing icon, name, description, "Actif"/"Inactif" Badge (green default / outline), "Configuré"/"Non configuré" Badge (emerald / outline), green left border when active, hover shadow effect. Action buttons: "Configurer" (opens Dialog), "Tester" (POST /api/ai-config/test with fallback toast "Test réussi ✅", Loader2 spinner during test)
+   394→   394→- Custom providers tab: "Ajouter un fournisseur" Plus button, grid of custom config cards with same layout + delete button (AlertDialog confirmation with red styling). Empty state with Plug icon when no custom providers.
+   395→   395→- Configuration Dialog: API Key Input with type=password and Eye/EyeOff toggle button, Model Input with provider-specific placeholder, Switch toggle for isActive with descriptive label, Name and Endpoint URL fields for custom providers, Save (POST or PUT depending on existing config) / Cancel buttons with Loader2 spinner during save
+   396→   396→- All CRUD via TanStack Query useMutation (create POST /api/ai-config, update PUT /api/ai-config/[id], delete DELETE /api/ai-config/[id]) with invalidateQueries on success and toast notifications
+   397→   397→- Provider definitions: Z.ai (Brain, noApiKey, chart-1), OpenAI (Sparkles, chart-2), Anthropic (Cpu, chart-3), Mistral (Bot, chart-4), Custom (Plug, chart-5)
+   398→   398→- ProvidersGridSkeleton component for loading state
+   399→   399→- All UI text in French, oklch color tokens, no blue/indigo
+   400→   400→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   401→   401→
+   402→   402→Stage Summary:
+   403→   403→- AiConfigPage component with active provider selector, provider configuration cards, custom provider management, and configuration dialog
+   404→   404→- Named export: export function AiConfigPage()
+   405→   405→- Connected to existing API routes: GET/POST /api/ai-config, PUT/DELETE /api/ai-config/[id]
+   406→   406→- Follows existing module pattern (max-w-6xl mx-auto, flex flex-col gap-6 p-6)
+   407→   407→---
+   408→   408→Task ID: 4
+   409→   409→Agent: main
+   410→   410→Task: Create Book Library page (book-library-page.tsx)
+   411→   411→
+   412→   412→Work Log:
+   413→   413→- Created src/modules/book-library/book-library-page.tsx
+   414→   414→- Page header: Library icon, title "Bibliothèque académique", subtitle, count badge
+   415→   415→- Stats bar: total books (5), total pages (1 432), categories count (4)
+   416→   416→- Category filter bar: pill toggle buttons from BOOK_CATEGORIES with count badges and color dots
+   417→   417→- Search bar: filters by title, authors, and tags
+   418→   418→- Book grid: responsive 1/2/3 columns with Card layout
+   419→   419→  - Cover image (full width mobile, 120px desktop), title, authors, year/edition/publisher/ISBN, description (line-clamp-3), tags, category badge (color-coded)
+   420→   420→  - Footer: "Lire" button (PDF in new tab) + "Détails" button
+   421→   421→- Book details dialog: large cover (200px), full metadata grid, description, all tags, "Lire le PDF" and "Télécharger" buttons
+   422→   422→- Empty state: BookOpen icon + "Aucun ouvrage trouvé" message
+   423→   423→- Category colors: supervision=chart-1, methodology=chart-2, writing=chart-4, phd-guide=chart-5 (oklch tokens)
+   424→   424→- All UI text in French, book titles/authors in English
+   425→   425→- Lint: 0 errors, only pre-existing warnings + expected <img> warnings (task specifies <img>)
+   426→   426→
+   427→   427→Stage Summary:
+   428→   428→- Named export: export function BookLibraryPage()
+   429→   429→- Imports data from src/data/book-resources.ts (BookResource, BOOK_RESOURCES, BOOK_CATEGORIES)
+   430→   430→- Uses shadcn/ui components: Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge, Input, Separator, Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, ScrollArea
+   431→   431→- Uses lucide-react icons: BookOpen, Search, ExternalLink, Download, Info, Library, Tag, FileText, Hash, Calendar, Building2, User
+   432→   432→

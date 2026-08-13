@@ -1,0 +1,133 @@
+================================================================================
+RB-3.jpg — VLM Analysis Report
+================================================================================
+
+Source: /home/z/my-project/upload/RB-extract/RB/RB-3.jpg
+Analyzed: 2026-08-13 (VLM-1 agent)
+Model: glm-5v-turbo with thinking
+
+---
+
+TITLE/TYPE
+  TYPES OF RESEARCH GAPS
+  Subtitle: "Research gaps highlight what is unknown, unclear, or needs
+  further investigation."
+  Type: Taxonomy/classification infographic
+
+---
+
+KEY CONCEPTS AND FRAMEWORKS
+
+  SEVEN TYPES OF RESEARCH GAPS (Hierarchical taxonomy):
+
+  TIER 1 — EPISTEMOLOGICAL GAPS (Foundational):
+
+    GAP 1: EVIDENCE GAP (Contradictory Evidence)
+      Icon: ⚖️ Scales of Justice
+      Definition: Findings across studies are inconsistent or contradict
+      each other.
+
+    GAP 2: KNOWLEDGE GAP (Knowledge Void)
+      Icon: 📖 Open Book
+      Definition: The needed evidence or research on a topic does not
+      exist.
+
+    GAP 3: PRACTICE–KNOWLEDGE GAP (Action–Knowledge Conflict)
+      Icon: 📋 Clipboard/Checklist
+      Definition: There is a difference between what research shows and
+      what is done in practice.
+
+  TIER 2 — PROCEDURAL, CONCEPTUAL & CONTEXTUAL GAPS (Advanced):
+
+    GAP 4: METHODOLOGICAL GAP (Method & Research Design)
+      Icon: 📊 Bar Chart with Magnifying Glass
+      Definition: New methods or research designs are needed to gain new
+      insights or reduce bias.
+
+    GAP 5: EMPIRICAL GAP (Evaluation Void Gap)
+      Icon: 🔍 Magnifying Glass over Line Graph
+      Definition: Existing findings require empirical testing or
+      validation.
+
+    GAP 6: THEORETICAL GAP (Theory Application Void)
+      Icon: 💡 Light Bulb
+      Definition: Existing theories are missing or have not been applied
+      to the research problem.
+
+    GAP 7: POPULATION GAP
+      Icon: 👥 Group of People Silhouette
+      Definition: Certain populations are underrepresented or have not
+      been adequately studied.
+
+---
+
+CLASSIFICATION SYSTEM
+
+  Three-category meta-classification:
+    A. Epistemological Gaps (1-3): State of existing knowledge
+       (contradiction, absence, misapplication)
+    B. Procedural Gaps (4-5): How knowledge is generated
+       (flawed methods, untested findings)
+    C. Conceptual/Contextual Gaps (6-7): Theoretical framework or
+       demographic scope
+
+  Seven diagnostic criteria for evaluating academic maturity:
+    1. Consistency Check (Evidence Gap)
+    2. Coverage Analysis (Knowledge Gap)
+    3. Implementation Fidelity (Practice-Knowledge Gap)
+    4. Methodological Rigor (Methodological Gap)
+    5. Validation Status (Empirical Gap)
+    6. Theoretical Grounding (Theoretical Gap)
+    7. Demographic Representativeness (Population Gap)
+
+---
+
+DERIVED RULES FOR AI PROMPTS
+
+  Rule 1 — DIAGNOSTIC PROMPT (Identification)
+    Template: "Analyze the following research topic: [INSERT TOPIC]. Using
+    the 'Types of Research Gaps' framework, identify which of the seven
+    categories best characterizes the primary limitation in current
+    literature. Justify your choice."
+
+  Rule 2 — GENERATIVE PROMPT (Gap Statement Formulation)
+    Template: "I am studying [TOPIC]. Generate three distinct research
+    gap statements based on this taxonomy: one focusing on a [Gap Type A],
+    one on a [Gap Type B], and one on a [Gap Type C]. For each, draft a
+    formal 'Problem Statement' paragraph using academic language."
+
+  Rule 3 — LITERATURE REVIEW AUDIT PROMPT
+    Template: "Act as a critical academic reviewer. I will provide
+    summaries of five key papers in [FIELD]. For each paper, assess
+    whether it contributes to closing a Knowledge Gap, resolving an
+    Evidence Gap, or addressing a Population Gap. Identify which gap
+    remains most open after reviewing these sources."
+
+  Rule 4 — METHODOLOGY SELECTION PROMPT
+    Template: "My research identifies a [e.g., Methodological Gap]
+    regarding [SPECIFIC ISSUE]. Recommend three qualitative or quantitative
+    research designs specifically suited to address this type of gap."
+
+  Rule 5 — PRACTICE-TO-THEORY TRANSLATION PROMPT (Gap #3 specific)
+    Template: "Describe a common practice in [INDUSTRY/FIELD]. Identify
+    the 'Practice-Knowledge Gap' by contrasting this real-world action
+    with current academic evidence. Propose a research question that
+    investigates why this discrepancy exists."
+
+  RULE: Treat the seven gaps as mutually exclusive tags/filters. By
+  explicitly naming the gap type, force the AI to adopt a specific
+  critical perspective rather than providing generic feedback.
+
+---
+
+ACADEMIC VALUE
+
+  VERY HIGH — This is a foundational taxonomy for research gap
+  identification. It transforms the vague concept of "finding a gap"
+  into a structured diagnostic process. Directly applicable to:
+  - ThesisFrame's problem statement generation
+  - Literature review gap identification prompts
+  - AI writing mode: "identify research gaps from paper summaries"
+  - Cadrage module: gap type classification
+
+================================================================================
