@@ -14,6 +14,7 @@ export type ViewId =
   | "references"
   | "academic-db"
   | "mendeley"
+  | "book-library"
   // Rédaction
   | "articles"
   | "thesis-plan"
@@ -88,6 +89,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Mendeley",
     icon: "BookMarked",
     description: "Gestion et import depuis Mendeley",
+    category: "recherche",
+  },
+  {
+    id: "book-library",
+    label: "Bibliothèque",
+    icon: "BookOpen",
+    description: "Ouvrages de référence pour la recherche",
     category: "recherche",
   },
 

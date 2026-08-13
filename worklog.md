@@ -404,3 +404,28 @@ Stage Summary:
 - Named export: export function AiConfigPage()
 - Connected to existing API routes: GET/POST /api/ai-config, PUT/DELETE /api/ai-config/[id]
 - Follows existing module pattern (max-w-6xl mx-auto, flex flex-col gap-6 p-6)
+---
+Task ID: 4
+Agent: main
+Task: Create Book Library page (book-library-page.tsx)
+
+Work Log:
+- Created src/modules/book-library/book-library-page.tsx
+- Page header: Library icon, title "Bibliothèque académique", subtitle, count badge
+- Stats bar: total books (5), total pages (1 432), categories count (4)
+- Category filter bar: pill toggle buttons from BOOK_CATEGORIES with count badges and color dots
+- Search bar: filters by title, authors, and tags
+- Book grid: responsive 1/2/3 columns with Card layout
+  - Cover image (full width mobile, 120px desktop), title, authors, year/edition/publisher/ISBN, description (line-clamp-3), tags, category badge (color-coded)
+  - Footer: "Lire" button (PDF in new tab) + "Détails" button
+- Book details dialog: large cover (200px), full metadata grid, description, all tags, "Lire le PDF" and "Télécharger" buttons
+- Empty state: BookOpen icon + "Aucun ouvrage trouvé" message
+- Category colors: supervision=chart-1, methodology=chart-2, writing=chart-4, phd-guide=chart-5 (oklch tokens)
+- All UI text in French, book titles/authors in English
+- Lint: 0 errors, only pre-existing warnings + expected <img> warnings (task specifies <img>)
+
+Stage Summary:
+- Named export: export function BookLibraryPage()
+- Imports data from src/data/book-resources.ts (BookResource, BOOK_RESOURCES, BOOK_CATEGORIES)
+- Uses shadcn/ui components: Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge, Input, Separator, Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, ScrollArea
+- Uses lucide-react icons: BookOpen, Search, ExternalLink, Download, Info, Library, Tag, FileText, Hash, Calendar, Building2, User

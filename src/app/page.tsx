@@ -47,6 +47,12 @@ const MendeleyPage = createLazyPanel(() =>
   }))
 );
 
+const BookLibraryPage = createLazyPanel(() =>
+  import("@/modules/book-library/book-library-page").then((m) => ({
+    default: m.BookLibraryPage,
+  }))
+);
+
 const ArticlesPage = createLazyPanel(() =>
   import("@/modules/articles/articles-page").then((m) => ({
     default: m.ArticlesPage,
@@ -196,6 +202,12 @@ function CurrentView() {
       return (
         <WrappedPanel name="Mendeley">
           <MendeleyPage />
+        </WrappedPanel>
+      );
+    case "book-library":
+      return (
+        <WrappedPanel name="Bibliothèque">
+          <BookLibraryPage />
         </WrappedPanel>
       );
 

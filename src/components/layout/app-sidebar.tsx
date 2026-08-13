@@ -61,6 +61,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Search,
   PenTool,
   Settings,
+  BookOpen,
   // Category icons (for group labels if needed)
   GraduationCap,
 };
