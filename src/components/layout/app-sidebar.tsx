@@ -11,9 +11,16 @@ import {
   ListTree,
   Wrench,
   Globe,
+  BookMarked,
+  Crosshair,
+  Bot,
+  Cloud,
+  Package,
+  Search,
+  PenTool,
   type LucideIcon,
 } from "lucide-react";
-import { useAppStore, NAVIGATION_ITEMS } from "@/lib/stores/app-store";
+import { useAppStore, NAVIGATION_ITEMS, NAVIGATION_CATEGORIES } from "@/lib/stores/app-store";
 import {
   Sidebar,
   SidebarContent,
@@ -34,7 +41,7 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
-// Icon registry
+// Icon registry — all icons used in navigation items
 const ICON_MAP: Record<string, LucideIcon> = {
   LayoutDashboard,
   FileText,
@@ -45,11 +52,20 @@ const ICON_MAP: Record<string, LucideIcon> = {
   ListTree,
   Wrench,
   Globe,
+  BookMarked,
+  Crosshair,
+  Bot,
+  Cloud,
+  Package,
+  Search,
+  PenTool,
+  // Category icons (for group labels if needed)
+  GraduationCap,
 };
 
 function NavIcon({ name, className }: { name: string; className?: string }) {
   const Icon = ICON_MAP[name];
-  if (!Icon) return null;
+  if (!Icon) return <LayoutDashboard className={cn("h-4 w-4", className)} />;
   return <Icon className={cn("h-4 w-4", className)} />;
 }
 
@@ -76,41 +92,50 @@ export function AppSidebar() {
 
       <Separator className="bg-sidebar-border" />
 
-      <SidebarContent className="px-2 py-2">
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-2 text-[11px] uppercase tracking-wider text-sidebar-foreground/50">
-            Navigation
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {NAVIGATION_ITEMS.map((item) => (
-                <SidebarMenuItem key={item.id}>
-                  <SidebarMenuButton
-                    isActive={currentView === item.id}
-                    onClick={() => setCurrentView(item.id)}
-                    tooltip={item.label}
-                    className={cn(
-                      "gap-3 px-3",
-                      currentView === item.id &&
-                        "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                    )}
-                  >
-                    <NavIcon name={item.icon} />
-                    <span className="truncate">{item.label}</span>
-                    {item.badge && (
-                      <Badge
-                        variant="secondary"
-                        className="ml-auto h-5 px-1.5 text-[10px] font-semibold bg-sidebar-accent/30 text-sidebar-foreground/80 group-data-[collapsible=icon]:hidden"
+      <SidebarContent className="px-2 py-2 gap-0">
+        {NAVIGATION_CATEGORIES.map((category) => {
+          const categoryItems = NAVIGATION_ITEMS.filter(
+            (item) => item.category === category.id
+          );
+          if (categoryItems.length === 0) return null;
+
+          return (
+            <SidebarGroup key={category.id}>
+              <SidebarGroupLabel className="px-2 text-[11px] uppercase tracking-wider text-sidebar-foreground/50">
+                {category.label}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {categoryItems.map((item) => (
+                    <SidebarMenuItem key={item.id}>
+                      <SidebarMenuButton
+                        isActive={currentView === item.id}
+                        onClick={() => setCurrentView(item.id)}
+                        tooltip={item.label}
+                        className={cn(
+                          "gap-3 px-3",
+                          currentView === item.id &&
+                            "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                        )}
                       >
-                        {item.badge}
-                      </Badge>
-                    )}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                        <NavIcon name={item.icon} />
+                        <span className="truncate">{item.label}</span>
+                        {item.badge && (
+                          <Badge
+                            variant="secondary"
+                            className="ml-auto h-5 px-1.5 text-[10px] font-semibold bg-sidebar-accent/30 text-sidebar-foreground/80 group-data-[collapsible=icon]:hidden"
+                          >
+                            {item.badge}
+                          </Badge>
+                        )}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          );
+        })}
       </SidebarContent>
 
       <SidebarFooter className="p-3">
