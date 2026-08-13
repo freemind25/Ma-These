@@ -1,7 +1,7 @@
 {
   "name": "thesisframe",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "description": "ThesisFrame — Assistant intelligent pour la rédaction de thèses de doctorat",
   "scripts": {
     "dev": "next dev -p 3000 2>&1 | tee dev.log",
@@ -15,7 +15,69 @@
     "db:seed": "bun prisma/seed.ts",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "electron:dev": "concurrently \"next dev\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron:build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && electron-builder --win",
+    "electron:build:all": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && electron-builder --win --mac --linux"
+  },
+  "main": "electron/main.cjs",
+  "author": "ThesisFrame",
+  "homepage": "https://github.com/freemind25/MaTh-se",
+  "build": {
+    "appId": "com.thesisframe.app",
+    "productName": "ThesisFrame",
+    "copyright": "Copyright © 2025 ThesisFrame",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      ".next/standalone/**/*",
+      ".next/static/**/*",
+      "public/**/*",
+      "electron/**/*",
+      "db/**/*",
+      "node_modules/.prisma/**/*",
+      "node_modules/@prisma/**/*",
+      "node_modules/prisma/**/*",
+      "prisma/schema.prisma"
+    ],
+    "extraResources": [
+      {
+        "from": "db/custom.db",
+        "to": "db/custom.db"
+      }
+    ],
+    "extraMetadata": {
+      "version": "1.0.0"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "public/logo.svg",
+      "artifactName": "${productName}-${version}-setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "public/logo.svg",
+      "uninstallerIcon": "public/logo.svg",
+      "installerHeaderIcon": "public/logo.svg",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ThesisFrame"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "freemind25",
+      "repo": "MaTh-se"
+    }
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -99,10 +161,15 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "bun-types": "^1.3.4",
+    "concurrently": "^10.0.4",
+    "electron": "^43.4.0",
+    "electron-builder": "^26.15.3",
+    "electron-updater": "^6.8.9",
     "eslint": "^9",
     "eslint-config-next": "^16.1.1",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.5",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-on": "^9.1.0"
   }
 }

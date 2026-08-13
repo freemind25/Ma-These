@@ -43,6 +43,8 @@ const eslintConfig = [
       "examples/**",
       "skills",
       "prisma/seed.ts",
+      "electron/**",
+      "release/**",
     ],
   },
 ];

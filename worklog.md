@@ -994,3 +994,65 @@ Stage Summary:
 - Provisoire cadrage shows yellow warning banner
 - No-cadrage state shows French message directing to Cadrage module
 - TypeScript check: 0 errors
+
+---
+Task ID: electron-desktop
+Agent: main
+Task: Convert Next.js web app into Electron desktop app with Windows installer and auto-updates via GitHub Releases
+
+Work Log:
+- Installed devDependencies: electron@43.4.0, electron-builder@26.15.3, electron-updater@6.8.9, concurrently@10.0.4, wait-on@9.1.0
+- Created `electron/main.cjs` — Main Electron process (CommonJS):
+  - Creates BrowserWindow (1400x900, min 1200x700)
+  - Starts Next.js standalone server as child process on port 3000
+  - Polls localhost:3000 until server is ready (max 60 retries)
+  - Loads loading.html splash screen first, then redirects to localhost:3000
+  - Handles minimize-to-tray on close (configurable quit via tray menu)
+  - Creates system tray with context menu (Open, Check Updates, Quit)
+  - Integrates electron-updater for auto-updates (checks every 4h + 10s after startup)
+  - Production uses app.asar path; development uses .next/standalone path
+  - Copies db/custom.db template to userData on first launch
+  - Exposes IPC handlers: get-user-data-path, get-app-version, get-db-path
+  - Cleanup: kills server process on quit (SIGTERM + SIGKILL fallback)
+- Created `electron/preload.cjs` — Safe context bridge:
+  - Exposes electronAPI on window (platform, version, isElectron)
+  - IPC methods: getAppVersion, getUserDataPath, getDbPath
+  - Event listeners: onUpdateStatus (auto-updater), onServerError
+  - Returns cleanup functions for event unsubscription
+- Created `electron/loading.html` — Splash screen:
+  - Dark/light theme with ThesisFrame Z-lettermark logo (inline SVG)
+  - App name + tagline in French
+  - Animated spinner and pulsing status text ("Démarrage du serveur...")
+  - Handles server error event display
+  - Respects prefers-color-scheme media query
+- Created `src/types/electron.d.ts` — TypeScript declarations:
+  - ElectronAPI interface for window.electronAPI
+  - UpdateStatus interface for auto-updater events
+  - Global Window augmentation
+- Modified `package.json`:
+  - Set `"private": false` (required for electron-builder)
+  - Added `"main": "electron/main.cjs"`
+  - Added `"author": "ThesisFrame"` and `"homepage": "https://github.com/freemind25/MaTh-se"`
+  - Added `"build"` field with electron-builder config (files, extraResources, win/nsis targets, publish)
+  - Added scripts: `electron:dev`, `electron:build`, `electron:build:all`
+- Created `electron-builder.yml` — Standalone electron-builder config:
+  - Cross-platform targets: Windows (NSIS x64/arm64), macOS (DMG), Linux (AppImage)
+  - NSIS: custom install directory, desktop/start menu shortcuts
+  - GitHub Releases publish config (freemind25/MaTh-se)
+- Modified `next.config.ts`:
+  - Added `assetPrefix: "./"` for production (relative paths for Electron local filesystem)
+- Modified `.gitignore`:
+  - Added /release/, /dist-electron/, *.blockmap, *.exe, *.dmg, *.AppImage, *.deb patterns
+  - Preserved !electron-builder.yml exception
+- Modified `eslint.config.mjs`:
+  - Added `electron/**` and `release/**` to ignores (CommonJS files don't need TS linting)
+
+Stage Summary:
+- Electron desktop app fully configured for Windows NSIS installer + macOS/Linux cross-platform
+- Auto-updates via GitHub Releases (checks every 4 hours)
+- Splash screen with ThesisFrame branding shown during server startup
+- System tray support with minimize-to-tray behavior
+- Database persistence: template copied to userData on first launch
+- Zero changes to existing `src/` application source files
+- Existing `bun run dev` and `bun run build` workflows unaffected
+- Lint: 0 errors (9 pre-existing warnings, none introduced)
