@@ -1,0 +1,951 @@
+     1→"use client";
+     2→
+     3→import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+     4→import { Button } from "@/components/ui/button";
+     5→import { Textarea } from "@/components/ui/textarea";
+     6→import { Badge } from "@/components/ui/badge";
+     7→import { Separator } from "@/components/ui/separator";
+     8→import { Skeleton } from "@/components/ui/skeleton";
+     9→import { ScrollArea } from "@/components/ui/scroll-area";
+    10→import {
+    11→  Tabs,
+    12→  TabsContent,
+    13→  TabsList,
+    14→  TabsTrigger,
+    15→} from "@/components/ui/tabs";
+    16→import {
+    17→  Select,
+    18→  SelectContent,
+    19→  SelectItem,
+    20→  SelectTrigger,
+    21→  SelectValue,
+    22→} from "@/components/ui/select";
+    23→import {
+    24→  GraduationCap,
+    25→  Brain,
+    26→  SpellCheck,
+    27→  Palette,
+    28→  User,
+    29→  Send,
+    30→  Bot,
+    31→  AlertTriangle,
+    32→  CheckCircle,
+    33→  Copy,
+    34→  Loader2,
+    35→} from "lucide-react";
+    36→import { useMutation } from "@tanstack/react-query";
+    37→import { useState, useRef, useEffect, useCallback } from "react";
+    38→import { toast } from "sonner";
+    39→
+    40→// ═══════════════════════════════════════
+    41→// Types
+    42→// ═══════════════════════════════════════
+    43→
+    44→interface ChatMessage {
+    45→  role: "user" | "assistant";
+    46→  content: string;
+    47→}
+    48→
+    49→interface GrammarCorrection {
+    50→  original: string;
+    51→  suggested: string;
+    52→  type: "error" | "warning" | "suggestion";
+    53→  rule?: string;
+    54→}
+    55→
+    56→interface GrammarResult {
+    57→  corrections: GrammarCorrection[];
+    58→  stats: {
+    59→    errors: number;
+    60→    warnings: number;
+    61→    suggestions: number;
+    62→  };
+    63→}
+    64→
+    65→interface StyleIssue {
+    66→  text: string;
+    67→  category: string;
+    68→  severity: "error" | "warning" | "info";
+    69→  suggestion: string;
+    70→}
+    71→
+    72→// ═══════════════════════════════════════
+    73→// Helper: parse structured results from AI
+    74→// ═══════════════════════════════════════
+    75→
+    76→function parseGrammarResult(raw: string): GrammarResult {
+    77→  const corrections: GrammarCorrection[] = [];
+    78→  let errors = 0;
+    79→  let warnings = 0;
+    80→  let suggestions = 0;
+    81→
+    82→  const lines = raw.split("\n");
+    83→  for (const line of lines) {
+    84→    const errorMatch = line.match(/-\s*\*\*(.+)\*\*\s*→\s*\*\*(.+)\*\*\s*\[(erreur|avertissement|suggestion)\]/i);
+    85→    if (errorMatch) {
+    86→      const type = errorMatch[3].toLowerCase() === "erreur" ? "error" : errorMatch[3].toLowerCase() === "avertissement" ? "warning" : "suggestion";
+    87→      if (type === "error") errors++;
+    88→      else if (type === "warning") warnings++;
+    89→      else suggestions++;
+    90→      corrections.push({
+    91→        original: errorMatch[1],
+    92→        suggested: errorMatch[2],
+    93→        type,
+    94→      });
+    95→      continue;
+    96→    }
+    97→    const simpleMatch = line.match(/-\s*\*\*(.+)\*\*\s*→\s*\*\*(.+)\*\*/);
+    98→    if (simpleMatch) {
+    99→      errors++;
+   100→      corrections.push({ original: simpleMatch[1], suggested: simpleMatch[2], type: "error" });
+   101→    }
+   102→  }
+   103→
+   104→  // If no structured parse worked, show raw text as a single suggestion
+   105→  if (corrections.length === 0) {
+   106→    corrections.push({ original: "", suggested: raw, type: "suggestion" });
+   107→    suggestions = 1;
+   108→  }
+   109→
+   110→  return { corrections, stats: { errors, warnings, suggestions } };
+   111→}
+   112→
+   113→function parseStyleIssues(raw: string): StyleIssue[] {
+   114→  const issues: StyleIssue[] = [];
+   115→  const blocks = raw.split(/\n(?=\d+\.)/);
+   116→
+   117→  for (const block of blocks) {
+   118→    const textMatch = block.match(/\d+\.\s*\*\*(.+)\*\*/);
+   119→    if (!textMatch) continue;
+   120→
+   121→    let category = "Général";
+   122→    let severity: "error" | "warning" | "info" = "info";
+   123→    let suggestion = "";
+   124→
+   125→    const catMatch = block.match(/\[([\w\s]+)\]/);
+   126→    if (catMatch) category = catMatch[1].trim();
+   127→
+   128→    if (block.toLowerCase().includes("[erreur]")) severity = "error";
+   129→    else if (block.toLowerCase().includes("[avertissement]")) severity = "warning";
+   130→
+   131→    const sugMatch = block.match(/Suggestion\s*:\s*(.+)/i);
+   132→    if (sugMatch) suggestion = sugMatch[1].trim();
+   133→
+   134→    issues.push({ text: textMatch[1], category, severity, suggestion });
+   135→  }
+   136→
+   137→  if (issues.length === 0) {
+   138→    issues.push({ text: raw, category: "Analyse", severity: "info", suggestion: "" });
+   139→  }
+   140→
+   141→  return issues;
+   142→}
+   143→
+   144→// ═══════════════════════════════════════
+   145→// 1. Directeur de thèse (Chat)
+   146→// ═══════════════════════════════════════
+   147→
+   148→function DirecteurPanel() {
+   149→  const [messages, setMessages] = useState<ChatMessage[]>([
+   150→    { role: "assistant", content: "Votre directeur IA vous guide dans votre recherche. Posez-lui vos questions sur votre problématique, votre méthodologie, ou toute autre étape de votre thèse." },
+   151→  ]);
+   152→  const [input, setInput] = useState("");
+   153→  const scrollRef = useRef<HTMLDivElement>(null);
+   154→
+   155→  useEffect(() => {
+   156→    if (scrollRef.current) {
+   157→      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+   158→    }
+   159→  }, [messages]);
+   160→
+   161→  const chatMutation = useMutation({
+   162→    mutationFn: async (userMessage: string) => {
+   163→      const allMessages = [...messages, { role: "user" as const, content: userMessage }];
+   164→      const res = await fetch("/api/directeur-chat", {
+   165→        method: "POST",
+   166→        headers: { "Content-Type": "application/json" },
+   167→        body: JSON.stringify({ messages: allMessages.slice(1) }),
+   168→      });
+   169→      if (!res.ok) {
+   170→        const err = await res.json().catch(() => ({ error: "Erreur serveur" }));
+   171→        throw new Error(err.error || "Erreur lors de la communication avec le directeur");
+   172→      }
+   173→      const data = await res.json();
+   174→      return data.data.content as string;
+   175→    },
+   176→    onSuccess: (content) => {
+   177→      setMessages((prev) => [...prev, { role: "assistant", content }]);
+   178→      toast.success("Réponse reçue");
+   179→    },
+   180→    onError: (error) => {
+   181→      toast.error(error.message);
+   182→      // Remove the user message and add error
+   183→      setMessages((prev) => [
+   184→        ...prev.slice(0, -1),
+   185→        { role: "assistant", content: `Désolé, une erreur est survenue : ${error.message}` },
+   186→      ]);
+   187→    },
+   188→  });
+   189→
+   190→  const handleSend = useCallback(() => {
+   191→    const trimmed = input.trim();
+   192→    if (!trimmed || chatMutation.isPending) return;
+   193→    setMessages((prev) => [...prev, { role: "user", content: trimmed }]);
+   194→    setInput("");
+   195→    chatMutation.mutate(trimmed);
+   196→  }, [input, chatMutation]);
+   197→
+   198→  const handleKeyDown = useCallback(
+   199→    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+   200→      if (e.key === "Enter" && !e.shiftKey) {
+   201→        e.preventDefault();
+   202→        handleSend();
+   203→      }
+   204→    },
+   205→    [handleSend]
+   206→  );
+   207→
+   208→  return (
+   209→    <Card className="border-0 shadow-none">
+   210→      <CardHeader className="pb-4">
+   211→        <div className="flex items-center gap-3">
+   212→          <div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ backgroundColor: "oklch(0.7 0.15 200)" }}>
+   213→            <GraduationCap className="h-5 w-5 text-white" />
+   214→          </div>
+   215→          <div>
+   216→            <CardTitle className="text-lg">Directeur de thèse IA</CardTitle>
+   217→            <CardDescription>Discutez avec votre directeur de recherche virtuel</CardDescription>
+   218→          </div>
+   219→        </div>
+   220→      </CardHeader>
+   221→      <Separator className="mb-4" />
+   222→      <CardContent className="flex flex-col gap-4 p-0">
+   223→        <ScrollArea className="h-[420px] rounded-lg border p-4" ref={scrollRef as React.RefObject<HTMLDivElement>}>
+   224→          <div className="flex flex-col gap-4">
+   225→            {messages.map((msg, i) => (
+   226→              <div
+   227→                key={i}
+   228→                className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
+   229→              >
+   230→                <div
+   231→                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+   232→                    msg.role === "user"
+   233→                      ? "bg-primary text-primary-foreground"
+   234→                      : ""
+   235→                  }`}
+   236→                  style={msg.role === "assistant" ? { backgroundColor: "oklch(0.7 0.15 200)" } : undefined}
+   237→                >
+   238→                  {msg.role === "user" ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4 text-white" />}
+   239→                </div>
+   240→                <div
+   241→                  className={`max-w-[80%] rounded-xl px-4 py-2.5 text-sm leading-relaxed ${
+   242→                    msg.role === "user"
+   243→                      ? "bg-primary text-primary-foreground"
+   244→                      : "bg-muted"
+   245→                  }`}
+   246→                >
+   247→                  {msg.content}
+   248→                </div>
+   249→              </div>
+   250→            ))}
+   251→            {chatMutation.isPending && (
+   252→              <div className="flex gap-3">
+   253→                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: "oklch(0.7 0.15 200)" }}>
+   254→                  <Bot className="h-4 w-4 text-white" />
+   255→                </div>
+   256→                <div className="bg-muted rounded-xl px-4 py-2.5 text-sm">
+   257→                  <div className="flex items-center gap-2">
+   258→                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+   259→                    <span className="text-muted-foreground">Le directeur réfléchit…</span>
+   260→                  </div>
+   261→                </div>
+   262→              </div>
+   263→            )}
+   264→          </div>
+   265→        </ScrollArea>
+   266→        <div className="flex gap-2">
+   267→          <Textarea
+   268→            value={input}
+   269→            onChange={(e) => setInput(e.target.value)}
+   270→            onKeyDown={handleKeyDown}
+   271→            placeholder="Posez votre question au directeur de thèse…"
+   272→            className="min-h-[44px] max-h-[120px] resize-none"
+   273→            disabled={chatMutation.isPending}
+   274→          />
+   275→          <Button
+   276→            onClick={handleSend}
+   277→            disabled={!input.trim() || chatMutation.isPending}
+   278→            size="icon"
+   279→            className="shrink-0 self-end"
+   280→            style={{ backgroundColor: "oklch(0.7 0.15 200)" }}
+   281→          >
+   282→            {chatMutation.isPending ? (
+   283→              <Loader2 className="h-4 w-4 animate-spin" />
+   284→            ) : (
+   285→              <Send className="h-4 w-4" />
+   286→            )}
+   287→          </Button>
+   288→        </div>
+   289→      </CardContent>
+   290→    </Card>
+   291→  );
+   292→}
+   293→
+   294→// ═══════════════════════════════════════
+   295→// 2. Assistant thèse
+   296→// ═══════════════════════════════════════
+   297→
+   298→const CONTEXT_OPTIONS = [
+   299→  { value: "chapitre", label: "Chapitre actuel" },
+   300→  { value: "problematique", label: "Problématique" },
+   301→  { value: "methodologie", label: "Méthodologie" },
+   302→  { value: "bibliographie", label: "Bibliographie" },
+   303→];
+   304→
+   305→function AssistantPanel() {
+   306→  const [question, setQuestion] = useState("");
+   307→  const [context, setContext] = useState("chapitre");
+   308→  const [result, setResult] = useState("");
+   309→
+   310→  const assistantMutation = useMutation({
+   311→    mutationFn: async () => {
+   312→      const res = await fetch("/api/ai-writing", {
+   313→        method: "POST",
+   314→        headers: { "Content-Type": "application/json" },
+   315→        body: JSON.stringify({
+   316→          mode: "assistant",
+   317→          prompt: question,
+   318→          context: `Contexte sélectionné : ${CONTEXT_OPTIONS.find((c) => c.value === context)?.label || context}`,
+   319→        }),
+   320→      });
+   321→      if (!res.ok) {
+   322→        const err = await res.json().catch(() => ({ error: "Erreur serveur" }));
+   323→        throw new Error(err.error || "Erreur lors de la génération");
+   324→      }
+   325→      const data = await res.json();
+   326→      return data.data.content as string;
+   327→    },
+   328→    onSuccess: (content) => {
+   329→      setResult(content);
+   330→      toast.success("Réponse générée avec succès");
+   331→    },
+   332→    onError: (error) => {
+   333→      toast.error(error.message);
+   334→    },
+   335→  });
+   336→
+   337→  return (
+   338→    <Card className="border-0 shadow-none">
+   339→      <CardHeader className="pb-4">
+   340→        <div className="flex items-center gap-3">
+   341→          <div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ backgroundColor: "oklch(0.7 0.15 145)" }}>
+   342→            <Brain className="h-5 w-5 text-white" />
+   343→          </div>
+   344→          <div>
+   345→            <CardTitle className="text-lg">Assistant thèse</CardTitle>
+   346→            <CardDescription>Obtenez de l\'aide contextuelle pour votre travail</CardDescription>
+   347→          </div>
+   348→        </div>
+   349→      </CardHeader>
+   350→      <Separator className="mb-4" />
+   351→      <CardContent className="flex flex-col gap-4 p-0">
+   352→        <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+   353→          <div className="flex-1 space-y-2">
+   354→            <label className="text-sm font-medium">Contexte</label>
+   355→            <Select value={context} onValueChange={setContext}>
+   356→              <SelectTrigger className="w-full sm:w-[220px]">
+   357→                <SelectValue />
+   358→              </SelectTrigger>
+   359→              <SelectContent>
+   360→                {CONTEXT_OPTIONS.map((opt) => (
+   361→                  <SelectItem key={opt.value} value={opt.value}>
+   362→                    {opt.label}
+   363→                  </SelectItem>
+   364→                ))}
+   365→              </SelectContent>
+   366→            </Select>
+   367→          </div>
+   368→        </div>
+   369→        <div className="space-y-2">
+   370→          <label className="text-sm font-medium">Votre question</label>
+   371→          <Textarea
+   372→            value={question}
+   373→            onChange={(e) => setQuestion(e.target.value)}
+   374→            placeholder="Posez votre question en rapport avec le contexte sélectionné…"
+   375→            className="min-h-[120px]"
+   376→            disabled={assistantMutation.isPending}
+   377→          />
+   378→        </div>
+   379→        <Button
+   380→          onClick={() => assistantMutation.mutate()}
+   381→          disabled={!question.trim() || assistantMutation.isPending}
+   382→          style={{ backgroundColor: "oklch(0.7 0.15 145)" }}
+   383→          className="w-fit"
+   384→        >
+   385→          {assistantMutation.isPending ? (
+   386→            <>
+   387→              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+   388→              Analyse en cours…
+   389→            </>
+   390→          ) : (
+   391→            <>
+   392→              <Brain className="mr-2 h-4 w-4" />
+   393→              Poser la question
+   394→            </>
+   395→          )}
+   396→        </Button>
+   397→
+   398→        {assistantMutation.isPending && (
+   399→          <div className="space-y-3 rounded-lg border p-4">
+   400→            <Skeleton className="h-4 w-3/4" />
+   401→            <Skeleton className="h-4 w-full" />
+   402→            <Skeleton className="h-4 w-5/6" />
+   403→            <Skeleton className="h-4 w-2/3" />
+   404→          </div>
+   405→        )}
+   406→
+   407→        {result && !assistantMutation.isPending && (
+   408→          <Card className="border bg-muted/50">
+   409→            <CardHeader className="pb-2">
+   410→              <CardTitle className="text-sm">Réponse de l\'assistant</CardTitle>
+   411→            </CardHeader>
+   412→            <CardContent>
+   413→              <div className="whitespace-pre-wrap text-sm leading-relaxed">{result}</div>
+   414→            </CardContent>
+   415→          </Card>
+   416→        )}
+   417→      </CardContent>
+   418→    </Card>
+   419→  );
+   420→}
+   421→
+   422→// ═══════════════════════════════════════
+   423→// 3. Vérification linguistique
+   424→// ═══════════════════════════════════════
+   425→
+   426→function GrammarPanel() {
+   427→  const [text, setText] = useState("");
+   428→  const [result, setResult] = useState<GrammarResult | null>(null);
+   429→
+   430→  const grammarMutation = useMutation({
+   431→    mutationFn: async () => {
+   432→      const res = await fetch("/api/ai-writing", {
+   433→        method: "POST",
+   434→        headers: { "Content-Type": "application/json" },
+   435→        body: JSON.stringify({
+   436→          mode: "correction",
+   437→          prompt: text,
+   438→        }),
+   439→      });
+   440→      if (!res.ok) {
+   441→        const err = await res.json().catch(() => ({ error: "Erreur serveur" }));
+   442→        throw new Error(err.error || "Erreur lors de l\'analyse");
+   443→      }
+   444→      const data = await res.json();
+   445→      return data.data.content as string;
+   446→    },
+   447→    onSuccess: (content) => {
+   448→      const parsed = parseGrammarResult(content);
+   449→      setResult(parsed);
+   450→      const total = parsed.stats.errors + parsed.stats.warnings + parsed.stats.suggestions;
+   451→      toast.success(`Analyse terminée : ${total} éléments trouvés`);
+   452→    },
+   453→    onError: (error) => {
+   454→      toast.error(error.message);
+   455→    },
+   456→  });
+   457→
+   458→  const severityIcon = (type: "error" | "warning" | "suggestion") => {
+   459→    if (type === "error") return <AlertTriangle className="h-4 w-4 text-red-500" />;
+   460→    if (type === "warning") return <AlertTriangle className="h-4 w-4 text-amber-500" />;
+   461→    return <CheckCircle className="h-4 w-4 text-sky-500" />;
+   462→  };
+   463→
+   464→  const severityLabel = (type: "error" | "warning" | "suggestion") => {
+   465→    if (type === "error") return "Erreur";
+   466→    if (type === "warning") return "Avertissement";
+   467→    return "Suggestion";
+   468→  };
+   469→
+   470→  return (
+   471→    <Card className="border-0 shadow-none">
+   472→      <CardHeader className="pb-4">
+   473→        <div className="flex items-center gap-3">
+   474→          <div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ backgroundColor: "oklch(0.7 0.15 80)" }}>
+   475→            <SpellCheck className="h-5 w-5 text-white" />
+   476→          </div>
+   477→          <div>
+   478→            <CardTitle className="text-lg">Vérification linguistique</CardTitle>
+   479→            <CardDescription>Analysez la grammaire, l\'orthographe et la syntaxe</CardDescription>
+   480→          </div>
+   481→        </div>
+   482→      </CardHeader>
+   483→      <Separator className="mb-4" />
+   484→      <CardContent className="flex flex-col gap-4 p-0">
+   485→        <div className="space-y-2">
+   486→          <label className="text-sm font-medium">Texte à analyser</label>
+   487→          <Textarea
+   488→            value={text}
+   489→            onChange={(e) => setText(e.target.value)}
+   490→            placeholder="Collez ou saisissez le texte de votre thèse à vérifier…"
+   491→            className="min-h-[160px]"
+   492→            disabled={grammarMutation.isPending}
+   493→          />
+   494→        </div>
+   495→        <Button
+   496→          onClick={() => grammarMutation.mutate()}
+   497→          disabled={!text.trim() || grammarMutation.isPending}
+   498→          style={{ backgroundColor: "oklch(0.7 0.15 80)" }}
+   499→          className="w-fit"
+   500→        >
+   501→          {grammarMutation.isPending ? (
+   502→            <>
+   503→              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+   504→              Analyse en cours…
+   505→            </>
+   506→          ) : (
+   507→            <>
+   508→              <SpellCheck className="mr-2 h-4 w-4" />
+   509→              Analyser
+   510→            </>
+   511→          )}
+   512→        </Button>
+   513→
+   514→        {grammarMutation.isPending && (
+   515→          <div className="space-y-3 rounded-lg border p-4">
+   516→            <Skeleton className="h-4 w-1/2" />
+   517→            <Skeleton className="h-12 w-full" />
+   518→            <Skeleton className="h-12 w-full" />
+   519→            <Skeleton className="h-12 w-full" />
+   520→          </div>
+   521→        )}
+   522→
+   523→        {result && !grammarMutation.isPending && (
+   524→          <div className="space-y-4">
+   525→            {/* Stats */}
+   526→            <div className="flex flex-wrap gap-3">
+   527→              <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 dark:border-red-900 dark:bg-red-950">
+   528→                <AlertTriangle className="h-4 w-4 text-red-500" />
+   529→                <span className="text-sm font-medium">{result.stats.errors} erreurs</span>
+   530→              </div>
+   531→              <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 dark:border-amber-900 dark:bg-amber-950">
+   532→                <AlertTriangle className="h-4 w-4 text-amber-500" />
+   533→                <span className="text-sm font-medium">{result.stats.warnings} avertissements</span>
+   534→              </div>
+   535→              <div className="flex items-center gap-2 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 dark:border-sky-900 dark:bg-sky-950">
+   536→                <CheckCircle className="h-4 w-4 text-sky-500" />
+   537→                <span className="text-sm font-medium">{result.stats.suggestions} suggestions</span>
+   538→              </div>
+   539→            </div>
+   540→
+   541→            {/* Corrections list */}
+   542→            <ScrollArea className="max-h-96">
+   543→              <div className="flex flex-col gap-3">
+   544→                {result.corrections.map((correction, i) => (
+   545→                  <div key={i} className="flex items-start gap-3 rounded-lg border p-3">
+   546→                    <div className="mt-0.5 shrink-0">{severityIcon(correction.type)}</div>
+   547→                    <div className="min-w-0 flex-1 space-y-1">
+   548→                      <div className="flex items-center gap-2">
+   549→                        <Badge variant={correction.type === "error" ? "destructive" : correction.type === "warning" ? "outline" : "secondary"}>
+   550→                          {severityLabel(correction.type)}
+   551→                        </Badge>
+   552→                      </div>
+   553→                      {correction.original && (
+   554→                        <div className="text-sm">
+   555→                          <span className="text-red-600 line-through dark:text-red-400">{correction.original}</span>
+   556→                          <span className="mx-2 text-muted-foreground">→</span>
+   557→                          <span className="font-medium text-green-700 dark:text-green-400">{correction.suggested}</span>
+   558→                        </div>
+   559→                      )}
+   560→                      {!correction.original && (
+   561→                        <div className="whitespace-pre-wrap text-sm leading-relaxed">{correction.suggested}</div>
+   562→                      )}
+   563→                    </div>
+   564→                  </div>
+   565→                ))}
+   566→              </div>
+   567→            </ScrollArea>
+   568→          </div>
+   569→        )}
+   570→      </CardContent>
+   571→    </Card>
+   572→  );
+   573→}
+   574→
+   575→// ═══════════════════════════════════════
+   576→// 4. Vérification stylistique
+   577→// ═══════════════════════════════════════
+   578→
+   579→function StylePanel() {
+   580→  const [text, setText] = useState("");
+   581→  const [issues, setIssues] = useState<StyleIssue[]>([]);
+   582→
+   583→  const styleMutation = useMutation({
+   584→    mutationFn: async () => {
+   585→      const res = await fetch("/api/ai-writing", {
+   586→        method: "POST",
+   587→        headers: { "Content-Type": "application/json" },
+   588→        body: JSON.stringify({
+   589→          mode: "harper",
+   590→          prompt: text,
+   591→        }),
+   592→      });
+   593→      if (!res.ok) {
+   594→        const err = await res.json().catch(() => ({ error: "Erreur serveur" }));
+   595→        throw new Error(err.error || "Erreur lors de l\'analyse");
+   596→      }
+   597→      const data = await res.json();
+   598→      return data.data.content as string;
+   599→    },
+   600→    onSuccess: (content) => {
+   601→      const parsed = parseStyleIssues(content);
+   602→      setIssues(parsed);
+   603→      toast.success(`${parsed.length} problème(s) de style détecté(s)`);
+   604→    },
+   605→    onError: (error) => {
+   606→      toast.error(error.message);
+   607→    },
+   608→  });
+   609→
+   610→  const severityStyle = (severity: "error" | "warning" | "info") => {
+   611→    if (severity === "error") return "border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950";
+   612→    if (severity === "warning") return "border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950";
+   613→    return "border-sky-200 bg-sky-50 dark:border-sky-900 dark:bg-sky-950";
+   614→  };
+   615→
+   616→  const severityIcon = (severity: "error" | "warning" | "info") => {
+   617→    if (severity === "error") return <AlertTriangle className="h-4 w-4 text-red-500" />;
+   618→    if (severity === "warning") return <AlertTriangle className="h-4 w-4 text-amber-500" />;
+   619→    return <CheckCircle className="h-4 w-4 text-sky-500" />;
+   620→  };
+   621→
+   622→  const severityLabel = (severity: "error" | "warning" | "info") => {
+   623→    if (severity === "error") return "Erreur";
+   624→    if (severity === "warning") return "Avertissement";
+   625→    return "Info";
+   626→  };
+   627→
+   628→  const categoryBadgeVariant = (category: string) => {
+   629→    const cat = category.toLowerCase();
+   630→    if (cat.includes("passe")) return "destructive" as const;
+   631→    if (cat.includes("actif")) return "default" as const;
+   632→    if (cat.includes("concordance")) return "secondary" as const;
+   633→    if (cat.includes("redondance")) return "outline" as const;
+   634→    return "secondary" as const;
+   635→  };
+   636→
+   637→  return (
+   638→    <Card className="border-0 shadow-none">
+   639→      <CardHeader className="pb-4">
+   640→        <div className="flex items-center gap-3">
+   641→          <div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ backgroundColor: "oklch(0.7 0.15 340)" }}>
+   642→            <Palette className="h-5 w-5 text-white" />
+   643→          </div>
+   644→          <div>
+   645→            <CardTitle className="text-lg">Vérification stylistique</CardTitle>
+   646→            <CardDescription>Analysez le style, le ton et la qualité rédactionnelle</CardDescription>
+   647→          </div>
+   648→        </div>
+   649→      </CardHeader>
+   650→      <Separator className="mb-4" />
+   651→      <CardContent className="flex flex-col gap-4 p-0">
+   652→        <div className="space-y-2">
+   653→          <label className="text-sm font-medium">Texte à vérifier</label>
+   654→          <Textarea
+   655→            value={text}
+   656→            onChange={(e) => setText(e.target.value)}
+   657→            placeholder="Saisissez le texte de votre thèse pour une analyse stylistique approfondie…"
+   658→            className="min-h-[160px]"
+   659→            disabled={styleMutation.isPending}
+   660→          />
+   661→        </div>
+   662→        <Button
+   663→          onClick={() => styleMutation.mutate()}
+   664→          disabled={!text.trim() || styleMutation.isPending}
+   665→          style={{ backgroundColor: "oklch(0.7 0.15 340)" }}
+   666→          className="w-fit"
+   667→        >
+   668→          {styleMutation.isPending ? (
+   669→            <>
+   670→              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+   671→              Vérification en cours…
+   672→            </>
+   673→          ) : (
+   674→            <>
+   675→              <Palette className="mr-2 h-4 w-4" />
+   676→              Vérifier le style
+   677→            </>
+   678→          )}
+   679→        </Button>
+   680→
+   681→        {styleMutation.isPending && (
+   682→          <div className="space-y-3 rounded-lg border p-4">
+   683→            <Skeleton className="h-4 w-2/3" />
+   684→            <Skeleton className="h-16 w-full" />
+   685→            <Skeleton className="h-16 w-full" />
+   686→            <Skeleton className="h-16 w-full" />
+   687→          </div>
+   688→        )}
+   689→
+   690→        {issues.length > 0 && !styleMutation.isPending && (
+   691→          <ScrollArea className="max-h-96">
+   692→            <div className="flex flex-col gap-3">
+   693→              {issues.map((issue, i) => (
+   694→                <div key={i} className={`rounded-lg border p-4 ${severityStyle(issue.severity)}`}>
+   695→                  <div className="flex items-start gap-3">
+   696→                    <div className="mt-0.5 shrink-0">{severityIcon(issue.severity)}</div>
+   697→                    <div className="min-w-0 flex-1 space-y-2">
+   698→                      <div className="flex flex-wrap items-center gap-2">
+   699→                        <Badge variant={categoryBadgeVariant(issue.category)}>{issue.category}</Badge>
+   700→                        <Badge variant="outline">{severityLabel(issue.severity)}</Badge>
+   701→                      </div>
+   702→                      <p className="text-sm font-medium">{issue.text}</p>
+   703→                      {issue.suggestion && (
+   704→                        <p className="text-sm text-muted-foreground">
+   705→                          <span className="font-medium">Suggestion :</span> {issue.suggestion}
+   706→                        </p>
+   707→                      )}
+   708→                    </div>
+   709→                  </div>
+   710→                </div>
+   711→              ))}
+   712→            </div>
+   713→          </ScrollArea>
+   714→        )}
+   715→      </CardContent>
+   716→    </Card>
+   717→  );
+   718→}
+   719→
+   720→// ═══════════════════════════════════════
+   721→// 5. Humanisateur
+   722→// ═══════════════════════════════════════
+   723→
+   724→function HumanizerPanel() {
+   725→  const [text, setText] = useState("");
+   726→  const [result, setResult] = useState("");
+   727→  const [copied, setCopied] = useState(false);
+   728→
+   729→  const humanizeMutation = useMutation({
+   730→    mutationFn: async () => {
+   731→      const res = await fetch("/api/ai-writing", {
+   732→        method: "POST",
+   733→        headers: { "Content-Type": "application/json" },
+   734→        body: JSON.stringify({
+   735→          mode: "humanize",
+   736→          prompt: text,
+   737→        }),
+   738→      });
+   739→      if (!res.ok) {
+   740→        const err = await res.json().catch(() => ({ error: "Erreur serveur" }));
+   741→        throw new Error(err.error || "Erreur lors de l\'humanisation");
+   742→      }
+   743→      const data = await res.json();
+   744→      return data.data.content as string;
+   745→    },
+   746→    onSuccess: (content) => {
+   747→      setResult(content);
+   748→      toast.success("Texte humanisé avec succès");
+   749→    },
+   750→    onError: (error) => {
+   751→      toast.error(error.message);
+   752→    },
+   753→  });
+   754→
+   755→  const handleCopy = useCallback(async () => {
+   756→    if (!result) return;
+   757→    try {
+   758→      await navigator.clipboard.writeText(result);
+   759→      setCopied(true);
+   760→      toast.success("Copié dans le presse-papiers");
+   761→      setTimeout(() => setCopied(false), 2000);
+   762→    } catch {
+   763→      toast.error("Impossible de copier le texte");
+   764→    }
+   765→  }, [result]);
+   766→
+   767→  return (
+   768→    <Card className="border-0 shadow-none">
+   769→      <CardHeader className="pb-4">
+   770→        <div className="flex items-center gap-3">
+   771→          <div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ backgroundColor: "oklch(0.7 0.15 280)" }}>
+   772→            <User className="h-5 w-5 text-white" />
+   773→          </div>
+   774→          <div>
+   775→            <CardTitle className="text-lg">Humanisateur</CardTitle>
+   776→            <CardDescription>Transformez un texte généré par IA en écriture naturelle</CardDescription>
+   777→          </div>
+   778→        </div>
+   779→      </CardHeader>
+   780→      <Separator className="mb-4" />
+   781→      <CardContent className="flex flex-col gap-4 p-0">
+   782→        <div className="space-y-2">
+   783→          <label className="text-sm font-medium">Texte généré par IA</label>
+   784→          <Textarea
+   785→            value={text}
+   786→            onChange={(e) => setText(e.target.value)}
+   787→            placeholder="Collez ici le texte généré par IA que vous souhaitez humaniser…"
+   788→            className="min-h-[160px]"
+   789→            disabled={humanizeMutation.isPending}
+   790→          />
+   791→        </div>
+   792→        <Button
+   793→          onClick={() => humanizeMutation.mutate()}
+   794→          disabled={!text.trim() || humanizeMutation.isPending}
+   795→          style={{ backgroundColor: "oklch(0.7 0.15 280)" }}
+   796→          className="w-fit"
+   797→        >
+   798→          {humanizeMutation.isPending ? (
+   799→            <>
+   800→              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+   801→              Humanisation en cours…
+   802→            </>
+   803→          ) : (
+   804→            <>
+   805→              <User className="mr-2 h-4 w-4" />
+   806→              Humaniser
+   807→            </>
+   808→          )}
+   809→        </Button>
+   810→
+   811→        {humanizeMutation.isPending && (
+   812→          <div className="grid gap-4 md:grid-cols-2">
+   813→            <div className="space-y-3 rounded-lg border p-4">
+   814→              <Skeleton className="h-3 w-16" />
+   815→              <Skeleton className="h-4 w-full" />
+   816→              <Skeleton className="h-4 w-full" />
+   817→              <Skeleton className="h-4 w-3/4" />
+   818→            </div>
+   819→            <div className="space-y-3 rounded-lg border p-4">
+   820→              <Skeleton className="h-3 w-20" />
+   821→              <Skeleton className="h-4 w-full" />
+   822→              <Skeleton className="h-4 w-full" />
+   823→              <Skeleton className="h-4 w-5/6" />
+   824→            </div>
+   825→          </div>
+   826→        )}
+   827→
+   828→        {result && !humanizeMutation.isPending && (
+   829→          <div className="grid gap-4 md:grid-cols-2">
+   830→            {/* Before */}
+   831→            <Card className="border">
+   832→              <CardHeader className="pb-2">
+   833→                <div className="flex items-center justify-between">
+   834→                  <CardTitle className="text-sm font-medium text-muted-foreground">Avant (IA)</CardTitle>
+   835→                  <Badge variant="outline" className="text-xs">Original</Badge>
+   836→                </div>
+   837→              </CardHeader>
+   838→              <CardContent>
+   839→                <ScrollArea className="h-[300px]">
+   840→                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{text}</p>
+   841→                </ScrollArea>
+   842→              </CardContent>
+   843→            </Card>
+   844→
+   845→            {/* After */}
+   846→            <Card className="border" style={{ borderColor: "oklch(0.7 0.12 280)" }}>
+   847→              <CardHeader className="pb-2">
+   848→                <div className="flex items-center justify-between">
+   849→                  <CardTitle className="text-sm font-medium" style={{ color: "oklch(0.5 0.15 280)" }}>Après (Humanisé)</CardTitle>
+   850→                  <Button
+   851→                    variant="outline"
+   852→                    size="sm"
+   853→                    onClick={handleCopy}
+   854→                    className="h-7 gap-1.5 text-xs"
+   855→                  >
+   856→                    <Copy className="h-3 w-3" />
+   857→                    {copied ? "Copié !" : "Copier le résultat"}
+   858→                  </Button>
+   859→                </div>
+   860→              </CardHeader>
+   861→              <CardContent>
+   862→                <ScrollArea className="h-[300px]">
+   863→                  <p className="whitespace-pre-wrap text-sm leading-relaxed">{result}</p>
+   864→                </ScrollArea>
+   865→              </CardContent>
+   866→            </Card>
+   867→          </div>
+   868→        )}
+   869→      </CardContent>
+   870→    </Card>
+   871→  );
+   872→}
+   873→
+   874→// ═══════════════════════════════════════
+   875→// Main Page
+   876→// ═══════════════════════════════════════
+   877→
+   878→export function IaAssistantsPage() {
+   879→  return (
+   880→    <div className="mx-auto flex max-w-7xl flex-col gap-6 p-6">
+   881→      {/* Header */}
+   882→      <div>
+   883→        <h1 className="text-2xl font-bold tracking-tight">IA & Assistants</h1>
+   884→        <p className="text-muted-foreground">Vos assistants IA dédiés à l\'écriture de votre thèse</p>
+   885→      </div>
+   886→
+   887→      {/* Tabs */}
+   888→      <Tabs defaultValue="directeur" className="w-full">
+   889→        <TabsList className="mb-6 flex h-auto flex-wrap gap-1 bg-muted p-1">
+   890→          <TabsTrigger
+   891→            value="directeur"
+   892→            className="gap-2 data-[state=active]:shadow-sm"
+   893→          >
+   894→            <GraduationCap className="h-4 w-4" />
+   895→            <span className="hidden sm:inline">Directeur de thèse</span>
+   896→            <span className="sm:hidden">Directeur</span>
+   897→          </TabsTrigger>
+   898→          <TabsTrigger
+   899→            value="assistant"
+   900→            className="gap-2 data-[state=active]:shadow-sm"
+   901→          >
+   902→            <Brain className="h-4 w-4" />
+   903→            <span className="hidden sm:inline">Assistant thèse</span>
+   904→            <span className="sm:hidden">Assistant</span>
+   905→          </TabsTrigger>
+   906→          <TabsTrigger
+   907→            value="grammar"
+   908→            className="gap-2 data-[state=active]:shadow-sm"
+   909→          >
+   910→            <SpellCheck className="h-4 w-4" />
+   911→            <span className="hidden sm:inline">Vérif. linguistique</span>
+   912→            <span className="sm:hidden">Linguistique</span>
+   913→          </TabsTrigger>
+   914→          <TabsTrigger
+   915→            value="style"
+   916→            className="gap-2 data-[state=active]:shadow-sm"
+   917→          >
+   918→            <Palette className="h-4 w-4" />
+   919→            <span className="hidden sm:inline">Vérif. stylistique</span>
+   920→            <span className="sm:hidden">Stylistique</span>
+   921→          </TabsTrigger>
+   922→          <TabsTrigger
+   923→            value="humanizer"
+   924→            className="gap-2 data-[state=active]:shadow-sm"
+   925→          >
+   926→            <User className="h-4 w-4" />
+   927→            <span className="hidden sm:inline">Humanisateur</span>
+   928→            <span className="sm:hidden">Humaniser</span>
+   929→          </TabsTrigger>
+   930→        </TabsList>
+   931→
+   932→        <TabsContent value="directeur">
+   933→          <DirecteurPanel />
+   934→        </TabsContent>
+   935→        <TabsContent value="assistant">
+   936→          <AssistantPanel />
+   937→        </TabsContent>
+   938→        <TabsContent value="grammar">
+   939→          <GrammarPanel />
+   940→        </TabsContent>
+   941→        <TabsContent value="style">
+   942→          <StylePanel />
+   943→        </TabsContent>
+   944→        <TabsContent value="humanizer">
+   945→          <HumanizerPanel />
+   946→        </TabsContent>
+   947→      </Tabs>
+   948→    </div>
+   949→  );
+   950→}
+   951→
