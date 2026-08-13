@@ -27,4 +27,14 @@ if (fs.existsSync(publicSrc) && !fs.existsSync(publicDst)) {
   console.warn('public/ not found — skipping');
 }
 
-console.log('Post-build complete.');
+// Copy db/ → .next/standalone/db/ (standalone needs the database)
+const dbSrc = path.join(__dirname, '..', 'db');
+const dbDst = path.join(standaloneDir, 'db');
+if (fs.existsSync(dbSrc)) {
+  fs.cpSync(dbSrc, dbDst, { recursive: true, force: true });
+  console.log('Copied db/ → .next/standalone/db/');
+} else {
+  console.warn('db/ not found — skipping');
+}
+
+console.log('Post-build complete (with database).');
