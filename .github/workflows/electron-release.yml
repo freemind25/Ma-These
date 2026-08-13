@@ -44,16 +44,13 @@ jobs:
       - name: Generate Prisma Client
         run: bun run db:generate
 
-      - name: Push database schema
-        run: bun run db:push
-
-      - name: Build Next.js
-        run: bun run build
-
-      - name: Create empty DB template
+      - name: Create SQLite database
         run: |
           mkdir -p db
           touch db/custom.db
+
+      - name: Build Next.js
+        run: bun run build
 
       - name: Upload standalone build
         uses: actions/upload-artifact@v4
