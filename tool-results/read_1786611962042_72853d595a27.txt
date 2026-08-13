@@ -1,0 +1,643 @@
+     1→// ═══════════════════════════════════════════════════════════════════
+     2→// ThesisFrame — Corpus de Cadres de Recherche
+     3→// Modules structurés extraits des infographies académiques RB et protocoles PRISMA/GRADE
+     4→// Reformulé en règles actionnables — aucune reproduction de texte protégé
+     5→// ═══════════════════════════════════════════════════════════════════
+     6→
+     7→// ─── Types ──────────────────────────────────────────────────────────────────────
+     8→
+     9→/** Un type de lacune de recherche (taxonomie à 7 types, RB-3) */
+    10→interface TypeLacune {
+    11→  id: string;
+    12→  label: string;
+    13→  categorie: "épistémologique" | "procédurale" | "conceptuelle-contextuelle";
+    14→  definitionCourte: string;
+    15→  critereDiagnostic: string;
+    16→  questionGuide: string;
+    17→}
+    18→
+    19→/** Un test statistique avec ses critères de sélection (RB-4) */
+    20→interface TestStatistique {
+    21→  id: string;
+    22→  label: string;
+    23→  typeDonnees: ("continue" | "catégorielle" | "ordinale")[];
+    24→  parametrique: boolean;
+    25→  quandUtiliser: string;
+    26→  groupeNombre: "0" | "2" | "2-apparié" | "3+";
+    27→  typeAnalyse: "description" | "comparaison" | "association" | "prédiction" | "réduction";
+    28→  alternativeNonParametrique?: string;
+    29→  conditionSpeciale?: string;
+    30→}
+    31→
+    32→/** Un aspect de comparaison cadre théorique vs conceptuel (RB-5) */
+    33→interface AspectComparaisonCadre {
+    34→  aspect: string;
+    35→  theorique: string;
+    36→  conceptuel: string;
+    37→  cleDecision: string;
+    38→}
+    39→
+    40→/** Une section de la structure du chapitre revue de littérature (RB-2) */
+    41→interface SectionRevueLitterature {
+    42→  numero: number;
+    43→  label: string;
+    44→  fonction: string;
+    45→  elementsCles: string[];
+    46→  inviteGeneration: string;
+    47→}
+    48→
+    49→// ═══════════════════════════════════════════════════════════════════
+    50→// MODULE 1 — Taxonomie des 7 lacunes de recherche (RB-3)
+    51→// ═══════════════════════════════════════════════════════════════════
+    52→
+    53→export const TYPES_LACUNES: TypeLacune[] = [
+    54→  {
+    55→    id: "evidence",
+    56→    label: "Lacune de preuve",
+    57→    categorie: "épistémologique",
+    58→    definitionCourte: "Résultats incohérents ou contradictoires entre études comparables",
+    59→    critereDiagnostic: "Vérifier la cohérence des conclusions sur un même objet d'au moins 3 études",
+    60→    questionGuide: "Quelles contradictions majeures existent entre les résultats disponibles ?",
+    61→  },
+    62→  {
+    63→    id: "knowledge",
+    64→    label: "Lacune de connaissance",
+    65→    categorie: "épistémologique",
+    66→    definitionCourte: "Absence totale de recherche ou de preuve sur un aspect du sujet",
+    67→    critereDiagnostic: "Analyser la couverture documentaire pour détecter les zones blanches",
+    68→    questionGuide: "Quels aspects du sujet n'ont fait l'objet d'aucune étude ?",
+    69→  },
+    70→  {
+    71→    id: "practice",
+    72→    label: "Lacune pratique-connaissance",
+    73→    categorie: "épistémologique",
+    74→    definitionCourte: "Écart entre les recommandations de la recherche et les pratiques réelles",
+    75→    critereDiagnostic: "Confronter recommandations théoriques et pratiques observées sur le terrain",
+    76→    questionGuide: "Quelles recommandations de la recherche ne sont pas appliquées, et pourquoi ?",
+    77→  },
+    78→  {
+    79→    id: "methodological",
+    80→    label: "Lacune méthodologique",
+    81→    categorie: "procédurale",
+    82→    definitionCourte: "Les méthodes existantes sont insuffisantes ou biaisées pour le problème étudié",
+    83→    critereDiagnostic: "Évaluer la rigueur méthodologique récurrente des études du domaine",
+    84→    questionGuide: "Quelles limites méthodologiques fragilisent les conclusions actuelles ?",
+    85→  },
+    86→  {
+    87→    id: "empirical",
+    88→    label: "Lacune empirique",
+    89→    definitionCourte: "Résultats existants nécessitant une validation empirique complémentaire",
+    90→    categorie: "procédurale",
+    91→    critereDiagnostic: "Vérifier si les résultats ont été répliqués dans des contextes différents",
+    92→    questionGuide: "Quels résultats n'ont pas encore été répliqués ou validés ?",
+    93→  },
+    94→  {
+    95→    id: "theoretical",
+    96→    label: "Lacune théorique",
+    97→    categorie: "conceptuelle-contextuelle",
+    98→    definitionCourte: "Absence de cadre théorique adapté au problème de recherche",
+    99→    critereDiagnostic: "Vérifier si le problème dispose d'un ancrage théorique explicite",
+   100→    questionGuide: "Quelle théorie existante pourrait éclairer ce problème mais n'est pas mobilisée ?",
+   101→  },
+   102→  {
+   103→    id: "population",
+   104→    label: "Lacune populationnelle",
+   105→    categorie: "conceptuelle-contextuelle",
+   106→    definitionCourte: "Populations ou contextes sous-représentés dans la littérature",
+   107→    critereDiagnostic: "Analyser la représentativité démographique et géographique des échantillons",
+   108→    questionGuide: "Quelles populations ou régions sont absentes de la littérature ?",
+   109→  },
+   110→];
+   111→
+   112→/** Règles d'identification systématique par type de lacune */
+   113→export const REGLES_IDENTIFICATION_LACUNES: {
+   114→  lacune: string;
+   115→  regle: string;
+   116→}[] = [
+   117→  { lacune: "evidence", regle: "Comparer les conclusions d'au moins 3 études sur le même objet — signaler toute inversion de résultat ou divergence non expliquée" },
+   118→  { lacune: "knowledge", regle: "Cartographier les sous-thèmes du domaine et identifier les zones sans publication identifiée" },
+   119→  { lacune: "practice", regle: "Confronter explicitement les recommandations des auteurs aux pratiques décrites dans les études de terrain" },
+   120→  { lacune: "methodological", regle: "Auditer les designs, tailles d'échantillon et méthodes d'analyse des études principales du domaine" },
+   121→  { lacune: "empirical", regle: "Vérifier si les résultats clés ont été reproduits dans au moins un autre contexte ou par une autre équipe" },
+   122→  { lacune: "theoretical", regle: "Lister les théories disponibles dans le champ et vérifier laquelle n'a pas été appliquée au problème" },
+   123→  { lacune: "population", regle: "Recenser les populations/contexts étudiés et identifier les silences démographiques ou géographiques" },
+   124→];
+   125→
+   126→/** Modèles de formulation de lacunes pour énoncés de problème */
+   127→export const MODELES_FORMULATION_LACUNES: {
+   128→  type: string;
+   129→  modele: string;
+   130→}[] = [
+   131→  { type: "evidence", modele: "Malgré des études antérieures sur [sujet], les résultats restent contradictoires quant à [variable/aspect], ce qui rend nécessaire une investigation approfondie de [facteur explicatif]." },
+   132→  { type: "knowledge", modele: "À ce jour, aucun travail n'a examiné [aspect/variable] dans le contexte de [population/terrain], laissant un vide documentaire sur [dimension précise]." },
+   133→  { type: "practice", modele: "Bien que la littérature recommande [action/approche], les pratiques observées dans [secteur/terrain] divergent significativement, suggérant un écart entre savoir académique et application réelle." },
+   134→  { type: "methodological", modele: "Les études existantes sur [sujet] présentent des limites méthodologiques récurrentes (taille d'échantillon, biais de sélection, absence de groupe contrôle), ce qui appelle un design [qualitatif/quantitatif/mixte] plus rigoureux." },
+   135→  { type: "empirical", modele: "Les conclusions de [Auteur, Année] concernant [relation/effet] n'ont pas encore été validées empiriquement dans [contexte/population], ce qui limite la généralisabilité des résultats." },
+   136→  { type: "theoretical", modele: "Le champ de [domaine] dispose de cadres théoriques établis (ex. [théorie 1], [théorie 2]) mais aucun n'a été mobilisé pour expliquer [phénomène étudié]." },
+   137→  { type: "population", modele: "La littérature sur [sujet] se concentre principalement sur [population dominante], alors que [population cible] reste largement sous-étudiée malgré [raison de pertinence]." },
+   138→];
+   139→
+   140→// ═══════════════════════════════════════════════════════════════════
+   141→// MODULE 2 — Cadre théorique vs conceptuel (RB-5)
+   142→// ═══════════════════════════════════════════════════════════════════
+   143→
+   144→export const COMPARAISON_CADRES: AspectComparaisonCadre[] = [
+   145→  {
+   146→    aspect: "Définition",
+   147→    theorique: "Ensemble large de principes offrant une perspective générale sur un domaine",
+   148→    conceptuel: "Concepts spécifiques appliqués directement au contexte de l'étude",
+   149→    cleDecision: "Si l'objectif est de situer la recherche dans un champ établi → théorique ; si l'objectif est de définir les variables étudiées → conceptuel",
+   150→  },
+   151→  {
+   152→    aspect: "Fondement",
+   153→    theorique: "Théories existantes validées par la communauté académique",
+   154→    conceptuel: "Concepts clés représentant les variables et leurs relations dans l'étude",
+   155→    cleDecision: "Si on mobilise des théories préexistantes citées → théorique ; si on construit un modèle de variables → conceptuel",
+   156→  },
+   157→  {
+   158→    aspect: "Nature",
+   159→    theorique: "Modèle guidant l'étude, ses hypothèses et l'interprétation des résultats",
+   160→    conceptuel: "Modèle développé par le chercheur pour expliquer les interactions entre concepts",
+   161→    cleDecision: "Si le modèle est déductif (test d'hypothèses) → théorique ; si le modèle est inductif/construit → conceptuel",
+   162→  },
+   163→  {
+   164→    aspect: "Développement",
+   165→    theorique: "Établi, reconnu et accepté dans la communauté académique",
+   166→    conceptuel: "Développé spécifiquement pour l'étude par le chercheur",
+   167→    cleDecision: "Si le cadre existe dans la littérature avant l'étude → théorique ; s'il est créé pour l'étude → conceptuel",
+   168→  },
+   169→  {
+   170→    aspect: "Finalité",
+   171→    theorique: "Positionner la recherche dans le corps de connaissances existant",
+   172→    conceptuel: "Montrer la logique d'enquête et comment les concepts seront examinés",
+   173→    cleDecision: "Si le but est le positionnement épistémologique → théorique ; si le but est l'articulation opérationnelle → conceptuel",
+   174→  },
+   175→  {
+   176→    aspect: "Composantes",
+   177→    theorique: "Théories, construits et propositions dérivés de la recherche antérieure",
+   178→    conceptuel: "Concepts centraux et leurs connexions illustrant les relations étudiées",
+   179→    cleDecision: "Si les éléments sont des théories/construits abstraits → théorique ; si ce sont des variables opérationnalisées → conceptuel",
+   180→  },
+   181→  {
+   182→    aspect: "Usage",
+   183→    theorique: "Tester des théories, formuler des prédictions, situer la recherche globalement",
+   184→    conceptuel: "Construire ou affiner une théorie, fournir des insights pratiques au contexte étudié",
+   185→    cleDecision: "Si la démarche vise la validation → théorique ; si elle vise la construction/exploration → conceptuel",
+   186→  },
+   187→];
+   188→
+   189→/** Règles de sélection automatique du type de cadre */
+   190→export const REGLES_SELECTION_CADRE: {
+   191→  condition: string;
+   192→  cadre: "théorique" | "conceptuel";
+   193→  justification: string;
+   194→}[] = [
+   195→  { condition: "Domaine de recherche mature avec théories bien établies", cadre: "théorique", justification: "Un champ bien balisé permet un ancrage théorique solide et reconnu" },
+   196→  { condition: "Domaine exploratoire ou émergent sans théorie dominante", cadre: "conceptuel", justification: "L'absence de cadre établi rend nécessaire la construction d'un modèle spécifique" },
+   197→  { condition: "Démarche déductive (test d'hypothèses contre une vérité établie)", cadre: "théorique", justification: "Le raisonnement déductif s'appuie sur des théories existantes à valider" },
+   198→  { condition: "Démarche inductive (construction de modèle à partir d'observations)", cadre: "conceptuel", justification: "Le raisonnement inductif construit un cadre à partir des données terrain" },
+   199→  { condition: "Besoin de positionnement épistémologique global", cadre: "théorique", justification: "Le cadre théorique situe la recherche dans le champ disciplinaire" },
+   200→  { condition: "Besoin de définir des variables et leurs relations opérationnelles", cadre: "conceptuel", justification: "Le cadre conceptuel opérationnalise les variables de l'étude" },
+   201→];
+   202→
+   203→/** Critères de validation d'un cadre (utilisé dans le mode hypothèse) */
+   204→export const CRITERES_VALIDATION_CADRE = [
+   205→  "Le cadre est-il cohérent avec la question de recherche ?",
+   206→  "Chaque concept clé dispose-t-il d'une définition opérationnelle claire ?",
+   207→  "Les relations entre concepts sont-elles explicitement formulées (causalité, corrélation, médiation) ?",
+   208→  "Le cadre permet-il de dériver des hypothèses testables ?",
+   209→  "Le cadre est-il ancré dans des références académiques (théorique) ou justifié par le terrain (conceptuel) ?",
+   210→  "Le diagramme du cadre (le cas échéant) reflète-t-il fidèlement le texte descriptif ?",
+   211→];
+   212→
+   213→// ═══════════════════════════════════════════════════════════════════
+   214→// MODULE 3 — Arbres de décision pour tests statistiques (RB-4)
+   215→// ═══════════════════════════════════════════════════════════════════
+   216→
+   217→export const TESTS_STATISTIQUES: TestStatistique[] = [
+   218→  {
+   219→    id: "descriptive",
+   220→    label: "Statistiques descriptives",
+   221→    typeDonnees: ["continue", "catégorielle", "ordinale"],
+   222→    parametrique: true,
+   223→    quandUtiliser: "Résumer les caractéristiques d'un jeu de données (tendance centrale, dispersion)",
+   224→    groupeNombre: "0",
+   225→    typeAnalyse: "description",
+   226→  },
+   227→  {
+   228→    id: "z-test",
+   229→    label: "Test Z",
+   230→    typeDonnees: ["continue"],
+   231→    parametrique: true,
+   232→    quandUtiliser: "Grand échantillon (n > 30) avec variance populationnelle connue, comparaison à une moyenne de référence",
+   233→    groupeNombre: "2",
+   234→    typeAnalyse: "comparaison",
+   235→    conditionSpeciale: "n > 30 et variance σ connue",
+   236→  },
+   237→  {
+   238→    id: "student-t",
+   239→    label: "Test t de Student",
+   240→    typeDonnees: ["continue"],
+   241→    parametrique: true,
+   242→    quandUtiliser: "Petit échantillon (n < 30), variance populationnelle inconnue, comparaison de deux moyennes indépendantes",
+   243→    groupeNombre: "2",
+   244→    typeAnalyse: "comparaison",
+   245→    alternativeNonParametrique: "mann-whitney",
+   246→  },
+   247→  {
+   248→    id: "paired-t",
+   249→    label: "Test t apparié",
+   250→    typeDonnees: ["continue"],
+   251→    parametrique: true,
+   252→    quandUtiliser: "Mesures répétées sur les mêmes sujets (avant/après, pré/post)",
+   253→    groupeNombre: "2-apparié",
+   254→    typeAnalyse: "comparaison",
+   255→    alternativeNonParametrique: "wilcoxon",
+   256→  },
+   257→  {
+   258→    id: "welch-t",
+   259→    label: "Test t de Welch",
+   260→    typeDonnees: ["continue"],
+   261→    parametrique: true,
+   262→    quandUtiliser: "Variances inégales et/ou tailles d'échantillon différentes entre groupes",
+   263→    groupeNombre: "2",
+   264→    typeAnalyse: "comparaison",
+   265→    conditionSpeciale: "Différence de taille > 20 % entre groupes → préférer Welch au Student classique",
+   266→  },
+   267→  {
+   268→    id: "chi-squared",
+   269→    label: "Test du Chi-carré",
+   270→    typeDonnees: ["catégorielle"],
+   271→    parametrique: false,
+   272→    quandUtiliser: "Tester l'association entre deux variables catégorielles",
+   273→    groupeNombre: "0",
+   274→    typeAnalyse: "association",
+   275→    conditionSpeciale: "Effectifs théoriques ≥ 5 dans chaque cellule",
+   276→  },
+   277→  {
+   278→    id: "fisher-exact",
+   279→    label: "Test exact de Fisher",
+   280→    typeDonnees: ["catégorielle"],
+   281→    parametrique: false,
+   282→    quandUtiliser: "Petits échantillons, tableaux de contingence 2×2, effectifs faibles",
+   283→    groupeNombre: "0",
+   284→    typeAnalyse: "association",
+   285→    conditionSpeciale: "n < 20 en tableau de contingence → Fisher plutôt que Chi-carré",
+   286→  },
+   287→  {
+   288→    id: "mann-whitney",
+   289→    label: "Test de Mann-Whitney",
+   290→    typeDonnees: ["ordinale", "continue"],
+   291→    parametrique: false,
+   292→    quandUtiliser: "Alternative non paramétrique au test t pour comparer deux groupes indépendants",
+   293→    groupeNombre: "2",
+   294→    typeAnalyse: "comparaison",
+   295→  },
+   296→  {
+   297→    id: "anova",
+   298→    label: "ANOVA",
+   299→    typeDonnees: ["continue"],
+   300→    parametrique: true,
+   301→    quandUtiliser: "Comparer les moyennes de trois groupes ou plus",
+   302→    groupeNombre: "3+",
+   303→    typeAnalyse: "comparaison",
+   304→    alternativeNonParametrique: "kruskal-wallis",
+   305→  },
+   306→  {
+   307→    id: "kruskal-wallis",
+   308→    label: "Test de Kruskal-Wallis",
+   309→    typeDonnees: ["ordinale", "continue"],
+   310→    parametrique: false,
+   311→    quandUtiliser: "Alternative non paramétrique à l'ANOVA pour 3+ groupes indépendants",
+   312→    groupeNombre: "3+",
+   313→    typeAnalyse: "comparaison",
+   314→  },
+   315→  {
+   316→    id: "pearson",
+   317→    label: "Corrélation de Pearson",
+   318→    typeDonnees: ["continue"],
+   319→    parametrique: true,
+   320→    quandUtiliser: "Mesurer la force et la direction d'une relation linéaire entre deux variables continues",
+   321→    groupeNombre: "0",
+   322→    typeAnalyse: "association",
+   323→    alternativeNonParametrique: "spearman",
+   324→  },
+   325→  {
+   326→    id: "spearman",
+   327→    label: "Corrélation de Spearman",
+   328→    typeDonnees: ["ordinale"],
+   329→    parametrique: false,
+   330→    quandUtiliser: "Mesurer la force d'une relation monotone entre variables ordinales ou non normales",
+   331→    groupeNombre: "0",
+   332→    typeAnalyse: "association",
+   333→  },
+   334→  {
+   335→    id: "regression-lineaire",
+   336→    label: "Régression linéaire simple",
+   337→    typeDonnees: ["continue"],
+   338→    parametrique: true,
+   339→    quandUtiliser: "Modéliser la relation linéaire entre une variable dépendante et une variable indépendante",
+   340→    groupeNombre: "0",
+   341→    typeAnalyse: "prédiction",
+   342→  },
+   343→  {
+   344→    id: "regression-multiple",
+   345→    label: "Régression multiple",
+   346→    typeDonnees: ["continue"],
+   347→    parametrique: true,
+   348→    quandUtiliser: "Prédire une variable dépendante continue à partir de plusieurs prédicteurs",
+   349→    groupeNombre: "0",
+   350→    typeAnalyse: "prédiction",
+   351→  },
+   352→  {
+   353→    id: "regression-logistique",
+   354→    label: "Régression logistique",
+   355→    typeDonnees: ["continue", "catégorielle"],
+   356→    parametrique: true,
+   357→    quandUtiliser: "Prédire la probabilité d'un résultat binaire (oui/non) à partir de prédicteurs",
+   358→    groupeNombre: "0",
+   359→    typeAnalyse: "prédiction",
+   360→  },
+   361→  {
+   362→    id: "analyse-factorielle",
+   363→    label: "Analyse factorielle",
+   364→    typeDonnees: ["continue", "ordinale"],
+   365→    parametrique: true,
+   366→    quandUtiliser: "Réduire un grand nombre de variables à un ensemble plus restreint de facteurs latents",
+   367→    groupeNombre: "0",
+   368→    typeAnalyse: "réduction",
+   369→  },
+   370→];
+   371→
+   372→/** Arbre de décision pour sélectionner un test statistique */
+   373→export const ARBRE_DECISION_STATISTIQUE = {
+   374→  etape1_typeQuestion: [
+   375→    { question: "Différence entre groupes ?", destination: "etape2_groupes" as const },
+   376→    { question: "Association entre variables ?", destination: "etape3_typeDonnees" as const },
+   377→    { question: "Prédiction d'une variable ?", destination: "etape4_regression" as const },
+   378→    { question: "Réduction dimensionnelle ?", destination: "etape5_reduction" as const },
+   379→  ],
+   380→  etape2_groupes: [
+   381→    { condition: "2 groupes indépendants, données continues, normalité respectée", test: "student-t" },
+   382→    { condition: "2 groupes indépendants, normalité NON respectée ou données ordinales", test: "mann-whitney" },
+   383→    { condition: "2 groupes appariés (mesures répétées), normalité respectée", test: "paired-t" },
+   384→    { condition: "2 groupes appariés, normalité NON respectée", test: "wilcoxon" },
+   385→    { condition: "2 groupes, variances inégales ou tailles très différentes", test: "welch-t" },
+   386→    { condition: "3+ groupes, données continues, normalité respectée", test: "anova" },
+   387→    { condition: "3+ groupes, données ordinales ou normalité NON respectée", test: "kruskal-wallis" },
+   388→    { condition: "2 variables catégorielles", test: "chi-squared" },
+   389→    { condition: "2 variables catégorielles, petits effectifs (n < 20)", test: "fisher-exact" },
+   390→  ],
+   391→  etape3_typeDonnees: [
+   392→    { condition: "Deux variables continues, relation linéaire, normalité", test: "pearson" },
+   393→    { condition: "Variables ordinales ou normalité non respectée", test: "spearman" },
+   394→  ],
+   395→  etape4_regression: [
+   396→    { condition: "Variable dépendante continue, 1 prédicteur", test: "regression-lineaire" },
+   397→    { condition: "Variable dépendante continue, plusieurs prédicteurs", test: "regression-multiple" },
+   398→    { condition: "Variable dépendante binaire", test: "regression-logistique" },
+   399→  ],
+   400→  etape5_reduction: [
+   401→    { condition: "Réduire de nombreuses variables à quelques facteurs latents", test: "analyse-factorielle" },
+   402→  ],
+   403→} as const;
+   404→
+   405→/** Règles de vérification pré-analyse */
+   406→export const REGLES_PRE_ANALYSE = [
+   407→  "Toujours vérifier la normalité des données avant de choisir un test paramétrique",
+   408→  "Si n > 30 et σ connu → Test Z ; si n < 30 et σ inconnu → Test t",
+   409→  "Si les tailles de groupe diffèrent de plus de 20 %, utiliser le test de Welch plutôt que le Student classique",
+   410→  "Pour les tableaux de contingence avec effectifs théoriques < 5, préférer le test exact de Fisher",
+   411→  "Spécifier explicitement si les groupes sont indépendants ou appariés avant de choisir le test",
+   412→  "Variable dépendante continue → régression linéaire ; variable dépendante binaire → régression logistique",
+   413→  "Construits latents non observables → analyse factorielle pour réduction dimensionnelle",
+   414→];
+   415→
+   416→// ═══════════════════════════════════════════════════════════════════
+   417→// MODULE 4 — Structure du chapitre revue de littérature (RB-2)
+   418→// ═══════════════════════════════════════════════════════════════════
+   419→
+   420→export const SECTIONS_REVUE_LITTERATURE: SectionRevueLitterature[] = [
+   421→  {
+   422→    numero: 1,
+   423→    label: "Introduction",
+   424→    fonction: "Rappeler la problématique, les objectifs et annoncer le plan du chapitre",
+   425→    elementsCles: ["Reformulation du problème de recherche", "Objectifs du chapitre", "Annonce de la structure (les 5 sections suivantes)"],
+   426→    inviteGeneration: "Rédige l'introduction du chapitre de revue de littérature sur [sujet]. Rappelle la problématique, énonce les objectifs de la revue et annonce le plan en 6 sections.",
+   427→  },
+   428→  {
+   429→    numero: 2,
+   430→    label: "Cadre théorique",
+   431→    fonction: "Présenter et justifier les théories mobilisées pour encadrer la recherche",
+   432→    elementsCles: ["Théories principales (noms, auteurs, postulats)", "Justification du choix de chaque théorie", "Lien avec le problème de recherche"],
+   433→    inviteGeneration: "Rédige la section du cadre théorique en mobilisant [théorie(s)]. Justifie pourquoi ce(s) cadre(s) est/sont adapté(s) pour expliquer [phénomène].",
+   434→  },
+   435→  {
+   436→    numero: 3,
+   437→    label: "Cadre conceptuel",
+   438→    fonction: "Définir les concepts clés et leurs relations, souvent illustré par un diagramme",
+   439→    elementsCles: ["Définitions opérationnelles des concepts", "Relations entre concepts (causalité, corrélation, médiation)", "Diagramme conceptuel"],
+   440→    inviteGeneration: "Construis le cadre conceptuel en définissant les concepts clés ([liste]) et leurs relations. Inclus une description textuelle du diagramme conceptuel.",
+   441→  },
+   442→  {
+   443→    numero: 4,
+   444→    label: "Revue de la littérature connexe",
+   445→    fonction: "Organiser les études antérieures selon une logique structurée et les analyser de manière critique",
+   446→    elementsCles: ["Sous-sections thématiques, chronologiques ou méthodologiques", "Études empiriques locales et internationales", "Tendances actuelles et débats", "Insights méthodologiques"],
+   447→    inviteGeneration: "Produis une revue structurée sur [sujet] en organisant les études selon une logique [thématique/chronologique/méthodologique]. Crée des sous-sections pour [thèmes].",
+   448→  },
+   449→  {
+   450→    numero: 5,
+   451→    label: "Revue critique et synthèse",
+   452→    fonction: "Comparer, confronter et évaluer les études ; identifier les forces, faiblesses et lacunes",
+   453→    elementsCles: ["Comparaison et contraste des résultats", "Identification des contradictions", "Évaluation des forces et faiblesses méthodologiques", "Positionnement de l'étude par rapport aux lacunes"],
+   454→    inviteGeneration: "Rédige une synthèse critique en comparant les forces et faiblesses des études. Identifie les contradictions concernant [variable] et explique comment cette étude se positionne.",
+   455→  },
+   456→  {
+   457→    numero: 6,
+   458→    label: "Résumé de la revue de littérature",
+   459→    fonction: "Consolider les enseignements clés, mettre en évidence la lacune et préparer la transition vers la méthodologie",
+   460→    elementsCles: ["Synthèse des principaux enseignements", "Mise en évidence de la lacune de recherche", "Transition vers le chapitre méthodologique"],
+   461→    inviteGeneration: "Rédige le résumé conclusif en consolidant les enseignements clés, en soulignant la lacune identifiée et en expliquant comment celle-ci dicte les choix méthodologiques du chapitre suivant.",
+   462→  },
+   463→];
+   464→
+   465→/** Les trois logiques d'organisation pour la Section 4 */
+   466→export const LOGIQUES_ORGANISATION_SECTION4 = [
+   467→  {
+   468→    id: "thematique",
+   469→    label: "Thématique",
+   470→    description: "Regroupement par sujet ou thème de recherche",
+   471→    quandUtiliser: "Lorsque le champ est riche et diversifié avec plusieurs dimensions clés",
+   472→  },
+   473→  {
+   474→    id: "chronologique",
+   475→    label: "Chronologique",
+   476→    description: "Classement par date de publication pour montrer l'évolution",
+   477→    quandUtiliser: "Lorsqu'il faut retracer l'évolution historique d'un concept ou d'un débat",
+   478→  },
+   479→  {
+   480→    id: "methodologique",
+   481→    label: "Méthodologique",
+   482→    description: "Regroupement par type d'approche (qualitative vs quantitative)",
+   483→    quandUtiliser: "Lorsque les approches méthodologiques constituent un enjeu central du champ",
+   484→  },
+   485→];
+   486→
+   487→/** Critères qualité d'une revue de littérature */
+   488→export const CRITERES_QUALITE_REVUE = [
+   489→  "Distinction claire entre revue descriptive (listing) et synthèse critique (évaluation)",
+   490→  "Identification explicite d'au moins une lacune de recherche (voir taxonomie des 7 lacunes)",
+   491→  "Présence de comparaisons et contrastes entre études (pas un simple catalogue)",
+   492→  "Transition logique vers le chapitre méthodologique",
+   493→  "Pondération des conclusions par la qualité méthodologique des études citées",
+   494→  "Absence d'affirmations non étayées par des références",
+   495→];
+   496→
+   497→// ═══════════════════════════════════════════════════════════════════
+   498→// MODULE 5 — Protocoles PRISMA/GRADE et grilles d'appréciation (SKILL.md)
+   499→// ═══════════════════════════════════════════════════════════════════
+   500→
+   501→/** Types de revues avec niveau d'exigence associé */
+   502→export const TYPES_REVUE = [
+   503→  { id: "systematique", label: "Revue systématique", protocole: "PRISMA 2020", exigence: "maximale" as const },
+   504→  { id: "scoping", label: "Revue scoping", protocole: "PRISMA-ScR", exigence: "élevée" as const },
+   505→  { id: "narrative", label: "Revue narrative structurée", protocole: "SANRA", exigence: "modérée" as const },
+   506→  { id: "integrative", label: "Revue intégrative", protocole: "Sans protocole standardisé", exigence: "modérée" as const },
+   507→];
+   508→
+   509→/** Les 12 protocoles d'analyse documentaire */
+   510→export const PROTOCOLES_ANALYSE = [
+   511→  { id: "P01", label: "Tableau structurant + clusters", description: "Base de structuration du corpus en thématiques" },
+   512→  { id: "P02", label: "Détecteur de contradictions", description: "Identification des divergences entre études" },
+   513→  { id: "P03", label: "Chaîne de citations (historiographie)", description: "Traçage de l'évolution des concepts à travers les citations" },
+   514→  { id: "P04", label: "Scanner de lacunes", description: "Identification systématique des lacunes (7 types)" },
+   515→  { id: "P05", label: "Audit méthodologique", description: "Typologie, échantillon et limites de chaque étude" },
+   516→  { id: "P05bis", label: "Grille d'appréciation critique", description: "Évaluation de la qualité par design (CASP, MMAT, RoB2 adaptés)" },
+   517→  { id: "P06", label: "Synthèse maîtresse", description: "Synthèse pondérée par la qualité des preuves (400 mots)" },
+   518→  { id: "P07", label: "Tueur d'hypothèses tacites", description: "Détection des postulats non explicités" },
+   519→  { id: "P08", label: "Carte de connaissances", description: "Visualisation des piliers de soutien pondérés" },
+   520→  { id: "P09", label: "Test 'Et alors ?'", description: "Évaluation de la pertinence et de l'impact" },
+   521→  { id: "P09bis", label: "Certitude des preuves (GRADE)", description: "Attribution d'un niveau de certitude par affirmation clé" },
+   522→  { id: "P10", label: "Limites et réflexivité", description: "Limites du corpus, de la méthode et déclaration IA" },
+   523→];
+   524→
+   525→/** Niveaux de certitude des preuves (approche GRADE) */
+   526→export const NIVEAUX_CERTITUDE_PREUVES = [
+   527→  { niveau: "Élevée", description: "Preuves solides issues d'études de haute qualité, résultats convergents" },
+   528→  { niveau: "Modérée", description: "Preuves acceptables mais avec quelques réserves méthodologiques" },
+   529→  { niveau: "Faible", description: "Preuves limitées, résultats fragiles ou issus d'une seule étude" },
+   530→  { niveau: "Très faible", description: "Preuves très insuffisantes, conclusions hautement spéculatives" },
+   531→];
+   532→
+   533→/** Règle de dégradation de la certitude */
+   534→export const REGLE_DEGRADATION_CERTITUDE = [
+   535→  "Risque de biais sérieux dominant → descendre d'un niveau",
+   536→  "Forte hétérogénéité non expliquée entre études → descendre d'un niveau",
+   537→  "Une seule étude porte l'affirmation → certitude maximale 'Faible'",
+   538→  "La convergence d'études biaisées de la même manière ne constitue PAS une preuve solide",
+   539→];
+   540→
+   541→/** Niveaux de risque de biais pour l'appréciation critique */
+   542→export const NIVEAUX_RISQUE_BIAIS = [
+   543→  { niveau: "Faible", signification: "Peu de préoccupations identifiées ; conclusions globalement fiables" },
+   544→  { niveau: "Modéré", signification: "Quelques préoccupations ; conclusions à interpréter avec prudence" },
+   545→  { niveau: "Sérieux", signification: "Préoccupations multiples ou majeures ; conclusions fragiles" },
+   546→  { niveau: "Critique", signification: "Failles méthodologiques compromettant la validité des conclusions" },
+   547→  { niveau: "Non évaluable", signification: "Informations insuffisantes — signaler comme limite, jamais combler par supposition" },
+   548→];
+   549→
+   550→/** Dimensions d'évaluation par type de design (grilles type CASP/MMAT, reformulées) */
+   551→export const DIMENSIONS_APPRECIATION_PAR_DESIGN = [
+   552→  {
+   553→    typeDesign: "quantitatif-experimental",
+   554→    dimensions: [
+   555→      "La méthode d'allocation des groupes évite-t-elle un biais de sélection ?",
+   556→      "L'échantillon est-il suffisamment grand et bien décrit ?",
+   557→      "Les mesures de résultat sont-elles cohérentes entre groupes ?",
+   558→      "Les analyses statistiques sont-elles adaptées au design et transparentes ?",
+   559→      "Les pertes de suivi sont-elles documentées et leur impact discuté ?",
+   560→    ],
+   561→  },
+   562→  {
+   563→    typeDesign: "observationnel",
+   564→    dimensions: [
+   565→      "La sélection des participants introduit-elle un biais identifiable ?",
+   566→      "Les facteurs de confusion principaux sont-ils mesurés et contrôlés ?",
+   567→      "La mesure de l'exposition et du résultat est-elle fiable et comparable ?",
+   568→      "La durée de suivi est-elle suffisante pour observer l'effet étudié ?",
+   569→    ],
+   570→  },
+   571→  {
+   572→    typeDesign: "qualitatif",
+   573→    dimensions: [
+   574→      "Le cadre conceptuel est-il cohérent avec la méthode de collecte ?",
+   575→      "L'échantillonnage est-il justifié (saturation, diversité) ?",
+   576→      "Le processus d'analyse est-il suffisamment transparent pour être audité ?",
+   577→      "Les auteurs font-ils preuve de réflexivité sur leur position ?",
+   578→    ],
+   579→  },
+   580→  {
+   581→    typeDesign: "revue-meta-analyse",
+   582→    dimensions: [
+   583→      "La stratégie de recherche est-elle reproductible ?",
+   584→      "Les critères d'inclusion/exclusion sont-ils explicites et appliqués de façon cohérente ?",
+   585→      "Le biais de publication est-il discuté ?",
+   586→      "L'hétérogénéité entre études est-elle évaluée et expliquée ?",
+   587→    ],
+   588→  },
+   589→];
+   590→
+   591→/** Éléments du cadrage protocolaire (Phase 0 PRISMA) */
+   592→export const CADRAGE_PROTOCOLAIRE = [
+   593→  { element: "Type de revue", options: "Systématique / Scoping / Narrative / Intégrative" },
+   594→  { element: "Question de recherche", format: "PICO ou PICO(S) : Population, Intervention, Comparateur, Outcome, Setting" },
+   595→  { element: "Critères d'inclusion/exclusion", precision: "Période, langue, type de document, méthodologie minimale" },
+   596→  { element: "Stratégie de recherche", precision: "Bases de données, équations, date de recherche" },
+   597→];
+   598→
+   599→// ═══════════════════════════════════════════════════════════════════
+   600→// EXPORT PRINCIPAL — Regroupement en objet unique
+   601→// ═══════════════════════════════════════════════════════════════════
+   602→
+   603→export const RESEARCH_FRAMEWORKS = {
+   604→  /** Taxonomie des 7 lacunes de recherche (RB-3) */
+   605→  lacunesDeRecherche: {
+   606→    taxonomie: TYPES_LACUNES,
+   607→    reglesIdentification: REGLES_IDENTIFICATION_LACUNES,
+   608→    modelesFormulation: MODELES_FORMULATION_LACUNES,
+   609→  },
+   610→
+   611→  /** Cadre théorique vs conceptuel (RB-5) */
+   612→  cadres: {
+   613→    comparaison: COMPARAISON_CADRES,
+   614→    reglesSelection: REGLES_SELECTION_CADRE,
+   615→    criteresValidation: CRITERES_VALIDATION_CADRE,
+   616→  },
+   617→
+   618→  /** Tests statistiques (RB-4) */
+   619→  testsStatistiques: {
+   620→    tests: TESTS_STATISTIQUES,
+   621→    arbreDecision: ARBRE_DECISION_STATISTIQUE,
+   622→    reglesPreAnalyse: REGLES_PRE_ANALYSE,
+   623→  },
+   624→
+   625→  /** Structure de la revue de littérature (RB-2) */
+   626→  revueLitterature: {
+   627→    sections: SECTIONS_REVUE_LITTERATURE,
+   628→    logiquesOrganisation: LOGIQUES_ORGANISATION_SECTION4,
+   629→    criteresQualite: CRITERES_QUALITE_REVUE,
+   630→  },
+   631→
+   632→  /** Protocoles PRISMA/GRADE et grilles d'appréciation */
+   633→  evaluationQualite: {
+   634→    typesRevue: TYPES_REVUE,
+   635→    protocoles: PROTOCOLES_ANALYSE,
+   636→    niveauxCertitude: NIVEAUX_CERTITUDE_PREUVES,
+   637→    regleDegradation: REGLE_DEGRADATION_CERTITUDE,
+   638→    niveauxRisqueBiais: NIVEAUX_RISQUE_BIAIS,
+   639→    dimensionsParDesign: DIMENSIONS_APPRECIATION_PAR_DESIGN,
+   640→    cadrageProtocolaire: CADRAGE_PROTOCOLAIRE,
+   641→  },
+   642→} as const;
+   643→

@@ -1,0 +1,708 @@
+     1→     1→// ═════════════════════════════════════════════════════════════════════════════════════════════════════════
+     2→     2→// ThesisFrame — Corpus d'Ingénierie de Prompts
+     3→     3→// Principes de qualité, modèles de prompts de recherche, anti-patterns,
+     4→     4→// règles empiriques de rédaction d'articles scientifiques
+     5→     5→// Basé sur les bonnes pratiques d'ingénierie de prompts — aucune reproduction de texte protégé
+     6→     6→// ═════════════════════════════════════════════════════════════════════════════════════════════════════════
+     7→     7→
+     8→     8→// ─── Types ──────────────────────────────────────────────────────────────────────
+     9→     9→
+    10→    10→/** Un principe fondamental d'ingénierie de prompts */
+    11→    11→interface PrincipePrompt {
+    12→    12→  id: string;
+    13→    13→  titre: string;
+    14→    14→  categorie: "structure" | "clarte" | "specificite" | "contraintes" | "iteration" | "contexte";
+    15→    15→  description: string;
+    16→    16→  exempleAvant: string;
+    17→    17→  exempleApres: string;
+    18→    18→}
+    19→    19→
+    20→    20→/** Un modèle de prompt de recherche spécialisé */
+    21→    21→interface ModelePromptRecherche {
+    22→    22→  id: string;
+    23→    23→  titre: string;
+    24→    24→  contexte: string;
+    25→    25→  structure: string[];
+    26→    26→  variables: { nom: string; description: string; obligatoire: boolean }[];
+    27→    27→  conseilExecution: string;
+    28→    28→}
+    29→    29→
+    30→    30→/** Un anti-pattern de prompting avec sa correction */
+    31→    31→interface AntiPatternPrompt {
+    32→    32→  id: string;
+    33→    33→  erreur: string;
+    34→    34→  consequence: string;
+    35→    35→  correction: string;
+    36→    36→  categorie: "vague" | "surcharge" | "absence_contexte" | "mauvais_role" | "absence_contraintes" | "iteration_unique";
+    37→    37→}
+    38→    38→
+    39→    39→/** Une règle empirique de rédaction d'articles de recherche */
+    40→    40→interface RegleEmpirique {
+    41→    41→  id: string;
+    42→    42→  domaine: "problematique" | "methodologie" | "resultats" | "discussion" | "redaction" | "structure" | "submission";
+    43→    43→  regle: string;
+    44→    44→  justification: string;
+    45→    45→}
+    46→    46→
+    47→    47→// ═════════════════════════════════════════════════════════════════════════════════
+    48→    48→// MODULE 1 — Principes de qualité des prompts
+    49→    49→// ═════════════════════════════════════════════════════════════════════════════════
+    50→    50→
+    51→    51→export const PRINCIPES_PROMPT_QUALITE: PrincipePrompt[] = [
+    52→    52→  {
+    53→    53→    id: "role-explicite",
+    54→    54→    titre: "Assigner un rôle expert explicite",
+    55→    55→    categorie: "role",
+    56→    56→    description: "Spécifier l'identité, le domaine d'expertise et le niveau de spécialisation de l'IA. Plus le rôle est précis, plus la réponse sera adaptée au contexte académique.",
+    57→    57→    exempleAvant: "Écris une introduction sur la méthodologie qualitative.",
+    58→    58→    exempleApres: "Tu es un professeur agrégé en méthodologie de la recherche en sciences de l'éducation, spécialisé en approches qualitatives et en analyse phénoménologique. Rédige une introduction méthodologique pour un chapitre de thèse en SHS.",
+    59→    59→  },
+    60→    60→  {
+    61→    61→    id: "structure-5C",
+    62→    62→    titre: "Appliquer le modèle des 5 C (Contexte, Consigne, Critères, Contraintes, Compléments)",
+    63→    63→    categorie: "structure",
+    64→    64→    description: "Un prompt efficace contient toujours ces cinq composantes structurantes, dans cet ordre logique.",
+    65→    65→    exempleAvant: "Fais une revue de littérature sur l'urbanisme participatif.",
+    66→    66→    exempleApres: "[CONTEXTE] Je rédige une thèse en urbanisme sur la participation citoyenne dans les projets d'aménagement. [CONSIGNE] Rédige la Section 4 de ma revue de littérature : synthèse des travaux sur l'urbanisme participatif (2000-2024). [CRITÈRES] Organise par courant théorique, compare les approches, identifie les lacunes. [CONTRAINTES] 2000 mots max, style académique francophone, citations (Auteur, Année). [COMPLÉMENTS] Voici 5 références clés : ...",
+    67→    67→  },
+    68→    68→  {
+    69→    69→    id: "specificite-observable",
+    70→    70→    titre: "Formuler des critères d'évaluation observables",
+    71→    71→    categorie: "specificite",
+    72→    72→    description: "Définir précisément ce qui constitue une bonne réponse : format, longueur, niveau de détail, ton, éléments à inclure/exclure.",
+    73→    73→    exempleAvant: "Résume cet article de façon claire.",
+    74→    74→    exempleApres: "Résume cet article en 150-200 mots. Structure : 1) objectif de l'étude, 2) méthode, 3) résultat principal, 4) implication. Style académique. Ne pas inclure de données chiffrées secondaires.",
+    75→    75→  },
+    76→    76→  {
+    77→    77→    id: "contraintes-format",
+    78→    78→    titre: "Contraindre le format de sortie",
+    79→    79→    categorie: "contraintes",
+    80→    80→    description: "Spécifier le format attendu (paragraphe, liste, tableau, sections numérotées) et les règles de présentation pour éviter les réponses non exploitable directement.",
+    81→    81→    exempleAvant: "Donne-moi des idées pour ma méthodologie.",
+    82→    82→    exempleApres: "Propose 3 approches méthodologiques adaptées à ma recherche. Pour chaque approche, présente : 1) Nom de l'approche (1 ligne), 2) Description (3-4 lignes), 3) Avantages et limites (puce par point). Format tableau comparatif en fin de réponse.",
+    83→    83→  },
+    84→    84→  {
+    85→    85→    id: "contexte-cadrage",
+    86→    86→    titre: "Fournir un contexte riche et structuré",
+    87→    87→    categorie: "contexte",
+    88→    88→    description: "L'IA produit des réponses proportionnelles à la qualité du contexte fourni. Inclure la problématique, les hypothèses, le cadre théorique, et le public cible.",
+    89→    89→    exempleAvant: "Aide-moi avec mes hypothèses de recherche.",
+    90→    90→    exempleApres: "Voici ma problématique : [énoncé]. Mon cadre théorique mobilise [théorie A] et [théorie B]. Mes variables sont : VI = [liste], VD = [liste]. Formule 3 hypothèses testables reliant ces variables, en justifiant la dérivation théorique de chacune.",
+    91→    91→  },
+    92→    92→  {
+    93→    93→    id: "iteration-refinage",
+    94→    94→    titre: "Itérer par raffinements successifs",
+    95→    95→    categorie: "iteration",
+    96→    96→    description: "Un prompt unique rarement produit un résultat optimal. Prévoir 2-3 itérations en affinant progressivement les exigences.",
+    97→    97→    exempleAvant: "Écris ma discussion (envoi unique, pas de suivi).",
+    98→    98→    exempleApres: "Première itération : Rédige un plan détaillé de la discussion. → Deuxième itération : Développe le point 2 en approfondissant le lien avec la littérature. → Troisième itération : Renforce la section sur les limites en ajoutant les biais non mentionnés.",
+    99→    99→  },
+   100→   100→  {
+   101→   101→    id: "demarche-etapee",
+   102→   102→    titre: "Découper les tâches complexes en étapes",
+   103→   103→    categorie: "structure",
+   104→   104→    description: "Pour les tâches longues (chapitre entier, revue complète), découper en sous-tâches séquentielles avec des jalons clairs.",
+   105→   105→    exempleAvant: "Écris mon chapitre de méthodologie complet.",
+   106→   106→    exempleApres: "Étape 1 : Rédige l'introduction du chapitre méthodologique (problématique, paradigme, justification du choix). Attends ma validation avant de continuer à l'étape 2.",
+   107→   107→  },
+   108→   108→  {
+   109→   109→    id: "exemples-fewshot",
+   110→   110→    titre: "Fournir des exemples de sortie attendue (few-shot)",
+   111→   111→    categorie: "specificite",
+   112→   112→    description: "Montrer à l'IA un exemple du format, du ton et du niveau de détail attendu améliore considérablement la conformité de la réponse.",
+   113→   113→    exempleAvant: "Analyse cet article comme une revue critique.",
+   114→   114→    exempleApres: "Analyse cet article selon la grille suivante. Voici un exemple de la format attendu pour une analyse antérieure :\n「Force : L'échantillon est représentatif (n=450, stratifié).\nLimite : L'absence de groupe contrôle réduit la validité interne.」\nApplique ce même format à l'article suivant.",
+   115→   115→  },
+   116→   116→  {
+   117→   117→    id: "verrouillage-negative",
+   118→   118→    titre: "Utiliser des contraintes négatives explicites",
+   119→   119→    categorie: "contraintes",
+   120→   120→    description: "Lister ce que l'IA NE doit PAS faire est souvent plus efficace que de lister ce qu'elle doit faire.",
+   121→   121→    exempleAvant: "Écris un résumé de ma thèse.",
+   122→   122→    exempleApres: "Rédige un résumé de 200 mots. NE PAS : utiliser la première personne, inclure des références bibliographiques, mentionner des détails méthodologiques secondaires, employer un ton promotionnel.",
+   123→   123→  },
+   124→   124→  {
+   125→   125→    id: "ancrage-theorique",
+   126→   126→    titre: "Ancrer le prompt dans un cadre théorique identifié",
+   127→   127→    categorie: "contexte",
+   128→   128→    description: " Quand le prompt spécifie la théorie ou le cadre mobilisé, l'IA produit des réponses significativement plus cohérentes avec la démarche scientifique.",
+   129→   129→    exempleAvant: " Parle-moi de la résilience urbaine. ",
+   130→   130→    exempleApres: " En t'appuyant sur le cadre théorique de la résilience urbaine (Holling, 1973 ; Folke, 2006), analyse comment la notion de panarchie s'applique aux systèmes de transport après un choc. Limite-toi à ce cadre. ",
+   131→   131→  },
+   132→   132→];
+   133→   133→
+   134→   134→// ═════════════════════════════════════════════════════════════════════════════════
+   135→   135→// MODULE 2 — Modèles de prompts de recherche
+   136→   136→// ═════════════════════════════════════════════════════════════════════════════════
+   137→   137→
+   138→   138→export const MODELES_PROMPTS_RECHERCHE = {
+   139→   139→  // ── Revue de littérature ────────────────────────────────────────────
+   140→   140→  revueLitterature: [
+   141→   141→    {
+   142→   142→      id: "rl-synthese-thematique",
+   143→   143→      titre: " Synthèse thématique d'un corpus de lectures ",
+   144→   144→      contexte: " Pour organiser et synthétiser les lectures autour de thèmes identifiés dans la littérature. ",
+   145→   145→      structure: [
+   146→   146→        " Rôle de l'IA : expert en synthèse académique dans [discipline] ",
+   147→   147→        " Contexte : thème de la revue, période couverte, nombre de sources ",
+   148→   148→        " Consigne : synthétiser les [n] sources selon [n] thèmes identifiés ",
+   149→   149→        " Pour chaque thème : constats convergents, divergents, lacunes ",
+   150→   150→        " Format : paragraphes thématiques avec citations intégrées (Auteur, Année) ",
+   151→   151→        " Contraintes : pas de catalogue d'abstracts, intégration croisée obligatoire ",
+   152→   152→      ],
+   153→   153→      variables: [
+   154→   154→        { nom: " discipline ", description: " Champ disciplinaire de la thèse ", obligatoire: true },
+   155→   155→        { nom: " sources ", description: " Liste des références à synthétiser ", obligatoire: true },
+   156→   156→        { nom: " themes ", description: " Thèmes d'organisation identifiés ", obligatoire: true },
+   157→   157→        { nom: " motsCible ", description: " Nombre de mots visé ", obligatoire: false },
+   158→   158→      ],
+   159→   159→      conseilExecution: " Fournir les résumés des sources pour chaque référence, pas seulement les titres. Si possible, fournir les conclusions principales de chaque source. ",
+   160→   160→    },
+   161→   161→    {
+   162→   162→      id: " rl-identification-lacunes ",
+   163→   163→      titre: " Identification systématique des lacunes de recherche ",
+   164→   164→      contexte: " Pour cartographier les lacunes dans la littérature existante selon une taxonomie structurée. ",
+   165→   165→      structure: [
+   166→   166→        " Rôle : chercheur senior spécialisé en épistémologie de [discipline] ",
+   167→   167→        " Contexte : objet de recherche, corpus déjà exploré, limites identifiées ",
+   168→   168→        " Consigne : identifier et classer les lacunes de recherche selon 7 types (preuve, méthode, population, contexte, théorique, empirique, pratique) ",
+   169→   169→        " Pour chaque lacune : type, preuve dans la littérature, question de recherche dérivée ",
+   170→   170→        " Hiérarchiser : lacune principale vs lacunes secondaires ",
+   171→   171→        " Format : tableau structuré avec colonnes [type, description, preuve, QDR dérivée] ",
+   172→   172→      ],
+   173→   173→      variables: [
+   174→   174→        { nom: " objetRecherche ", description: " L'objet d'étude principal ", obligatoire: true },
+   175→   175→        { nom: " syntheseExistante ", description: " Résumé de ce que la littérature couvre déjà ", obligatoire: true },
+   176→   176→        { nom: " sources ", description: " Références clés du corpus ", obligatoire: false },
+   177→   177→      ],
+   178→   178→      conseilExecution: " Préciser les méthodes déjà utilisées dans le domaine et les populations déjà étudiées pour permettre à l'IA de cibler les lacunes pertinentes. ",
+   179→   179→    },
+   180→   180→    {
+   181→   181→      id: " rl-cadrage-prisma ",
+   182→   182→      titre: " Cadrage protocolaire PRISMA pour revue systématique ",
+   183→   183→      contexte: " Pour initialiser le protocole d'une revue systématique ou scoping review selon les lignes directrices PRISMA. ",
+   184→   184→      structure: [
+   185→   185→        " Rôle : méthodologue expert en revues systématiques, familier avec PRISMA 2020 ",
+   186→   186→        " Contexte : type de revue (systématique, scoping, narrative), discipline ",
+   187→   187→        " Consigne : rédiger les sections du protocole : PICO/PECO, stratégie de recherche, critères d'inclusion/exclusion, diagramme PRISMA ",
+   188→   188→        " Inclure : bases de données, mots-clés, opérateurs booléens, stratégie de tri ",
+   189→   189→        " Format : sections numérotées, tableau de synthèse des critères ",
+   190→   190→      ],
+   191→   191→      variables: [
+   192→   192→        { nom: " typeRevue ", description: " systématique | scoping | narrative ", obligatoire: true },
+   193→   193→        { nom: " questionRecherche ", description: " La question de recherche principale ", obligatoire: true },
+   194→   194→        { nom: " bases ", description: " Bases de données cibles (ex: Scopus, Web of Science) ", obligatoire: false },
+   195→   195→      ],
+   196→   196→      conseilExecution: " Commencer par définir clairement la question PICO/PECO avant de demander le protocole complet. ",
+   197→   197→    },
+   198→   198→  ],
+   199→   199→
+   200→   200→  // ── Méthodologie ───────────────────────────────────────────────────
+   201→   201→  methodologie: [
+   202→   202→    {
+   203→   203→      id: " meth-choix-design ",
+   204→   204→      titre: " Sélection justifiée d'un design de recherche ",
+   205→   205→      contexte: " Pour choisir et justifier le design méthodologique le plus adapté à la question de recherche. ",
+   206→   206→      structure: [
+   207→   207→        " Rôle : méthodologue de recherche en [discipline] ",
+   208→   208→        " Contexte : question de recherche, paradigme épistémologique, contraintes pratiques ",
+   209→   209→        " Consigne : proposer 2-3 designs possibles, les comparer, et recommander le plus adapté ",
+   210→   210→        " Pour chaque design : description, forces, limites, conditions d'application ",
+   211→   211→        " Justification du choix recommandé aligné avec la question et le paradigme ",
+   212→   212→        " Format : tableau comparatif + paragraphe de justification ",
+   213→   213→      ],
+   214→   214→      variables: [
+   215→   215→        { nom: " questionRecherche ", description: " La question de recherche formulée ", obligatoire: true },
+   216→   216→        { nom: " paradigme ", description: " Paradigme épistémologique (positiviste, constructiviste, pragmatiste…) ", obligatoire: true },
+   217→   217→        { nom: " contraintes ", description: " Contraintes (temps, accès terrain, budget) ", obligatoire: false },
+   218→   218→      ],
+   219→   219→      conseilExecution: " Mentionner explicitement si la recherche vise la description, l'explication, la compréhension ou la prédiction. ",
+   220→   220→    },
+   221→   221→    {
+   222→   222→      id: " meth-selection-statistique ",
+   223→   223→      titre: " Sélection assistée de tests statistiques ",
+   224→   224→      contexte: " Pour identifier le test statistique approprié en fonction du type de données et de la question de recherche. ",
+   225→   225→      structure: [
+   226→   226→        " Rôle : biostatisticien et méthodologue quantitatif ",
+   227→   227→        " Contexte : type de variables, distribution, taille d'échantillon, nombre de groupes ",
+   228→   228→        " Consigne : appliquer l'arbre de décision statistique pour recommander le test approprié ",
+   229→   229→        " Étapes : 1) Vérifier les préconditions (normalité, homoscédasticité), 2) Type de question (différence, association, prédiction), 3) Recommender le test + alternative non paramétrique ",
+   230→   230→        " Format : raisonnement pas-à-pas + recommandation finale encadrée ",
+   231→   231→      ],
+   232→   232→      variables: [
+   233→   233→        { nom: " variables ", description: " Description des variables (type, nombre de modalités) ", obligatoire: true },
+   234→   234→        { nom: " question ", description: " La question statistique à tester ", obligatoire: true },
+   235→   235→        { nom: " effectif ", description: " Taille de l'échantillon ", obligatoire: true },
+   236→   236→      ],
+   237→   237→      conseilExecution: " Fournir les statistiques descriptives de base (moyenne, écart-type, skewness) pour permettre la vérification des préconditions. ",
+   238→   238→    },
+   239→   239→    {
+   240→   240→      id: " meth-guide-entretien ",
+   241→   241→      titre: " Élaboration d'un guide d'entretien semi-directif ",
+   242→   242→      contexte: " Pour construire un guide d'entretien structuré pour la collecte de données qualitatives. ",
+   243→   243→      structure: [
+   244→   244→        " Rôle : chercheur qualiticien expérimenté en [discipline] ",
+   245→   245→        " Contexte : objectifs de l'entretien, profil des répondants, cadre théorique ",
+   246→   246→        " Consigne : construire un guide de [n] questions organisées en [n] thèmes ",
+   247→   247→        " Pour chaque question : objectif, formulation ouverte, relance prévue ",
+   248→   248→        " Inclure : question d'ouverture, transition, question de clôture ",
+   249→   249→        " Considérations éthiques : consentement, anonymat, droit de retrait ",
+   250→   250→      ],
+   251→   251→      variables: [
+   252→   252→        { nom: " objectifs ", description: " Ce que l'entretien vise à comprendre ", obligatoire: true },
+   253→   253→        { nom: " profil ", description: " Profil des personnes interviewées ", obligatoire: true },
+   254→   254→        { nom: " cadre ", description: " Cadre théorique mobilisé ", obligatoire: false },
+   255→   255→      ],
+   256→   256→      conseilExecution: " Préciser la durée visée de l'entretien (30 min, 60 min, 90 min) pour calibrer le nombre de questions. ",
+   257→   257→    },
+   258→   258→  ],
+   259→   259→
+   260→   260→  // ── Analyse de données ─────────────────────────────────────────────
+   261→   261→  analyseDonnees: [
+   262→   262→    {
+   263→   263→      id: " ad-codage-qualitatif ",
+   264→   264→      titre: " Stratégie de codage pour analyse qualitative ",
+   265→   265→      contexte: " Pour développer une grille de codage et une stratégie d'analyse thématique. ",
+   266→   266→      structure: [
+   267→   267→        " Rôle : chercheur qualiticien expert en analyse thématique (Braun & Clarke) ",
+   268→   268→        " Contexte : données collectées (type, volume), question de recherche, cadre théorique ",
+   269→   269→        " Consigne : proposer une stratégie de codage en 6 phases (familiarisation, codage initial, recherche de thèmes, révision, définition, rédaction) ",
+   270→   270→        " Inclure : exemples de codes déductifs (issus du cadre) et inductifs (émergents des données) ",
+   271→   271→        " Format : tableau de codes (code, définition, exemple, thème rattaché) ",
+   272→   272→      ],
+   273→   273→      variables: [
+   274→   274→        { nom: " typeDonnees ", description: " Entretiens, observations, documents… ", obligatoire: true },
+   275→   275→        { nom: " cadreTheorique ", description: " Théorie mobilisée pour les codes déductifs ", obligatoire: true },
+   276→   276→        { nom: " volume ", description: " Nombre approximatif de pages/transcriptions ", obligatoire: false },
+   277→   277→      ],
+   278→   278→      conseilExecution: " Fournir 2-3 extraits de données brutes pour permettre à l'IA d'illustrer les exemples de codage. ",
+   279→   279→    },
+   280→   280→    {
+   281→   281→      id: " ad-interpretation-resultats ",
+   282→   282→      titre: " Interprétation et discussion des résultats ",
+   283→   283→      contexte: " Pour interpréter des résultats quantitatifs ou qualitatifs en lien avec la littérature et le cadre théorique. ",
+   284→   284→      structure: [
+   285→   285→        " Rôle : chercheur senior en [discipline], expert en interprétation de résultats ",
+   286→   286→        " Contexte : résultats obtenus, hypothèses de recherche, cadre théorique, littérature de référence ",
+   287→   287→        " Consigne : interpréter chaque résultat en : 1) le résumant, 2) le comparant à la littérature, 3) l'expliquant par le cadre théorique, 4) identifiant les implications ",
+   288→   288→        " Distinguer : résultats confirmant les hypothèses vs résultats inattendus ",
+   289→   289→        " Inclure une section sur les résultats non significatifs ou contradictoires ",
+   290→   290→        " Format : sous-sections par hypothèse/résultat, avec transition logique entre chacune ",
+   291→   291→      ],
+   292→   292→      variables: [
+   293→   293→        { nom: " resultats ", description: " Les résultats principaux à interpréter ", obligatoire: true },
+   294→   294→        { nom: " hypotheses ", description: " Les hypothèses formulées ", obligatoire: true },
+   295→   295→        { nom: " litterature ", description: " Résumé des résultats des études de référence ", obligatoire: true },
+   296→   296→      ],
+   297→   297→      conseilExecution: " Préciser quels résultats sont statistiquement significatifs (avec les seuils) et quels résultats sont des tendances. ",
+   298→   298→    },
+   299→   299→  ],
+   300→   300→
+   301→   301→  // ── Rédaction scientifique ─────────────────────────────────────────
+   302→   302→  redactionScientifique: [
+   303→   303→    {
+   304→   304→      id: " rs-introduction-funnel ",
+   305→   305→      titre: " Rédaction de l'introduction en entonnoir (funnel approach) ",
+   306→   306→      contexte: " Pour structurer l'introduction d'un article ou chapitre selon la logique de l'entonnoir (du général au spécifique). ",
+   307→   307→      structure: [
+   308→   308→        " Rôle : rédacteur scientifique senior pour revues [discipline] ",
+   309→   309→        " Contexte : thème général, problématique spécifique, hypothèses ",
+   310→   310→        " Consigne : rédiger en 5 mouvements : 1) contexte large, 2) domaine spécifique, 3) lacune identifiée, 4) objectif de l'étude, 5) valeur ajoutée ",
+   311→   311→        " Chaque mouvement = 1 paragraphe avec connecteur de transition ",
+   312→   312→        " Contraintes : pas de titres de sous-sections dans l'intro, logique descendante ",
+   313→   313→      ],
+   314→   314→      variables: [
+   315→   315→        { nom: " contexteLarge ", description: " Le contexte général du domaine ", obligatoire: true },
+   316→   316→        { nom: " lacune ", description: " La lacune de recherche identifiée ", obligatoire: true },
+   317→   317→        { nom: " objectif ", description: " L'objectif de l'étude ", obligatoire: true },
+   318→   318→      ],
+   319→   319→      conseilExecution: " La dernière phrase de l'intro doit annoncer clairement la structure du reste de l'article/chapitre. ",
+   320→   320→    },
+   321→   321→    {
+   322→   322→      id: " rs-reformulation-paragraphe ",
+   323→   323→      titre: " Reformulation académique d'un paragraphe ",
+   324→   324→      contexte: " Pour améliorer la clarté, la concision et le style académique d'un paragraphe rédigé. ",
+   325→   325→      structure: [
+   326→   326→        " Rôle : éditeur scientifique pour revues à comité de lecture en [discipline] ",
+   327→   327→        " Contexte : paragraphe à améliorer, section concernée (intro/méthode/résultat/discussion) ",
+   328→   328→        " Consigne : reformuler en respectant le sens intégral, en améliorant : 1) concision, 2) précision, 3) connecteurs logiques, 4) registre académique ",
+   329→   329→        " Fournir : version reformulée + liste des modifications justifiées ",
+   330→   330→        " Contrainte négative : ne pas ajouter d'information absente de l'original ",
+   331→   331→      ],
+   332→   332→      variables: [
+   333→   333→        { nom: " paragraphe ", description: " Le texte à reformuler ", obligatoire: true },
+   334→   334→        { nom: " section ", description: " Section d'où provient le paragraphe ", obligatoire: true },
+   335→   335→      ],
+   336→   336→      conseilExecution: " Indiquer le problème principal du paragraphe (trop long, jargon, manque de transition, répétition) pour cibler la reformulation. ",
+   337→   337→    },
+   338→   338→    {
+   339→   339→      id: " rs-reponse-evaluateurs ",
+   340→   340→      titre: " Rédaction d'une réponse aux évaluateurs (rebuttal letter) ",
+   341→   341→      contexte: " Pour rédiger une réponse structurée et professionnelle aux commentaires des relecteurs d'une revue. ",
+   342→   342→      structure: [
+   343→   343→        " Rôle : auteur senior avec expérience de la réponse aux évaluateurs ",
+   344→   344→        " Contexte : commentaires reçus, décision de l'éditeur (révision mineure/majeure), modifications effectuées ",
+   345→   345→        " Consigne : pour chaque commentaire : 1) remercier, 2) résumer le point, 3) répondre (accepter/argumenter/refuser avec justification), 4) indiquer la modification dans le manuscrit (numéro de ligne) ",
+   346→   346→        " Ton : respectueux, pas défensif, reconnaître les points valides ",
+   347→   347→        " Format : lettre de suivi + réponse point par point numérotée ",
+   348→   348→      ],
+   349→   349→      variables: [
+   350→   350→        { nom: " commentaires ", description: " Les commentaires des évaluateurs ", obligatoire: true },
+   351→   351→        { nom: " decision ", description: " Décision de l'éditeur ", obligatoire: true },
+   352→   352→      ],
+   353→   353→      conseilExecution: " Toujours répondre à CHAQUE point, même les points mineurs. Ne jamais ignorer un commentaire. ",
+   354→   354→    },
+   355→   355→  ],
+   356→   356→
+   357→   357→  // ── Revue par les pairs ─────────────────────────────────────────────
+   358→   358→  critiquePaire: [
+   359→   359→    {
+   360→   360→      id: " cp-evaluation-structuree ",
+   361→   361→      titre: " Évaluation structurée type peer review ",
+   362→   362→      contexte: " Pour réaliser une évaluation critique complète d'un manuscrit selon les standards de la revue par les pairs. ",
+   363→   363→      structure: [
+   364→   364→        " Rôle : évaluateur expert pour une revue Q1 en [discipline] ",
+   365→   365→        " Contexte : manuscrit à évaluer, type d'article (original, revue, méthodologique) ",
+   366→   366→        " Consigne : évaluer selon 8 critères : 1) originalité, 2) pertinence, 3) rigueur méthodologique, 4) qualité de l'analyse, 5) clarté de la rédaction, 6) adéquation des conclusions, 7) qualité des figures/tableaux, 8) contribution au champ ",
+   367→   367→        " Pour chaque critère : appréciation + détails + suggestions concrètes ",
+   368→   368→        " Synthèse : forces, faiblesses majeures, recommandation (accepter/réviser mineurement/réviser majeurement/rejeter) ",
+   369→   369→      ],
+   370→   370→      variables: [
+   371→   371→        { nom: " manuscrit ", description: " Le texte à évaluer ", obligatoire: true },
+   372→   372→        { nom: " typeArticle ", description: " Type d'article pour adapter les critères ", obligatoire: true },
+   373→   373→      ],
+   374→   374→      conseilExecution: " Préciser le type de design de recherche pour adapter la grille d'évaluation (expérimental, observationnel, qualitatif, mixte). ",
+   375→   375→    },
+   376→   376→    {
+   377→   377→      id: " cp-auto-evaluation-pre-soumission ",
+   378→   378→      titre: " Auto-évaluation pré-soumission d'un manuscrit ",
+   379→   379→      contexte: " Pour vérifier la qualité d'un manuscrit avant soumission à une revue. ",
+   380→   380→      structure: [
+   381→   381→        " Rôle : éditeur en chef de revue scientifique en [discipline] ",
+   382→   382→        " Contexte : manuscrit quasi-final, revue cible identifiée ",
+   383→   383→        " Consigne : évaluer le manuscrit avec la grille de la revue cible et identifier les points faibles rédhibitoires (desk reject risks) ",
+   384→   384→        " Vérifier : adéquation au scope de la revue, respect des normes auteur, qualité du titre/résumé, structure IMRaD ",
+   385→   385→        " Prioriser : classer les problèmes par sévérité (bloquant / important / mineur) ",
+   386→   386→        " Format : liste priorisée de problèmes avec recommandations de correction ",
+   387→   387→      ],
+   388→   388→      variables: [
+   389→   389→        { nom: " manuscrit ", description: " Le texte à auto-évaluer ", obligatoire: true },
+   390→   390→        { nom: " revueCible ", description: " Nom et guidelines de la revue visée ", obligatoire: true },
+   391→   391→      ],
+   392→   392→      conseilExecution: 'Fournir les guidelines "author instructions" de la revue cible pour une évaluation plus précise.',
+   393→   393→    },
+   394→   394→  ],
+   395→   395→
+   396→   396→  // ── Spécifique thèse ───────────────────────────────────────────────
+   397→   397→  these: [
+   398→   398→    {
+   399→   399→      id: " th-problematique ",
+   400→   400→      titre: " Formulation de la problématique de thèse ",
+   401→   401→      contexte: " Pour formuler et affiner la problématique d'une thèse à partir d'un thème de recherche initial. ",
+   402→   402→      structure: [
+   403→   403→        " Rôle : directeur de thèse en [discipline] avec 20 ans d'expérience ",
+   404→   404→        " Contexte : thème initial, lectures exploratoires, discipline, niveau (master/doctorat) ",
+   405→   405→        " Consigne : formuler la problématique en 3 étapes : 1) contexte et enjeux, 2) tension/paradoxe/contradiction identifié(e), 3) question(s) de recherche principale(s) et secondaires ",
+   406→   406→        " Vérifier : la problématique est-elle assez large pour une thèse ? assez spécifique pour être traitable ? ",
+   407→   407→        " Critères : faisabilité, originalité, pertinence, rigueur ",
+   408→   408→      ],
+   409→   409→      variables: [
+   410→   410→        { nom: " theme ", description: " Le thème initial de recherche ", obligatoire: true },
+   411→   411→        { nom: " lectures ", description: " Résumé des lectures exploratoires ", obligatoire: true },
+   412→   412→        { nom: " discipline ", description: " Discipline de la thèse ", obligatoire: true },
+   413→   413→      ],
+   414→   414→      conseilExecution: " Fournir les 3-5 références fondatrices du domaine pour permettre à l'IA d'ancrer la problématique dans la littérature existante. ",
+   415→   415→    },
+   416→   416→    {
+   417→   417→      id: " th-plan-chapitre ",
+   418→   418→      titre: " Plan détaillé d'un chapitre de thèse ",
+   419→   419→      contexte: " Pour construire le plan détaillé d'un chapitre en cohérence avec la problématique et le plan général de la thèse. ",
+   420→   420→      structure: [
+   421→   421→        " Rôle : directeur de thèse expert en structuration de manuscrits académiques ",
+   422→   422→        " Contexte : titre provisoire du chapitre, place dans la thèse, problématique, hypothèses pertinentes ",
+   423→   423→        " Consigne : élaborer un plan en 2-3 niveaux hiérarchiques avec pour chaque section : objectif, contenu attendu, nombre de pages estimé ",
+   424→   424→        " Vérifier la cohérence : chaque section contribue-t-elle à la problématique ? ",
+   425→   425→        " Inclure : transitions prévues entre sections, liens avec d'autres chapitres ",
+   426→   426→        " Format : plan numéroté (1., 1.1., 1.1.1.) avec annotations ",
+   427→   427→      ],
+   428→   428→      variables: [
+   429→   429→        { nom: " titreChapitre ", description: " Titre provisoire du chapitre ", obligatoire: true },
+   430→   430→        { nom: " place ", description: " Position du chapitre dans la thèse et rôle ", obligatoire: true },
+   431→   431→        { nom: " pagesCible ", description: " Nombre de pages visé pour le chapitre ", obligatoire: false },
+   432→   432→      ],
+   433→   433→      conseilExecution: " Préciser quelles hypothèses ou questions de recherche ce chapitre doit traiter. ",
+   434→   434→    },
+   435→   435→    {
+   436→   436→      id: " th-prepare-soutenance ",
+   437→   437→      titre: " Préparation aux questions du jury de soutenance ",
+   438→   438→      contexte: " Pour anticiper et préparer les questions probables du jury lors de la soutenance de thèse. ",
+   439→   439→      structure: [
+   440→   440→        " Rôle : membre expérimenté de jurys de thèse en [discipline] ",
+   441→   441→        " Contexte : résumé de la thèse, hypothèses principales, résultats clés, limites identifiées ",
+   442→   442→        " Consigne : générer 15-20 questions probables classées en 5 catégories : 1) problématique et choix, 2) méthodologie et validité, 3) résultats et interprétation, 4) limites et perspectives, 5) ouverture et positionnement ",
+   443→   443→        " Pour chaque question : formulation + éléments de réponse suggérés ",
+   444→   444→        " Identifier les 3 questions les plus risquées (plus difficiles à répondre) ",
+   445→   445→      ],
+   446→   446→      variables: [
+   447→   447→        { nom: " resume ", description: " Résumé de la thèse (200-300 mots) ", obligatoire: true },
+   448→   448→        { nom: " resultats ", description: " Résultats principaux et leur signification ", obligatoire: true },
+   449→   449→        { nom: " limites ", description: " Limites déjà identifiées par le candidat ", obligatoire: false },
+   450→   450→      ],
+   451→   451→      conseilExecution: " Mentionner les critiques probables de la littérature pour que l'IA puisse formuler des questions pointues sur les choix théoriques. ",
+   452→   452→    },
+   453→   453→    {
+   454→   454→      id: " th-avis-directeur ",
+   455→   455→      titre: " Simulation de retour de directeur de thèse ",
+   456→   456→      contexte: " Pour obtenir un feedback réaliste sur un texte de thèse simulé par un directeur expérimenté. ",
+   457→   457→      structure: [
+   458→   458→        " Rôle : directeur de thèse exigeant mais bienveillant, 25 ans d'expérience, spécialiste de [discipline] ",
+   459→   459→        " Contexte : texte soumis, chapitre concerné, stade d'avancement de la thèse ",
+   460→   460→        " Consigne : lire le texte et fournir un retour structuré : 1) points positifs (ce qui fonctionne), 2) problèmes majeurs (structure, argumentation, logique), 3) problèmes mineurs (style, formulation, précision), 4) questions pour guider la révision, 5) prochaines étapes concrètes ",
+   461→   461→        " Ton : direct, académique, constructif — ni complaisant ni décourageant ",
+   462→   462→        " Vérifier : cohérence avec la problématique, progression argumentaire, qualité des preuves ",
+   463→   463→      ],
+   464→   464→      variables: [
+   465→   465→        { nom: " texte ", description: " Le texte de thèse à examiner ", obligatoire: true },
+   466→   466→        { nom: " chapitre ", description: " Quel chapitre / section ", obligatoire: true },
+   467→   467→        { nom: " stade ", description: " Stade (exploratoire, intermédiaire, final) ", obligatoire: false },
+   468→   468→      ],
+   469→   469→      conseilExecution: " Préciser les retours précédents du vrai directeur pour que l'IA puisse vérifier s'ils ont été pris en compte. ",
+   470→   470→    },
+   471→   471→  ],
+   472→   472→} as const;
+   473→   473→
+   474→   474→// ═════════════════════════════════════════════════════════════════════════════════
+   475→   475→// MODULE 3 — Anti-patterns de prompting
+   476→   476→// ═════════════════════════════════════════════════════════════════════════════════
+   477→   477→
+   478→   478→export const ANTIPATTERNS_PROMPTING: AntiPatternPrompt[] = [
+   479→   479→  {
+   480→   480→    id: " ap-prompt-vague ",
+   481→   481→    erreur: " Prompt vague et non contraignant (ex: " Écris quelque chose sur… ") ",
+   482→   482→    consequence: " L'IA produit un texte générique, non adapté au contexte académique, et souvent trop long ou hors sujet. ",
+   483→   483→    correction: " Utiliser le modèle 5C : Contexte + Consigne + Critères + Contraintes + Compléments. Spécifier le rôle, la longueur, le ton, le format, et le public cible. ",
+   484→   484→    categorie: " vague ",
+   485→   485→  },
+   486→   486→  {
+   487→   487→    id: " ap-surcharge-instructions ",
+   488→   488→    erreur: " Prompt surchargé avec trop d'instructions simultanées ",
+   489→   489→    consequence: " L'IA se perd dans les exigences contradictoires et produit une réponse incohérente ou incomplète. ",
+   490→   490→    correction: " Découper en sous-prompts séquentiels. Un prompt = une tâche principale. Utiliser la démarche par étapes pour les tâches complexes. ",
+   491→   491→    categorie: " surcharge ",
+   492→   492→  },
+   493→   493→  {
+   494→   494→    id: " ap-absence-contexte ",
+   495→   495→    erreur: " Absence de contexte de recherche (discipline, stade, public) ",
+   496→   496→    consequence: " L'IA adopte un ton inapproprié (trop vulgarisateur ou trop jargonné) et des références hors domaine. ",
+   497→   497→    correction: " Toujours inclure : discipline, type de document (article, chapitre, rapport), stade d'avancement, et public cible (experts, étudiants, grand public). ",
+   498→   498→    categorie: " absence_contexte ",
+   499→   499→  },
+   500→   500→  {
+   501→   501→    id: " ap-role-generique ",
+   502→   502→    erreur: " Rôle générique ou absent (ex: " Tu es un assistant IA ") ",
+   503→   503→    consequence: " La réponse manque de profondeur disciplinaire et d'autorité académique. ",
+   504→   504→    correction: " Assigner un rôle expert spécifique : " Tu es un professeur en [discipline] spécialisé en [sous-domaine], avec 15 ans d'expérience de recherche et de supervision doctorale. " ",
+   505→   505→    categorie: " mauvais_role ",
+   506→   506→  },
+   507→   507→  {
+   508→   508→    id: " ap-zero-contrainte ",
+   509→   509→    erreur: " Aucune contrainte de format, longueur ou style ",
+   510→   510→    consequence: " La réponse est trop longue, mal structurée, ou dans un registre inapproprié. ",
+   511→   511→    correction: " Spécifier toujours : nombre de mots (ou fourchette), format de sortie (paragraphes, liste, tableau), style (académique, formel, concis). ",
+   512→   512→    categorie: " absence_contraintes ",
+   513→   513→  },
+   514→   514→  {
+   515→   515→    id: " ap-iteration-unique ",
+   516→   516→    erreur: " Attente d'un résultat parfait en un seul prompt ",
+   517→   517→    consequence: " Frustration, sous-exploitation du potentiel de l'IA, résultat médiocre utilisé tel quel. ",
+   518→   518→    correction: " Planifier 2-3 itérations. Première itération = brouillon structuré. Itérations suivantes = raffinement ciblé (renforcer un argument, améliorer une transition, approfondir une section). ",
+   519→   519→    categorie: " iteration_unique ",
+   520→   520→  },
+   521→   521→  {
+   522→   522→    id: " ap-copier-coller ",
+   523→   523→    erreur: " Copier-coller direct du résultat IA sans révision critique ",
+   524→   524→    consequence: " Propagation d'erreurs factuelles, hallucinations bibliographiques, incohérences avec le reste du manuscrit. ",
+   525→   525→    correction: " Toujours vérifier : 1) l'exactitude des références citées, 2) la cohérence avec le cadre théorique, 3) l'absence d'hallucinations, 4) l'adéquation avec les sections adjacentes. ",
+   526→   526→    categorie: " vague ",
+   527→   527→  },
+   528→   528→  {
+   529→   529→    id: " ap-absence-exemples ",
+   530→   530→    erreur: " Ne fournir aucun exemple de sortie attendue ",
+   531→   531→    consequence: " L'IA ne comprend pas le niveau de détail, le ton, ou le format souhaité. ",
+   532→   532→    correction: " Fournir au moins un exemple de la sortie attendue (few-shot prompting), surtout pour les formats spécifiques (grille d'évaluation, plan structuré, reformulation). ",
+   533→   533→    categorie: " absence_contraintes ",
+   534→   534→  },
+   535→   535→  {
+   536→   536→    id: " ap-confondre-revue-catalogue ",
+   537→   537→    erreur: " Demander une " revue de littérature " sans préciser qu'on veut une synthèse critique et non un catalogue ",
+   538→   538→    consequence: " L'IA produit une succession de résumés d'articles au lieu d'une intégration thématique. ",
+   539→   539→    correction: " Préciser explicitement : " Synthèse critique et intégrée, PAS un catalogue d'abstracts. Organise par thèmes, PAS par article. Compare les résultats entre études. " ",
+   540→   540→    categorie: " vague ",
+   541→   541→  },
+   542→   542→  {
+   543→   543→    id: " ap-prompt-sans-lien-problematique ",
+   544→   544→    erreur: " Demander de rédiger une section sans la connecter à la problématique ",
+   545→   545→    consequence: " La section produite est déconnectée du fil conducteur de la thèse. ",
+   546→   546→    correction: " Toujours inclure : " Cette section doit contribuer à répondre à [la question de recherche / l'hypothèse X] en montrant comment [contribution spécifique]. " ",
+   547→   547→    categorie: " absence_contexte ",
+   548→   548→  },
+   549→   549→];
+   550→   550→
+   551→   551→// ═════════════════════════════════════════════════════════════════════════════════
+   552→   552→// MODULE 4 — Règles empiriques de rédaction d'articles de recherche
+   553→   553→// (Synthèse des bonnes pratiques de la littérature sur la rédaction scientifique)
+   554→   554→// ═════════════════════════════════════════════════════════════════════════════════
+   555→   555→
+   556→   556→export const REGLES_EMPIRIQUES_REDACTION: RegleEmpirique[] = [
+   557→   557→  // ── Problématique ──────────────────────────────────────────────────
+   558→   558→  {
+   559→   559→    id: " re-prob-funnel ",
+   560→   560→    domaine: " problematique ",
+   561→   561→    regle: " L'introduction suit une structure en entonnoir : contexte large → domaine spécifique → lacune → objectif → apport. Chaque paragraphe rétrécit le focus. ",
+   562→   562→    justification: " Cette structure permet au lecteur de suivre la logique de la recherche et de comprendre pourquoi l'étude est nécessaire. Les évaluateurs vérifient systématiquement cette progression. ",
+   563→   563→  },
+   564→   564→  {
+   565→   565→    id: " re-prob-une-question ",
+   566→   566→    domaine: " problematique ",
+   567→   567→    regle: " Une seule question de recherche principale par article. Les sous-questions sont tolérées mais doivent toutes se rattacher à la question principale. ",
+   568→   568→    justification: " Un article qui poursuit plusieurs objectifs principaux perd en focale et en cohérence. Les évaluateurs critiquent systématiquement les articles " fourre-tout ". ",
+   569→   569→  },
+   570→   570→  {
+   571→   571→    id: " re-prob-lacune-explicite ",
+   572→   572→    domaine: " problematique ",
+   573→   573→    regle: " La lacune de recherche doit être formulée de manière explicite, pas seulement suggérée. Utiliser des marqueurs linguistiques : " Cependant ", " Toutefois ", " Malgré ces avancées ". ",
+   574→   574→    justification: " Les évaluateurs doivent identifier clairement ce que l'article apporte de nouveau. Une lacune implicite est souvent interprétée comme une absence de contribution. ",
+   575→   575→  },
+   576→   576→
+   577→   577→  // ── Méthodologie ───────────────────────────────────────────────────
+   578→   578→  {
+   579→   579→    id: " re-meth-reproductibilite ",
+   580→   580→    domaine: " methodologie ",
+   581→   581→    regle: " La section méthodologique doit permettre la reproduction de l'étude par un autre chercheur. Chaque décision méthodologique doit être justifiée. ",
+   582→   582→    justification: " La reproductibilité est le critère central de la scientificité. Les évaluateurs évaluent la méthodologie avant même de lire les résultats. ",
+   583→   583→  },
+   584→   584→  {
+   585→   585→    id: " re-meth-echantillon ",
+   586→   586→    domaine: " methodologie ",
+   587→   587→    regle: " Toujours justifier la taille de l'échantillon (power analysis pour les études quantitatives, saturation pour les études qualitatives). ",
+   588→   588→    justification: " Un échantillon non justifié est la critique méthodologique la plus fréquente dans les rapports d'évaluation. ",
+   589→   589→  },
+   590→   590→  {
+   591→   591→    id: " re-meth-triangulation ",
+   592→   592→    domaine: " methodologie ",
+   593→   593→    regle: " Quand c'est possible, trianguler les sources de données ou les méthodes d'analyse pour renforcer la validité des conclusions. ",
+   594→   594→    justification: " La triangulation est un critère de qualité reconnu dans les approches qualitatives et mixtes. Elle réduit le risque de biais unique. ",
+   595→   595→  },
+   596→   596→
+   597→   597→  // ── Résultats ──────────────────────────────────────────────────────
+   598→   598→  {
+   599→   599→    id: " re-res-presente-pas-interprete ",
+   600→   600→    domaine: " resultats ",
+   601→   601→    regle: " Dans la section Résultats, présenter les données sans les interpréter. L'interprétation appartient à la Discussion. ",
+   602→   602→    justification: " Confondre résultats et interprétation est une erreur fréquente qui affaiblit la structure IMRaD et irrite les évaluateurs. ",
+   603→   603→  },
+   604→   604→  {
+   605→   605→    id: " re-res-tableaux-coherence ",
+   606→   606→    domaine: " resultats ",
+   607→   607→    regle: " Chaque tableau et figure doit être référencé dans le texte et pouvoir être compris sans lire le texte. Les données dans le texte ne doivent pas répéter celles des tableaux. ",
+   608→   608→    justification: " Un tableau/figure non référencé ou redondant avec le texte est un signe de mauvaise rédaction scientifique. ",
+   609→   609→  },
+   610→   610→  {
+   611→   611→    id: " re-res-resultats-negatifs ",
+   612→   612→    domaine: " resultats ",
+   613→   613→    regle: " Rapporter les résultats non significatifs avec la même rigueur que les résultats significatifs. Ne pas les cacher ni les minimiser. ",
+   614→   614→    justification: " Les résultats négatifs sont scientifiquement précieux. Leur omission constitue un biais de publication. ",
+   615→   615→  },
+   616→   616→
+   617→   617→  // ── Discussion ─────────────────────────────────────────────────────
+   618→   618→  {
+   619→   619→    id: " re-dis-repond-intro ",
+   620→   620→    domaine: " discussion ",
+   621→   621→    regle: " La Discussion doit répondre explicitement à la question posée dans l'Introduction. C'est la boucle IMRaD : Intro → Méthodes → Résultats → Discussion (retour à l'Intro). ",
+   622→   622→    justification: " Une Discussion qui ne répond pas à l'Introduction est la critique la plus fréquente des évaluateurs. La cohérence argumentaire est le critère n°1. ",
+   623→   623→  },
+   624→   624→  {
+   625→   625→    id: " re-dis-limites-honnetes ",
+   626→   626→    domaine: " discussion ",
+   627→   627→    regle: " Présenter les limites de manière honnête et spécifique. Mieux vaut identifier soi-même ses limites que de laisser les évaluateurs le faire. ",
+   628→   628→    justification: " Les évaluateurs qui identifient des limites non mentionnées par l'auteur perçoivent un manque de rigueur. Les limites honnêtement discutées renforcent la crédibilité. ",
+   629→   629→  },
+   630→   630→  {
+   631→   631→    id: " re-dis-pas-resultats-nouveaux ",
+   632→   632→    domaine: " discussion ",
+   633→   633→    regle: " Ne jamais introduire de nouveaux résultats dans la Discussion. Les résultats rapportés doivent tous figurer dans la section Résultats. ",
+   634→   634→    justification: " Introduire des résultats nouveaux en Discussion est perçu comme une tentative de manipulation ou un manque de rigueur. ",
+   635→   635→  },
+   636→   636→
+   637→   637→  // ── Rédaction ──────────────────────────────────────────────────────
+   638→   638→  {
+   639→   639→    id: " re-red-paragraphe-acm ",
+   640→   640→    domaine: " redaction ",
+   641→   641→    regle: " Un paragraphe = une idée principale. La première phrase est le topic sentence. Les phrases suivantes développent. La dernière phrase fait la transition ou conclut. ",
+   642→   642→    justification: " La structure paragraphe-acm est universelle dans la rédaction académique anglophone et francophone. Les évaluateurs lisent en diagonale et s'appuient sur les topic sentences. ",
+   643→   643→  },
+   644→   644→  {
+   645→   645→    id: " re-red-phrases-courtes ",
+   646→   646→    domaine: " redaction ",
+   647→   647→    regle: " Privilégier des phrases de 20-30 mots. Éviter les phrases de plus de 40 mots. Découper les phrases complexes en deux. ",
+   648→   648→    justification: " Les phrases longues diminuent la lisibilité et augmentent le risque d'ambiguïté. La clarté est la première qualité de la rédaction scientifique. ",
+   649→   649→  },
+   650→   650→  {
+   651→   651→    id: " re-red-voix-active ",
+   652→   652→    domaine: " redaction ",
+   653→   653→    regle: " Privilégier la voix active. Utiliser le " nous " de modestie pour les actions de recherche. Réserver la voix passive aux cas où l'agent est évident ou non pertinent. ",
+   654→   654→    justification: " La voix active est plus directe, plus claire et plus engageante. L'excès de voix passive alourdit le texte et masque la responsabilité de l'auteur. ",
+   655→   655→  },
+   656→   656→
+   657→   657→  // ── Structure ──────────────────────────────────────────────────────
+   658→   658→  {
+   659→   659→    id: " re-str-titre-informatif ",
+   660→   660→    domaine: " structure ",
+   661→   661→    regle: " Le titre doit être informatif et concis (10-15 mots). Il doit contenir les éléments clés : sujet, méthode ou population. Éviter les formulations vagues. ",
+   662→   662→    justification: " Le titre est l'élément le plus lu d'un article (lu 500 fois plus que le texte complet). Un titre vague réduit la visibilité et la citabilité. ",
+   663→   663→  },
+   664→   664→  {
+   665→   665→    id: " re-str-resume-auto-suffisant ",
+   666→   666→    domaine: " structure ",
+   667→   667→    regle: " Le résumé doit être auto-suffisant : compréhensible sans lire l'article. Contenir les 4 éléments IMRaD en 150-250 mots. ",
+   668→   668→    justification: " Le résumé est le deuxième élément le plus lu. S'il ne permet pas de comprendre l'étude, le lecteur passe à un autre article. ",
+   669→   669→  },
+   670→   670→  {
+   671→   671→    id: " re-str-conclusion-pas-resume ",
+   672→   672→    domaine: " structure ",
+   673→   673→    regle: " La conclusion ne doit pas répéter le résumé ni les résultats. Elle apporte une valeur ajoutée : implications pratiques, contributions théoriques, perspectives de recherche. ",
+   674→   674→    justification: " Une conclusion qui se contente de répéter est perçue comme un remplissage. Les évaluateurs attendent une réflexion synthétique. ",
+   675→   675→  },
+   676→   676→
+   677→   677→  // ── Soumission ─────────────────────────────────────────────────────
+   678→   678→  {
+   679→   679→    id: " re-sou-revue-adaptee ",
+   680→   680→    domaine: " submission ",
+   681→   681→    regle: " Choisir la revue en fonction de : 1) l'adéquation du scope, 2) le public cible, 3) le facteur d'impact, 4) les délais de traitement. Ne pas viser trop haut ni trop bas. ",
+   682→   682→    justification: " Soumettre à une revue inappropriée garantit un rejet rapide (desk reject) et retarde la publication de 6-12 mois. ",
+   683→   683→  },
+   684→   684→  {
+   685→   685→    id: " re-sou-reponse-evaluateurs ",
+   686→   686→    domaine: " submission ",
+   687→   687→    regle: " Répondre à TOUS les commentaires des évaluateurs, sans exception. Même les commentaires erronés méritent une réponse argumentée et respectueuse. ",
+   688→   688→    justification: " Ignorer un commentaire est perçu comme un manque de professionnalisme et réduit les chances d'acceptation après révision. ",
+   689→   689→  },
+   690→   690→  {
+   691→   691→    id: " re-sou-lettre-accompagnement ",
+   692→   692→    domaine: " submission ",
+   693→   693→    regle: " La lettre d'accompagnement (cover letter) doit : 1) présenter le manuscrit, 2) expliquer l'originalité, 3) justifier le choix de la revue, 4) déclarer les conflits d'intérêts. ",
+   694→   694→    justification: " La cover letter est le premier contact avec l'éditeur. Une lettre bien rédigée augmente les chances que le manuscrit passe l'étape du desk review. ",
+   695→   695→  },
+   696→   696→];
+   697→   697→
+   698→   698→// ═════════════════════════════════════════════════════════════════════════════════
+   699→   699→// EXPORT AGRÉGÉ
+   700→   700→// ═════════════════════════════════════════════════════════════════════════════════
+   701→   701→
+   702→   702→export const PROMPTING_CORPUS = {
+   703→   703→  principesPromptQualite: PRINCIPES_PROMPT_QUALITE,
+   704→   704→  modelesPromptsRecherche: MODELES_PROMPTS_RECHERCHE,
+   705→   705→  antipatternsPrompting: ANTIPATTERNS_PROMPTING,
+   706→   706→  reglesEmpiriquesRedaction: REGLES_EMPIRIQUES_REDACTION,
+   707→   707→} as const;
+   708→   708→

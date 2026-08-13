@@ -1,0 +1,915 @@
+Advances in Artificial Intelligence in Education 2
+
+Xue Zhou
+Hosam Al-Samarraie Editors
+
+Institutional
+guide to using
+AI for research
+
+Advances in Artificial Intelligence in Education
+Volume 2
+
+Series Editors
+Dirk Ifenthaler , Learning, Design and Technology, University of Mannheim,
+Mannheim, Germany
+Vitomir Kovanovic, City West Campus, BH3-21, University of South Australia,
+Adelaide, Australia
+Editorial Board Members
+Masanori Yamada, Center Zone, Building 3, Room 3506, Kyushu University,
+Fac Arts & Science, Fukuoka, Japan
+Mohamed Amine Chatti, Social Computing Group, Universität Duisburg-Essen,
+Duisburg, Nordrhein-Westfalen, Germany
+
+This book series focuses on using artificial intelligence (AI) in educational contexts,
+providing the venue to showcase the latest developments in this rapidly moving
+field. From personalised instruction to adaptive assessments and immersive learning
+experiences, AI tools and technologies can revolutionise education and empower
+educators, students, and decision makers.
+A wide range of topics surrounding the use of AI in learning and teaching are
+explored, covering global perspectives from different communities and disciplines.
+The book series approaches the use of AI in education with caution and addresses
+ethical considerations such as data privacy, algorithmic bias, and transparency. By
+examining AI socially responsible and inclusively, AI’s full potential shall be
+unlocked and create a future of education that is personalised, engaging, and
+equitable for all learners.
+The titles in the series cover the use of AI within K-12 through tertiary settings
+and in other domains such as professional, lifelong, and work-integrated learning.
+The series accepts monographs and edited volumes that fit the scope mentioned
+above and covers various topics, including (but not limited to) tutoring systems,
+adaptive learning, feedback provision, learner modelling, assessment analytics, as
+well as teaching and learning support. The series also includes titles covering related
+issues of ethical and responsible use of AI, data privacy, bias and transparency,
+educational design, institutional adoption, and inclusion.
+Please contact Professor Dirk Ifenthaler at dirk@ifenthaler.info if you wish to
+discuss a book proposal for the series.
+
+Xue Zhou • Hosam Al-Samarraie
+Editors
+
+Institutional guide to using
+AI for research
+
+Editors
+Xue Zhou
+University of Leicester
+Leicester, UK
+
+Hosam Al-Samarraie
+University of Leeds
+Leeds, UK
+
+ISSN 3004-9903	    ISSN 3004-9911 (electronic)
+Advances in Artificial Intelligence in Education
+ISBN 978-3-031-94808-4    ISBN 978-3-031-94809-1 (eBook)
+https://doi.org/10.1007/978-3-031-94809-1
+© The Editor(s) (if applicable) and The Author(s), under exclusive license to Springer Nature
+Switzerland AG 2025
+This work is subject to copyright. All rights are solely and exclusively licensed by the Publisher, whether
+the whole or part of the material is concerned, specifically the rights of translation, reprinting, reuse of
+illustrations, recitation, broadcasting, reproduction on microfilms or in any other physical way, and
+transmission or information storage and retrieval, electronic adaptation, computer software, or by similar
+or dissimilar methodology now known or hereafter developed.
+The use of general descriptive names, registered names, trademarks, service marks, etc. in this publication
+does not imply, even in the absence of a specific statement, that such names are exempt from the relevant
+protective laws and regulations and therefore free for general use.
+The publisher, the authors and the editors are safe to assume that the advice and information in this book
+are believed to be true and accurate at the date of publication. Neither the publisher nor the authors or the
+editors give a warranty, expressed or implied, with respect to the material contained herein or for any
+errors or omissions that may have been made. The publisher remains neutral with regard to jurisdictional
+claims in published maps and institutional affiliations.
+This Springer imprint is published by the registered company Springer Nature Switzerland AG
+The registered company address is: Gewerbestrasse 11, 6330 Cham, Switzerland
+If disposing of this product, please recycle the paper.
+
+Preface
+
+In the rapidly evolving landscape of higher education, artificial intelligence (AI) has
+emerged as a transformative force. This has significantly reshaped the way we
+approach academic research. As students embark on their academic journey, it is
+common for them to find themselves at the forefront of this technological revolution, attempting to take advantage of AI to enhance their research capabilities and
+contribute to the advancement of knowledge in their chosen fields.
+This book, Institutional Guide to Using AI for Research, is designed to provide a
+general perspective on how higher education institutions (HEIs) could navigate the
+exciting yet complex world of AI in research. Our aim is to equip HEIs with the
+knowledge, skills, and ethical framework necessary to leverage AI tools (e.g., generative AI) effectively and responsibly in their academic pursuits. The integration of
+AI into academic research is not merely a trend; it represents a fundamental shift in
+how we process information, analyse data, and generate insights. From natural language processing algorithms that can sift through vast amounts of literature in seconds to machine learning models that can identify patterns in complex datasets,
+generative AI is expanding the boundaries of what is possible in research across all
+disciplines. Yet, this also brings a number of challenges and concerns among both
+educators and students, with great power comes great responsibility. As we delve
+into the applications of AI in research, we must also grapple with the ethical implications and potential pitfalls of relying too heavily on these technologies. This book
+seeks to strike a balance between embracing the potential of AI and maintaining the
+critical thinking and human insight that are at the core of academic inquiry.
+Throughout this guide, we will explore the multifaceted role of AI in academic
+research, providing you with both theoretical understanding and practical skills.
+The book is structured into four key sections, each addressing a crucial aspect of
+AI in research:
+
+v
+
+vi
+
+Preface
+
+Part I: The Role of AI in Advancing Research
+in Higher Education
+In this section, we lay the foundation for understanding AI's place in the academic
+landscape. Chapter 1 provides an introduction to AI in research, outlining its evolution and current capabilities. Chapter 2 delves into the perception of generative AI
+in higher education, exploring both the enthusiasm and scepticism surrounding
+these technologies. Chapter 3 offers an overview of the AI tools and technologies
+available for academic research, giving you a practical understanding of the
+resources at your disposal.
+
+Part II: Practical Applications and Excellence
+in AI-Driven Research
+This section focuses on the hands-on application of AI in various stages of the
+research process. Chapter 4 explores how AI can possibly revolutionise literature
+reviews, helping you navigate the ever-growing sea of academic publications.
+Chapter 5 explores AI's role in data analysis, showcasing how machine learning
+algorithms can uncover patterns and insights that might elude human researchers.
+Chapter 6 addresses the critical task of interpreting research outcomes with AI,
+emphasising the importance of human judgement in contextualising AI-generated
+results. Finally, Chapter 7 covers AI-assisted writing and editing, a topic of particular relevance in the age of large language models and automated writing tools.
+
+Part III: Ethical Considerations in AI-Enabled Research
+As we harness the power of AI, we must also confront the ethical challenges it presents. Chapter 8 explores the broader ethical implications and governance of AI in
+research, encouraging you to think critically about the impact of these technologies
+on academic integrity and societal outcomes. Chapter 9 focuses specifically on data
+integrity and AI ethics, addressing crucial issues such as bias in AI models, privacy
+concerns, and the responsible use of data in research.
+
+Part IV: Policy Perspectives and Future Directions in AI
+and Higher Education
+The final section of the book looks towards the future, examining the evolving landscape of AI in academia. Chapter 10 discusses AI policies in academic institutions,
+providing insight into how universities and research organisations are adapting to
+
+Preface
+
+vii
+
+the AI revolution. Chapter 11 explores the horizon of AI in academic research,
+offering a glimpse into emerging technologies and potential future developments
+that may shape your research careers.
+Readers of this book are encouraged to approach the material with both enthusiasm and critical thinking. The knowledge introduced in this book aims to provide
+basic means for students to ethically and responsibly experiment with AI while
+conducting their research. As you progress through this book, you'll develop not
+only technical skills but also a deeper understanding of the research process itself.
+You'll learn how to formulate better research questions, design more robust studies,
+and communicate your findings more effectively—all with the assistance of AI
+tools. We have designed this guide to be accessible to students across various disciplines, recognising that AI's impact on research is not limited to any single field.
+Whether you're studying computer science, humanities, social sciences, or natural
+sciences, you'll find valuable insights and practical advice tailored to your needs.
+Each chapter includes examples and case studies to help you apply the concepts to
+your own research projects. We've also included discussions on the limitations and
+potential biases of AI systems, encouraging you to approach these tools with a discerning eye.
+Remember that AI tools, no matter how advanced, are just that—tools. They are
+meant to augment your abilities, not replace your creativity, critical thinking, or
+ethical judgement. As you learn to leverage these powerful technologies, always
+strive to maintain the human touch that is essential to meaningful research and
+discovery.
+Leicester, UK
+Leeds, UK 
+
+Xue Zhou
+Hosam Al-Samarraie
+
+Contents
+
+Part I The Role of AI in Advancing Research in Higher Education
+1
+
+Introduction to AI in Research ��������������������������������������������������������������    3
+Xue Zhou and Hosam Al-Samarraie
+
+2
+
+Student Perspectives on the Impact of GenAI��������������������������������������   23
+Cassandra Lewis, Paula Funnell, Nick Fisher, and Pedro Elston
+
+3
+
+AI Tools and Technologies for Academic Research������������������������������   43
+Attila Szendi, Dániel Kuttor, and Zsolt Pál
+
+Part II Practical Applications and Excellence in AI-Driven Research
+4
+
+Using AI for Literature Review��������������������������������������������������������������   69
+Zhenyu Sun and Ruixue Yuan
+
+5
+
+Using AI for Data Analysis���������������������������������������������������������������������� 105
+Zhenyu Sun and Ruixue Yuan
+
+6
+
+Harnessing AI for Data Interpretation and Insightful
+Discussions������������������������������������������������������������������������������������������������ 129
+Lei Fang and Aniekan Essien
+
+7
+
+AI-Assisted Writing and Editing������������������������������������������������������������ 149
+Lilian Schofield and Xue Zhou
+
+Part III Ethical Considerations in AI-Enabled Research
+8
+
+Ethical Implications and Governance of AI in Research �������������������� 167
+Lucy Caton and Yujeong Hwang
+
+9
+
+Data Integrity and AI Ethics������������������������������������������������������������������ 185
+Khaldoon Dhou and Leyla Orudzheva
+
+ix
+
+x
+
+Contents
+
+Part IV Policy Perspectives and Future Directions in AI and Higher
+Education
+10
+
+AI Policy Considerations in Academic Institutions������������������������������ 207
+Tasnim Ahmed and Olatunde Durowoju
+
+11
+
+The Horizon of AI in Academic Research: The Role of Human
+Factors to Optimise Performance���������������������������������������������������������� 233
+Joana Eva Dodoo and Griffiths Twum Appeaning
+
+Contributors
+
+Tasnim Ahmed Liverpool John Moores University, Liverpool, UK
+Hosam Al-Samarraie University of Leeds, Leeds, UK
+Lucy Caton The University of Greater Manchester, Bolton, UK
+Khaldoon Dhou Texas A&M University Central Texas, Killeen, TX, USA
+Joana Eva Dodoo University of Cape Coast, Cape Coast, Ghana
+Olatunde Durowoju Liverpool John Moores University, Liverpool, UK
+Pedro Elston Queen Mary University of London, London, UK
+Aniekan Essien University of Bristol, Bristol, UK
+Lei Fang Queen Mary University of London, London, UK
+Nick Fisher Queen Mary University of London, London, UK
+Paula Funnell Queen Mary University of London, London, UK
+Griffiths Twum Appeaning University of Cape Coast, Cape Coast, Ghana
+Yujeong Hwang The University of Greater Manchester, Bolton, UK
+Dániel Kuttor Faculty of Economics, University of Miskolc, Miskolc, Hungary
+Cassandra Lewis Queen Mary University of London, London, UK
+Leyla Orudzheva Texas A&M University Central Texas, Killeen, TX, USA
+Zsolt Pál Faculty of Economics University of Miskolc, Miskolc, Hungary
+Lilian Schofield Queen Mary University of London, London, UK
+Zhenyu Sun University of Chinese Academy of Sciences, Beijing, China
+
+xi
+
+xii
+
+Contributors
+
+Attila Szendi Library, Archives, Museum, University of Miskolc, Miskolc, Hungary
+Ruixue Yuan Beijing University of Chemical Technology, Beijing, China
+Xue Zhou University of Leicester, Leicester, UK
+
+Part I
+
+The Role of AI in Advancing Research in
+Higher Education
+
+Chapter 1
+
+Introduction to AI in Research
+Xue Zhou and Hosam Al-Samarraie
+
+Abstract This chapter introduces the transformative role of Artificial Intelligence
+(AI) in reshaping research methodologies across various academic fields. We delve
+into fundamental AI concepts, its evolution, its growing significance in academic
+research, and its impact on enhancing research methodologies. As AI technologies
+become increasingly integral to the research process—from literature review and
+data collection to analysis and hypothesis generation—students, academics, and
+professionals must grasp the profound implications and opportunities AI presents.
+This chapter also addresses the critical challenges of data privacy, algorithmic bias,
+and the interpretability of AI-generated results, which are paramount in ensuring
+responsible and ethical research. Through a comprehensive overview, this chapter
+equips students with the necessary knowledge and critical thinking skills to navigate
+the complex landscape of AI in research. We explore the impact of AI on developing
+research skills, the ethical considerations in its application, and future trends in
+AI-driven research. By the end of this chapter, students will better understand AI’s
+role in modern research, enabling them to critically evaluate the benefits and limitations of AI tools in their respective fields.
+
+1 Introduction of the Chapter
+The recent advancement in Artificial Intelligence (AI) has led to a new era of scientific practices that is fundamentally transforming how we approach discovery, analysis, and innovation across all fields of study. As we stand at the point of this AI
+X. Zhou (*)
+University of Leicester, Leicester, UK
+e-mail: xue.zhou@le.ac.uk
+H. Al-Samarraie (*)
+University of Leeds, Leeds, UK
+e-mail: h.alsamarraie@leeds.ac.uk
+© The Author(s), under exclusive license to Springer Nature Switzerland AG 2025
+X. Zhou, H. Al-Samarraie (eds.), Institutional guide to using AI for research,
+Advances in Artificial Intelligence in Education 2,
+https://doi.org/10.1007/978-3-031-94809-1_1
+
+3
+
+4
+
+X. Zhou and H. Al-Samarraie
+
+revolution in research, students, academics, and professionals alike must understand
+the profound implications and opportunities that AI presents in the area of scientific
+inquiry (Golan et al., 2023). Understanding AI in the context of research is no longer a luxury but a necessity. AI technologies are rapidly becoming integral to every
+stage of the research process, from literature review and data collection to analysis
+and hypothesis generation (Khalifa & Albadawy, 2024). These tools are not merely
+automating routine tasks; they are augmenting human intelligence, enabling
+researchers to tackle more complex problems, uncover hidden patterns in vast datasets, and accelerate the pace of discovery in ways previously unimaginable (Perkins
+& Roe, 2024a).
+Since AI is multifaceted and ever-expanding, emerging issues of data privacy,
+algorithmic bias, and the interpretability of AI-generated results are at the forefront
+of discussions in the scientific community (Hacker et al., 2024). Understanding
+these challenges is crucial for conducting responsible, ethical research in the AI age.
+Thus, the purpose of this chapter is to provide a comprehensive overview of AI in
+research, equipping students with the knowledge and critical thinking skills necessary to navigate this new landscape. Throughout this chapter, we will explore:
+• The fundamental concepts of AI and how they apply to assist research.
+• The impact of AI on research skills development, from data analysis to critical
+thinking.
+• The ethical considerations and challenges in integrating AI into research
+processes.
+• Future trends and potential developments in AI-driven research.
+By the end of this chapter, students can expect to have gained an understanding of
+the role AI plays in modern research. They will be able to critically evaluate the
+potential benefits and limitations of AI tools in their own fields of study. Moreover,
+they will develop an appreciation for the interdisciplinary nature of AI-driven
+research and the importance of combining domain expertise with AI literacy.
+
+2 AI in Research
+AI generally refers to computer-controlled machines that perform tasks similar to
+those carried out by humans. In research, it could refer to the tools, skills, and practices that are commonly used by students to understand aspects related to their
+research. Generative AI (GenAI) is the latest form of AI that generates contents in
+response to users in the form of text, images, or audio using a large training data.
+ChatGPT and Dall-E are an example of GenAI that serves. These tools are extensively used in the higher education sector to support various stages of research
+development, but their use, value and challenges for the research community keeps
+on changing. This is because AI keeps on evolving as a result of increased in individuals’ digital footprint and usage. This increase has resulted in reforming the way
+AI learn and respond to diverse needs of individuals.
+
+1
+
+Introduction to AI in Research
+
+5
+
+This chapter shades the light on the potential of GenAI in research workflow.
+Figure 1.1 break down the stages of where GenAI has been reported in the literature
+to be used in research practices. From the Figure, it can be seen that GenAI play a
+role in supporting researchers at an early stage of their research. In the proposal
+stage, students have been widely considered to take advantage of GenAI to ensure
+their ideas and narratives are presented in academic manners. For example, GenAI
+has been reported to offer the means for students to create a structure for their
+research proposal and help draft parts or refine or edit language of it (Andersen
+et al., 2024). Ideation, synthesis of previous studies, reflection, and writing were the
+main topics discussed by previous studies at the proposal writing stage with the support of GenAI. A significant aspect of this viewpoint was the potential of generative
+tools to enhance students’ idea generation and writing skills by providing suggestions and offering feedback on grammar, sentence structure, and word choice
+(Al-Samarraie et al., 2024). It is worth noting that the inclination to use GenAI tools
+at the proposal stage might stem from the ability of these tools to drive motivation,
+flexibility, and competency among users of specific learning needs.
+Our review of the literature, seeding activities (university wide GenAI brainstorming sessions), and conversations with key educational organizations in the UK
+have led to the understanding that GenAI can be widely used to:
+1. Identify the need for knowledge and clarify ethical considerations.
+2. Collect relevant information and generate data following appropriate
+methodologies.
+3. Evaluate information/data and reflect on the processes used.
+4. Organise information and manage research stages.
+5. Analyse information/data and synthesize new knowledge to produce coherent
+understandings.
+6. Communicate the processes, understandings, and applications of the research,
+and respond to feedback while being mindful of ethical, cultural, and social issues.
+Literature writing, data analysis, results interpretation, and reporting have been recognised as key research practices where students relay on GenAI tools to progress
+in their research. These applications of GenAI vary significantly across disciplines,
+which is largely linked to the choice of methodology adopted in each field to seek
+new knowledge. For example, in the humanities, students may employ GenAI to
+refine language and structure in their academic writing, while in the sciences, they
+may rely on AI for complex data analysis and simulation modelling. In both cases,
+the use of GenAI has been found to help—to some level—streamline research processes by offering quick access to relevant information, generating data insights,
+and ensuring clarity and coherence of findings.
+Yet, to mitigate the potential misuse of GenAI tools in forming irrelevant or inaccurate research directions, many doctoral colleges across the sector have acknowledged the lack of unified policies to clearly define what GenAI tools are acceptable
+for use in research writing and how they should be implemented. In addition, there
+is a significant gap in available training resources to guide students and staff in
+effectively and ethically using these technologies. Such lack has been perceived by
+
+6
+
+Fig. 1.1 GenAI in research and needed interventions
+
+X. Zhou and H. Al-Samarraie
+
+1
+
+Introduction to AI in Research
+
+7
+
+academics as a concern that potentially can lead to inconsistent practices. In addition, the over reliance on GenAI at an early stage of research can pose several novelty and integrity related concerns for the sector and potential supervisors. On its
+core the lack of developing skills essential for students to fully comprehend how
+specific research steps can contribute to their research journey. Therefore, institutions are increasingly recognising the need for comprehensive policies and tailored
+training programs to ensure responsible and beneficial integration of GenAI tools in
+academic research.
+
+3 Bibliometric Analysis of GenAI in Research
+To explore the evolving nature of GenAI, we conducted a bibliometric analysis of
+studies focusing on its use in research. Using R, we analysed and visualised trends,
+sentiments, and topics from research articles retrieved from the Scopus database
+using keywords that reflect GenAI and research practices. We began by creating a
+.bib file containing 2520 studies, including details such as authors, titles, keywords,
+abstracts, and publication years. This .bib file was then imported into R for topic
+modelling to identify key terms in the literature. Several preprocessing steps were
+carried out in R to clean and normalise the text data. From there, we used a Latent
+Dirichlet Allocation model to extract a document-topic matrix, helping us understand how topics were distributed across the documents. We visualised the top terms
+for each topic. We also analysed the sentiments expressed in the abstracts of these
+studies, which were extracted and visualised. Figure 1.2 illustrates the volume of
+
+Fig. 1.2 GenAI publications in research by year
+
+8
+
+X. Zhou and H. Al-Samarraie
+
+research published on the use of GenAI in research, showing a significant increase
+from 2020 onward. This surge is likely due to the demand for GenAI-powered
+online solutions during and after the Covid-19 pandemic.
+The abstracts of the 2520 studies were extracted and processed for sentiment
+analysis. The results (see Fig. 1.3) showed that sentiment around the application of
+GenAI in research was largely positive. Positive emotions, such as trust and joy,
+were found to drive students’ optimism and confidence in GenAI’s potential to
+enhance their research practices. Anticipation and excitement were also common,
+indicating enthusiasm about future GenAI-driven tools. However, negative sentiments like fear and sadness were also notable, likely reflecting concerns about ethical challenges, potential misuse, and impacts on traditional research methods.
+Meanwhile, the lower levels of anger and disgust may indicate frustrations with
+GenAI’s limitations, such as its accuracy in locating and comparing sources of
+information. These findings highlight the need for a balanced approach, recognising
+both the opportunities and the ethical or practical concerns GenAI raises.
+The analysis of the top positive terms related to the use of GenAI in research—as
+shown in Fig. 1.4—revealed a strong focus on aspects that enhance efficiency and
+cognitive processes. Terms such as “simplicity,” “accessibility,” and “speed” underscore the value students place on GenAI’s ability to streamline tasks and make
+
+Fig. 1.3 Sentiment results of GenAI use in research
+
+1
+
+Introduction to AI in Research
+
+9
+
+Fig. 1.4 Top positive terms on the use of GenAI in research
+
+research tools more readily available and faster. The emphasis on “understanding,”
+“reflective thinking,” and “engagement” suggests that GenAI supports deeper cognitive engagement, promoting critical analysis and a better comprehension of complex topics. We also identified terms like “idea generation,” “problem-solving,” and
+“comparing,” which reflect an appreciation for GenAI in facilitating creative thinking and intellectual comparison. This aids in developing innovative research
+approaches and solutions. Overall, these terms indicate that GenAI is seen not just
+as a convenient tool but also as a catalyst for enhancing intellectual rigor and innovation in the research process.
+The analysis of negative terms (see Fig. 1.5) highlighted key concerns faced by
+researchers, such as “ethics” and “accuracy.” This indicates a strong focus on the
+moral and factual implications of using AI in academic work. The terms “responsibility” and “declaration” suggest a need for transparency and accountability when
+using AI tools. The presence of “bias” points to worries about the fairness and neutrality of AI outputs, while “creativity” reflects concerns that over-reliance on AI
+may stifle original thought. Other terms like “repetition,” “cost,” and “reliance”
+indicate anxieties about AI’s limitations in generating novel insights, the potential
+financial burden, and the risk of researchers becoming overly dependent on these
+tools. Lastly, “environment” suggests concerns regarding the sustainability and
+broader ecological impact of using AI technologies. Together, these keywords
+underscore the multifaceted apprehensions surrounding the integration of GenAI
+
+10
+
+X. Zhou and H. Al-Samarraie
+
+Fig. 1.5 Top negative terms on the use of GenAI in research
+
+into academic research, particularly regarding its ethical, practical, and long-term
+implications.
+
+4 Collective Guidance on GenAI Use in Research
+The use of GenAI across disciplines can bring different challenges when it comes to
+formulate future policies and usage strategies. This is largely reflected in each discipline, and the research needs of students. Meanwhile, AI is viewed by individuals
+doing research as an enabler of new methods, processes, management, and evaluation (Alasadi & Baiz, 2023; Dwivedi et al., 2023). Based on our review of large
+volume of previous studies, our seeding initiatives, across discipline workshops,
+and close consultation with educational partners across the UK, we found that the
+majority of students enrolled in research programmes across all disciplines are
+using GenAI tools for idea generation, planning of the literature, identify research
+methods and procedures, perform data analysis and interpretation.
+Table 1.1 compares the various tools, skills, and practices students might develop
+through the use of GenAI in their research. During the idea generation phase, tools
+like ChatGPT and Jasper have been noted for their ability to help students brainstorm by suggesting potential research questions and offering related perspectives.
+
+1
+
+Introduction to AI in Research
+
+11
+
+Table 1.1 Key tools, practices and skills of using GenAI in research
+Stage
+Idea
+generation
+
+Planning of
+the literature
+
+Identify
+research
+methods and
+procedures
+
+Data analysis
+and
+interpretation
+
+Use
+Breakdown of logics
+and ideas, generate
+relevant ideas,
+repropose closely
+related ideas, provide
+alternatives, compare
+between solutions and
+link them to the
+searched problem
+Identify search strategy,
+build keywords, article
+filtering criteria,
+suggest connections
+between studies,
+compare between
+studies, identify gap in
+knowledge, suggest
+research questions
+Support in sample
+identification,
+recruitment methods,
+protocol, and procedure
+
+Selection of data
+analysis methods,
+visualisation, writing
+style and interpretation
+of statistical data
+
+Tools
+ChatGPT,
+Jasper,
+IdeaFlow
+
+Practices
+Brainstorming
+research questions
+and identifying
+knowledge gaps
+
+Skills
+Critical
+thinking,
+information
+seeking, and
+adaptability
+
+Elicit, Iris.ai,
+Connected
+Papers
+
+Quickly review
+literature and
+summarize
+findings
+
+Analytical
+reading,
+synthesis of
+summaries
+
+Formulate
+hypotheses,
+suggest research
+frameworks,
+sample sizes, and
+methodologies
+Plan data
+OpenAI
+Codex, Python, collection and
+analysis methods,
+R, DALL-E,
+simulate potential
+ChatGPT,
+outcomes
+WriteSonic,
+Grammarly
+SciNote, GPT
+models for
+drafting
+
+Research
+methodology,
+critical analysis
+
+Data literacy,
+statistical
+reasoning
+
+Regular use of these tools is thought to aid students in developing critical thinking
+skills, essential for identifying research gaps or forming hypotheses. Tools such as
+Elicit and Iris.ai, used in the planning of literature reviews, can assist students in
+summarising large amounts of academic work, potentially simplifying the process
+of identifying relevant research and emerging trends. The development of analytical
+skills is seen in students’ ability to synthesise information efficiently, though the full
+impact of using GenAI for literature reviews is still not fully understood in the current literature.
+Furthermore, GenAI tools like SciNote or GPT can be effective in supporting
+students identify relevant research methods and procedures that are related to their
+subject area and sample characteristics. These tools support students by assessing
+them in drafting research frameworks, suggesting methodologies, and facilitating
+an understanding of key assumptions related to the subject matter. In terms of data
+analysis and interpretation, GenAI tools such as OpenAI Codex can recommend
+suitable data analysis techniques and visualisations for specific research types. The
+
+12
+
+X. Zhou and H. Al-Samarraie
+
+potential advantage of these tools at this stage lies in improving statistical reasoning, as students are expected to select and apply appropriate AI-generated recommendations while avoiding over-reliance on AI outputs. Nevertheless, this process
+demands that students make their own decisions and critically link these to existing
+recommendations from their literature review.
+
+5 How AI Is Supporting Research Skills Development?
+AI is transforming how researchers approach their work, from literature review, and
+hypothesis generation to data analysis. Khalifa and Albadawy (2024) carried out a
+systematic review to examine how AI is utilised and its impact on academic writing
+and research. Their research revealed that AI has improved academic writing and
+research across six key areas: idea generation, content structuring, literature synthesis, data management, editing, and ethical compliance, as illustrated in Fig. 1.6.
+Both UNESCO (2023) and the European Commission (2024) have acknowledged
+the growing trend of using General AI to aid academic research. They have provided
+detailed guidelines to support academics in effectively utilising GenAI for research
+purposes. In the following, we delved into the specific ways AI is fostering research
+skills development.
+
+Fig. 1.6 The six domains where AI can improve academic functions (Khalifa & Albadawy, 2024)
+
+1
+
+Introduction to AI in Research
+
+13
+
+5.1 Facilitation of Literature Review
+and Information Synthesis
+One of the most significant contributions of AI to research skills development is in
+the area of literature review and information synthesis. The exponential growth of
+scientific publications makes it increasingly challenging for researchers to stay
+abreast of developments in their field. AI-powered tools are helping to address this
+challenge, while also fostering important research skills (Wagner et al., 2022).
+Natural Language Processing (NLP) algorithms can rapidly analyse vast numbers of scientific papers, extracting key information, identifying trends, and even
+suggesting connections between seemingly disparate studies. These tools are not
+just saving time; they’re changing how researchers approach the literature review
+process. AI tools that blend large language models (LLMs) with academic databases, such as Elicit and Semantic Scholar, are extensively utilised to assist researchers in finding relevant literature. Some conversational AI tools, such as the GPT-4
+model, allow for the use of retrieval-augmented LLMs that access external documents, thereby enhancing accuracy and reducing factual errors (Bubeck et al.,
+2023). AI-driven literature review tools such as Connected Papers, Inciteful and
+Research Rabbit can generate knowledge graphs, visually representing the relationships between different concepts, authors, and publications in a field (Aaron, 2021).
+By interacting with these knowledge graphs, researchers can develop skills in conceptual mapping and interdisciplinary thinking. Students can also learn to identify
+connections across different areas of study and identify gaps in existing research
+more effectively. Furthermore, AI tools, for example, Scispace and ChatGPT, that
+can summarise complex scientific papers, and even provide detailed explanations of
+the concepts for students to quickly grasp the essence of numerous studies (Semrl
+et al., 2023). This capability is precious for interdisciplinary research, where
+researchers often need to quickly develop to speed on areas outside their primary
+expertise. By working with these tools, researchers are honing their skills in rapid
+information assimilation and synthesis.
+However, it’s crucial to note that these tools are not replacing the need for careful, critical reading. Instead, they’re allowing researchers to approach literature
+review more strategically, focusing their in-depth reading on the most relevant and
+promising papers (Khlaif et al., 2023). This strategic approach is fostering the
+development of more sophisticated information literacy skills, as researchers learn
+to navigate and make sense of the vast sea of available information more effectively.
+
+14
+
+X. Zhou and H. Al-Samarraie
+
+5.2 Enhancement of Data Analysis and Pattern
+Recognition Capabilities
+Another area where AI can significantly support research skills development is in
+data analysis and pattern recognition. As datasets grow increasingly large and complex, traditional analytical methods often fall short. Machine learning algorithms
+excel at processing vast amounts of data and identifying patterns that might be
+imperceptible to human researchers (Sharma et al., 2024). Research has also indicated that AI-driven software and tools, equipped with automated guiding strategies, can produce more precise data analysis by quickly identifying key traits
+compared to conventional data analysis methods (Zhai et al., 2023).
+Advanced AI systems can help researchers analyse data across multiple dimensions in order to uncover hidden patterns and relationships within datasets. This
+capability is particularly valuable in fields like genomics, climate science, and social
+network analysis, where the interplay of numerous variables can be challenging to
+discern through conventional methods. For instance, in bioinformatics, AI algorithms can analyse gene expression data to identify potential biomarkers for cardiovascular diseases, a task that would be prohibitively time-consuming and complex
+for human researchers alone (DeGroat et al., 2024). Similarly, in climate science, AI
+models can process data from multiple sources—satellite imagery, weather stations,
+and historical records—to detect subtle patterns in climate change that might otherwise go unnoticed (Satish et al., 2023).
+GenAI has proven to be a valuable tool in supporting researchers in both qualitative and quantitative data analysis. Perkins and Roe (2024b) demonstrated how
+ChatGPT could be used for thematic analysis that can contribute to improved coding efficiency and aiding in initial data exploration. Similarly, Perkins and Roe
+(2024b) found that ChatGPT significantly aids inductive thematic analysis by
+enabling a process that includes separate human-driven and GenAI-assisted coding.
+While ChatGPT’s utility in data analysis was acknowledged, issues such as hallucination and irreproducibility in outputs were reported. This as a result emphasises
+the need for researchers to verify and critically assess the results. Furthermore,
+GenAI has shown greater accuracy in supporting quantitative data analysis. Tools
+integrated with popular statistical software have enabled more sophisticated analyses, streamlining processes from data cleaning and identifying outliers or missing
+data patterns to suggesting appropriate statistical models based on data characteristics (Perkins & Roe, 2024a). This integration not only simplifies the analytical process for researchers but also alleviates concerns about the reproducibility of results.
+By working with these AI tools, researchers are likely to develop enhanced skills
+in data interpretation and pattern recognition. They’re learning to ask more nuanced
+questions of their data, formulate more complex hypotheses, and think more critically about the patterns and relationships uncovered by AI analysis. Moreover, as
+researchers become more adept at working with AI-driven data analysis tools,
+they’re developing a deeper understanding of the strengths and limitations of these
+technologies. This growing AI literacy is becoming an essential skill in itself,
+
+1
+
+Introduction to AI in Research
+
+15
+
+enabling researchers to more effectively leverage these powerful tools while maintaining a critical perspective on their outputs.
+
+5.3 Assistance in Research Design and Hypothesis Generation
+AI is also playing an increasingly important role in research design and hypothesis
+generation, two critical aspects of the research process. By analysing patterns in
+existing research and combining elements from different studies, some advanced AI
+systems can suggest research questions and novel hypotheses for researchers to
+explore (Alshater, 2022). For instance, in drug discovery research, AI algorithms
+can analyse data on molecular structures, biological pathways, and existing drugs to
+propose new compounds that might be effective against a particular disease (Chen
+et al., 2023).
+While the researcher still needs to evaluate these suggestions critically, this
+AI-assisted approach is fostering more creative and wide-ranging hypothesis generation. In terms of experimental design, AI tools can help researchers optimise
+their methodologies. Machine learning algorithms can simulate numerous experimental scenarios, helping researchers identify the most promising approaches
+before they even step into the lab (Ma et al., 2024). This capability is particularly
+valuable in fields where experiments are costly or time-consuming, such as particle
+physics or clinical trials. Moreover, the latest GenAI tools can generate preliminary
+research ideas, methodologies, and expected outcomes with simple prompts like
+“Based on the research gap, generate 10 topical research questions for topic X”
+(UNESCO, 2023). These tools provide foundational concepts that can inform the
+overall research plan.
+By engaging with these AI tools, researchers are developing more sophisticated
+skills in hypothesis formulation and experimental planning. They’re learning to
+think more systematically about the variables in their experiments and to consider a
+wider range of possibilities in their hypotheses. Moreover, the process of critically
+evaluating AI-generated hypotheses and experimental designs is itself fostering
+important research skills. Researchers are developing a more nuanced understanding of what makes a good hypothesis or a well-designed experiment, as they learn
+to discern the strengths and weaknesses of AI-generated suggestions.
+
+5.4 Role of AI in Academic Writing
+While AI in academic writing is often associated with automating tasks like grammar checking and citation formatting, its true impact lies in fostering higher-order
+writing skills such as critical analysis, argumentation, and stylistic refinement
+(Khalifa & Albadawy, 2024). This might seem counterintuitive, but it stems from
+how AI is transforming the nature of academic writing. As AI systems take over
+
+16
+
+X. Zhou and H. Al-Samarraie
+
+more routine aspects of writing—like basic editing, reference management, and
+initial literature searches—writers are freed to focus on more complex, creative
+aspects of their work. They’re spending more time developing nuanced arguments,
+synthesising diverse sources, and critically examining the implications of their
+research.
+Furthermore, the use of AI writing tools like Grammarly, which specialises in
+enhancing writing skills, is fostering advanced writing abilities. These tools offer
+suggestions for impeccable English grammar structures and vocabulary variations,
+making them highly beneficial for non-English-speaking academics aiming to correct grammatical errors. Utilising AI writing tools is not only enhancing advanced
+writing skills but also effectively improving the writing process and boosting productivity (Golan et al., 2023). However, this integration poses challenges, particularly for junior academics with limited research experience and subject knowledge.
+Researchers must carefully consider how to present their ideas to AI systems, interpret AI-generated suggestions judiciously, and seamlessly blend AI-assisted content
+with their original thoughts and analyses. Argumentation skills or critical analysis
+skills are also being enhanced through AI integration. Writers are learning to construct more robust arguments by leveraging AI’s ability to quickly identify counterarguments and potential weaknesses in logic (Hadan et al., 2024). For instance,
+AI-powered research tools such as Elicit and Consensus, can surface conflicting
+viewpoints from a vast array of sources, challenging writers to address these perspectives and strengthen their own positions.
+A growing number of publishers are recognising that AI can be utilised to
+enhance the readability and grammatical correctness of articles. For example, the
+Academy of Management (n.d.) has specified in its AI policy that while authors are
+permitted to use AI for spelling and grammar checks, they must inform the publisher about the sections of the manuscript where AI was used. Similarly, Elsevier’s
+(n.d.) AI policy indicates that AI can be employed to refine the language of a document, but it should not be used to create the scientific and pedagogical content of the
+paper. In essence, AI in academic writing is not replacing the need for human skills
+but rather elevating the role of the writer, pushing authors to engage more deeply
+with their subject matter and produce more refined scholarly works. Authors are
+responsible for ensuring that the final output of their writing is clear and accurate,
+effectively communicating the research in a concise and precise manner. Our view
+is that the most successful researchers of the future will likely be those who can
+effectively combine their domain expertise with AI literacy to push the boundaries
+of human knowledge while maintaining a critical, ethical perspective on their use.
+
+1
+
+Introduction to AI in Research
+
+17
+
+6 Responsible AI Integration
+The integration of AI into research processes offers unprecedented opportunities for
+advancing knowledge and accelerating scientific discovery. However, this integration also brings some ethical considerations and practical challenges that researchers must understand. The followings are the main considerations.
+
+6.1 Ethical Considerations
+• Data Privacy:
+• One of the foremost ethical concerns in AI-driven research is data privacy. AI
+systems often require vast amounts of data to function effectively, and in many
+research contexts, this data may include sensitive personal information.
+Researchers must grapple with questions of data ownership, consent, and the
+potential for re-identification of anonymised data. The challenge lies in balancing the need for comprehensive datasets with the ethical imperative to protect
+individual privacy. Techniques such as differential privacy and federated learning
+are emerging as potential solutions, allowing researchers to gain insights from
+data without directly accessing individual records (UNESCO, 2023). However,
+implementing these techniques can be complex and may impact the accuracy of
+results, presenting researchers with difficult trade-offs. Moreover, as AI systems
+become more sophisticated, there’s an increasing risk of unintended data disclosures. For instance, an AI model trained on anonymised data might inadvertently
+learn patterns that could lead to re-identification of individuals. Researchers
+must be vigilant about these risks and implement robust safeguards to protect
+privacy throughout the research process (Perkins & Roe, 2024a).
+• Bias in AI Algorithms:
+• Another critical ethical consideration is the potential for bias in AI algorithms.
+AI systems learn from the data they’re trained on, and if this data contains historical biases or is not representative of diverse populations, the resulting algorithms can perpetuate or even amplify these biases (Hacker et al., 2024). In
+research contexts, biased AI systems can lead to skewed results, misrepresentation of certain groups, and ultimately, flawed conclusions (Afrin et al., 2022).
+This is particularly concerning in fields like healthcare, social sciences, and policy research, where biased outcomes could have far-reaching societal implications. Addressing algorithmic bias requires a multifaceted approach. Researchers
+must critically examine their data sources, actively seek diverse and representative datasets, and implement bias detection and mitigation techniques in their AI
+models. However, identifying and correcting for all potential biases is a complex
+task that requires ongoing vigilance and interdisciplinary collaboration.
+
+18
+
+X. Zhou and H. Al-Samarraie
+
+• Transparency and Explainability:
+• The “black box” nature of many advanced AI systems, particularly deep learning
+models, poses significant challenges for transparency in research. When AI is
+used to analyse data or generate insights, it’s crucial that researchers understand
+and explain how these results were obtained. The lack of explainability in AI
+systems or tools can undermine the scientific principle of reproducibility and
+make it difficult to validate research findings. Furthermore, in fields where AI-­
+driven decisions have significant consequences, such as medical diagnosis or
+criminal justice research, the inability to explain how an AI reached its conclusion raises serious ethical concerns.
+
+6.2 Responsible AI Integration in Research
+AI techniques and tools are evolving at an unprecedented rate, making it difficult for
+researchers, especially those without a background in computer science, to stay
+informed about the latest developments and best practices. This rapid evolution also
+means that ethical guidelines and regulatory frameworks often lag behind technological capabilities (UNESCO, 2023). Researchers may find themselves in unexplored ethical territory, having to make decisions about the use of AI technologies
+before clear guidelines have been established. To address this challenge, there’s a
+growing need for ongoing education and interdisciplinary collaboration. Researchers
+need access to resources and training that can help them understand the ethical
+implications of new AI technologies and how to implement them responsibly
+(Perkins & Roe, 2024b).
+• Balancing AI Capabilities with Human Expertise:
+• Another significant challenge lies in striking the right balance between leveraging AI capabilities and maintaining the critical role of human expertise in
+research. While AI can process vast amounts of data and identify patterns beyond
+human capability, it lacks the nuanced understanding, creativity, and ethical
+judgment that human researchers bring to the table. Solid research continues to
+depend on researchers’ deep subject knowledge, thorough analysis, and interpretation. AI cannot substitute human intelligence when it comes to critical thinking
+and the creation of new knowledge. There’s a risk that over-reliance on AI could
+lead to a devaluation of human expertise or a reluctance to question AI-generated
+results. This may particularly affect junior researchers by depriving them of valuable learning experiences through trial and error. Researchers must cultivate a
+mindset that views AI as a tool to augment human capabilities rather than replace
+them. This requires developing new skills in interpreting and critically evaluating
+AI outputs, as well as designing research methodologies that effectively combine
+AI and human insights (European Commission, 2024).
+
+1
+
+Introduction to AI in Research
+
+19
+
+• Ensuring Equitable Access and Preventing AI Divide:
+• As AI becomes increasingly integral to cutting-edge research, there is a risk of
+exacerbating existing inequalities in the research landscape. Advanced AI systems often require significant computational resources and technical expertise,
+which may not be equally available to all researchers or institutions. Additionally,
+researchers who have access to more advanced versions of GenAI, such as
+ChatGPT 4, often experience enhanced productivity and effectiveness. This
+potential “AI divide” could lead to a concentration of AI-driven research capabilities in well-funded institutions or technologically advanced countries, potentially skewing the direction of global research and limiting diverse perspectives.
+Addressing this challenge requires concerted efforts to democratise access to AI
+technologies in research. This might involve developing more accessible AI
+tools, promoting open-source AI initiatives, and investing in AI education and
+infrastructure in underrepresented communities and developing countries.
+In conclusion, responsible AI integration in research presents a complex landscape
+of ethical considerations and practical challenges. Addressing issues of data privacy,
+algorithmic bias, and transparency, while also navigating the rapid pace of technological change and ensuring equitable access, requires a concerted effort from the
+entire research community. The key to responsible AI integration lies in maintaining
+a balance—leveraging the power of AI to enhance research capabilities while steadfastly upholding ethical principles and the irreplaceable value of human insight and
+oversight. As we continue to explore the frontiers of AI-driven research, ongoing
+dialogue, interdisciplinary collaboration, and a commitment to ethical practice will
+be crucial in realising the full potential of AI while safeguarding the integrity and
+societal impact of research.
+
+7 Summary
+Efforts to support researchers’ independence in using AI are still in their early stages
+in higher education. This is mainly due to the constantly changing nature of AI
+technology, which has led to shifts in educational policies and practices. As a result,
+there’s considerable uncertainty about how best to integrate AI tools into research.
+To make the most of these developments, universities need to help researchers adapt
+to and use GenAI in a way that’s both ethical and effective. There’s also a growing
+interest among universities to define the role of AI in research development and
+policy. However, there’s a noticeable gap between what students expect and what
+institutions prioritise, particularly when it comes to research outcomes and employability. This disconnect has made things challenging for both students and their
+supervisors, especially as timely supervision and mentoring are vital. The mismatch
+between expectations has created confusion around AI research practices, which
+can lead to misunderstandings and knowledge gaps. This situation can negatively
+impact students’ research results and their ability to meet institutional objectives.
+While GenAI could help students, especially those who lack knowledge in certain
+
+

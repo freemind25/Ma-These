@@ -1,0 +1,957 @@
+    80→      "Autosuffisance locale : logement, emploi, services et espaces verts intégrés",
+    81→      "Connexion entre cités-jardins par des réseaux ferroviaires (Social City)",
+    82→    ],
+    83→    apportsMajeurs: [
+    84→      "Premier modèle de planification urbaine intégrée à l'échelle du quartier",
+    85→      "Introduction du concept de ceinture verte (green belt)",
+    86→      « Fondation du mouvement des villes nouvelles en Europe (Letchworth 1903, Welwyn 1920) »,
+    87→      « Ancêtre conceptuel de l'éco-quartier et de la ville durable »,
+    88→    ],
+    89→    limitesCritiques: [
+    90→      « Modèle idéalisé difficilement généralisable aux métropoles existantes »,
+    91→      « Contrôle foncier communautaire jugé utopique dans les économies de marché »,
+    92→      « Ségrégation fonctionnelle entre zones résidentielles et industrielles »,
+    93→      « Dimension sociale limitée : conçu pour la classe moyenne britannique »,
+    94→    ],
+    95→    imageRef: "RB-8",
+    96→    motsCles: [
+    97→      "garden city",
+    98→      « ceinture verte »,
+    99→      « ville-campagne »,
+   100→      « planification Howard »,
+   101→      « Letchworth »,
+   102→      « Welwyn »,
+   103→    ],
+   104→  },
+   105→
+   106→  // ── RB-9 : Planification Moderne ──
+   107→  {
+   108→    id: "planification-moderne",
+   109→    nom: "Planification Moderne",
+   110→    periode: "1920–1960",
+   111→    auteur: « Le Corbusier (Charles-Édouard Jeanneret) »,
+   112→    ouvrageRef: « Vers une architecture (1923), La Ville radieuse (1935) »,
+   113→    contexteHistorique:
+   114→      « Après la Première Guerre mondiale, nécessité de reconstruire massivement et de résoudre les problèmes d'insalubrité dans les centres urbains. Essor de l'industrie automobile et de la production en série. »,
+   115→    principes: [
+   116→      « Les 5 points de l'architecture moderne : pilotis, toit-jardin, plan libre, façade libre, fenêtre en bandeau »,
+   117→      « Zonage fonctionnel strict : séparer habitation, travail, circulation et loisirs (CIAM, Charte d'Athènes 1933) »,
+   118→      « Ville verticale : immeubles-tours dégagent le sol pour des espaces verts continus »,
+   119→      « Primauté de la circulation automobile : voies rapides, échangeurs, stationnement »,
+   120→      « Standardisation et industrialisation de la construction pour l'efficacité »,
+   121→      « Hygiénisme : soleil, air, verdure comme déterminants du logement sain »,
+   122→      « Tabula rasa : la reconstruction souvent privilégiée au renouvellement progressif »,
+   123→    ],
+   124→    apportsMajeurs: [
+   125→      « Fondation du Mouvement Moderne (CIAM) et de l'architecture internationale »,
+   126→      « Innovation technique majeure : béton armé, plan libre, nouvelle esthétique »,
+   127→      « Influence planétaire : de Chandigarh à Brasilia, du Unité d'Habitation à la ville radieuse »,
+   128→      « Première tentative systématique de théoriser la ville à l'échelle mondiale »,
+   129→    ],
+   130→    limitesCritiques: [
+   131→      « Zonage fonctionnel détruit la vitalité urbaine et la mixité sociale (critique de Jane Jacobs) »,
+   132→      « Ville construite pour l'automobile, hostile au piéton et à l'échelle humaine »,
+   133→      « Utopie technocratique ignorant les dynamiques sociales et économiques informelles »,
+   134→      « Grands ensembles et tours isolées ont produit des paysages monotonnes et des ghettos urbains »,
+   135→      « Déconnexion entre le concepteur et l'usager final de la ville »,
+   136→    ],
+   137→    imageRef: "RB-9",
+   138→    motsCles: [
+   139→      « Mouvement Moderne »,
+   140→      « CIAM »,
+   141→      « Charte d'Athènes »,
+   142→      « Ville radieuse »,
+   143→      « zonage fonctionnel »,
+   144→      « Unité d'Habitation »,
+   145→    ],
+   146→  },
+   147→
+   148→  // ── RB-10 : Planification Compréhensive ──
+   149→  {
+   150→    id: "planification-comprehensive",
+   151→    nom: « Planification Compréhensive »,
+   152→    periode: « 1945–1970 »,
+   153→    auteur: « Patrick Abercrombie (Plan du Grand Londres 1944) »,
+   154→    ouvrageRef: « County of London Plan (1943), Greater London Plan (1944) »,
+   155→    contexteHistorique:
+   156→      « Reconstruction d'après-guerre en Europe. Les gouvernements investissent massivement dans la planification urbaine à grande échelle. L'État-providence prend en charge l'aménagement du territoire. »,
+   157→    principes: [
+   158→      « Approche systémique : la ville comme organisme complexe nécessitant une vision globale »,
+   159→      « Planification à long terme (20-30 ans) avec revisites périodiques »,
+   160→      « Intégration de multiples échelles : régional, urbain, quartier »,
+   161→      « Maîtrise foncière et outils réglementaires (zonage, plans d'occupation des sols) »,
+   162→      « Équilibre entre croissance urbaine et préservation des espaces ruraux »,
+   163→      « Décentralisation vers des villes nouvelles pour décongestionner les métropoles (New Towns Act 1946) »,
+   164→      « Coordination interinstitutionnelle : transport, logement, industrie, services publics »,
+   165→    ],
+   166→    apportsMajeurs: [
+   167→      « Premier modèle de planification urbaine institutionnalisée à l'échelle métropolitaine »,
+   168→      « Création de 28 New Towns au Royaume-Uni, modèle pour les villes nouvelles françaises »,
+   169→      « Systématisation des outils de planification : Schéma Directeur, Plan d'Occupation des Sols »,
+   170→      « Approche multi-scalaire devenue standard dans la planification européenne »,
+   171→    ],
+   172→    limitesCritiques: [
+   173→      « Vision top-down peu sensible aux besoins et aspirations des résidents »,
+   174→      « Rigidité du plan face aux dynamiques économiques et sociales imprévisibles »,
+   175→      « Déconnexion entre planificateurs et communautés locales »,
+   176→      « Échec partiel des villes nouvelles : certaines n'ont jamais atteint la taille critique »,
+   177→      « Négligence des processus informels et de l'économie de la rue »,
+   178→    ],
+   179→    imageRef: "RB-10",
+   180→    motsCles: [
+   181→      « Grand Londres »,
+   182→      « Abercrombie »,
+   183→      « New Towns »,
+   184→      « plan directeur »,
+   185→      « déconcentration »,
+   186→      « villes nouvelles »,
+   187→    ],
+   188→  },
+   189→
+   190→  // ── RB-11 : Planification Plaidoyer ──
+   191→  {
+   192→    id: "planification-plaidoyer",
+   193→    nom: « Planification Plaidoyer et Équité »,
+   194→    periode: « 1960–1980 »,
+   195→    auteur: « Jane Jacobs, Paul Davidoff »,
+   196→    ouvrageRef:
+   197→      « The Death and Life of Great American Cities (Jacobs, 1961), Advocacy and Pluralism in Planning (Davidoff, 1965) »,
+   198→    contexteHistorique:
+   199→      « Contestation des grands ensembles modernistes et des plans d'urbanisme technocratiques. Mouvements des droits civiques aux États-Unis. Émergence de la sociologie urbaine critique. »,
+   200→    principes: [
+   201→      « Vitalité urbaine par la diversité : mixité d'usages, d'âges, de revenus et d'activités »,
+   202→      « Échelle du piéton : la rue comme espace social fondamental, pas l'autoroute »,
+   203→      « Usage continu des espaces publics : sécurité par la présence humaine, pas par la surveillance »,
+   204→      « Vieillissement graduel des bâtiments : source de diversité économique et culturelle »,
+   205→      « Densité modérée mais soutenue : condition nécessaire (pas suffisante) de la vitalité »,
+   206→      « Planification plaidoyère (Davidoff) : représenter les intérêts des groupes marginalisés »,
+   207→      « Participation citoyenne : les résidents doivent avoir voix au chapitre dans les décisions »,
+   208→      « Planification pluraliste : reconnaître et négocier les valeurs divergentes dans la ville »,
+   209→    ],
+   210→    apportsMajeurs: [
+   211→      « Rupture paradigmatique : de la ville fonctionnelle à la ville sociale et vivante »,
+   212→      « Concepts devenus fondamentaux : mixité fonctionnelle, diversité, vitalité, participation »,
+   213→      « Légitimation de la contestation citoyenne dans les processus d'aménagement »,
+   214→      « Influence durable sur le Nouvel Urbanisme et la planification participative contemporaine »,
+   215→    ],
+   216→    limitesCritiques: [
+   217→      « Vision parfois romantique de la diversité urbaine spontanée »,
+   218→      « Critique des grands ensembles sans proposer d'alternative constructive détaillée »,
+   219→      « Applicabilité limitée aux villes du Sud global avec des dynamiques différentes »,
+   220→      « Plaidoyer peut devenir politisation excessive au détriment de la faisabilité technique »,
+   221→    ],
+   222→    imageRef: "RB-11",
+   223→    motsCles: [
+   224→      « Jane Jacobs »,
+   225→      « Davidoff »,
+   226→      « diversité urbaine »,
+   227→      « participation citoyenne »,
+   228→      « mixité fonctionnelle »,
+   229→      « vitalité »,
+   230→    ],
+   231→  },
+   232→
+   233→  // ── RB-12 : Nouvel Urbanisme ──
+   234→  {
+   235→    id: "nouvel-urbanisme",
+   236→    nom: « Nouvel Urbanisme »,
+   237→    periode: « 1980–présent »,
+   238→    auteur: « Andres Duany, Elizabeth Plater-Zyberk, Peter Calthorpe, Leon Krier »,
+   239→    ouvrageRef: « The New Urbanism: Toward an Architecture of Community (Katz, 1994) »,
+   240→    contexteHistorique:
+   241→      « Réaction contre l'étalement urbain (sprawl) américain et la dépendance automobile. Crise des centres-villes et des banlieues monofonctionnelles. Recherche de modes de vie plus durables et communautaires. »,
+   242→    principes: [
+   243→      « Marchabilité (walkability) : rues à échelle piétonne avec trottoirs, arbres, façades actives »,
+   244→      « Connectivité : réseau de rues interconnectées (grille modifiée), pas de culs-de-sac »,
+   245→      « Mixité : logement, commerces, bureaux et espaces publics dans chaque quartier »,
+   246→      « Densité modérée : suffisante pour soutenir le transport en commun et les commerces de proximité »,
+   247→      « Architecture contextuelle : bâtiments qui définissent l'espace public, pas des objets isolés »,
+   248→      « Espace public de qualité : places, parcs, rues comme lieux de vie et de rencontre »,
+   249→      « Transport en commun et modes doux prioritaires sur la voiture individuelle »,
+   250→      « Gestion de la croissance : limites urbaines et développement compact (smart growth) »,
+   251→    ],
+   252→    apportsMajeurs: [
+   253→      « Charte du Nouvel Urbanisme (1996) devenue référence mondiale en design urbain »,
+   254→      « Projets phares : Seaside (FL), Poundbury (UK), Portishead (UK) »,
+   255→      « Réhabilitation de principes pré-modernes (rue traditionnelle, quartier complet) »,
+   256→      « Influence sur les politiques de croissance intelligente (smart growth) aux États-Unis »,
+   257→    ],
+   258→    limitesCritiques: [
+   259→      « Risque de pastiche néo-traditionnel déconnecté des réalités contemporaines »,
+   260→      « Implémentation souvent limitée à des projets neufs de taille réduite »,
+   261→      « Dimension sociale parfois évacuée au profit de l'esthétique urbaine »,
+   262→      « Difficulté à s'adapter aux métropoles existantes de grande taille »,
+   263→      « Critique de néo-libéralisme urbain : gentrification déguisée en qualité de vie »,
+   264→    ],
+   265→    imageRef: "RB-12",
+   266→    motsCles: [
+   267→      « New Urbanism »,
+   268→      « smart growth »,
+   269→      « walkability »,
+   270→      « TOD »,
+   271→      « Seaside »,
+   272→      « mixité »,
+   273→      « densité »,
+   274→    ],
+   275→  },
+   276→
+   277→  // ── RB-13 : Planification Durable ──
+   278→  {
+   279→    id: "planification-durable",
+   280→    nom: « Planification Durable »,
+   281→    periode: « 1990–présent »,
+   282→    auteur: « Timothy Beatley, Herbert Girardet, Richard Rogers »,
+   283→    ouvrageRef: « Green Urbanism: Learning from European Cities (Beatley, 2000), Cities for a Small Planet (Rogers, 1997) »,
+   284→    contexteHistorique:
+   285→      « Sommet de la Terre de Rio (1992) et emergence du développement durable comme paradigme global. Prise de conscience du changement climatique et de l'empreinte écologique urbaine. »,
+   286→    principes: [
+   287→      « Triple bilan : équilibrer dimensions environnementale, sociale et économique (3 piliers) »,
+   288→      « Réduction de l'empreinte carbone : éco-construction, énergie renouvelable, mobilité décarbonée »,
+   289→      « Économie circulaire urbaine : gestion des déchets, recyclage, métabolisme urbain »,
+   290→      « Résilience climatique : adaptation aux risques naturels, îlots de chaleur, inondations »,
+   291→      « Biodiversité urbaine : trames vertes, corridors écologiques, parcs et jardins »,
+   292→      « Justice environnementale : équité dans l'accès aux espaces verts et aux aménités »,
+   293→      « Gouvernance participative : Agenda 21 local, coopération public-privé-citoyen »,
+   294→      « Évaluation environnementale : bilan carbone, analyse du cycle de vie, indicateurs durables »,
+   295→    ],
+   296→    apportsMajeurs: [
+   297→      « Intégration de la durabilité comme obligation légale dans les plans d'urbanisme (SDAGE, SCOT, PLU en France) »,
+   298→      « Émergence des éco-quartiers comme laboratoires (Vauban-Fribourg, Hammarby-Stockholm, BedZED-Londres) »,
+   299→      « Métriques de durabilité urbaine : empreinte écologique, bilan carbone, indicateurs ADEME »,
+   300→      « Cadre international : Objectifs de Développement Durable 11 (villes durables) »,
+   301→    ],
+   302→    limitesCritiques: [
+   303→      « Risque d'éco-gentrification : les aménités vertes font monter les prix immobiliers »,
+   304→      « Greenwashing : projets labellisés « durables » sans transformation structurelle réelle »,
+   305→      « Tension entre croissance urbaine et limites planétaires difficilement résoluble »,
+   306→      « Complexité de la mise en œuvre : nécessite coordination intersectorielle massive »,
+   307→      « Approche parfois technocratique qui marginalise les savoirs locaux et autochtones »,
+   308→    ],
+   309→    imageRef: "RB-13",
+   310→    motsCles: [
+   311→      « développement durable »,
+   312→      « éco-quartier »,
+   313→      « résilience »,
+   314→      « biodiversité urbaine »,
+   315→      « économie circulaire »,
+   316→      « ODD 11 »,
+   317→    ],
+   318→  },
+   319→
+   320→  // ── RB-14 : Ville Intelligente ──
+   321→  {
+   322→    id: "ville-intelligente",
+   323→    nom: « Ville Intelligente (Smart City) »,
+   324→    periode: « 2000–présent »,
+   325→    auteur: « Carole Boulton, Anthony Townsend, Saskia Sassen »,
+   326→    ouvrageRef: « Smart Cities: Big Data, Civic Hackers, and the Quest for a New Utopia (Townsend, 2013) »,
+   327→    contexteHistorique:
+   328→      « Explosion des données numériques, Internet des objets (IoT) et intelligence artificielle. Les technologies offrent de nouvelles capacités de gestion urbaine en temps réel. Concurrence entre villes pour attirer les entreprises tech. »,
+   329→    principes: [
+   330→      « Données comme infrastructure : capteurs, IoT, open data pour la connaissance urbaine en temps réel »,
+   331→      « Gestion optimisée : transport intelligent, énergie smart grid, gestion de l'eau et des déchets »,
+   332→      « Services numériques aux citoyens : e-administration, applications de mobilité, participation en ligne »,
+   333→      « Innovation ouverte : living labs, hackathons civiques, co-création technologique avec les usagers »,
+   334→      « Mobilité connectée : VTC, vélos en libre-service, information voyageur multimodale »,
+   335→      « Modélisation prédictive : simulation urbaine, jumeaux numériques (digital twins), IA décisionnelle »,
+   336→      « Infrastructure 5G et connectivité omniprésente comme prérequis technique »,
+   337→    ],
+   338→    apportsMajeurs: [
+   339→      « Outils d'analyse inédits : jumeaux numériques, modélisation urbaine, données massives »,
+   340→      « Optimisation des services publics : éclairage adaptatif, flux de circulation, gestion énergétique »,
+   341→      « Nouvelles formes de participation citoyenne via les plateformes numériques »,
+   342→      « Projets pionniers : Songdo (Corée), Barcelona Smart City, Singapore Smart Nation »,
+   343→    ],
+   344→    limitesCritiques: [
+   345→      « Technosolutionnisme : croire que la technologie seule résout les problèmes urbains sociaux »,
+   346→      « Surveillance numérique : risques pour la vie privée et le contrôle social (smart city = surveillance city ?) »,
+   347→      « Fracture numérique : exclusion des populations non connectées ou non alphabétisées numériquement »,
+   348→      « Dépendance aux entreprises privées de la tech (GAFAM) pour l'infrastructure publique »,
+   349→      « Ville aseptisée et corporate : les smart districts négligent souvent la diversité sociale et culturelle »,
+   350→      « Vulnérabilité cybernétique : les villes hyperconnectées sont des cibles pour les attaques »,
+   351→    ],
+   352→    imageRef: "RB-14",
+   353→    motsCles: [
+   354→      « smart city »,
+   355→      « IoT »,
+   356→      « open data »,
+   357→      « jumeau numérique »,
+   358→      « living lab »,
+   359→      « mobilité intelligente »,
+   360→    ],
+   361→  },
+   362→];
+   363→
+   364→// ─── Synthèse Transversale (RB-15) ─────────────────────────────────────────────────
+   365→
+   366→const SYNTHESE_URBANISME: ElementSynthese[] = [
+   367→  {
+   368→    theme: « Tension entre top-down et bottom-up »,
+   369→    erasConcernees: [
+   370→      « planification-comprehensive »,
+   371→      « planification-plaidoyer »,
+   372→      « ville-intelligente »,
+   373→    ],
+   374→    constat:
+   375→      « L'histoire de l'urbanisme oscille entre des approches technocratiques (top-down : Le Corbusier, Abercrombie, Smart City) et des approches participatives (bottom-up : Jacobs, Nouvel Urbanisme, planification durable). Aucune n'a résolu seule les défis urbains contemporains. »,
+   376→    implicationsRecherche: [
+   377→      « Analyser les mécanismes de gouvernance hybrides combinant expertise technique et participation citoyenne »,
+   378→      « Comparer l'efficacité des approches top-down vs bottom-up sur des indicateurs mesurables »,
+   379→      « Étudier les conditions dans lesquelles la participation citoyenne produit des résultats tangibles »,
+   380→    ],
+   381→  },
+   382→  {
+   383→    theme: « Densité et forme urbaine »,
+   384→    erasConcernees: [
+   385→      « cite-jardin »,
+   386→      « planification-moderne »,
+   387→      « nouvel-urbanisme »,
+   388→      « planification-durable »,
+   389→    ],
+   390→    constat:
+   391→      « La densité est un paramètre central mais controversé. Howard la fuit (cité-jardin), Le Corbusier la concentre (tours), le Nouvel Urbanisme la modère, et la planification durable la réclame pour réduire l'empreinte carbone. La densité optimale dépend du contexte social, culturel et climatique. »,
+   392→    implicationsRecherche: [
+   393→      « Définir les seuils de densité optimaux selon les contextes socio-culturels et climatiques »,
+   394→      « Mesurer l'impact de différentes formes urbaines sur les émissions de GES et la qualité de vie »,
+   395→      « Analyser comment la densité interagit avec la mixité fonctionnelle pour produire de la vitalité »,
+   396→    ],
+   397→  },
+   398→  {
+   399→    theme: « Mobilité et échelle humaine »,
+   400→    erasConcernees: [
+   401→      « planification-moderne »,
+   402→      « planification-plaidoyer »,
+   403→      « nouvel-urbanisme »,
+   404→      « ville-intelligente »,
+   405→    ],
+   406→    constat:
+   407→      « Le passage de la ville-piéton (Jacobs) à la ville-automobile (Le Corbusier) puis au retour vers la mobilité douce et connectée illustre une recherche permanente de l'échelle humaine dans un contexte technologique changeant. »,
+   408→    implicationsRecherche: [
+   409→      « Évaluer l'impact des infrastructures de mobilité sur la cohésion sociale locale »,
+   410→      « Comparer les modèles de mobilité intelligente selon leur accessibilité pour les populations vulnérables »,
+   411→      « Analyser les effets de la transition numérique sur les pratiques de déplacement quotidiennes »,
+   412→    ],
+   413→  },
+   414→  {
+   415→    theme: « Durabilité vs croissance »,
+   416→    erasConcernees: [
+   417→      « planification-durable »,
+   418→      « ville-intelligente »,
+   419→      « nouvel-urbanisme »,
+   420→    ],
+   421→    constat:
+   422→      « Les modèles récents (ville durable, smart city, nouvel urbanisme) cherchent tous à concilier croissance urbaine et limites environnementales, mais sans résoudre la tension fondamentale entre développement économique et empreinte écologique. »,
+   423→    implicationsRecherche: [
+   424→      « Modéliser les trajectoires de développement urbain compatibles avec les limites planétaires »,
+   425→      « Analyser les mécanismes de décroissance urbaine ou de degrowth appliqués à l'aménagement »,
+   426→      « Comparer les indicateurs de durabilité utilisés dans les différents modèles de ville »,
+   427→    ],
+   428→  },
+   429→  {
+   430→    theme: « Justice spatiale et équité »,
+   431→    erasConcernees: [
+   432→      « planification-plaidoyer »,
+   433→      « planification-durable »,
+   434→      « ville-intelligente »,
+   435→    ],
+   436→    constat:
+   437→      « Chaque époque produit de nouvelles formes d'inégalité spatiale : ségrégation par les grands ensembles (moderne), gentrification par les éco-quartiers (durable), fracture numérique par la smart city (intelligente). La question de l'équité traverse toute l'histoire de l'urbanisme. »,
+   438→    implicationsRecherche: [
+   439→      « Identifier les mécanismes par lesquels les projets d'aménagement reproduisent les inégalités »,
+   440→      « Développer des indicateurs d'équité spatiale intégrés aux outils de planification »,
+   441→      « Analyser les stratégies de résistance et d'appropriation des populations marginalisées »,
+   442→    ],
+   443→  },
+   444→];
+   445→
+   446→// ─── Cadres Théoriques d'Auteurs Majeurs ───────────────────────────────────────────
+   447→
+   448→const CADRES_AUTEURS: CadreAuteur[] = [
+   449→  {
+   450→    id: "bertaud-order-without-design",
+   451→    auteur: « Alain Bertaud »,
+   452→    ouvrage: « Order without Design: How Markets Shape Cities »,
+   453→    annee: 2018,
+   454→    principesFondamentaux: [
+   455→      « Le marché immobilier est le principal ordonnateur de la structure urbaine, pas le planificateur »,
+   456→      « La densité résulte de l'interaction entre prix du foncier, revenus des ménages et préférences résidentielles »,
+   457→      « La réglementation foncière (zonage, limites de hauteur, coefficients d'occupation) a des effets pervers mesurables »,
+   458→      « Les villes les plus performantes économiquement sont celles où le marché foncier est le plus fluide »,
+   459→      « Le transport en commun est efficace uniquement là où la densité le justifie (densité seuil) »,
+   460→      « La taille urbaine optimale n'existe pas : les avantages de l'agglomération compensent les déséconomies »,
+   461→    ],
+   462→    critiquesFormulees: [
+   463→      « La planification réglementaire (zonage strict) réduit l'offre de logement et fait exploser les prix »,
+   464→      « Les plans directeurs se trompent systématiquement sur la demande future de logements et d'emplois »,
+   465→      « La ceinture verte britannique a produit un étalement urbain paradoxal au-delà de la ceinture »,
+   466→      « Le New Urbanisme impose une morphologie urbaine qui ne correspond pas toujours aux préférences réelles »,
+   467→    ],
+   468→    reglesActionnables: [
+   469→      « Règle 1 — RÉGLEMENTATION : avant de proposer une réglementation foncière, analyser ses effets pervers potentiels sur le prix du logement et la mobilité »,
+   470→      « Règle 2 — DENSITÉ : distinguer la densité de peuplement (hab/ha) de la densité d'emploi (emplois/ha) et la densité de construction (m² de plancher/ha) — chacune a des implications différentes »,
+   471→      « Règle 3 — TRANSPORT : le choix du mode de transport dépend de la densité résidentielle ET de la densité d'emploi — les deux doivent être analysées conjointement »,
+   472→      « Règle 4 — TAILLE : ne pas présupposer une taille urbaine « optimale » — les externalités d'agglomération croissent avec la taille jusqu'à un point qui varie selon le contexte »,
+   473→      « Règle 5 — MARCHÉ : utiliser les prix immobiliers comme indicateurs de la rareté foncière et de l'efficacité de la réglementation »,
+   474→      « Règle 6 — FORME : la forme urbaine « organique » (non planifiée) n'est ni chaotique ni inefficace — elle résulte de millions de décisions individuelles optimisantes »,
+   475→    ],
+   476→    citationsReformulees: [
+   477→      « La ville est le résultat de l'interaction entre le marché du travail, le marché foncier et le marché immobilier — pas du plan d'urbanisme »,
+   478→      « Un bon urbanisme ne crée pas l'ordre — il crée les conditions pour que l'ordre émerge spontanément »,
+   479→      « La réglementation qui ignore les forces du marché ne les supprime pas — elle les déplace et les amplifie »,
+   480→    ],
+   481→    pertinenceThese: [
+   482→      « Thèse sur la réglementation foncière et le prix du logement »,
+   483→      « Thèse sur les effets du zonage sur la ségrégation spatiale »,
+   484→      « Thèse sur la relation entre transport en commun et densité urbaine »,
+   485→      « Thèse sur l'étalement urbain et les politiques de croissance »,
+   486→      « Thèse comparative sur les modèles de planification dans différents pays »,
+   487→    ],
+   488→  },
+   489→  {
+   490→    id: "jacobs-death-and-life",
+   491→    auteur: « Jane Jacobs »,
+   492→    ouvrage: « The Death and Life of Great American Cities »,
+   493→    annee: 1961,
+   494→    principesFondamentaux: [
+   495→      « La diversité d'usages est la condition première de la vitalité urbaine »,
+   496→      « Les quartiers doivent mélanger résidence, commerce, industrie et loisir »,
+   497→      « Les rues doivent être sûres par la présence humaine, pas par la séparation fonctionnelle »,
+   498→      « Les blocs urbains courts favorisent la circulation piétonne et la diversité »,
+   499→      « Les bâtiments de tous âges coexistent pour offrir une gamme de prix et d'usages »,
+   500→      « La concentration de population est nécessaire mais pas suffisante pour la vitalité »,
+   501→      « Les usagers de la rue sont les premiers garants de l'ordre public »,
+   502→    ],
+   503→    critiquesFormulees: [
+   504→      « La planification moderne a détruit les quartiers vivants en les remplaçant par des zones monofonctionnelles »,
+   505→      « Les « cités-jardins » et les « villes nouvelles » sont des utopies qui ignorent la complexité urbaine réelle »,
+   506→      « Les autoroutes urbaines sont des « barrières de mort » qui détruisent les quartiers qu'elles traversent »,
+   507→      « Les grands ensembles de logements sociaux produisent de la ségrégation et du déclin »,
+   508→      « Les planificateurs confondent l'ordre visuel avec l'ordre social — une ville « en désordre » peut être socialement saine »,
+   509→    ],
+   510→    reglesActionnables: [
+   511→      « Règle 1 — MIXITÉ : évaluer tout projet d'aménagement selon sa capacité à maintenir ou créer une mixité d'usages (au moins 3 types d'activités primaires dans un rayon de 400m) »,
+   512→      « Règle 2 — BLOCS COURTS : privilégier des blocs urbains de moins de 200m de côté pour maximiser les itinéraires piétons et la perméabilité »,
+   513→      « Règle 3 — VIEUX BÂTIMENTS : préserver une proportion significative de bâtiments anciens (au moins 30-40% du parc) pour maintenir la diversité économique »,
+   514→      « Règle 4 — CONCENTRATION : viser une densité résidentielle suffisante pour soutenir les commerces et services de proximité (seuil indicatif : 100 hab/ha minimum) »,
+   515→      « Règle 5 — FRONTIÈRE ACTIVE : concevoir les rez-de-chaussée avec des façades ouvertes sur la rue (commerces, entrées, vitrines) pour générer de la surveillance naturelle »,
+   516→      « Règle 6 — AUTONOMIE DE QUARTIER : chaque quartier devrait offrir les services de base (épiceries, écoles, parcs) à distance de marche (< 500m) »,
+   517→    ],
+   518→    citationsReformulees: [
+   519→      « Les villes ont la capacité de fournir quelque chose pour tout le monde, précisément parce que chacun est différent des autres »,
+   520→      « La sécurité des rues est assurée par un réseau complexe de surveillance mutuelle, pas par la police seule »,
+   521→      « Sous le semblant de désordre d'une rue vivante se cache un ordre social complexe et résilient »,
+   522→    ],
+   523→    pertinenceThese: [
+   524→      « Thèse sur la vitalité urbaine et les indicateurs de qualité de vie »,
+   525→      « Thèse sur la mixité fonctionnelle et ses effets sur la cohésion sociale »,
+   526→      « Thèse sur les marchés de rue et l'économie informelle »,
+   527→      « Thèse sur la rénovation urbaine et la préservation du tissu social existant »,
+   528→      « Thèse sur la sécurité urbaine et l'aménagement de l'espace public »,
+   529→    ],
+   530→  },
+   531→  {
+   532→    id: « schenk-designing-cities »,
+   533→    auteur: « Leonhard Schenk »,
+   534→    ouvrage: « Designing Cities: Basics, Principles and Projects »,
+   535→    annee: 2019,
+   536→    principesFondamentaux: [
+   537→      « Le design urbain opère à l'échelle intermédiaire entre l'architecture (bâtiment) et la planification (ville) »,
+   538→      « L'espace public est le produit du bâtiment, pas le vide entre les bâtiments »,
+   539→      « La typologie morphologique (rue, place, boulevard, passage) est un vocabulaire de conception »,
+   540→      « Le design urbain doit intégrer les dimensions historiques, sociales, économiques et environnementales »,
+   541→      « Les projets urbains doivent être évalués à l'aune de leur performance globale, pas esthétique seule »,
+   542→    ],
+   543→    critiquesFormulees: [
+   544→      « Le design urbain contemporain souffre d'une déconnexion entre la formation des architectes et les réalités de la ville »,
+   545→      « Les concours d'urbanisme privilégient trop souvent l'innovation formelle au détriment de la durabilité sociale »,
+   546→      « La standardisation internationale du design urbain (starchitects) efface les spécificités locales »,
+   547→    ],
+   548→    reglesActionnables: [
+   549→      « Règle 1 — ÉCHELLE : toujours situer le projet dans son contexte morphologique immédiat et à l'échelle de la ville »,
+   550→      « Règle 2 — TYPOLOGIE : choisir les types spatiaux (rue, place, parc) en fonction des usages projetés et de l'histoire du site »,
+   551→      « Règle 3 — PERFORMANCE : évaluer le projet selon des critères multiples (social, environnemental, économique, esthétique) »,
+   552→      « Règle 4 — PARTICIPATION : intégrer les usagers dans le processus de conception dès les phases exploratoires »,
+   553→    ],
+   554→    citationsReformulees: [
+   555→      « L'espace public de qualité est le meilleur investissement qu'une ville puisse faire pour sa cohésion sociale »,
+   556→      « Concevoir la ville, c'est d'abord comprendre comment les gens l'utilisent au quotidien »,
+   557→    ],
+   558→    pertinenceThese: [
+   559→      « Thèse sur le design urbain et la qualité de l'espace public »,
+   560→      « Thèse sur la morphologie urbaine et les typologies spatiales »,
+   561→      « Thèse sur les processus de conception participative en urbanisme »,
+   562→    ],
+   563→  },
+   564→  {
+   565→    id: « tribillon-l-urbanisme »,
+   566→    auteur: « Jean Tribillon »,
+   567→    ouvrage: « L'urbanisme »,
+   568→    annee: 1991,
+   569→    principesFondamentaux: [
+   570→      « L'urbanisme est une discipline carrefour qui articule architecture, géographie, sociologie, économie et droit »,
+   571→      « La planification urbaine française s'inscrit dans une tradition centralisée et réglementaire (POS → PLU) »,
+   572→      « La décentralisation (lois Defferre 1982-1983) a transféré la compétence urbanisme aux communes et intercommunalités »,
+   573→      « Les outils de planification (SDAU, POS, PLU, SCOT) forment un système hiérarchisé de normes spatiales »,
+   574→      « La notion de « paysage urbain » englobe le bâti, l'espace public et les usages qui s'y déploient »,
+   575→    ],
+   576→    critiquesFormulees: [
+   577→      « La complexité du système normatif français (PLU, SCOT, SCoT, DSF) peut paralyser l'initiative locale »,
+   578→      « La décentralisation a creusé les inégalités entre communes riches (capables de payer des urbanistes) et communes pauvres »,
+   579→      « L'urbanisme réglementaire français reste trop centré sur le droit de construire et pas assez sur la qualité de vie »,
+   580→    ],
+   581→    reglesActionnables: [
+   582→      « Règle 1 — CONTEXTE FRANÇAIS : analyser tout projet urbain français à travers le prisme de la hiérarchie des normes (SCOT > PLU > règlement) »,
+   583→      « Règle 2 — DÉCENTRALISATION : évaluer les capacités réelles des collectivités locales à mener une politique d'urbanisme ambitieuse »,
+   584→      « Règle 3 — INTERDISCIPLINARITÉ : mobiliser les disciplines connexes (droit, économie, sociologie) pour enrichir l'analyse urbaine »,
+   585→    ],
+   586→    citationsReformulees: [
+   587→      « L'urbanisme n'est ni un art ni une science — c'est une pratique sociale qui engage la collectivité tout entière »,
+   588→      « La ville se lit dans ses lois autant que dans ses pierres »,
+   589→    ],
+   590→    pertinenceThese: [
+   591→      « Thèse sur le droit de l'urbanisme et les outils de planification français »,
+   592→      « Thèse sur la décentralisation et la gouvernance locale de l'aménagement »,
+   593→      « Thèse sur l'histoire de l'urbanisme en France »,
+   594→    ],
+   595→  },
+   596→];
+   597→
+   598→// ─── Références aux Images Cartographiques RB ──────────────────────────────────────
+   599→
+   600→const IMAGES_CARTOGRAPHIQUES: ReferenceImageRB[] = [
+   601→  {
+   602→    id: "rb-7",
+   603→    fichier: "RB-7.jpg",
+   604→    titre: « Vue d'ensemble : Chronologie de l'urbanisme »,
+   605→    synthese:
+   606→      « Panorama des grandes étapes de l'histoire de la planification urbaine, de la Cité-Jardin (1898) à la Ville Intelligente (2000+). Met en évidence les ruptures paradigmatiques et les filiations intellectuelles entre les différentes écoles. »,
+   607→    conceptsCles: [
+   608→      « chronologie »,
+   609→      « paradigmes urbains »,
+   610→      « ruptures épistémologiques »,
+   611→      « filiations intellectuelles »,
+   612→    ],
+   613→    liensAuteurs: [« Howard », « Le Corbusier », « Abercrombie », « Jacobs »],
+   614→    questionGuidePourThese:
+   615→      « Quelle époque de la planification urbaine est la plus pertinente pour analyser mon terrain d'étude ? Quels paradigmes s'y confrontent ? »,
+   616→  },
+   617→  {
+   618→    id: "rb-8",
+   619→    fichier: "RB-8.jpg",
+   620→    titre: « L'approche Cité-Jardin (1898) »,
+   621→    synthese:
+   622→      « Le modèle d'Ebenezer Howard de ville autonome combinant avantages urbains et ruraux. Plan circulaire, ceinture verte, propriété communautaire du foncier. Ancêtre des éco-quartiers et des villes nouvelles. »,
+   623→    conceptsCles: [
+   624→      « plan circulaire »,
+   625→      « ceinture verte »,
+   626→      « propriété communautaire »,
+   627→      « ville-campagne »,
+   628→    ],
+   629→    liensAuteurs: [« Howard », « Osborn »],
+   630→    questionGuidePourThese:
+   631→      « Comment le modèle de la cité-jardin influence-t-il encore les politiques actuelles de ceintures vertes et de villes nouvelles ? »,
+   632→  },
+   633→  {
+   634→    id: "rb-9",
+   635→    fichier: "RB-9.jpg",
+   636→    titre: « La planification moderniste (Le Corbusier) »,
+   637→    synthese:
+   638→      « La vision de Le Corbusier de la ville fonctionnelle, zonée et verticale. Les 5 points de l'architecture moderne, la Charte d'Athènes (1933), la primauté de la circulation automobile. Un modèle qui a façonné les villes du XXe siècle mais fortement critiqué par la suite. »,
+   639→    conceptsCles: [
+   640→      « zonage fonctionnel »,
+   641→      « Ville radieuse »,
+   642→      « Charte d'Athènes »,
+   643→      « 5 points »,
+   644→      « ville verticale »,
+   645→    ],
+   646→    liensAuteurs: [« Le Corbusier », « CIAM »],
+   647→    questionGuidePourThese:
+   648→      « Quels héritages du modernisme subsistent dans la morphologie urbaine actuelle de mon terrain d'étude ? Comment sont-ils questionnés aujourd'hui ? »,
+   649→  },
+   650→  {
+   651→    id: "rb-10",
+   652→    fichier: "RB-10.jpg",
+   653→    titre: « La planification compréhensive (Plan du Grand Londres) »,
+   654→    synthese:
+   655→      « Le modèle de planification à grande échelle d'Abercrombie pour la reconstruction de Londres. Approche systémique intégrant transport, logement, ceinture verte et villes nouvelles. Planification multi-scalaire devenue référence européenne. »,
+   656→    conceptsCles: [
+   657→      « Grand Londres »,
+   658→      « New Towns »,
+   659→      « plan directeur »,
+   660→      « déconcentration »,
+   661→      « multi-scalaire »,
+   662→    ],
+   663→    liensAuteurs: [« Abercrombie », « Forshaw »],
+   664→    questionGuidePourThese:
+   665→      « Comment le modèle de planification compréhensive s'adapte-t-il aux contextes urbains contemporains caractérisés par l'incertitude et la rapidité du changement ? »,
+   666→  },
+   667→  {
+   668→    id: "rb-11",
+   669→    fichier: "RB-11.jpg",
+   670→    titre: « Planification plaidoyer et équité (Jane Jacobs) »,
+   671→    synthese:
+   672→      « La révolution conceptuelle de Jane Jacobs : la ville doit être diverse, piétonne, dense et mixte. Critique radicale du modernisme. Paul Davidoff complète avec la planification plaidoyère au service des groupes marginalisés. »,
+   673→    conceptsCles: [
+   674→      « diversité urbaine »,
+   675→      « mixité fonctionnelle »,
+   676→      « échelle piétonne »,
+   677→      « plaidoyer »,
+   678→      « participation »,
+   679→    ],
+   680→    liensAuteurs: [« Jacobs », « Davidoff », « Gans »],
+   681→    questionGuidePourThese:
+   682→      « Dans quelle mesure les principes de Jane Jacobs sont-ils opérationnalisables dans les villes du Sud global ou dans les contextes post-coloniaux ? »,
+   683→  },
+   684→  {
+   685→    id: "rb-12",
+   686→    fichier: "RB-12.jpg",
+   687→    titre: « Le Nouvel Urbanisme (1980-présent) »,
+   688→    synthese:
+   689→      « Le retour aux principes urbains traditionnels : rues piétonnes, quartiers complets, architecture de rue, connectivité. Le Nouvel Urbanisme cherche à reconstruire la ville sur l'échelle humaine après les excès du modernisme. »,
+   690→    conceptsCles: [
+   691→      « walkability »,
+   692→      « quartier complet »,
+   693→      « connectivité »,
+   694→      « TOD »,
+   695→      « smart growth »,
+   696→    ],
+   697→    liensAuteurs: [« Duany », « Plater-Zyberk », « Calthorpe », « Krier »],
+   698→    questionGuidePourThese:
+   699→      « Le Nouvel Urbanisme est-il un retour en arrière nostalgique ou une véritable innovation pour les villes contemporaines ? »,
+   700→  },
+   701→  {
+   702→    id: "rb-13",
+   703→    fichier: "RB-13.jpg",
+   704→    titre: « La planification durable »,
+   705→    synthese:
+   706→      « L'intégration des impératifs environnementaux dans la planification urbaine : éco-quartiers, résilience climatique, biodiversité, économie circulaire. La durabilité comme paradigme obligatoire de l'aménagement contemporain. »,
+   707→    conceptsCles: [
+   708→      « éco-quartier »,
+   709→      « résilience »,
+   710→      « triple bilan »,
+   711→      « ODD 11 »,
+   712→      « économie circulaire »,
+   713→    ],
+   714→    liensAuteurs: [« Beatley », « Girardet », « Rogers »],
+   715→    questionGuidePourThese:
+   716→      « Comment mesurer la durabilité réelle d'un projet urbain au-delà des labels et du greenwashing ? Quels indicateurs sont les plus pertinents ? »,
+   717→  },
+   718→  {
+   719→    id: "rb-14",
+   720→    fichier: "RB-14.jpg",
+   721→    titre: « L'approche Ville Intelligente (Smart City) »,
+   722→    synthese:
+   723→      « La ville pilotée par les données : IoT, open data, jumeaux numériques, IA. Les promesses d'optimisation et de participation numérique face aux risques de surveillance, de fracture numérique et de dépendance technologique. »,
+   724→    conceptsCles: [
+   725→      « IoT »,
+   726→      « open data »,
+   727→      « jumeau numérique »,
+   728→      « gouvernance algorithmique »,
+   729→      « participation numérique »,
+   730→    ],
+   731→    liensAuteurs: [« Townsend », « Sassen », « Kitchin »],
+   732→    questionGuidePourThese:
+   733→      « La smart city améliore-t-elle réellement la qualité de vie de tous les citadins, ou renforce-t-elle les inégalités existantes ? »,
+   734→  },
+   735→  {
+   736→    id: "rb-15",
+   737→    fichier: "RB-15.jpg",
+   738→    titre: « Synthèse : Rassembler les approches »,
+   739→    synthese:
+   740→      « Carte de synthèse montrant comment les différentes approches de la planification urbaine peuvent se compléter. Aucun paradigme unique ne suffit : la ville contemporaine nécessite une combinaison de principes tirés de chaque école. La planification urbaine du XXIe siècle doit être intégrative, adaptative et équitable. »,
+   741→    conceptsCles: [
+   742→      « approche intégrative »,
+   743→      « planification adaptative »,
+   744→      « équité »,
+   745→      « résilience »,
+   746→      « gouvernance hybride »,
+   747→    ],
+   748→    liensAuteurs: [
+   749→      « Bertaud »,
+   750→      « Jacobs »,
+   751→      « Beatley »,
+   752→      « Townsend »,
+   753→    ],
+   754→    questionGuidePourThese:
+   755→      « Comment articuler les différents paradigmes de la planification urbaine dans un cadre analytique cohérent pour ma thèse ? »,
+   756→  },
+   757→];
+   758→
+   759→// ─── Fonction d'Activation Conditionnelle ──────────────────────────────────────────
+   760→
+   761→/**
+   762→ * Détermine si le corpus urbanisme est pertinent pour une discipline donnée.
+   763→ * Ce corpus est CONDITIONNEL — il ne doit être activé que lorsque le sujet de
+   764→ * thèse relève de l'urbanisme, l'architecture, la géographie ou l'aménagement.
+   765→ *
+   766→ * @param discipline - La discipline ou le sujet de la thèse (en français ou anglais)
+   767→ * @returns true si le corpus urbanisme devrait être activé
+   768→ */
+   769→export function isUrbanismRelevant(discipline: string): boolean {
+   770→  const normalized = discipline.toLowerCase().trim();
+   771→
+   772→  const keywordsFr: string[] = [
+   773→    « urbanisme »,
+   774→    « aménagement »,
+   775→    « aménagement du territoire »,
+   776→    « urbanisation »,
+   777→    « ville »,
+   778→    « villes »,
+   779→    « cité »,
+   780→    « cités »,
+   781→    « quartier »,
+   782→    « architecture »,
+   783→    « architecturale »,
+   784→    « géographie »,
+   785→    « géographe »,
+   786→    « paysage »,
+   787→    « paysagisme »,
+   788→    « habitat »,
+   789→    « logement »,
+   790→    « mobilité »,
+   791→    « transport urbain »,
+   792→    « espace public »,
+   793→    « espace urbain »,
+   794→    « morphologie urbaine »,
+   795→    « planification »,
+   796→    « planificateur »,
+   797→    « développement durable urbain »,
+   798→    « smart city »,
+   799→    « ville intelligente »,
+   800→    « éco-quartier »,
+   801→    « écoquartier »,
+   802→    « nouvel urbanisme »,
+   803→    « renouvellement urbain »,
+   804→    « rénovation urbaine »,
+   805→    « extension urbaine »,
+   806→    « étalement urbain »,
+   807→    « densité urbaine »,
+   808→    « ségrégation spatiale »,
+   809→    « justice spatiale »,
+   810→    « gentrification »,
+   811→    « patrimoine urbain »,
+   812→    « foncier »,
+   813→    « droit de l'urbanisme »,
+   814→    « scot »,
+   815→    « plu »,
+   816→    « scoT »,
+   817→    « plU »,
+   818→  ];
+   819→
+   820→  const keywordsEn: string[] = [
+   821→    « urban planning »,
+   822→    « urbanism »,
+   823→    « city planning »,
+   824→    « town planning »,
+   825→    « urban design »,
+   826→    « urban development »,
+   827→    « urban studies »,
+   828→    « urban geography »,
+   829→    « urban sociology »,
+   830→    « landscape architecture »,
+   831→    « land use »,
+   832→    « land use planning »,
+   833→    « zoning »,
+   834→    « smart city »,
+   835→    « sustainable city »,
+   836→    « sustainable urban »,
+   837→    « new urbanism »,
+   838→    « urban renewal »,
+   839→    « urban sprawl »,
+   840→    « urban density »,
+   841→    « public space »,
+   842→    « urban form »,
+   843→    « urban morphology »,
+   844→    « housing »,
+   845→    « built environment »,
+   846→    « city »,
+   847→    « cities »,
+   848→    « urban »,
+   849→    « metropolitan »,
+   850→    « suburban »,
+   851→    « neighborhood »,
+   852→    « neighbourhood »,
+   853→    « walkability »,
+   854→    « transit-oriented »,
+   855→    « mixed-use »,
+   856→    « garden city »,
+   857→    « urban resilience »,
+   858→    « spatial justice »,
+   859→    « gentrification »,
+   860→    « urban policy »,
+   861→    « regional planning »,
+   862→  ];
+   863→
+   864→  const allKeywords = [...keywordsFr, ...keywordsEn];
+   865→
+   866→  return allKeywords.some((keyword) => normalized.includes(keyword));
+   867→}
+   868→
+   869→// ─── Ouvrages de Référence (livres identifiés, non extraits) ────────────────────────
+   870→
+   871→interface OuvrageReference {
+   872→  id: string;
+   873→  titre: string;
+   874→  auteur: string;
+   875→  annee: number;
+   876→  format: string;
+   877→  provenance: string;
+   878→  pertinenceTopics: string[];
+   879→  noteAccessibilite: string;
+   880→}
+   881→
+   882→const OUVRAGES_REFERENCE: OuvrageReference[] = [
+   883→  {
+   884→    id: « bertaud-2018 »,
+   885→    titre: « Order without Design: How Markets Shape Cities »,
+   886→    auteur: « Alain Bertaud »,
+   887→    annee: 2018,
+   888→    format: « EPUB (dans .1.rar) »,
+   889→    provenance: « Google Drive — Ressources utilisateur »,
+   890→    pertinenceTopics: [
+   891→      « marché foncier »,
+   892→      « densité urbaine »,
+   893→      « réglementation »,
+   894→      « transport »,
+   895→      « zonage »,
+   896→    ],
+   897→    noteAccessibilite:
+   898→      « Archivé dans RAR — extraction nécessaire. Ouvrage majeur sur les fondements économiques de la forme urbaine. »,
+   899→  },
+   900→  {
+   901→    id: « tribillon-1991 »,
+   902→    titre: « L'urbanisme »,
+   903→    auteur: « Jean Tribillon »,
+   904→    annee: 1991,
+   905→    format: « PDF (dans .3.rar) »,
+   906→    provenance: « Google Drive — Ressources utilisateur »,
+   907→    pertinenceTopics: [
+   908→      « histoire de l'urbanisme »,
+   909→      « droit de l'urbanisme »,
+   910→      « planification française »,
+   911→      « décentralisation »,
+   912→    ],
+   913→    noteAccessibilite:
+   914→      « Archivé dans RAR — extraction nécessaire. Introduction synthétique à la discipline et à ses outils juridiques. »,
+   915→  },
+   916→  {
+   917→    id: « nouveaux-principes »,
+   918→    titre: « Nouveaux Principes de l'urbanisme »,
+   919→    auteur: « Collectif »,
+   920→    annee: 0,
+   921→    format: « PDF (dans .3.rar) »,
+   922→    provenance: « Google Drive — Ressources utilisateur »,
+   923→    pertinenceTopics: [
+   924→      « principes urbanistiques »,
+   925→      « renouvellement de la discipline »,
+   926→      « théorie urbaine »,
+   927→    ],
+   928→    noteAccessibilite:
+   929→      « Archivé dans RAR — extraction nécessaire. Ouvrage collectif sur l'évolution des principes de la planification. »,
+   930→  },
+   931→  {
+   932→    id: « renouveler-amenagement »,
+   933→    titre: « Renouveler l'aménagement »,
+   934→    auteur: « Collectif »,
+   935→    annee: 0,
+   936→    format: « PDF (dans .4.rar) »,
+   937→    provenance: « Google Drive — Ressources utilisateur »,
+   938→    pertinenceTopics: [
+   939→      « aménagement du territoire »,
+   940→      « renouvellement urbain »,
+   941→      « politiques publiques »,
+   942→    ],
+   943→    noteAccessibilite:
+   944→      « Archivé dans RAR — extraction nécessaire. Ouvrage sur les nouvelles approches de l'aménagement territorial. »,
+   945→  },
+   946→  {
+   947→    id: « schenk-2019 »,
+   948→    titre: « Designing Cities: Basics, Principles and Projects »,
+   949→    auteur: « Leonhard Schenk »,
+   950→    annee: 2019,
+   951→    format: « PDF »,
+   952→    provenance: « Google Drive — Livres/ressources/ »,
+   953→    pertinenceTopics: [
+   954→      « design urbain »,
+   955→      « espace public »,
+   956→      « morphologie »,
+   957→      « projets urbains »,
+   958→    ],
+   959→    noteAccessibilite:
+   960→      « Sur Google Drive (non extrait). Guide pratique du design urbain avec études de cas internationales. »,
+   961→  },
+   962→  {
+   963→    id: « fuller-moore-jacobs »,
+   964→    titre: « An Analysis of Jane Jacobs' Urban Ideas »,
+   965→    auteur: « Fuller, Moore »,
+   966→    annee: 0,
+   967→    format: « PDF »,
+   968→    provenance: « Google Drive — Livres/ »,
+   969→    pertinenceTopics: [
+   970→      « Jane Jacobs »,
+   971→      « diversité urbaine »,
+   972→      « vitalité »,
+   973→      « critique moderniste »,
+   974→    ],
+   975→    noteAccessibilite:
+   976→      « Sur Google Drive (non extrait). Analyse académique des idées de Jane Jacobs et de leur pertinence contemporaine. »,
+   977→  },
+   978→];
+   979→
+   980→// ─── Export Unifié ──────────────────────────────────────────────────────────────────
+   981→
+   982→export const URBANISM_CORPUS = {
+   983→  /**
+   984→   * Drapeau d'activation conditionnelle.
+   985→   * Ce corpus ne doit être utilisé que si isUrbanismRelevant() retourne true.
+   986→   */
+   987→  enabled: false as boolean,
+   988→
+   989→  /** Fonction pour vérifier si le corpus est pertinent */
+   990→  isRelevant: isUrbanismRelevant,
+   991→
+   992→  /** Les 7 ères de l'histoire de l'urbanisme (RB-7 à RB-15) */
+   993→  chronologieUrbanisme: {
+   994→    eras: ERAS_URBANISME,
+   995→    synthese: SYNTHESE_URBANISME,
+   996→  },
+   997→
+   998→  /** Cadres théoriques des auteurs majeurs */
+   999→  cadresTheoriques: {
+  1000→    bertaud: CADRES_AUTEURS.find((a) => a.id === « bertaud-order-without-design »)!,
+  1001→    jacobs: CADRES_AUTEURS.find((a) => a.id === « jacobs-death-and-life »)!,
+  1002→    schenk: CADRES_AUTEURS.find((a) => a.id === « schenk-designing-cities »)!,
+  1003→    tribillon: CADRES_AUTEURS.find((a) => a.id === « tribillon-l-urbanisme »)!,
+  1004→    /** Tous les cadres auteurs en tableau */
+  1005→    tous: CADRES_AUTEURS,
+  1006→  },
+  1007→
+  1008→  /** Références aux images RB-7 à RB-15 */
+  1009→  imagesCartographiques: IMAGES_CARTOGRAPHIQUES,
+  1010→
+  1011→  /** Ouvrages de référence identifiés (pas encore extraits des RAR) */
+  1012→  ouvrages: OUVRAGES_REFERENCE,
+  1013→
+  1014→  /** Nombre total d'ères couvertes */
+  1015→  nombreEras: ERAS_URBANISME.length,
+  1016→
+  1017→  /** Nombre de cadres théoriques */
+  1018→  nombreCadres: CADRES_AUTEURS.length,
+  1019→
+  1020→  /** Nombre d'images référencées */
+  1021→  nombreImages: IMAGES_CARTOGRAPHIQUES.length,
+  1022→
+  1023→  /** Nombre d'ouvrages de référence */
+  1024→  nombreOuvrages: OUVRAGES_REFERENCE.length,
+  1025→} as const;
+  1026→
+  1027→// ─── Ré-export des types pour usage externe ─────────────────────────────────────────
+  1028→
+  1029→export type {
+  1030→  EreUrbanisme,
+  1031→  CadreAuteur,
+  1032→  ReferenceImageRB,
+  1033→  ElementSynthese,
+  1034→  OuvrageReference,
+  1035→};
+  1036→

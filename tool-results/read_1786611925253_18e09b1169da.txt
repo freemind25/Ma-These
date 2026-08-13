@@ -1,0 +1,457 @@
+     1→// Corpus scientifique - ThesisFrame
+     2→// Regles IMRaD, criteres qualite, anti-patterns (Gastel & Day, Turabian)
+     3→
+     4→export type CritereQualite = string;
+     5→
+     6→export type AntiPattern = {
+     7→  erreur: string;
+     8→  correction: string;
+     9→};
+    10→
+    11→export type SectionCriteres = {
+    12→  titre: CritereQualite[];
+    13→  resume: CritereQualite[];
+    14→  introduction: CritereQualite[];
+    15→  methodes: CritereQualite[];
+    16→  resultats: CritereQualite[];
+    17→  discussion: CritereQualite[];
+    18→};
+    19→
+    20→export type AntipatternsParSection = {
+    21→  titre: AntiPattern[];
+    22→  resume: AntiPattern[];
+    23→  introduction: AntiPattern[];
+    24→  methodes: AntiPattern[];
+    25→  resultats: AntiPattern[];
+    26→  discussion: AntiPattern[];
+    27→};
+    28→
+    29→export type ItemChecklist = {
+    30→  categorie: string;
+    31→  items: string[];
+    32→};
+    33→
+    34→export const CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE = {
+    35→  reglesIMRaD: `STRUCTURE IMRAD D'UN ARTICLE SCIENTIFIQUE :
+    36→
+    37→Logique fondamentale (4 questions) :
+    38→  - Quelle question a ete etudiee ? -> Introduction
+    39→  - Comment a-t-elle ete etudiee ? -> Methodes
+    40→  - Quels sont les resultats ? -> Resultats
+    41→  - Que signifient ces resultats ? -> Discussion
+    42→
+    43→**TITRE** :
+    44→- Definir comme le moins de mots possibles decrivant le contenu du papier.
+    45→- Pas de mots de remplissage en debut ("Etudes sur", "Observations preliminaires sur", "A/An/Le").
+    46→- Specific plutot que general : nommer les especes, les methodes, les variables si possible.
+    47→- Syntaxe correcte : attention aux participes suspendus ("bacteries causant la mammite par chromatographie" -> "par chromatographie, bacteries causant la mammite").
+    48→- Pas d'abreviations, de noms commerciaux, de jargon.
+    49→- Le titre est une etiquette, pas une phrase (eviter les titres affirmatifs/declaratifs).
+    50→- Pas de titres-serie ni de titres-a-deux-points sauf convention de la revue.
+    51→
+    52→**RESUME (ABSTRACT)** :
+    53→- Version miniature du papier (les 4 elements IMRaD).
+    54→- Maximum 250 mots, un seul paragraphe (sauf format structure avec sous-titres).
+    55→- Tems : principalement le passe (travail deja realise).
+    56→- Auto-suffisant : compréhensible sans le reste de l'article.
+    57→- Pas de citations, pas de renvoi a des tableaux/figures.
+    58→- Pas d'information absente du corps du texte.
+    59→- Mots-cles a la fin (3-5 termes, differents de ceux du titre).
+    60→
+    61→**INTRODUCTION (entonnoir : du general au specifique)** :
+    62→  1. Presenter la nature et la portee du probleme avec toute la clarte possible. Pourquoi ce domaine est-il important ?
+    63→  2. Revue selective de la litterature pertinente pour orienter le lecteur et identifier le gap.
+    64→  3. Formuler clairement l'objectif de la recherche (ou l'hypothese).
+    65→  4. Indiquer la methode choisie et, si necessaire, justifier ce choix.
+    66→  5. (Recommande) Annoncer les principaux resultats et conclusions des la fin.
+    67→- Tems : principalement le present (connaissances etablies).
+    68→- Ne PAS cacher les resultats importants jusqu'a la fin (pas d'effet de suspense).
+    69→- Definir tout terme specialise ou abreviation.
+    70→
+    71→**METHODES (reproductibilite)** :
+    72→  - But : decrire le design experimental et fournir assez de details pour qu'un collegue competent puisse reproduire l'experience.
+    73→  - Temps : principalement le passe (actions deja realisees). Pas de copier-coller de la proposition sans changer le temps.
+    74→  - Ordre : chronologique quand possible, mais regrouper les methodes apparentees (ex. tous les dosages ensemble, meme si faits a des moments differents).
+    75→  - Commencer par un apercu general du design experimental.
+    76→  - Sous-titres paralleles a ceux de la section Resultats.
+    77→  - Materials : specifications techniques exactes, quantites, sources. Noms generiques de preference aux noms commerciaux.
+    78→  - Sujets humains/animaux : criteres de selection, consentement eclaire, approbation ethique (IRB/IACUC).
+    79→  - Statistiques : decrire brievement les methodes statistiques; citer si avancees ou inhabituelles.
+    80→  - Pas de resultats dans cette section.
+    81→  - Precision grammaticale cruciale (une virgule manquante peut changer le sens).
+    82→  - La voix passive est acceptable ici (l'agent de l'action est souvent irrelevent).
+    83→
+    84→**RESULTATS (clarte cristalline)** :
+    85→  - C'est le coeur du papier - les nouvelles connaissances.
+    86→  - Commencer par un apercu general (pas repeter les details de la section Methodes).
+    87→  - Presenter les donnees : ordre chronologique, thematique, ou du plus au moins important.
+    88→  - Donnees representatives plutot que repetitives ("Le sage selectionne les faits; le fou les accumule").
+    89→  - Si peu de determinations : dans le texte. Si repetitives : dans des tableaux/graphiques.
+    90→  - Tems : passe.
+    91→  - Eviter la redondance : ne pas repeter en mots ce qui est deja lisible dans les tableaux/figures.
+    92→  - Citer en renvoi : "X a inhibe la croissance de Y (Tableau 1)" et NON "Il est clairement montre dans le Tableau 1 que X a inhibe..."
+    93→  - Signaler les resultats negatifs pertinents (ce qui n'a pas fonctionne est aussi important).
+    94→  - Nombre de decimales raisonnable (29% et non 28,8136% pour 17/59).
+    95→  - Ne pas laisser l'antecedent d'un pronom ambigu.
+    96→
+    97→**DISCUSSION (entonnoir inverse : du specifique au general)** :
+    98→  - Interpréter les resultats, NE PAS les repeter.
+    99→  1. Presenter les principes, relations et generalisations montres par les resultats.
+   100→  2. Pointer les exceptions et correlations manquantes. Ne jamais masquer ou truquer les donnees.
+   101→  3. Comparer avec les travaux anterieurs (convergences et divergences, raisons possibles).
+   102→  4. Discuter les implications theoriques et les applications pratiques.
+   103→  5. Indiquer clairement l'apport original par rapport aux travaux anterieurs.
+   104→  6. Poser de nouvelles questions de recherche et suggérer des pistes pour les travaux futurs.
+   105→  7. Formuler une conclusion claire, nette et memorable.
+   106→  - Forme en entonnoir inverse : partir des resultats specifiques pour aboutir aux implications generales.
+   107→  - Repondre a la question posee dans l'introduction : l'intro et la discussion forment une paire logique.
+   108→  - RAPPEL : la discussion interprete les resultats, elle ne les repete pas.
+   109→
+   110→  Erreur frequente (la technique du calamar) : masquer des faiblesses dans les donnees par un texte verbeux et flou. La concision et l'honnetete intellectuelle sont preferable.
+   111→
+   112→  Autres variantes structurelles :
+   113→  - IRDAM : Methodes en fin de papier (certaines revues medicales).
+   114→  - IMRDRDRD : Alternance methodes/resultats (experiences sequentielles).
+   115→  - ILMRAD : Revue de litterature integree apres l'introduction.
+   116→  - IMRADC : Section Conclusions separee a la fin.
+   117→
+   118→  Toujours verifier les conventions de la revue cible avant de choisir la structure.
+   119→
+   120→  Forme globale du papier : Sablier (large -> etroit -> large). Orientation large (intro), focus etroit (methodes/resultats), contexte large (discussion).
+   121→`,
+   122→
+   123→  criteresQualiteParSection: {
+   124→    titre: [
+   125→      "Le titre contient-il les mots-cles les plus pertinents pour l'indexation ?",
+   126→      "Chaque mot est-il necessaire ?",
+   127→      "La syntaxe est-elle correcte (pas de participe suspendu) ?",
+   128→      "Le titre serait-il comprehensible hors de son contexte ?",
+   129→      "Y a-t-il des abreviations, du jargon ou des noms commerciaux ? (a eviter)",
+   130→      "Le titre est-il specifique plutot que vague ou general ?",
+   131→    ],
+   132→    resume: [
+   133→      "Le resume decrit-il les 4 elements (objectif, methode, resultats, conclusion) ?",
+   134→      "Le resume respecte-t-il la limite de mots (typiquement 250 mots) ?",
+   135→      "Le resume est-il auto-suffisant (sans renvoi a des figures, tableaux ou references) ?",
+   136→      "Les abreviations sont-elles evitees sauf si elles apparaissent plusieurs fois ?",
+   137→      "Le resume contient-il des informations absentes du corps du texte ? (a eviter)",
+   138→      "Le temps verbal est-il principalement le passe ?",
+   139→    ],
+   140→    introduction: [
+   141→      "Le probleme est-il clairement defini des les premieres phrases ?",
+   142→      "La revue de litterature est-elle ciblee et selective (pas exhaustive) ?",
+   143→      "Le gap dans la litterature est-il explicitement identifie ?",
+   144→      "L'objectif de l'etude est-il formule de maniere claire et specifique ?",
+   145→      "La structure en entonnoir (du general au specifique) est-elle respectee ?",
+   146→      "Les termes specialises sont-ils definis ?",
+   147→    ],
+   148→    methodes: [
+   149→      "Un collegue competent pourrait-il reproduire l'experience a partir de cette description ?",
+   150→      "Les materiaux sont-ils decrits avec precision (specifications, sources, quantites) ?",
+   151→      "Le design experimental est-il decrit de maniere generale avant les details ?",
+   152→      "Les methodes statistiques sont-elles mentionnees (sans description excessive) ?",
+   153→      "Les approbations ethiques sont-elles notees (sujets humains, animaux) ?",
+   154→      "Y a-t-il des resultats melanges dans cette section ? (a eviter)",
+   155→    ],
+   156→    resultats: [
+   157→      "Les resultats sont-ils presentes avec clarte cristalline ?",
+   158→      "Les donnees representatives sont-elles privilegiees sur les donnees repetitives ?",
+   159→      "L'organisation est-elle logique (chronologique, par theme, ou par importance) ?",
+   160→      "Les chiffres sont-ils cites en renvoi au tableau/figure, pas en repetition verbale ?",
+   161→      "Les valeurs negatives (ce qui n'a pas fonctionne) sont-elles mentionnees quand pertinent ?",
+   162→      "Le nombre de decimales est-il raisonnable par rapport a la precision des mesures ?",
+   163→    ],
+   164→    discussion: [
+   165→      "La discussion interprete-t-elle les resultats au lieu de les repeter ?",
+   166→      "Les resultats sont-ils compares aux travaux anterieurs (convergences et divergences) ?",
+   167→      "Les implications theoriques et pratiques sont-elles discutees ?",
+   168→      "Les forces et limites de l'etude sont-elles identifiees honnetement ?",
+   169→      "La discussion repond-elle a la question posee dans l'introduction ?",
+   170→      "La conclusion est-elle claire, nette et memorable ?",
+   171→    ],
+   172→  },
+   173→
+   174→  reglesTableauxFigures: `TABLEAUX :
+   175→- Utiliser un tableau quand les donnees sont trop nombreuses ou complexes pour le texte.
+   176→- Ne jamais dupliquer dans le texte ce qui est deja clairement lisible dans le tableau.
+   177→- Structure : en-tetes clairs, unites dans les en-tetes de colonnes, donnees alignees.
+   178→- Chaque tableau doit etre autonome : comprehensible sans lire le texte.
+   179→- Titre descriptif au-dessus du tableau.
+   180→- Notes de bas de tableau pour les abreviations, les niveaux de signification (p), et les notes methodologiques.
+   181→- Pas de lignes verticales dans les tableaux scientifiques (convention standard).
+   182→
+   183→FIGURES :
+   184→- Utiliser des graphiques pour montrer des tendances, des comparaisons, des relations.
+   185→- Eviter les graphiques 3D decoratifs : la clarte prime sur l'esthetique.
+   186→- Legende descriptive sous la figure.
+   187→- Les axes doivent avoir des etiquettes claires avec unites.
+   188→- Resolution suffisante pour la publication (minimum 300 dpi).
+   189→- Chaque figure doit etre referencee dans le texte.
+   190→- Ne pas utiliser de figure quand un tableau serait plus precis (donnees exactes).
+   191→- Schema experimentaux et diagrammes de flux pour les methodes complexes.
+   192→
+   193→REFERENCEMENT DANS LE TEXTE :
+   194→- Ecrire "X a inhibe la croissance de Y (Tableau 1)" et NON "Il est clairement montre dans le Tableau 1 que X a inhibe la croissance de Y".
+   195→- Attirer l'attention sur les resultats, pas sur les tableaux/figures.
+   196→`,
+   197→
+   198→  reglesCitationReferences: `TROIS SYSTEMES DE CITATION PRINCIPAUX :
+   199→
+   200→1. Nom-Annee (systeme Harvard) : "Dupont (2020)" ou "(Dupont et Martin, 2020)".
+   201→   - Avantage : facile a ajouter/supprimer des references.
+   202→   - Regle "et al." : 1-2 auteurs = tous cites ; 3 auteurs = tous la premiere fois puis "et al." ; 4+ auteurs = "et al." des la premiere citation.
+   203→
+   204→2. Numerotation alphabetique : references classees par ordre alphabetique, citees par numero.
+   205→   - Permet d'integrer le nom dans la phrase : "Cette methode a ete decouverte par Dupont (13)."
+   206→
+   207→3. Numerotation par ordre d'apparition : numeros dans l'ordre de citation.
+   208→   - Simple, lecteur suit l'ordre 1-2-3. Difficile a modifier (renumerotation).
+   209→
+   210→BONNES PRATIQUES :
+   211→- Toujours conserver les informations bibliographiques completes (titre, pages incluses, DOI si disponible).
+   212→- Verifier chaque reference contre l'original.
+   213→- Les titres de journaux en un seul mot (Science, Biochemistry) ne sont JAMAIS abreges.
+   214→- Les abreviations de titres de journaux suivent la norme ANSI.
+   215→
+   216→STYLE CHICAGO/TURABIAN :
+   217→Deux styles selon la discipline :
+   218→- Notes-Bibliographie : notes de bas de page, bibliographie finale (sciences humaines, certaines sciences sociales).
+   219→- Auteur-Date : citations entre parentheses dans le texte (Auteur, Annee, p. X), liste de references finale (sciences naturelles, physiques, la plupart des sciences sociales).
+   220→
+   221→QUAND CITER (Turabian) :
+   222→- Resumer quand on n'a besoin que du point general.
+   223→- Paraphraser quand on peut representer l'idee plus clairement que l'original (utiliser ses propres mots ET sa propre structure de phrases).
+   224→- Citer textuellement quand : les mots constituent une preuve, proviennent d'une autorite, sont originaux/frappants, encadrent la discussion, ou presentent une vue qu'on conteste.
+   225→- Verifier TOUJOURS les citations textuelles contre l'original.
+   226→`,
+   227→
+   228→  processusSoumissionEvaluation: `PREPARATION A LA SOUMISSION :
+   229→- Verifier la conformite aux instructions aux auteurs de la revue cible.
+   230→- Relire l'ensemble du manuscrit : coherence, exactitude, logique, concision.
+   231→- Faire relire par : (1) un expert de la specialite, (2) un collegue du domaine general, (3) un lecteur intelligent non-specialiste.
+   232→- Preparer une lettre d'accompagnement : indiquer la nouveaute, l'importance, l'absence de soumission parallele.
+   233→- Finaliser le titre et le resume en dernier.
+   234→
+   235→PROCESSUS D'EVALUATION (PEER REVIEW) :
+   236→- L'editeur evalue d'abord le manuscrit (pertinence, qualite generale).
+   237→- Si retenu, l'editeur l'envoie a 2-3 rapporteurs experts.
+   238→- Les rapporteurs evaluent : importance de la question, originalite, validite des methodes, solidite des conclusions, clarte de la redaction.
+   239→- L'editeur prend la decision : accepter, reviser (mineurement ou majoritairement), ou rejeter.
+   240→
+   241→REPONDRE AUX COMMENTAIRES :
+   242→- Repondre a CHAQUE commentaire, point par point.
+   243→- Adopter un ton respectueux et constructif.
+   244→- Si on ne suit pas une suggestion, expliquer pourquoi avec courtoisie.
+   245→- Reviser le manuscrit en consequence et indiquer les modifications.
+   246→`,
+   247→
+   248→  considerationsEthiques: [
+   249→    "Authenticite : les donnees rapportees doivent provenir de recherches reellement effectuees. La fabrication de donnees est une faute grave.",
+   250→    "Precision : pas d'omission de points aberrants sans justification, pas de manipulation d'images pour accentuer les resultats.",
+   251→    "Originalite : les resultats doivent etre inedits (sauf republication avec citation claire de l'original). Pas de double soumission.",
+   252→    "Credit : l'auteur doit avoir contribue substantiellement a la conception, l'acquisition de donnees, ou l'analyse. Contribuer uniquement a l'obtention de financement ne suffit pas.",
+   253→    "Ordre des auteurs : refleter l'importance de la contribution. L'auteur correspondant soumet, recoit les decisions et repond aux lecteurs.",
+   254→    "Conflits d'interets : declarer tout lien financier, personnel ou professionnel pouvant influencer l'interpretation des resultats.",
+   255→    "Sujets humains/animaux : obtenir le consentement eclaire et l'approbation du comite d'ethique (IRB/IACUC).",
+   256→    "Plagiat : paraphraser en utilisant ses propres mots et sa propre structure de phrases. Toujours citer la source.",
+   257→  ],
+   258→
+   259→  antipatterns: {
+   260→    titre: [
+   261→      { erreur: "Titres vagues ou trop generaux", exemple: "Etudes sur les bacteries", correction: "Inhibition de la croissance de Staphylococcus aureus par la streptomycine" },
+   262→      { erreur: "Mots de remplissage en debut de titre", exemple: "Observations preliminaires sur l'effet de certains antibiotiques...", correction: "Supprimer 'Observations preliminaires sur' et 'de certains'" },
+   263→      { erreur: "Syntaxe defectueuse (participe suspendu)", exemple: "Caracterisation des bacteries causant la mammite par chromatographie", correction: "Caracterisation par chromatographie des bacteries causant la mammite" },
+   264→      { erreur: "Titres-slogans ou jeux de mots", exemple: "Mourir pour faire pipi", correction: "Association entre l'utilisation de diuretiques et la mortalite cardiovasculaire" },
+   265→    ],
+   266→    resume: [
+   267→      { erreur: "Resume qui omet des elements cles (objectif, methode, resultats ou conclusion)", correction: "Verifier la presence des 4 composantes IMRaD dans le resume." },
+   268→      { erreur: "Informations ou conclusions absentes du corps du texte", correction: "Le resume ne doit contenir que ce qui est dans le papier." },
+   269→      { erreur: "Citations bibliographiques dans le resume", correction: "Supprimer les citations (sauf exception pour une methode modifiee)." },
+   270→      { erreur: "Resume trop long ou verbeux", correction: "Condenser : 'Les individus dans les sciences doivent faire une quantite considerable d'ecriture' -> 'Les scientifiques doivent ecrire pour reussir'." },
+   271→    ],
+   272→    introduction: [
+   273→      { erreur: "Cacher les resultats importants jusqu'a la fin (effet de suspense)", correction: "Annoncer les principaux resultats et conclusions a la fin de l'introduction. Le lecteur doit savoir qui a fait ca des le debut." },
+   274→      { erreur: "Revue de litterature excessive ou non selective", correction: "La revue dans l'intro doit etre breve et ciblee. Une revue approfondie necessite une section separee." },
+   275→      { erreur: "Probleme non defini ou incomprehensible", correction: "La premiere regle est de definir le probleme clairement. Sans probleme clair, le lecteur n'a aucun interet pour la solution." },
+   276→      { erreur: "Terms non definis pour les lecteurs hors-specialite", correction: "Definir tout terme specialise ou abreviation dans l'introduction." },
+   277→    ],
+   278→    methodes: [
+   279→      { erreur: "Melanges de resultats dans la section methodes", correction: "Les resultats n'ont pas leur place ici. Seule la description de la procedure." },
+   280→      { erreur: "Details insuffisants pour la reproductibilite", correction: "Test : un collegue competent peut-il reproduire l'experience ? Si non, ajouter des details." },
+   281→      { erreur: "Changement de temps non effectue (present au lieu du passe)", correction: "Revoir le temps verbal : les actions deja accomplies se rapportent au passe." },
+   282→      { erreur: "Noms commerciaux sans equivalent generique", correction: "Utiliser le nom generique en premier, le nom commercial entre parentheses si necessaire." },
+   283→    ],
+   284→    resultats: [
+   285→      { erreur: "Repetition verbale de toutes les donnees des tableaux/figures", correction: "Citer en renvoi : 'X a inhibe la croissance de Y (Tableau 1)' plutot que de tout reformuler." },
+   286→      { erreur: "Donnees repetitives plutot que representatives", correction: "Le sage selectionne les faits ; le fou les accumule. Presenter les donnees pertinentes, pas tout le carnet de laboratoire." },
+   287→      { erreur: "Trop de decimales non significatives", correction: "Si 17 sur 59 ecureuils ont repondu, ecrire 29% et non 28,8136%." },
+   288→      { erreur: "Antecedents de pronoms manquants", correction: "Toujours verifier que chaque pronom a un antecedent clair et non ambigu." },
+   289→    ],
+   290→    discussion: [
+   291→      { erreur: "Repetition/recapitulation des resultats", correction: "La discussion INTERPRETE les resultats, elle ne les repete pas." },
+   292→      { erreur: "Discussion trop verbeuse ou evasive (technique du calamar)", correction: "Etre direct et concis. L'obscurete masque souvent des faiblesses dans les donnees." },
+   293→      { erreur: "Omission des limites de l'etude", correction: "Identifier honnetement les limites. Les evaluateurs les remarqueront de toute facon -- mieux vaut les anticiper." },
+   294→      { erreur: "Pas de reponse a la question de l'introduction", correction: "L'intro et la discussion forment une paire. La discussion doit repondre a ce que l'intro a pose." },
+   295→      { erreur: "Fin en marecage (pas de conclusion claire)", correction: "Terminer par une conclusion nette et memorable. Comme une bonne musique, un bon article a un climax adapte." },
+   296→    ],
+   297→  } as Record<string, AntiPattern[]>,
+   298→
+   299→  jargonAEviter: {
+   300→    "en raison du fait que": "parce que",
+   301→    "en ce qui concerne": "sur, concernant",
+   302→    "au moyen de": "par, avec",
+   303→    "a l'issue de": "apres",
+   304→    "a l'heure actuelle": "maintenant",
+   305→    "a ce stade": "maintenant",
+   306→    "dans le but de": "pour",
+   307→    "pour la raison que": "parce que",
+   308→    "en vue de": "pour",
+   309→    "compte tenu du fait que": "parce que",
+   310→    "il convient de noter que": "noter que (ou supprimer)",
+   311→    "il est a noter que": "noter que (ou supprimer)",
+   312→    "il est suggere que": "je pense",
+   313→    "il est generalement admis que": "beaucoup pensent",
+   314→    "il est interessant de noter que": "(supprimer)",
+   315→    "il a ete rapporte par X que": "X a rapporte que",
+   316→    "il est apparu que": "(supprimer)",
+   317→    "il est evident que": "clairement",
+   318→    "il est clair que": "clairement",
+   319→    "en termes de": "concernant, au sujet de",
+   320→    "en l'absence de": "sans",
+   321→    "dans l'eventualite ou": "si",
+   322→    "a la majorite des": "la plupart des",
+   323→    "un nombre considerable de": "beaucoup de",
+   324→    "un certain nombre de": "quelques, certains",
+   325→    "un petit nombre de": "quelques",
+   326→    "essentiellement unique": "unique",
+   327→    "tres unique": "unique",
+   328→    "resultats finaux": "resultats",
+   329→    "la grande majorite des": "la plupart des",
+   330→    "faciliter": "aider",
+   331→    "effectuer": "faire",
+   332→    "mettre en oeuvre": "commencer, appliquer",
+   333→    "proceder a": "faire",
+   334→    "prendre en consideration": "considere",
+   335→    "avoir la capacite de": "pouvoir",
+   336→    "quantifier": "mesurer",
+   337→    "elucider": "expliquer",
+   338→    "modifier": "changer",
+   339→    "ultime": "dernier",
+   340→    "rassembler ensemble": "rassembler",
+   341→    "suffisamment suffisant": "suffisant",
+   342→    "resumer brievement": "resumer",
+   343→    "raison fondamentale": "cause",
+   344→    "resultat final": "resultat",
+   345→    "consensus d'opinion": "consensus",
+   346→    "rouge en couleur": "rouge",
+   347→    "grand en taille": "grand",
+   348→    "a un rythme rapide": "rapidement",
+   349→    "a une date anterieure": "precedemment",
+   350→    "avoir un impact sur": "affecter",
+   351→    "faire reference a": "mentionner",
+   352→    "cette decouverte particuliere": "cette decouverte",
+   353→    "ce resultat semblerait indiquer que": "ce resultat indique que",
+   354→    "que ce soit ou non": "si",
+   355→    "a un rythme rapide": "rapidement",
+   356→    "a une date anterieure": "precedemment",
+   357→    "dans le domaine de la chimie": "en chimie",
+   358→  } as Record<string, string>,
+   359→
+   360→  reglesRevueLitterature: `REDIGER UNE REVUE DE LITTERATURE :
+   361→
+   362→1. Planification :
+   363→   - Preparer un plan detaille AVANT d'ecrire.
+   364→   - Consulter l'editeur de la revue cible pour verifier l'interet du sujet.
+   365→
+   366→2. Types de revues :
+   367→   - Revue critique : evaluation et synthese avec jugement (prefere par les vieilles revues de synthese).
+   368→   - Revue bibliographique : compilation annotee mais non evaluative.
+   369→   - Revue systematique : methodologie explicite (bases interrogees, termes, criteres d'inclusion/exclusion). Suivre PRISMA.
+   370→
+   371→3. Style d'ecriture :
+   372→   - Moins technique que pour un article original (audience plus large).
+   373→   - Eliminer le jargon ou l'expliquer soigneusement.
+   374→   - Style expansif plutot que telegraphique.
+   375→   - Utiliser des sous-titres correspondant au plan.
+   376→
+   377→4. Contenu essentiel :
+   378→   - Premier paragraphe de chaque section : crucial pour les lecteurs qui decident de lire ou de survoler.
+   379→   - INTEGRER plutot que cataloguer : combiner les resultats de differentes etudes dans des paragraphes thematiques.
+   380→   - Ne PAS faire une succession d'abstracts (un paragraphe par etude citee).
+   381→   - Inclure des figures et tableaux quand approprie.
+   382→   - Identifier les lacunes dans les connaissances.
+   383→   - Ecrire une conclusion/synthese.
+   384→
+   385→5. Erreurs frequentes :
+   386→   - Citer tout ce qui existe sur le sujet (citer ce qui est pertinent).
+   387→   - Ne pas citer un article important : le mentionner avec ses limites si necessaire.
+   388→   - Organiser chronologiquement sans reflexion thematique.
+   389→`,
+   390→
+   391→  conseilsThese: `REDACTION DE LA THESE :
+   392→
+   393→- La these est la preuve que le candidat maitrise un domaine et sait faire de la recherche originale.
+   394→- Commencer a ecrire TOT pendant la recherche (pas a la fin).
+   395→- On peut commencer par n'importe quelle section (souvent les Methodes sont les plus faciles).
+   396→- Laisser le titre et le resume pour la fin.
+   397→- Reviser au moins 10 fois.
+   398→
+   399→RECHERCHE D'EFFICACITE :
+   400→- Bloquer des creneaux d'ecriture dans l'agenda.
+   401→- Fixer des echeances internes.
+   402→- Ne pas interrompre l'elan pour chercher des details mineurs.
+   403→- S'arreter en plein elan pour faciliter la reprise.
+   404→- Si blocage : diviser en sous-taches, lire un bon exemple, enregistrer ses idees.
+   405→
+   406→VERIFICATION AVANT SOUMISSION :
+   407→- Montrer le manuscrit a : un expert de la specialite, un collegue du domaine, un lecteur non-specialiste.
+   408→- Poser la question cle : un collegue peut-il reproduire les experiences ?
+   409→- Verifier coherence, exactitude, logique, concision, grammaire, orthographe.
+   410→`,
+   411→
+   412→  checklistSoumission: [
+   413→    { categorie: "Contenu", items: [
+   414→      "Toutes les informations necessaires sont-elles incluses ?",
+   415→      "Du contenu superflu doit-il etre supprime ?",
+   416→      "Toutes les informations sont-elles exactes ?",
+   417→      "Le raisonnement est-il logiquement solide ?",
+   418→      "Le contenu est-il coherent tout au long du manuscrit ?",
+   419→      "La discussion repond-elle a la question de l'introduction ?",
+   420→    ]},
+   421→    { categorie: "Organisation", items: [
+   422→      "La structure IMRaD est-elle respectee (ou variante appropriee) ?",
+   423→      "Les sous-titres sont-ils paralleles entre methodes et resultats ?",
+   424→      "Le plan en entonnoir est-il respecte dans l'introduction ?",
+   425→      "Le plan en entonnoir inverse est-il respecte dans la discussion ?",
+   426→    ]},
+   427→    { categorie: "Redaction", items: [
+   428→      "Chaque phrase est-elle clairement formulee ?",
+   429→      "Les points sont-ils brievement, simplement et directement enonces ?",
+   430→      "Le jargon et les expressions verbeuses sont-ils elimines ?",
+   431→      "La grammaire, l'orthographe et la ponctuation sont-elles correctes ?",
+   432→      "Le temps verbal est-il approprie (present pour la litterature, passe pour les methodes/resultats) ?",
+   433→      "Les abreviations sont-elles definies a la premiere utilisation ?",
+   434→    ]},
+   435→    { categorie: "Elements visuels", items: [
+   436→      "Chaque tableau/figure est-il bien concu et necessaire ?",
+   437→      "Les tableaux/figures sont-ils references dans le texte ?",
+   438→      "Les legendes sont-elles descriptives et autonomes ?",
+   439→      "Il n'y a pas de redondance texte/tableau ?",
+   440→    ]},
+   441→    { categorie: "References", items: [
+   442→      "Toutes les references citees sont-elles dans la bibliographie (et vice versa) ?",
+   443→      "Chaque reference est-elle verifiee contre l'original ?",
+   444→      "Le style de citation est-il conforme aux instructions aux auteurs ?",
+   445→      "Les titres de journaux sont-ils correctement abreges ?",
+   446→      "Les DOI sont-ils inclus quand disponibles ?",
+   447→    ]},
+   448→    { categorie: "Ethique et forme", items: [
+   449→      "Les approbations ethiques sont-elles mentionnees ?",
+   450→      "Les conflits d'interets sont-ils declares ?",
+   451→      "La contribution de chaque auteur est-elle claire ?",
+   452→      "Le manuscrit est-il conforme aux instructions aux auteurs de la revue ?",
+   453→      "La lettre d'accompagnement est-elle preparee ?",
+   454→    ]},
+   455→  ],
+   456→} as const;
+   457→

@@ -1,0 +1,958 @@
+     1→paul johannesson
+     2→W R I T I N G Y O U R T H E S I S W I T H C H AT G P T
+     3→
+     4→W R I T I N G Y O U R T H E S I S W I T H C H AT G P T
+     5→paul johannesson
+     6→
+     7→Research, Scholarship and Academic Writing in the Age of Generative AI
+     8→January 2024 – First edition
+     9→
+    10→Paul Johannesson: Writing Your Thesis with ChatGPT, Research, Scholarship and Academic Writing in the Age of Generative AI, January
+    11→2024
+    12→This book is licensed under the Creative Commons Attribution 4.0
+    13→International License
+    14→
+    15→P R E FA C E
+    16→
+    17→Over many years, I have guided students in their thesis work. As a
+    18→supervisor for over 10 PhD candidates and 100 bachelor’s and master’s theses, and as a reviewer or examiner for more than 1000 theses, I have witnessed the challenges the students have faced. I have
+    19→seen them wrestling with the formulations of their research questions,
+    20→struggling with their literature reviews, sweating over their data collection and data analysis, and grappling with their writing. Yet, I
+    21→have also seen all this hard work bearing fruit in well-crafted theses
+    22→with original, significant findings, making them the pinnacle of the
+    23→students’ academic work. Generative AI is promising, or threatening,
+    24→to change all of this.
+    25→Generative AI tools, such as ChatGPT, will be able to support all
+    26→parts and aspects of thesis writing. Students will have access to multitudes of virtual, but devoted and indefatigable, experts, research
+    27→assistants, supervisors, mentors, and editors. Will these tools take out
+    28→the drudgery in thesis writing and leave the fun and creative parts?
+    29→Will they enable students to produce theses with higher quality, and
+    30→learn more in the process, than ever before? Or will they lure the students into soulless and automated writing with predictable and dull
+    31→results? And what will the role of human supervisors be in this new
+    32→landscape?
+    33→This book does not answer these questions. Instead, it takes a more
+    34→practical approach by providing instruments, in the form of guidelines and prompts, that students and supervisors can use to act on
+    35→these questions — the book is rather about changing than explaining.
+    36→The instruments encourage students to work with generative AI in an
+    37→iterative, open-ended, creative and critical way instead of just making
+    38→the writing more efficient. While generative AI is here to stay as a vital part of the thesis writing process, it is up to students and teachers
+    39→to form its use.
+    40→When writing the book, I have made extensive use of ChatGPT and
+    41→Grammarly Go both for suggesting and editing text. Some prompts
+    42→that I have used repeatedly can be found in Chapters 13 and 14. Furthermore, the chapter illustrations have all been generated with Midjourney, using the word “steampunk”, as a metaphor for the craft of
+    43→thesis writing infused with the new technology of generative AI and
+    44→the art of prompting. The book was typeset in LATEX using the template “A Classic Thesis Style” by André Miede. And ChatGPT has
+    45→proved a valuable resource for making up for my limited knowledge
+    46→of LATEX.
+    47→I have learnt much about generative AI when writing this book, in
+    48→particular, that you can often get both useful and surprising results
+    49→from it if you just prompt a little better. My hope is that the reader
+    50→will find the book both helpful and inspiring, not only as a step towards better thesis writing, but also as a source for reflecting about
+    51→
+    52→v
+    53→
+    54→the goals and purposes of research, scholarship and academic writing. For thesis writing, it is the best of times, and it is the worst of
+    55→times.
+    56→You can find a downloadable version of this book at :
+    57→https://writingyourthesiswithchatgpt.wordpress.com/. There you will
+    58→also find additional resources, such as a tailored GPT.
+    59→
+    60→Stockholm, Sweden
+    61→January 2024
+    62→
+    63→Paul Johannesson
+    64→
+    65→vi
+    66→
+    67→CONTENTS
+    68→
+    69→i
+    70→1
+    71→
+    72→prologue
+    73→1
+    74→thesis writing and generative ai
+    75→3
+    76→1.1 The Purpose of Writing a Thesis
+    77→3
+    78→1.2 The IMRAD Structure
+    79→4
+    80→1.3 Generative AI: Boon or Bane?
+    81→5
+    82→1.4 Prompt Engineering for Thesis Writing
+    83→6
+    84→1.5 How to Read This Book
+    85→9
+    86→2 generative ai
+    87→11
+    88→2.1 Fundamental Concepts and Methodologies
+    89→11
+    90→2.2 Applications of Generative AI
+    91→12
+    92→2.3 Ethical Considerations
+    93→13
+    94→ii introduction
+    95→15
+    96→3 research problem
+    97→17
+    98→3.1 Theoretical Research Problems
+    99→17
+   100→3.2 Practical Research Problems
+   101→18
+   102→3.3 Scenarios
+   103→19
+   104→3.4 Prompts for Research Problem
+   105→20
+   106→4 research question
+   107→23
+   108→4.1 From Problem to Question
+   109→24
+   110→4.2 Knowledge Questions and Design Questions
+   111→4.3 Research Goals as Research Questions
+   112→25
+   113→4.4 Characteristics of Good Research Questions
+   114→4.5 Delimitations
+   115→26
+   116→4.6 Prompts for Research Question
+   117→27
+   118→5 background
+   119→29
+   120→5.1 Introduction to the topic
+   121→29
+   122→5.2 Conceptual Framework
+   123→30
+   124→5.3 Literature Review
+   125→32
+   126→5.4 Concept Maps
+   127→34
+   128→5.5 Prompts for Background
+   129→34
+   130→iii method
+   131→37
+   132→6 research strategy
+   133→39
+   134→6.1 Choosing a Research Strategy
+   135→39
+   136→6.2 Experiment
+   137→40
+   138→6.3 Survey
+   139→43
+   140→6.4 Case Study
+   141→44
+   142→6.5 Prompts for Research Strategy
+   143→46
+   144→7 data collection
+   145→49
+   146→7.1 Choosing a Data Collection Method
+   147→7.2 Questionnaires
+   148→51
+   149→7.3 Interviews
+   150→51
+   151→7.4 Observation
+   152→57
+   153→7.5 Documents
+   154→57
+   155→
+   156→24
+   157→25
+   158→
+   159→49
+   160→
+   161→vii
+   162→
+   163→viii
+   164→
+   165→contents
+   166→
+   167→7.6 Prompts for Data Collection
+   168→58
+   169→8 data analysis
+   170→61
+   171→8.1 Qualitative Analysis
+   172→61
+   173→8.2 Quantitative Analysis
+   174→66
+   175→8.3 Prompts for Data Analysis
+   176→68
+   177→9 design science methodology
+   178→71
+   179→9.1 Design Science Activities
+   180→71
+   181→9.2 Explicate problem
+   182→72
+   183→9.3 Define Requirements
+   184→78
+   185→9.4 Design and Develop Artefact
+   186→81
+   187→9.5 Evaluate Artefact
+   188→86
+   189→9.6 Prompts for Design Science Methodology
+   190→iv results
+   191→93
+   192→10 results
+   193→95
+   194→10.1 Qualitative Results
+   195→10.2 Quantitative Results
+   196→10.3 Prompts for Results
+   197→
+   198→95
+   199→98
+   200→99
+   201→
+   202→v discussion
+   203→101
+   204→11 discussion
+   205→103
+   206→11.1 Summary of Results 103
+   207→11.2 Interpretation of Results 104
+   208→11.3 Limitations of the Study 105
+   209→11.4 Ethical and Societal Implications of Results
+   210→11.5 Future Work 108
+   211→11.6 Prompts for Discussion 110
+   212→vi thinking and writing
+   213→113
+   214→12 critical thinking
+   215→115
+   216→12.1 Counterarguments 115
+   217→12.2 Diverse Perspectives 117
+   218→12.3 Hidden Assumptions 118
+   219→12.4 Prompts for Critical Thinking 119
+   220→13 academic writing style
+   221→121
+   222→13.1 The 7 C’s of Academic Writing Style 121
+   223→13.2 Topics and Points in Paragraphs 123
+   224→13.3 Coherence among Paragraphs 125
+   225→13.4 Prompts for Academic Writing Style 125
+   226→13.4.1 Prompts for Evaluation 125
+   227→14 reader engagement
+   228→127
+   229→14.1 Examples and Scenarios 127
+   230→14.2 Metaphors and Analogies 128
+   231→14.3 Memorable Quotes 128
+   232→14.4 Acronyms 129
+   233→14.5 Prompts for Reader Engagement 130
+   234→vii appendices
+   235→131
+   236→a further reading
+   237→133
+   238→b chapter illustrations
+   239→
+   240→89
+   241→
+   242→137
+   243→
+   244→107
+   245→
+   246→LIST OF FIGURES
+   247→
+   248→Figure 9.1
+   249→Figure 9.2
+   250→Figure 10.1
+   251→Figure 10.2
+   252→
+   253→A Storyboard for a Drone Helping an Elderly
+   254→Man to Remember his Medicine
+   255→85
+   256→An Explosion Diagram of a Drone
+   257→85
+   258→A Staple Diagram for Primary Causes
+   259→98
+   260→A Heatmap for Age, Age of Onset and Severity
+   261→98
+   262→
+   263→L I S T O F TA B L E S
+   264→
+   265→Table 8.1
+   266→Table 10.1
+   267→
+   268→Table 10.2
+   269→
+   270→Sample Data from Eating Disorder Table
+   271→66
+   272→Themes and their Associated Quotes related to
+   273→Causes of Eating Disorders among Young People
+   274→96
+   275→Themes and their Definitions related to Causes
+   276→of Eating Disorders among Young People
+   277→97
+   278→
+   279→ix
+   280→
+   281→Part I
+   282→PROLOGUE
+   283→
+   284→1
+   285→
+   286→T H E S I S W R I T I N G A N D G E N E R AT I V E A I
+   287→
+   288→“Education makes
+   289→machines which
+   290→act like men and
+   291→produces men who
+   292→act like machines.”
+   293→— Erich Fromm
+   294→
+   295→A thesis is the culminating work of your degree, be it a bachelor, a
+   296→master or a PhD. It will demonstrate your expertise and interest in a
+   297→particular subject within your field of study. A thesis is also a valuable
+   298→learning experience in itself that will prepare you for academic work,
+   299→professional research roles as well as other career paths.
+   300→1.1
+   301→
+   302→the purpose of writing a thesis
+   303→
+   304→Writing a thesis serves a practical purpose, as it is often a requirement
+   305→for obtaining a degree. However, there are additional and deeper benefits that go beyond this. By writing a thesis, you develop skills in
+   306→generating, exploring, synthesizing, and communicating knowledge
+   307→and ideas.
+   308→Creating Knowledge Through Research. Writing a thesis will teach
+   309→you how to conduct systematic investigations to discover new knowledge or affirm known truths. It provides hands-on experience in designing and implementing research methods, such as experiments,
+   310→case studies, interviews, and data analysis. You will gain proficiency
+   311→in managing projects, setting goals, achieving results, and meeting
+   312→deadlines. You will learn about attention to detail, technical skills,
+   313→problem-solving as well as patience and persistence. In other words,
+   314→by writing a thesis, you will learn how to become a researcher.
+   315→Exploring and Synthesizing Through Scholarship. By writing a
+   316→thesis, you will learn to delve deeply into a topic, which is usually
+   317→not possible during ordinary coursework. You will experience how to
+   318→learn from different sources, in particular academic articles, to gather
+   319→
+   320→3
+   321→
+   322→4
+   323→
+   324→thesis writing and generative ai
+   325→
+   326→diverse ideas and perspectives. You will come to see the relationships
+   327→between your thesis and existing knowledge in the field. You will
+   328→learn to discuss and defend your work, both with your supervisor
+   329→and fellow students. You will come to understand how critical thinking, curiosity, open-mindedness, and humility can help to enhance
+   330→your thesis. In other words, by writing a thesis, you will learn how to
+   331→become a scholar.
+   332→Communicating Through Academic Writing. By writing a thesis,
+   333→you will learn how to communicate with an audience through the
+   334→written word. You will acquire the skill to express complex thoughts
+   335→with clarity and precision. You will learn to write coherently and concisely, ensuring that your text flows logically without being verbose.
+   336→And you will learn how to structure a long academic text in a readerfriendly manner. In other words, by writing a thesis, you will learn
+   337→how to become an academic writer.
+   338→An analogy can help to clarify the differences between a scholar, a researcher and an academic writer. A scholar is like someone who has a
+   339→vast collection of LEGO sets. They have studied each set’s instructions
+   340→closely and can explain how various pieces and sets connect. They appreciate the designs others have made and can tell you all about them.
+   341→They love to learn, discuss, and share their knowledge about these
+   342→LEGO sets. In contrast, a researcher is like a LEGO enthusiast who
+   343→doesn’t just stick to the instructions. Instead, they experiment with
+   344→the bricks, trying to create something new. They love to innovate and
+   345→discover new possibilities with the bricks. And an academic writer
+   346→is like the person who writes and illustrates the LEGO instruction
+   347→manuals. They take the knowledge from the LEGO collector (scholar)
+   348→and the innovations from the LEGO experimenter (researcher) and
+   349→create clear, step-by-step guides for others to follow. They are skilled
+   350→in presenting information in a clear, organized, and understandable
+   351→manner.
+   352→In the academic world, the roles of researcher, scholar, and academic writer are usually performed by the same individual. While
+   353→each role has its distinct characteristics, they should not be separated,
+   354→as the activities of inquiry, discovery, and dissemination contribute to
+   355→and enhance each other.
+   356→1.2
+   357→
+   358→the imrad structure
+   359→
+   360→Research findings can be presented in different ways, but using a standardized structure makes it easier for readers to follow the logic and
+   361→reasoning of the presentation. The IMRAD (Introduction, Method, Results And Discussion) structure has become an established format for
+   362→organising both research papers and theses in the natural as well as
+   363→social sciences. IMRAD suggests a division into four parts:
+   364→• Introduction — Why did you start the study? This section aims to
+   365→provide an overview of the research presented in the thesis. It
+   366→
+   367→1.3 generative ai: boon or bane?
+   368→
+   369→5
+   370→
+   371→begins by providing a brief introduction to the area of study.
+   372→It then goes on to explain the research problem and formulate
+   373→research questions or goals. This section also provides a conceptual framework, explaining and discussing the key notions of
+   374→the thesis. Furthermore, it includes a literature review, summarizing existing research including current knowledge gaps.
+   375→• Method — What did you do and how? This section describes the
+   376→research strategies, methods of data collection, and data analysis that were employed, and explains how they were utilized. It
+   377→provides a rationale for the choice of these strategies and methods, and also addresses research ethics.
+   378→• Results — What did you find? This section answers the research
+   379→question of the thesis. It presents and explains the research results, thereby often including tables, graphs, charts, and figures
+   380→to represent the results visually.
+   381→• Discussion — What does it mean? This section presents a critical
+   382→analysis and interpretation of the research conducted and its
+   383→results. It highlights limitations that were encountered during
+   384→the study, compares the results to those of prior research, and
+   385→discusses the practical and theoretical implications of the outcomes. Furthermore, it outlines future research areas that could
+   386→be explored.
+   387→1.3
+   388→
+   389→generative ai: boon or bane?
+   390→
+   391→ChatGPT can support you in the thesis writing process in the roles of
+   392→researcher, scholar as well as academic writer.
+   393→• As a researcher, ChatGPT can offer you suggestions for sharpening your research question, generate hypotheses, recommend
+   394→research methods, guide you through ethical considerations, assist with experimental design, design interview studies, create
+   395→and justify interview questions, create codes, themes and statistics for the responses, summarize results, offer guidance on research limitations, and much more.
+   396→• As a scholar, ChatGPT can help you identify knowledge and
+   397→research gaps, suggest relevant literature, summarize and analyze articles, clarify academic concepts, provide summaries of
+   398→complex topics, provide historical context, guide you through
+   399→interdisciplinary connections, offer counterarguments to your
+   400→ideas, outline ethical and societal implications of your results,
+   401→and much more.
+   402→• As an academic writer, ChatGPT can assist you in drafting and
+   403→editing content, make your text clear and concise as well as coherent and confident, help you with making your text engaging
+   404→for the reader, assist in argument formulation, help you craft
+   405→compelling titles and abstracts, suggest relevant citations and
+   406→
+   407→The IMRAD
+   408→structure can be
+   409→likened to classic
+   410→storytelling. The
+   411→“Introduction” sets
+   412→the scene, the
+   413→“Methods” describe
+   414→the journey, the
+   415→“Results” are the
+   416→climax, and the
+   417→“Discussion” offers a
+   418→resolution or
+   419→reflection.
+   420→
+   421→6
+   422→
+   423→thesis writing and generative ai
+   424→
+   425→check citation formats, suggest visualizations of your results,
+   426→and much more.
+   427→What is not to be liked about this? Indeed, generative AI has the
+   428→potential to improve both the thesis itself and the learning from the
+   429→writing process. However, there are drawbacks. It may compromise
+   430→originality, as AI-generated content lacks personal insight and novel
+   431→contributions. There are accuracy concerns, given that AI might not
+   432→provide the most current or precise information. Ethical issues arise,
+   433→as over-reliance on AI could violate academic standards regarding
+   434→plagiarism and original work. AI use can also hinder the development of critical thinking and analytical skills. AI may also struggle
+   435→with the depth and context understanding required for a thesis. Thus,
+   436→over-dependence on AI can lead to a lack of necessary independent research and writing skills. In the next paragraph, ChatGPT formulates
+   437→these concerns itself based on the classic German legend “Faust”.
+   438→This is an example of
+   439→a modifier prompt,
+   440→see Section 1.4; the
+   441→word “sinister”
+   442→makes a big
+   443→difference for the
+   444→answer
+   445→
+   446→“Faust,” a tragic
+   447→play by Johann
+   448→Wolfgang von
+   449→Goethe, tells the
+   450→story of Dr. Faust, a
+   451→disillusioned scholar.
+   452→Desperate for
+   453→knowledge and
+   454→pleasure, Faust
+   455→makes a pact with
+   456→Mephistopheles, a
+   457→demon, exchanging
+   458→his soul for
+   459→unlimited knowledge
+   460→and worldly delights.
+   461→
+   462→> prompt: Suggest a sinister analogy for a master student using ChatGPT when writing their thesis, based on the story of the pact between
+   463→Faust and Mephistopheles.
+   464→> answer: Using ChatGPT for a master’s thesis is like Faust’s dangerous
+   465→dalliance with Mephistopheles:
+   466→In the shadowy corridors of academia, the master’s student (Faust) is desperate for enlightenment and success. ChatGPT (Mephistopheles) emerges
+   467→from the digital abyss, offering forbidden knowledge and seductive shortcuts.
+   468→Lured by the promise of easy answers and swift progress, the student
+   469→might be tempted to sell their academic “soul” to this digital devil, sacrificing originality and integrity for convenience. But every piece of information
+   470→taken from ChatGPT is like a chain, binding the student to a fate of potential deceit and plagiarism.
+   471→As the student becomes more entangled with ChatGPT, the line between
+   472→their own work and the borrowed wisdom of the digital Mephistopheles
+   473→blurs. And just as Faust’s pact comes with a heavy price, the student’s
+   474→over-reliance on ChatGPT might lead to academic damnation, with their
+   475→credibility and reputation forever tarnished. In the end, the allure of easy
+   476→knowledge could become the student’s own tragic downfall.
+   477→1.4
+   478→
+   479→prompt engineering for thesis writing
+   480→
+   481→Forms of Prompts
+   482→Prompts come in many forms and shapes, and some of the most common ones are listed below. These forms of prompts can be combined
+   483→in order to craft a prompt that conveys your intention and helps ChatGPT provide a focused and relevant answer.
+   484→Standard Prompts. Standard prompts are a simple way to guide
+   485→ChatGPT by providing a specific task for it to complete. Standard
+   486→prompts usually start with a word, such as “Write”, “Create” or “Gen-
+   487→
+   488→1.4 prompt engineering for thesis writing
+   489→
+   490→erate”, followed by a noun phrase. Standard prompts can be seen as
+   491→the basic form of prompts, which can be extended in various ways.
+   492→Some examples are:
+   493→• Write a review of this article
+   494→• Create themes for these responses
+   495→• Explain the process of photosynthesis
+   496→Instruction Prompts. Instruction prompts extend standard prompts
+   497→by providing explicit instructions on how ChatGPT should perform a
+   498→task. Providing detailed instructions allows ChatGPT to give relevant
+   499→answers that reflect your intentions. Some examples are:
+   500→• Write a review of this movie that focuses on the protagonist
+   501→• Create interview questions that are friendly and easy to understand
+   502→• Explain the process of photosynthesis, detailing the key stages,
+   503→the role of chlorophyll, and the importance of sunlight and carbon dioxide
+   504→Role Prompts. Role Prompts are prompts in which you ask ChatGPT
+   505→to take on a certain role, e.g a researcher, a student or a lawyer. Some
+   506→examples are:
+   507→• As a researcher, explain the process of photosynthesis
+   508→• As a journalist, explain the process of photosynthesis
+   509→• As a lawyer, explain GDPR
+   510→Audience Prompts. Audience prompts are prompts in which you ask
+   511→ChatGPT to provide answers that are suitable for a specific audience,
+   512→e.g. children, experts, or non-experts. Some examples are:
+   513→• Explain the process of photosynthesis for a biologist
+   514→• Explain the process of photosynthesis for a twelve-year-old child
+   515→• As a journalist, explain the process of photosynthesis for a biologist
+   516→Modifier Prompts. Modifier prompts are prompts in which a single
+   517→word or phrase, the modifier, completely changes the tone or meaning of the prompt, thereby causing ChatGPT to give a very different
+   518→answer. Modifiers are usually adjectives modifying nouns or adverbs
+   519→modifying verbs. Some examples are (with the modifier in italics):
+   520→• Propose an innovative design for a vacuum cleaner
+   521→• Write a popular summary of this article
+   522→• Write a scathing review of this movie that focuses on the protagonist
+   523→
+   524→7
+   525→
+   526→8
+   527→
+   528→thesis writing and generative ai
+   529→
+   530→Contextual Prompts. Contextual prompts are prompts that include
+   531→the context in which you are prompting. It could, for example, be
+   532→some activity you are carrying out or some goal you want to achieve.
+   533→Some examples are (with the context in italics):
+   534→• My research question is, “What are the causes of eating disorders
+   535→among young people?”. I am going to do an interview study. And
+   536→my main interview question is, “How has your relationship
+   537→with food evolved over the years?”. Suggest some questions that
+   538→prompt, probe and check this question.
+   539→• I am writing a master thesis. My research question is, “What are the
+   540→causes of eating disorders among young people?” I have carried out
+   541→interviews with young people who have been treated for eating
+   542→disorders. Which kind of data analysis should I use: thematic
+   543→analysis or content analysis?
+   544→Guidelines for Prompting
+   545→A general guideline for good prompting is that you should not only
+   546→use one-shot prompts, i.e. simple questions without any follow-up
+   547→questions. Instead, you benefit more from using complex questions
+   548→in a dialogue, where you can guide ChatGPT in multiple steps to
+   549→provide you with relevant and diverse information. Here are a few
+   550→concrete guidelines to help you engage in a dialogue with ChatGPT.
+   551→Be Patient and Iterative. If the answer you received was not what
+   552→you were expecting or hoping for, you can ask ChatGPT to generate
+   553→a new answer. Sometimes, even if you were initially satisfied with
+   554→the answer, a regenerated response can provide a more original or
+   555→nuanced answer. Additionally, you can try asking follow-up prompts
+   556→to get more information, for example:
+   557→• Can you elaborate on . . .
+   558→• I didn’t understand X, can you explain it differently?
+   559→Be Open to Exploration. Allow room for ChatGPT to provide original or alternative answers and even playful or whimsical ones. Use
+   560→open-ended prompts by asking how and why questions. Some examples are:
+   561→• How can you carry out . . .
+   562→• What are some potential solutions to . . .
+   563→• Can you explore different viewpoints on . . .
+   564→Rephrase and Refine. Experiment with different phrasings or details to improve response quality. Checking out the different forms of
+   565→prompts above can help in the experimentation, in particular contextual prompts. Here are some examples:
+   566→
+   567→1.5 how to read this book
+   568→
+   569→• “What is the difference between semi-structured and unstructured interviews?” can be rephrased and refined as “What are
+   570→the advantages of semi-structured interviews to unstructured
+   571→interviews in the context of interviewing experts?”.
+   572→• “What is the difference between generative AI and machine
+   573→learning?” can be rephrased as “In what ways does generative
+   574→AI vary from traditional machine learning practices?”.
+   575→Guide the Response Format. If you want the answer from ChatGPT
+   576→to be in a certain format, you can specify this in the prompt, for example:
+   577→• What is the difference between generative AI and machine learning? Answer in one paragraph with 100 - 125 words.
+   578→• What are the advantages of using ChatGPT for thesis writing?
+   579→Answer with a bullet list consisting of five items.
+   580→Be Goal Oriented. When prompting in ChatGPT, it is always important to have a clear goal in mind. Are you, in the role of a researcher,
+   581→looking for idea generation, suggestions for appropriate methods,
+   582→and critiques of your method choices? Or are you, in the role of a
+   583→scholar, trying to provide explanations of key notions, synthesize literature, and relate your work to previous research? Or do you, as
+   584→an academic writer, want to formulate complex thoughts with clarity,
+   585→improve coherence and conciseness, and identify ways to visualize
+   586→your results?
+   587→It is also useful to differentiate between prompts that aid in brainstorming and those that assist in evaluating the quality of your writing. Brainstorming prompts can help you generate creative ideas related to, for example, your research problem, research question, or
+   588→study design. They can also assist in drafting text, such as literature
+   589→summaries, interview questions, or ethical consent forms. In contrast,
+   590→evaluating prompts are designed to review text that is mostly finished, to ensure it is complete, clear, precise, and meets other quality
+   591→standards.
+   592→1.5
+   593→
+   594→how to read this book
+   595→
+   596→This book is primarily organized according to the IMRAD structure.
+   597→Part II addresses Introduction, Part III Method, Part IV Results, and
+   598→Part V Discussion. There is also a Part VI, which addresses critical
+   599→thinking and academic writing.
+   600→The structure of each chapter in this book follows a similar pattern. Firstly, there is a brief introduction to the topic of the chapter.
+   601→Secondly, there are a number of sections covering the main themes
+   602→of this topic, which are illustrated with example prompts including
+   603→answers from ChatGPT. These example prompts are often accompanied by tricks and tips on how to vary them to achieve desired effects.
+   604→Finally, you will find a list of prompts for the topic, divided into brainstorming prompts and evaluating prompts. Needless to say, the list
+   605→
+   606→9
+   607→
+   608→10
+   609→
+   610→thesis writing and generative ai
+   611→
+   612→is not exhaustive, but rather serves as a starting point and inspiration
+   613→for further prompting.
+   614→One way to read this book is to begin with Chapter 3 and work
+   615→your way through all the chapters. However, this method may be
+   616→overwhelming, as the text is fairly long and includes many prompt
+   617→examples. Nonetheless, if you are new to academic writing, this may
+   618→be an appealing option. If you choose to read the book in this way, it
+   619→is recommended that you initially skim only the prompt examples.
+   620→A very different way to read the book is to start with the prompts
+   621→at the end of each chapter, and check out an example of a prompt
+   622→only if you find it interesting. This is the fastest way of reading the
+   623→book, but it requires that you have a good grasp of thesis writing.
+   624→The best way to read the book is probably to first skim through the
+   625→entire book and then focus on each chapter as required for your thesis
+   626→writing. Start reading each chapter by checking out its prompt examples and, whenever needed, refer to the explanatory text preceding
+   627→them.
+   628→
+   629→2
+   630→
+   631→G E N E R AT I V E A I
+   632→
+   633→“Aristotle
+   634→founded or
+   635→discovered logic
+   636→by observing the
+   637→world. ChatGPT
+   638→thinks logically.
+   639→Why? Because it
+   640→notices all the logic
+   641→in the data in its
+   642→training set.”
+   643→— Stephen Wolfram
+   644→
+   645→Generative AI is a branch of AI that can generate new data samples
+   646→that are statistically similar to a specific dataset. It has seen rapid
+   647→development and is now being used in various fields such as art,
+   648→literature, and healthcare. This chapter provides a brief overview of
+   649→generative AI by discussing its basic principles and methodologies,
+   650→diverse applications, and ethical considerations.
+   651→2.1
+   652→
+   653→fundamental concepts and methodologies
+   654→
+   655→Generative models are a type of artificial intelligence that specialize
+   656→in creating new content that resembles existing data. They work by
+   657→analyzing a given dataset and then generating new data that follows
+   658→a similar pattern. You can think of it like an artist who has spent
+   659→years practicing by copying the styles of famous painters. Once they
+   660→have mastered these styles, they can create new paintings that look
+   661→like they were made by the great masters themselves. In the same
+   662→way, generative models use existing data to create something new, but
+   663→instead of paintings, they create digital content. Generative models
+   664→learn by going through huge amounts of data, like photos or text.
+   665→They look for patterns and features that define the style or content of
+   666→this data. Once they understand these patterns, they can use them to
+   667→generate new, similar pieces of content. There are two main types of
+   668→generative models that are commonly used:
+   669→• Variational Autoencoders (VAEs) work like a talented forger who
+   670→tries to recreate a masterpiece. Such a forger begins by studying
+   671→the artwork to understand its basic structure and style. Once
+   672→they have analyzed the details, they try to create a new painting
+   673→
+   674→11
+   675→
+   676→12
+   677→
+   678→generative ai
+   679→
+   680→that captures the essence of the original. Similarly, VAEs do this
+   681→with digital data. They learn to understand the structure of a
+   682→given dataset and then generate new instances that are similar
+   683→to it. By doing so, they can produce new content that resembles
+   684→the original data.
+   685→• Generative Adversarial Networks (GANs) work like a game between two artists — one of them creates paintings, and the other
+   686→judges them. The creator, also known as the "generator," tries to
+   687→make paintings so good that the judge cannot tell if they are
+   688→originals or fakes. The judge, called the "discriminator," tries to
+   689→get better at distinguishing between the two. Over time, both
+   690→artists improve their skills, resulting in highly realistic digital
+   691→content. This technique is widely used in machine learning to
+   692→generate new content that is similar to some existing data.
+   693→2.2
+   694→
+   695→applications of generative ai
+   696→
+   697→Generative AI has been applied in various sectors of society, providing innovative solutions and opening up new opportunities. Below
+   698→are some of the key application areas:
+   699→Art and Creativity. Generative AI can create artwork, imitating
+   700→styles of famous artists or generating unique pieces. AI algorithms
+   701→can compose music in various genres, assisting or even leading the
+   702→creative process. Based on prompts, AI can generate poems, stories,
+   703→and other written content.
+   704→Entertainment and Media. For video games, AI can generate realistic environments, characters, and game elements. In film and animation, it can assist in animation, creating realistic visual effects, and
+   705→even generating scripts. And for virtual reality, it can create immersive and realistic virtual environments.
+   706→Education. AI can generate customized worksheets, quizzes, and
+   707→learning resources based on specific curriculum requirements and
+   708→student needs. It can offer real-time translation services to help nonnative speakers understand educational content. And it can create virtual labs for students to conduct experiments, providing a safe and
+   709→controlled environment.
+   710→Healthcare and Biotechnology. Generative models can suggest
+   711→new molecular structures for potential drugs, predicting which compounds might be most effective for specific diseases. It can analyze
+   712→patient data to recommend personalized treatment plans. It can automate the extraction of relevant information from unstructured EHR
+   713→data, and create concise patient summaries from extensive EHR data,
+   714→aiding clinicians in decision-making.
+   715→
+   716→2.3 ethical considerations
+   717→
+   718→Retail and E-commerce. AI can generate tailored product suggestions and descriptions for customers. It can assist in copywriting and
+   719→graphic design of advertisements, banners, and social media content.
+   720→It can also automate responses in customer service interactions.
+   721→Technology and IT. In software development, generative AI can
+   722→write code snippets and provide programming assistance. It can identify bugs in code and suggest fixes. In the area of cybersecurity, it can
+   723→create simulations of cyber threats for training and preparedness.
+   724→2.3
+   725→
+   726→ethical considerations
+   727→
+   728→Generative AI raises several ethical considerations that need to be
+   729→addressed to ensure responsible and fair use. Some of the major concerns are:
+   730→• Privacy and Consent. Ensuring that any data used to train generative models is properly anonymized to protect individuals’
+   731→privacy. Obtaining proper consent for the use of personal data
+   732→in training models.
+   733→• Intellectual Property. Addressing questions around the ownership of content generated by AI, especially in creative fields like
+   734→art, music, or writing. Determining how patent laws apply to
+   735→inventions or innovations generated by AI.
+   736→• Social Impact. Addressing the potential for generative AI to displace or degrade jobs, particularly in fields like content creation,
+   737→design, and customer service.
+   738→• Bias and Fairness. Generative AI models learn from data, and if
+   739→the data is biased, the output will reflect that bias. Ensuring fairness requires careful curation and monitoring of training data.
+   740→The generative models should not favour one group over another and be representative of diverse populations.
+   741→• Misuse and Malicious Use. Addressing the ethical implications of
+   742→using generative AI to create deepfakes, which can be used to
+   743→spread misinformation or harm individuals’ reputations.
+   744→
+   745→13
+   746→
+   747→Part II
+   748→INTRODUCTION
+   749→The introduction sets the stage for your thesis, highlighting the research problem and posing the research question.
+   750→In other words, it addresses the overarching “Why is this
+   751→study important?” and the specific “What is this study to
+   752→achieve?”. The introduction should also provide enough
+   753→context to make your thesis comprehensible to your intended audience.
+   754→
+   755→3
+   756→
+   757→RESEARCH PROBLEM
+   758→
+   759→“Research is
+   760→formalized
+   761→curiosity. It is
+   762→poking and prying
+   763→with a purpose. It is
+   764→a seeking that he
+   765→who wishes may
+   766→know the cosmic
+   767→secrets of the world
+   768→and they that dwell
+   769→therein.”
+   770→— Zora Neale
+   771→Hurston
+   772→
+   773→In a thesis, the research problem is the central issue or challenge that
+   774→you aim to address through your research. It answers the why questions of your thesis: “Why did you decide to conduct your study in
+   775→the first place?” and “Why is your study valuable and important?”.
+   776→The research problem is usually broad in scope and may involve complex issues that require in-depth investigations. It frames your study
+   777→and motivates the choice of your research question.
+   778→A research problem can be described in three parts. First, a background offering contextual information that sets the stage for the research problem. Secondly, a clear, concise statement expressing the
+   779→research problem. Thirdly, a justification of the research problem, consisting of reasons why this problem is worth investigating, including
+   780→its relevance, originality, significance, and timeliness.
+   781→3.1
+   782→
+   783→theoretical research problems
+   784→
+   785→Theoretical research problems are challenges that require the improvement of theories. Its goal is to understand and analyze the underlying
+   786→principles and mechanisms of a phenomenon, typically without immediate practical application. Theoretical research aims to contribute
+   787→to academic knowledge by clarifying concepts, developing theories,
+   788→and testing them. Some examples of theoretical research problems
+   789→are:
+   790→• It is unknown to what extent personality depends on genetic
+   791→factors (nature) or environmental factors (nurture)
+   792→
+   793→17
+   794→
+   795→In everyday
+   796→language, a
+   797→“problem” implies
+   798→something negative;
+   799→But in research, it
+   800→does not mean
+   801→something bad, but
+   802→rather an unexplored
+   803→area that offers an
+   804→opportunity for
+   805→discovery
+   806→
+   807→18
+   808→
+   809→research problem
+   810→
+   811→• It is contested whether economic theories can account for the
+   812→overuse of common resources, like fisheries or forests, when
+   813→individual rationality leads to collective irrationality
+   814→
+   815→As Kurt Lewin
+   816→stated, “There is
+   817→nothing as practical
+   818→as a good theory”
+   819→
+   820→• It is not known whether the use of social media enhances or
+   821→diminishes the quality of interpersonal communication
+   822→Although the primary objective of theoretical research is to enhance
+   823→theory, it can still have effects on a practical level. Even though it may
+   824→not provide immediate, tangible solutions, the knowledge gained from
+   825→theoretical research can serve as a basis for practical applications,
+   826→guide policy decisions, and inform professional practices.
+   827→> prompt: It is unknown to what extent personality depends on genetic
+   828→factors (nature) or environmental factors (nurture). What practical implications could be the result of knowing this? Max 100 words.
+   829→> answer: Determining the balance between nature and nurture in shaping personality could have profound implications. It would guide personalized education, tailoring teaching methods to individual predispositions. In
+   830→mental health, treatments could be better aligned with a person’s genetic
+   831→makeup or environmental history. Parenting strategies might evolve, emphasizing either genetic tendencies or environmental adjustments. Legal
+   832→systems might reconsider the extent of personal responsibility based on genetic predispositions. Moreover, it would influence policies on child-rearing,
+   833→social welfare, and public health, ensuring environments that nurture positive personality development irrespective of genetic predispositions.
+   834→3.2
+   835→
+   836→practical research problems
+   837→
+   838→A practical research problem aims to solve real-world issues that need
+   839→workable solutions. Unlike theoretical research, which focuses on understanding and advancing theories, practical research looks for solutions to specific problems that people experience. The goal is to use
+   840→the research findings to make real-world improvements for real people in real environments. Practical research often involves not only
+   841→researchers but also stakeholders such as citizens, organisations, or
+   842→policymakers who are directly or indirectly affected by the research.
+   843→Some examples of practical research problems are:
+   844→• The rate of hospital-acquired infections is high and increasing
+   845→• There is a shortage of landfills that can be used to recycle household waste
+   846→• The use of learning platforms sometimes reduces student engagement and academic performance
+   847→Conducting practical research can serve a dual purpose. It not only
+   848→helps in resolving real-world issues but can sometimes contribute to
+   849→theoretical knowledge by providing evidence that either confirms, refutes, or refines existing theories. This evidence can also draw attention to gaps in current theories, thereby encouraging further theoretical development.
+   850→
+   851→3.3 scenarios
+   852→
+   853→19
+   854→
+   855→Theoretical research problems are commonly found in the sciences,
+   856→the social sciences and the humanities, as these help build the foundational knowledge upon which applied research can be conducted.
+   857→Practical research problems, on the other hand, are more common
+   858→in applied subjects, such as engineering, medical sciences, and computer science, as these are focused on creating tangible and workable
+   859→solutions to real-world issues.
+   860→> prompt: Generate possible practical consequences of the situation that
+   861→“The rate of hospital-acquired infections is high and increasing”. Max 75
+   862→words.
+   863→> answer: A high and rising rate of hospital-acquired infections could
+   864→lead to longer patient hospital stays, increased medical costs, and higher
+   865→mortality rates. Hospitals might face legal liabilities, reduced public trust,
+   866→and potential funding cuts. There could be an increased demand for isolation rooms, advanced sterilization equipment, and specialized training
+   867→for staff. Additionally, visitation policies might become stricter, and there
+   868→could be a surge in research for infection prevention measures.
+   869→3.3
+   870→
+   871→This prompt restricts
+   872→the answer to 75
+   873→words, which forces
+   874→ChatGPT to be
+   875→concise
+   876→
+   877→scenarios
+   878→
+   879→If you are delving into a complex and technical topic, your research
+   880→problem may seem somewhat dry or even downright boring. In such
+   881→a case, a scenario can help illustrate your research problem in an accessible, enjoyable and engaging way. Research problems are often
+   882→complex and multifaceted, but a well-crafted scenario can express
+   883→the essence of your problem as an inspiring story, making it easier to
+   884→understand. Scenarios can also offer a context in which the research
+   885→problem exists, helping to clarify why the problem is important and
+   886→whom it affects. And a compelling scenario can capture your audience’s attention, even if they are not experts in the field, making
+   887→them more interested in your research. Furthermore, a scenario can
+   888→highlight the ethical and social dimensions of your research problem,
+   889→showing how it fits into a larger picture.
+   890→> prompt: Generate a dramatic story based on the situation that “The
+   891→rate of hospital-acquired infections is high and increasing”, focusing on a
+   892→patient called “Mary” and addressing economic, health and justice aspects.
+   893→Max 100 words.
+   894→> answer: Mary, a single mother, entered the hospital for a minor surgery,
+   895→expecting a swift recovery. However, she contracted a severe hospitalacquired infection, prolonging her stay. The mounting medical bills devastated her finances, forcing her to sell her home. As her health deteriorated,
+   896→she discovered that the hospital had been cutting corners on sanitation
+   897→to save costs. With the support of other affected patients, Mary took the
+   898→hospital to court. The trial exposed deep-rooted corruption, leading to a
+   899→nationwide call for justice, stricter regulations, and a renewed focus on
+   900→patient safety.
+   901→
+   902→This is an example of
+   903→a modifier prompt —
+   904→the single word
+   905→“dramatic” makes
+   906→much difference to
+   907→the tone and feel of
+   908→the story
+   909→
+   910→20
+   911→
+   912→research problem
+   913→
+   914→3.4
+   915→
+   916→prompts for research problem
+   917→
+   918→Prompts for Brainstorming
+   919→• Generate three minor modifications of the research problem [insert research problem], making it more [narrow | general | original | difficult | significant | . . . ].
+   920→• My research problem is [insert research problem]. Suggest some
+   921→root causes of this problem.
+   922→• Generate a story based on the situation that [insert research problem], addressing [economic | health | legal | . . . ] aspects.
+   923→• Generate possible practical consequences of the situation that
+   924→[insert practical research problem].
+   925→• My research problem is [insert practical research problem]. What
+   926→theoretical implications could be the result of solving this problem?
+   927→• My research problem is [insert theoretical research problem]. What
+   928→theoretical contributions can be the result of knowing this?
+   929→• My research problem is [insert theoretical research problem]. What
+   930→practical implications could be the result of knowing this?
+   931→Prompts for Evaluation
+   932→• Repeat the research problem stated in the thesis.
+   933→• Is it stated in the thesis why the research problem is [relevant |
+   934→significant | timely | original | ...]?
+   935→• Is it stated in the thesis who is affected by the research problem
+   936→and how they are affected?
+   937→• Is it stated in the thesis in which context the research problem
+   938→appears?
+   939→
+   940→The last prompt is a
+   941→follow-up prompt
+   942→that can be used
+   943→after the other
+   944→prompts
+   945→
+   946→• Is it stated in the thesis who can benefit from a solution to the
+   947→research problem and in what ways?
+   948→• Expand your answer and be more critical as well as constructive.
+   949→Suggest references that could help address the weak points of
+   950→the research problem as well as its statement and discussion in
+   951→the thesis.
+   952→How to Use the Prompts
+   953→Before writing any text about the research problem, it is often helpful
+   954→to reformulating it as well as framing and reframing it; the prompts
+   955→for modifying the problem and identifying root causes can then be
+   956→useful.
+   957→
+   958→

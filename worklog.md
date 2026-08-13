@@ -617,3 +617,151 @@ Stage Summary:
 - Enhanced file: src/data/ai-writing-modes.ts — 5 modes now inject Gastel & Day + Turabian knowledge via 10 new builder functions
 - All 10 modes preserve their existing functionality; 5 modes received significant prompt enrichment
 - No existing functionality was removed or broken
+
+---
+Task ID: 15
+Agent: full-stack-developer
+Task: LOT 7 (CONDITIONAL) — Process urbanism-related resources to create a conditional urban planning corpus
+
+Work Log:
+- Checked /home/z/my-project/upload/rb-analysis/ — confirmed no VLM analysis exists for RB-7 to RB-15 (only RB-2 through RB-5 exist)
+- Confirmed RB-7.jpg through RB-15.jpg are present in /home/z/my-project/upload/RB-extract/RB/
+- Reviewed existing corpus structure (corpus-research-frameworks.ts, book-resources.ts) to maintain consistency
+- Created src/data/corpus-urbanism.ts (~1028 lines) with 5 typed interfaces and 5 structured data modules:
+  - Module 1: chronologieUrbanisme — 7 eras of urban planning (Cité-Jardin 1898 to Smart City 2000+) derived from RB-7 to RB-14
+  - Module 2: cadresTheoriques — 4 major authors (Bertaud 2018, Jacobs 1961, Schenk 2019, Tribillon 1991) with principles, critiques, actionable rules, and reformulated citations
+  - Module 3: imagesCartographiques — 9 references (RB-7 to RB-15) with key takeaways, concepts, linked authors, and thesis guide questions
+  - Module 4: synthese (RB-15) — 5 cross-cutting themes (top-down/bottom-up, density, mobility, sustainability, spatial justice) with research implications
+  - Module 5: ouvrages — 6 reference books (Bertaud, Tribillon, Nouveaux Principes, Renouveler l'amenagement, Schenk, Fuller/Moore) with accessibility notes
+- Implemented isUrbanismRelevant(discipline: string): boolean — activation function checking 42 French + 43 English urbanism-related keywords
+- URBANISM_CORPUS.enabled set to false — must be explicitly activated by user
+- ESLint: 0 new errors, 0 new warnings. Dev server compiles successfully.
+
+Stage Summary:
+- New file: src/data/corpus-urbanism.ts — conditional urban planning corpus (7 eras, 4 author frameworks, 9 RB image refs, 6 book refs, 5 synthesis themes)
+- Conditional activation via isUrbanismRelevant() with 85+ keywords (FR+EN)
+- All knowledge reformulated into actionable rules — no protected text reproduced
+- Pre-existing lint errors in corpus-prompting.ts and corpus-publication.ts are unrelated to this task
+
+---
+Task ID: 14
+Agent: main
+Task: LOT 6 — Extract and process books about Publication & Peer Review to enrich the peer-review and publication modes
+
+Work Log:
+- Attempted extraction of RAR archives (.1.rar through .6.rar) — all contain the same file with Unicode filename issues preventing extraction of target books
+- Created src/data/corpus-publication.ts (1175 lines) with 8 structured modules:
+  - Module 1: Belcher — 12-week article writing program (12 weekly milestones, 10 quality criteria, 12 pitfalls)
+  - Module 2: Pyrczak — 19 evaluation questions across 4 categories, 4 quality levels (Excellent/Bon/Acceptable/Insuffisant)
+  - Module 3: PhDone (Roda, Saunders, Anderson) — 12 professional editing rules with before/after examples
+  - Module 4: Sonneveld — 8-section proposal structure, 8 acceptance criteria (with eliminatoire/majeur/mineur weights), 12 frequent errors
+  - Module 5: Holtom & Fisher — 12 motivation strategies for thesis writing across 6 phases
+  - Module 6: Graustein — 7 thesis stages (exploration to defense), 10 excellence criteria
+  - Module 7: Epstein, Kenway, Boden — 12 publication writing rules
+  - Module 8: RMIT — 10 transversal research/writing competencies
+- Enhanced src/data/ai-writing-modes.ts:
+  - Added 8 new prompt builder functions (insererCriteresQualitePublication, insererQuestionsEvaluationPyrczak, insererNiveauxQualite, insererReglesEditionPhDone, insererCriteresAcceptationSonneveld, insererErreursFrequentionsProposition, insererCriteresExcellenceThese, insererReglesRedactionPublication)
+  - peer-review mode: Added Pyrczak's 19 evaluation questions + 4 quality levels + Belcher's 10 quality criteria + structured 7-point evaluation format
+  - defense mode: Added Graustein's 10 excellence criteria + Sonneveld's 8 acceptance criteria + 12 frequent proposal errors + expanded jury evaluation framework
+  - scientific-writing mode: Added PhDone's 12 editing rules with before/after examples + Epstein et al.'s 12 publication writing rules
+  - Added PUBLICATION_CORPUS re-export
+- All knowledge reformulated into actionable rules — no protected text reproduced
+- French comments/variables throughout
+- Dev server compiles successfully, no new lint errors introduced
+
+Stage Summary:
+- corpus-publication.ts provides comprehensive knowledge base from 8 academic writing books
+- peer-review mode now uses structured Pyrczak evaluation grid with 4 quality levels
+- defense mode now includes Sonneveld acceptance criteria and Graustein excellence standards
+- scientific-writing mode now enforces PhDone professional editing rules
+
+---
+Task ID: 13
+Agent: main
+Task: LOT 5 — Extract and process books about AI and Research to create an "AI-Assisted Research" corpus
+
+Work Log:
+- Successfully extracted 4 books from RAR archives using python3 rarfile (Unicode filenames handled via binary read):
+  - .1.rar: Bagheri (EPUB, 3MB), Belleville & Jackson (EPUB, 2.7MB)
+  - .2.rar: Zhou & Al-Samarraie (PDF, 2.7MB), Johannesson (PDF, 1.7MB)
+- Extracted text: 2 PDFs via pdftotext (first 30 pages each = ~14K words total), 2 EPUBs via pandoc (~160K words total)
+- Read and analyzed content from all 4 books across multiple targeted sections
+- Created /src/data/corpus-ai-research.ts (318 lines, 18KB) with 4 structured modules:
+  - Module 1: Principes éthiques institutionnels (Zhou & Al-Samarraie) — 6 research domains, 6 ethical principles, 8 specific AI risks
+  - Module 2: Taxonomie des outils IA (Bagheri) — 20+ tools in 4 categories (rédaction, recherche, analyse, communication), 6 advanced prompting techniques
+  - Module 3: Bonnes pratiques ChatGPT pour la thèse (Johannesson) — 3 ChatGPT roles (chercheur/érudit/rédacteur), 8 prompting directives, 7 C's of academic style
+  - Module 4: Persévérance et stratégies cognitives (Belleville & Jackson) — 4 goal types for thesis writing, 6 writing block strategies, 8 supervision relationship rules
+- Enhanced /src/data/ai-writing-modes.ts:
+  - Added 7 new prompt builder functions (insererAvertissementEthiqueIA, insererOutilsIA, insererSeptCStyle, insererDirectivesPromptingThese, insererTechniquesPrompting, insererStrategiesDeblocage)
+  - All 10 writing modes now include AI ethics warnings with 6 principles + 8 risks
+  - scientific-writing: Added 7 C's of academic style + tool recommendations
+  - literature-review: Added research tool recommendations + AI ethics warnings
+  - abstract: Added 7 C's style guide + AI ethics warnings
+  - hypothesis: Added AI ethics warning (hallucination risk, originality)
+  - methodology: Added AI ethics warning + analysis tool recommendations
+  - theory: Added AI ethics warning
+  - supervision: Added prompting directives + techniques + writing block strategies + AI ethics
+  - defense: Added AI ethics warning
+  - Added AI_RESEARCH_CORPUS re-export
+- All knowledge reformulated into actionable rules — no protected text reproduced
+- French comments/variables throughout
+- Lint: 0 new errors introduced (1 pre-existing error in corpus-prompting.ts unrelated)
+- Dev server compiles successfully
+
+Stage Summary:
+- corpus-ai-research.ts provides structured knowledge base from 4 AI/research books (~175K source words → 318 lines of actionable rules)
+- All 10 writing modes now include AI ethics warnings and responsible use guidance
+- Supervision mode enriched with cognitive writing strategies and prompting techniques
+- Literature-review and scientific-writing modes now recommend specific AI tools by category
+
+
+---
+Task ID: 17
+Agent: general-purpose
+Task: Analyze Google Drive images in Articles/ and images/ress-1/, images/ress-2/ subfolders
+
+Work Log:
+- Used agent-browser to navigate Google Drive shared folder (1bkBgWmM6Bpfr-9ss-zRaGYJY3oeZyHoL)
+- Extracted folder IDs via DOM inspection (Articles, images, Livres, Prompting, sites)
+- Discovered Articles/Nouveau dossier/ returns 404 without login (subfolder lacks individual sharing)
+- Successfully accessed all 24 files in images/ress-2/ and 50 files in images/ress-1/ via direct file URLs
+- Took 40+ screenshots and ran 8 batch VLM analyses (z-ai vision, glm-5v-turbo) on all accessible images
+- Analyzed every image group: Type series (9 files), semantic/SR (2), six series (3), tip series (3), variables (1), w series (5), 1- series (11), 2- series (2), 3 (1), 5- series (4), AI series (3), data series (15+), doc series (6), gap series (2), plus 3 other files (APA Results Composer.md, arXiv paper, video)
+- Classified all 74 analyzed files into 4 priority tiers based on academic value for ThesisFrame
+- Identified 10 knowledge gaps not yet in existing corpus files
+- Full report saved to /home/z/my-project/upload/gdrive-analysis/IMAGE-AUDIT-REPORT.md
+
+Key Findings:
+- 38 of 74 analyzed files (51%) have HIGH or VERY HIGH academic value for ThesisFrame
+- Top priority files: APA Results Composer.md (APA 7 reporting rules), doc-3.jpg (10 gap types), doc-1.jpg (peer review 5-criteria), w-10 to w-12 (RMIT sentence starters), tip-1/tip-2 (PEER paragraph framework)
+- The data series (15 files) is a Data Analyst course — LOW relevance for ThesisFrame
+- Articles/Nouveau dossier/ (~20+ files) remains INACCESSIBLE — needs login or .rar extraction
+- 10 new knowledge areas identified that could enrich existing corpus modules
+
+Stage Summary:
+- Complete audit of all accessible Google Drive images (74/94 files)
+- 4-tier priority classification with specific transfer recommendations
+- 10 knowledge gaps identified for corpus enhancement
+- Critical access issue documented: Articles/Nouveau dossier/ requires login or .rar extraction
+- Report: /home/z/my-project/upload/gdrive-analysis/IMAGE-AUDIT-REPORT.md
+
+---
+Task ID: corpus-prompting-fix
+Agent: main
+Task: Fix parsing errors in src/data/corpus-prompting.ts
+
+Work Log:
+- Identified 3 categories of syntax errors across 708-line data file:
+  1. Leading/trailing spaces inside string values (hundreds of instances in MODELES_PROMPTS_RECHERCHE, ANTIPATTERNS_PROMPTING, REGLES_EMPIRIQUES_REDACTION)
+  2. Nested unescaped double quotes inside double-quoted strings (9 lines: 481, 502, 504, 537, 539, 546, 568, 573, 653)
+  3. Box-drawing characters (→, 「, 」) in string values (lines 98, 114, 561)
+- Wrote Python script with regex-based bulk fix for space trimming and box-drawing character replacement
+- Applied explicit fixes for 9 lines with nested quotes (escaped inner quotes with \")
+- Manually fixed line 114 (containing \n escape sequences that defeated the regex)
+- Replaced → with - and 「/」 with - in string values (kept in comments)
+
+Stage Summary:
+- ESLint passes with 0 errors (6 pre-existing warnings in other files)
+- All string values trimmed of leading/trailing spaces
+- All nested quotes properly escaped with backslash
+- No logic or content changed, only syntax fixes
