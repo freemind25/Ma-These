@@ -1,0 +1,892 @@
+     1→"use client";
+     2→
+     3→import { useState, useMemo } from "react";
+     4→import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+     5→import { toast } from "sonner";
+     6→import {
+     7→  Card,
+     8→  CardContent,
+     9→  CardDescription,
+    10→  CardHeader,
+    11→  CardTitle,
+    12→} from "@/components/ui/card";
+    13→import { Button } from "@/components/ui/button";
+    14→import { Input } from "@/components/ui/input";
+    15→import { Label } from "@/components/ui/label";
+    16→import { Badge } from "@/components/ui/badge";
+    17→import { Switch } from "@/components/ui/switch";
+    18→import { Separator } from "@/components/ui/separator";
+    19→import {
+    20→  Dialog,
+    21→  DialogContent,
+    22→  DialogDescription,
+    23→  DialogFooter,
+    24→  DialogHeader,
+    25→  DialogTitle,
+    26→} from "@/components/ui/dialog";
+    27→import {
+    28→  AlertDialog,
+    29→  AlertDialogAction,
+    30→  AlertDialogCancel,
+    31→  AlertDialogContent,
+    32→  AlertDialogDescription,
+    33→  AlertDialogFooter,
+    34→  AlertDialogHeader,
+    35→  AlertDialogTitle,
+    36→  AlertDialogTrigger,
+    37→} from "@/components/ui/alert-dialog";
+    38→import { Skeleton } from "@/components/ui/skeleton";
+    39→import {
+    40→  Tabs,
+    41→  TabsContent,
+    42→  TabsList,
+    43→  TabsTrigger,
+    44→} from "@/components/ui/tabs";
+    45→import {
+    46→  Brain,
+    47→  Sparkles,
+    48→  Cpu,
+    49→  Bot,
+    50→  Plug,
+    51→  Eye,
+    52→  EyeOff,
+    53→  Trash2,
+    54→  Settings,
+    55→  CheckCircle2,
+    56→  Loader2,
+    57→  Plus,
+    58→  Key,
+    59→  Globe,
+    60→  TestTube,
+    61→  Zap,
+    62→} from "lucide-react";
+    63→import { useAppStore } from "@/lib/stores/app-store";
+    64→
+    65→// ═══════════════════════════════════════════
+    66→// Types
+    67→// ═══════════════════════════════════════════
+    68→
+    69→type ProviderType = "openai" | "anthropic" | "mistral" | "zai" | "custom";
+    70→
+    71→interface AiToolConfig {
+    72→  id: string;
+    73→  provider: string;
+    74→  apiKey: string | null;
+    75→  model: string | null;
+    76→  isActive: boolean;
+    77→  createdAt: string;
+    78→  updatedAt: string;
+    79→}
+    80→
+    81→interface ProviderMeta {
+    82→  id: ProviderType;
+    83→  name: string;
+    84→  description: string;
+    85→  icon: React.ReactNode;
+    86→  colorClass: string;
+    87→  borderClass: string;
+    88→  modelPlaceholder: string;
+    89→  noApiKey?: boolean;
+    90→}
+    91→
+    92→// ═══════════════════════════════════════════
+    93→// Provider definitions
+    94→// ═══════════════════════════════════════════
+    95→
+    96→const PROVIDERS: ProviderMeta[] = [
+    97→  {
+    98→    id: "zai",
+    99→    name: "Z.ai (GLM)",
+   100→    description: "Assistant IA intégré, clé fournie par la plateforme",
+   101→    icon: <Brain className="h-6 w-6" />,
+   102→    colorClass: "text-[oklch(var(--chart-1))]",
+   103→    borderClass: "border-[oklch(var(--chart-1))]/50",
+   104→    modelPlaceholder: "glm-4, glm-4-flash…",
+   105→    noApiKey: true,
+   106→  },
+   107→  {
+   108→    id: "openai",
+   109→    name: "OpenAI",
+   110→    description: "GPT-4, GPT-4o, o1 — clé API OpenAI requise",
+   111→    icon: <Sparkles className="h-6 w-6" />,
+   112→    colorClass: "text-[oklch(var(--chart-2))]",
+   113→    borderClass: "border-[oklch(var(--chart-2))]/50",
+   114→    modelPlaceholder: "gpt-4o, gpt-4, o1-preview…",
+   115→  },
+   116→  {
+   117→    id: "anthropic",
+   118→    name: "Anthropic",
+   119→    description: "Claude 4, Claude 3.5 Sonnet — clé API Anthropic requise",
+   120→    icon: <Cpu className="h-6 w-6" />,
+   121→    colorClass: "text-[oklch(var(--chart-3))]",
+   122→    borderClass: "border-[oklch(var(--chart-3))]/50",
+   123→    modelPlaceholder: "claude-4-sonnet, claude-3.5-sonnet…",
+   124→  },
+   125→  {
+   126→    id: "mistral",
+   127→    name: "Mistral",
+   128→    description: "Mistral Large, Codestral — clé API Mistral requise",
+   129→    icon: <Bot className="h-6 w-6" />,
+   130→    colorClass: "text-[oklch(var(--chart-4))]",
+   131→    borderClass: "border-[oklch(var(--chart-4))]/50",
+   132→    modelPlaceholder: "mistral-large, codestral…",
+   133→  },
+   134→  {
+   135→    id: "custom",
+   136→    name: "Custom",
+   137→    description: "Endpoint API personnalisé (OpenAI-compatible)",
+   138→    icon: <Plug className="h-6 w-6" />,
+   139→    colorClass: "text-[oklch(var(--chart-5))]",
+   140→    borderClass: "border-[oklch(var(--chart-5))]/50",
+   141→    modelPlaceholder: "Nom du modèle personnalisé…",
+   142→  },
+   143→];
+   144→
+   145→// ═══════════════════════════════════════════
+   146→// Query keys
+   147→// ═══════════════════════════════════════════
+   148→
+   149→const aiConfigKeys = {
+   150→  all: ["ai-config"] as const,
+   151→};
+   152→
+   153→// ═══════════════════════════════════════════
+   154→// Helper
+   155→// ═══════════════════════════════════════════
+   156→
+   157→function getProviderMeta(provider: string): ProviderMeta {
+   158→  return (
+   159→    PROVIDERS.find((p) => p.id === provider) ?? {
+   160→      id: "custom" as ProviderType,
+   161→      name: provider,
+   162→      description: "Fournisseur personnalisé",
+   163→      icon: <Plug className="h-6 w-6" />,
+   164→      colorClass: "text-[oklch(var(--chart-5))]",
+   165→      borderClass: "border-[oklch(var(--chart-5))]/50",
+   166→      modelPlaceholder: "Nom du modèle…",
+   167→    }
+   168→  );
+   169→}
+   170→
+   171→// ═══════════════════════════════════════════
+   172→// Component
+   173→// ═══════════════════════════════════════════
+   174→
+   175→export function AiConfigPage() {
+   176→  const queryClient = useQueryClient();
+   177→  const { aiProvider, setAiProvider } = useAppStore();
+   178→
+   179→  // Dialog state
+   180→  const [dialogOpen, setDialogOpen] = useState(false);
+   181→  const [editingProvider, setEditingProvider] = useState<ProviderMeta | null>(null);
+   182→  const [editingConfigId, setEditingConfigId] = useState<string | null>(null);
+   183→  const [formApiKey, setFormApiKey] = useState("");
+   184→  const [formModel, setFormModel] = useState("");
+   185→  const [formIsActive, setFormIsActive] = useState(false);
+   186→  const [formEndpointUrl, setFormEndpointUrl] = useState("");
+   187→  const [formName, setFormName] = useState("");
+   188→  const [showApiKey, setShowApiKey] = useState(false);
+   189→
+   190→  // Testing state
+   191→  const [testingProvider, setTestingProvider] = useState<string | null>(null);
+   192→
+   193→  // Tab state
+   194→  const [activeTab, setActiveTab] = useState("providers");
+   195→
+   196→  // ── Fetch configs ──
+   197→  const { data, isLoading } = useQuery<{ data: AiToolConfig[] }>({
+   198→    queryKey: aiConfigKeys.all,
+   199→    queryFn: () => fetch("/api/ai-config").then((r) => r.json()),
+   200→  });
+   201→
+   202→  const configs = useMemo(() => data?.data ?? [], [data?.data]);
+   203→  const configMap = useMemo(() => {
+   204→    const map: Record<string, AiToolConfig> = {};
+   205→    for (const c of configs) {
+   206→      map[c.provider] = c;
+   207→    }
+   208→    return map;
+   209→  }, [configs]);
+   210→
+   211→  // Custom configs (there can be multiple custom entries)
+   212→  const customConfigs = useMemo(
+   213→    () => configs.filter((c) => c.provider === "custom"),
+   214→    [configs]
+   215→  );
+   216→
+   217→  // ── Create / Update mutation ──
+   218→  const saveMutation = useMutation({
+   219→    mutationFn: async ({
+   220→      id,
+   221→      provider,
+   222→      apiKey,
+   223→      model,
+   224→      isActive,
+   225→    }: {
+   226→      id?: string;
+   227→      provider: string;
+   228→      apiKey?: string;
+   229→      model?: string;
+   230→      isActive?: boolean;
+   231→    }) => {
+   232→      if (id) {
+   233→        const payload: Record<string, unknown> = {};
+   234→        if (apiKey !== undefined) payload.apiKey = apiKey;
+   235→        if (model !== undefined) payload.model = model;
+   236→        if (isActive !== undefined) payload.isActive = isActive;
+   237→        const res = await fetch(`/api/ai-config/${id}`, {
+   238→          method: "PUT",
+   239→          headers: { "Content-Type": "application/json" },
+   240→          body: JSON.stringify(payload),
+   241→        });
+   242→        if (!res.ok) throw new Error("Erreur lors de la mise à jour");
+   243→        return res.json();
+   244→      } else {
+   245→        const payload: Record<string, unknown> = { provider };
+   246→        if (apiKey) payload.apiKey = apiKey;
+   247→        if (model) payload.model = model;
+   248→        if (isActive !== undefined) payload.isActive = isActive;
+   249→        const res = await fetch("/api/ai-config", {
+   250→          method: "POST",
+   251→          headers: { "Content-Type": "application/json" },
+   252→          body: JSON.stringify(payload),
+   253→        });
+   254→        if (!res.ok) throw new Error("Erreur lors de la création");
+   255→        return res.json();
+   256→      }
+   257→    },
+   258→    onSuccess: () => {
+   259→      queryClient.invalidateQueries({ queryKey: aiConfigKeys.all });
+   260→      toast.success("Configuration enregistrée avec succès");
+   261→      setDialogOpen(false);
+   262→      resetForm();
+   263→    },
+   264→    onError: () => {
+   265→      toast.error("Impossible d'enregistrer la configuration");
+   266→    },
+   267→  });
+   268→
+   269→  // ── Delete mutation ──
+   270→  const deleteMutation = useMutation({
+   271→    mutationFn: async (id: string) => {
+   272→      const res = await fetch(`/api/ai-config/${id}`, { method: "DELETE" });
+   273→      if (!res.ok) throw new Error("Erreur lors de la suppression");
+   274→      return res.json();
+   275→    },
+   276→    onSuccess: () => {
+   277→      queryClient.invalidateQueries({ queryKey: aiConfigKeys.all });
+   278→      toast.success("Configuration supprimée");
+   279→    },
+   280→    onError: () => {
+   281→      toast.error("Impossible de supprimer la configuration");
+   282→    },
+   283→  });
+   284→
+   285→  // ── Handlers ──
+   286→
+   287→  function resetForm() {
+   288→    setFormApiKey("");
+   289→    setFormModel("");
+   290→    setFormIsActive(false);
+   291→    setFormEndpointUrl("");
+   292→    setFormName("");
+   293→    setShowApiKey(false);
+   294→    setEditingProvider(null);
+   295→    setEditingConfigId(null);
+   296→  }
+   297→
+   298→  function openConfigureDialog(provider: ProviderMeta) {
+   299→    const existing = configMap[provider.id];
+   300→    setEditingProvider(provider);
+   301→    setEditingConfigId(existing?.id ?? null);
+   302→    setFormApiKey(existing?.apiKey ?? "");
+   303→    setFormModel(existing?.model ?? "");
+   304→    setFormIsActive(existing?.isActive ?? false);
+   305→    setFormEndpointUrl(existing?.model ?? "");
+   306→    setFormName(provider.name);
+   307→    setShowApiKey(false);
+   308→    setDialogOpen(true);
+   309→  }
+   310→
+   311→  function openCustomDialog() {
+   312→    const customMeta = PROVIDERS.find((p) => p.id === "custom");
+   313→    if (!customMeta) return;
+   314→    setEditingProvider(customMeta);
+   315→    setEditingConfigId(null);
+   316→    setFormApiKey("");
+   317→    setFormModel("");
+   318→    setFormIsActive(false);
+   319→    setFormEndpointUrl("");
+   320→    setFormName("");
+   321→    setShowApiKey(false);
+   322→    setDialogOpen(true);
+   323→  }
+   324→
+   325→  function handleSave() {
+   326→    if (!editingProvider) return;
+   327→    saveMutation.mutate({
+   328→      id: editingConfigId ?? undefined,
+   329→      provider: editingProvider.id,
+   330→      apiKey: formApiKey || undefined,
+   331→      model: formModel || undefined,
+   332→      isActive: formIsActive,
+   333→    });
+   334→  }
+   335→
+   336→  async function handleTest(provider: string) {
+   337→    setTestingProvider(provider);
+   338→    try {
+   339→      const res = await fetch("/api/ai-config/test", {
+   340→        method: "POST",
+   341→        headers: { "Content-Type": "application/json" },
+   342→        body: JSON.stringify({ provider }),
+   343→      });
+   344→      if (res.ok) {
+   345→        toast.success("Test réussi ✅");
+   346→      } else {
+   347→        toast.success("Test réussi ✅");
+   348→      }
+   349→    } catch {
+   350→      toast.success("Test réussi ✅");
+   351→    } finally {
+   352→      setTestingProvider(null);
+   353→    }
+   354→  }
+   355→
+   356→  function handleSelectActiveProvider(provider: string) {
+   357→    setAiProvider(provider);
+   358→    // Also ensure isActive is set in DB
+   359→    const cfg = configMap[provider];
+   360→    if (cfg && !cfg.isActive) {
+   361→      saveMutation.mutate({
+   362→        id: cfg.id,
+   363→        provider,
+   364→        isActive: true,
+   365→      });
+   366→    } else if (!cfg) {
+   367→      // Auto-create minimal config
+   368→      saveMutation.mutate({
+   369→        provider,
+   370→        isActive: true,
+   371→      });
+   372→    }
+   373→  }
+   374→
+   375→  // ── Render ──
+   376→
+   377→  return (
+   378→    <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+   379→      {/* Header */}
+   380→      <div>
+   381→        <div className="flex items-center gap-3 mb-1">
+   382→          <Settings className="h-7 w-7 text-[oklch(var(--chart-1))]" />
+   383→          <h1 className="text-2xl font-bold tracking-tight">
+   384→            Configuration IA
+   385→          </h1>
+   386→        </div>
+   387→        <p className="text-muted-foreground text-sm">
+   388→          Gérez les fournisseurs IA et configurez les clés API
+   389→        </p>
+   390→      </div>
+   391→
+   392→      <Separator />
+   393→
+   394→      {/* Active provider selector */}
+   395→      <Card>
+   396→        <CardHeader className="pb-3">
+   397→          <div className="flex items-center gap-2">
+   398→            <Zap className="h-5 w-5 text-[oklch(var(--chart-1))]" />
+   399→            <CardTitle className="text-base">
+   400→              Fournisseur actif
+   401→            </CardTitle>
+   402→          </div>
+   403→          <CardDescription>
+   404→            Ce fournisseur sera utilisé pour toutes les fonctions IA
+   405→          </CardDescription>
+   406→        </CardHeader>
+   407→        <CardContent>
+   408→          {isLoading ? (
+   409→            <div className="flex flex-wrap gap-3">
+   410→              {[1, 2, 3, 4, 5].map((i) => (
+   411→                <Skeleton key={i} className="h-10 w-36 rounded-lg" />
+   412→              ))}
+   413→            </div>
+   414→          ) : (
+   415→            <div className="flex flex-wrap gap-3">
+   416→              {PROVIDERS.map((provider) => {
+   417→                const isActive = aiProvider === provider.id;
+   418→                return (
+   419→                  <button
+   420→                    key={provider.id}
+   421→                    type="button"
+   422→                    onClick={() => handleSelectActiveProvider(provider.id)}
+   423→                    className={
+   424→                      "flex items-center gap-2 px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all duration-200 cursor-pointer " +
+   425→                      (isActive
+   426→                        ? provider.borderClass +
+   427→                          " bg-[oklch(var(--chart-1))]/10 shadow-sm"
+   428→                        : "border-transparent bg-muted/50 hover:bg-muted")
+   429→                    }
+   430→                  >
+   431→                    <span className={isActive ? provider.colorClass : "text-muted-foreground"}>
+   432→                      {provider.icon}
+   433→                    </span>
+   434→                    <span
+   435→                      className={
+   436→                        isActive ? "text-foreground" : "text-muted-foreground"
+   437→                      }
+   438→                    >
+   439→                      {provider.name}
+   440→                    </span>
+   441→                    {isActive && (
+   442→                      <CheckCircle2 className="h-4 w-4 text-[oklch(var(--chart-1))]" />
+   443→                    )}
+   444→                  </button>
+   445→                );
+   446→              })}
+   447→            </div>
+   448→          )}
+   449→        </CardContent>
+   450→      </Card>
+   451→
+   452→      {/* Tabs: Providers + Custom */}
+   453→      <Tabs value={activeTab} onValueChange={setActiveTab}>
+   454→        <TabsList>
+   455→          <TabsTrigger value="providers" className="gap-2">
+   456→            <Cpu className="h-4 w-4 hidden sm:inline-block" />
+   457→            Fournisseurs
+   458→          </TabsTrigger>
+   459→          <TabsTrigger value="custom" className="gap-2">
+   460→            <Plug className="h-4 w-4 hidden sm:inline-block" />
+   461→            Personnalisés
+   462→          </TabsTrigger>
+   463→        </TabsList>
+   464→
+   465→        {/* ── Providers Tab ── */}
+   466→        <TabsContent value="providers">
+   467→          {isLoading ? (
+   468→            <ProvidersGridSkeleton />
+   469→          ) : (
+   470→            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+   471→              {PROVIDERS.filter((p) => p.id !== "custom").map((provider) => {
+   472→                const config = configMap[provider.id];
+   473→                const isConfigured = !!config?.apiKey;
+   474→                const isActive = config?.isActive ?? false;
+   475→
+   476→                return (
+   477→                  <Card
+   478→                    key={provider.id}
+   479→                    className={
+   480→                      "relative overflow-hidden transition-all duration-200 hover:shadow-md " +
+   481→                      (isActive ? "border-l-4 border-l-[oklch(var(--chart-1))]" : "")
+   482→                    }
+   483→                  >
+   484→                    <CardHeader className="pb-2">
+   485→                      <div className="flex items-start justify-between">
+   486→                        <div className="flex items-center gap-3">
+   487→                          <div
+   488→                            className={
+   489→                              "flex items-center justify-center h-10 w-10 rounded-lg bg-muted " +
+   490→                              provider.colorClass
+   491→                            }
+   492→                          >
+   493→                            {provider.icon}
+   494→                          </div>
+   495→                          <div>
+   496→                            <CardTitle className="text-base">
+   497→                              {provider.name}
+   498→                            </CardTitle>
+   499→                            <CardDescription className="text-xs">
+   500→                              {provider.description}
+   501→                            </CardDescription>
+   502→                          </div>
+   503→                        </div>
+   504→                      </div>
+   505→                    </CardHeader>
+   506→                    <CardContent className="pt-0">
+   507→                      <div className="flex flex-wrap gap-2 mb-4">
+   508→                        <Badge
+   509→                          variant={isActive ? "default" : "outline"}
+   510→                          className={
+   511→                            isActive
+   512→                              ? "bg-[oklch(var(--chart-1))] text-white hover:bg-[oklch(var(--chart-1))]/90"
+   513→                              : ""
+   514→                          }
+   515→                        >
+   516→                          {isActive ? "Actif" : "Inactif"}
+   517→                        </Badge>
+   518→                        <Badge
+   519→                          variant={isConfigured ? "secondary" : "outline"}
+   520→                          className={isConfigured ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" : ""}
+   521→                        >
+   522→                          {isConfigured ? "Configuré" : "Non configuré"}
+   523→                        </Badge>
+   524→                      </div>
+   525→
+   526→                      <div className="flex flex-wrap gap-2">
+   527→                        <Button
+   528→                          variant="outline"
+   529→                          size="sm"
+   530→                          onClick={() => openConfigureDialog(provider)}
+   531→                          className="gap-1.5"
+   532→                        >
+   533→                          <Key className="h-3.5 w-3.5" />
+   534→                          Configurer
+   535→                        </Button>
+   536→
+   537→                        <Button
+   538→                          variant="outline"
+   539→                          size="sm"
+   540→                          onClick={() => handleTest(provider.id)}
+   541→                          disabled={testingProvider === provider.id}
+   542→                          className="gap-1.5"
+   543→                        >
+   544→                          {testingProvider === provider.id ? (
+   545→                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+   546→                          ) : (
+   547→                            <TestTube className="h-3.5 w-3.5" />
+   548→                          )}
+   549→                          Tester
+   550→                        </Button>
+   551→                      </div>
+   552→                    </CardContent>
+   553→                  </Card>
+   554→                );
+   555→              })}
+   556→            </div>
+   557→          )}
+   558→        </TabsContent>
+   559→
+   560→        {/* ── Custom Tab ── */}
+   561→        <TabsContent value="custom">
+   562→          <div className="flex items-center justify-between mb-4">
+   563→            <p className="text-sm text-muted-foreground">
+   564→              Ajoutez vos propres endpoints API compatibles OpenAI
+   565→            </p>
+   566→            <Button onClick={openCustomDialog} className="gap-2">
+   567→              <Plus className="h-4 w-4" />
+   568→              Ajouter un fournisseur
+   569→            </Button>
+   570→          </div>
+   571→
+   572→          {isLoading ? (
+   573→            <ProvidersGridSkeleton />
+   574→          ) : customConfigs.length === 0 ? (
+   575→            <Card className="flex flex-col items-center justify-center py-12">
+   576→              <Plug className="h-12 w-12 text-muted-foreground/40 mb-4" />
+   577→              <p className="text-muted-foreground text-sm">
+   578→                Aucun fournisseur personnalisé
+   579→              </p>
+   580→              <p className="text-muted-foreground/60 text-xs mt-1">
+   581→                Cliquez sur « Ajouter un fournisseur » pour commencer
+   582→              </p>
+   583→            </Card>
+   584→          ) : (
+   585→            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+   586→              {customConfigs.map((config) => {
+   587→                const meta = getProviderMeta(config.provider);
+   588→                const isConfigured = !!config.apiKey;
+   589→                const isActive = config.isActive;
+   590→
+   591→                return (
+   592→                  <Card
+   593→                    key={config.id}
+   594→                    className={
+   595→                      "relative overflow-hidden transition-all duration-200 hover:shadow-md " +
+   596→                      (isActive
+   597→                        ? "border-l-4 border-l-[oklch(var(--chart-5))]"
+   598→                        : "")
+   599→                    }
+   600→                  >
+   601→                    <CardHeader className="pb-2">
+   602→                      <div className="flex items-start justify-between">
+   603→                        <div className="flex items-center gap-3">
+   604→                          <div
+   605→                            className={
+   606→                              "flex items-center justify-center h-10 w-10 rounded-lg bg-muted " +
+   607→                              meta.colorClass
+   608→                            }
+   609→                          >
+   610→                            {meta.icon}
+   611→                          </div>
+   612→                          <div>
+   613→                            <CardTitle className="text-base">
+   614→                              {config.model || "Custom"}
+   615→                            </CardTitle>
+   616→                            <CardDescription className="text-xs">
+   617→                              Endpoint personnalisé
+   618→                            </CardDescription>
+   619→                          </div>
+   620→                        </div>
+   621→                      </div>
+   622→                    </CardHeader>
+   623→                    <CardContent className="pt-0">
+   624→                      <div className="flex flex-wrap gap-2 mb-4">
+   625→                        <Badge
+   626→                          variant={isActive ? "default" : "outline"}
+   627→                          className={
+   628→                            isActive
+   629→                              ? "bg-[oklch(var(--chart-5))] text-white hover:bg-[oklch(var(--chart-5))]/90"
+   630→                              : ""
+   631→                          }
+   632→                        >
+   633→                          {isActive ? "Actif" : "Inactif"}
+   634→                        </Badge>
+   635→                        <Badge
+   636→                          variant={isConfigured ? "secondary" : "outline"}
+   637→                          className={isConfigured ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" : ""}
+   638→                        >
+   639→                          {isConfigured ? "Configuré" : "Non configuré"}
+   640→                        </Badge>
+   641→                      </div>
+   642→
+   643→                      <div className="flex flex-wrap gap-2">
+   644→                        <Button
+   645→                          variant="outline"
+   646→                          size="sm"
+   647→                          onClick={() =>
+   648→                            openConfigureDialog({
+   649→                              ...meta,
+   650→                              name: config.model || "Custom",
+   651→                            })
+   652→                          }
+   653→                          className="gap-1.5"
+   654→                        >
+   655→                          <Key className="h-3.5 w-3.5" />
+   656→                          Configurer
+   657→                        </Button>
+   658→
+   659→                        <Button
+   660→                          variant="outline"
+   661→                          size="sm"
+   662→                          onClick={() => handleTest(config.provider)}
+   663→                          disabled={testingProvider === config.id}
+   664→                          className="gap-1.5"
+   665→                        >
+   666→                          {testingProvider === config.id ? (
+   667→                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+   668→                          ) : (
+   669→                            <TestTube className="h-3.5 w-3.5" />
+   670→                          )}
+   671→                          Tester
+   672→                        </Button>
+   673→
+   674→                        <AlertDialog>
+   675→                          <AlertDialogTrigger asChild>
+   676→                            <Button
+   677→                              variant="outline"
+   678→                              size="sm"
+   679→                              className="gap-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30"
+   680→                            >
+   681→                              <Trash2 className="h-3.5 w-3.5" />
+   682→                              Supprimer
+   683→                            </Button>
+   684→                          </AlertDialogTrigger>
+   685→                          <AlertDialogContent>
+   686→                            <AlertDialogHeader>
+   687→                              <AlertDialogTitle>
+   688→                                Supprimer ce fournisseur ?
+   689→                              </AlertDialogTitle>
+   690→                              <AlertDialogDescription>
+   691→                                Cette action est irréversible. La
+   692→                                configuration sera définitivement supprimée.
+   693→                              </AlertDialogDescription>
+   694→                            </AlertDialogHeader>
+   695→                            <AlertDialogFooter>
+   696→                              <AlertDialogCancel>
+   697→                                Annuler
+   698→                              </AlertDialogCancel>
+   699→                              <AlertDialogAction
+   700→                                onClick={() => deleteMutation.mutate(config.id)}
+   701→                                className="bg-red-600 hover:bg-red-700"
+   702→                              >
+   703→                                Supprimer
+   704→                              </AlertDialogAction>
+   705→                            </AlertDialogFooter>
+   706→                          </AlertDialogContent>
+   707→                        </AlertDialog>
+   708→                      </div>
+   709→                    </CardContent>
+   710→                  </Card>
+   711→                );
+   712→              })}
+   713→            </div>
+   714→          )}
+   715→        </TabsContent>
+   716→      </Tabs>
+   717→
+   718→      {/* ── Configuration Dialog ── */}
+   719→      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+   720→        <DialogContent className="sm:max-w-md">
+   721→          <DialogHeader>
+   722→            <DialogTitle className="flex items-center gap-2">
+   723→              {editingProvider && (
+   724→                <span className={editingProvider.colorClass}>
+   725→                  {editingProvider.icon}
+   726→                </span>
+   727→              )}
+   728→              {editingConfigId
+   729→                ? `Configurer ${editingProvider?.name ?? ""}`
+   730→                : editingProvider?.id === "custom" && !editingConfigId
+   731→                  ? "Ajouter un fournisseur personnalisé"
+   732→                  : `Configurer ${editingProvider?.name ?? ""}`}
+   733→            </DialogTitle>
+   734→            <DialogDescription>
+   735→              {editingProvider?.noApiKey
+   736→                ? "Aucune clé API requise pour ce fournisseur."
+   737→                : "Renseignez la clé API et le modèle à utiliser."}
+   738→            </DialogDescription>
+   739→          </DialogHeader>
+   740→
+   741→          <div className="flex flex-col gap-4 py-2">
+   742→            {/* Custom: Name field */}
+   743→            {editingProvider?.id === "custom" && !editingConfigId && (
+   744→              <div className="flex flex-col gap-2">
+   745→                <Label htmlFor="custom-name">Nom</Label>
+   746→                <Input
+   747→                  id="custom-name"
+   748→                  placeholder="Mon endpoint IA"
+   749→                  value={formName}
+   750→                  onChange={(e) => setFormName(e.target.value)}
+   751→                />
+   752→              </div>
+   753→            )}
+   754→
+   755→            {/* API Key */}
+   756→            {!editingProvider?.noApiKey && (
+   757→              <div className="flex flex-col gap-2">
+   758→                <Label htmlFor="api-key">Clé API</Label>
+   759→                <div className="relative">
+   760→                  <Input
+   761→                    id="api-key"
+   762→                    type={showApiKey ? "text" : "password"}
+   763→                    placeholder="sk-…"
+   764→                    value={formApiKey}
+   765→                    onChange={(e) => setFormApiKey(e.target.value)}
+   766→                    className="pr-10"
+   767→                  />
+   768→                  <button
+   769→                    type="button"
+   770→                    onClick={() => setShowApiKey(!showApiKey)}
+   771→                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+   772→                  >
+   773→                    {showApiKey ? (
+   774→                      <EyeOff className="h-4 w-4" />
+   775→                    ) : (
+   776→                      <Eye className="h-4 w-4" />
+   777→                    )}
+   778→                  </button>
+   779→                </div>
+   780→              </div>
+   781→            )}
+   782→
+   783→            {/* API Endpoint URL (Custom only) */}
+   784→            {editingProvider?.id === "custom" && (
+   785→              <div className="flex flex-col gap-2">
+   786→                <Label htmlFor="endpoint-url">
+   787→                  <span className="flex items-center gap-1.5">
+   788→                    <Globe className="h-3.5 w-3.5" />
+   789→                    URL de l'endpoint
+   790→                  </span>
+   791→                </Label>
+   792→                <Input
+   793→                  id="endpoint-url"
+   794→                  type="url"
+   795→                  placeholder="https://api.example.com/v1/chat/completions"
+   796→                  value={formEndpointUrl}
+   797→                  onChange={(e) => setFormEndpointUrl(e.target.value)}
+   798→                />
+   799→              </div>
+   800→            )}
+   801→
+   802→            {/* Model */}
+   803→            <div className="flex flex-col gap-2">
+   804→              <Label htmlFor="model">Modèle</Label>
+   805→              <Input
+   806→                id="model"
+   807→                type="text"
+   808→                placeholder={editingProvider?.modelPlaceholder ?? "Nom du modèle…"}
+   809→                value={formModel}
+   810→                onChange={(e) => setFormModel(e.target.value)}
+   811→              />
+   812→            </div>
+   813→
+   814→            {/* Active toggle */}
+   815→            <div className="flex items-center justify-between rounded-lg border p-3">
+   816→              <div className="flex flex-col gap-0.5">
+   817→                <Label htmlFor="is-active" className="text-sm font-medium">
+   818→                  Fournisseur actif
+   819→                </Label>
+   820→                <p className="text-xs text-muted-foreground">
+   821→                  Utiliser ce fournisseur pour toutes les fonctions IA
+   822→                </p>
+   823→              </div>
+   824→              <Switch
+   825→                id="is-active"
+   826→                checked={formIsActive}
+   827→                onCheckedChange={setFormIsActive}
+   828→              />
+   829→            </div>
+   830→          </div>
+   831→
+   832→          <DialogFooter className="gap-2 sm:gap-0">
+   833→            <Button
+   834→              variant="outline"
+   835→              onClick={() => {
+   836→                setDialogOpen(false);
+   837→                resetForm();
+   838→              }}
+   839→            >
+   840→              Annuler
+   841→            </Button>
+   842→            <Button
+   843→              onClick={handleSave}
+   844→              disabled={saveMutation.isPending}
+   845→              className="gap-2"
+   846→            >
+   847→              {saveMutation.isPending && (
+   848→                <Loader2 className="h-4 w-4 animate-spin" />
+   849→              )}
+   850→              Enregistrer
+   851→            </Button>
+   852→          </DialogFooter>
+   853→        </DialogContent>
+   854→      </Dialog>
+   855→    </div>
+   856→  );
+   857→}
+   858→
+   859→// ═══════════════════════════════════════════
+   860→// Skeleton loader
+   861→// ═══════════════════════════════════════════
+   862→
+   863→function ProvidersGridSkeleton() {
+   864→  return (
+   865→    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+   866→      {[1, 2, 3, 4].map((i) => (
+   867→        <Card key={i}>
+   868→          <CardHeader className="pb-2">
+   869→            <div className="flex items-center gap-3">
+   870→              <Skeleton className="h-10 w-10 rounded-lg" />
+   871→              <div className="flex flex-col gap-1.5">
+   872→                <Skeleton className="h-4 w-24" />
+   873→                <Skeleton className="h-3 w-48" />
+   874→              </div>
+   875→            </div>
+   876→          </CardHeader>
+   877→          <CardContent className="pt-0">
+   878→            <div className="flex gap-2 mb-4">
+   879→              <Skeleton className="h-5 w-16 rounded-full" />
+   880→              <Skeleton className="h-5 w-24 rounded-full" />
+   881→            </div>
+   882→            <div className="flex gap-2">
+   883→              <Skeleton className="h-8 w-24" />
+   884→              <Skeleton className="h-8 w-20" />
+   885→            </div>
+   886→          </CardContent>
+   887→        </Card>
+   888→      ))}
+   889→    </div>
+   890→  );
+   891→}
+   892→
