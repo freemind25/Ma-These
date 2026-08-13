@@ -453,3 +453,168 @@ VERIFICATION AVANT SOUMISSION :
     ]},
   ],
 } as const;
+
+// Module A — Regles APA 7 pour la communication des resultats statistiques
+export const REGLES_APA_RESULTATS_STATISTIQUES = `
+REGLES APA 7 POUR LA COMMUNICATION DES RESULTATS STATISTIQUES :
+
+Principes fondamentaux :
+- Rapporter les statistiques descriptives (M, ET) et inférentielles (test, ddl, valeur, p) pour chaque analyse
+- Les valeurs exactes de p sont préférées (p = .032) sauf si p < .001
+- Ne jamais rapporter p = .000 — écrire p < .001
+- Toujours inclure l'intervalle de confiance à 95 % quand possible
+- Arrondir à 2 décimales sauf pour les valeurs de p (3 décimales)
+
+Corrélation de Pearson :
+- Format : r(ddl) = valeur, p = valeur, IC 95 % [borne_inf, borne_sup]
+- Exemple : r(98) = .45, p < .001, IC 95 % [.32, .56]
+- Indiquer la direction (positive/négative) et la force (faible/modérée/forte)
+- Seuils de force : .10 = faible, .30 = modérée, .50 = forte
+
+Test t de Student :
+- Format : t(ddl) = valeur, p = valeur, d = Cohen
+- Exemple : t(48) = 3.21, p = .002, d = 0.92
+- Toujours rapporter l'effectif des deux groupes
+- Inclure les statistiques descriptives groupées (M et ET)
+
+ANOVA :
+- Format : F(ddl_intergroupe, ddl_intragroupe) = valeur, p = valeur, η²p = valeur
+- Exemple : F(2, 147) = 8.45, p < .001, η²p = .10
+- Rapporter les tests post-hoc avec corrections (Bonferroni, Tukey)
+- Taille d'effet : η²p = .01 faible, .06 moyen, .14 fort
+
+Régression :
+- Format : B = valeur, SE = valeur, β = valeur, p = valeur
+- Rapporter R², R² ajusté et F du modèle
+- Rapporter les VIF pour la multicolinéarité (< 5 acceptable)
+
+Chi-carré :
+- Format : χ²(ddl, N = effectif) = valeur, p = valeur, φ = valeur ou V de Cramer
+- Rapporter les effectifs observés et théoriques dans un tableau
+
+Médiation / Modération :
+- Indiquer clairement le type de test (Sobel, Bootstrap)
+- Rapporter l'effet indirect avec IC à 95 %
+- Pour la modération : rapporter l'interaction F et le graphique d'interaction
+
+Règles de présentation :
+- Ne jamais utiliser le symbole « ≠ » dans le texte — écrire « ne diffère pas de »
+- Mettre en italique les symboles statistiques : M, SD, t, F, p, r, d
+- Nombres décimaux avec zéro initial : .32 (pas 0,32 en français)
+- Abréviations standard : M = moyenne, ET = écart-type (SD en anglais), ddl = degrés de liberté
+- Tableaux statistiques : pas de lignes verticales, en-têtes clairs, notes de bas de page pour les abréviations
+`;
+
+// Module B — Cadre PEER pour la structure des paragraphes académiques
+export const CADRE_PEER_PARAGRAPHE = {
+  titre: "Structure PEER des paragraphes académiques",
+  description: "Chaque paragraphe de rédaction scientifique doit suivre la structure PEER : Point, Evidence, Explanation, Reference",
+  composants: [
+    {
+      lettre: "P",
+      composant: "Point",
+      description: "L'idée principale du paragraphe, énoncée dès la première phrase (topic sentence)",
+      regle: "Un seul point par paragraphe — ne jamais mélanger deux idées dans un même bloc",
+      exemple: "L'utilisation des réseaux sociaux est associée à une augmentation des troubles anxieux chez les adolescents."
+    },
+    {
+      lettre: "E",
+      composant: "Evidence",
+      description: "La preuve empirique, les données ou les résultats d'études étayant le point",
+      regle: "Citer au moins une source primaire ; privilégier les données quantitatives aux opinions",
+      exemple: "Une méta-analyse de Huang (2022) portant sur 42 études (N = 31 247) a montré une corrélation positive modérée entre le temps d'utilisation et les scores d'anxiété (r = .34, p < .001)."
+    },
+    {
+      lettre: "E",
+      composant: "Explanation",
+      description: "L'interprétation et l'explication de la preuve en lien avec le point principal",
+      regle: "Montrer le lien logique entre la preuve et l'argument ; ne pas répéter la preuve mais l'interpréter",
+      exemple: "Cette corrélation suggère que l'exposition prolongée aux comparaisons sociales numériques pourrait amplifier la vulnérabilité anxieuse, particulièrement durant la période de développement identitaire."
+    },
+    {
+      lettre: "R",
+      composant: "Reference",
+      description: "La conclusion du paragraphe et le lien vers le suivant",
+      regle: "Rappeler l'argument principal et annoncer la transition ; ne pas introduire de nouveaux arguments",
+      exemple: "Ainsi, le temps passé sur les plateformes sociales constitue un facteur de risque significatif, ce qui conduit à examiner les mécanismes sous-jacents impliqués dans cette association."
+    },
+  ],
+  antiPatterns: [
+    {
+      erreur: "Paragraphe sans topic sentence claire",
+      correction: "La première phrase doit énoncer l'idée principale du paragraphe de manière directe"
+    },
+    {
+      erreur: "Preuve insuffisante ou absente",
+      correction: "Chaque point doit être étayé par au moins une source empirique citée"
+    },
+    {
+      erreur: "Explication manquante entre la preuve et le point",
+      correction: "L'explication doit articuler logiquement la preuve avec l'argument et montrer le mécanisme"
+    },
+    {
+      erreur: "Deux points dans un même paragraphe",
+      correction: "Scinder en deux paragraphes distincts, chacun avec sa propre structure PEER"
+    },
+  ],
+};
+
+// Module C — Phrases d'amorce RMIT par section IMRaD
+export const PHRASES_AMORCE_RMIT = {
+  introduction: [
+    "La question de [X] a suscité un intérêt croissant dans le domaine de [Y] au cours des dernières décennies.",
+    "Malgré les avancées significatives dans le domaine de [X], un certain nombre de questions demeurent sans réponse.",
+    "Les recherches récentes sur [X] ont mis en évidence [Y], ce qui soulève des interrogations quant à [Z].",
+    "L'importance de [X] dans le contexte de [Y] est largement reconnue, mais les mécanismes sous-jacents restent mal compris.",
+    "Une revue de la littérature sur [X] révèle des résultats contradictoires quant à [Y], ce qui justifie une investigation plus approfondie.",
+    "Bien que plusieurs études aient examiné [X], peu ont exploré [Y] dans le contexte spécifique de [Z].",
+    "Le présent chapitre s'inscrit dans le prolongement des travaux de [Auteur(s)] sur [X], en apportant un éclairage nouveau sur [Y].",
+    "La compréhension de [X] constitue un enjeu majeur pour [domaine], tant sur le plan théorique que pratique.",
+  ],
+  revueLitterature: [
+    "Plusieurs études ont examiné l'impact de [X] sur [Y], avec des résultats contrastés.",
+    "Les travaux de [Auteur, Année] ont mis en évidence une relation significative entre [X] et [Y].",
+    "En revanche, [Auteur, Année] n'a pas trouvé d'effet significatif de [X] sur [Y], suggérant que [explication].",
+    "Cette divergence de résultats pourrait s'expliquer par [facteur méthodologique ou contextuel].",
+    "Une méta-analyse récente de [Auteur, Année] portant sur [N] études a confirmé [résultat].",
+    "Les lacunes identifiées dans la littérature incluent [lacune 1] et [lacune 2].",
+    "Il convient de noter que la majorité des études sur [X] ont été menées dans le contexte de [population/pays], limitant la généralisabilité des résultats.",
+    "Cependant, ces résultats doivent être interprétés avec prudence en raison de [limitation].",
+  ],
+  methodes: [
+    "L'étude a reçu l'approbation du comité d'éthique de [institution] (référence : [numéro]).",
+    "Les participants ont été recrutés par [méthode de recrutement] auprès de [population source].",
+    "Les données ont été collectées au moyen de [instrument] validé par [Auteur, Année].",
+    "L'échantillon a été déterminé par [méthode de calcul de taille d'échantillon] avec une puissance de [X] %.",
+    "Les analyses statistiques ont été réalisées à l'aide de [logiciel, version].",
+    "Les variables indépendantes comprenaient [liste], tandis que la variable dépendante était [description].",
+    "La fiabilité interne de l'instrument a été évaluée par le coefficient alpha de Cronbach (α = [valeur]).",
+    "Afin de contrôler l'effet de [variable confusionnelle], un [modèle/analyse] a été utilisé.",
+  ],
+  resultats: [
+    "Les résultats de l'analyse [type d'analyse] révèlent [résultat principal].",
+    "Comme le montre le Tableau [X], [description des résultats].",
+    "L'effet de [X] sur [Y] s'est avéré [significatif/non significatif], t(ddl) = [valeur], p = [valeur].",
+    "Les moyennes des deux groupes diffèrent significativement sur [variable] (M_groupe1 = [valeur], ET = [valeur] ; M_groupe2 = [valeur], ET = [valeur]).",
+    "La corrélation entre [X] et [Y] est [positive/négative] et [faible/modérée/forte], r(ddl) = [valeur], p = [valeur].",
+    "Le modèle de régression explique [X] % de la variance de [variable dépendante], R² = [valeur], F(ddl) = [valeur], p = [valeur].",
+    "Conformément à l'hypothèse [N], [description du résultat attendu confirmé/infirmé].",
+    "Aucun effet d'interaction significatif n'a été observé entre [X] et [Y], F(ddl) = [valeur], p = [valeur].",
+  ],
+  discussion: [
+    "Ces résultats sont conformes aux travaux antérieurs de [Auteur, Année], qui avaient également mis en évidence [résultat similaire].",
+    "À l'inverse de [Auteur, Année], nos résultats suggèrent que [différence].",
+    "Une explication possible de ce résultat réside dans [mécanisme/théorie].",
+    "Les implications théoriques de ces résultats incluent [implication 1] et [implication 2].",
+    "Sur le plan pratique, ces résultats suggèrent que [recommandation].",
+    "Plusieurs limites doivent être mentionnées : premièrement [limite 1] ; deuxièmement [limite 2].",
+    "Les recherches futures devraient examiner [piste de recherche] afin de [objectif].",
+    "En conclusion, cette étude contribue à la compréhension de [phénomène] en [contribution principale].",
+  ],
+  conclusion: [
+    "En somme, cette étude a permis de mettre en évidence [résultat principal].",
+    "Les résultats obtenus corroborent l'hypothèse selon laquelle [résumé de l'hypothèse confirmée].",
+    "Cette recherche apporte une contribution originale au domaine de [X] en [nature de la contribution].",
+    "Les perspectives de recherche ouvertes par ces résultats incluent [perspective 1] et [perspective 2].",
+  ],
+};

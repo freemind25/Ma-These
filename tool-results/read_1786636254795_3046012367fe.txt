@@ -1,0 +1,1175 @@
+     1→// ═══════════════════════════════════════════════════════════════════
+     2→// ThesisFrame — Corpus Publication & Relecture par les pairs
+     3→// Base de connaissances structurée issue de :
+     4→//   - Belcher, W.L. "Writing Your Journal Article in Twelve Weeks"
+     5→//   - Pyrczak, F. "Evaluating Research in Academic Journals"
+     6→//   - Epstein, D., Kenway, J., Boden, R. "Writing for Publication"
+     7→//   - RMIT "Research and Writing Skills"
+     8→//   - Roda, J., Saunders, D., Anderson, K. "PhDone"
+     9→//   - Sonneveld, H. "The Art of Writing a PhD Proposal"
+    10→//   - Holtom, D., Fisher, E. "Enjoy Writing Your Science Thesis"
+    11→//   - Graustein, A. "How to Write an Exceptional Thesis"
+    12→// Reformulé en règles actionnables — aucune reproduction de texte protégé
+    13→// ═══════════════════════════════════════════════════════════════════
+    14→
+    15→// ─── Types ──────────────────────────────────────────────────────────────────────
+    16→
+    17→/** Étape hebdomadaire du programme de Belcher */
+    18→interface EtapeHebdomadaire {
+    19→  semaine: number;
+    20→  titre: string;
+    21→  objectif: string;
+    22→  livrables: string[];
+    23→  pieges: string[];
+    24→}
+    25→
+    26→/** Critère de qualité pour la publication (Belcher) */
+    27→interface CritereQualitePublication {
+    28→  id: string;
+    29→  domaine: string;
+    30→  critere: string;
+    31→  indicateur: string;
+    32→}
+    33→
+    34→/** Question d'évaluation critique (Pyrczak) */
+    35→interface QuestionEvaluation {
+    36→  id: string;
+    37→  categorie: string;
+    38→  question: string;
+    39→  ceChercher: string;
+    40→}
+    41→
+    42→/** Niveau de qualité d'une recherche (Pyrczak) */
+    43→interface NiveauQualite {
+    44→  niveau: string;
+    45→  description: string;
+    46→  signesDistinctifs: string[];
+    47→}
+    48→
+    49→/** Règle d'édition professionnelle (PhDone) */
+    50→interface RegleEdition {
+    51→  id: string;
+    52→  categorie: string;
+    53→  regle: string;
+    54→  exempleAvant: string;
+    55→  exempleApres: string;
+    56→}
+    57→
+    58→/** Étape de la proposition de thèse (Sonneveld) */
+    59→interface EtapeProposition {
+    60→  id: string;
+    61→  section: string;
+    62→  objectif: string;
+    63→  elementsAttendus: string[];
+    64→  erreursFrequentes: string[];
+    65→}
+    66→
+    67→/** Critère d'acceptation d'une proposition (Sonneveld) */
+    68→interface CritereAcceptation {
+    69→  id: string;
+    70→  critere: string;
+    71→  poids: "éliminatoire"|"majeur"|"mineur";
+    72→  description: string;
+    73→}
+    74→
+    75→/** Stratégie de motivation pour la rédaction (Holtom & Fisher) */
+    76→interface StrategieMotivation {
+    77→  id: string;
+    78→  phase: string;
+    79→  strategie: string;
+    80→  miseEnPratique: string;
+    81→}
+    82→
+    83→/** Étape du guide complet de thèse (Graustein) */
+    84→interface EtapeThese {
+    85→  id: string;
+    86→  phase: string;
+    87→  titre: string;
+    88→  objectif: string;
+    89→  produitsLivables: string[];
+    90→  delaiEstime: string;
+    91→}
+    92→
+    93→/** Critère d'excellence d'une thèse (Graustein) */
+    94→interface CritereExcellence {
+    95→  id: string;
+    96→  domaine: string;
+    97→  critere: string;
+    98→  description: string;
+    99→}
+   100→
+   101→// ═══════════════════════════════════════════════════════════════════
+   102→// MODULE 1 — Programme de publication en 12 semaines (Belcher)
+   103→// Stratégie hebdomadaire pour transformer un manuscrit en article publiable
+   104→// ═══════════════════════════════════════════════════════════════════
+   105→
+   106→export const SEMAINES_PROGRAMME_PUBLICATION: EtapeHebdomadaire[] = [
+   107→  {
+   108→    semaine: 1,
+   109→    titre: "Direction de l'article",
+   110→    objectif: "Choisir une revue cible et analyser ses exigences",
+   111→    livrables: [
+   112→      "Identification de 3 revues cibles classées par ordre de préférence",
+   113→      "Analyse des guidelines de la revue prioritaire",
+   114→      "Cartographie des exigences de format et de structure",
+   115→    ],
+   116→    pieges: [
+   117→      "Viser trop haut sans évaluer la faisabilité (journal factor d'impact disproportionné au stade du chercheur)",
+   118→      "Ignorer les normes spécifiques de la revue (longueur, sections, style bibliographique)",
+   119→      "Choisir une revue sans lire ses derniers numéros pour comprendre le profil éditorial",
+   120→    ],
+   121→  },
+   122→  {
+   123→    semaine: 2,
+   124→    titre: "Résumé structuré",
+   125→    objectif: "Rédiger un résumé qui guide toute la structure de l'article",
+   126→    livrables: [
+   127→      "Résumé de 150-250 mots respectant la structure de la revue",
+   128→      "Mots-clés (5-7 termes)",
+   129→      "Vérification de la concordance résumé/conclusion du manuscrit",
+   130→    ],
+   131→    pieges: [
+   132→      "Rédiger le résumé en dernier (Belcher recommande de le faire en premier comme plan)",
+   133→      "Inclure des références ou des résultats non présents dans le corps du texte",
+   134→      "Dépasser la limite de mots de la revue cible",
+   135→    ],
+   136→  },
+   137→  {
+   138→    semaine: 3,
+   139→    titre: "Accroche et littérature",
+   140→    objectif: "Structurer l'introduction avec une progression logique",
+   141→    livrables: [
+   142→      "Paragraphe d'accroche (contexte large)",
+   143→      "Cadrage vers la problématique spécifique",
+   144→      "Revue ciblée de la littérature (seulement ce qui est pertinent)",
+   145→      "Énoncé de la question de recherche ou de l'objectif",
+   146→    ],
+   147→    pieges: [
+   148→      "Faire une revue encyclopédique au lieu d'une revue argumentative",
+   149→      "Oublier de signaler la lacune de recherche que l'article comble",
+   150→      "Entamer la rédaction sans avoir lu les travaux fondateurs du domaine",
+   151→    ],
+   152→  },
+   153→  {
+   154→    semaine: 4,
+   155→    titre: "Argumentation et cadre",
+   156→    objectif: "Finaliser l'introduction avec la justification méthodologique",
+   157→    livrables: [
+   158→      "Justification de l'approche retenue par rapport aux alternatives",
+   159→      "Positionnement clair de la contribution",
+   160→      "Transition vers la section méthodes",
+   161→    ],
+   162→    pieges: [
+   163→      "Affirmer une contribution sans la démontrer par rapport à l'existant",
+   164→      "Ne pas justifier pourquoi cette méthodologie et pas une autre",
+   165→      "Introduction trop longue (> 30% de l'article)",
+   166→    ],
+   167→  },
+   168→  {
+   169→    semaine: 5,
+   170→    titre: "Méthodes — Approche",
+   171→    objectif: "Rédiger la section méthodologique de manière reproductible",
+   172→    livrables: [
+   173→      "Description du design de recherche",
+   174→      "Présentation de l'échantillon/population",
+   175→      "Description des instruments de collecte",
+   176→    ],
+   177→    pieges: [
+   178→      "Manquer de détails pour permettre la reproductibilité",
+   179→      "Confondre protocole (ce qu'on a fait) et justification (pourquoi)",
+   180→      "Omettre les considérations éthiques",
+   181→    ],
+   182→  },
+   183→  {
+   184→    semaine: 6,
+   185→    titre: "Méthodes — Procédure et analyse",
+   186→    objectif: "Compléter les procédures de collecte et d'analyse",
+   187→    livrables: [
+   188→      "Procédure de collecte de données détaillée",
+   189→      "Méthodes d'analyse (statistiques ou qualitatives)",
+   190→      "Justification des choix analytiques",
+   191→    ],
+   192→    pieges: [
+   193→      "Séparer la collecte et l'analyse au point de perdre la cohérence du protocole",
+   194→      "Ne pas préciser les logiciels ou versions utilisés pour l'analyse",
+   195→      "Oublier de mentionner les critères d'inclusion/exclusion",
+   196→    ],
+   197→  },
+   198→  {
+   199→    semaine: 7,
+   200→    titre: "Résultats — Présentation",
+   201→    objectif: "Organiser les résultats selon la logique des questions de recherche",
+   202→    livrables: [
+   203→      "Tableaux et figures avec titres descriptifs (auto-suffisants)",
+   204→      "Texte narratif accompagnant chaque tableau/figure",
+   205→      "Ordre logique des résultats (du général au spécifique)",
+   206→    ],
+   207→    pieges: [
+   208→      "Répéter dans le texte tout ce qui est dans les tableaux (le texte doit synthétiser, pas dupliquer)",
+   209→      "Présenter des résultats bruts sans analyse ni mise en contexte",
+   210→      "Intercaler de l'interprétation dans la section résultats",
+   211→    ],
+   212→  },
+   213→  {
+   214→    semaine: 8,
+   215→    titre: "Résultats — Vérification",
+   216→    objectif: "Vérifier la cohérence entre résultats, résumé et objectifs",
+   217→    livrables: [
+   218→      "Vérification : chaque objectif → résultats correspondants",
+   219→      "Vérification : chaque tableau/figure → référencé dans le texte",
+   220→      "Vérification : cohérence des chiffres entre résumé, texte et tableaux",
+   221→    ],
+   222→    pieges: [
+   223→      "Résultats qui ne répondent à aucun objectif déclaré",
+   224→      "Incohérence numérique entre le texte et les tableaux",
+   225→      "Tableaux/figures jamais cités dans le corps du texte",
+   226→    ],
+   227→  },
+   228→  {
+   229→    semaine: 9,
+   230→    titre: "Discussion — Interprétation",
+   231→    objectif: "Interpréter les résultats en lien avec la littérature existante",
+   232→    livrables: [
+   233→      "Rappel de l'objectif principal et des principaux résultats",
+   234→      "Comparaison avec les résultats des études antérieures",
+   235→      "Interprétation des convergences et divergences",
+   236→    ],
+   237→    pieges: [
+   238→      "Répéter les résultats au lieu de les interpréter",
+   239→      "Ne pas confronter les résultats à la littérature existante",
+   240→      "Ignorer les résultats contraires aux hypothèses",
+   241→    ],
+   242→  },
+   243→  {
+   244→    semaine: 10,
+   245→    titre: "Discussion — Limites et implications",
+   246→    objectif: "Formuler les limites, contributions et perspectives",
+   247→    livrables: [
+   248→      "Limites méthodologiques identifiées et justifiées",
+   249→      "Contributions théoriques et/ou pratiques",
+   250→      "Pistes de recherche future",
+   251→    ],
+   252→    pieges: [
+   253→      "Formuler des limites génériques non liées au protocole réel",
+   254→      "Surévaluer la portée des contributions",
+   255→      "Proposer des pistes de recherche sans lien avec les limites identifiées",
+   256→    ],
+   257→  },
+   258→  {
+   259→    semaine: 11,
+   260→    titre: "Révision et cohérence globale",
+   261→    objectif: "Réviser l'article dans sa globalité pour la cohérence et le style",
+   262→    livrables: [
+   263→      "Vérification de la progression argumentaire introduction → conclusion",
+   264→      "Harmonisation du style et du registre linguistique",
+   265→      "Vérification des références (complètes et conformes au style de la revue)",
+   266→    ],
+   267→    pieges: [
+   268→      "Réviser uniquement la forme et non le fond",
+   269→      "Ignorer les guidelines de la revue cible lors de la mise en forme",
+   270→      "Ne pas faire relire par un pair avant soumission",
+   271→    ],
+   272→  },
+   273→  {
+   274→    semaine: 12,
+   275→    titre: "Finalisation et soumission",
+   276→    objectif: "Préparer la lettre d'accompagnement et soumettre",
+   277→    livrables: [
+   278→      "Lettre d'accompagnement (cover letter) adaptée à la revue",
+   279→      "Vérification finale de la conformité aux exigences de soumission",
+   280→      "Soumission et enregistrement du suivi",
+   281→    ],
+   282→    pieges: [
+   283→      "Lettre d'accompagnement générique non personnalisée pour la revue",
+   284→      "Oublier les formulaires obligatoires (déclaration de conflit d'intérêts, consentement éthique)",
+   285→      "Ne pas conserver une copie du manuscrit tel que soumis (version tracking)",
+   286→    ],
+   287→  },
+   288→];
+   289→
+   290→// ─── Critères de qualité pour la publication (Belcher) ─────────
+   291→
+   292→export const CRITERES_QUALITE_PUBLICATION: CritereQualitePublication[] = [
+   293→  {
+   294→    id: "belcher-coherence",
+   295→    domaine: "Structure",
+   296→    critere: "Cohérence argumentaire globale",
+   297→    indicateur: "Chaque section renvoie à la précédente et prépare la suivante",
+   298→  },
+   299→  {
+   300→    id: "belcher-lacune",
+   301→    domaine: "Introduction",
+   302→    critere: "Identification explicite de la lacune",
+   303→    indicateur: "Le lecteur comprend en fin d'introduction ce que l'article apporte de nouveau",
+   304→  },
+   305→  {
+   306→    id: "belcher-reproductibilite",
+   307→    domaine: "Méthodes",
+   308→    critere: "Reproductibilité du protocole",
+   309→    indicateur: "Un chercheur pourrait reproduire l'étude à partir de la seule description des méthodes",
+   310→  },
+   311→  {
+   312→    id: "belcher-resultats-non-redondants",
+   313→    domaine: "Résultats",
+   314→    critere: "Non-redondance texte/tableaux",
+   315→    indicateur: "Le texte commente les tableaux sans en dupliquer les données",
+   316→  },
+   317→  {
+   318→    id: "belcher-discussion-litterature",
+   319→    domaine: "Discussion",
+   320→    critere: "Confrontation systématique avec la littérature",
+   321→    indicateur: "Chaque résultat principal est discuté en référence à au moins une étude antérieure",
+   322→  },
+   323→  {
+   324→    id: "belcher-limites-specifiques",
+   325→    domaine: "Discussion",
+   326→    critere: "Limites spécifiques au protocole",
+   327→    indicateur: "Les limites mentionnées sont directement liées aux choix méthodologiques de l'étude",
+   328→  },
+   329→  {
+   330→    id: "belcher-contribution-originale",
+   331→    domaine: "Contribution",
+   332→    critere: "Originalité de la contribution",
+   333→    indicateur: "La contribution est clairement distinguée des travaux existants",
+   334→  },
+   335→  {
+   336→    id: "belcher-conformite-revue",
+   337→    domaine: "Forme",
+   338→    critere: "Conformité aux exigences de la revue cible",
+   339→    indicateur: "Longueur, style bibliographique, sections — tout correspond aux guidelines",
+   340→  },
+   341→  {
+   342→    id: "belcher-couverture-letter",
+   343→    domaine: "Soumission",
+   344→    critere: "Lettre d'accompagnement personnalisée",
+   345→    indicateur: "La cover letter explique pourquoi cet article est pertinent pour CETTE revue",
+   346→  },
+   347→  {
+   348→    id: "belcher-revision-reponse",
+   349→    domaine: "Révision",
+   350→    critere: "Réponse constructive aux évaluateurs",
+   351→    indicateur: "Chaque commentaire est adressé point par point, même si non suivi",
+   352→  },
+   353→];
+   354→
+   355→// ─── Pièges à fuir en publication (Belcher) ───────────────────
+   356→
+   357→export const PIEGES_PUBLICATION: string[] = [
+   358→  "Attendre d'avoir un manuscrit parfait avant de choisir une revue cible",
+   359→  "Rédiger l'article avant d'avoir identifié la revue et ses exigences",
+   360→  "Ignorer le profil éditorial de la revue (types d'articles récents, thématiques privilégiées)",
+   361→  "Soumettre simultanément à plusieurs revues (soumission multiple = faute professionnelle)",
+   362→  "Ne pas répondre aux évaluateurs dans le délai imparti",
+   363→  "Répondre de manière défensive ou agressive aux commentaires des évaluateurs",
+   364→  "Ignorer les commentaires des évaluateurs et soumettre sans modification substantielle",
+   365→  "Confondre révision mineure (corrections formelles) et révision majeure (restructuration)",
+   366→  "Ne pas conserver une trace des versions successives du manuscrit",
+   367→  "Attendre la fin de la thèse pour publier (publier au fur et à mesure est stratégique)",
+   368→  "Ne pas demander à des collègues de relire avant soumission",
+   369→  "Sous-estimer l'importance de la lettre d'accompagnement (cover letter)",
+   370→];
+   371→
+   372→// ═══════════════════════════════════════════════════════════════════
+   373→// MODULE 2 — Évaluation de la qualité de recherche (Pyrczak)
+   374→// Grille d'évaluation critique pour évaluer des articles de revues académiques
+   375→// ═══════════════════════════════════════════════════════════════════
+   376→
+   377→export const QUESTIONS_EVALUATION_RECHERCHE: QuestionEvaluation[] = [
+   378→  // --- Problématique et objectives ---
+   379→  {
+   380→    id: "pyrczak-obj1",
+   381→    categorie: "Problématique",
+   382→    question: "La question de recherche est-elle clairement formulée ?",
+   383→    ceChercher: "Un énoncé interrogatif ou déclaratif identifiant la variable dépendante et les variables indépendantes, avec une délimitation du champ d'étude",
+   384→  },
+   385→  {
+   386→    id: "pyrczak-obj2",
+   387→    categorie: "Problématique",
+   388→    question: "L'importance du problème est-elle justifiée ?",
+   389→    ceChercher: "Des données (statistiques, citations, contexte) démontrant pourquoi ce problème mérite une investigation",
+   390→  },
+   391→  {
+   392→    id: "pyrczak-obj3",
+   393→    categorie: "Problématique",
+   394→    question: "La revue de littérature est-elle pertinente et à jour ?",
+   395→    ceChercher: "Des références récentes (dernières 5 ans majoritairement), des travaux fondateurs, et une synthèse critique plutôt qu'un catalogue",
+   396→  },
+   397→  {
+   398→    id: "pyrczak-obj4",
+   399→    categorie: "Problématique",
+   400→    question: "Les hypothèses sont-elles dérivées de la théorie ou de la littérature ?",
+   401→    ceChercher: "Un lien explicite entre le cadre théorique/conceptuel et chaque hypothèse formulée",
+   402→  },
+   403→  // --- Méthodologie ---
+   404→  {
+   405→    id: "pyrczak-meth1",
+   406→    categorie: "Méthodologie",
+   407→    question: "Le design de recherche est-il approprié pour la question posée ?",
+   408→    ceChercher: "Cohérence entre le type de question (causale, descriptive, exploratoire) et le design choisi (expérimental, quasi-expérimental, corrélationnel, qualitatif)",
+   409→  },
+   410→  {
+   411→    id: "pyrczak-meth2",
+   412→    categorie: "Méthodologie",
+   413→    question: "L'échantillon est-il représentatif et de taille adéquate ?",
+   414→    ceChercher: "Description de la méthode d'échantillonnage, calcul de puissance statistique si applicable, critères d'inclusion/exclusion",
+   415→  },
+   416→  {
+   417→    id: "pyrczak-meth3",
+   418→    categorie: "Méthodologie",
+   419→    question: "Les instruments de mesure sont-ils valides et fiables ?",
+   420→    ceChercher: "Indication de la validité (construct, critère, contenu) et de la fiabilité (cohérence interne, test-retest) des instruments",
+   421→  },
+   422→  {
+   423→    id: "pyrczak-meth4",
+   424→    categorie: "Méthodologie",
+   425→    question: "Les variables sont-elles opérationnalisées de manière claire ?",
+   426→    ceChercher: "Pour chaque variable : définition opérationnelle, échelle de mesure, procédure de collecte",
+   427→  },
+   428→  {
+   429→    id: "pyrczak-meth5",
+   430→    categorie: "Méthodologie",
+   431→    question: "Les biais potentiels sont-ils identifiés et contrôlés ?",
+   432→    ceChercher: "Discussion des biais de sélection, de mesure, de confusion, et des stratégies de contrôle (appariement, randomisation, stratification)",
+   433→  },
+   434→  // --- Résultats ---
+   435→  {
+   436→    id: "pyrczak-res1",
+   437→    categorie: "Résultats",
+   438→    question: "Les méthodes statistiques sont-elles appropriées ?",
+   439→    ceChercher: "Adéquation entre le type de données et le test choisi, vérification des préconditions (normalité, homoscédasticité), mention des tailles d'effet",
+   440→  },
+   441→  {
+   442→    id: "pyrczak-res2",
+   443→    categorie: "Résultats",
+   444→    question: "Les résultats sont-ils présentés de manière claire et honnête ?",
+   445→    ceChercher: "Tableaux/figures lisibles, absence de sélection biaisée des résultats (no p-hacking), reporting complet des résultats négatifs",
+   446→  },
+   447→  {
+   448→    id: "pyrczak-res3",
+   449→    categorie: "Résultats",
+   450→    question: "L'importance pratique (taille d'effet) est-elle rapportée en plus de la signification statistique ?",
+   451→    ceChercher: "Mentions de d de Cohen, r², odds ratio ou autres mesures d'effet, pas seulement les valeurs p",
+   452→  },
+   453→  // --- Discussion ---
+   454→  {
+   455→    id: "pyrczak-disc1",
+   456→    categorie: "Discussion",
+   457→    question: "Les résultats sont-ils interprétés correctement ?",
+   458→    ceChercher: "Interprétation proportionnelle aux preuves, pas de généralisation au-delà des limites de l'étude",
+   459→  },
+   460→  {
+   461→    id: "pyrczak-disc2",
+   462→    categorie: "Discussion",
+   463→    question: "Les résultats sont-ils comparés à la littérature antérieure ?",
+   464→    ceChercher: "Confrontation explicite avec les études clés du domaine, explication des convergences et divergences",
+   465→  },
+   466→  {
+   467→    id: "pyrczak-disc3",
+   468→    categorie: "Discussion",
+   469→    question: "Les limites de l'étude sont-elles discutées de manière spécifique ?",
+   470→    ceChercher: "Limites liées au design, à l'échantillon, aux mesures — et implications pour l'interprétation",
+   471→  },
+   472→  {
+   473→    id: "pyrczak-disc4",
+   474→    categorie: "Discussion",
+   475→    question: "Les conclusions sont-elles justifiées par les données ?",
+   476→    ceChercher: "Pas de conclusions allant au-delà des résultats présentés, distinction entre résultats directs et implications spéculatives",
+   477→  },
+   478→  // --- Forme et éthique ---
+   479→  {
+   480→    id: "pyrczak-form1",
+   481→    categorie: "Forme et éthique",
+   482→    question: "L'article est-il bien organisé et clairement écrit ?",
+   483→    ceChercher: "Structure logique, paragraphes thématiques, transitions explicites, style concis sans jargon inutile",
+   484→  },
+   485→  {
+   486→    id: "pyrczak-form2",
+   487→    categorie: "Forme et éthique",
+   488→    question: "Les références sont-elles complètes et à jour ?",
+   489→    ceChercher: "Toutes les citations dans le texte ont une entrée bibliographique, et vice-versa ; style cohérent",
+   490→  },
+   491→  {
+   492→    id: "pyrczak-form3",
+   493→    categorie: "Forme et éthique",
+   494→    question: "Les considérations éthiques sont-elles respectées ?",
+   495→    ceChercher: "Approbation d'un comité d'éthique, consentement éclairé, déclaration de conflits d'intérêts",
+   496→  },
+   497→];
+   498→
+   499→// ─── Niveaux de qualité d'une recherche (Pyrczak) ─────────────
+   500→
+   501→export const NIVEAUX_QUALITE_RECHERCHE: NiveauQualite[] = [
+   502→  {
+   503→    niveau: "Excellent",
+   504→    description: "L'étude répond de manière convaincante à sa question de recherche avec une méthodologie rigoureuse et des conclusions justifiées",
+   505→    signesDistinctifs: [
+   506→      "Question de recherche précise et bien justifiée",
+   507→      "Design méthodologique optimal pour la question posée",
+   508→      "Échantillon représentatif avec justification de la taille",
+   509→      "Analyse statistique appropriée avec tailles d'effet",
+   510→      "Discussion nuancée intégrant la littérature pertinente",
+   511→      "Limites réalistes et spécifiques au protocole",
+   512→    ],
+   513→  },
+   514→  {
+   515→    niveau: "Bon",
+   516→    description: "L'étude est solide mais présente des limites méthodologiques mineures n'affectant pas la validité des conclusions",
+   517→    signesDistinctifs: [
+   518→      "Question claire mais justification parfois insuffisante",
+   519→      "Design approprié mais certains choix pourraient être mieux justifiés",
+   520→      "Échantillon adéquat mais sans calcul de puissance",
+   521→      "Analyse correcte mais taille d'effet non rapportée",
+   522→      "Discussion complète mais peu de confrontation avec la littérature",
+   523→    ],
+   524→  },
+   525→  {
+   526→    niveau: "Acceptable",
+   527→    description: "L'étude apporte une contribution malgré des faiblesses méthodologiques notables qui limitent la portée des conclusions",
+   528→    signesDistinctifs: [
+   529→      "Question identifiable mais formulation imprécise",
+   530→      "Design convenable mais biais non contrôlés",
+   531→      "Échantillon de convenance sans justification",
+   532→      "Analyse statistique basique sans vérification des préconditions",
+   533→      "Discussion descriptive sans interprétation approfondie",
+   534→    ],
+   535→  },
+   536→  {
+   537→    niveau: "Insuffisant",
+   538→    description: "Les faiblesses méthodologiques compromettent la validité des résultats et des conclusions",
+   539→    signesDistinctifs: [
+   540→      "Problématique vague ou absente",
+   541→      "Design inadéquat pour la question de recherche",
+   542→      "Échantillon trop petit ou non représentatif sans justification",
+   543→      "Analyses statistiques inappropriées ou mal rapportées",
+   544→      "Conclusions non justifiées par les données",
+   545→    ],
+   546→  },
+   547→];
+   548→
+   549→// ═══════════════════════════════════════════════════════════════════
+   550→// MODULE 3 — Règles d'édition professionnelle (PhDone — Roda, Saunders, Anderson)
+   551→// Principes pour transformer un manuscrit doctoral en texte publiable
+   552→// ═══════════════════════════════════════════════════════════════════
+   553→
+   554→export const REGLES_EDITION_PROFESSIONNELLE: RegleEdition[] = [
+   555→  {
+   556→    id: "phdone-un-paragraphe-une-idee",
+   557→    categorie: "Structure",
+   558→    regle: "Un paragraphe = une idée principale",
+   559→    exempleAvant: "Les résultats montrent que X augmente avec Y. Z est également significatif. Les participants ont rapporté... La méthode utilisée était...",
+   560→    exempleApres: "Les résultats montrent une corrélation positive significative entre X et Y (r = 0.65, p < .01). Ce résultat est cohérent avec les travaux de [Auteur, Année].",
+   561→  },
+   562→  {
+   563→    id: "phdone-sujet-verbe",
+   564→    categorie: "Clarté",
+   565→    regle: "Rapprocher le sujet du verbe principal",
+   566→    exempleAvant: "Les résultats de l'analyse, qui ont été obtenus après avoir appliqué le modèle de régression multiple aux données recueillies auprès des 150 participants de l'étude, montrent que...",
+   567→    exempleApres: "L'analyse de régression multiple (n = 150) montre que...",
+   568→  },
+   569→  {
+   570→    id: "phdone-actif",
+   571→    categorie: "Style",
+   572→    regle: "Privilégier la voix active pour la clarté (le passif n'est pas interdit mais doit être justifié)",
+   573→    exempleAvant: "Il a été observé que les participants...",
+   574→    exempleApres: "Les participants ont montré...",
+   575→  },
+   576→  {
+   577→    id: "phdone-sigle-premiere-fois",
+   578→    categorie: "Forme",
+   579→    regle: "Toujours définir un sigle ou une abréviation à sa première occurrence",
+   580→    exempleAvant: "L'ANOVA révèle des différences significatives.",
+   581→    exempleApres: "L'analyse de variance (ANOVA) révèle des différences significatives.",
+   582→  },
+   583→  {
+   584→    id: "phdone-nom-chiffres",
+   585→    categorie: "Forme",
+   586→    regle: "Écrire les nombres en lettres jusqu'à neuf, en chiffres à partir de 10 (sauf exceptions : dates, pourcentages, unités)",
+   587→    exempleAvant: "3 groupes ont été comparés. Vingt-cinq participants...",
+   588→    exempleApres: "Trois groupes ont été comparés. 25 participants...",
+   589→  },
+   590→  {
+   591→    id: "phdone-transition",
+   592→    categorie: "Cohésion",
+   593→    regle: "Chaque paragraphe doit commencer par un connecteur logique ou un rappel du thème précédent",
+   594→    exempleAvant: "Les résultats confirment l'hypothèse H1. Le test de Student...",
+   595→    exempleApres: "En conformité avec l'hypothèse H1, les résultats confirment... Par ailleurs, le test de Student...",
+   596→  },
+   597→  {
+   598→    id: "phdone-coupe-phrases-longues",
+   599→    categorie: "Lisibilité",
+   600→    regle: "Découper les phrases de plus de 35 mots en unités plus courtes",
+   601→    exempleAvant: "Bien que les résultats préliminaires aient suggéré une relation entre les deux variables, il convient de noter que la taille réduite de l'échantillon limite la généralisabilité de ces findings qui nécessitent donc une réplication sur un échantillon plus large.",
+   602→    exempleApres: "Les résultats préliminaires suggèrent une relation entre les deux variables. Cependant, la taille réduite de l'échantillon limite la généralisabilité de ces résultats. Une réplication sur un échantillon plus large est nécessaire.",
+   603→  },
+   604→  {
+   605→    id: "phdone-elimine-redondances",
+   606→    categorie: "Concision",
+   607→    regle: "Supprimer les redondances verbales et les tournures alourdies",
+   608→    exempleAvant: "Il est important de prendre en considération le fait que...",
+   609→    exempleApres: "Il faut considérer que...",
+   610→  },
+   611→  {
+   612→    id: "phdone-temps-verbaux",
+   613→    categorie: "Cohérence",
+   614→    regle: "Maintenir la cohérence des temps verbaux : passé pour les méthodes/résultats, présent pour la littérature établie et les conclusions",
+   615→    exempleAvant: "Les participants ont complété le questionnaire (passé). La littérature a montré que... (passé au lieu de présent). Nous recommandons que... (présent correct).",
+   616→    exempleApres: "Les participants ont complété le questionnaire. La littérature montre que... Nous recommandons que...",
+   617→  },
+   618→  {
+   619→    id: "phdone-parallelisme",
+   620→    categorie: "Structure",
+   621→    regle: "Assurer le parallélisme grammatical dans les listes et énumérations",
+   622→    exempleAvant: "L'étude vise à : 1) analyser les données, 2) la comparaison des groupes, 3) interpréter les résultats.",
+   623→    exempleApres: "L'étude vise à : 1) analyser les données, 2) comparer les groupes, 3) interpréter les résultats.",
+   624→  },
+   625→  {
+   626→    id: "phdone-precision-quantitative",
+   627→    categorie: "Rigueur",
+   628→    regle: "Toujours accompagner les résultats statistiques de la taille d'effet et de l'intervalle de confiance",
+   629→    exempleAvant: "La différence est significative (p < .05).",
+   630→    exempleApres: "La différence est significative, d = 0.72 (IC 95% [0.41, 1.03]), p < .001.",
+   631→  },
+   632→  {
+   633→    id: "phdone-non-sexisme",
+   634→    categorie: "Inclusivité",
+   635→    regle: "Utiliser un langage inclusif (doubler les termes ou utiliser le point médian si conforme aux normes de la revue)",
+   636→    exempleAvant: "Le chercheur doit toujours vérifier ses hypothèses.",
+   637→    exempleApres: "Les chercheurs et chercheuses doivent toujours vérifier leurs hypothèses.",
+   638→  },
+   639→];
+   640→
+   641→// ═══════════════════════════════════════════════════════════════════
+   642→// MODULE 4 — Rédaction de la proposition de thèse (Sonneveld)
+   643→// Structure, critères d'acceptation et erreurs fréquentes
+   644→// ═══════════════════════════════════════════════════════════════════
+   645→
+   646→export const STRUCTURE_PROPOSITION_THESE: EtapeProposition[] = [
+   647→  {
+   648→    id: "sonneveld-titre",
+   649→    section: "Titre provisoire",
+   650→    objectif: "Formuler un titre qui indique le domaine, l'objet et l'angle d'approche",
+   651→    elementsAttendus: [
+   652→      "Domaine disciplinaire identifiable",
+   653→      "Objet d'étude clairement délimité",
+   654→      "Perspective ou angle d'approche suggéré",
+   655→      "Longueur raisonnable (10-15 mots)",
+   656→    ],
+   657→    erreursFrequentes: [
+   658→      ' Titre trop vague (ex. : "Étude de..." sans plus de précision) ',
+   659→      "Titre trop long ou contenant une question complète",
+   660→      "Titre qui promet plus que ce que la recherche peut livrer",
+   661→    ],
+   662→  },
+   663→  {
+   664→    id: "sonneveld-contexte",
+   665→    section: "Contexte et justification",
+   666→    objectif: "Établir la pertinence sociale, scientifique et académique du sujet",
+   667→    elementsAttendus: [
+   668→      "Cadrage du domaine de recherche",
+   669→      "Données factuelles justifiant l'intérêt du sujet",
+   670→      "Références aux débats contemporains dans le champ",
+   671→      "Transition vers la problématique spécifique",
+   672→    ],
+   673→    erreursFrequentes: [
+   674→      "Contexte trop large ou encyclopédique",
+   675→      "Absence de données chiffrées ou de faits étayant la pertinence",
+   676→      "Justification purement personnelle (ce sujet m'intéresse) sans ancrage scientifique",
+   677→    ],
+   678→  },
+   679→  {
+   680→    id: "sonneveld-problematique",
+   681→    section: "Problématique et questions de recherche",
+   682→    objectif: "Formuler la question centrale et les sous-questions dérivées",
+   683→    elementsAttendus: [
+   684→      "Question de recherche principale claire et focalisée",
+   685→      "Sous-questions opérationnelles dérivées de la question principale",
+   686→      "Hypothèses provisoires si applicable",
+   687→      "Définitions provisoires des concepts clés",
+   688→    ],
+   689→    erreursFrequentes: [
+   690→      "Question trop large ou trop vague pour une thèse",
+   691→      "Questions qui ne sont pas reliées entre elles de manière logique",
+   692→      "Confusion entre question de recherche et hypothèse",
+   693→    ],
+   694→  },
+   695→  {
+   696→    id: "sonneveld-revue",
+   697→    section: "Revue de littérature préliminaire",
+   698→    objectif: "Démontrer la maîtrise de l'état de l'art et identifier la lacune",
+   699→    elementsAttendus: [
+   700→      "Synthèse des travaux majeurs sur le sujet",
+   701→      "Identification des courants théoriques pertinents",
+   702→      "Mise en évidence de la lacune de recherche",
+   703→      "Positionnement du projet par rapport à l'existant",
+   704→    ],
+   705→    erreursFrequentes: [
+   706→      "Succession de résumés d'articles au lieu d'une synthèse intégrée",
+   707→      "Revue exhaustive non sélective (tout citer au lieu de citer ce qui est pertinent)",
+   708→      "Absence de mise en perspective critique des travaux cités",
+   709→    ],
+   710→  },
+   711→  {
+   712→    id: "sonneveld-cadre-theorique",
+   713→    section: "Cadre théorique ou conceptuel",
+   714→    objectif: "Présenter les théories ou concepts qui guideront l'analyse",
+   715→    elementsAttendus: [
+   716→      "Théories principales mobilisées avec auteurs de référence",
+   717→      "Définitions opérationnelles des concepts clés",
+   718→      "Modèle conceptuel/analytique proposé (si applicable)",
+   719→      "Justification du choix de ce cadre (pourquoi celui-ci et pas un autre)",
+   720→    ],
+   721→    erreursFrequentes: [
+   722→      "Cadre purement descriptif sans liens entre les concepts",
+   723→      "Théories citées sans être réellement mobilisées dans l'analyse",
+   724→      "Absence de justification du choix du cadre",
+   725→    ],
+   726→  },
+   727→  {
+   728→    id: "sonneveld-methodologie",
+   729→    section: "Méthodologie proposée",
+   730→    objectif: "Décrire le design de recherche et les méthodes de collecte et d'analyse",
+   731→    elementsAttendus: [
+   732→      "Design de recherche justifié (qualitatif, quantitatif, mixte)",
+   733→      "Population cible et stratégie d'échantillonnage",
+   734→      "Techniques de collecte de données",
+   735→      "Méthodes d'analyse prévues",
+   736→      "Considérations éthiques",
+   737→      "Calendrier prévisionnel",
+   738→    ],
+   739→    erreursFrequentes: [
+   740→      "Description vague sans détails opérationnels",
+   741→      "Échantillonnage non justifié",
+   742→      "Absence de mention des outils d'analyse (logiciels, grilles)",
+   743→      "Méthodologie non cohérente avec les questions de recherche",
+   744→    ],
+   745→  },
+   746→  {
+   747→    id: "sonneveld-plan-previsionnel",
+   748→    section: "Plan provisoire de la thèse",
+   749→    objectif: "Présenter la structure prévue des chapitres",
+   750→    elementsAttendus: [
+   751→      "Titre provisoire de chaque chapitre",
+   752→      "Contenu prévu pour chaque chapitre (3-5 lignes)",
+   753→      "Progression logique entre les chapitres",
+   754→      "Estimation du volume (pages) par chapitre",
+   755→    ],
+   756→    erreursFrequentes: [
+   757→      "Plan trop détaillé (illusoire à ce stade) ou trop vague",
+   758→      "Absence de logique entre les chapitres",
+   759→      "Plan non cohérent avec les questions de recherche",
+   760→    ],
+   761→  },
+   762→  {
+   763→    id: "sonneveld-bibliographie",
+   764→    section: "Bibliographie préliminaire",
+   765→    objectif: "Présenter les références principales qui fondent le projet",
+   766→    elementsAttendus: [
+   767→      "20-40 références minimum couvrant les principaux axes",
+   768→      "Équilibre entre sources récentes et travaux fondateurs",
+   769→      "Respect d'un style bibliographique cohérent",
+   770→    ],
+   771→    erreursFrequentes: [
+   772→      "Trop peu de références pour le niveau doctoral",
+   773→      "Sources obsolètes (majorité > 10 ans sans justification)",
+   774→      "Style bibliographique incohérent ou incomplet",
+   775→    ],
+   776→  },
+   777→];
+   778→
+   779→// ─── Critères d'acceptation d'une proposition de thèse (Sonneveld) ──
+   780→
+   781→export const CRITERES_ACCEPTATION_PROPOSITION: CritereAcceptation[] = [
+   782→  {
+   783→    id: "sonneveld-ca-feasabilite",
+   784→    critere: "Faisabilité",
+   785→    poids: "éliminatoire",
+   786→    description: "Le projet peut-il être réalisé dans le temps imparti (3-4 ans) avec les ressources disponibles ? La question n'est ni trop vaste ni trop étroite.",
+   787→  },
+   788→  {
+   789→    id: "sonneveld-ca-originalite",
+   790→    critere: "Originalité",
+   791→    poids: "majeur",
+   792→    description: "La contribution est-elle nouvelle ou apporte-t-elle un angle nouveau sur un sujet existant ? Le positionnement par rapport à la littérature est clair.",
+   793→  },
+   794→  {
+   795→    id: "sonneveld-ca-coherence",
+   796→    critere: "Cohérence interne",
+   797→    poids: "majeur",
+   798→    description: "Les questions de recherche, le cadre théorique et la méthodologie forment-ils un ensemble cohérent ? Chaque élément justifie les autres.",
+   799→  },
+   800→  {
+   801→    id: "sonneveld-ca-rigueur",
+   802→    critere: "Rigueur méthodologique",
+   803→    poids: "majeur",
+   804→    description: "Le design de recherche est-il approprié pour les questions posées ? Les méthodes sont-elles décrites avec suffisamment de détails ?",
+   805→  },
+   806→  {
+   807→    id: "sonneveld-ca-maitrise",
+   808→    critere: "Maîtrise de la littérature",
+   809→    poids: "majeur",
+   810→    description: "Le candidat démontre-t-il une connaissance solide de l'état de l'art ? La revue préliminaire est-elle sélective et critique ?",
+   811→  },
+   812→  {
+   813→    id: "sonneveld-ca-pertinence",
+   814→    critere: "Pertinence disciplinaire",
+   815→    poids: "mineur",
+   816→    description: "Le projet s'inscrit-il dans les thématiques de recherche du laboratoire ou de l'équipe d'accueil ?",
+   817→  },
+   818→  {
+   819→    id: "sonneveld-ca-qualite-redaction",
+   820→    critere: "Qualité de la rédaction",
+   821→    poids: "mineur",
+   822→    description: "La proposition est-elle bien structurée, claire et sans fautes ? Le style est-il académique et professionnel ?",
+   823→  },
+   824→  {
+   825→    id: "sonneveld-ca-ethique",
+   826→    critere: "Considérations éthiques",
+   827→    poids: "éliminatoire",
+   828→    description: "Les questions éthiques sont-elles identifiées et un protocole d'approbation est-il prévu ?",
+   829→  },
+   830→];
+   831→
+   832→// ─── Erreurs fréquentes dans les propositions de thèse (Sonneveld) ──
+   833→
+   834→export const ERREURS_FREQUENTES_PROPOSITION: string[] = [
+   835→  "Problématique trop large — impossibilité de la traiter en une thèse",
+   836→  "Absence de question de recherche clairement formulée",
+   837→  "Revue de littérature descriptive au lieu de critique et intégrative",
+   838→  "Cadre théorique absent ou juxtaposé sans articulation",
+   839→  "Méthodologie vaguement esquissée sans détails opérationnels",
+   840→  "Inadéquation entre les questions de recherche et les méthodes proposées",
+   841→  "Bibliographie insuffisante ou déséquilibrée",
+   842→  "Plan de thèse non cohérent avec la problématique",
+   843→  "Absence de considérations éthiques",
+   844→  "Langage non académique ou trop informel",
+   845→  "Promettre plus que ce qui est réaliste (projet surdimensionné)",
+   846→  "Ne pas situer le projet par rapport aux travaux existants (manque de positionnement)",
+   847→];
+   848→
+   849→// ═══════════════════════════════════════════════════════════════════
+   850→// MODULE 5 — Stratégies de motivation pour la rédaction (Holtom & Fisher)
+   851→// Principes psychologiques et pratiques pour apprécier la rédaction de la thèse
+   852→// ═══════════════════════════════════════════════════════════════════
+   853→
+   854→export const STRATEGIES_MOTIVATION_REDACTION: StrategieMotivation[] = [
+   855→  {
+   856→    id: "holtom-bloc-temps",
+   857→    phase: "Planification",
+   858→    strategie: "Bloquer des créneaux de rédaction réguliers et non négociables",
+   859→    miseEnPratique: "Réserver 2-3 heures par jour (matin de préférence) dédiées exclusivement à l'écriture. Traiter ce créneau comme un rendez-vous clinique — ni mails, ni téléphone, ni réseaux.",
+   860→  },
+   861→  {
+   862→    id: "holtom-objectifs-quotidiens",
+   863→    phase: "Planification",
+   864→    strategie: "Se fixer des objectifs d'écriture quotidiens mesurables",
+   865→    miseEnPratique: "Définir un nombre de mots (ex. : 500 mots/jour) ou un sous-objectif (ex. : rédiger un paragraphe). Ne pas quitter le créneau sans avoir atteint l'objectif.",
+   866→  },
+   867→  {
+   868→    id: "holtom-ecrire-pour-comprendre",
+   869→    phase: "Processus",
+   870→    strategie: "Écrire pour comprendre, pas seulement pour communiquer",
+   871→    miseEnPratique: "Accepter que les premiers brouillons soient imparfaits. L'acte d'écrire aide à structurer la pensée. Séparer le moment de la création (rédaction) du moment de la correction (révision).",
+   872→  },
+   873→  {
+   874→    id: "holtom-pomodoro",
+   875→    phase: "Processus",
+   876→    strategie: "Utiliser des sessions de rédaction courtes et intenses",
+   877→    miseEnPratique: "Travailler par blocs de 25-45 minutes avec des pauses de 5-10 minutes. Cette technique maintient la concentration et évite l'épuisement cognitif.",
+   878→  },
+   879→  {
+   880→    id: "holtom-debuter-facile",
+   881→    phase: "Démarrage",
+   882→    strategie: "Commencer par la section la plus facile, pas la plus difficile",
+   883→    miseEnPratique: "Pour la thèse scientifique, les méthodes et les résultats sont souvent les sections les plus faciles à rédiger (données déjà disponibles). Commencer par là construit l'élan.",
+   884→  },
+   885→  {
+   886→    id: "holtom-skeleton",
+   887→    phase: "Démarrage",
+   888→    strategie: "Rédiger d'abord le squelette, puis remplir chaque section",
+   889→    miseEnPratique: "Créer un document avec les titres et sous-titres de chaque section, les figures/tableaux à insérer, et les références clés. Puis remplir progressivement chaque section.",
+   890→  },
+   891→  {
+   892→    id: "holtom-feedback-precoce",
+   893→    phase: "Itération",
+   894→    strategie: "Obtenir des retours le plus tôt possible",
+   895→    miseEnPratique: "Partager des sections complétées (pas l'ensemble) avec le directeur ou des collègues dès qu'elles sont dans un état lisible. Les retours précoces évitent les réécritures massives.",
+   896→  },
+   897→  {
+   898→    id: "holtom-celebrer",
+   899→    phase: "Motivation",
+   900→    strategie: "Célébrer les petites victoires",
+   901→    miseEnPratique: "Marquer l'achèvement de chaque section, chapitre ou étape importante. La thèse est un marathon — les étapes intermédiaires méritent d'être reconnues.",
+   902→  },
+   903→  {
+   904→    id: "holtom-groupe-ecriture",
+   905→    phase: "Environnement",
+   906→    strategie: "Rejoindre ou créer un groupe d'écriture (writing group)",
+   907→    miseEnPratique: "Séances d'écriture collectives (en personne ou en ligne) avec des pairs. L'engagement social et la pression bienveillante du groupe maintiennent la régularité.",
+   908→  },
+   909→  {
+   910→    id: "holtom-separer-redaction-revision",
+   911→    phase: "Processus",
+   912→    strategie: "Ne jamais réviser en même temps qu'on rédige",
+   913→    miseEnPratique: "Pendant la session d'écriture : avancer sans se soucier du style. Pendant la session de révision : corriger sans chercher à produire du nouveau contenu. Les deux activités sollicitent des processus cognitifs différents.",
+   914→  },
+   915→  {
+   916→    id: "holtom-visualiser-progres",
+   917→    phase: "Motivation",
+   918→    strategie: "Visualiser la progression avec des indicateurs tangibles",
+   919→    miseEnPratique: "Suivre le nombre de mots, de pages, de sections complétées. Un tableau de progression visible quotidiennement renforce le sentiment d'avancement.",
+   920→  },
+   921→  {
+   922→    id: "holtom-routine",
+   923→    phase: "Environnement",
+   924→    strategie: "Créer une routine d'écritureritualisée",
+   925→    miseEnPratique: "Même lieu, même heure, même rituel de démarrage (café, musique, 5 minutes de lecture). Le cerveau associe ces signaux à l'état d'écriture et bascule plus facilement en mode concentration.",
+   926→  },
+   927→];
+   928→
+   929→// ═══════════════════════════════════════════════════════════════════
+   930→// MODULE 6 — Guide complet de la thèse (Graustein)
+   931→// De la proposition à la soutenance : étapes et critères d'excellence
+   932→// ═══════════════════════════════════════════════════════════════════
+   933→
+   934→export const ETAPES_GUIDE_THESE: EtapeThese[] = [
+   935→  {
+   936→    id: "graustein-exploration",
+   937→    phase: "Phase exploratoire (mois 1-6)",
+   938→    titre: "Exploration et orientation",
+   939→    objectif: "Délimiter le sujet, explorer la littérature et affiner la problématique",
+   940→    produitsLivables: [
+   941→      "État de l'art préliminaire (15-20 pages)",
+   942→      "Question de recherche affinée",
+   943→      "Liste de lectures prioritaires",
+   944→      "Premier jet du cadre théorique provisoire",
+   945→    ],
+   946→    delaiEstime: "6 mois",
+   947→  },
+   948→  {
+   949→    id: "graustein-proposition",
+   950→    phase: "Phase de proposition (mois 6-9)",
+   951→    titre: "Rédaction et défense de la proposition",
+   952→    objectif: "Formaliser le projet de recherche et obtenir l'approbation du comité",
+   953→    produitsLivables: [
+   954→      "Proposition de thèse complète (30-50 pages)",
+   955→      "Présentation de la proposition (diapositives)",
+   956→      "Réponses aux questions du comité",
+   957→      "Plan révisé de la thèse",
+   958→    ],
+   959→    delaiEstime: "3 mois",
+   960→  },
+   961→  {
+   962→    id: "graustein-collecte",
+   963→    phase: "Phase de collecte (mois 9-18)",
+   964→    titre: "Collecte de données et premiers résultats",
+   965→    objectif: "Mettre en œuvre le protocole de recherche et collecter les données",
+   966→    produitsLivables: [
+   967→      "Base de données constituée",
+   968→      "Résultats préliminaires",
+   969→      "Journal de bord de la recherche",
+   970→      "Ajustements méthodologiques documentés",
+   971→    ],
+   972→    delaiEstime: "9 mois",
+   973→  },
+   974→  {
+   975→    id: "graustein-analyse",
+   976→    phase: "Phase d'analyse (mois 18-24)",
+   977→    titre: "Analyse et interprétation",
+   978→    objectif: "Analyser les données et produire les résultats interprétés",
+   979→    produitsLivables: [
+   980→      "Résultats d'analyse complets",
+   981→      "Tableaux et figures définitifs",
+   982→      "Interprétations préliminaires",
+   983→      "Au moins un article soumis ou en préparation",
+   984→    ],
+   985→    delaiEstime: "6 mois",
+   986→  },
+   987→  {
+   988→    id: "graustein-redaction",
+   989→    phase: "Phase de rédaction (mois 24-36)",
+   990→    titre: "Rédaction des chapitres",
+   991→    objectif: "Rédiger l'ensemble de la thèse chapitre par chapitre",
+   992→    produitsLivables: [
+   993→      "Chapitre 1 : Introduction et problématique",
+   994→      "Chapitre 2 : Revue de littérature",
+   995→      "Chapitre 3 : Cadre théorique",
+   996→      "Chapitre 4 : Méthodologie",
+   997→      "Chapitres 5+ : Résultats et discussion",
+   998→      "Chapitre final : Conclusion et perspectives",
+   999→    ],
+  1000→    delaiEstime: "12 mois",
+  1001→  },
+  1002→  {
+  1003→    id: "graustein-revision",
+  1004→    phase: "Phase de révision (mois 36-42)",
+  1005→    titre: "Révision globale et mise en forme",
+  1006→    objectif: "Réviser l'ensemble pour la cohérence, le style et la conformité",
+  1007→    produitsLivables: [
+  1008→      "Version révisée après retours du directeur",
+  1009→      "Cohérence inter-chapitres vérifiée",
+  1010→      "Bibliographie complète et vérifiée",
+  1011→      "Annexes organisées",
+  1012→    ],
+  1013→    delaiEstime: "3 mois",
+  1014→  },
+  1015→  {
+  1016→    id: "graustein-soutenance",
+  1017→    phase: "Phase de soutenance (mois 42-48)",
+  1018→    titre: "Préparation et soutenance",
+  1019→    objectif: "Préparer la présentation et répondre aux questions du jury",
+  1020→    produitsLivables: [
+  1021→      "Présentation de soutenance (20-30 minutes)",
+  1022→      "Liste de questions anticipées avec réponses préparées",
+  1023→      "Version finale de la thèse",
+  1024→    ],
+  1025→    delaiEstime: "2 mois",
+  1026→  },
+  1027→];
+  1028→
+  1029→// ─── Critères d'excellence d'une thèse (Graustein) ────────────────
+  1030→
+  1031→export const CRITERES_EXCELLENCE_THESE: CritereExcellence[] = [
+  1032→  {
+  1033→    id: "graustein-originalite",
+  1034→    domaine: "Contribution",
+  1035→    critere: "Originalité de la contribution",
+  1036→    description: "La thèse apporte une contribution nouvelle au champ — nouvelle théorie, nouvelles données, nouvelle méthode, ou nouvelle synthèse. L'originalité est démontrée, pas seulement affirmée.",
+  1037→  },
+  1038→  {
+  1039→    id: "graustein-coherence",
+  1040→    domaine: "Structure",
+  1041→    critere: "Cohérence de l'argumentation",
+  1042→    description: "Chaque chapitre contribue à la démonstration globale. La progression logique est claire et le lecteur ne perd jamais le fil de l'argument.",
+  1043→  },
+  1044→  {
+  1045→    id: "graustein-rigueur-methode",
+  1046→    domaine: "Méthodologie",
+  1047→    critere: "Rigueur méthodologique exemplaire",
+  1048→    description: "Le design est justifié, les procédures sont reproductibles, les biais sont identifiés et contrôlés, et les analyses sont appropriées.",
+  1049→  },
+  1050→  {
+  1051→    id: "graustein-litterature-maitrise",
+  1052→    domaine: "Littérature",
+  1053→    critere: "Maîtrise de la littérature",
+  1054→    description: "La revue est exhaustive mais sélective, critique et intégrative. Les travaux sont comparés et synthétisés, pas simplement catalogués.",
+  1055→  },
+  1056→  {
+  1057→    id: "graustein-cadre-solide",
+  1058→    domaine: "Théorie",
+  1059→    critere: "Cadre théorique/conceptuel solide",
+  1060→    description: "Les concepts sont clairement définis, les relations sont explicitées, et le cadre guide effectivement l'analyse des données.",
+  1061→  },
+  1062→  {
+  1063→    id: "graustein-discussion-nuancee",
+  1064→    domaine: "Discussion",
+  1065→    critere: "Discussion nuancée et honnête",
+  1066→    description: "Les résultats sont interprétés avec prudence, confrontés à la littérature, et les limites sont discutées de manière spécifique et honnête.",
+  1067→  },
+  1068→  {
+  1069→    id: "graustein-redaction-soignee",
+  1070→    domaine: "Rédaction",
+  1071→    critere: "Qualité de la rédaction",
+  1072→    description: "Le style est clair, concis et académique. Les phrases sont bien construites, les transitions sont explicites, et le texte est exempt de fautes.",
+  1073→  },
+  1074→  {
+  1075→    id: "graustein-presentation",
+  1076→    domaine: "Forme",
+  1077→    critere: "Présentation soignée",
+  1078→    description: "La mise en page est professionnelle, les tableaux et figures sont de qualité, les références sont complètes et conformes, et les annexes sont utiles.",
+  1079→  },
+  1080→  {
+  1081→    id: "graustein-publications",
+  1082→    domaine: "Rayonnement",
+  1083→    critere: "Publications dérivées de la thèse",
+  1084→    description: "Au moins un article accepté dans une revue à comité de lecture, ou des soumissions en cours démontrant la capacité à publier.",
+  1085→  },
+  1086→  {
+  1087→    id: "graustein-perspectives",
+  1088→    domaine: "Ouverture",
+  1089→    critere: "Perspectives de recherche pertinentes",
+  1090→    description: "Les pistes de recherche future sont réalistes, spécifiques, et en lien direct avec les limites identifiées et les résultats obtenus.",
+  1091→  },
+  1092→];
+  1093→
+  1094→// ═══════════════════════════════════════════════════════════════════
+  1095→// MODULE 7 — Règles de rédaction pour publication (Epstein, Kenway, Boden)
+  1096→// Principes spécifiques au processus de rédaction académique pour publication
+  1097→// ═══════════════════════════════════════════════════════════════════
+  1098→
+  1099→export const REGLES_REDACTION_PUBLICATION: string[] = [
+  1100→  "Identifier l'audience cible AVANT de commencer à rédiger — le style et le niveau de détail dépendent du lectorat de la revue",
+  1101→  "Adopter le style de la revue cible en analysant 3-5 articles récents publiés dans cette même revue",
+  1102→  "Structurer le premier paragraphe de chaque section pour capter l'attention — c'est le critère de lecture/saut du lecteur",
+  1103→  "Rédiger le résumé en premier pour clarifier le message central, puis le réviser en dernier pour cohérence",
+  1104→  "Éviter la métaphore filée et les figures de style littéraires — la clarté prime sur l'élégance",
+  1105→  "Chaque phrase doit apporter une information nouvelle — éliminer les phrases qui ne font que répéter ou paraphraser",
+  1106→  "Les transitions entre sections doivent être explicites — ne pas supposer que le lecteur fera le lien seul",
+  1107→  "Utiliser le présent pour les vérités établies et la littérature, le passé pour les méthodes et résultats de l'étude",
+  1108→  "Les sigles sont définis à la première occurrence, même si le lecteur cible est spécialisé",
+  1109→  "Citer les sources pertinentes, pas toutes les sources disponibles — la bibliographie est sélective, pas exhaustive",
+  1110→  "Vérifier que chaque référence citée dans le texte figure dans la bibliographie, et réciproquement",
+  1111→  "Préparer une réponse-type aux évaluateurs : remerciement, réponse point par point, justification des choix non modifiés",
+  1112→];
+  1113→
+  1114→// ═══════════════════════════════════════════════════════════════════
+  1115→// MODULE 8 — Compétences en recherche et rédaction (RMIT)
+  1116→// Compétences transversales pour la recherche doctorale
+  1117→// ═══════════════════════════════════════════════════════════════════
+  1118→
+  1119→export const COMPETENCES_RECHERCHE_REDACTION: string[] = [
+  1120→  "Savoir formuler une question de recherche testable et falsifiable",
+  1121→  "Maîtriser les techniques de recherche documentaire avancées (bases de données, mots-clés, opérateurs booléens)",
+  1122→  "Évaluer de manière critique la qualité méthodologique d'une étude (validité interne, validité externe, fiabilité)",
+  1123→  "Synthétiser les résultats de plusieurs études de manière intégrative (pas cumulative)",
+  1124→  "Communiquer les résultats de recherche de manière claire et adaptée à l'audience",
+  1125→  "Gérer le temps de rédaction de manière réaliste en tenant compte des itérations inévitables",
+  1126→  "Accepter et intégrer les retours critiques de manière constructive",
+  1127→  "Respecter les normes éthiques de la recherche et de la publication",
+  1128→  "Développer une identité de chercheur par la pratique régulière de l'écriture académique",
+  1129→  "Comprendre le processus de publication (soumission, évaluation, révision, acceptation) pour s'y préparer stratégiquement",
+  1130→];
+  1131→
+  1132→// ═══════════════════════════════════════════════════════════════════
+  1133→// EXPORT UNIFIÉ
+  1134→// ═══════════════════════════════════════════════════════════════════
+  1135→
+  1136→export const PUBLICATION_CORPUS = {
+  1137→  // Module 1 — Belcher
+  1138→  programmePublication12Semaines: {
+  1139→    semaines: SEMAINES_PROGRAMME_PUBLICATION,
+  1140→    criteresQualite: CRITERES_QUALITE_PUBLICATION,
+  1141→    piegesAFuir: PIEGES_PUBLICATION,
+  1142→  },
+  1143→
+  1144→  // Module 2 — Pyrczak
+  1145→  evaluationQualiteRecherche: {
+  1146→    criteresEvaluation: QUESTIONS_EVALUATION_RECHERCHE,
+  1147→    niveauxQualite: NIVEAUX_QUALITE_RECHERCHE,
+  1148→  },
+  1149→
+  1150→  // Module 3 — PhDone
+  1151→  reglesEditionProfessionnelle: REGLES_EDITION_PROFESSIONNELLE,
+  1152→
+  1153→  // Module 4 — Sonneveld
+  1154→  redactionPropositionThese: {
+  1155→    structureProposition: STRUCTURE_PROPOSITION_THESE,
+  1156→    criteresAcceptation: CRITERES_ACCEPTATION_PROPOSITION,
+  1157→    erreursFrequentes: ERREURS_FREQUENTES_PROPOSITION,
+  1158→  },
+  1159→
+  1160→  // Module 5 — Holtom & Fisher
+  1161→  strategiesMotivationRedaction: STRATEGIES_MOTIVATION_REDACTION,
+  1162→
+  1163→  // Module 6 — Graustein
+  1164→  guideCompletThese: {
+  1165→    etapes: ETAPES_GUIDE_THESE,
+  1166→    criteresExcellence: CRITERES_EXCELLENCE_THESE,
+  1167→  },
+  1168→
+  1169→  // Module 7 — Epstein, Kenway, Boden
+  1170→  reglesRedactionPublication: REGLES_REDACTION_PUBLICATION,
+  1171→
+  1172→  // Module 8 — RMIT
+  1173→  competencesRechercheRedaction: COMPETENCES_RECHERCHE_REDACTION,
+  1174→};
+  1175→

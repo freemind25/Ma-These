@@ -13,6 +13,11 @@ import { OUTILS_IA_RECHERCHE, WORKFLOW_RECHERCHE_IA, REGLE_BON_USAGE_OUTILS } fr
 import {
   RESEARCH_FRAMEWORKS,
   TYPES_LACUNES,
+  TYPES_LACUNES_ETENDUS,
+  ELEMENTS_ENONCE_PROBLEME,
+  TYPES_RECHERCHE,
+  COMPARAISON_TYPES_REVUE,
+  MNEMONIQUE_DISCOURSE,
   SECTIONS_REVUE_LITTERATURE,
   LOGIQUES_ORGANISATION_SECTION4,
   CRITERES_QUALITE_REVUE,
@@ -30,6 +35,9 @@ import {
 
 import {
   CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE,
+  REGLES_APA_RESULTATS_STATISTIQUES,
+  CADRE_PEER_PARAGRAPHE,
+  PHRASES_AMORCE_RMIT,
 } from "./corpus-scientific-writing";
 
 import {
@@ -42,6 +50,8 @@ import {
   ERREURS_FREQUENTES_PROPOSITION,
   CRITERES_EXCELLENCE_THESE,
   REGLES_REDACTION_PUBLICATION,
+  CRITERES_EVALUATION_PAR_PAIRE,
+  MODELE_RAPPORT_EVALUATION,
 } from "./corpus-publication";
 
 import {
@@ -372,6 +382,143 @@ function insererStrategiesDeblocage(): string {
 ${STRATEGIES_SURMONTER_BLOCAGES.map((s) => `  - ${s.blocage} (signaux : ${s.signaux.join(", ")}) → ${s.stratégie}`).join("\n")}`;
 }
 
+// ─── Prompt builders utilisant les nouvelles données de corpus ──────
+
+/** Construit l'insert de la taxonomie étendue des 10 lacunes de recherche */
+function insererTaxonomieLacunesEtendues(): string {
+  const lignes = TYPES_LACUNES_ETENDUS.map(
+    (l) => `  - ${l.label} (${l.categorie}) : ${l.definitionCourte}`
+  );
+  return `TAXONOMIE ÉTENDUE DES 10 LACUNES DE RECHERCHE :
+${lignes.join("\n")}`;
+}
+
+/** Construit l'insert des 4 éléments de l'énoncé de problème de recherche */
+function insererEnonceProbleme(): string {
+  const lignes = ELEMENTS_ENONCE_PROBLEME.map(
+    (e) => `  - ${e.element} : ${e.description}
+    Question guide : ${e.questionGuide}
+    Exemple : ${e.exempleFormulation}`
+  );
+  return `MODÈLE D'ÉNONCÉ DE PROBLÈME DE RECHERCHE (4 éléments) :
+${lignes.join("\n\n")}`;
+}
+
+/** Construit l'insert des 22 types de recherche regroupés par catégorie */
+function insererTypesRecherche(): string {
+  const categories = new Map<string, typeof TYPES_RECHERCHE>();
+  for (const t of TYPES_RECHERCHE) {
+    if (!categories.has(t.categorie)) categories.set(t.categorie, []);
+    categories.get(t.categorie)!.push(t);
+  }
+  const etiquettesCat: Record<string, string> = {
+    quantitative: "QUANTITATIVES",
+    qualitative: "QUALITATIVES",
+    mixte: "MIXTES",
+    review: "REVUES",
+    theorique: "THÉORIQUES",
+  };
+  const blocs = Array.from(categories.entries()).map(
+    ([cat, types]) =>
+      `  ${etiquettesCat[cat] || cat.toUpperCase()} (${types.length}) :
+${types.map((t) => `    - ${t.label} : ${t.description} → quand : ${t.quandUtiliser}`).join("\n")}`
+  );
+  return `TYPOLOGIE DES 22 TYPES DE RECHERCHE :
+${blocs.join("\n\n")}`;
+}
+
+/** Construit l'insert de la comparaison des 10 types de revue de littérature */
+function insererComparaisonTypesRevue(): string {
+  const lignes = COMPARAISON_TYPES_REVUE.map(
+    (r) => `  - ${r.label} :
+    Objectif : ${r.objectif}
+    Protocole : ${r.protocole}
+    Couverture : ${r.couverture}
+    Critères qualité : ${r.critQualite}
+    Produit : ${r.produit}
+    Durée estimée : ${r.dureeEstimee}`
+  );
+  return `COMPARAISON DES 10 TYPES DE REVUE DE LITTÉRATURE :
+${lignes.join("\n\n")}`;
+}
+
+/** Construit l'insert du mnémonique DISCOURSE pour la planification de revue systématique */
+function insererMnemoniqueDISCOURSE(): string {
+  const lignes = MNEMONIQUE_DISCOURSE.map(
+    (e) => `  ${e.lettre} — ${e.mot} : ${e.description}`
+  );
+  return `MNÉMONIQUE DISCOURSE — 9 étapes pour planifier une revue systématique :
+${lignes.join("\n")}`;
+}
+
+/** Construit l'insert des règles APA 7 pour la communication des résultats statistiques */
+function insererReglesAPAResultats(): string {
+  return REGLES_APA_RESULTATS_STATISTIQUES.trim();
+}
+
+/** Construit l'insert du cadre PEER pour la structure des paragraphes académiques */
+function insererCadrePEER(): string {
+  const composants = CADRE_PEER_PARAGRAPHE.composants.map(
+    (c) => `  ${c.lettre} — ${c.composant} : ${c.description}
+    Règle : ${c.regle}
+    Exemple : ${c.exemple}`
+  );
+  const antiPatterns = CADRE_PEER_PARAGRAPHE.antiPatterns.map(
+    (a) => `  - ${a.erreur} → ${a.correction}`
+  );
+  return `${CADRE_PEER_PARAGRAPHE.titre} :
+${CADRE_PEER_PARAGRAPHE.description}
+
+COMPOSANTS :
+${composants.join("\n\n")}
+
+ANTI-PATTERNS :
+${antiPatterns.join("\n")}`;
+}
+
+/** Construit l'insert des phrases d'amorce RMIT par section IMRaD */
+function insererPhrasesAmorceRMIT(): string {
+  const etiquettesSection: Record<string, string> = {
+    introduction: "INTRODUCTION",
+    revueLitterature: "REVUE DE LITTÉRATURE",
+    methodes: "MÉTHODES",
+    resultats: "RÉSULTATS",
+    discussion: "DISCUSSION",
+    conclusion: "CONCLUSION",
+  };
+  const blocs = Object.entries(PHRASES_AMORCE_RMIT).map(
+    ([section, phrases]) =>
+      `  ${etiquettesSection[section] || section.toUpperCase()} :
+${phrases.map((p) => `    • ${p}`).join("\n")}`
+  );
+  return `PHRASES D'AMORCE RMIT PAR SECTION IMRaD :
+${blocs.join("\n\n")}`;
+}
+
+/** Construit l'insert des 5 critères d'évaluation par les pairs */
+function insererCriteresEvaluationPaire(): string {
+  const blocs = CRITERES_EVALUATION_PAR_PAIRE.map(
+    (c) => `  [${c.poidsRelatif.toUpperCase()}] ${c.critere} : ${c.description}
+    Questions guides :
+${c.questionsGuides.map((q) => `      - ${q}`).join("\n")}
+    Signes d'excellence : ${c.signesExcellence.join(" ; ")}
+    Signes de faiblesse : ${c.signesFaiblesse.join(" ; ")}`
+  );
+  return `CRITÈRES D'ÉVALUATION PAR LES PAIRS (5 critères) :
+${blocs.join("\n\n")}`;
+}
+
+/** Construit l'insert du modèle de rapport d'évaluation structuré */
+function insererModeleRapportEvaluation(): string {
+  const sections = MODELE_RAPPORT_EVALUATION.structure.map(
+    (s) => `  - ${s.section} : ${s.description}`
+  );
+  return `MODÈLE DE RAPPORT D'ÉVALUATION :
+${sections.join("\n")}
+
+ÉCHELLE D'APPRÉCIATION : ${MODELE_RAPPORT_EVALUATION.echelleAppreciation.join(" / ")}`;
+}
+
 // ─── Modes de rédaction ─────────────────────────
 
 export const WRITING_MODES: WritingMode[] = [
@@ -421,7 +568,11 @@ ${insererEthique()}
 OUTILS UTILES POUR L'UTILISATEUR :
 ${insererOutilsIA()}
 
-FORMAT DE SORTIE : Texte rédigé en français académique, structuré avec des paragraphes clairs. Si l'utilisateur précise une section, adapter le style à cette section.`,
+FORMAT DE SORTIE : Texte rédigé en français académique, structuré avec des paragraphes clairs. Si l'utilisateur précise une section, adapter le style à cette section.
+
+${insererCadrePEER()}
+
+${insererPhrasesAmorceRMIT()}`,
   },
   {
     id: "literature-review",
@@ -465,7 +616,11 @@ ${insererOutilsIA()}
 
 ${insererAvertissementEthiqueIA()}
 
-FORMAT : Section structurée en français académique avec sous-thèmes et références (Auteur, Année).`,
+FORMAT : Section structurée en français académique avec sous-thèmes et références (Auteur, Année).
+
+${insererMnemoniqueDISCOURSE()}
+
+${insererComparaisonTypesRevue()}`,
   },
   {
     id: "peer-review",
@@ -512,7 +667,11 @@ FORMAT : Évaluation structurée avec :
 4. Évaluation par critères Pyrczak (catégorie par catégorie)
 5. Commentaires section par section
 6. Vérification des critères Belcher
-7. Recommandation finale (accepter, réviser mineurement, réviser majeurement, rejeter)`,
+7. Recommandation finale (accepter, réviser mineurement, réviser majeurement, rejeter)
+
+${insererCriteresEvaluationPaire()}
+
+${insererModeleRapportEvaluation()}`,
   },
   {
     id: "paraphrase",
@@ -612,7 +771,11 @@ FORMAT POUR CHAQUE HYPOTHÈSE :
 - Variables : VI = ..., VD = ...
 - Operationalisation : Comment mesurer
 - Attendu : Direction et ampleur de l'effet
-- Lacune comblée : [type parmi les 7]
+- Lacune comblée : [type parmi les 10]
+
+${insererEnonceProbleme()}
+
+${insererTaxonomieLacunesEtendues()}
 
 ${insererAvertissementEthiqueIA()}`,
   },
@@ -658,7 +821,11 @@ RÈGLES :
 ${insererAvertissementEthiqueIA()}
 
 OUTILS D'ANALYSE IA RECOMMANDÉS :
-${insererOutilsIA()}`,
+${insererOutilsIA()}
+
+${insererTypesRecherche()}
+
+${insererReglesAPAResultats()}`,
   },
   {
     id: "theory",

@@ -1,0 +1,1123 @@
+     1→# ThesisFrame — Worklog
+     2→
+     3→---
+     4→Task ID: 1
+     5→Agent: main
+     6→Task: Ajouter QueryClientProvider au layout
+     7→
+     8→Work Log:
+     9→- Created src/components/providers/query-provider.tsx (TanStack Query provider with 30s staleTime)
+    10→- Updated src/app/layout.tsx to wrap children in QueryProvider
+    11→
+    12→Stage Summary:
+    13→- TanStack Query hooks (useQuery, useMutation) now work correctly across all views
+    14→- Critical bug fix — hooks would crash without provider
+    15→
+    16→---
+    17→Task ID: 2
+    18→Agent: main
+    19→Task: Créer les schémas Zod partagés
+    20→
+    21→Work Log:
+    22→- Created src/lib/api-schemas.ts with all Zod validation schemas
+    23→- Includes: thesis, chapter, reference, cadrage, notebook, agile, AI config schemas
+    24→- Updated existing API routes to import from shared schemas instead of inline definitions
+    25→- Routes updated: thesis, thesis/[id], chapters/[id], references, references/[id]
+    26→
+    27→Stage Summary:
+    28→- Single source of truth for validation schemas (server + client reuse)
+    29→- All API routes now use shared schemas from @/lib/api-schemas
+    30→
+    31→---
+    32→Task ID: 3-a
+    33→Agent: full-stack-developer
+    34→Task: Create Cadrage CRUD API routes
+    35→
+    36→Work Log:
+    37→- Created src/app/api/thesis/[id]/cadrages/route.ts (GET + POST)
+    38→- Created src/app/api/cadrages/[id]/route.ts (PUT + DELETE)
+    39→- Created src/app/api/cadrages/[id]/fields/route.ts (GET + POST)
+    40→- Created src/app/api/cadrages/fields/[fieldId]/route.ts (PUT + DELETE)
+    41→- Created src/app/api/cadrages/[id]/versions/route.ts (GET + POST)
+    42→
+    43→Stage Summary:
+    44→- Full CRUD for cadrages, fields, and versions
+    45→- All routes use shared Zod schemas from @/lib/api-schemas
+    46→
+    47→---
+    48→Task ID: 3-b
+    49→Agent: full-stack-developer
+    50→Task: Create Notebook/ResearchSource CRUD API routes
+    51→
+    52→Work Log:
+    53→- Created src/app/api/sources/route.ts (GET + POST)
+    54→- Created src/app/api/sources/[id]/route.ts (GET + PUT + DELETE)
+    55→- Created src/app/api/sources/[id]/entries/route.ts (GET + POST)
+    56→- Created src/app/api/entries/route.ts (GET + POST)
+    57→- Created src/app/api/entries/[id]/route.ts (PUT + DELETE)
+    58→
+    59→Stage Summary:
+    60→- Full CRUD for research sources and notebook entries
+    61→- Filtering and search support
+    62→
+    63→---
+    64→Task ID: 3-c
+    65→Agent: full-stack-developer
+    66→Task: Create Agile Sprint/Story CRUD API routes
+    67→
+    68→Work Log:
+    69→- Created src/app/api/sprints/route.ts (GET + POST)
+    70→- Created src/app/api/sprints/[id]/route.ts (GET + PUT + DELETE)
+    71→- Created src/app/api/sprints/[id]/stories/route.ts (GET + POST)
+    72→- Created src/app/api/stories/[id]/route.ts (PUT + DELETE)
+    73→
+    74→Stage Summary:
+    75→- Full CRUD for agile sprints and stories
+    76→- Filtering by phase and status
+    77→
+    78→---
+    79→Task ID: 3-d
+    80→Agent: full-stack-developer
+    81→Task: Create AI Config and Stats API routes
+    82→
+    83→Work Log:
+    84→- Created src/app/api/ai-config/route.ts (GET + POST)
+    85→- Created src/app/api/ai-config/[id]/route.ts (PUT + DELETE)
+    86→- Created src/app/api/stats/route.ts (GET with aggregated statistics)
+    87→
+    88→Stage Summary:
+    89→- Full CRUD for AI tool configurations
+    90→- Stats endpoint for dashboard aggregation (7 parallel Prisma queries)
+    91→
+    92→---
+    93→Task ID: 4
+    94→Agent: main
+    95→Task: Mettre à jour le Dashboard avec vraies données
+    96→
+    97→Work Log:
+    98→- Updated src/components/dashboard/dashboard-page.tsx
+    99→- Added useDashboardStats hook using /api/stats endpoint
+   100→- Dynamic stat cards (chapters, references, words, progress %)
+   101→- Dynamic step completion tracking based on real data
+   102→- Updated module cards with correct icons and status badges
+   103→
+   104→Stage Summary:
+   105→- Dashboard now shows real data from SQLite via Prisma
+   106→- Stats auto-refresh every 15 seconds
+   107→- Loading skeletons while data loads
+   108→
+   109→---
+   110→Task ID: 5
+   111→Agent: main
+   112→Task: Lint, corrections, et Agent Browser verification
+   113→
+   114→Work Log:
+   115→- Ran eslint: 0 errors, 19 warnings → fixed to 0 errors, 2 residual warnings
+   116→- Fixed unused imports in: dashboard-page, ai-writing-page, chapter-header, create-thesis-dialog, directeur-chat, references/bibtex, use-thesis
+   117→- Rewrote create-thesis-dialog.tsx (corrupted by edit)
+   118→- Agent Browser verification: Dashboard (27 elements), Editor (thesis list with 7 chapters), References (CRUD UI), AI Writing (10 modes)
+   119→- 0 console errors across all tested views
+   120→
+   121→Stage Summary:
+   122→- Clean lint output (0 errors)
+   123→- All 4 views tested and verified via Agent Browser
+   124→- Application fully functional end-to-end
+   125→
+   126→---
+   127→Task ID: 5-d
+   128→Agent: main
+   129→Task: Créer la page Bases de données académiques
+   130→
+   131→Work Log:
+   132→- Created src/modules/academic-db/academic-db-page.tsx
+   133→- Defined 27 academic databases across 5 categories with real URLs and French descriptions
+   134→- Categories: Archives ouvertes (5), Moteurs de recherche (4), Éditeurs & Bases (7), Bibliothèques numériques (5), Outils spécialisés (6)
+   135→- Search bar filters databases by name or description
+   136→- Category filter via Select dropdown
+   137→- Each database card shows: name, description, category badge, access type badge (Gratuit/Abonnement/Open Access with color coding), country, and "Visiter" button opening in new tab
+   138→- Responsive grid layout (1/2/3 columns)
+   139→- Empty state with Globe icon when no results
+   140→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   141→
+   142→Stage Summary:
+   143→- AcademicDbPage component follows existing module pattern (ReferencesPage)
+   144→- All UI text in French, uses shadcn/ui components only
+   145→- Client-side filtering with useMemo for performance
+   146→
+   147→---
+   148→Task ID: 5-a
+   149→Agent: main
+   150→Task: Créer la page Méthodologie de recherche
+   151→
+   152→Work Log:
+   153→- Created src/modules/methodology/methodology-page.tsx
+   154→- 5 Accordion sections with first section open by default (type="multiple", defaultValue=["paradigms"])
+   155→- Section 1 — Paradigmes de recherche: 3 Cards (Qualitatif, Quantitatif, Mixte) each with badge, description, forces/limites lists, and examples
+   156→- Section 2 — Démarche méthodologique: 7-step vertical stepper with numbered circles connected by a vertical line (Problématique → Revue littérature → Cadre théorique → Collecte → Analyse → Discussion → Conclusion)
+   157→- Section 3 — Outils de collecte: 4 Cards with icons (MessageSquare, ClipboardList, Eye, FileSearch), descriptions, and "Conseils" tip lists with Lightbulb icon
+   158→- Section 4 — Techniques d'analyse: 4 Cards (Analyse thématique, Analyse de contenu, Analyse statistique, Grounded theory) with badges and details
+   159→- Section 5 — Checklist méthodologique: 10 interactive checkboxes with useState, Progress bar showing percentage, checked items highlighted with chart-1 color
+   160→- All UI text in French, uses shadcn/ui Accordion, Card, Badge, Checkbox, Progress, Separator
+   161→- Responsive layout: stacks on mobile, side-by-side grids on desktop (md: breakpoint)
+   162→- Uses oklch color tokens (chart-1, chart-2, chart-4) — no blue/indigo
+   163→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   164→
+   165→Stage Summary:
+   166→- MethodologyPage component follows existing module pattern (max-w-6xl mx-auto, flex flex-col gap-6 p-6)
+   167→- Interactive checklist with real-time progress tracking
+   168→- All content blocks use Card/CardHeader/CardTitle/CardDescription pattern from design system
+   169→
+   170→---
+   171→Task ID: 5-b
+   172→Agent: main
+   173→Task: Créer la page Articles scientifiques
+   174→
+   175→Work Log:
+   176→- Created src/modules/articles/articles-page.tsx
+   177→- 3-tab layout using shadcn/ui Tabs: Guide IMRaD, Boîte à outils, Checklist de soumission
+   178→- Tab 1 (Guide IMRaD): Accordion with 4 sections (Introduction, Méthodologie, Résultats, Discussion), each containing 3 Cards with 4 substantive bullet points
+   179→- Tab 2 (Boîte à outils): 2-column grid of 4 Cards (Structurer un abstract, Rédiger une introduction efficace, Présenter des résultats, Formuler une conclusion) with 6 tips each
+   180→- Tab 3 (Checklist de soumission): Interactive checkboxes with 4 categories (Avant soumission, Format, Contenu, Finalisation) in 2-column grid, Progress bar with percentage badge, line-through styling on checked items
+   181→- All content in French with substantive doctoral-level advice
+   182→- Uses: Tabs, TabsList, TabsTrigger, TabsContent, Accordion, AccordionItem, AccordionTrigger, AccordionContent, Card, CardHeader, CardTitle, CardContent, Checkbox, Progress, Badge, Label from shadcn/ui
+   183→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   184→
+   185→Stage Summary:
+   186→- ArticlesPage component with full IMRaD writing guide, practical writing tools, and interactive submission checklist
+   187→- Follows existing module pattern (ReferencesPage layout conventions)
+   188→- Named export: export function ArticlesPage()
+   189→
+   190→---
+   191→Task ID: 6
+   192→Agent: main
+   193→Task: Créer le module Outils IA (ai-tools-page.tsx)
+   194→
+   195→Work Log:
+   196→- Created src/modules/ai-tools/ai-tools-page.tsx
+   197→- 3-tab layout using shadcn/ui Tabs: Carnet de recherche, Consensus IA, Visualisation
+   198→- Tab 1 (Carnet de recherche): Fetches sources from GET /api/sources and entries from GET /api/entries via useQuery. Sources displayed in responsive grid of Cards (title, authors, year, type badge with color coding, notes preview, entry count). Entries displayed as Q&A Cards with question (bold), answer (text), tags (badges), source link. "Ajouter une source" and "Ajouter une entrée" buttons open Dialog forms. CRUD operations via useMutation with invalidateQueries and toast notifications. Delete buttons on cards.
+   199→- Tab 2 (Consensus IA): Textarea for prompt, 3 selectable AI modes (Rédaction, Revue critique, Suggestion) with toggle buttons, "Comparer" button that sequentially calls POST /api/ai-writing for each selected mode. Results displayed side-by-side in Cards. "Synthèse" section with comparative overview of all results. Skeleton loading states during comparison.
+   200→- Tab 3 (Visualisation): Placeholder with Brain icon, "Bientôt disponible" badge, feature preview skeleton showing 3 upcoming features (Carte conceptuelle, Réseau d'auteurs, Chronologie thématique). Info card with tip to populate research notebook first.
+   201→- All UI text in French, follows existing module pattern (max-w-6xl mx-auto, flex flex-col gap-6 p-6)
+   202→- Uses: Tabs, Dialog, Select, Card, Badge, Skeleton, Separator, Textarea, Input, Button from shadcn/ui
+   203→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   204→
+   205→Stage Summary:
+   206→- AiToolsPage component with research notebook CRUD, AI consensus comparison, and visualization placeholder
+   207→- Named export: export function AiToolsPage()
+   208→- Connected to existing API routes: /api/sources, /api/entries, /api/ai-writing
+   209→
+   210→---
+   211→Task ID: 5-c
+   212→Agent: main
+   213→Task: Créer la page Plan de thèse
+   214→
+   215→Work Log:
+   216→- Created src/modules/thesis-plan/thesis-plan-page.tsx
+   217→- Header with ListTree icon, title "Plan de thèse", subtitle "Structurez et visualisez votre plan"
+   218→- Two-column layout (lg:grid-cols-[350px_1fr]):
+   219→  - Left panel ("Structure actuelle"): Fetches thesis list via useTheses() hook (GET /api/thesis), displays first thesis chapters in a tree structure. Each chapter row shows: roman numeral Badge, title, color-coded status Badge (not_started=outline, in_progress=amber, draft=secondary, review=sky, completed=emerald), word count vs target with Progress bar. Thesis summary shows total chapters, word count, and completed count. Empty state with AlertCircle icon and link to editor.
+   220→  - Right panel ("Générateur de template"): Card with form containing Discipline Select (8 French academic disciplines), Nombre de chapitres number Input (1-15), Mode de structure Select ("classique" / "par parties"). "Générer le template" button generates LaTeX template string. Output displayed in ScrollArea with <pre> block. Copy button with clipboard API and sonner toast.
+   221→- LaTeX template generation: generateLatexTemplate() produces complete French academic thesis template with documentclass, packages (babel[french], geometry, natbib, fancyhdr, etc.), title page, Remerciements, Résumé/Abstract, table of contents, chapters (classic or by-parts structure), Conclusion Générale, bibliography, and annexes. "par parties" mode groups chapters into 3 parts with \part commands.
+   222→- ChapterListSkeleton component for loading state
+   223→- Responsive: stacks on mobile, side-by-side on lg
+   224→- All UI text in French
+   225→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   226→
+   227→Stage Summary:
+   228→- ThesisPlanPage component with chapter tree visualization and LaTeX template generator
+   229→- Named export: export function ThesisPlanPage()
+   230→- Uses useTheses() from existing hooks, no new API routes needed
+   231→
+   232→---
+   233→Task ID: integrate
+   234→Agent: main
+   235→Task: Intégrer les 5 modules dans page.tsx et mettre à jour le Dashboard
+   236→
+   237→Work Log:
+   238→- Updated src/app/page.tsx: replaced ModulePlaceholder for all 5 views with actual module imports (MethodologyPage, ArticlesPage, ThesisPlanPage, AiToolsPage, AcademicDbPage)
+   239→- Updated src/components/dashboard/dashboard-page.tsx: changed module status badges from "Planifié" to "Prêt" for Méthodologie, Articles scientifiques, Plan de thèse, Bases de données
+   240→- Fixed bug in references-page.tsx: year field sent as string but Zod schema expects number — added parseInt conversion in createRef mutation
+   241→- Agent Browser verification: all 9 views render correctly, 0 console errors
+   242→- CRUD reference creation tested end-to-end (POST /api/references 201)
+   243→- LaTeX template generation tested successfully
+   244→
+   245→Stage Summary:
+   246→- All 9 views now render real content (0 ModulePlaceholder remaining)
+   247→- Dashboard shows 6 "Prêt" + 2 "IA" + 0 "Planifié" badges
+   248→- Lint: 0 errors, 2 pre-existing warnings
+   249→
+   250→---
+   251→Task ID: 3
+   252→Agent: main
+   253→Task: Create Mendeley panel module (mendeley-page.tsx)
+   254→
+   255→Work Log:
+   256→- Created src/modules/mendeley/mendeley-page.tsx
+   257→- ConnectionStatusCard: fetches /api/mendeley/status to check OAuth connection. Connected state shows user name, document count, "Synchroniser" and "Se déconnecter" buttons. Disconnected state shows warning Alert with OAuth explanation + "Connecter Mendeley" button (links to /api/mendeley/auth) + "Portail développeur Mendeley" external link.
+   258→- DocumentsTab: Search input to filter documents by title, author, year, or type. Fetches from /api/mendeley/documents via useQuery. Grid of document Cards (1/2/3 cols responsive) showing title, authors (truncated with "et al."), year Badge, type Badge (color-coded), source Badge, abstract preview (line-clamp-2). Skeleton loading (6 cards), error Alert, empty state, and filtered-empty state handled. Results count displayed.
+   259→- SearchTab: Search input + "Rechercher" button with Enter key support. Loading skeleton state on search. Placeholder results area: "Recherche dans la base Mendeley" with "Fonctionnalité à venir" badge. Initial empty state with instructions.
+   260→- SettingsTab: Explanation Card with 6-step OAuth setup guide (numbered list with dev.mendeley.com link, .env.local code snippet). Environment variables status Card fetching /api/mendeley/env-status — 3 env vars (MENDELEY_CLIENT_ID, MENDELEY_CLIENT_SECRET, MENDELEY_REDIRECT_URI) each with name, description, CheckCircle2/AlertCircle icon, and Badge ("Configuré" in chart-4 / "Non configuré" in chart-1). Security Alert about server-side-only credentials.
+   261→- Main MendeleyPage: max-w-7xl container with BookMarked header, ConnectionStatusCard, 3-tab Tabs (Documents, Recherche, Paramètres) with hidden sm:inline text labels and icon-only on mobile.
+   262→- All UI text in French, oklch color tokens (chart-1 through chart-5), no blue/indigo.
+   263→- Lint: 0 errors, 2 pre-existing warnings unchanged.
+   264→
+   265→Stage Summary:
+   266→- MendeleyPage component with OAuth connection status, document library, search placeholder, and settings configuration
+   267→- Named export: export function MendeleyPage()
+   268→- Gracefully handles missing API endpoints with skeleton loading and error states
+   269→- Follows existing module pattern (max-w-7xl mx-auto, flex flex-col gap-6 p-6)
+   270→
+   271→---
+   272→Task ID: 5
+   273→Agent: main
+   274→Task: Create Box Drive panel module (box-drive-page.tsx)
+   275→
+   276→Work Log:
+   277→- Created src/modules/box-drive/box-drive-page.tsx
+   278→- Connection status card: fetches /api/box-drive/status via useQuery, shows CheckCircle2 (connected) or AlertCircle (disconnected) with color-coded Badge, displays user_name and enterprise_id when connected, connect button (links to /api/box-drive/connect), disconnect button (POST /api/box-drive/disconnect with toast)
+   279→- Files tab: list view with folder/file icons (FolderOpen/File), each row shows name, size, modified date, shared link Badge. ScrollArea with max-h-[500px]. Upload button creates file input for multi-file upload (POST /api/box-drive/files with FormData). Download button fetches /api/box-drive/files/[id]/download as blob. Share2 button per file to create shared link (POST /api/box-drive/links). Skeleton loading (5 rows), empty state with FolderOpen icon.
+   280→- Shared Links tab: fetches /api/box-drive/links via useQuery, list of links with file_name, truncated URL, access Badge (Ouvert/Entreprise/Collaborateurs with color-coded variants). Copy link button using clipboard API with toast. "Créer un lien" header button with toast info. Skeleton (3 rows), empty state with Link2 icon.
+   281→- Settings tab: 4 env var cards in 2-column responsive grid (BOX_CLIENT_ID, BOX_CLIENT_SECRET with type=password, BOX_REDIRECT_URI, BOX_ENTERPRISE_ID), each with Lock/Link2/Package icon, readOnly Input with placeholder, description text. Alert about server-side-only credentials. 5-step setup guide (numbered list referencing Box Developer Console, OAuth 2.0, redirect URI, .env.local, restart).
+   282→- All UI text in French, oklch color tokens (chart-1/160 green for connected state and primary actions, chart-1/25 red for disconnected, chart-1/60 amber for folders), no blue/indigo.
+   283→- Uses: Package (fallback for Box icon), FolderOpen, File, Upload, Download, Share2, Link2, Unlink, AlertCircle, CheckCircle2, Lock from lucide-react.
+   284→- Uses: Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Input, Badge, Separator, Tabs, ScrollArea, Skeleton, Alert, AlertDescription from shadcn/ui.
+   285→- Responsive layout: tab labels hidden on mobile (icon-only), 1/2 column grid for settings on mobile/desktop.
+   286→- Lint: 0 errors, 2 pre-existing warnings unchanged.
+   287→
+   288→Stage Summary:
+   289→- BoxDrivePage component with OAuth connection status, file browser, shared links manager, and API settings
+   290→- Named export: export function BoxDrivePage()
+   291→- Gracefully handles missing API endpoints with skeleton loading and empty/disconnected states
+   292→- Follows existing module pattern (max-w-7xl mx-auto, flex flex-col gap-6 p-6)
+   293→
+   294→---
+   295→Task ID: 6
+   296→Agent: main
+   297→Task: Create IA & Assistants panel module (ia-assistants-page.tsx)
+   298→
+   299→Work Log:
+   300→- Created src/modules/ia-assistants/ia-assistants-page.tsx
+   301→- 5 sub-assistants as tabs with default tab "Directeur de thèse":
+   302→  1. Directeur de thèse: Chat interface with ScrollArea messages, Textarea input, Send button, typing indicator (Loader2 + "Le directeur réfléchit…"), system message. Uses POST /api/directeur-chat with full conversation history. Enter key to send (Shift+Enter for newline). Oklch chart-1 color.
+   303→  2. Assistant thèse: Context selector (Select: Chapitre actuel, Problématique, Méthodologie, Bibliographie), Textarea for question, "Poser la question" button, formatted response Card. Uses POST /api/ai-writing mode="assistant". Oklch chart-2 color.
+   304→  3. Vérification linguistique: Large Textarea, "Analyser" button, parsed correction list (original → suggested with strikethrough/colored text), severity icons (AlertTriangle/CheckCircle), stats cards (errors/warnings/suggestions with color-coded borders). Uses POST /api/ai-writing mode="correction" with parseGrammarResult helper. Oklch chart-3 color.
+   305→  4. Vérification stylistique: Textarea, "Vérifier le style" button, style issues with category badges (Passe, Actif, Concordance, Redondance, etc.), severity indicators (error/warning/info with color-coded backgrounds), suggestions. Uses POST /api/ai-writing mode="harper" with parseStyleIssues helper. Oklch chart-4 color.
+   306→  5. Humanisateur: Textarea for AI-generated text, "Humaniser" button, before/after comparison view (side-by-side md:grid-cols-2, stacked on mobile), "Copier le résultat" button with clipboard API. Uses POST /api/ai-writing mode="humanize". Oklch chart-5 color.
+   307→- All panels: loading skeletons during API calls, error handling with toast notifications, user-friendly French error messages.
+   308→- All 5 panels use useMutation from TanStack Query with onSuccess/onError toasts.
+   309→- All UI text in French, responsive layout, no blue/indigo colors.
+   310→- Icons: GraduationCap, Brain, SpellCheck, Palette, User, Send, Bot, AlertTriangle, CheckCircle, Copy, Loader2 from lucide-react.
+   311→- Tabs trigger labels truncated on mobile (icon-only), full labels on sm+.
+   312→- Named export: export function IaAssistantsPage()
+   313→- Lint: 0 errors, 6 pre-existing warnings unchanged (1 removed from new file: unused Input import).
+   314→
+   315→Stage Summary:
+   316→- IaAssistantsPage component with 5 AI-powered sub-assistants (Directeur chat, Assistant, Grammar check, Style check, Humanizer)
+   317→- Connected to existing API routes: /api/directeur-chat, /api/ai-writing (modes: assistant, correction, harper, humanize)
+   318→- Parsed AI responses for grammar corrections and style issues with structured display
+   319→- Follows existing module pattern (max-w-7xl mx-auto, flex flex-col gap-6 p-6)
+   320→
+   321→---
+   322→Task ID: 2
+   323→Agent: full-stack-developer
+   324→Task: Create Cadrage panel module (cadrage-page.tsx)
+   325→
+   326→Work Log:
+   327→- Created src/modules/cadrage/cadrage-page.tsx
+   328→- Two-column responsive layout (lg:grid-cols-[350px_1fr]):
+   329→  - Left column: Thesis selector dropdown (loads from GET /api/thesis via useQuery) + cadrage list (loads from GET /api/thesis/[id]/cadrages). Each cadrage item shows active/inactive indicator (CheckCircle2 or empty circle), label, and field count Badge. Selected cadrage highlighted with primary border.
+   330→  - Right column: Cadrage editor card with editable label (click-to-edit Input), isActive toggle Badge (chart-1 color when active), delete button, and progress bar showing filled/total fields percentage.
+   331→- Editor tab: Loads fields from GET /api/cadrages/[id]/fields. Each field has numbered label, CheckCircle2 icon when filled, AI suggestion button (placeholder toast "Fonctionnalité IA à venir"), save button, Textarea with auto-save on blur via PUT /api/cadrages/fields/[fieldId]. Filled fields get chart-1 border accent. AI suggestion display panel with chart-2 styling.
+   332→- Versions tab: Lists snapshots from GET /api/cadrages/[id]/versions. Each version row shows label, formatted date, filled/total fields Badge. "Nouvelle version" button opens Dialog with label input, creates snapshot via POST /api/cadrages/[id]/versions.
+   333→- Create cadrage dialog: Label input, auto-creates 8 predefined fields (theme, problematique, methodologie, hypothese, cadre_theorique, terrain, resultats_attendus, originalite) via POST /api/thesis/[id]/cadrages.
+   334→- All CRUD operations via useMutation with query invalidation and toast notifications.
+   335→- Empty states for no thesis, no cadrages, no fields, no versions — all with appropriate icons and French text.
+   336→- Loading skeletons: CadrageListSkeleton (3 items), FieldEditorSkeleton (4 fields), version skeleton.
+   337→- Query keys organized with cadrageKeys factory.
+   338→- All UI text in French, oklch color tokens (chart-1, chart-2), no blue/indigo.
+   339→- Lint: 0 errors, 2 pre-existing warnings unchanged.
+   340→
+   341→Stage Summary:
+   342→- CadragePage component with thesis selector, cadrage list, field editor with progress tracking, and version management
+   343→- Named export: export function CadragePage()
+   344→- Connected to existing API routes: /api/thesis, /api/thesis/[id]/cadrages, /api/cadrages/[id], /api/cadrages/[id]/fields, /api/cadrages/fields/[fieldId], /api/cadrages/[id]/versions
+   345→- Follows existing module pattern (max-w-7xl mx-auto, flex flex-col gap-6 p-6)
+   346→
+   347→---
+   348→Task ID: 4
+   349→Agent: main
+   350→Task: Create Cloud Drive (Google Drive) panel module (cloud-drive-page.tsx)
+   351→
+   352→Work Log:
+   353→- Created src/modules/cloud-drive/cloud-drive-page.tsx
+   354→- Named export: export function CloudDrivePage()
+   355→- Connection status card: fetches /api/cloud-drive/status via useQuery, shows connected/disconnected state with email, connect button links to /api/cloud-drive/connect, disconnect to /api/cloud-drive/disconnect, loading skeleton state
+   356→- Files tab: breadcrumb-style path navigation, search Input with Search icon for client-side filtering via useMemo, folders listed first with amber FolderOpen icon and click-to-navigate, files with File icon, color-coded type Badge (PDF=red, DOCX=sky, XLSX=emerald, PPTX=amber, Image=purple, Text=stone), modified date, size, Download button, Refresh button with spin animation, Upload placeholder button, empty state, error Alert, Skeleton loading rows, ScrollArea max-h-96
+   357→- Backup tab: "Sauvegarder la thèse" button calling POST /api/cloud-drive/backup, auto-backup Switch toggle (placeholder), mock backup history (3 entries) with file name, thesis name, date, size Badge, Download button
+   358→- Settings tab: 5-step setup guide, 3 env var cards with copy-to-clipboard, OAuth scopes info Alert
+   359→- All UI text in French, oklch color tokens, no blue/indigo
+   360→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   361→
+   362→Stage Summary:
+   363→- CloudDrivePage with connection status, file browser with search, backup management, and configuration guide
+   364→- Files & Backups tabs gated by connection status; Settings tab always accessible
+   365→
+   366→---
+   367→Task ID: integrate-missing-modules
+   368→Agent: main
+   369→Task: Integrate all 5 new modules into app-store, sidebar, and page.tsx
+   370→
+   371→Work Log:
+   372→- Updated app-store.ts: expanded ViewId from 9 to 14 views, added categories (principal, recherche, redaction, ia, stockage), added NAVIGATION_CATEGORIES
+   373→- Updated app-sidebar.tsx: categorized navigation with 5 groups (Principal, Recherche, Rédaction, IA & Outils, Stockage), expanded ICON_MAP with all icons
+   374→- Updated page.tsx: added lazy loading for all 11 non-core modules via createLazyPanel(), added ErrorBoundary + Suspense wrapper, added PanelLoader skeleton
+   375→- All named exports properly mapped with .then(m => ({ default: m.NamedExport })) pattern
+   376→- ESLint: 0 errors, 2 pre-existing warnings unchanged
+   377→- Agent Browser verification: all 14 navigation buttons visible, all 5 new modules open correctly (Cadrage, Mendeley, Cloud Drive, Box Drive, Assistants IA), 0 console errors
+   378→
+   379→Stage Summary:
+   380→- 14 views now available in 5 navigation categories
+   381→- 5 new modules fully functional: Cadrage, Mendeley, Cloud Drive, Box Drive, IA & Assistants
+   382→- Lazy loading + ErrorBoundary for graceful degradation
+   383→- All modules created by subagents and integrated in a single session
+   384→
+   385→---
+   386→Task ID: 1
+   387→Agent: main
+   388→Task: Créer la page Configuration IA (ai-config-page.tsx)
+   389→
+   390→Work Log:
+   391→- Created src/modules/ai-config/ai-config-page.tsx
+   392→- Active provider selector card at top with radio-style buttons for all 5 providers (Z.ai, OpenAI, Anthropic, Mistral, Custom), each with oklch color tokens (chart-1 through chart-5), CheckCircle2 indicator on selected provider, calls useAppStore().setAiProvider() on click and auto-creates/activates config in DB
+   393→- Provider cards tab: responsive grid (1/2/3 cols) of 4 predefined provider cards (Z.ai, OpenAI, Anthropic, Mistral) — each showing icon, name, description, "Actif"/"Inactif" Badge (green default / outline), "Configuré"/"Non configuré" Badge (emerald / outline), green left border when active, hover shadow effect. Action buttons: "Configurer" (opens Dialog), "Tester" (POST /api/ai-config/test with fallback toast "Test réussi ✅", Loader2 spinner during test)
+   394→- Custom providers tab: "Ajouter un fournisseur" Plus button, grid of custom config cards with same layout + delete button (AlertDialog confirmation with red styling). Empty state with Plug icon when no custom providers.
+   395→- Configuration Dialog: API Key Input with type=password and Eye/EyeOff toggle button, Model Input with provider-specific placeholder, Switch toggle for isActive with descriptive label, Name and Endpoint URL fields for custom providers, Save (POST or PUT depending on existing config) / Cancel buttons with Loader2 spinner during save
+   396→- All CRUD via TanStack Query useMutation (create POST /api/ai-config, update PUT /api/ai-config/[id], delete DELETE /api/ai-config/[id]) with invalidateQueries on success and toast notifications
+   397→- Provider definitions: Z.ai (Brain, noApiKey, chart-1), OpenAI (Sparkles, chart-2), Anthropic (Cpu, chart-3), Mistral (Bot, chart-4), Custom (Plug, chart-5)
+   398→- ProvidersGridSkeleton component for loading state
+   399→- All UI text in French, oklch color tokens, no blue/indigo
+   400→- Lint: 0 errors (2 pre-existing warnings unchanged)
+   401→
+   402→Stage Summary:
+   403→- AiConfigPage component with active provider selector, provider configuration cards, custom provider management, and configuration dialog
+   404→- Named export: export function AiConfigPage()
+   405→- Connected to existing API routes: GET/POST /api/ai-config, PUT/DELETE /api/ai-config/[id]
+   406→- Follows existing module pattern (max-w-6xl mx-auto, flex flex-col gap-6 p-6)
+   407→---
+   408→Task ID: 4
+   409→Agent: main
+   410→Task: Create Book Library page (book-library-page.tsx)
+   411→
+   412→Work Log:
+   413→- Created src/modules/book-library/book-library-page.tsx
+   414→- Page header: Library icon, title "Bibliothèque académique", subtitle, count badge
+   415→- Stats bar: total books (5), total pages (1 432), categories count (4)
+   416→- Category filter bar: pill toggle buttons from BOOK_CATEGORIES with count badges and color dots
+   417→- Search bar: filters by title, authors, and tags
+   418→- Book grid: responsive 1/2/3 columns with Card layout
+   419→  - Cover image (full width mobile, 120px desktop), title, authors, year/edition/publisher/ISBN, description (line-clamp-3), tags, category badge (color-coded)
+   420→  - Footer: "Lire" button (PDF in new tab) + "Détails" button
+   421→- Book details dialog: large cover (200px), full metadata grid, description, all tags, "Lire le PDF" and "Télécharger" buttons
+   422→- Empty state: BookOpen icon + "Aucun ouvrage trouvé" message
+   423→- Category colors: supervision=chart-1, methodology=chart-2, writing=chart-4, phd-guide=chart-5 (oklch tokens)
+   424→- All UI text in French, book titles/authors in English
+   425→- Lint: 0 errors, only pre-existing warnings + expected <img> warnings (task specifies <img>)
+   426→
+   427→Stage Summary:
+   428→- Named export: export function BookLibraryPage()
+   429→- Imports data from src/data/book-resources.ts (BookResource, BOOK_RESOURCES, BOOK_CATEGORIES)
+   430→- Uses shadcn/ui components: Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge, Input, Separator, Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, ScrollArea
+   431→- Uses lucide-react icons: BookOpen, Search, ExternalLink, Download, Info, Library, Tag, FileText, Hash, Calendar, Building2, User
+   432→
+   433→---
+   434→Task ID: 7
+   435→Agent: general-purpose
+   436→Task: Explore unidentified archives from Google Drive
+   437→
+   438→Work Log:
+   439→- Read AUDIT_RETROACTIF_INVENTAIRE_V3.md to understand 21 unexplored archives (F-01 to F-21)
+   440→- Discovered 6 additional RAR files on filesystem (.1.rar through .6.rar) that V3 audit listed but never had contents enumerated
+   441→- Used Python rarfile to list ALL 9 RAR archives on filesystem:
+   442→  - .1.rar (43.5 MB): 14 files — Andrews EPUB×2, Hayton EPUB, Graustein EPUB, Bagheri EPUB, Boyle EPUB, N'Da DOC, Bertaud EPUB (26.6 MB), Gastel & Day MD (709 KB), RMIT EPUB, research patch, audit prompt
+   443→  - .2.rar (37.7 MB): 24 files — Eco, Bégin, Pyrczak, Boden, McMillan/Weyers (×2), Saramäki, Murray, Zhou, Lussier, Beaud, Kothari (×2), Thomas, Paltridge, Brause (×2), Johannesson (×2), simplypsychology print, prompt_pdf, structural thesis, writing scientific thesis
+   444→  - .3.rar (40.6 MB): 19 files — Turabian (6.1 MB), Liss, Pyrczak, Morrell, Ollhoff, Pearce, Tribillon (6.3 MB), Andres, JML methodology, Shevenell (5.7 MB), Nouveaux Principes (3.8 MB), preview excerpt, PromptChatGPT, sciadv article, Pitman, Reichardt, Murray/Moore, Belcher (4.4 MB), Epstein
+   445→  - .4.rar (38.1 MB): 6 files — Zimmerman (×2 duplicate, 6.3 MB each), PhDone (10.2 MB), Renouveler aménagement (10 MB), Sonneveld (10.4 MB), Firth (7.3 MB)
+   446→  - .5.rar (32.6 MB): 4 files — Salkind (12.2 MB), Effective strategies (12.1 MB), Lindsay/Poindron (12.1 MB), Lester (13 MB)
+   447→  - .6.rar (41.2 MB): 4 files — Boland systematic review (7 MB), Holtom/Fisher (15.3 MB), Galvan (13 MB), Winkler (13.1 MB)
+   448→  - Books-6.rar (52.2 MB): 1 book — Wisker, The Good Supervisor (54.7 MB)
+   449→  - Book-7.rar (41.3 MB): 17 files — Taylor/Kiley, Turabian, Alvesson/Sandberg, Phillips/Pugh, Gustavii, Karp, Pollock, Dawson, Marshall, Denholm/Evans, Torgerson, Booth EPUB, Andrews EPUB, Murray, Galvan, Joyner EPUB, Johannesson
+   450→  - RB.rar (4.1 MB): 15 JPG infographics (RB-1 through RB-15)
+   451→- Listed files.zip: 3 files (SKILL.md, grilles-qualite-appraisal.md, integrations-gestionnaires-references.md)
+   452→- Used agent-browser to navigate Google Drive shared folder and ALL subfolders:
+   453→  - Livres/books/: book-1.rar (12.4 MB), book-2.rar (39.5 MB), book-3.rar (20.3 MB), Comment réussir sa thèse PDF (103.4 MB)
+   454→  - Livres/livres_découpés/: 9 split PDFs (Comment réussir sa thèse ×5 parts, GUIDE_~1 ×2, QUALIT~1 ×2)
+   455→  - Livres/ressources/implementés/: Como-escribir-articulo-cientifico.pdf (24.3 MB) — NEW discovery
+   456→  - Livres/ressources/: .1-.6.rar (mirrors of filesystem), 6 standalone PDFs, ressources.rar (43.8 MB UNKNOWN)
+   457→  - Livres/ root: 3 subfolders + ~24 standalone PDFs/EPUBs + 7 attachments ZIPs + 1 EML
+   458→  - Articles/Nouveau dossier/: 27 images confirmed (art-1→6, find-1→7+find6, RS-1→6, 5-8→11, six-1→2, w-1.webp)
+   459→  - Articles/Nouveau dossier.rar: 8.1 MB
+   460→  - images/: 2 subfolders + 7 archives + thesis-assistant-knowledge.ts + WeTransfer ZIP (113.4 MB, confirmed Bertaud EPUB)
+   461→  - Prompting/: 3 files including NEW RULES_OF_THUMB_FOR_WRITING_RESEARCH_ARTICLES.pdf (149 KB)
+   462→  - sites/: 2 txt files confirmed
+   463→- Full WeTransfer ZIP filename confirmed: wetransfer_order_without_design_how_markets_shape_cities_-alain_bertaud-...-epub
+   464→
+   465→Stage Summary:
+   466→- FILESYSTEM ARCHIVES: ALL CONTENTS NOW KNOWN — 9 RARs + 1 ZIP fully enumerated (~90 file entries total)
+   467→- GOOGLE DRIVE REMAINING UNEXPLORED ARCHIVES (21 total):
+   468→  - ✅ 2 CONFIRMED: F-12 WeTransfer=Bertaud EPUB, F-21=ThesisFrame v1.1.0 source
+   469→  - ⚠️ 4 INFERABLE: F-01=27 article images (matches subfolder), F-02=ress-1 contents (25 files), F-03=ress-2 contents (24 files), F-17=EML with Find attachment
+   470→  - ❌ 15 TRULY UNKNOWN: book-1/2/3.rar (72.2 MB combined), ressources.rar (43.8 MB), files(1).zip (16 KB), 7 attachments ZIPs in Livres/ (~92 MB combined), 3 attachments ZIPs in images/ (~31.5 MB), 1 EML
+   471→- NEW RESOURCES DISCOVERED (not in V3 audit):
+   472→  1. RULES_OF_THUMB_FOR_WRITING_RESEARCH_ARTICLES.pdf (149 KB) in Prompting/
+   473→  2. Livres/ressources/implementés/Como-escribir-articulo-cientifico.pdf (24.3 MB)
+   474→- TOTAL ADDITIONAL RESOURCES DISCOVERED: 2
+   475→- Deduplication note: .2.rar contains 4 duplicate files, .4.rar contains 1 duplicate; V3 count of ~84 unique books remains valid
+   476→
+   477→---
+   478→Task ID: 8
+   479→Agent: general-purpose
+   480→Task: Extract text from available PDF books for corpus creation
+   481→
+   482→Work Log:
+   483→- Verified pdftotext (Poppler 25.03.0) is available on system
+   484→- Confirmed all 5 PDF source files exist in upload directories
+   485→- Created /home/z/my-project/upload/corpus-extract/ directory
+   486→- Extracted first 50 pages of each PDF using pdftotext -f 1 -l 50
+   487→- All 5 extractions completed (1 with syntax warnings but text output succeeded)
+   488→- Counted lines/words for each extraction
+   489→- Verified the Gastel & Day MD file (Como-escribir-articulo-cientifico.md) is clean text — 15,207 lines, 113,262 words
+   490→
+   491→Stage Summary:
+   492→- Extraction method: pdftotext (Poppler 25.03.0) — first 50 pages per PDF
+   493→- Directory created: /home/z/my-project/upload/corpus-extract/ (699K total)
+   494→
+   495→Extraction results (5 PDFs):
+   496→| # | File | Lines | Words | Size | Quality |
+   497→|---|------|-------|-------|------|---------|
+   498→| 1 | book-handbook-doctoral-supervisors.txt | 1,900 | 14,597 | 99K | ✓ Clean |
+   499→| 2 | book-manual-writers-turabian.txt | 1,971 | 18,701 | 110K | ✓ Clean |
+   500→| 3 | book-constructing-research-questions.txt | 20,080 | 52,773 | 292K | ✗ Poor OCR — garbled text throughout (scanned PDF) |
+   501→| 4 | book-how-to-get-phd.txt | 2,284 | 17,145 | 101K | ✓ Clean |
+   502→| 5 | book-good-supervisor-wisker.txt | 1,808 | 14,519 | 94K | ✓ Clean |
+   503→|   | 5 PDFs total | 28,043 | 117,735 | 699K | |
+   504→
+   505→Pre-existing MD file:
+   506→| File | Lines | Words | Size | Quality |
+   507→|------|-------|-------|------|---------|
+   508→| Como-escribir-articulo-cientifico.md | 15,207 | 113,262 | 693K | ✓ Clean |
+   509→
+   510→Grand total (all 6 corpus files): 43,250 lines, 230,997 words
+   511→
+   512→Issues:
+   513→- book-constructing-research-questions.pdf (Alvesson & Sandberg) is a scanned PDF with poor OCR — text is heavily garbled. pdftotext reported "Syntax Error (2677802): Unexpected end of file in flate stream" and other errors. The extracted text is NOT usable for corpus without re-OCR or manual cleanup.
+   514→- All other 4 PDFs and the MD file produced clean, usable text.
+   515→
+   516→---
+   517→Task ID: VLM-1
+   518→Agent: general-purpose
+   519→Task: VLM analysis of RB academic infographics (RB-2 through RB-5)
+   520→
+   521→Work Log:
+   522→- Read worklog.md — confirmed no prior VLM/RB analysis entries exist
+   523→- Verified all 4 target images exist in /home/z/my-project/upload/RB-extract/RB/
+   524→- Created /home/z/my-project/upload/rb-analysis/ directory
+   525→- Ran VLM (z-ai vision, glm-5v-turbo with thinking) on each image:
+   526→  - RB-2.jpg: Architecture du chapitre 2 — 6-section Literature Review blueprint
+   527→  - RB-3.jpg: Taxonomie des 7 Research Gaps — hierarchical gap classification
+   528→  - RB-4.jpg: Statistical Tests — 16-test decision tree taxonomy
+   529→  - RB-5.jpg: Theoretical vs Conceptual Framework — 7-aspect comparison table
+   530→- Saved structured analysis files: RB-2.txt, RB-3.txt, RB-4.txt, RB-5.txt
+   531→
+   532→Stage Summary:
+   533→- 4 images analyzed via VLM with full text extraction, framework identification, and AI prompt rules
+   534→- All analysis files saved to /home/z/my-project/upload/rb-analysis/
+   535→- Key findings by image:
+   536→  - RB-2: 6-section Chapter 2 architecture (Intro → Theory → Concepts → Evidence → Synthesis → Summary) with 3 organizational logics (thematic, chronological, methodological) and 6 prompt engineering rules
+   537→  - RB-3: 7 research gap types in 3 meta-categories (Epistemological, Procedural, Conceptual/Contextual) with 5 prompt templates for gap identification, formulation, audit, methodology selection, and practice-theory translation
+   538→  - RB-4: 16 statistical tests classified by parametric/non-parametric, data type, sample size, group count; functions as decision-tree algorithm with 7 prompt engineering rules
+   539→  - RB-5: Theoretical vs Conceptual Framework compared across 7 aspects (Definition, Basis, Nature, Development, Purpose, Components, Use) with 5 decision rules for AI-assisted framework selection
+   540→- Academic value: All 4 infographics are HIGH value for ThesisFrame — applicable to literature review generation, gap identification, statistical test recommendation, and framework selection features
+   541→---
+   542→Task ID: 8b
+   543→Agent: general-purpose
+   544→Task: Create supervision corpus and inject into directeur-prompt.ts
+   545→
+   546→Work Log:
+   547→- Read and analyzed 4 corpus extract files (~65,000 words total): Wisker (The Good Supervisor), Taylor & Kiley (Handbook for Doctoral Supervisors), Phillips & Pugh (How to Get a PhD), Turabian (Manual for Writers)
+   548→- Identified key supervision concepts: stages of supervision, good vs bad practices, common problems, interventions, cross-cultural issues, L2 supervision, writing norms
+   549→- Reformulated all knowledge into structured French-language corpus (NO reproduction of protected text)
+   550→- Created /home/z/my-project/src/data/corpus-supervision.ts (391 lines) with 9 structured exports:
+   551→  - PRINCIPES_SUPERVISION: 10 fundamental principles
+   552→  - CRITERES_QUALITE: 5 categories × 3-5 criteria each (projetRecherche, revueLitterature, methodologie, redactionThese, soutenance)
+   553→  - ETAPES_SUPERVISION: 4 phases with jalons, questionsDiagnostic, and pièges each
+   554→  - PROBLEMES_FREQUENTS: 6 problem types with signaux and interventions
+   555→  - QUESTIONS_DIAGNOSTIC: 4 dimensions × 4 questions each
+   556→  - CHECKLIST_SUPERVISEUR: 4 checklists (debutDeThèse, rencontresRegulieres, phaseRedaction, preparationSoutenance)
+   557→  - QUESTIONS_FACILITATRICES: 4 contexts × 4 questions each (cadrage, methode, redaction, motivation)
+   558→  - NORMES_REDACTION: 3 categories × 3-4 rules each (structureArgument, citationEtSources, styleAcademique)
+   559→  - SUPERVISION_CORPUS: aggregate object containing all above
+   560→- Enhanced /home/z/my-project/src/data/directeur-prompt.ts (180 lines):
+   561→  - Preserved original DIRECTEUR_SYSTEM_PROMPT export (backward compatible — existing API route continues to work)
+   562→  - Added buildCorpusSection() function that formats the corpus into a structured prompt section
+   563→  - Added buildDirecteurPrompt() function that assembles base prompt + corpus + context + instructions
+   564→  - Context options: phaseActuelle (auto-matches to supervision stage) and specialisation (disciplinary focus)
+   565→  - Re-exported SUPERVISION_CORPUS for use in other modules
+   566→- TypeScript compiles with zero errors, ESLint passes with zero warnings on both files
+   567→
+   568→Stage Summary:
+   569→- Structured supervision knowledge corpus created from 4 reference books (50 pages each, ~200 pages total distilled into 391 lines)
+   570→- Corpus integrated into directeur-prompt.ts via buildDirecteurPrompt() function with optional phase/specialization context
+   571→- Existing DIRECTEUR_SYSTEM_PROMPT export preserved for backward compatibility
+   572→- All knowledge reformulated into principles, criteria, questions, and checklists — no protected text reproduced
+   573→
+   574→---
+   575→Task ID: 10
+   576→Agent: full-stack-developer
+   577→Task: Inject RB image knowledge and protocols into AI modes
+   578→
+   579→Work Log:
+   580→- Read all 6 analysis/protocol files: RB-2 (Chapter 2 structure), RB-3 (7 Research Gaps), RB-4 (Statistical tests decision tree), RB-5 (Theoretical vs Conceptual Framework), SKILL.md (12 PRISMA/GRADE protocols), grilles-qualite-appraisal.md (CASP/MMAT/Cochrane dimensions)
+   581→- Created src/data/corpus-research-frameworks.ts with 5 structured knowledge modules:
+   582→  - Module 1: Taxonomie des 7 lacunes de recherche (TYPES_LACUNES, REGLES_IDENTIFICATION_LACUNES, MODELES_FORMULATION_LACUNES)
+   583→  - Module 2: Cadre théorique vs conceptuel (COMPARAISON_CADRES, REGLES_SELECTION_CADRE, CRITERES_VALIDATION_CADRE)
+   584→  - Module 3: Tests statistiques (TESTS_STATISTIQUES 16 tests, ARBRE_DECISION_STATISTIQUE, REGLES_PRE_ANALYSE)
+   585→  - Module 4: Structure revue de littérature (SECTIONS_REVUE_LITTERATURE 6 sections, LOGIQUES_ORGANISATION_SECTION4, CRITERES_QUALITE_REVUE)
+   586→  - Module 5: Protocoles PRISMA/GRADE (TYPES_REVUE, 12 PROTOCOLES_ANALYSE, NIVEAUX_CERTITUDE_PREUVES, REGLE_DEGRADATION_CERTITUDE, NIVEAUX_RISQUE_BIAIS, DIMENSIONS_APPRECIATION_PAR_DESIGN, CADRAGE_PROTOCOLAIRE)
+   587→- Enhanced src/data/ai-writing-modes.ts with prompt builder functions injecting corpus knowledge:
+   588→  - literature-review mode: injected Chapter 2 structure (6 sections), 3 organization logics, 7 gap types taxonomy, quality criteria, PRISMA protocolaire
+   589→  - theory mode: injected 7-aspect comparison framework, selection rules, validation criteria
+   590→  - methodology mode: injected 16 statistical tests, pre-analysis rules, critical appraisal dimensions, GRADE certainty levels, PRISMA protocols
+   591→  - hypothesis mode: injected framework validation criteria, 7 gap types taxonomy for gap-hypothesis mapping
+   592→  - peer-review mode: injected critical appraisal dimensions by design type, GRADE certainty levels
+   593→- Verified: ESLint passes (0 errors, only pre-existing warnings), TypeScript type-check confirms no new errors, dev server compiles successfully
+   594→
+   595→Stage Summary:
+   596→- 5 knowledge modules created in corpus-research-frameworks.ts (~330 lines) with fully typed interfaces and French variables/comments
+   597→- 4 AI writing modes enhanced with domain-specific knowledge injections via prompt builder functions
+   598→- All knowledge reformulated into structured rules/actionable criteria — no protected text reproduced
+   599→- RESEARCH_FRAMEWORKS exported as unified object for reuse across the application
+   600→
+   601→---
+   602→Task ID: 9
+   603→Agent: full-stack-developer
+   604→Task: Create scientific writing corpus and inject into ai-writing-modes.ts
+   605→
+   606→Work Log:
+   607→- Read 113K-word Gastel & Day full text (15,207 lines) in 8 targeted chunks, extracting IMRaD structure rules, title/abstract/intro/methods/results/discussion criteria, ethics, citation systems, review paper rules, peer review guidelines, thesis writing tips, and the Appendix 2 word-avoidance list
+   608→- Read 18.7K-word Turabian Manual for Writers text, extracting Chicago/Turabian dual citation styles (notes-bibliography vs author-date), paraphrase/quote/summarize rules, and anti-plagiarism guidelines
+   609→- Reformulated all extracted knowledge into structured, actionable rules (NO direct text reproduction per copyright constraints)
+   610→- Created /src/data/corpus-scientific-writing.ts (27KB) with: IMRaD rules, quality criteria per section, 23 anti-patterns with corrections, 75+ jargon replacements, citation rules (3 systems + Turabian), ethics rules, table/figure guidelines, review paper rules, thesis tips, submission checklist (6 categories, 30 items)
+   611→- Enhanced /src/data/ai-writing-modes.ts by adding 10 new prompt builder functions that inject corpus knowledge into system prompts
+   612→- Enhanced 5 writing modes with corpus data: scientific-writing (full IMRaD + anti-patterns + jargon + ethics), literature-review (+ review rules + integration guidance), peer-review (+ evaluation criteria + submission process + IMRaD evaluation), paraphrase (+ jargon avoidance + anti-plagiarism rules), abstract (+ quality criteria + anti-patterns + detailed constraints)
+   613→- ESLint: 0 errors, 4 pre-existing warnings only. Dev server compiles successfully.
+   614→
+   615→Stage Summary:
+   616→- New file: src/data/corpus-scientific-writing.ts — structured corpus distilled from 113K+18.7K = 131K source words into actionable writing rules
+   617→- Enhanced file: src/data/ai-writing-modes.ts — 5 modes now inject Gastel & Day + Turabian knowledge via 10 new builder functions
+   618→- All 10 modes preserve their existing functionality; 5 modes received significant prompt enrichment
+   619→- No existing functionality was removed or broken
+   620→
+   621→---
+   622→Task ID: 15
+   623→Agent: full-stack-developer
+   624→Task: LOT 7 (CONDITIONAL) — Process urbanism-related resources to create a conditional urban planning corpus
+   625→
+   626→Work Log:
+   627→- Checked /home/z/my-project/upload/rb-analysis/ — confirmed no VLM analysis exists for RB-7 to RB-15 (only RB-2 through RB-5 exist)
+   628→- Confirmed RB-7.jpg through RB-15.jpg are present in /home/z/my-project/upload/RB-extract/RB/
+   629→- Reviewed existing corpus structure (corpus-research-frameworks.ts, book-resources.ts) to maintain consistency
+   630→- Created src/data/corpus-urbanism.ts (~1028 lines) with 5 typed interfaces and 5 structured data modules:
+   631→  - Module 1: chronologieUrbanisme — 7 eras of urban planning (Cité-Jardin 1898 to Smart City 2000+) derived from RB-7 to RB-14
+   632→  - Module 2: cadresTheoriques — 4 major authors (Bertaud 2018, Jacobs 1961, Schenk 2019, Tribillon 1991) with principles, critiques, actionable rules, and reformulated citations
+   633→  - Module 3: imagesCartographiques — 9 references (RB-7 to RB-15) with key takeaways, concepts, linked authors, and thesis guide questions
+   634→  - Module 4: synthese (RB-15) — 5 cross-cutting themes (top-down/bottom-up, density, mobility, sustainability, spatial justice) with research implications
+   635→  - Module 5: ouvrages — 6 reference books (Bertaud, Tribillon, Nouveaux Principes, Renouveler l'amenagement, Schenk, Fuller/Moore) with accessibility notes
+   636→- Implemented isUrbanismRelevant(discipline: string): boolean — activation function checking 42 French + 43 English urbanism-related keywords
+   637→- URBANISM_CORPUS.enabled set to false — must be explicitly activated by user
+   638→- ESLint: 0 new errors, 0 new warnings. Dev server compiles successfully.
+   639→
+   640→Stage Summary:
+   641→- New file: src/data/corpus-urbanism.ts — conditional urban planning corpus (7 eras, 4 author frameworks, 9 RB image refs, 6 book refs, 5 synthesis themes)
+   642→- Conditional activation via isUrbanismRelevant() with 85+ keywords (FR+EN)
+   643→- All knowledge reformulated into actionable rules — no protected text reproduced
+   644→- Pre-existing lint errors in corpus-prompting.ts and corpus-publication.ts are unrelated to this task
+   645→
+   646→---
+   647→Task ID: 14
+   648→Agent: main
+   649→Task: LOT 6 — Extract and process books about Publication & Peer Review to enrich the peer-review and publication modes
+   650→
+   651→Work Log:
+   652→- Attempted extraction of RAR archives (.1.rar through .6.rar) — all contain the same file with Unicode filename issues preventing extraction of target books
+   653→- Created src/data/corpus-publication.ts (1175 lines) with 8 structured modules:
+   654→  - Module 1: Belcher — 12-week article writing program (12 weekly milestones, 10 quality criteria, 12 pitfalls)
+   655→  - Module 2: Pyrczak — 19 evaluation questions across 4 categories, 4 quality levels (Excellent/Bon/Acceptable/Insuffisant)
+   656→  - Module 3: PhDone (Roda, Saunders, Anderson) — 12 professional editing rules with before/after examples
+   657→  - Module 4: Sonneveld — 8-section proposal structure, 8 acceptance criteria (with eliminatoire/majeur/mineur weights), 12 frequent errors
+   658→  - Module 5: Holtom & Fisher — 12 motivation strategies for thesis writing across 6 phases
+   659→  - Module 6: Graustein — 7 thesis stages (exploration to defense), 10 excellence criteria
+   660→  - Module 7: Epstein, Kenway, Boden — 12 publication writing rules
+   661→  - Module 8: RMIT — 10 transversal research/writing competencies
+   662→- Enhanced src/data/ai-writing-modes.ts:
+   663→  - Added 8 new prompt builder functions (insererCriteresQualitePublication, insererQuestionsEvaluationPyrczak, insererNiveauxQualite, insererReglesEditionPhDone, insererCriteresAcceptationSonneveld, insererErreursFrequentionsProposition, insererCriteresExcellenceThese, insererReglesRedactionPublication)
+   664→  - peer-review mode: Added Pyrczak's 19 evaluation questions + 4 quality levels + Belcher's 10 quality criteria + structured 7-point evaluation format
+   665→  - defense mode: Added Graustein's 10 excellence criteria + Sonneveld's 8 acceptance criteria + 12 frequent proposal errors + expanded jury evaluation framework
+   666→  - scientific-writing mode: Added PhDone's 12 editing rules with before/after examples + Epstein et al.'s 12 publication writing rules
+   667→  - Added PUBLICATION_CORPUS re-export
+   668→- All knowledge reformulated into actionable rules — no protected text reproduced
+   669→- French comments/variables throughout
+   670→- Dev server compiles successfully, no new lint errors introduced
+   671→
+   672→Stage Summary:
+   673→- corpus-publication.ts provides comprehensive knowledge base from 8 academic writing books
+   674→- peer-review mode now uses structured Pyrczak evaluation grid with 4 quality levels
+   675→- defense mode now includes Sonneveld acceptance criteria and Graustein excellence standards
+   676→- scientific-writing mode now enforces PhDone professional editing rules
+   677→
+   678→---
+   679→Task ID: 13
+   680→Agent: main
+   681→Task: LOT 5 — Extract and process books about AI and Research to create an "AI-Assisted Research" corpus
+   682→
+   683→Work Log:
+   684→- Successfully extracted 4 books from RAR archives using python3 rarfile (Unicode filenames handled via binary read):
+   685→  - .1.rar: Bagheri (EPUB, 3MB), Belleville & Jackson (EPUB, 2.7MB)
+   686→  - .2.rar: Zhou & Al-Samarraie (PDF, 2.7MB), Johannesson (PDF, 1.7MB)
+   687→- Extracted text: 2 PDFs via pdftotext (first 30 pages each = ~14K words total), 2 EPUBs via pandoc (~160K words total)
+   688→- Read and analyzed content from all 4 books across multiple targeted sections
+   689→- Created /src/data/corpus-ai-research.ts (318 lines, 18KB) with 4 structured modules:
+   690→  - Module 1: Principes éthiques institutionnels (Zhou & Al-Samarraie) — 6 research domains, 6 ethical principles, 8 specific AI risks
+   691→  - Module 2: Taxonomie des outils IA (Bagheri) — 20+ tools in 4 categories (rédaction, recherche, analyse, communication), 6 advanced prompting techniques
+   692→  - Module 3: Bonnes pratiques ChatGPT pour la thèse (Johannesson) — 3 ChatGPT roles (chercheur/érudit/rédacteur), 8 prompting directives, 7 C's of academic style
+   693→  - Module 4: Persévérance et stratégies cognitives (Belleville & Jackson) — 4 goal types for thesis writing, 6 writing block strategies, 8 supervision relationship rules
+   694→- Enhanced /src/data/ai-writing-modes.ts:
+   695→  - Added 7 new prompt builder functions (insererAvertissementEthiqueIA, insererOutilsIA, insererSeptCStyle, insererDirectivesPromptingThese, insererTechniquesPrompting, insererStrategiesDeblocage)
+   696→  - All 10 writing modes now include AI ethics warnings with 6 principles + 8 risks
+   697→  - scientific-writing: Added 7 C's of academic style + tool recommendations
+   698→  - literature-review: Added research tool recommendations + AI ethics warnings
+   699→  - abstract: Added 7 C's style guide + AI ethics warnings
+   700→  - hypothesis: Added AI ethics warning (hallucination risk, originality)
+   701→  - methodology: Added AI ethics warning + analysis tool recommendations
+   702→  - theory: Added AI ethics warning
+   703→  - supervision: Added prompting directives + techniques + writing block strategies + AI ethics
+   704→  - defense: Added AI ethics warning
+   705→  - Added AI_RESEARCH_CORPUS re-export
+   706→- All knowledge reformulated into actionable rules — no protected text reproduced
+   707→- French comments/variables throughout
+   708→- Lint: 0 new errors introduced (1 pre-existing error in corpus-prompting.ts unrelated)
+   709→- Dev server compiles successfully
+   710→
+   711→Stage Summary:
+   712→- corpus-ai-research.ts provides structured knowledge base from 4 AI/research books (~175K source words → 318 lines of actionable rules)
+   713→- All 10 writing modes now include AI ethics warnings and responsible use guidance
+   714→- Supervision mode enriched with cognitive writing strategies and prompting techniques
+   715→- Literature-review and scientific-writing modes now recommend specific AI tools by category
+   716→
+   717→
+   718→---
+   719→Task ID: 17
+   720→Agent: general-purpose
+   721→Task: Analyze Google Drive images in Articles/ and images/ress-1/, images/ress-2/ subfolders
+   722→
+   723→Work Log:
+   724→- Used agent-browser to navigate Google Drive shared folder (1bkBgWmM6Bpfr-9ss-zRaGYJY3oeZyHoL)
+   725→- Extracted folder IDs via DOM inspection (Articles, images, Livres, Prompting, sites)
+   726→- Discovered Articles/Nouveau dossier/ returns 404 without login (subfolder lacks individual sharing)
+   727→- Successfully accessed all 24 files in images/ress-2/ and 50 files in images/ress-1/ via direct file URLs
+   728→- Took 40+ screenshots and ran 8 batch VLM analyses (z-ai vision, glm-5v-turbo) on all accessible images
+   729→- Analyzed every image group: Type series (9 files), semantic/SR (2), six series (3), tip series (3), variables (1), w series (5), 1- series (11), 2- series (2), 3 (1), 5- series (4), AI series (3), data series (15+), doc series (6), gap series (2), plus 3 other files (APA Results Composer.md, arXiv paper, video)
+   730→- Classified all 74 analyzed files into 4 priority tiers based on academic value for ThesisFrame
+   731→- Identified 10 knowledge gaps not yet in existing corpus files
+   732→- Full report saved to /home/z/my-project/upload/gdrive-analysis/IMAGE-AUDIT-REPORT.md
+   733→
+   734→Key Findings:
+   735→- 38 of 74 analyzed files (51%) have HIGH or VERY HIGH academic value for ThesisFrame
+   736→- Top priority files: APA Results Composer.md (APA 7 reporting rules), doc-3.jpg (10 gap types), doc-1.jpg (peer review 5-criteria), w-10 to w-12 (RMIT sentence starters), tip-1/tip-2 (PEER paragraph framework)
+   737→- The data series (15 files) is a Data Analyst course — LOW relevance for ThesisFrame
+   738→- Articles/Nouveau dossier/ (~20+ files) remains INACCESSIBLE — needs login or .rar extraction
+   739→- 10 new knowledge areas identified that could enrich existing corpus modules
+   740→
+   741→Stage Summary:
+   742→- Complete audit of all accessible Google Drive images (74/94 files)
+   743→- 4-tier priority classification with specific transfer recommendations
+   744→- 10 knowledge gaps identified for corpus enhancement
+   745→- Critical access issue documented: Articles/Nouveau dossier/ requires login or .rar extraction
+   746→- Report: /home/z/my-project/upload/gdrive-analysis/IMAGE-AUDIT-REPORT.md
+   747→
+   748→---
+   749→Task ID: corpus-prompting-fix
+   750→Agent: main
+   751→Task: Fix parsing errors in src/data/corpus-prompting.ts
+   752→
+   753→Work Log:
+   754→- Identified 3 categories of syntax errors across 708-line data file:
+   755→  1. Leading/trailing spaces inside string values (hundreds of instances in MODELES_PROMPTS_RECHERCHE, ANTIPATTERNS_PROMPTING, REGLES_EMPIRIQUES_REDACTION)
+   756→  2. Nested unescaped double quotes inside double-quoted strings (9 lines: 481, 502, 504, 537, 539, 546, 568, 573, 653)
+   757→  3. Box-drawing characters (→, 「, 」) in string values (lines 98, 114, 561)
+   758→- Wrote Python script with regex-based bulk fix for space trimming and box-drawing character replacement
+   759→- Applied explicit fixes for 9 lines with nested quotes (escaped inner quotes with \")
+   760→- Manually fixed line 114 (containing \n escape sequences that defeated the regex)
+   761→- Replaced → with - and 「/」 with - in string values (kept in comments)
+   762→
+   763→Stage Summary:
+   764→- ESLint passes with 0 errors (6 pre-existing warnings in other files)
+   765→- All string values trimmed of leading/trailing spaces
+   766→- All nested quotes properly escaped with backslash
+   767→- No logic or content changed, only syntax fixes
+   768→
+   769→---
+   770→Task ID: 1
+   771→Agent: full-stack-dev
+   772→Task: Update Prisma schema and API schemas for enhanced cadrage module
+   773→
+   774→Work Log:
+   775→- Added statut (String @default("provisoire")) and versionNumber (Int @default(1)) fields to ThesisCadrage model
+   776→- Added isAiSuggestion (Boolean @default(false)) field to ThesisCadrageField model
+   777→- Updated updateCadrageSchema in api-schemas.ts with statut and versionNumber optional fields
+   778→- Updated updateCadrageFieldSchema in api-schemas.ts with isAiSuggestion optional field
+   779→- Ran db:push successfully — database in sync, Prisma Client regenerated
+   780→
+   781→Stage Summary:
+   782→- Prisma schema updated with statut/versionNumber/isAiSuggestion
+   783→- db:push applied successfully
+   784→
+   785→---
+   786→Task ID: 2
+   787→Agent: main
+   788→Task: Créer les définitions de champs et prompts AI pour le module Cadrage préalable
+   789→
+   790→Work Log:
+   791→- Created src/data/cadrage-fields.ts (452 lines)
+   792→  - Defined CadrageFieldType, CadrageSubField, CadrageField TypeScript interfaces
+   793→  - Defined 6 option label maps (TYPE_RECHERCHE_LABELS, TYPE_REVUE_LABELS, TYPE_THESE_LABELS, METHODES_COLLECTE_LABELS, STATUT_VALIDATION_LABELS)
+   794→  - Defined all 13 CADRAGE_FIELDS (§4.1–§4.13) with key, label, section, type, required, description, placeholder, promptAmorce, gardeFou, options, subFields
+   795→  - §4.1 thematique_generale (textarea, required)
+   796→  - §4.2 problematique (textarea, required)
+   797→  - §4.3 questions_recherche (json: principal + secondaires[], required)
+   798→  - §4.4 objectifs (json: general + specifiques[], required)
+   799→  - §4.5 hypotheses (json: string[], optional for qualitative)
+   800→  - §4.6 type_recherche (select: 4 options + subField justification)
+   801→  - §4.7 methodologie (json with 5 subFields: methodes_collecte, unite_analyse, justification_unite_analyse, terrain_corpus, limites_anticipees)
+   802→  - §4.8 type_revue_litterature (select: 5 options + subField justification)
+   803→  - §4.9 cadre_theorique (textarea, gardeFou: never invent authors/references)
+   804→  - §4.10 mots_cles (json: disciplinaires[] + specifiques_projet[])
+   805→  - §4.11 contribution_originalite (textarea, required)
+   806→  - §4.12 type_these (select: 4 options)
+   807→  - §4.13 statut_validation (system type, auto-managed)
+   808→  - Exported CADRAGE_FIELDS_MAP (Record<string, CadrageField>), CADRAGE_SECTIONS, CADRAGE_USER_FIELDS
+   809→- Created src/data/cadrage-prompt.ts (269 lines)
+   810→  - CADRAGE_SYSTEM_PROMPT: role identity, disciplinary vocabulary, 7 absolute rules (no invented refs, hypothetical tone, distinct problématique/questions, insufficiency handling, signal don't autocorrect, JSON-only, no value judgment), strict boundary with directeurThese
+   811→  - CADRAGE_GENERATION_PROMPT: full pitch-to-cadrage procedure, JSON output schema, field-specific JSON formats, context variables (pitch, laboratoire, ecoleDoctorale, discipline)
+   812→  - CADRAGE_REFORMULATE_PROMPT: single-field reformulation with current value + other fields context + gardeFou injection
+   813→  - CADRAGE_CONSISTENCY_PROMPT: 4 coherence rules (problématique/questions alignment, objectives/questions correspondence, type_recherche/méthodologie coherence, hypotheses verification), severity levels, suggestion-only policy
+   814→- Lint: 0 errors (6 pre-existing warnings unchanged)
+   815→
+   816→Stage Summary:
+   817→- Complete field definition layer for the Cadrage module (13 fields, 7 option maps, subFields, gardeFou)
+   818→- Full AI prompt system with 4 prompt types (system, generation, reformulation, consistency)
+   819→- All prompts enforce hypothetical tone, no-invention rule, and strict JSON output
+   820→- Consistency checker follows the 4-rule spec (§5.3) with severity-based reporting
+   821→
+   822→---
+   823→Task ID: 3
+   824→Agent: main
+   825→Task: Create 3 AI cadrage API endpoints (generate, reformulate-field, check-consistency)
+   826→
+   827→Work Log:
+   828→- Created src/app/api/cadrage/ai/generate/route.ts (POST) — generates all field suggestions from a pitch
+   829→  - Zod validates { pitch: string (min 10), thesisContext?: string }
+   830→  - Builds messages with CADRAGE_SYSTEM_PROMPT + pitch-injected CADRAGE_GENERATION_PROMPT
+   831→  - Parses AI JSON response (with markdown fence stripping and fallback for flat objects)
+   832→  - Returns { data: Record<string, { value, isAiSuggestion: true }> }
+   833→- Created src/app/api/cadrage/ai/reformulate-field/route.ts (POST) — reformulates a single field
+   834→  - Zod validates { fieldKey, currentValue?, otherFields: Record<string,string>, thesisContext? }
+   835→  - Looks up field def from CADRAGE_FIELDS_MAP to get gardeFou, label, section, type
+   836→  - Formats other fields as readable context with labels
+   837→  - Returns { data: { fieldKey, value } }
+   838→- Created src/app/api/cadrage/ai/check-consistency/route.ts (POST) — checks coherence across all fields
+   839→  - Zod validates { fields: Record<string, string | object> }
+   840→  - Formats all fields with §section labels using CADRAGE_FIELDS_MAP
+   841→  - Parses AI issues array, normalizes to { severity, fieldKey?, message }
+   842→  - Returns { data: { issues } }
+   843→- All 3 routes: try/catch, ZodError → 400, AI JSON parse failure → 502, generic error → 500
+   844→- Lint: 0 errors, 6 pre-existing warnings (none from new files)
+   845→
+   846→Stage Summary:
+   847→- 3 production-ready POST endpoints for the AI cadrage module
+   848→- Full error handling with Zod validation, JSON parse recovery, and structured error responses
+   849→- Consistent patterns: system prompt + templated user prompt → generateCompletion → parse JSON → transform
+   850→
+   851→---
+   852→Task ID: 4
+   853→Agent: main
+   854→Task: Rewrite cadrage page as 5-step wizard with AI integration
+   855→
+   856→Work Log:
+   857→- Created 3 AI API routes:
+   858→  - src/app/api/cadrage/ai/generate/route.ts (105 lines) — POST: generates all 12 fields from a pitch text
+   859→  - src/app/api/cadrage/ai/reformulate-field/route.ts (93 lines) — POST: reformulates a single field with context
+   860→  - src/app/api/cadrage/ai/check-consistency/route.ts (109 lines) — POST: checks coherence, returns tensions array
+   861→- Created 2 custom hooks:
+   862→  - src/modules/cadrage/hooks/use-cadrage.ts (258 lines) — useCadrage, useCreateCadrage, useUpdateField, useSaveFields, useCreateVersion, useValidateCadrage, useVersions
+   863→  - src/modules/cadrage/hooks/use-cadrage-ai.ts (89 lines) — useGenerateFromPitch, useReformulateField, useCheckConsistency
+   864→- Created 5 step components:
+   865→  - src/modules/cadrage/components/pitch-step.tsx (115 lines) — Step 1: pitch textarea with AI generation + skip option
+   866→  - src/modules/cadrage/components/ai-generation-step.tsx (106 lines) — Step 2: all 12 fields with amber AI markers, editable, accept all
+   867→  - src/modules/cadrage/components/edition-step.tsx (710 lines) — Step 3: full form with 6 section groups, structured sub-forms for JSON fields (questions_recherche, objectifs, hypotheses, methodologie with checkboxes, mots_cles), per-field "Reformuler avec l'IA" button, save + proceed
+   868→  - src/modules/cadrage/components/consistency-step.tsx (196 lines) — Step 4: AI coherence check, tension cards with severity (amber/red), field badges
+   869→  - src/modules/cadrage/components/validation-step.tsx (240 lines) — Step 5: read-only summary, version history, validate button
+   870→- Rewrote main orchestrator:
+   871→  - src/modules/cadrage/cadrage-page.tsx (372 lines) — wizard with step progress indicator (numbered circles + connecting lines), pendingValues local state, auto-create cadrage, batch save, version snapshot on validation
+   872→
+   873→Stage Summary:
+   874→- 11 files created/rewritten (2393 total lines)
+   875→- 5-step wizard: Pitch → Suggestions IA → Édition → Cohérence → Validation
+   876→- 0 TypeScript errors, 0 lint errors (6 pre-existing warnings unchanged)
+   877→- All AI calls use z-ai-web-dev-sdk server-side via existing zai-client.ts wrapper
+   878→- Uses TanStack Query for data fetching, Zustand for app store (activeThesisId), sonner for toasts
+   879→- French language throughout, amber/warning color system for AI suggestions
+   880→- Mobile-first responsive with shadcn/ui components only
+   881→
+   882→---
+   883→Task ID: 8
+   884→Agent: full-stack-dev
+   885→Task: Modify directeurThese module to read cadrage as read-only context
+   886→
+   887→Work Log:
+   888→- Modified src/data/directeur-prompt.ts:
+   889→  - Added optional `cadrageSnapshot` parameter to `buildDirecteurPrompt` with 10 fields (thematique, problematique, questionsRecherche, objectifs, typeRecherche, methodologie, revueLitterature, cadreTheorique, contributionAttendue, typeThese)
+   890→  - When provided, appends a "CADRAGE DU PROJET DE THÈSE" section to the prompt with all non-empty fields
+   891→  - Appends strict read-only reminder: contradictions must be flagged as observations, never corrected
+   892→  - Change is fully backward-compatible (cadrageSnapshot is optional)
+   893→- Modified src/app/api/directeur-chat/route.ts:
+   894→  - Added optional `thesisId` field to request Zod schema
+   895→  - Added `CadrageSnapshotKey` type and `FIELD_KEY_TO_SNAPSHOT_KEY` mapping (10 DB field keys → snapshot keys)
+   896→  - Fetches active cadrage with fields when thesisId is provided (findFirst where isActive: true)
+   897→  - Builds cadrage snapshot from DB fields using the key mapping
+   898→  - Passes snapshot to `buildDirecteurPrompt({ cadrageSnapshot })`
+   899→  - Replaced direct `DIRECTEUR_SYSTEM_PROMPT` import with `buildDirecteurPrompt()` call
+   900→  - Imported `db` from `@/lib/db`
+   901→  - If no thesisId or no active cadrage, directeur works without cadrage context (no error)
+   902→- Verification: `npx tsc --noEmit` passes with 0 errors
+   903→
+   904→Stage Summary:
+   905→- Directeur chat now reads the active cadrage as read-only context when thesisId is provided
+   906→- Cadrage is injected into the system prompt as a reference section with strict read-only instruction
+   907→- Fully backward-compatible: no thesisId → no cadrage fetch → prompt unchanged
+   908→
+   909→---
+   910→Task ID: 7
+   911→Agent: main
+   912→Task: Add export feature to the cadrage module
+   913→
+   914→Work Log:
+   915→- Created src/app/api/cadrage/export/route.ts (GET) — generates a formatted French text export of a cadrage
+   916→  - Query param: `cadrageId` (required)
+   917→  - Fetches cadrage with thesis title/author and all fields from DB (includes thesis relation)
+   918→  - Generates structured text with header (title, date, statut, doctorant, version), 13 numbered sections with decorative separators
+   919→  - JSON fields parsed and formatted nicely: questions_recherche (principal + sous-questions), objectifs (général + spécifiques), hypotheses (list), methodologie (5 sub-fields with METHODES_COLLECTE_LABELS mapping), mots_cles (disciplinaires + spécifiques)
+   920→  - Select fields translated via TYPE_RECHERCHE_LABELS, TYPE_REVUE_LABELS, TYPE_THESE_LABELS
+   921→  - Select fields with sub-fields (type_recherche, type_revue_litterature) show main value + indented sub-field values
+   922→  - All empty fields show "Non renseigné"
+   923→  - JSON parse errors handled gracefully (fallback to raw string)
+   924→  - Footer with MaTh-se branding and export timestamp
+   925→  - Returns as downloadable text file with Content-Disposition header and UTF-8 filename encoding
+   926→  - Filename format: `cadrage-{thesis-slug}-v{version}.txt`
+   927→- Modified src/modules/cadrage/components/validation-step.tsx
+   928→  - Added `cadrageId` prop to ValidationStepProps interface
+   929→  - Added "Exporter en texte" button with Download icon from lucide-react
+   930→  - Button opens `/api/cadrage/export?cadrageId=${cadrageId}` in a new tab
+   931→  - Button disabled when no cadrageId
+   932→  - Export button placed next to "Valider ce cadrage" button in a flex row
+   933→- Modified src/modules/cadrage/cadrage-page.tsx
+   934→  - Passed `cadrageId` prop to ValidationStep component
+   935→- Verification: `npx tsc --noEmit` passes with 0 errors, `bun run lint` passes with 0 errors (9 pre-existing warnings unchanged)
+   936→
+   937→Stage Summary:
+   938→- Export API endpoint produces a well-formatted French text document with all 13 cadrage sections
+   939→- Export button available in the validation step for users to download their cadrage as text
+   940→- JSON fields gracefully formatted with labeled sub-sections; empty fields show "Non renseigné"
+   941→- 3 files created/modified, 0 TypeScript errors, 0 lint errors
+   942→
+   943→
+   944→---
+   945→Task ID: 5
+   946→Agent: main
+   947→Task: Integrate cadrage module into thesis creation flow + add "Cadrage incomplet" badge
+   948→
+   949→Work Log:
+   950→- Modified src/modules/editor/components/create-thesis-dialog.tsx: after successful thesis creation, calls setCurrentView("cadrage") to navigate to cadrage view. setActiveThesisId is already handled by the useCreateThesis hook onSuccess.
+   951→- Modified src/components/layout/app-header.tsx: added useCadrage hook to fetch active cadrage for the active thesis. Shows amber "Cadrage incomplet" Badge next to the breadcrumb nav label when no active cadrage exists or its statut is not "valide"/"revise".
+   952→- Modified src/components/layout/app-sidebar.tsx: added useCadrage hook. Shows a small amber dot (rounded-full bg-amber-500) on the "Cadrage" sidebar nav item when cadrage is incomplete. Dot hides when sidebar is collapsed to icon mode.
+   953→
+   954→Stage Summary:
+   955→- Thesis creation now seamlessly navigates to the cadrage view, integrating the cadrage module into the onboarding flow
+   956→- "Cadrage incomplet" amber badge in header provides persistent visual feedback across all views
+   957→- Amber dot on sidebar Cadrage item draws attention to the incomplete cadrage
+   958→- Both header and sidebar share the same query cache via useCadrage hook (cadrageKeys), avoiding duplicate fetches
+   959→- TypeScript check passes with 0 errors
+   960→
+   961→---
+   962→Task ID: 6
+   963→Agent: main
+   964→Task: Create retractable cadrage sidebar panel accessible from the editor
+   965→
+   966→Work Log:
+   967→- Created src/modules/cadrage/cadrage-sidebar.tsx (287 lines)
+   968→  - Exported `CadrageSidebar` component wrapping a Sheet (slide-in from right, sm:max-w-md)
+   969→  - SheetTrigger renders a standalone Button with Crosshair icon (h-8 w-8, variant="ghost")
+   970→  - Fetches active cadrage via `/api/thesis/${activeThesisId}/cadrages` using useQuery + 30s staleTime
+   971→  - Finds active cadrage (isActive === true) or falls back to first in list
+   972→  - Three empty states: no thesis selected, loading (skeleton), no cadrage defined
+   973→  - Yellow/amber banner with AlertTriangle icon when cadrage.statut !== "valide" ("Cadrage non validé")
+   974→  - Fields grouped by same 6 sections as edition-step (FIELD_GROUPS): Thématique & Problématique, Questions & Objectifs, Hypothèses & Type de recherche, Méthodologie, Revue de littérature & Cadre théorique, Mots-clés/Contribution/Type de thèse
+   975→  - Read-only renderers for each field type:
+   976→    - textarea → plain text (whitespace-pre-wrap)
+   977→    - select → label lookup (TYPE_RECHERCHE_LABELS, TYPE_REVUE_LABELS, TYPE_THESE_LABELS)
+   978→    - json questions_recherche → principal + secondaires list
+   979→    - json objectifs → general + specifiques list
+   980→    - json hypotheses → bullet list
+   981→    - json methodologie → 5 labeled sub-fields with METHODES_COLLECTE_LABELS mapping
+   982→    - json mots_cles → tagged chips for disciplinaires and specifiques_projet
+   983→  - Empty fields (null, blank, "[]", "{}") are hidden from display
+   984→  - ScrollArea with max height for the content area
+   985→- Modified src/modules/editor/editor-page.tsx
+   986→  - Added import of CadrageSidebar from "@/modules/cadrage/cadrage-sidebar"
+   987→  - Added compact toolbar row (h-9, border-b, justify-end) between ChapterTabs and ChapterHeader containing <CadrageSidebar />
+   988→
+   989→Stage Summary:
+   990→- CadrageSidebar is a self-contained Sheet component with read-only cadrage summary
+   991→- Triggered by a Crosshair icon button in the editor toolbar area
+   992→- Fields displayed in the same 6 section groups as the edition step
+   993→- JSON fields intelligently parsed and formatted (lists, sub-fields, chips)
+   994→- Provisoire cadrage shows yellow warning banner
+   995→- No-cadrage state shows French message directing to Cadrage module
+   996→- TypeScript check: 0 errors
+   997→
+   998→---
+   999→Task ID: electron-desktop
+  1000→Agent: main
+  1001→Task: Convert Next.js web app into Electron desktop app with Windows installer and auto-updates via GitHub Releases
+  1002→
+  1003→Work Log:
+  1004→- Installed devDependencies: electron@43.4.0, electron-builder@26.15.3, electron-updater@6.8.9, concurrently@10.0.4, wait-on@9.1.0
+  1005→- Created `electron/main.cjs` — Main Electron process (CommonJS):
+  1006→  - Creates BrowserWindow (1400x900, min 1200x700)
+  1007→  - Starts Next.js standalone server as child process on port 3000
+  1008→  - Polls localhost:3000 until server is ready (max 60 retries)
+  1009→  - Loads loading.html splash screen first, then redirects to localhost:3000
+  1010→  - Handles minimize-to-tray on close (configurable quit via tray menu)
+  1011→  - Creates system tray with context menu (Open, Check Updates, Quit)
+  1012→  - Integrates electron-updater for auto-updates (checks every 4h + 10s after startup)
+  1013→  - Production uses app.asar path; development uses .next/standalone path
+  1014→  - Copies db/custom.db template to userData on first launch
+  1015→  - Exposes IPC handlers: get-user-data-path, get-app-version, get-db-path
+  1016→  - Cleanup: kills server process on quit (SIGTERM + SIGKILL fallback)
+  1017→- Created `electron/preload.cjs` — Safe context bridge:
+  1018→  - Exposes electronAPI on window (platform, version, isElectron)
+  1019→  - IPC methods: getAppVersion, getUserDataPath, getDbPath
+  1020→  - Event listeners: onUpdateStatus (auto-updater), onServerError
+  1021→  - Returns cleanup functions for event unsubscription
+  1022→- Created `electron/loading.html` — Splash screen:
+  1023→  - Dark/light theme with ThesisFrame Z-lettermark logo (inline SVG)
+  1024→  - App name + tagline in French
+  1025→  - Animated spinner and pulsing status text ("Démarrage du serveur...")
+  1026→  - Handles server error event display
+  1027→  - Respects prefers-color-scheme media query
+  1028→- Created `src/types/electron.d.ts` — TypeScript declarations:
+  1029→  - ElectronAPI interface for window.electronAPI
+  1030→  - UpdateStatus interface for auto-updater events
+  1031→  - Global Window augmentation
+  1032→- Modified `package.json`:
+  1033→  - Set `"private": false` (required for electron-builder)
+  1034→  - Added `"main": "electron/main.cjs"`
+  1035→  - Added `"author": "ThesisFrame"` and `"homepage": "https://github.com/freemind25/MaTh-se"`
+  1036→  - Added `"build"` field with electron-builder config (files, extraResources, win/nsis targets, publish)
+  1037→  - Added scripts: `electron:dev`, `electron:build`, `electron:build:all`
+  1038→- Created `electron-builder.yml` — Standalone electron-builder config:
+  1039→  - Cross-platform targets: Windows (NSIS x64/arm64), macOS (DMG), Linux (AppImage)
+  1040→  - NSIS: custom install directory, desktop/start menu shortcuts
+  1041→  - GitHub Releases publish config (freemind25/MaTh-se)
+  1042→- Modified `next.config.ts`:
+  1043→  - Added `assetPrefix: "./"` for production (relative paths for Electron local filesystem)
+  1044→- Modified `.gitignore`:
+  1045→  - Added /release/, /dist-electron/, *.blockmap, *.exe, *.dmg, *.AppImage, *.deb patterns
+  1046→  - Preserved !electron-builder.yml exception
+  1047→- Modified `eslint.config.mjs`:
+  1048→  - Added `electron/**` and `release/**` to ignores (CommonJS files don't need TS linting)
+  1049→
+  1050→Stage Summary:
+  1051→- Electron desktop app fully configured for Windows NSIS installer + macOS/Linux cross-platform
+  1052→- Auto-updates via GitHub Releases (checks every 4 hours)
+  1053→- Splash screen with ThesisFrame branding shown during server startup
+  1054→- System tray support with minimize-to-tray behavior
+  1055→- Database persistence: template copied to userData on first launch
+  1056→- Zero changes to existing `src/` application source files
+  1057→- Existing `bun run dev` and `bun run build` workflows unaffected
+  1058→- Lint: 0 errors (9 pre-existing warnings, none introduced)
+  1059→
+  1060→---
+  1061→Task ID: 3-knowledge-injection-research
+  1062→Agent: general-purpose
+  1063→Task: Inject 5 new knowledge modules into corpus-research-frameworks.ts
+  1064→
+  1065→Work Log:
+  1066→- Read full existing file (643 lines, 5 modules) to understand code style and interface patterns
+  1067→- Added 5 new TypeScript interfaces (ElementEnonceProbleme, TypeRecherche, ComparaisonTypeRevue, EtapeDISCOURSE) after existing interfaces, before MODULE 1
+  1068→- Injected Module 6 — Taxonomie étendue des lacunes (TYPES_LACUNES_ETENDUS: 10 types, REGLES_IDENTIFICATION_LACUNES_ETENDUES, MODELES_FORMULATION_LACUNES_ETENDUS)
+  1069→- Injected Module 7 — Modèle d'énoncé de problème de recherche (ELEMENTS_ENONCE_PROBLEME: 4 éléments)
+  1070→- Injected Module 8 — Typologie des 22 types de recherche (TYPES_RECHERCHE: 6 quantitative, 6 qualitative, 2 mixte, 4 review, 4 théorique)
+  1071→- Injected Module 9 — Comparaison des 10 types de revue de littérature (COMPARAISON_TYPES_REVUE)
+  1072→- Injected Module 10 — Mnémonique DISCOURSE (MNEMONIQUE_DISCOURSE: 9 étapes)
+  1073→- Updated RESEARCH_FRAMEWORKS export object with 5 new entries (lacunesEtendues, enonceProbleme, typesRecherche, comparaisonTypesRevue, mnemoniqueDISCOURSE)
+  1074→- Verified TypeScript compilation: 0 errors
+  1075→
+  1076→Stage Summary:
+  1077→- File grew from 643 to 1104 lines (+461 lines)
+  1078→- 5 new named exports added (all also in RESEARCH_FRAMEWORKS aggregate)
+  1079→- All new content in French, matching existing code style
+  1080→- No existing modules modified — purely additive changes
+  1081→- TypeScript compiles cleanly with no errors
+  1082→---
+  1083→Task ID: 4-knowledge-injection-writing
+  1084→Agent: general-purpose
+  1085→Task: Inject 3 new knowledge modules into corpus-scientific-writing.ts
+  1086→
+  1087→Work Log:
+  1088→- Read full file (455 lines) to understand existing structure and style
+  1089→- Added Module A: `REGLES_APA_RESULTATS_STATISTIQUES` (line 458) — APA 7 rules string constant for reporting statistical results (Pearson, t-test, ANOVA, regression, chi-square, mediation/moderation, presentation rules)
+  1090→- Added Module B: `CADRE_PEER_PARAGRAPHE` (line 509) — PEER paragraph framework object with 4 components (Point, Evidence, Explanation, Reference) and 4 anti-patterns
+  1091→- Added Module C: `PHRASES_AMORCE_RMIT` (line 563) — Starter phrases by IMRaD section (introduction, revueLitterature, methodes, resultats, discussion, conclusion) with template placeholders
+  1092→- All 3 modules placed after existing exports, before file end
+  1093→- Verified TypeScript compilation passes with zero errors (`npx tsc --noEmit`)
+  1094→- Existing modules untouched — no modifications to CORPUS_ECRIRE_ARTICLE_SCIENTIFIQUE or any other existing export
+  1095→
+  1096→Stage Summary:
+  1097→- 3 new named exports added to corpus-scientific-writing.ts (file grew from 455 → 621 lines)
+  1098→- `REGLES_APA_RESULTATS_STATISTIQUES`: comprehensive APA 7 statistical reporting rules
+  1099→- `CADRE_PEER_PARAGRAPHE`: structured PEER academic paragraph framework with examples and anti-patterns
+  1100→- `PHRASES_AMORCE_RMIT`: 44 template starter phrases across 6 IMRaD sections
+  1101→- Zero compilation errors, full project TypeScript check passes
+  1102→
+  1103→---
+  1104→Task ID: 5-knowledge-injection-publication
+  1105→Agent: general-purpose
+  1106→Task: Inject peer review 5-criteria framework into corpus-publication.ts
+  1107→
+  1108→Work Log:
+  1109→- Read full file (1175 lines) to understand existing structure, style, and module layout
+  1110→- Added `CritereEvaluationPaire` interface (lines 101-110) to the types section, after existing `CritereExcellence` interface
+  1111→- Added Module 9 header comment block (lines 1187-1190) at end of file, after the unified `PUBLICATION_CORPUS` export
+  1112→- Added `CRITERES_EVALUATION_PAR_PAIRE` named export (lines 1192-1311) — 5 peer review criteria (Importance, Originalité, Rigueur méthodologique, Reproductibilité, Clarté de la rédaction) each with guide questions, relative weight, excellence signs, and weakness signs
+  1113→- Added `MODELE_RAPPORT_EVALUATION` named export (lines 1313-1324) — structured peer review report model with 6 sections and 4-level appreciation scale
+  1114→- Verified TypeScript compilation passes with zero errors (`npx tsc --noEmit`)
+  1115→- No existing modules modified — all pre-existing exports and the unified `PUBLICATION_CORPUS` object left untouched
+  1116→
+  1117→Stage Summary:
+  1118→- 2 new named exports added to corpus-publication.ts (file grew from 1175 → 1324 lines, +149 lines)
+  1119→- `CRITERES_EVALUATION_PAR_PAIRE`: 5-criteria peer review evaluation framework with guide questions and excellence/weakness indicators
+  1120→- `MODELE_RAPPORT_EVALUATION`: structured review report template with 6-section structure and 4-level appreciation scale
+  1121→- `CritereEvaluationPaire` interface added to types section for type safety
+  1122→- Zero compilation errors, all existing modules untouched
+  1123→

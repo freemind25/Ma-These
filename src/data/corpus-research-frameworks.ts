@@ -46,6 +46,44 @@ interface SectionRevueLitterature {
   inviteGeneration: string;
 }
 
+/** Un élément de l'énoncé de problème de recherche (doc-2) */
+interface ElementEnonceProbleme {
+  id: string;
+  element: string;
+  description: string;
+  questionGuide: string;
+  exempleFormulation: string;
+}
+
+/** Un type de recherche avec sa catégorie et ses critères d'usage (doc-31) */
+interface TypeRecherche {
+  id: string;
+  label: string;
+  categorie: "quantitative" | "qualitative" | "mixte" | "review" | "theorique";
+  description: string;
+  quandUtiliser: string;
+  exempleQuestion: string;
+}
+
+/** Un type de revue de littérature avec comparaison détaillée */
+interface ComparaisonTypeRevue {
+  id: string;
+  label: string;
+  objectif: string;
+  protocole: string;
+  couverture: string;
+  critQualite: string;
+  produit: string;
+  dureeEstimee: string;
+}
+
+/** Une étape du mnémonique DISCOURSE */
+interface EtapeDISCOURSE {
+  lettre: string;
+  mot: string;
+  description: string;
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // MODULE 1 — Taxonomie des 7 lacunes de recherche (RB-3)
 // ═══════════════════════════════════════════════════════════════════
@@ -597,6 +635,409 @@ export const CADRAGE_PROTOCOLAIRE = [
 ];
 
 // ═══════════════════════════════════════════════════════════════════
+// MODULE 6 — Taxonomie étendue des lacunes de recherche (10 types)
+// ═══════════════════════════════════════════════════════════════════
+
+/** Taxonomie à 10 types : 7 originaux (RB-3) + 3 nouveaux */
+export const TYPES_LACUNES_ETENDUS: TypeLacune[] = [
+  ...TYPES_LACUNES,
+  {
+    id: "temporelle",
+    label: "Lacune temporelle",
+    categorie: "conceptuelle-contextuelle",
+    definitionCourte: "Absence de données récentes ; les connaissances disponibles datent d'une période où le contexte a changé",
+    critereDiagnostic: "Vérifier la date des études les plus récentes et comparer avec les évolutions du contexte",
+    questionGuide: "Les données les plus récentes datent-elles d'une époque où le contexte était significativement différent ?",
+  },
+  {
+    id: "geographique",
+    label: "Lacune géographique",
+    categorie: "conceptuelle-contextuelle",
+    definitionCourte: "Phénomène étudié dans un contexte géographique mais non transposé à un autre contexte pertinent",
+    critereDiagnostic: "Identifier les zones géographiques non couvertes malgré la pertinence du phénomène",
+    questionGuide: "Quels territoires ou environnements pertinents n'ont pas fait l'objet d'études sur ce phénomène ?",
+  },
+  {
+    id: "methodologique-innovation",
+    label: "Lacune d'innovation méthodologique",
+    categorie: "procédurale",
+    definitionCourte: "Aucune étude n'a appliqué de méthodes innovantes (mixtes, numériques, participatives) au problème étudié",
+    critereDiagnostic: "Vérifier si toutes les études utilisent les mêmes méthodes traditionnelles sans variante",
+    questionGuide: "Quelles approches méthodologiques innovantes pourraient éclairer ce problème différemment ?",
+  },
+];
+
+/** Règles d'identification pour les 3 types supplémentaires */
+export const REGLES_IDENTIFICATION_LACUNES_ETENDUES: {
+  lacune: string;
+  regle: string;
+}[] = [
+  { lacune: "temporelle", regle: "Identifier la date de la publication la plus récente et comparer avec les changements majeurs du contexte (réglementation, technologie, marché)" },
+  { lacune: "geographique", regle: "Cartographier les zones géographiques couvertes et croiser avec les zones où le phénomène est avéré ou probable" },
+  { lacune: "methodologique-innovation", regle: "Inventorier les méthodes employées dans les études existantes et vérifier l'absence de méthodes mixtes, numériques ou participatives" },
+];
+
+/** Modèles de formulation étendus pour les 3 types supplémentaires */
+export const MODELES_FORMULATION_LACUNES_ETENDUS: {
+  type: string;
+  modele: string;
+}[] = [
+  { type: "temporelle", modele: "Les études les plus récentes sur [sujet] datent de [période], soit avant [changement majeur]. Les connaissances disponibles ne reflètent donc pas la situation actuelle, ce qui rend nécessaire une mise à jour empirique." },
+  { type: "geographique", modele: "Le phénomène de [sujet] a été abondamment étudié dans [contexte géographique connu], mais aucun travail n'a encore examiné sa manifestation dans [contexte géographique ciblé], malgré [raison de pertinence]." },
+  { type: "methodologique-innovation", modele: "L'ensemble des études sur [sujet] repose sur des approches [méthode dominante], sans aucune application de méthodes [mixtes/numériques/participatives]. Ce verrouillage méthodologique limite la compréhension du phénomène." },
+];
+
+// ═══════════════════════════════════════════════════════════════════
+// MODULE 7 — Modèle d'énoncé de problème de recherche (doc-2)
+// ═══════════════════════════════════════════════════════════════════
+
+export const ELEMENTS_ENONCE_PROBLEME: ElementEnonceProbleme[] = [
+  {
+    id: "contexte",
+    element: "Contexte du problème",
+    description: "Situer le domaine, les connaissances actuelles et l'importance du sujet",
+    questionGuide: "Quel est l'état actuel des connaissances dans ce domaine et pourquoi est-ce important ?",
+    exempleFormulation: "Dans le domaine de [X], les recherches récentes ont montré [Y], ce qui soulève des questions cruciales pour [Z].",
+  },
+  {
+    id: "probleme",
+    element: "Problème ou lacune identifié(e)",
+    description: "Formuler précisément l'écart, la contradiction ou l'absence de connaissances",
+    questionGuide: "Quelle est la lacune, contradiction ou insuffisance spécifique dans les connaissances actuelles ?",
+    exempleFormulation: "Cependant, malgré les avancées sur [aspect], il existe une lacune concernant [lacune spécifique].",
+  },
+  {
+    id: "signification",
+    element: "Signification et pertinence",
+    description: "Expliquer pourquoi cette lacune mérite d'être étudiée (impact théorique et/ou pratique)",
+    questionGuide: "Pourquoi cette lacune est-elle importante et quel est l'impact potentiel de la combler ?",
+    exempleFormulation: "Comblée, cette lacune permettrait de [bénéfice théorique] et de [bénéfice pratique].",
+  },
+  {
+    id: "objectifs",
+    element: "Objectifs de l'étude",
+    description: "Énoncer ce que l'étude se propose d'accomplir pour combler la lacune",
+    questionGuide: "Quels sont les objectifs spécifiques de cette recherche pour répondre au problème identifié ?",
+    exempleFormulation: "L'objectif de cette étude est donc de [objectif principal] en vue de [finalité].",
+  },
+];
+
+// ═══════════════════════════════════════════════════════════════════
+// MODULE 8 — Typologie des 22 types de recherche (doc-31)
+// ═══════════════════════════════════════════════════════════════════
+
+export const TYPES_RECHERCHE: TypeRecherche[] = [
+  // ── Quantitatives (6) ──
+  {
+    id: "experimentale",
+    label: "Recherche expérimentale",
+    categorie: "quantitative",
+    description: "Manipulation délibérée d'une variable indépendante avec attribution aléatoire et groupe contrôle pour établir une causalité",
+    quandUtiliser: "Quand l'objectif est de démontrer un lien de cause à effet entre une intervention et un résultat, avec contrôle des biais par randomisation",
+    exempleQuestion: "L'implémentation du protocole [X] améliore-t-elle significativement la performance [Y] par rapport au groupe contrôle ?",
+  },
+  {
+    id: "quasi-experimentale",
+    label: "Recherche quasi-expérimentale",
+    categorie: "quantitative",
+    description: "Étude avec intervention et groupe de comparaison, sans attribution aléatoire (groupes naturels, pré/post)",
+    quandUtiliser: "Quand la randomisation est impossible ou non éthique, mais qu'un groupe de comparaison existe naturellement",
+    exempleQuestion: "Les établissements ayant adopté la politique [X] présentent-ils des résultats [Y] supérieurs à ceux qui ne l'ont pas fait ?",
+  },
+  {
+    id: "correlationnelle",
+    label: "Recherche corrélationnelle",
+    categorie: "quantitative",
+    description: "Examen de la relation entre deux ou plusieurs variables sans manipulation, mesurant la force et la direction de l'association",
+    quandUtiliser: "Quand on cherche à établir si des variables varient ensemble, sans pouvoir affirmer de causalité",
+    exempleQuestion: "Existe-t-il une relation entre le niveau de [variable A] et la performance en [variable B] chez [population] ?",
+  },
+  {
+    id: "descriptive",
+    label: "Recherche descriptive",
+    categorie: "quantitative",
+    description: "Description systématique des caractéristiques d'un phénomène, d'une population ou d'une situation",
+    quandUtiliser: "Quand le phénomène est mal connu et qu'il faut d'abord le décrire avant de formuler des hypothèses",
+    exempleQuestion: "Quelles sont les caractéristiques démographiques, les attitudes et les pratiques de [population] face à [phénomène] ?",
+  },
+  {
+    id: "longitudinale",
+    label: "Recherche longitudinale",
+    categorie: "quantitative",
+    description: "Collecte de données à plusieurs points dans le temps sur les mêmes sujets pour observer l'évolution",
+    quandUtiliser: "Quand on cherche à comprendre les trajectoires, les dynamiques d'évolution ou les effets à long terme",
+    exempleQuestion: "Comment l'attitude des professionnels vis-à-vis de [X] évolue-t-elle sur une période de [durée] ?",
+  },
+  {
+    id: "transversale",
+    label: "Recherche transversale",
+    categorie: "quantitative",
+    description: "Collecte de données à un seul instant T sur un échantillon représentatif pour établir un état des lieux",
+    quandUtiliser: "Quand on a besoin d'un instantané de la situation, de la prévalence ou de la distribution d'un phénomène",
+    exempleQuestion: "Quelle est la prévalence de [phénomène] parmi [population] à la période [T] ?",
+  },
+
+  // ── Qualitatives (6) ──
+  {
+    id: "etude-de-cas",
+    label: "Étude de cas",
+    categorie: "qualitative",
+    description: "Investigation approfondie et multidimensionnelle d'un cas unique ou de plusieurs cas dans leur contexte réel",
+    quandUtiliser: "Quand le phénomène est complexe, contextualisé et que la richesse des détails est essentielle à la compréhension",
+    exempleQuestion: "Comment le processus de [X] se déroule-t-il concrètement dans le contexte spécifique de [cas] ?",
+  },
+  {
+    id: "phenomenologique",
+    label: "Recherche phénoménologique",
+    categorie: "qualitative",
+    description: "Exploration de l'expérience vécue des individus face à un phénomène pour en dégager l'essence",
+    quandUtiliser: "Quand l'objectif est de comprendre le sens profond que les acteurs donnent à leur expérience subjective",
+    exempleQuestion: "Quelle est l'expérience vécue des [participants] confrontés à [phénomène] et quel sens donnent-ils à cette expérience ?",
+  },
+  {
+    id: "ethnographique",
+    label: "Recherche ethnographique",
+    categorie: "qualitative",
+    description: "Immersion prolongée dans un terrain pour observer et décrire les pratiques culturelles et sociales",
+    quandUtiliser: "Quand on cherche à comprendre la culture, les normes implicites et les pratiques d'un groupe social dans son environnement naturel",
+    exempleQuestion: "Quelles sont les pratiques culturelles et les normes implicites qui régissent [comportement] au sein de [communauté] ?",
+  },
+  {
+    id: "grounded-theory",
+    label: "Théorie enracinée (Grounded Theory)",
+    categorie: "qualitative",
+    description: "Construction de théorie émergente à partir des données terrain par codage itératif et comparaison constante",
+    quandUtiliser: "Quand il n'existe pas de théorie satisfaisante pour le phénomène étudié et que l'on cherche à en construire une depuis le terrain",
+    exempleQuestion: "Quel modèle théorique émerge de l'analyse des pratiques de [population] en matière de [phénomène] ?",
+  },
+  {
+    id: "recherche-action",
+    label: "Recherche-action",
+    categorie: "qualitative",
+    description: "Démarche itérative combinant action de terrain et recherche, impliquant les praticiens comme co-chercheurs",
+    quandUtiliser: "Quand on vise simultanément la production de connaissances et l'amélioration d'une pratique ou d'une situation",
+    exempleQuestion: "Comment la mise en place du dispositif [X], co-construit avec les praticiens, transforme-t-elle les pratiques de [domaine] ?",
+  },
+  {
+    id: "narrative",
+    label: "Recherche narrative",
+    categorie: "qualitative",
+    description: "Analyse des récits et histoires de vie pour comprendre comment les individus construisent du sens et de l'identité",
+    quandUtiliser: "Quand le phénomène est intrinsèquement lié à l'expérience temporelle, à l'histoire personnelle et à la construction identitaire",
+    exempleQuestion: "Comment les [professionnels] racontent-ils leur trajectoire face à [événement] et quel sens en dégagent-ils ?",
+  },
+
+  // ── Mixtes (2) ──
+  {
+    id: "convergent-parallele",
+    label: "Design mixte convergent parallèle",
+    categorie: "mixte",
+    description: "Collecte simultanée de données quantitatives et qualitatives, analysées séparément puis fusionnées pour une interprétation intégrée",
+    quandUtiliser: "Quand les données quantitatives et qualitatives apportent des perspectives complémentaires de même poids sur le même phénomène",
+    exempleQuestion: "Quelle est la fréquence de [comportement] (quantitatif) et comment les acteurs le justifient-ils (qualitatif) ?",
+  },
+  {
+    id: "exploratoire-sequentiel",
+    label: "Design mixte exploratoire séquentiel",
+    categorie: "mixte",
+    description: "Phase qualitative exploratoire suivie d'une phase quantitative confirmatoire, les résultats de la première éclairant la seconde",
+    quandUtiliser: "Quand le phénomène est mal connu (phase qualitative d'exploration) puis nécessite une validation sur un échantillon plus large (phase quantitative)",
+    exempleQuestion: "Quels facteurs influencent [phénomène] (qualitatif), et dans quelle mesure ces facteurs prédisent-ils [résultat] dans un échantillon représentatif (quantitatif) ?",
+  },
+
+  // ── Revues (4) ──
+  {
+    id: "revue-systematique",
+    label: "Revue systématique",
+    categorie: "review",
+    description: "Identification, évaluation et synthèse méthodique de toutes les études pertinentes sur une question formulée (PICO)",
+    quandUtiliser: "Quand on doit répondre à une question de recherche précise en synthétisant l'ensemble des preuves disponibles avec un protocole reproductible",
+    exempleQuestion: "Quelles sont les preuves de l'efficacité de [intervention] sur [résultat] chez [population], selon les études disponibles ?",
+  },
+  {
+    id: "revue-scoping",
+    label: "Revue scoping",
+    categorie: "review",
+    description: "Cartographie systématique de l'étendue des recherches sur un sujet pour identifier les concepts clés, les lacunes et les sources de preuves",
+    quandUtiliser: "Quand le champ est vaste ou mal délimité et qu'on cherche à en cartographier la portée plutôt qu'à répondre à une question ciblée",
+    exempleQuestion: "Quels sont les concepts, les sources de preuves et les lacunes identifiés dans la littérature sur [sujet émergent] ?",
+  },
+  {
+    id: "meta-analyse",
+    label: "Méta-analyse",
+    categorie: "review",
+    description: "Synthèse statistique des résultats de plusieurs études pour produire un effet global (taille d'effet poolée) avec intervalle de confiance",
+    quandUtiliser: "Quand suffisamment d'études comparables (même type de données, même mesure de résultat) sont disponibles pour une agrégation statistique",
+    exempleQuestion: "Quelle est la taille d'effet globale de [intervention] sur [résultat], en poolingant les résultats des études disponibles ?",
+  },
+  {
+    id: "meta-synthese",
+    label: "Méta-synthèse",
+    categorie: "review",
+    description: "Synthèse interprétative d'études qualitatives pour produire de nouvelles interprétations allant au-delà du simple résumé des études individuelles",
+    quandUtiliser: "Quand on dispose de plusieurs études qualitatives sur un même phénomène et qu'on cherche à en produire une synthèse interprétative",
+    exempleQuestion: "Quelles interprétations émergent de la synthèse des études qualitatives sur l'expérience des [participants] face à [phénomène] ?",
+  },
+
+  // ── Théoriques (4) ──
+  {
+    id: "conceptuelle",
+    label: "Recherche conceptuelle",
+    categorie: "theorique",
+    description: "Développement ou clarification de concepts, cadres ou modèles théoriques sans collecte de données empiriques",
+    quandUtiliser: "Quand les concepts existants sont flous, contradictoires ou insuffisants et nécessitent un travail de clarification ou de proposition nouvelle",
+    exempleQuestion: "Comment redéfinir le concept de [X] pour qu'il rende mieux compte des réalités actuelles de [domaine] ?",
+  },
+  {
+    id: "analytique",
+    label: "Recherche analytique",
+    categorie: "theorique",
+    description: "Analyse critique et systématique de textes, théories ou arguments pour en déconstruire la logique et les présupposés",
+    quandUtiliser: "Quand il faut examiner la cohérence interne, les fondements logiques ou les implications d'un corpus théorique",
+    exempleQuestion: "Quelles sont les contradictions logiques dans le cadre théorique de [X] et que révèlent-elles sur ses limites ?",
+  },
+  {
+    id: "historique",
+    label: "Recherche historique",
+    categorie: "theorique",
+    description: "Étude systématique du passé à partir de sources primaires et secondaires pour comprendre l'évolution d'un phénomène ou d'une idée",
+    quandUtiliser: "Quand la compréhension actuelle nécessite de retracer la généalogie, les ruptures et les continuités d'un phénomène dans le temps",
+    exempleQuestion: "Comment le concept de [X] a-t-il évolué dans la pensée de [domaine] entre [période A] et [période B] ?",
+  },
+  {
+    id: "critique",
+    label: "Recherche critique",
+    categorie: "theorique",
+    description: "Examen des rapports de pouvoir, des biais idéologiques et des inégalités systémiques dans les connaissances ou les pratiques",
+    quandUtiliser: "Quand l'objectif est de déconstruire les rapports de pouvoir, les normes dominantes ou les discours naturalisant des inégalités",
+    exempleQuestion: "Quels rapports de pouvoir et présupposés idéologiques sous-tendent les approches dominantes en [domaine] ?",
+  },
+];
+
+// ═══════════════════════════════════════════════════════════════════
+// MODULE 9 — Comparaison des 10 types de revue de littérature
+// ═══════════════════════════════════════════════════════════════════
+
+export const COMPARAISON_TYPES_REVUE: ComparaisonTypeRevue[] = [
+  {
+    id: "narrative",
+    label: "Revue narrative",
+    objectif: "Offrir une vue d'ensemble thématique d'un domaine, structurée par le jugement expert de l'auteur",
+    protocole: "Sans protocole standardisé (SANRA recommandé pour structuration)",
+    couverture: "Sélective, guidée par l'expertise de l'auteur ; pas d'exhaustivité requise",
+    critQualite: "Évaluation subjective par l'auteur ; pas de grille d'appréciation systématique",
+    produit: "Synthèse discursive avec perspective argumentée",
+    dureeEstimee: "1 à 3 mois",
+  },
+  {
+    id: "systematique",
+    label: "Revue systématique",
+    objectif: "Répondre à une question de recherche ciblée en synthétisant l'ensemble des preuves disponibles de manière reproductible",
+    protocole: "PRISMA 2020",
+    couverture: "Exhaustive sur les bases de données ciblées selon des critères d'inclusion/exclusion explicites",
+    critQualite: "Évaluation systématique de la qualité (grilles adaptées au design : RoB2, CASP, MMAT)",
+    produit: "Synthèse pondérée par la qualité des preuves, avec méta-analyse si les données le permettent",
+    dureeEstimee: "6 à 18 mois",
+  },
+  {
+    id: "scoping",
+    label: "Revue scoping",
+    objectif: "Cartographier l'étendue de la littérature sur un sujet vaste ou émergent, identifier les concepts clés et les lacunes",
+    protocole: "PRISMA-ScR",
+    couverture: "Large et exploratoire ; vise la couverture conceptuelle plutôt que l'exhaustivité sur une question ciblée",
+    critQualite: "Description du corpus mais pas d'évaluation qualité systématique obligatoire",
+    produit: "Carte de connaissances, diagramme conceptuel, synthèse descriptive",
+    dureeEstimee: "6 à 12 mois",
+  },
+  {
+    id: "meta-analyse",
+    label: "Méta-analyse",
+    objectif: "Quantifier l'effet global d'une intervention en combinant statistiquement les résultats d'études individuelles",
+    protocole: "PRISMA 2020 + MOOSE pour études observationnelles",
+    couverture: "Exhaustive, limitée aux études fournissant des données statistiques comparables (tailles d'effet)",
+    critQualite: "Évaluation systématique + analyse de l'hétérogénéité (I², Q test) + examen du biais de publication (funnel plot)",
+    produit: "Taille d'effet poolée avec intervalle de confiance, sous-analyses, méta-régression",
+    dureeEstimee: "12 à 24 mois",
+  },
+  {
+    id: "integrative",
+    label: "Revue intégrative",
+    objectif: "Combiner des preuves de designs méthodologiques divers (qualitatif, quantitatif, théorique) pour une compréhension holistique",
+    protocole: "Sans protocole standardisé universel (framework de Whittemore & Knafl souvent utilisé)",
+    couverture: "Périodique et sélective selon la pertinence conceptuelle, incluant des designs variés",
+    critQualite: "Évaluation différenciée selon le type de design (critères distincts pour qualitatif, quantitatif, théorique)",
+    produit: "Synthèse intégrée avec modèle conceptuel nouveau ou reformulé",
+    dureeEstimee: "6 à 12 mois",
+  },
+  {
+    id: "critique",
+    label: "Revue critique",
+    objectif: "Examiner les présupposés théoriques et méthodologiques d'un domaine pour en déconstruire les biais et les angles morts",
+    protocole: "Sans protocole standardisé ; approche herméneutique ou déconstructiviste",
+    couverture: "Sélective et orientée vers les textes fondateurs, les débats clés et les approches dominantes",
+    critQualite: "Évaluation épistémologique de la rigueur conceptuelle et de la cohérence argumentative",
+    produit: "Analyse critique des fondements, identification des biais épistémologiques et des alternatives",
+    dureeEstimee: "3 à 6 mois",
+  },
+  {
+    id: "theorique",
+    label: "Revue théorique",
+    objectif: "Examiner et comparer les cadres théoriques existants pour identifier les convergences, divergences et opportunités de synthèse",
+    protocole: "Sans protocole standardisé ; approche analytique et conceptuelle",
+    couverture: "Sélective, centrée sur les textes théoriques fondateurs et les débats conceptuels",
+    critQualite: "Évaluation de la cohérence interne, de la portée explicative et de la fécondité des cadres théoriques",
+    produit: "Cadre théorique synthétique, modèle conceptuel nouveau, taxonomie de cadres",
+    dureeEstimee: "3 à 6 mois",
+  },
+  {
+    id: "methodologique",
+    label: "Revue méthodologique",
+    objectif: "Évaluer et comparer les méthodes de recherche utilisées dans un domaine pour identifier les meilleures pratiques",
+    protocole: "Sans protocole standardisé universel ; approche systématique recommandée",
+    couverture: "Sélective, ciblée sur les publications décrivant des designs, instruments ou procédures de recherche",
+    critQualite: "Évaluation de la validité, fiabilité et reproductibilité des méthodes décrites",
+    produit: "Recommandations méthodologiques, comparaison d'instruments, guide de bonnes pratiques",
+    dureeEstimee: "3 à 6 mois",
+  },
+  {
+    id: "realist",
+    label: "Revue réaliste",
+    objectif: "Comprendre « ce qui fonctionne, pour qui, dans quelles circonstances et pourquoi » en examinant les mécanismes sous-jacents",
+    protocole: "RAMESES (Realist And MEta-narrative Evidence Syntheses: Evolving Standards)",
+    couverture: "Sélective et itérative, orientée vers l'identification de configurations contexte-mécanisme-résultat",
+    critQualite: "Évaluation de la pertinence théorique et de la cohérence des configurations CMO (Contexte-Mécanisme-Résultat)",
+    produit: "Modèles théoriques expliquant les mécanismes d'action dans différents contextes",
+    dureeEstimee: "12 à 18 mois",
+  },
+  {
+    id: "empirique",
+    label: "Revue empirique",
+    objectif: "Synthétiser les résultats d'études empiriques (quantitatives et/ou qualitatives) sur une question de recherche pratique",
+    protocole: "Variable (PRISMA recommandé si approche systématique)",
+    couverture: "Sélective ou exhaustive selon l'approche, centrée sur les études fournissant des données empiriques",
+    critQualite: "Évaluation de la qualité des preuves empiriques (GRADE si approche systématique)",
+    produit: "Synthèse des résultats empiriques avec identification des tendances et lacunes",
+    dureeEstimee: "3 à 12 mois",
+  },
+];
+
+// ═══════════════════════════════════════════════════════════════════
+// MODULE 10 — Mnémonique DISCOURSE pour planification de revue systématique
+// ═══════════════════════════════════════════════════════════════════
+
+export const MNEMONIQUE_DISCOURSE: EtapeDISCOURSE[] = [
+  { lettre: "D", mot: "Define", description: "Définir la question de recherche avec précision (PICO/PCC)" },
+  { lettre: "I", mot: "Identify", description: "Identifier les bases de données et sources pertinentes" },
+  { lettre: "S", mot: "Search", description: "Construire et exécuter la stratégie de recherche avec équations booléennes" },
+  { lettre: "C", mot: "Critically appraise", description: "Évaluer la qualité méthodologique des études retenues" },
+  { lettre: "O", mot: "Organize", description: "Organiser les données extraites dans un tableau structuré" },
+  { lettre: "U", mot: "Understand", description: "Comprendre et interpréter les résultats dans leur contexte" },
+  { lettre: "R", mot: "Reflect", description: "Réfléchir aux limites, biais et implications" },
+  { lettre: "S", mot: "Synthesize", description: "Synthétiser les preuves et formuler des conclusions" },
+  { lettre: "E", mot: "Evaluate", description: "Évaluer la certitude des preuves (GRADE) et formuler des recommandations" },
+];
+
+// ═══════════════════════════════════════════════════════════════════
 // EXPORT PRINCIPAL — Regroupement en objet unique
 // ═══════════════════════════════════════════════════════════════════
 
@@ -639,4 +1080,25 @@ export const RESEARCH_FRAMEWORKS = {
     dimensionsParDesign: DIMENSIONS_APPRECIATION_PAR_DESIGN,
     cadrageProtocolaire: CADRAGE_PROTOCOLAIRE,
   },
+
+  /** Taxonomie étendue des 10 lacunes de recherche */
+  lacunesEtendues: {
+    taxonomie: TYPES_LACUNES_ETENDUS,
+    reglesIdentification: REGLES_IDENTIFICATION_LACUNES_ETENDUES,
+    modelesFormulation: MODELES_FORMULATION_LACUNES_ETENDUS,
+  },
+
+  /** Modèle d'énoncé de problème de recherche (doc-2) */
+  enonceProbleme: {
+    elements: ELEMENTS_ENONCE_PROBLEME,
+  },
+
+  /** Typologie des 22 types de recherche (doc-31) */
+  typesRecherche: TYPES_RECHERCHE,
+
+  /** Comparaison des 10 types de revue de littérature */
+  comparaisonTypesRevue: COMPARAISON_TYPES_REVUE,
+
+  /** Mnémonique DISCOURSE pour planification de revue systématique */
+  mnemoniqueDISCOURSE: MNEMONIQUE_DISCOURSE,
 } as const;

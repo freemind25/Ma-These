@@ -98,6 +98,17 @@ interface CritereExcellence {
   description: string;
 }
 
+/** Critère d'évaluation par les pairs (cadre à 5 critères) */
+interface CritereEvaluationPaire {
+  id: string;
+  critere: string;
+  description: string;
+  questionsGuides: string[];
+  poidsRelatif: "élevé" | "modéré" | "bas";
+  signesExcellence: string[];
+  signesFaiblesse: string[];
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // MODULE 1 — Programme de publication en 12 semaines (Belcher)
 // Stratégie hebdomadaire pour transformer un manuscrit en article publiable
@@ -1171,4 +1182,143 @@ export const PUBLICATION_CORPUS = {
 
   // Module 8 — RMIT
   competencesRechercheRedaction: COMPETENCES_RECHERCHE_REDACTION,
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// MODULE 9 — Cadre d'évaluation par les pairs en 5 critères (doc-1)
+// Structure d'évaluation structurée pour la relecture par les pairs
+// ═══════════════════════════════════════════════════════════════════
+
+export const CRITERES_EVALUATION_PAR_PAIRE: CritereEvaluationPaire[] = [
+  {
+    id: "importance",
+    critere: "Importance",
+    description: "La contribution est-elle significative pour le champ de recherche ? L'étude apporte-t-elle une valeur ajoutée par rapport à la littérature existante ?",
+    questionsGuides: [
+      "Le problème traité est-il pertinent et d'actualité dans le domaine ?",
+      "La lacune de recherche identifiée est-elle réelle et justifiée ?",
+      "Les résultats potentiels pourraient-ils influencer la pratique ou la théorie ?",
+      "La contribution originale est-elle clairement articulée par rapport aux travaux antérieurs ?",
+    ],
+    poidsRelatif: "élevé",
+    signesExcellence: [
+      "Problème clairement ancré dans une lacune documentée",
+      "Contribution originale explicitée vis-à-vis de l'état de l'art",
+      "Implications théoriques et/ou pratiques identifiables",
+    ],
+    signesFaiblesse: [
+      "Problème trivial ou déjà largement résolu",
+      "Justification de la pertinence vague ou absente",
+      "Contribution incrémentale non différenciée",
+    ],
+  },
+  {
+    id: "originalite",
+    critere: "Originalité",
+    description: "L'étude propose-t-elle une approche, une perspective ou des résultats nouveaux dans le domaine ?",
+    questionsGuides: [
+      "La question de recherche est-elle nouvelle ou abordée sous un angle inédit ?",
+      "La méthode, les données ou le cadre théorique apportent-ils une innovation ?",
+      "Les résultats contredisent-ils ou nuancent-ils des conclusions antérieures ?",
+      "L'étude ouvre-t-elle de nouvelles pistes de recherche ?",
+    ],
+    poidsRelatif: "élevé",
+    signesExcellence: [
+      "Angle d'approche ou question de recherche inédit",
+      "Combinaison novatrice de méthodes ou de cadres théoriques",
+      "Résultats qui remettent en question des hypothèses établies",
+    ],
+    signesFaiblesse: [
+      "Reproduction d'une étude existante sans innovation",
+      "Cadre théorique et méthodologie standards sans adaptation",
+      "Aucun résultat inattendu ni nouvelle piste ouverte",
+    ],
+  },
+  {
+    id: "methodologie",
+    critere: "Rigueur méthodologique",
+    description: "Le design de recherche, la collecte de données et les analyses sont-ils appropriés et rigoureux ?",
+    questionsGuides: [
+      "Le design de recherche est-il adapté à la question posée ?",
+      "L'échantillon est-il représentatif et de taille suffisante ?",
+      "Les instruments de mesure sont-ils valides et fiables ?",
+      "Les méthodes d'analyse statistique sont-elles appropriées et correctement appliquées ?",
+      "Les biais potentiels sont-ils identifiés et contrôlés ?",
+    ],
+    poidsRelatif: "élevé",
+    signesExcellence: [
+      "Design justifié et cohérent avec la question de recherche",
+      "Procédure de collecte transparente et reproductible",
+      "Analyses statistiques rigoureuses avec tests appropriés",
+      "Biais identifiés et mesures de contrôle explicites",
+    ],
+    signesFaiblesse: [
+      "Design inadapté à la question posée",
+      "Échantillon trop petit ou non représentatif sans justification",
+      "Analyses statistiques inappropriées ou mal reportées",
+      "Absence de discussion sur les biais et limites",
+    ],
+  },
+  {
+    id: "reproductibilite",
+    critere: "Reproductibilité",
+    description: "Les informations fournies permettent-elles à un autre chercheur de reproduire l'étude ?",
+    questionsGuides: [
+      "Toutes les étapes de la procédure sont-elles décrites avec suffisamment de détails ?",
+      "Les instruments de mesure sont-ils disponibles ou décrits en détail ?",
+      "Les données brutes et le code d'analyse sont-ils accessibles ?",
+      "Les paramètres techniques (logiciel, version, seuils) sont-ils spécifiés ?",
+    ],
+    poidsRelatif: "modéré",
+    signesExcellence: [
+      "Procédure complète et détaillée permettant la réplication",
+      "Instruments standardisés avec références",
+      "Mise à disposition des données et du code d'analyse",
+      "Spécification précise de tous les paramètres techniques",
+    ],
+    signesFaiblesse: [
+      "Descriptions insuffisantes pour reproduire les étapes clés",
+      "Instruments non documentés ni référencés",
+      "Absence d'accès aux données ou au code",
+      "Paramètres statistiques incomplets",
+    ],
+  },
+  {
+    id: "clarte",
+    critere: "Clarté de la rédaction",
+    description: "L'article est-il bien structuré, clairement rédigé et accessible pour le lecteur cible ?",
+    questionsGuides: [
+      "Le titre reflète-t-il fidèlement le contenu de l'étude ?",
+      "Le résumé présente-t-il clairement les objectifs, méthodes, résultats et conclusions ?",
+      "La structure IMRaD est-elle respectée et logiquement articulée ?",
+      "Le style est-il précis, concis et dépourvu de jargon inutile ?",
+      "Les tableaux et figures sont-ils clairs, bien légendés et intégrés au texte ?",
+    ],
+    poidsRelatif: "modéré",
+    signesExcellence: [
+      "Titre informatif et fidèle au contenu",
+      "Résumé autonome couvrant les 4 éléments IMRaD",
+      "Transitions logiques entre sections",
+      "Figures et tableaux auto-explicatifs avec légendes complètes",
+    ],
+    signesFaiblesse: [
+      "Titre vague ou trompeur",
+      "Résumé incomplet ou non représentatif",
+      "Sections mal articulées ou redondantes",
+      "Figures sans légende ou non référencées dans le texte",
+    ],
+  },
+];
+
+/** Modèle de rapport d'évaluation structuré pour la relecture par les pairs */
+export const MODELE_RAPPORT_EVALUATION = {
+  structure: [
+    { section: "Résumé de l'article", description: "En 2-3 phrases, résumer les objectifs, méthodes et principaux résultats" },
+    { section: "Évaluation par critère", description: "Pour chacun des 5 critères (Importance, Originalité, Méthodologie, Reproductibilité, Clarté), fournir une appréciation et des justifications" },
+    { section: "Forces de l'article", description: "Lister les 2-3 principales forces identifiées" },
+    { section: "Faiblesses et recommandations", description: "Lister les principales faiblesses avec des recommandations d'amélioration spécifiques" },
+    { section: "Questions pour les auteurs", description: "Formuler 3-5 questions adressées aux auteurs pour clarifier ou approfondir des points" },
+    { section: "Décision recommandée", description: "Accepter / Réviser mineur / Réviser majeur / Rejeter, avec justification" },
+  ],
+  echelleAppreciation: ["Excellent", "Bon", "Acceptable", "Insuffisant"],
 };

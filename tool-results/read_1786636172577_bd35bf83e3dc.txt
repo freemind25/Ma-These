@@ -1,0 +1,425 @@
+     1→// ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+     2→// ThesisFrame — Corpus « Recherche assistée par l'IA »
+     3→// Distillé de 4 ouvrages : Zhou & Al-Samarraie, Bagheri, Johannesson, Belleville & Jackson
+     4→// Aucune reproduction de texte protégé — savoir reformulé
+     5→// ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+     6→
+     7→// ─── Module 1 : Principes éthiques institutionnels (Zhou & Al-Samarraie) ───
+     8→
+     9→/** 6 domaines où l'IA générative améliore les fonctions académiques */
+    10→export const DOMAINES_IA_RECHERCHE = [
+    11→  {
+    12→    domaine: "générationIdées",
+    13→    description: "Brainstorming de questions de recherche, identification de lacunes, alternatives méthodologiques",
+    14→    outils: ["ChatGPT", "Claude", "Jasper", "IdeaFlow"],
+    15→    compétencesDéveloppées: ["Pensée critique", "Recherche d'information", "Adaptabilité"],
+    16→  },
+    17→  {
+    18→    domaine: "planificationLittérature",
+    19→    description: "Stratégie de recherche, mots-clés, filtrage, connexions inter-études, identification de lacunes",
+    20→    outils: ["Elicit", "Iris.ai", "Connected Papers", "Semantic Scholar", "Research Rabbit"],
+    21→    compétencesDéveloppées: ["Lecture analytique", "Synthèse de résumés"],
+    22→  },
+    23→  {
+    24→    domaine: "méthodesRecherche",
+    25→    description: "Sélection d'échantillon, méthodes de recueil, protocole, simulation de résultats",
+    26→    outils: ["ChatGPT", "SciNote", "DALL-E"],
+    27→    compétencesDéveloppées: ["Méthodologie de recherche", "Analyse critique"],
+    28→  },
+    29→  {
+    30→    domaine: "analyseDonnées",
+    31→    description: "Sélection de tests statistiques, nettoyage de données, visualisation, interprétation",
+    32→    outils: ["OpenAI Codex", "R + IA", "Python + IA", "WriteSonic", "Grammarly"],
+    33→    compétencesDéveloppées: ["Littératie statistique", "Raisonnement statistique"],
+    34→  },
+    35→  {
+    36→    domaine: "rédactionAcadémique",
+    37→    description: "Amélioration du style, clarté, concision, cohérence, argumentation, vérification des citations",
+    38→    outils: ["Grammarly", "WriteSonic", "ChatGPT", "Claude"],
+    39→    compétencesDéveloppées: ["Argumentation", "Analyse critique du texte"],
+    40→  },
+    41→  {
+    42→    domaine: "conformitééthique",
+    43→    description: "Vérification de l'intégrité, déclaration d'usage, transparence méthodologique",
+    44→    outils: ["ChatGPT (audit)", "Outils institutionnels"],
+    45→    compétencesDéveloppées: ["Sens éthique", "Responsabilité académique"],
+    46→  },
+    47→] as const;
+    48→
+    49→/** Principes éthiques fondamentaux pour l'usage de l'IA en recherche */
+    50→export const PRINCIPES_ETHIQUES_IA = [
+    51→  {
+    52→    principe: "Transparence et explicabilité",
+    53→    description: "Documenter l'usage de l'IA (modèles, techniques de prompting, limites). Rendre le raisonnement de l'IA aussi explicite que possible, surtout en chaîne-de-pensée.",
+    54→    actionConcrète: "Tenir un registre d'interactions avec l'IA (prompts, sorties, modifications). Inclure une déclaration dans la section méthodes ou les remerciements.",
+    55→  },
+    56→  {
+    57→    principe: "Responsabilité et imputabilité",
+    58→    description: "Le chercheur reste ultimement responsable de l'intégrité et de la qualité de son travail, même avec l'IA. L'IA est un collaborateur, pas un remplaçant.",
+    59→    actionConcrète: "Toujours vérifier les informations générées par l'IA avec des sources fiables. Ne jamais accepter aveuglément un résultat généré par l'IA.",
+    60→  },
+    61→  {
+    62→    principe: "Détection et atténuation des biais",
+    63→    description: "Les LLM reproduisent les biais de leurs données d'entraînement. Le chercheur doit identifier et atténuer ces biais, surtout dans les recherches impliquant l'équité sociale.",
+    64→    actionConcrète: "Utiliser des prompts variés et représentatifs. Demander à l'IA de critiquer ses propres sorties. Faire relire par des collègues aux perspectives diverses.",
+    65→  },
+    66→  {
+    67→    principe: "Confidentialité et sécurité des données",
+    68→    description: "Protéger la vie privée des données sensibles. Anonymiser avant utilisation. Choisir des plateformes sécurisées. Se conformer au RGPD et aux lignes directrices institutionnelles.",
+    69→    actionConcrète: "Anonymiser toutes les données avant de les soumettre à l'IA. N'utiliser que la quantité minimale de données nécessaire.",
+    70→  },
+    71→  {
+    72→    principe: "Équité d'accès et fracture numérique",
+    73→    description: "L'accès inégal aux outils IA avancés peut creuser les inégalités entre institutions et pays. Démocratiser l'accès pour éviter une concentration de la capacité de recherche.",
+    74→    actionConcrète: "Privilégier les outils open source quand possible. Plaider pour un accès institutionnel aux outils IA.",
+    75→  },
+    76→  {
+    77→    principe: "Équilibre IA / expertise humaine",
+    78→    description: "L'IA manque de compréhension nuancée, de créativité et de jugement éthique. La sur-dépendance prive les jeunes chercheurs d'expériences d'apprentissage essentielles.",
+    79→    actionConcrète: "Utiliser l'IA pour augmenter (pas remplacer) les capacités humaines. Maintenir la supervision humaine à chaque étape du processus.",
+    80→  },
+    81→] as const;
+    82→
+    83→/** Risques spécifiques de l'IA en recherche */
+    84→export const RISQUES_IA_RECHERCHE = [
+    85→  "Hallucination : génération de références, citations ou résultats fictifs qui semblent plausibles",
+    86→  "Perte d'originalité : le contenu généré par l'IA manque de perspective personnelle et de contribution novatrice",
+    87→  "Biais algorithmique : reproduction et amplification de biais présents dans les données d'entraînement",
+    88→  "Dépendance excessive : atrophie des compétences de pensée critique et d'analyse indépendante",
+    89→  "Non-reproductibilité : les sorties d'IA ne sont pas déterministes, ce qui compromet la reproductibilité",
+    90→  "Fuite de données : soumission involontaire de données confidentielles à des serveurs externes",
+    91→  "Conformité stylistique : textes uniformes et prévisibles qui érodent la voix de l'auteur",
+    92→  "Fausse impression de compétence : l'étudiant croît maîtriser un sujet parce que l'IA a produit un texte fluide",
+    93→] as const;
+    94→
+    95→// ─── Module 2 : Taxonomie des outils IA (Bagheri) ───
+    96→
+    97→/** Outils IA organisés par catégorie de tâche académique */
+    98→export const OUTILS_IA = {
+    99→  rédaction: [
+   100→    { nom: "ChatGPT", usage: "Rédaction, reformulation, feedback stylistique, brainstorming idées" },
+   101→    { nom: "Claude", usage: "Rédaction longue, analyse de documents, raisonnement approfondi" },
+   102→    { nom: "Grammarly", usage: "Correction grammaticale, amélioration du style, suggestions de vocabulaire" },
+   103→    { nom: "WriteSonic", usage: "Génération de brouillons, paraphrase, optimisation SEO académique" },
+   104→    { nom: "Jenni AI", usage: "Assistance à la rédaction académique, complétion de texte" },
+   105→  ],
+   106→  recherche: [
+   107→    { nom: "Elicit", usage: "Recherche sémantique, résumé d'articles, extraction de données" },
+   108→    { nom: "Connected Papers", usage: "Cartographie visuelle des relations entre articles" },
+   109→    { nom: "Research Rabbit", usage: "Découverte de littérature connexe, graphes de citation" },
+   110→    { nom: "Semantic Scholar", usage: "Recherche académique avec IA, TLDR automatique" },
+   111→    { nom: "Consensus", usage: "Synthèse de preuves depuis la littérature, réponses fondées sur la recherche" },
+   112→    { nom: "SciSpace / Typeset.io", usage: "Lecture assistée, explication de formules, surligneur IA" },
+   113→    { nom: "Iris.ai", usage: "Cartographie de la littérature, extraction de concepts clés" },
+   114→  ],
+   115→  analyse: [
+   116→    { nom: "OpenAI Codex / ChatGPT Code", usage: "Génération de code d'analyse statistique (R, Python)" },
+   117→    { nom: "Julius AI", usage: "Analyse de données en langage naturel, visualisation automatique" },
+   118→    { nom: "SciNote", usage: "Gestion de données de laboratoire, protocoles expérimentaux" },
+   119→    { nom: "ATLAS.ti (avec IA)", usage: "Analyse qualitative, codage thématique assisté" },
+   120→  ],
+   121→  communication: [
+   122→    { nom: "Beautiful.ai", usage: "Présentations académiques, diapositives de soutenance" },
+   123→    { nom: "Tome", usage: "Mise en page académique, formatage de manuscrits" },
+   124→    { nom: "Zotero + IA plugins", usage: "Gestion de références avec suggestions de citations" },
+   125→  ],
+   126→} as const;
+   127→
+   128→/** Techniques avancées de prompting pour la recherche */
+   129→export const TECHNIQUES_PROMPTING = [
+   130→  {
+   131→    technique: "Apprentissage en contexte (Few-Shot ICL)",
+   132→    description: "Fournir des exemples du format attendu avant de demander la tâche",
+   133→    exempleRecherche: "Voici 3 résumés d'articles [exemples]. Résume cet article en suivant le même format.",
+   134→  },
+   135→  {
+   136→    technique: "Chaîne de prompts interactive",
+   137→    description: "Décomposer une tâche complexe en étapes séquentielles avec feedback",
+   138→    exempleRecherche: "Étape 1 : identifie les thèmes principaux. Attends ma validation. Étape 2 : pour chaque thème validé, trouve 5 articles clés.",
+   139→  },
+   140→  {
+   141→    technique: "Prompting itératif",
+   142→    description: "Affiner progressivement les sorties par révisions successives ciblées",
+   143→    exempleRecherche: "Révise cette section en ajoutant une discussion sur les biais potentiels. Corrige ensuite le ton pour le rendre plus nuancé.",
+   144→  },
+   145→  {
+   146→    technique: "Auto-cohérence (Self-Consistency)",
+   147→    description: "Générer plusieurs réponses et comparer la cohérence pour identifier les biais",
+   148→    exempleRecherche: "Propose 3 formulations différentes de cette hypothèse. Compare-les et identifie les points de convergence et divergence.",
+   149→  },
+   150→  {
+   151→    technique: "Prompting récursif (Step-Back)",
+   152→    description: "Demander à l'IA de prendre du recul pour considérer le contexte plus large",
+   153→    exempleRecherche: "Avant de répondre, prends du recul : quelles sont les hypothèses fondamentales de ma question de recherche ?",
+   154→  },
+   155→  {
+   156→    technique: "Rôle + Auditoire + Modificateur",
+   157→    description: "Combiner rôle, public cible et modificateur tonal pour cibler la réponse",
+   158→    exempleRecherche: "En tant que méthodologue expérimenté, explique la différence entre analyse thématique et analyse de contenu, pour un doctorant en SHS, de façon nuancée.",
+   159→  },
+   160→] as const;
+   161→
+   162→// ─── Module 3 : Bonnes pratiques ChatGPT pour la thèse (Johannesson) ───
+   163→
+   164→/** Rôles de ChatGPT dans le processus de thèse */
+   165→export const ROLES_CHATGPT_THESE = [
+   166→  {
+   167→    rôle: "Chercheur",
+   168→    tâches: [
+   169→      "Affiner les questions de recherche",
+   170→      "Générer des hypothèses",
+   171→      "Recommander des méthodes de recherche",
+   172→      "Guider les considérations éthiques",
+   173→      "Concevoir des protocoles d'entretien",
+   174→      "Créer et justifier des grilles d'entretien",
+   175→      "Proposer des codes et thèmes pour l'analyse qualitative",
+   176→    ],
+   177→  },
+   178→  {
+   179→    rôle: "Érudit",
+   180→    tâches: [
+   181→      "Identifier les lacunes de connaissance et de recherche",
+   182→      "Suggérer de la littérature pertinente",
+   183→      "Résumer et analyser des articles",
+   184→      "Clarifier des concepts académiques",
+   185→      "Fournir le contexte historique",
+   186→      "Offrir des contre-arguments aux idées de l'étudiant",
+   187→      "Dégager les implications éthiques et sociétales",
+   188→    ],
+   189→  },
+   190→  {
+   191→    rôle: "Rédacteur académique",
+   192→    tâches: [
+   193→      "Rédiger et éditer du contenu",
+   194→      "Rendre le texte clair, concis, cohérent et confiant",
+   195→      "Rendre le texte engageant pour le lecteur",
+   196→      "Aider à la formulation d'arguments",
+   197→      "Rédiger des titres et résumés percutants",
+   198→      "Suggérer des visualisations de résultats",
+   199→      "Améliorer la fluidité des transitions entre sections",
+   200→    ],
+   201→  },
+   202→] as const;
+   203→
+   204→/** Directives de prompting itératif pour la thèse */
+   205→export const DIRECTIVES_PROMPTING_THESE = [
+   206→  "Être patient et itératif : ne pas se limiter à un prompt unique. Utiliser des questions de suivi pour affiner.",
+   207→  "Être ouvert à l'exploration : permettre à l'IA de proposer des réponses originales. Utiliser des questions ouvertes (comment, pourquoi).",
+   208→  "Reformuler et affiner : expérimenter différentes formulations. Ajouter du contexte (discipline, public cible, contraintes).",
+   209→  "Guider le format de réponse : spécifier la longueur, la structure (paragraphes, listes, tableau).",
+   210→  "Être orienté objectif : distinguer prompts de brainstorming (créatifs) et prompts d'évaluation (critiques).",
+   211→  "Combiner les formes de prompts : rôle + instruction + contexte + modificateur = prompt précis",
+   212→  "Différencier les 3 rôles : chercheur (méthodes), érudit (littérature), rédacteur (style)",
+   213→  "Toujours vérifier les références citées par l'IA : elles sont souvent fictives",
+   214→] as const;
+   215→
+   216→/** Les 7 C du style académique (Johannesson) */
+   217→export const SEPT_C_STYLE_ACADEMIQUE = [
+   218→  { lettre: "C", qualité: "Clear", traduction: "Clair", description: "Idées compréhensibles sans ambiguïté" },
+   219→  { lettre: "C", qualité: "Concise", traduction: "Concis", description: "Exprimer le maximum en un minimum de mots" },
+   220→  { lettre: "C", qualité: "Coherent", traduction: "Cohérent", description: "Logique interne et liens explicites entre idées" },
+   221→  { lettre: "C", qualité: "Correct", traduction: "Correct", description: "Grammaire, terminologie et citations exactes" },
+   222→  { lettre: "C", qualité: "Credible", traduction: "Crédible", description: "Arguments étayés par des preuves et des sources" },
+   223→  { lettre: "C", qualité: "Complete", traduction: "Complet", description: "Tous les aspects nécessaires traités sans omission" },
+   224→  { lettre: "C", qualité: "Compelling", traduction: "Convaincant", description: "Texte engageant qui maintient l'attention du lecteur" },
+   225→] as const;
+   226→
+   227→// ─── Module 4 : Persévérance et stratégies cognitives de rédaction (Belleville & Jackson) ───
+   228→
+   229→/** 4 types d'objectifs pour structurer la rédaction d'une thèse */
+   230→export const TYPES_OBJECTIFS_REDACTION = [
+   231→  {
+   232→    type: "À long terme",
+   233→    description: "Lignes d'arrivée ultimes (ex. : finir le contexte théorique d'ici la fin de session)",
+   234→    avantage: "Forte motivation par accomplissement, représente la progression",
+   235→    piège: "Peut générer du découragement face à l'ampleur, feedback trop vague du directeur",
+   236→  },
+   237→  {
+   238→    type: "Spécifiques (SMART)",
+   239→    description: "Objectifs précis, concrets, réalisables à court terme (hebdomadaires)",
+   240→    avantage: "Permet un état des lieux réaliste, teste la faisabilité",
+   241→    piège: "Tendance à les sous-estimer, surtout pour les doctorants inexpérimentés",
+   242→  },
+   243→  {
+   244→    type: "De temps",
+   245→    description: "Plages horaires régulières dédiées à la rédaction (ex. : 3 × 2h par semaine)",
+   246→    avantage: "Crée une habitude, rend la production écriture prévisible et régulière",
+   247→    piège: "Qualité vs quantité : écrire beaucoup n'est pas écrire bien",
+   248→  },
+   249→  {
+   250→    type: "De projet",
+   251→    description: "Étapes jalonnées avec livrables concrets (plan détaillé, première version, révision)",
+   252→    avantage: "Structure le travail de rédaction non linéaire, permet le suivi de progression",
+   253→    piège: "Risque de rigidité si les objectifs changent en cours de route",
+   254→  },
+   255→] as const;
+   256→
+   257→/** Stratégies cognitives pour surmonter les blocages de rédaction */
+   258→export const STRATEGIES_SURMONTER_BLOCAGES = [
+   259→  {
+   260→    blocage: "Syndrome de l'imposteur",
+   261→    signaux: ["Comparaison excessive avec les pairs", "Minimisation de ses propres réalisations", "Peur d'être découvert comme incompétent"],
+   262→    stratégie: "Se comparer à soi-même (passé vs présent), pas aux autres. Valoriser la progression personnelle. L'excellence est un moyen, pas une fin.",
+   263→  },
+   264→  {
+   265→    blocage: "Procrastination cyclique",
+   266→    signaux: ["Évitement répété", "Objectifs grandioses suivis de culpabilité", "Binge-writing (rédaction compulsive)"],
+   267→    stratégie: "Remplacer les grands objectifs par des micro-tâches SMART. Programmer des plages régulières courtes plutôt que de longues sessions épisodiques.",
+   268→  },
+   269→  {
+   270→    blocage: "Perfectionnisme paralysant",
+   271→    signaux: ["Refus de soumettre un texte imparfait", "Révisions infinies sans progression", "Attente d'inspiration plutôt que de discipline"],
+   272→    stratégie: "Séparer rédaction et révision. Produire d'abord (qualité acceptable), parfaire ensuite. Le texte parfait n'existe pas au premier jet.",
+   273→  },
+   274→  {
+   275→    blocage: "Anxiété de performance",
+   276→    signaux: ["Pression de la compétition universitaire", "Culture du publie ou péris", "Peur de l'échec face au directeur"],
+   277→    stratégie: "Distinguer compétition saine (motivation, créativité) de compétition toxique (anxiété, autoflagellation). On vaut plus que le total de ses subventions.",
+   278→  },
+   279→  {
+   280→    blocage: "Blocage créatif",
+   281→    signaux: ["Incapacité à commencer", "Page blanche prolongée", "Difficulté à organiser ses idées"],
+   282→    stratégie: "Commencer par un plan détaillé ou une carte conceptuelle. Écrire la section la plus facile en premier pour gagner de l'élan. Utiliser le freewriting (écriture libre sans censure).",
+   283→  },
+   284→  {
+   285→    blocage: "Désengagement progressif",
+   286→    signaux: ["Absence aux rendez-vous de supervision", "Retards répétés", "Évitement de la rétroaction"],
+   287→    stratégie: "Rappeler que la rédaction de thèse est un casse-tête de 10 000 pièces sans image finale — avancer un morceau à la fois. L'entente écrite de supervision prévient les malentendus.",
+   288→  },
+   289→] as const;
+   290→
+   291→/** Règles d'or pour la relation de supervision et la rédaction (Belleville & Jackson) */
+   292→export const REGLES_RELATION_SUPERVISION = [
+   293→  "Clarifier les attentes mutuelles dès le début : utiliser un exercice structuré (type Échelle des PERDUS)",
+   294→  "Consigner l'entente par écrit : rôles, responsabilités, échéances, modalités de feedback",
+   295→  "Le directeur présente un miroir bienveillant mais honnête, pas dicte les objectifs",
+   296→  "L'étudiant est l'auteur de la thèse : développer son autonomie, pas créer une dépendance",
+   297→  "La rétroaction entre pairs développe l'ouverture et l'humilité — initier tôt la révision par les pairs",
+   298→  "Attention aux contrats implicites : les règles non écrites sont un terreau fertile pour les conflits",
+   299→  "Éviter le binge-writing : privilégier des sessions régulières et courtes",
+   300→  "La compétition peut être saine (motivation, créativité) mais devient toxique quand elle mène à l'autoflagellation",
+   301→] as const;
+   302→
+   303→// ─── Agrégat pour import global ───
+   304→
+   305→export const AI_RESEARCH_CORPUS = {
+   306→  principesEthiquesIA: PRINCIPES_ETHIQUES_IA,
+   307→  risquesIA: RISQUES_IA_RECHERCHE,
+   308→  domainesIA: DOMAINES_IA_RECHERCHE,
+   309→  outilsIA: OUTILS_IA,
+   310→  techniquesPrompting: TECHNIQUES_PROMPTING,
+   311→  rolesChatGPT: ROLES_CHATGPT_THESE,
+   312→  directivesPrompting: DIRECTIVES_PROMPTING_THESE,
+   313→  septCStyle: SEPT_C_STYLE_ACADEMIQUE,
+   314→  typesObjectifs: TYPES_OBJECTIFS_REDACTION,
+   315→  strategiesBlocages: STRATEGIES_SURMONTER_BLOCAGES,
+   316→  reglesSupervision: REGLES_RELATION_SUPERVISION,
+   317→} as const;
+   318→
+   319→// ─── Module 9 : 27 Outils IA pour la recherche (Priyo Das) + workflow 8 étapes ──────────────────────────────
+   320→
+   321→export interface OutilRecherche {
+   322→  nom: string;
+   323→  categorie: string;
+   324→  usage: string;
+   325→  quandUtiliser: string;
+   326→}
+   327→
+   328→export interface EtapeWorkflow {
+   329→  etape: number;
+   330→  titre: string;
+   331→  description: string;
+   332→  outilsRecommandes: string[];
+   333→}
+   334→
+   335→export interface CategorieOutils {
+   336→  categorie: string;
+   337→  description: string;
+   338→  outils: OutilRecherche[];
+   339→}
+   340→
+   341→export const OUTILS_IA_RECHERCHE: CategorieOutils[] = [
+   342→  {
+   343→    categorie: "recherche_litterature",
+   344→    description: "Recherche et découverte de littérature académique",
+   345→    outils: [
+   346→      { nom: "Semantic Scholar", categorie: "recherche_litterature", usage: "Recherche sémantique dans une vaste base de données académiques avec résumés automatiques", quandUtiliser: "Quand on souhaite identifier rapidement des articles pertinents par mot-clé ou par similarité sémantique" },
+   347→      { nom: "Search Smart", categorie: "recherche_litterature", usage: "Comparaison des bases de données académiques pour identifier la plus adaptée à un sujet donné", quandUtiliser: "Quand on débute un sujet et qu'on ne sait pas quelle base de données interroger en priorité" },
+   348→      { nom: "Consensus", categorie: "recherche_litterature", usage: "Synthèse de réponses fondées sur la littérature académique à une question de recherche", quandUtiliser: "Quand on cherche une réponse rapide étayée par des preuves issues d'articles évalués par les pairs" },
+   349→      { nom: "Scinapse", categorie: "recherche_litterature", usage: "Recherche et filtrage d'articles académiques avec classement par pertinence", quandUtiliser: "Quand on a besoin de filtrer et classer les résultats d'une recherche bibliographique" },
+   350→      { nom: "R Discovery", categorie: "recherche_litterature", usage: "Découverte de littérature pertinente avec recommandations personnalisées", quandUtiliser: "Quand on explore un domaine et souhaite des suggestions contextualisées" },
+   351→    ],
+   352→  },
+   353→  {
+   354→    categorie: "cartographie_litterature",
+   355→    description: "Cartographie visuelle des relations entre articles et auteurs",
+   356→    outils: [
+   357→      { nom: "ResearchRabbit", categorie: "cartographie_litterature", usage: "Découverte d'articles connexes et d'auteurs émergents via des connexions visuelles", quandUtiliser: "Quand on veut étendre sa revue de littérature en suivant les réseaux de citations et de co-auteurs" },
+   358→      { nom: "Inciteful", categorie: "cartographie_litterature", usage: "Exploration des relations entre articles académiques et visualisation de la littérature connectée", quandUtiliser: "Quand on cherche à identifier les articles les plus influents et leurs liens structurels" },
+   359→      { nom: "Open Knowledge Maps", categorie: "cartographie_litterature", usage: "Création de cartes visuelles de la littérature scientifique autour d'un sujet", quandUtiliser: "Quand on souhaite une vue d'ensemble topographique d'un champ de recherche" },
+   360→      { nom: "VOSviewer", categorie: "cartographie_litterature", usage: "Création et visualisation de réseaux bibliométriques (mots-clés, citations, co-auteurship)", quandUtiliser: "Quand on réalise une analyse bibliométrique ou scientométrique complète" },
+   361→      { nom: "Connected Papers", categorie: "cartographie_litterature", usage: "Construction de graphes visuels d'articles connexes à partir d'un article de départ", quandUtiliser: "Quand on a trouvé un article clé et veut identifier visuellement ses précurseurs et successeurs" },
+   362→    ],
+   363→  },
+   364→  {
+   365→    categorie: "prise_de_notes",
+   366→    description: "Organisation des notes et des findings de recherche",
+   367→    outils: [
+   368→      { nom: "NotebookLM", categorie: "prise_de_notes", usage: "Structuration thématique des findings de recherche avec organisation automatique", quandUtiliser: "Quand on a accumulé de nombreuses notes et souhaite les organiser par thématiques" },
+   369→      { nom: "Notion", categorie: "prise_de_notes", usage: "Base de données personnalisable pour organiser la recherche, les références et les tâches", quandUtiliser: "Quand on a besoin d'un système flexible combinant notes, suivi de tâches et gestion de projet" },
+   370→      { nom: "Glasp", categorie: "prise_de_notes", usage: "Surlignage et organisation d'informations depuis pages web, PDFs, YouTube et autres sources", quandUtiliser: "Quand on lit en ligne et souhaite capturer des passages clés avec annotation et catégorisation" },
+   371→    ],
+   372→  },
+   373→  {
+   374→    categorie: "analyse_donnees",
+   375→    description: "Analyse statistique et traitement des données de recherche",
+   376→    outils: [
+   377→      { nom: "JASP", categorie: "analyse_donnees", usage: "Analyse statistique via interface conviviale, incluant méthodes fréquentistes et bayésiennes", quandUtiliser: "Quand on réalise des analyses statistiques sans expertise approfondie en programmation R" },
+   378→      { nom: "Simple ML for Sheets", categorie: "analyse_donnees", usage: "Machine learning directement dans Google Sheets (prédiction, valeurs manquantes, détection d'anomalies, prévisions)", quandUtiliser: "Quand on dispose de données tabulaires et souhaite appliquer des modèles ML sans coder" },
+   379→      { nom: "R (R Project)", categorie: "analyse_donnees", usage: "Calcul statistique, analyse de données, visualisation et recherche quantitative avancée", quandUtiliser: "Quand on a besoin d'analyses statistiques avancées et personnalisées nécessitant un langage de programmation" },
+   380→    ],
+   381→  },
+   382→  {
+   383→    categorie: "figures_diagrammes",
+   384→    description: "Création de figures, diagrammes et visuels de recherche",
+   385→    outils: [
+   386→      { nom: "Draw.io / diagrams.net", categorie: "figures_diagrammes", usage: "Création de diagrammes de flux, cadres de recherche et structures visuelles", quandUtiliser: "Quand on construit un schéma méthodologique, un diagramme de processus ou un cadre conceptuel" },
+   387→      { nom: "Inkscape", categorie: "figures_diagrammes", usage: "Éditeur vectoriel libre pour la création et l'édition de figures de recherche", quandUtiliser: "Quand on a besoin de figures haute qualité pour publication (format SVG modifiable)" },
+   388→      { nom: "Meta AI", categorie: "figures_diagrammes", usage: "Génération et édition d'images à partir de descriptions textuelles", quandUtiliser: "Quand on souhaite créer des visuels exploratoires ou des concepts pour illustration" },
+   389→      { nom: "Bing Image Creator", categorie: "figures_diagrammes", usage: "Génération d'images à partir de descriptions textuelles", quandUtiliser: "Quand on a besoin d'illustrations conceptuelles pour des présentations ou des supports visuels" },
+   390→    ],
+   391→  },
+   392→  {
+   393→    categorie: "redaction_proofreading",
+   394→    description: "Édition, relecture et amélioration de la rédaction scientifique",
+   395→    outils: [
+   396→      { nom: "ChatGPT", categorie: "redaction_proofreading", usage: "Édition, reformulation, relecture, explication, restructuration et amélioration de la rédaction scientifique", quandUtiliser: "Quand on a besoin d'aide pour la formulation, la reformulation ou le feedback stylistique" },
+   397→      { nom: "Hemingway Editor", categorie: "redaction_proofreading", usage: "Amélioration de la lisibilité, identification des phrases complexes, rendre l'écriture plus concise", quandUtiliser: "Quand on veut simplifier un texte académique trop dense ou vérifier sa lisibilité" },
+   398→      { nom: "Paraphraser.io", categorie: "redaction_proofreading", usage: "Reformulation de phrases et paragraphes tout en conservant le sens", quandUtiliser: "Quand on doit reformuler un passage sans en modifier le sens pour éviter le plagiat" },
+   399→    ],
+   400→  },
+   401→  {
+   402→    categorie: "gestion_references",
+   403→    description: "Collecte, organisation et gestion des références bibliographiques",
+   404→    outils: [
+   405→      { nom: "Zotero", categorie: "gestion_references", usage: "Collecte, organisation, annotation, citation et gestion des articles de recherche", quandUtiliser: "Quand on construit une bibliothèque de références avec import automatique depuis bases de données" },
+   406→      { nom: "Mendeley", categorie: "gestion_references", usage: "Gestion des références, organisation des articles, génération de citations et bibliographies", quandUtiliser: "Quand on combine gestion de références et lecture annotée de PDFs dans un même outil" },
+   407→      { nom: "JabRef", categorie: "gestion_references", usage: "Organisation d'informations bibliographiques, particulièrement adapté aux workflows BibTeX", quandUtiliser: "Quand on travaille avec LaTeX et a besoin d'un gestionnaire natif BibTeX" },
+   408→    ],
+   409→  },
+   410→];
+   411→
+   412→export const WORKFLOW_RECHERCHE_IA: EtapeWorkflow[] = [
+   413→  { etape: 1, titre: "Trouver les articles", description: "Interroger les bases de données académiques pour identifier la littérature pertinente. En choisir 2-3 outils maximum.", outilsRecommandes: ["Semantic Scholar", "Search Smart", "Consensus"] },
+   414→  { etape: 2, titre: "Étendre la littérature", description: "Utiliser la cartographie visuelle pour découvrir les articles connexes et les développements récents.", outilsRecommandes: ["ResearchRabbit", "Connected Papers"] },
+   415→  { etape: 3, titre: "Cartographier le champ", description: "Construire une vue d'ensemble topographique pour identifier clusters thématiques et auteurs centraux.", outilsRecommandes: ["VOSviewer", "Open Knowledge Maps"] },
+   416→  { etape: 4, titre: "Lire et extraire", description: "Capturer les passages et idées clés, organiser par thématique pour la synthèse.", outilsRecommandes: ["Glasp", "NotebookLM"] },
+   417→  { etape: 5, titre: "Analyser les données", description: "Traiter et analyser les données selon la méthodologie choisie.", outilsRecommandes: ["JASP", "R", "Simple ML for Sheets"] },
+   418→  { etape: 6, titre: "Créer les figures", description: "Concevoir diagrammes méthodologiques et figures de résultats. Formats vectoriels privilégiés.", outilsRecommandes: ["Draw.io / diagrams.net", "Inkscape"] },
+   419→  { etape: 7, titre: "Améliorer la rédaction", description: "Revoir style, clarté, concision. La rédaction reste la responsabilité du doctorant.", outilsRecommandes: ["ChatGPT", "Hemingway Editor"] },
+   420→  { etape: 8, titre: "Gérer les références", description: "Organiser les références, générer la bibliographie, vérifier la cohérence des citations.", outilsRecommandes: ["Zotero", "Mendeley", "JabRef"] },
+   421→];
+   422→
+   423→export const REGLE_BON_USAGE_OUTILS: string =
+   424→  "Ne pas utiliser tous les outils simultanément — construire un workflow séquentiel avec 2-3 outils par étape maximum.";
+   425→
