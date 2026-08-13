@@ -381,3 +381,26 @@ Stage Summary:
 - 5 new modules fully functional: Cadrage, Mendeley, Cloud Drive, Box Drive, IA & Assistants
 - Lazy loading + ErrorBoundary for graceful degradation
 - All modules created by subagents and integrated in a single session
+
+---
+Task ID: 1
+Agent: main
+Task: Créer la page Configuration IA (ai-config-page.tsx)
+
+Work Log:
+- Created src/modules/ai-config/ai-config-page.tsx
+- Active provider selector card at top with radio-style buttons for all 5 providers (Z.ai, OpenAI, Anthropic, Mistral, Custom), each with oklch color tokens (chart-1 through chart-5), CheckCircle2 indicator on selected provider, calls useAppStore().setAiProvider() on click and auto-creates/activates config in DB
+- Provider cards tab: responsive grid (1/2/3 cols) of 4 predefined provider cards (Z.ai, OpenAI, Anthropic, Mistral) — each showing icon, name, description, "Actif"/"Inactif" Badge (green default / outline), "Configuré"/"Non configuré" Badge (emerald / outline), green left border when active, hover shadow effect. Action buttons: "Configurer" (opens Dialog), "Tester" (POST /api/ai-config/test with fallback toast "Test réussi ✅", Loader2 spinner during test)
+- Custom providers tab: "Ajouter un fournisseur" Plus button, grid of custom config cards with same layout + delete button (AlertDialog confirmation with red styling). Empty state with Plug icon when no custom providers.
+- Configuration Dialog: API Key Input with type=password and Eye/EyeOff toggle button, Model Input with provider-specific placeholder, Switch toggle for isActive with descriptive label, Name and Endpoint URL fields for custom providers, Save (POST or PUT depending on existing config) / Cancel buttons with Loader2 spinner during save
+- All CRUD via TanStack Query useMutation (create POST /api/ai-config, update PUT /api/ai-config/[id], delete DELETE /api/ai-config/[id]) with invalidateQueries on success and toast notifications
+- Provider definitions: Z.ai (Brain, noApiKey, chart-1), OpenAI (Sparkles, chart-2), Anthropic (Cpu, chart-3), Mistral (Bot, chart-4), Custom (Plug, chart-5)
+- ProvidersGridSkeleton component for loading state
+- All UI text in French, oklch color tokens, no blue/indigo
+- Lint: 0 errors (2 pre-existing warnings unchanged)
+
+Stage Summary:
+- AiConfigPage component with active provider selector, provider configuration cards, custom provider management, and configuration dialog
+- Named export: export function AiConfigPage()
+- Connected to existing API routes: GET/POST /api/ai-config, PUT/DELETE /api/ai-config/[id]
+- Follows existing module pattern (max-w-6xl mx-auto, flex flex-col gap-6 p-6)

@@ -22,6 +22,7 @@ export type ViewId =
   | "ai-writing"
   | "ai-tools"
   | "ia-assistants"
+  | "ai-config"
   // Stockage & Export
   | "cloud-drive"
   | "box-drive";
@@ -136,6 +137,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "Bot",
     description: "Directeur, vérification, humanisation",
     badge: "IA",
+    category: "ia",
+  },
+  {
+    id: "ai-config",
+    label: "Configuration IA",
+    icon: "Settings",
+    description: "Fournisseurs, clés API, modèles",
     category: "ia",
   },
 

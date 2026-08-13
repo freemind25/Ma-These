@@ -83,6 +83,12 @@ const IaAssistantsPage = createLazyPanel(() =>
   }))
 );
 
+const AiConfigPage = createLazyPanel(() =>
+  import("@/modules/ai-config/ai-config-page").then((m) => ({
+    default: m.AiConfigPage,
+  }))
+);
+
 const CloudDrivePage = createLazyPanel(() =>
   import("@/modules/cloud-drive/cloud-drive-page").then((m) => ({
     default: m.CloudDrivePage,
@@ -230,6 +236,12 @@ function CurrentView() {
       return (
         <WrappedPanel name="Assistants IA">
           <IaAssistantsPage />
+        </WrappedPanel>
+      );
+    case "ai-config":
+      return (
+        <WrappedPanel name="Configuration IA">
+          <AiConfigPage />
         </WrappedPanel>
       );
 

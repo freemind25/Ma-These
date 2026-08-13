@@ -18,6 +18,7 @@ import {
   Package,
   Search,
   PenTool,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 import { useAppStore, NAVIGATION_ITEMS, NAVIGATION_CATEGORIES } from "@/lib/stores/app-store";
@@ -59,6 +60,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Package,
   Search,
   PenTool,
+  Settings,
   // Category icons (for group labels if needed)
   GraduationCap,
 };
