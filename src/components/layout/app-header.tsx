@@ -66,6 +66,8 @@ function loadSavedConfig(): AiProviderConfig {
 
 function saveConfig(config: AiProviderConfig): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  // Dispatch custom event so useAiConfig hooks in other components re-read
+  window.dispatchEvent(new CustomEvent("ai-config-changed"));
 }
 
 // ═══════════════════════════════════════
