@@ -616,3 +616,24 @@ Stage Summary:
 - Dashboard fiche synthèse updated with Mendeley + source bibliographiques
 - Lint: 0 errors, 9 warnings (pre-existing)
 - Pushed to Vercel as commit 738ef73
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Fix Vercel build failure
+
+Work Log:
+- Ran `npx next build` to identify build errors
+- Found error in `skills/image-edit/scripts/image-edit.ts` — SDK API mismatch (images vs image)
+- Fixed: changed `images: [{ url: imageSource }]` to `image: imageSource`
+- Found error in `skills/stock-analysis-skill/src/analyzer.ts` — unrelated pre-existing error
+- Root cause: `skills/` directory was not excluded from tsconfig.json compilation
+- Added "skills" to tsconfig.json exclude array
+- Found duplicate key "chapter" in csl-json-parser.ts (strict TS build caught it)
+- Removed the duplicate key
+- Verified build passes: `npx next build` succeeds
+- Pushed as commit cf7b425
+
+Stage Summary:
+- 3 build errors fixed: tsconfig exclude, CSL-JSON duplicate key, image-edit SDK type
+- Build now passes locally — Vercel should deploy successfully
