@@ -75,7 +75,6 @@ function saveConfig(config: AiProviderConfig): void {
 // ═══════════════════════════════════════
 
 function AiConfigDialog({
-  open,
   onOpenChange,
 }: {
   open: boolean;
