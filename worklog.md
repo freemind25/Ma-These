@@ -637,3 +637,24 @@ Work Log:
 Stage Summary:
 - 3 build errors fixed: tsconfig exclude, CSL-JSON duplicate key, image-edit SDK type
 - Build now passes locally — Vercel should deploy successfully
+
+---
+Task ID: vercel-fix-retrigger
+Agent: main
+Task: Fix red X on Vercel deployment for "fix: resolve build errors" commit
+
+Work Log:
+- Verified build passes locally with `npx next build` — zero errors, 18 pages generated
+- Verified build passes without Turbopack flag — same clean result
+- Cleaned up unused variables in eslint.config.mjs (removed unused __dirname imports)
+- Fixed unused `open` prop destructuring in AiConfigDialog component
+- Ran lint — reduced from 9 warnings to 7, zero errors
+- Pushed commit a9a40ba to trigger fresh Vercel build
+- Verified app in browser via agent-browser — all 28 modules render correctly
+- Dashboard shows "Sources bibliographiques" card with Mendeley/Zotero/EndNote/BibTeX/RIS/CSL-JSON
+- References page shows Importer button, Export BibTeX link, type filter
+
+Stage Summary:
+- Build passes locally (with and without Turbopack)
+- Fresh commit pushed to trigger new Vercel deployment (a9a40ba)
+- Application verified working end-to-end in browser
