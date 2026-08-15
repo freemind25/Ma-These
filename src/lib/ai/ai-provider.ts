@@ -1,32 +1,26 @@
 // ═══════════════════════════════════════
-// ThesisFrame — AI Provider Configuration
-// Centralized provider detection & config
+// ThesisFrame — AI Provider (server-side only)
+// Uses require("fs") / require("os") for sandbox detection
+// Client components MUST import from ai-types.ts instead
 // ═══════════════════════════════════════
 
-export type AiProviderId = "zai" | "openai" | "anthropic" | "mistral" | "custom";
+// Re-export everything from client-safe types file
+export {
+  type AiProviderId,
+  type AiProviderConfig,
+  PROVIDER_BASE_URLS,
+  PROVIDER_MODELS,
+  getProviderLabel,
+  getProviderFields,
+} from "./ai-types";
 
-export interface AiProviderConfig {
-  provider: AiProviderId;
-  apiKey?: string;
-  model?: string;
-  baseUrl?: string;
-}
-
-// Default base URLs for known providers
-const PROVIDER_BASE_URLS: Record<AiProviderId, string> = {
-  zai: "",
-  openai: "https://api.openai.com/v1",
-  anthropic: "https://api.anthropic.com/v1",
-  mistral: "https://api.mistral.ai/v1",
-  custom: "",
-};
+import { type AiProviderId, PROVIDER_BASE_URLS } from "./ai-types";
 
 /**
  * Check if the current environment supports z.ai SDK (sandbox).
  * Detection: /etc/.z-ai-config exists (mounted by z.ai sandbox)
  * In production (Vercel), z.ai SDK won't work → fall back to OpenAI-compatible API.
  */
-// Server-side detection helpers (lazy dynamic import to avoid browser issues)
 let _fsExistsSync: ((path: string) => boolean) | null = null;
 let _homedir: (() => string) | null = null;
 let _triedInit = false;
@@ -67,43 +61,4 @@ export function detectBackend(provider: AiProviderId): "zai" | "api" {
 export function getBaseUrl(provider: AiProviderId, customBaseUrl?: string): string {
   if (provider === "zai") return "";
   return customBaseUrl || PROVIDER_BASE_URLS[provider] || "";
-}
-
-/**
- * Get a human-readable label for a provider
- */
-export function getProviderLabel(provider: AiProviderId): string {
-  const labels: Record<AiProviderId, string> = {
-    zai: "Z.ai (SDK natif)",
-    openai: "OpenAI",
-    anthropic: "Anthropic (Claude)",
-    mistral: "Mistral AI",
-    custom: "Personnalisé (API compatible)",
-  };
-  return labels[provider] || provider;
-}
-
-/**
- * Default models for each provider
- */
-export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
-  zai: ["default"],
-  openai: ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "o1-mini", "o3-mini"],
-  anthropic: ["claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022", "claude-3-haiku-20240307"],
-  mistral: ["mistral-large-latest", "mistral-medium-latest", "mistral-small-latest", "codestral-latest"],
-  custom: [],
-};
-
-/**
- * Which fields to show in the config form for each provider
- */
-export function getProviderFields(provider: AiProviderId): {
-  showApiKey: boolean;
-  showModel: boolean;
-  showBaseUrl: boolean;
-} {
-  if (provider === "zai") {
-    return { showApiKey: false, showModel: false, showBaseUrl: false };
-  }
-  return { showApiKey: true, showModel: true, showBaseUrl: provider === "custom" };
 }

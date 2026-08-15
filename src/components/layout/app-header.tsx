@@ -44,11 +44,10 @@ import { toast } from "sonner";
 import {
   type AiProviderId,
   type AiProviderConfig,
-  detectBackend,
   getProviderLabel,
   getProviderFields,
   PROVIDER_MODELS,
-} from "@/lib/ai/ai-provider";
+} from "@/lib/ai/ai-types";
 
 // Saved config stored in localStorage
 const STORAGE_KEY = "thesisframe-ai-config";
@@ -172,8 +171,8 @@ function AiConfigDialog({
             </SelectContent>
           </Select>
           <p className="text-[11px] text-muted-foreground">
-            {detectBackend(config.provider) === "zai"
-              ? "✓ Environnement détecté : SDK natif disponible"
+            {config.provider === "zai"
+              ? "✓ SDK natif (sandbox) ou clé API non requise"
               : "↔ Utilisera l'API compatible OpenAI"}
           </p>
         </div>

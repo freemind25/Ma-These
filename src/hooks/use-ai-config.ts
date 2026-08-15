@@ -7,7 +7,7 @@
 "use client";
 
 import { useSyncExternalStore, useCallback } from "react";
-import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import { type AiProviderConfig } from "@/lib/ai/ai-types";
 
 const STORAGE_KEY = "thesisframe-ai-config";
 
