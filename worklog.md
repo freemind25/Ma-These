@@ -566,3 +566,27 @@ Stage Summary:
 - AI provider config now flows: client localStorage → _aiConfig body → server providerConfig → generateCompletion()
 - User can select Mistral/OpenAI/Anthropic in ⚙ Settings → AI Provider → Save → all modules use it
 - Sandbox uses z.ai SDK by default; Vercel uses external API
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix client-side exception when clicking "Assistant IA" after configuring Mistral
+
+Work Log:
+- Read `use-ai-config.ts` hook — identified `useSyncExternalStore` as potential issue
+- Analyzed the `getSnapshot()` function — found it calls `JSON.parse(localStorage)` on every invocation
+- Root cause: `useSyncExternalStore` requires `getSnapshot` to return referentially stable values (same `Object.is()`). `JSON.parse()` creates a new object reference each time → React detects "change" → triggers re-render → calls `getSnapshot` again → infinite loop → crash
+- This only happens when user HAS configured a provider (e.g., Mistral). Without config, `getSnapshot` returns the static `DEFAULT_CONFIG` constant (same reference, no loop)
+- Fixed `getSnapshot()` with module-level caching: only parses JSON when raw localStorage string changes
+- Added proper `getServerSnapshot()` function for SSR (always returns `DEFAULT_CONFIG`)
+- Added custom event `ai-config-changed` for same-tab config updates
+- Updated `saveConfig()` in `app-header.tsx` to dispatch the custom event
+- Changed `withAiConfig` to read directly from `getSnapshot()` with empty deps
+- Verified: `bun run lint` passes (0 errors, 9 warnings — same as before)
+- Committed and pushed to GitHub: `732c298`
+
+Stage Summary:
+- Bug: `useSyncExternalStore` infinite re-render caused by unstable `getSnapshot()` references
+- Fix: Module-level caching in `useAiConfig` hook ensures referential stability
+- Files changed: `src/hooks/use-ai-config.ts`, `src/components/layout/app-header.tsx`
+- Pushed to `main` → Vercel auto-deploys
