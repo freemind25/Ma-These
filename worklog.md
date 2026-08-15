@@ -590,3 +590,29 @@ Stage Summary:
 - Fix: Module-level caching in `useAiConfig` hook ensures referential stability
 - Files changed: `src/hooks/use-ai-config.ts`, `src/components/layout/app-header.tsx`
 - Pushed to `main` → Vercel auto-deploys
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Add Mendeley support + import bibliographic references (.bib, .ris, CSL-JSON) + update dashboard
+
+Work Log:
+- Added `source` field to Prisma Reference model (manual|mendeley|zotero|bibtex|ris|csl-json|doi)
+- Created BibTeX parser (src/lib/parsers/bibtex-parser.ts) — supports @article, @book, @inproceedings, @phdthesis, @mastersthesis, @misc, @techreport, @incollection, @online
+- Created RIS parser (src/lib/parsers/ris-parser.ts) — supports JOUR, BOOK, CHAP, THES, CONF, RPRT, ELEC, and 20+ more types with multi-line continuation
+- Created CSL-JSON parser (src/lib/parsers/csl-json-parser.ts) — supports article-journal, book, thesis, paper-conference, webpage, etc.
+- Created unified parser index with auto-detect format from filename and content
+- Created POST /api/references/import API endpoint (multipart upload, max 10MB, max 500 refs per import)
+- Updated GET /api/references to support `source` filter parameter
+- Updated createReferenceSchema with `source` field
+- Rewrote references-page.tsx with: Import dialog (drag-drop, format selection, preview, results), Source filter dropdown, Source badge column, Import info banner with tool tips for Mendeley/Zotero/EndNote
+- Updated dashboard: welcome subtitle mentions Mendeley/Zotero/EndNote, References stat description updated, Références action button, new Sources bibliographiques module card, module card description
+
+Stage Summary:
+- 12 files changed, +1112 lines, -26 lines
+- 3 new parsers (BibTeX, RIS, CSL-JSON)
+- 1 new API endpoint (POST /api/references/import)
+- Full drag-and-drop import UI with format auto-detection
+- Dashboard fiche synthèse updated with Mendeley + source bibliographiques
+- Lint: 0 errors, 9 warnings (pre-existing)
+- Pushed to Vercel as commit 738ef73
