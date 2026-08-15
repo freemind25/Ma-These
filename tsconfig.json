@@ -26,5 +26,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "examples", "tests", "tool-results", "agent-ctx", "pdf-gen", "mini-services"]
+  "exclude": ["node_modules", "examples", "tests", "tool-results", "agent-ctx", "pdf-gen", "mini-services", "skills"]
 }
