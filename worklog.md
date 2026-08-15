@@ -658,3 +658,27 @@ Stage Summary:
 - Build passes locally (with and without Turbopack)
 - Fresh commit pushed to trigger new Vercel deployment (a9a40ba)
 - Application verified working end-to-end in browser
+
+---
+Task ID: vercel-fix-cleanup
+Agent: main
+Task: Fix red X on Vercel — clean repo, fix build script
+
+Work Log:
+- Found 33 tool-results .txt files tracked in git (gitignored but committed before)
+- Found pdf-gen/ directory and roadmap-thesisframe.pdf tracked in git
+- Removed all 41 non-code files from git tracking (34,813 lines deleted)
+- Updated .gitignore to properly exclude tool-results/, pdf-gen/, roadmap-thesisframe.pdf
+- Fixed package.json build script: removed fragile `cp` commands, added `prisma generate` before build
+- Added `postinstall: prisma generate` for Vercel compatibility
+- Cleaned up eslint.config.mjs (removed unused __dirname/path imports)
+- Fixed unused `open` prop in AiConfigDialog
+- Build passes locally: 0 errors, 18 pages, lint clean (7 warnings only)
+- Browser verification: page renders correctly, 0 runtime errors
+- Pushed commit 6fa13db
+
+Stage Summary:
+- Repo cleaned: removed 41 unnecessary tracked files (tool-results, pdf-gen)
+- Build script simplified: `prisma generate && next build` (Vercel-compatible)
+- postinstall hook ensures Prisma client exists on Vercel
+- Application verified working end-to-end
