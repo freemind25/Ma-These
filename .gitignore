@@ -55,4 +55,10 @@ server.log
 
 # Upload / Download
 /upload/
-/download/tool-results/
+/download/
+
+# Tool results & generated files
+tool-results/
+pdf-gen/
+roadmap-thesisframe.pdf
+agent-ctx/
