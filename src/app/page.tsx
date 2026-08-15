@@ -1,0 +1,118 @@
+"use client";
+
+import { useAppStore } from "@/lib/stores/app-store";
+import { AppSidebar } from "@/components/layout/app-sidebar";
+import { AppHeader } from "@/components/layout/app-header";
+import { AppFooter } from "@/components/layout/app-footer";
+import { DashboardPage } from "@/components/dashboard/dashboard-page";
+import { EditorPage } from "@/modules/editor/editor-page";
+import { ReferencesPage } from "@/modules/references/references-page";
+import { AiWritingPage } from "@/modules/ai-writing/ai-writing-page";
+import { MethodologyPage } from "@/modules/methodology/methodology-page";
+import { ArticlesPage } from "@/modules/articles/articles-page";
+import { ThesisPlanPage } from "@/modules/thesis-plan/thesis-plan-page";
+import { AiToolsPage } from "@/modules/ai-tools/ai-tools-page";
+import { AcademicDbPage } from "@/modules/academic-db/academic-db-page";
+import { DeblocageEcriturePage } from "@/modules/deblocage-ecriture/deblocage-ecriture-page";
+import { JournauxOaPage } from "@/modules/journaux-oa/journaux-oa-page";
+import { RecherchePleinTextePage } from "@/modules/recherche-plein-texte/recherche-plein-texte-page";
+import { AutoEditionPage } from "@/modules/auto-edition/auto-edition-page";
+import { FeuilleRouteAgilePage } from "@/modules/feuille-route-agile/feuille-route-agile-page";
+import { AnalyseChampRecherchePage } from "@/modules/analyse-champ-recherche/analyse-champ-recherche-page";
+import { OutilsSlrPage } from "@/modules/outils-slr/outils-slr-page";
+import { ApaComposerPage } from "@/modules/apa-composer/apa-composer-page";
+import { VerificationMethodoPage } from "@/modules/verification-methodo/verification-methodo-page";
+import { BoiteDoctoralePage } from "@/modules/boite-doctorale/boite-doctorale-page";
+import { BoxCloudPage } from "@/modules/box-cloud/box-cloud-page";
+import { RoutesMePage } from "@/modules/routesme/routesme-page";
+import { LivresCompetencesPage } from "@/modules/livres-competences/livres-competences-page";
+import { OngletRecherchePage } from "@/modules/onglet-recherche/onglet-recherche-page";
+import { GrammairePage } from "@/modules/grammaire/grammaire-page";
+import { ExportPdfPage } from "@/modules/export-pdf/export-pdf-page";
+import { EquilibreChapitresPage } from "@/modules/equilibre-chapitres/equilibre-chapitres-page";
+import { DiagrammesPage } from "@/modules/diagrammes/diagrammes-page";
+import { HarperPage } from "@/modules/harper/harper-page";
+import {
+  SidebarProvider,
+  SidebarInset,
+} from "@/components/ui/sidebar";
+
+function CurrentView() {
+  const { currentView } = useAppStore();
+
+  switch (currentView) {
+    case "dashboard":
+      return <DashboardPage />;
+    case "editor":
+      return <EditorPage />;
+    case "ai-writing":
+      return <AiWritingPage />;
+    case "references":
+      return <ReferencesPage />;
+    case "methodology":
+      return <MethodologyPage />;
+    case "articles":
+      return <ArticlesPage />;
+    case "thesis-plan":
+      return <ThesisPlanPage />;
+    case "ai-tools":
+      return <AiToolsPage />;
+    case "academic-db":
+      return <AcademicDbPage />;
+    case "journaux-oa":
+      return <JournauxOaPage />;
+    case "recherche-plein-texte":
+      return <RecherchePleinTextePage />;
+    case "auto-edition":
+      return <AutoEditionPage />;
+    case "feuille-route-agile":
+      return <FeuilleRouteAgilePage />;
+    case "deblocage-ecriture":
+      return <DeblocageEcriturePage />;
+    case "outils-slr":
+      return <OutilsSlrPage />;
+    case "analyse-champ-recherche":
+      return <AnalyseChampRecherchePage />;
+    case "apa-composer":
+      return <ApaComposerPage />;
+    case "verification-methodo":
+      return <VerificationMethodoPage />;
+    case "boite-doctorale":
+      return <BoiteDoctoralePage />;
+    case "box-cloud":
+      return <BoxCloudPage />;
+    case "routesme":
+      return <RoutesMePage />;
+    case "livres-competences":
+      return <LivresCompetencesPage />;
+    case "onglet-recherche":
+      return <OngletRecherchePage />;
+    case "grammaire":
+      return <GrammairePage />;
+    case "export-pdf":
+      return <ExportPdfPage />;
+    case "equilibre-chapitres":
+      return <EquilibreChapitresPage />;
+    case "diagrammes":
+      return <DiagrammesPage />;
+    case "harper":
+      return <HarperPage />;
+    default:
+      return <DashboardPage />;
+  }
+}
+
+export default function Home() {
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset className="flex flex-col min-h-screen">
+        <AppHeader />
+        <main className="flex-1 overflow-y-auto scrollbar-thin">
+          <CurrentView />
+        </main>
+        <AppFooter />
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
