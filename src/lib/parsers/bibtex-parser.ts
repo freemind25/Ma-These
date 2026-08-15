@@ -122,25 +122,12 @@ function joinAuthors(authors?: string): string | undefined {
 }
 
 function mapBibTypeToInternal(bibType: string): string {
+  // Keep original BibTeX types for precision; only remap aliases
   const mapping: Record<string, string> = {
-    article: "article",
-    book: "book",
-    inproceedings: "conference",
-    conference: "conference",
-    phdthesis: "thesis",
-    mastersthesis: "thesis",
-    techreport: "report",
-    incollection: "book",
-    misc: "other",
-    online: "web",
-    electronic: "web",
-    unpublished: "other",
-    inbook: "book",
-    proceedings: "conference",
-    booklet: "other",
-    manual: "other",
-    thesis: "thesis",
-    report: "report",
+    conference: "inproceedings",
+    mastersthesis: "phdthesis",
+    electronic: "online",
+    thesis: "phdthesis",
   };
-  return mapping[bibType] || "other";
+  return mapping[bibType] || bibType;
 }

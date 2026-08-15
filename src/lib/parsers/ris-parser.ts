@@ -110,31 +110,12 @@ function joinRisAuthors(authors?: string): string | undefined {
 }
 
 function mapRisTypeToInternal(risType: string): string {
-  const type = risType.trim().toUpperCase();
+  // Keep original RIS types for precision; only normalize case
+  const type = risType.trim().toLowerCase();
+  // Remap ambiguous aliases only
   const mapping: Record<string, string> = {
-    JOUR: "article",
-    JFULL: "article",
-    BOOK: "book",
-    CHAP: "book",
-    THES: "thesis",
-    DISS: "thesis",
-    CONF: "conference",
-    CPAPER: "conference",
-    RPRT: "report",
-    TB: "report",
-    ELEC: "web",
-    EBOOK: "web",
-    WEB: "web",
-    GENERIC: "other",
-    ART: "other",
-    BLOG: "web",
-    MPCT: "conference",
-    HEAR: "conference",
-    PAMP: "other",
-    SER: "other",
-    PAT: "other",
-    CASE: "other",
-    UNPB: "other",
+    tb: "rprt",
+    ebook: "elec",
   };
-  return mapping[type] || "other";
+  return mapping[type] || type;
 }

@@ -98,40 +98,18 @@ function formatAuthor(author: CslAuthor): string {
 }
 
 function mapCslTypeToInternal(cslType: string): string {
+  // Keep original CSL-JSON types for precision; only remap ambiguous aliases
   const type = cslType.toLowerCase();
   const mapping: Record<string, string> = {
-    "article-journal": "article",
-    "article-magazine": "article",
-    "article-newspaper": "article",
-    article: "article",
-    book: "book",
-    chapter: "book",
-    thesis: "thesis",
-    "phd-thesis": "thesis",
-    "master-thesis": "thesis",
-    "paper-conference": "conference",
-    proceedings: "conference",
-    speech: "conference",
-    report: "report",
-    techreport: "report",
-    webpage: "web",
-    "web-post": "web",
-    "post-weblog": "web",
-    post: "web",
-    "entry-dictionary": "other",
-    "entry-encyclopedia": "other",
-    entry: "other",
-    manuscript: "other",
-    preprint: "article",
-    dataset: "other",
-    interview: "other",
-    patent: "other",
-    legislation: "other",
-    legal_case: "other",
-    treaty: "other",
-    musical_score: "other",
-    review: "article",
-    "review-book": "article",
+    article: "article-journal",
+    chapter: "incollection",
+    thesis: "phdthesis",
+    "phd-thesis": "phdthesis",
+    "master-thesis": "mastersthesis",
+    techreport: "techreport",
+    post: "post-weblog",
+    entry: "entry-dictionary",
+    "musical_score": "musical-score",
   };
-  return mapping[type] || "other";
+  return mapping[type] || type;
 }
