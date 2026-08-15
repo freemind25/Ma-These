@@ -139,6 +139,7 @@ model Reference {
   keywords    String?  // Comma separated tags
   notes       String?
   bibtexKey   String?  // Custom BibTeX citation key
+  source      String   @default("manual") // manual | mendeley | zotero | bibtex | ris | csl-json | doi
   isFavorite  Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -146,6 +147,7 @@ model Reference {
   @@index([type])
   @@index([year])
   @@index([isFavorite])
+  @@index([source])
 }
 
 // ═══════════════════════════════════════

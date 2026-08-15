@@ -11,10 +11,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type");
     const search = searchParams.get("search");
+    const source = searchParams.get("source");
     const favoritesOnly = searchParams.get("favorites") === "true";
 
     const where: Record<string, unknown> = {};
     if (type && type !== "all") where.type = type;
+    if (source && source !== "all") where.source = source;
     if (favoritesOnly) where.isFavorite = true;
     if (search) {
       where.OR = [

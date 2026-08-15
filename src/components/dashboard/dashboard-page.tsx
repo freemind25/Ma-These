@@ -34,6 +34,7 @@ import {
   Compass,
   SpellCheck,
   Scale,
+  Library,
 } from "lucide-react";
 
 // ═══ Stats types ═══
@@ -76,6 +77,7 @@ const MODULE_ICONS: Record<string, React.ElementType> = {
   "Analyse du champ": Compass,
   "Grammaire": SpellCheck,
   "Équilibre chapitres": Scale,
+  "Sources bibliographiques": Library,
 };
 
 export function DashboardPage() {
@@ -101,7 +103,8 @@ export function DashboardPage() {
         </h1>
         <p className="text-muted-foreground text-sm max-w-2xl">
           Votre assistant intelligent pour la rédaction de thèses de doctorat.
-          Structurez votre travail, rédigez avec l&apos;IA et gérez vos références bibliographiques.
+          Structurez votre travail, rédigez avec l'IA et gérez vos références bibliographiques.
+          Compatible <strong>Mendeley</strong>, <strong>Zotero</strong>, <strong>EndNote</strong>.
         </p>
       </div>
 
@@ -125,8 +128,8 @@ export function DashboardPage() {
           value={isLoading ? "—" : String(stats?.totalReferences ?? 0)}
           description={
             stats && stats.totalReferences > 0
-              ? "Bibliothèque active"
-              : "Bibliothèque vide"
+              ? `${stats.totalSources} sources de recherche`
+              : "Importez depuis Mendeley"
           }
           accent="emerald"
           isLoading={isLoading}
@@ -187,7 +190,7 @@ export function DashboardPage() {
             <ActionButton
               icon={BookOpen}
               label="Références"
-              description="Gérer la bibliographie"
+              description="Mendeley, Zotero, BibTeX"
               onClick={() => setCurrentView("references")}
             />
             <ActionButton
@@ -286,7 +289,7 @@ export function DashboardPage() {
             />
             <ModuleCard
               title="Références"
-              description="CRUD bibliographique, export BibTeX, recherche et filtrage"
+              description="Import Mendeley, Zotero, BibTeX, RIS, CSL-JSON. Export BibTeX"
               status="Prêt"
               onClick={() => setCurrentView("references")}
             />
@@ -337,6 +340,12 @@ export function DashboardPage() {
               description="Analysez la répartition, fixez des objectifs et recommandations IA"
               status="IA"
               onClick={() => setCurrentView("equilibre-chapitres")}
+            />
+            <ModuleCard
+              title="Sources bibliographiques"
+              description="Mendeley, Zotero, EndNote, JabRef — import BibTeX, RIS, CSL-JSON"
+              status="Prêt"
+              onClick={() => setCurrentView("references")}
             />
           </div>
         </CardContent>

@@ -98,6 +98,7 @@ export const createReferenceSchema = z.object({
   keywords: z.string().optional(),
   notes: z.string().optional(),
   bibtexKey: z.string().optional(),
+  source: z.string().default("manual"),
 });
 
 export const updateReferenceSchema = z.object({
