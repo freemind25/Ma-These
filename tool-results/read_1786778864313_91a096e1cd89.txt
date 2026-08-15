@@ -1,0 +1,1201 @@
+     1→"use client";
+     2→
+     3→import { useState, useMemo, useCallback } from "react";
+     4→import {
+     5→  BookOpen,
+     6→  PenTool,
+     7→  FlaskConical,
+     8→  BarChart3,
+     9→  Mic,
+    10→  ScanSearch,
+    11→  Scale,
+    12→  FolderKanban,
+    13→  MonitorSmartphone,
+    14→  Star,
+    15→  TrendingUp,
+    16→  Lightbulb,
+    17→  Sparkles,
+    18→  ChevronRight,
+    19→  ExternalLink,
+    20→  Target,
+    21→  GraduationCap,
+    22→  CalendarDays,
+    23→  RefreshCcw,
+    24→  Loader2,
+    25→} from "lucide-react";
+    26→import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+    27→import { Badge } from "@/components/ui/badge";
+    28→import { Button } from "@/components/ui/button";
+    29→import { Progress } from "@/components/ui/progress";
+    30→import { Separator } from "@/components/ui/separator";
+    31→import {
+    32→  Accordion,
+    33→  AccordionContent,
+    34→  AccordionItem,
+    35→  AccordionTrigger,
+    36→} from "@/components/ui/accordion";
+    37→import {
+    38→  Select,
+    39→  SelectContent,
+    40→  SelectItem,
+    41→  SelectTrigger,
+    42→  SelectValue,
+    43→} from "@/components/ui/select";
+    44→import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+    45→
+    46→// ═══════════════════════════════════════════════════════════════════════
+    47→// TYPES
+    48→// ═══════════════════════════════════════════════════════════════════════
+    49→
+    50→type ProficiencyLevel = "Débutant" | "Intermédiaire" | "Avancé" | "Expert";
+    51→
+    52→const PROFICIENCY_ORDER: Record<ProficiencyLevel, number> = {
+    53→  Débutant: 0,
+    54→  Intermédiaire: 1,
+    55→  Avancé: 2,
+    56→  Expert: 3,
+    57→};
+    58→
+    59→const PROFICIENCY_VALUES: Record<ProficiencyLevel, number> = {
+    60→  Débutant: 25,
+    61→  Intermédiaire: 50,
+    62→  Avancé: 75,
+    63→  Expert: 100,
+    64→};
+    65→
+    66→const PROFICIENCY_COLORS: Record<ProficiencyLevel, string> = {
+    67→  Débutant: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+    68→  Intermédiaire: "bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300",
+    69→  Avancé: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
+    70→  Expert: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
+    71→};
+    72→
+    73→interface Skill {
+    74→  id: string;
+    75→  label: string;
+    76→  description: string;
+    77→  resources: Resource[];
+    78→}
+    79→
+    80→interface Resource {
+    81→  title: string;
+    82→  author: string;
+    83→  link: string;
+    84→}
+    85→
+    86→interface CompetencyCategory {
+    87→  id: string;
+    88→  label: string;
+    89→  icon: React.ComponentType<{ className?: string }>;
+    90→  color: string;
+    91→  skills: Skill[];
+    92→}
+    93→
+    94→interface AssessmentRecord {
+    95→  date: string;
+    96→  skills: Record<string, ProficiencyLevel>;
+    97→  overallScore: number;
+    98→}
+    99→
+   100→// ═══════════════════════════════════════════════════════════════════════
+   101→// DATA — 8 Doctoral Competency Categories
+   102→// ═══════════════════════════════════════════════════════════════════════
+   103→
+   104→const COMPETENCY_CATEGORIES: CompetencyCategory[] = [
+   105→  {
+   106→    id: "redaction-academique",
+   107→    label: "Rédaction académique",
+   108→    icon: PenTool,
+   109→    color: "text-rose-600 dark:text-rose-400",
+   110→    skills: [
+   111→      {
+   112→        id: "structure-texte",
+   113→        label: "Structure d'un texte académique",
+   114→        description: "Organiser introduction, développement, conclusion selon les normes",
+   115→        resources: [
+   116→          { title: "Comment écrire une thèse", author: "Howard S. Becker", link: "https://www.decitre.fr/" },
+   117→          { title: "Writing Your Journal Article in 12 Weeks", author: "Wendy Laura Belcher", link: "https://www.sagepub.com/" },
+   118→        ],
+   119→      },
+   120→      {
+   121→        id: "style-academique",
+   122→        label: "Style académique et registre de langue",
+   123→        description: "Maîtriser le ton formel, la voix passive, les tournures impersonnelles",
+   124→        resources: [
+   125→          { title: "Le savoir et la revendication de l'identité", author: "Bourdieu", link: "https://www.lespressesdeluniversite.com/" },
+   126→          { title: "Academic Writing for Graduate Students", author: "Swales & Feak", link: "https://www.press.umich.edu/" },
+   127→        ],
+   128→      },
+   129→      {
+   130→        id: "argumentation",
+   131→        label: "Argumentation et cohérence logique",
+   132→        description: "Construire des arguments solides et enchaîner les idées logiquement",
+   133→        resources: [
+   134→          { title: "The Art of Argumentation and Debate", author: "Frans van Eemeren", link: "https://www.cambridge.org/" },
+   135→          { title: "La dissertation philosophique", author: "Claudine Tiercelin", link: "https://www.puf.com/" },
+   136→        ],
+   137→      },
+   138→      {
+   139→        id: "relecture-revision",
+   140→        label: "Révision et réécriture",
+   141→        description: "Relire, corriger et améliorer ses textes de manière itérative",
+   142→        resources: [
+   143→          { title: "Revising Prose", author: "Richard Lanham", link: "https://www.pearson.com/" },
+   144→          { title: "The Sense of Style", author: "Steven Pinker", link: "https://www.penguinrandomhouse.com/" },
+   145→        ],
+   146→      },
+   147→      {
+   148→        id: "citations-references",
+   149→        label: "Intégration de citations et références",
+   150→        description: "Citer correctement et intégrer les sources dans le texte",
+   151→        resources: [
+   152→          { title: "Manuel de rédaction APA", author: "APA (7e édition)", link: "https://apastyle.apa.org/" },
+   153→          { title: "The Craft of Research", author: "Wayne C. Booth", link: "https://www.press.uchicago.edu/" },
+   154→        ],
+   155→      },
+   156→    ],
+   157→  },
+   158→  {
+   159→    id: "methodologie-recherche",
+   160→    label: "Méthodologie de recherche",
+   161→    icon: FlaskConical,
+   162→    color: "text-amber-600 dark:text-amber-400",
+   163→    skills: [
+   164→      {
+   165→        id: "conception-projet",
+   166→        label: "Conception de projet de recherche",
+   167→        description: "Formuler une question de recherche et définir les objectifs",
+   168→        resources: [
+   169→          { title: "Research Design", author: "John Creswell", link: "https://www.sagepub.com/" },
+   170→          { title: "Construire un projet de recherche", author: "Quivy & Van Campenhoudt", link: "https://www.dunod.com/" },
+   171→        ],
+   172→      },
+   173→      {
+   174→        id: "choix-methode",
+   175→        label: "Choix et justification des méthodes",
+   176→        description: "Sélectionner les méthodes qualitatives, quantitatives ou mixtes adaptées",
+   177→        resources: [
+   178→          { title: "Qualitative Research Practice", author: "Ritchie & Lewis", link: "https://www.sagepub.com/" },
+   179→          { title: "Mixed Methods Research", author: "Creswell & Plano Clark", link: "https://www.sagepub.com/" },
+   180→        ],
+   181→      },
+   182→      {
+   183→        id: "echantillonnage",
+   184→        label: "Échantillonnage et collecte de données",
+   185→        description: "Définir la stratégie d'échantillonnage et les protocoles de collecte",
+   186→        resources: [
+   187→          { title: "Sampling Design and Analysis", author: "Sharon Lohr", link: "https://www.crcpress.com/" },
+   188→          { title: "Enquête et méthodes", author: "Grawitz", link: "https://www.dalloz.fr/" },
+   189→        ],
+   190→      },
+   191→      {
+   192→        id: "validite-fiabilite",
+   193→        label: "Validité et fiabilité",
+   194→        description: "Évaluer la rigueur scientifique et la reproductibilité des résultats",
+   195→        resources: [
+   196→          { title: "Validity and Validation", author: "Samuel Messick", link: "https://www.springer.com/" },
+   197→          { title: "Educational Research", author: "Creswell & Creswell", link: "https://www.pearson.com/" },
+   198→        ],
+   199→      },
+   200→    ],
+   201→  },
+   202→  {
+   203→    id: "analyse-donnees",
+   204→    label: "Analyse de données",
+   205→    icon: BarChart3,
+   206→    color: "text-emerald-600 dark:text-emerald-400",
+   207→    skills: [
+   208→      {
+   209→        id: "statistiques-descriptives",
+   210→        label: "Statistiques descriptives",
+   211→        description: "Résumer et visualiser les données de manière pertinente",
+   212→        resources: [
+   213→          { title: "Discovering Statistics Using R", author: "Andy Field", link: "https://www.sagepub.com/" },
+   214→          { title: "Statistiques pour les nuls", author: "Déborah Rumsey", link: "https://www.first-interactive.com/" },
+   215→        ],
+   216→      },
+   217→      {
+   218→        id: "statistiques-inferentielles",
+   219→        label: "Statistiques inférentielles",
+   220→        description: "Tests d'hypothèses, intervalles de confiance et p-values",
+   221→        resources: [
+   222→          { title: "All of Statistics", author: "Larry Wasserman", link: "https://www.springer.com/" },
+   223→          { title: "OpenIntro Statistics", author: "Diez et al.", link: "https://www.openintro.org/" },
+   224→        ],
+   225→      },
+   226→      {
+   227→        id: "analyse-qualitative",
+   228→        label: "Analyse qualitative",
+   229→        description: "Codage, catégorisation et analyse thématique de données textuelles",
+   230→        resources: [
+   231→          { title: "Qualitative Data Analysis", author: "Matthew Miles", link: "https://www.sagepub.com/" },
+   232→          { title: "Doing Thematic Analysis", author: "Braun & Clarke", link: "https://www.sagepub.com/" },
+   233→        ],
+   234→      },
+   235→      {
+   236→        id: "visualisation-donnees",
+   237→        label: "Visualisation de données",
+   238→        description: "Créer des graphiques clairs et impactants pour communiquer les résultats",
+   239→        resources: [
+   240→          { title: "Storytelling with Data", author: "Cole Nussbaumer Knaflic", link: "https://www.storytellingwithdata.com/" },
+   241→          { title: "The Visual Display of Quantitative Information", author: "Edward Tufte", link: "https://www.edwardtufte.com/" },
+   242→        ],
+   243→      },
+   244→      {
+   245→        id: "logiciels-analyse",
+   246→        label: "Maîtrise des logiciels d'analyse",
+   247→        description: "Utiliser R, Python, SPSS, NVivo ou équivalents pour l'analyse",
+   248→        resources: [
+   249→          { title: "R for Data Science", author: "Wickham & Grolemund", link: "https://r4ds.had.co.nz/" },
+   250→          { title: "Python for Data Analysis", author: "Wes McKinney", link: "https://www.oreilly.com/" },
+   251→        ],
+   252→      },
+   253→    ],
+   254→  },
+   255→  {
+   256→    id: "communication-scientifique",
+   257→    label: "Communication scientifique",
+   258→    icon: Mic,
+   259→    color: "text-orange-600 dark:text-orange-400",
+   260→    skills: [
+   261→      {
+   262→        id: "presentation-orale",
+   263→        label: "Présentation orale",
+   264→        description: "Structurer et délivrer une présentation scientifique efficace",
+   265→        resources: [
+   266→          { title: "Talk Like TED", author: "Carmine Gallo", link: "https://www.stmartins.com/" },
+   267→          { title: "Le pouvoir des présentations", author: "Nancy Duarte", link: "https://www.duarte.com/" },
+   268→        ],
+   269→      },
+   270→      {
+   271→        id: "poster-scientifique",
+   272→        label: "Poster scientifique",
+   273→        description: "Concevoir un poster clair et attractif pour les conférences",
+   274→        resources: [
+   275→          { title: "Designing Conference Posters", author: "Colin Purrington", link: "https://colinpurrington.com/tips/poster-design/" },
+   276→          { title: "Scientific Posters", author: "Erren & Bourne", link: "https://www.plos.org/" },
+   277→        ],
+   278→      },
+   279→      {
+   280→        id: "publication-article",
+   281→        label: "Processus de publication",
+   282→        description: "Comprendre le cycle peer-review et répondre aux évaluateurs",
+   283→        resources: [
+   284→          { title: "Writing for Peer Reviewed Journals", author: "Thomson & Kamler", link: "https://www.routledge.com/" },
+   285→          { title: "Getting Published", author: "Jerry Wellington", link: "https://www.routledge.com/" },
+   286→        ],
+   287→      },
+   288→      {
+   289→        id: "networking",
+   290→        label: "Réseautage académique",
+   291→        description: "Construire et entretenir un réseau professionnel de chercheurs",
+   292→        resources: [
+   293→          { title: "Networking for Nerds", author: "Alaina G. Levine", link: "https://www.wiley.com/" },
+   294→          { title: "The PhD Journey", author: "Høyer & Wenneberg", link: "https://www.springer.com/" },
+   295→        ],
+   296→      },
+   297→    ],
+   298→  },
+   299→  {
+   300→    id: "veille-bibliographique",
+   301→    label: "Veille bibliographique",
+   302→    icon: ScanSearch,
+   303→    color: "text-teal-600 dark:text-teal-400",
+   304→    skills: [
+   305→      {
+   306→        id: "strategie-recherche",
+   307→        label: "Stratégie de recherche documentaire",
+   308→        description: "Formuler des requêtes efficaces et utiliser les opérateurs booléens",
+   309→        resources: [
+   310→          { title: "Systematic Approaches to Literature Review", author: "Okoli", link: "https://aisel.aisnet.org/" },
+   311→          { title: "Doing a Literature Review", author: "Chris Hart", link: "https://www.sagepub.com/" },
+   312→        ],
+   313→      },
+   314→      {
+   315→        id: "bases-donnees",
+   316→        label: "Maîtrise des bases de données académiques",
+   317→        description: "Utiliser efficacement Google Scholar, Scopus, Web of Science, PubMed",
+   318→        resources: [
+   319→          { title: "Guide de recherche documentaire", author: "INIST-CNRS", link: "https://www.inist.fr/" },
+   320→          { title: "Information Literacy", author: "Sara Baron", link: "https://www.elsevier.com/" },
+   321→        ],
+   322→      },
+   323→      {
+   324→        id: "gestion-refs",
+   325→        label: "Gestion des références bibliographiques",
+   326→        description: "Utiliser Zotero, Mendeley ou EndNote pour organiser sa bibliographie",
+   327→        resources: [
+   328→          { title: "Zotero Documentation", author: "Zotero Team", link: "https://www.zotero.org/support/" },
+   329→          { title: "Using Bibliographic Software", author: "Nolan", link: "https://www.oxfordhandbooks.com/" },
+   330→        ],
+   331→      },
+   332→      {
+   333→        id: "synthese-litterature",
+   334→        label: "Synthèse et analyse de la littérature",
+   335→        description: "Synthétiser les résultats de multiples sources de manière critique",
+   336→        resources: [
+   337→          { title: "Synthesizing Research", author: "Harris Cooper", link: "https://www.sagepub.com/" },
+   338→          { title: "The Literature Review", author: "Lawrence Machi", link: "https://www.corwin.com/" },
+   339→        ],
+   340→      },
+   341→    ],
+   342→  },
+   343→  {
+   344→    id: "ethique-recherche",
+   345→    label: "Éthique de la recherche",
+   346→    icon: Scale,
+   347→    color: "text-slate-600 dark:text-slate-400",
+   348→    skills: [
+   349→      {
+   350→        id: "consentement",
+   351→        label: "Consentement éclairé",
+   352→        description: "Obtenir et documenter le consentement des participants de manière éthique",
+   353→        resources: [
+   354→          { title: "Ethics in Research", author: "Oliver, Paul & Walmsley", link: "https://www.bloomsbury.com/" },
+   355→          { title: "Comité d'éthique — Guide du chercheur", author: "CNRS", link: "https://www.cnrs.fr/" },
+   356→        ],
+   357→      },
+   358→      {
+   359→        id: "integrite-scientifique",
+   360→        label: "Intégrité scientifique",
+   361→        description: "Comprendre plagiat, falsification, fabrication et bonnes pratiques",
+   362→        resources: [
+   363→          { title: "On Being a Scientist", author: "NAS/NAE/IOM", link: "https://www.nap.edu/" },
+   364→          { title: "Intégrité scientifique", author: "COMETS-CNRS", link: "https://www.cnrs.fr/" },
+   365→        ],
+   366→      },
+   367→      {
+   368→        id: "protection-donnees",
+   369→        label: "Protection des données (RGPD)",
+   370→        description: "Conformité au RGPD et gestion sécurisée des données de recherche",
+   371→        resources: [
+   372→          { title: "Le RGPD pour les chercheurs", author: "CNIL", link: "https://www.cnil.fr/" },
+   373→          { title: "Data Protection in Research", author: "Büchi et al.", link: "https://www.springer.com/" },
+   374→        ],
+   375→      },
+   376→      {
+   377→        id: "declaration-conflits",
+   378→        label: "Déclaration de conflits d'intérêts",
+   379→        description: "Identifier et déclarer tout conflit d'intérêts potentiel",
+   380→        resources: [
+   381→          { title: "Conflict of Interest in Research", author: "COPE", link: "https://publicationethics.org/" },
+   382→          { title: "Responsible Conduct of Research", author: "Macrina", link: "https://www.asmscience.org/" },
+   383→        ],
+   384→      },
+   385→    ],
+   386→  },
+   387→  {
+   388→    id: "gestion-projet",
+   389→    label: "Gestion de projet",
+   390→    icon: FolderKanban,
+   391→    color: "text-violet-600 dark:text-violet-400",
+   392→    skills: [
+   393→      {
+   394→        id: "planification-temporelle",
+   395→        label: "Planification et gestion du temps",
+   396→        description: "Définir un calendrier réaliste et respecter les échéances",
+   397→        resources: [
+   398→          { title: "The 7 Habits of Highly Effective People", author: "Stephen Covey", link: "https://www.simonschuster.com/" },
+   399→          { title: "GTD — Getting Things Done", author: "David Allen", link: "https://gtd.davidco.com/" },
+   400→        ],
+   401→      },
+   402→      {
+   403→        id: "gestion-budget",
+   404→        label: "Gestion budgétaire d'un projet",
+   405→        description: "Budgetiser, suivre les dépenses et justifier les financements",
+   406→        resources: [
+   407→          { title: "Project Management for Research", author: "Adedeji Badiru", link: "https://www.crcpress.com/" },
+   408→          { title: "Grant Writing Handbook", author: "Ries & Leukefeld", link: "https://www.springer.com/" },
+   409→        ],
+   410→      },
+   411→      {
+   412→        id: "collaboration",
+   413→        label: "Travail collaboratif et interdisciplinarité",
+   414→        description: "Collaborer efficacement avec des chercheurs d'autres disciplines",
+   415→        resources: [
+   416→          { title: "Team Science", author: "National Research Council", link: "https://www.nap.edu/" },
+   417→          { title: "Collaborative Research", author: "Bammer", link: "https://www.anu.edu.au/" },
+   418→        ],
+   419→      },
+   420→      {
+   421→        id: "risques-contingences",
+   422→        label: "Gestion des risques et plans de contingence",
+   423→        description: "Anticiper et gérer les obstacles dans un projet doctoral",
+   424→        resources: [
+   425→          { title: "Risk Management for Research", author: "Kumar", link: "https://www.elsevier.com/" },
+   426→          { title: "The Project Management Tool Kit", author: "Tomasz Kowalczyk", link: "https://www.wiley.com/" },
+   427→        ],
+   428→      },
+   429→    ],
+   430→  },
+   431→  {
+   432→    id: "technologies-numeriques",
+   433→    label: "Technologies numériques",
+   434→    icon: MonitorSmartphone,
+   435→    color: "text-cyan-600 dark:text-cyan-400",
+   436→    skills: [
+   437→      {
+   438→        id: "outils-bureautique-avances",
+   439→        label: "Outils bureautiques avancés",
+   440→        description: "Maîtriser LaTeX, Word avancé, tableur pour la recherche",
+   441→        resources: [
+   442→          { title: "LaTeX pour tous", author: "Vincent Lozano", link: "https://framabook.org/" },
+   443→          { title: "The LaTeX Companion", author: "Mittelbach & Goossens", link: "https://www.pearson.com/" },
+   444→        ],
+   445→      },
+   446→      {
+   447→        id: "outils-ia-recherche",
+   448→        label: "Outils IA pour la recherche",
+   449→        description: "Utiliser l'IA générative, les LLM et les outils IA de manière éthique",
+   450→        resources: [
+   451→          { title: "AI for Academics", author: "Mollick & Mollick", link: "https://www.oreilly.com/" },
+   452→          { title: "Generative AI for Researchers", author: "RTE France", link: "https://hal.science/" },
+   453→        ],
+   454→      },
+   455→      {
+   456→        id: "gestion-version",
+   457→        label: "Gestion de versions (Git)",
+   458→        description: "Utiliser Git et GitHub pour versionner ses documents et codes",
+   459→        resources: [
+   460→          { title: "Pro Git", author: "Scott Chacon", link: "https://git-scm.com/book/fr/v2" },
+   461→          { title: "Happy Git with R", author: "Bryan et al.", link: "https://happygitwithr.com/" },
+   462→        ],
+   463→      },
+   464→      {
+   465→        id: "science-ouverte",
+   466→        label: "Science ouverte et accès libre",
+   467→        description: "Partager ses données, publications et codes selon les principes FAIR",
+   468→        resources: [
+   469→          { title: "Open Science", author: "Bartling & Friesike", link: "https://www.springer.com/" },
+   470→          { title: "The FAIR Data Principles", author: "GO FAIR", link: "https://www.go-fair.org/" },
+   471→        ],
+   472→      },
+   473→    ],
+   474→  },
+   475→];
+   476→
+   477→// ═══════════════════════════════════════════════════════════════════════
+   478→// HELPERS
+   479→// ═══════════════════════════════════════════════════════════════════════
+   480→
+   481→function getCategoryScore(
+   482→  category: CompetencyCategory,
+   483→  skills: Record<string, ProficiencyLevel>
+   484→): number {
+   485→  const catSkills = category.skills;
+   486→  if (catSkills.length === 0) return 0;
+   487→  const total = catSkills.reduce(
+   488→    (sum, s) => sum + (PROFICIENCY_VALUES[skills[s.id] || "Débutant"] || 0),
+   489→    0
+   490→  );
+   491→  return Math.round(total / catSkills.length);
+   492→}
+   493→
+   494→function getOverallScore(skills: Record<string, ProficiencyLevel>): number {
+   495→  const allSkills = COMPETENCY_CATEGORIES.flatMap((c) => c.skills);
+   496→  if (allSkills.length === 0) return 0;
+   497→  const total = allSkills.reduce(
+   498→    (sum, s) => sum + (PROFICIENCY_VALUES[skills[s.id] || "Débutant"] || 0),
+   499→    0
+   500→  );
+   501→  return Math.round(total / allSkills.length);
+   502→}
+   503→
+   504→function getScoreLabel(score: number): string {
+   505→  if (score >= 90) return "Expert";
+   506→  if (score >= 70) return "Avancé";
+   507→  if (score >= 45) return "Intermédiaire";
+   508→  return "Débutant";
+   509→}
+   510→
+   511→function getScoreColor(score: number): string {
+   512→  if (score >= 90) return "text-purple-600 dark:text-purple-400";
+   513→  if (score >= 70) return "text-emerald-600 dark:text-emerald-400";
+   514→  if (score >= 45) return "text-sky-600 dark:text-sky-400";
+   515→  return "text-amber-600 dark:text-amber-400";
+   516→}
+   517→
+   518→// ═══════════════════════════════════════════════════════════════════════
+   519→// COMPONENT
+   520→// ═══════════════════════════════════════════════════════════════════════
+   521→
+   522→export function LivresCompetencesPage() {
+   523→  // ── State ────────────────────────────────────────────────
+   524→  const [currentSkills, setCurrentSkills] = useState<Record<string, ProficiencyLevel>>(
+   525→    () => {
+   526→      const allSkillIds = COMPETENCY_CATEGORIES.flatMap((c) => c.skills.map((s) => s.id));
+   527→      const initial: Record<string, ProficiencyLevel> = {};
+   528→      allSkillIds.forEach((id) => {
+   529→        initial[id] = "Débutant";
+   530→      });
+   531→      return initial;
+   532→    }
+   533→  );
+   534→  const [assessmentHistory, setAssessmentHistory] = useState<AssessmentRecord[]>([]);
+   535→  const [aiRecommendation, setAiRecommendation] = useState<string>("");
+   536→  const [aiLoading, setAiLoading] = useState(false);
+   537→  const [activeTab, setActiveTab] = useState("evaluation");
+   538→
+   539→  // ── Derived ──────────────────────────────────────────────
+   540→  const overallScore = useMemo(() => getOverallScore(currentSkills), [currentSkills]);
+   541→
+   542→  const categoryScores = useMemo(() => {
+   543→    return COMPETENCY_CATEGORIES.map((cat) => ({
+   544→      ...cat,
+   545→      score: getCategoryScore(cat, currentSkills),
+   546→    }));
+   547→  }, [currentSkills]);
+   548→
+   549→  const weakestCategories = useMemo(
+   550→    () => [...categoryScores].sort((a, b) => a.score - b.score).slice(0, 3),
+   551→    [categoryScores]
+   552→  );
+   553→
+   554→  const strongestCategories = useMemo(
+   555→    () => [...categoryScores].sort((a, b) => b.score - a.score).slice(0, 3),
+   556→    [categoryScores]
+   557→  );
+   558→
+   559→  // ── Handlers ─────────────────────────────────────────────
+   560→  const handleSkillChange = useCallback((skillId: string, level: ProficiencyLevel) => {
+   561→    setCurrentSkills((prev) => ({ ...prev, [skillId]: level }));
+   562→  }, []);
+   563→
+   564→  const handleSaveAssessment = useCallback(() => {
+   565→    const record: AssessmentRecord = {
+   566→      date: new Date().toLocaleDateString("fr-FR", {
+   567→        day: "numeric",
+   568→        month: "long",
+   569→        year: "numeric",
+   570→      }),
+   571→      skills: { ...currentSkills },
+   572→      overallScore,
+   573→    };
+   574→    setAssessmentHistory((prev) => [record, ...prev].slice(0, 20));
+   575→  }, [currentSkills, overallScore]);
+   576→
+   577→  const handleResetAll = useCallback(() => {
+   578→    const allSkillIds = COMPETENCY_CATEGORIES.flatMap((c) => c.skills.map((s) => s.id));
+   579→    const reset: Record<string, ProficiencyLevel> = {};
+   580→    allSkillIds.forEach((id) => {
+   581→      reset[id] = "Débutant";
+   582→    });
+   583→    setCurrentSkills(reset);
+   584→    setAiRecommendation("");
+   585→  }, []);
+   586→
+   587→  const handleAiRecommendation = useCallback(async () => {
+   588→    setAiLoading(true);
+   589→    setAiRecommendation("");
+   590→    try {
+   591→      const skillsSummary = COMPETENCY_CATEGORIES.map((cat) => {
+   592→        const catScore = getCategoryScore(cat, currentSkills);
+   593→        const weakSkills = cat.skills
+   594→          .filter((s) => (PROFICIENCY_VALUES[currentSkills[s.id]] || 0) <= 25)
+   595→          .map((s) => s.label);
+   596→        return `Catégorie: ${cat.label} — Score: ${catScore}/100${weakSkills.length > 0 ? ` — Compétences faibles: ${weakSkills.join(", ")}` : ""}`;
+   597→      }).join("\n");
+   598→
+   599→      const prompt = `Je suis doctorant et voici mon auto-évaluation de compétences doctorales (score global: ${overallScore}/100) :
+   600→
+   601→${skillsSummary}
+   602→
+   603→En te basant sur ces résultats, propose-moi un plan d'apprentissage personnalisé et priorisé. Pour chaque compétence faible identifiée, suggère 2-3 ressources concrètes (livres, cours en ligne, exercices pratiques) avec une justification. Structure ta réponse avec des titres clairs et des priorités (P1, P2, P3). Réponds en français.`;
+   604→
+   605→      const res = await fetch("/api/ai-writing", {
+   606→        method: "POST",
+   607→        headers: { "Content-Type": "application/json" },
+   608→        body: JSON.stringify({
+   609→          mode: "improvement",
+   610→          prompt,
+   611→          context: "Auto-évaluation des compétences doctorales — Livres-compétences ThesisFrame",
+   612→        }),
+   613→      });
+   614→
+   615→      const data = await res.json();
+   616→      if (data.data?.content) {
+   617→        setAiRecommendation(data.data.content);
+   618→      } else {
+   619→        setAiRecommendation("Impossible de générer les recommandations. Vérifiez la connexion au service IA.");
+   620→      }
+   621→    } catch {
+   622→      setAiRecommendation("Erreur lors de la communication avec le service IA. Veuillez réessayer.");
+   623→    } finally {
+   624→      setAiLoading(false);
+   625→    }
+   626→  }, [currentSkills, overallScore]);
+   627→
+   628→  // ── Render ───────────────────────────────────────────────
+   629→  return (
+   630→    <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+   631→      {/* Header */}
+   632→      <div className="flex flex-col gap-2">
+   633→        <div className="flex items-center gap-3">
+   634→          <div className="p-2 rounded-lg bg-rose-100 dark:bg-rose-900/30">
+   635→            <BookOpen className="h-6 w-6 text-rose-600 dark:text-rose-400" />
+   636→          </div>
+   637→          <div>
+   638→            <h1 className="text-2xl font-bold tracking-tight">Livres-compétences</h1>
+   639→            <p className="text-sm text-muted-foreground">
+   640→              Suivi et développement de vos compétences doctorales
+   641→            </p>
+   642→          </div>
+   643→        </div>
+   644→      </div>
+   645→
+   646→      {/* Overall Score Card */}
+   647→      <Card>
+   648→        <CardHeader className="pb-3">
+   649→          <div className="flex items-center justify-between flex-wrap gap-4">
+   650→            <div className="flex items-center gap-3">
+   651→              <Target className="h-5 w-5 text-muted-foreground" />
+   652→              <div>
+   653→                <CardTitle className="text-lg">Score global de compétence</CardTitle>
+   654→                <CardDescription>
+   655→                  Basé sur votre auto-évaluation de {COMPETENCY_CATEGORIES.flatMap((c) => c.skills).length} compétences
+   656→                </CardDescription>
+   657→              </div>
+   658→            </div>
+   659→            <div className="text-right">
+   660→              <p className={`text-4xl font-bold ${getScoreColor(overallScore)}`}>{overallScore}</p>
+   661→              <p className="text-sm text-muted-foreground">/ 100 — {getScoreLabel(overallScore)}</p>
+   662→            </div>
+   663→          </div>
+   664→        </CardHeader>
+   665→        <CardContent className="pt-0">
+   666→          <Progress value={overallScore} className="h-3" />
+   667→          <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+   668→            {categoryScores.map((cat) => {
+   669→              const Icon = cat.icon;
+   670→              return (
+   671→                <div key={cat.id} className="flex items-center gap-2">
+   672→                  <Icon className={`h-4 w-4 shrink-0 ${cat.color}`} />
+   673→                  <div className="flex-1 min-w-0">
+   674→                    <p className="text-xs text-muted-foreground truncate">{cat.label}</p>
+   675→                    <div className="flex items-center gap-2">
+   676→                      <Progress value={cat.score} className="h-1.5 flex-1" />
+   677→                      <span className="text-xs font-medium tabular-nums w-8 text-right">{cat.score}</span>
+   678→                    </div>
+   679→                  </div>
+   680→                </div>
+   681→              );
+   682→            })}
+   683→          </div>
+   684→        </CardContent>
+   685→      </Card>
+   686→
+   687→      {/* Main Tabs */}
+   688→      <Tabs value={activeTab} onValueChange={setActiveTab}>
+   689→        <TabsList className="grid w-full grid-cols-4">
+   690→          <TabsTrigger value="evaluation" className="text-xs sm:text-sm">
+   691→            <Star className="h-4 w-4 mr-1.5 hidden sm:inline" />
+   692→            Auto-évaluation
+   693→          </TabsTrigger>
+   694→          <TabsTrigger value="ressources" className="text-xs sm:text-sm">
+   695→            <GraduationCap className="h-4 w-4 mr-1.5 hidden sm:inline" />
+   696→            Ressources
+   697→          </TabsTrigger>
+   698→          <TabsTrigger value="progression" className="text-xs sm:text-sm">
+   699→            <TrendingUp className="h-4 w-4 mr-1.5 hidden sm:inline" />
+   700→            Progression
+   701→          </TabsTrigger>
+   702→          <TabsTrigger value="ia" className="text-xs sm:text-sm">
+   703→            <Sparkles className="h-4 w-4 mr-1.5 hidden sm:inline" />
+   704→            IA
+   705→          </TabsTrigger>
+   706→        </TabsList>
+   707→
+   708→        {/* ═══════════════════════════════════════════════════ */
+   709→        {/* TAB: Auto-évaluation                               */}
+   710→        {/* ═══════════════════════════════════════════════════ */}
+   711→        <TabsContent value="evaluation" className="mt-4">
+   712→          <div className="flex flex-col gap-4">
+   713→            <div className="flex items-center justify-between flex-wrap gap-2">
+   714→              <p className="text-sm text-muted-foreground">
+   715→                Évaluez votre niveau pour chaque compétence doctorale
+   716→              </p>
+   717→              <div className="flex gap-2">
+   718→                <Button variant="outline" size="sm" onClick={handleResetAll}>
+   719→                  <RefreshCcw className="h-3.5 w-3.5 mr-1.5" />
+   720→                  Réinitialiser
+   721→                </Button>
+   722→                <Button size="sm" onClick={handleSaveAssessment}>
+   723→                  <CalendarDays className="h-3.5 w-3.5 mr-1.5" />
+   724→                  Sauvegarder l'évaluation
+   725→                </Button>
+   726→              </div>
+   727→            </div>
+   728→
+   729→            <Accordion type="multiple" className="w-full">
+   730→              {COMPETENCY_CATEGORIES.map((category) => {
+   731→                const catScore = getCategoryScore(category, currentSkills);
+   732→                const Icon = category.icon;
+   733→                return (
+   734→                  <AccordionItem key={category.id} value={category.id}>
+   735→                    <AccordionTrigger className="hover:no-underline">
+   736→                      <div className="flex items-center gap-3 flex-1 text-left">
+   737→                        <Icon className={`h-5 w-5 shrink-0 ${category.color}`} />
+   738→                        <div className="flex-1">
+   739→                          <div className="flex items-center gap-2 flex-wrap">
+   740→                            <span className="font-semibold">{category.label}</span>
+   741→                            <Badge variant="secondary" className="text-xs">
+   742→                              {catScore}/100
+   743→                            </Badge>
+   744→                            <Badge className={`text-xs ${PROFICIENCY_COLORS[getScoreLabel(catScore) as ProficiencyLevel]}`}>
+   745→                              {getScoreLabel(catScore)}
+   746→                            </Badge>
+   747→                          </div>
+   748→                          <Progress value={catScore} className="h-1.5 mt-2 max-w-xs" />
+   749→                        </div>
+   750→                      </div>
+   751→                    </AccordionTrigger>
+   752→                    <AccordionContent>
+   753→                      <div className="grid gap-3 pt-2">
+   754→                        {category.skills.map((skill) => (
+   755→                          <div
+   756→                            key={skill.id}
+   757→                            className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-lg border p-3"
+   758→                          >
+   759→                            <div className="flex-1 min-w-0">
+   760→                              <p className="font-medium text-sm">{skill.label}</p>
+   761→                              <p className="text-xs text-muted-foreground mt-0.5">
+   762→                                {skill.description}
+   763→                              </p>
+   764→                            </div>
+   765→                            <div className="sm:w-44 shrink-0">
+   766→                              <Select
+   767→                                value={currentSkills[skill.id] || "Débutant"}
+   768→                                onValueChange={(val) =>
+   769→                                  handleSkillChange(skill.id, val as ProficiencyLevel)
+   770→                                }
+   771→                              >
+   772→                                <SelectTrigger className="w-full">
+   773→                                  <SelectValue />
+   774→                                </SelectTrigger>
+   775→                                <SelectContent>
+   776→                                  <SelectItem value="Débutant">
+   777→                                  <span className="flex items-center gap-2">
+   778→                                    <span className="w-2 h-2 rounded-full bg-amber-500" />
+   779→                                    Débutant
+   780→                                  </span>
+   781→                                  </SelectItem>
+   782→                                  <SelectItem value="Intermédiaire">
+   783→                                  <span className="flex items-center gap-2">
+   784→                                    <span className="w-2 h-2 rounded-full bg-sky-500" />
+   785→                                    Intermédiaire
+   786→                                  </span>
+   787→                                  </SelectItem>
+   788→                                  <SelectItem value="Avancé">
+   789→                                  <span className="flex items-center gap-2">
+   790→                                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+   791→                                    Avancé
+   792→                                  </span>
+   793→                                  </SelectItem>
+   794→                                  <SelectItem value="Expert">
+   795→                                  <span className="flex items-center gap-2">
+   796→                                    <span className="w-2 h-2 rounded-full bg-purple-500" />
+   797→                                    Expert
+   798→                                  </span>
+   799→                                  </SelectItem>
+   800→                                </SelectContent>
+   801→                              </Select>
+   802→                            </div>
+   803→                          </div>
+   804→                        ))}
+   805→                      </div>
+   806→                    </AccordionContent>
+   807→                  </AccordionItem>
+   808→                );
+   809→              })}
+   810→            </Accordion>
+   811→          </div>
+   812→        </TabsContent>
+   813→
+   814→        {/* ═══════════════════════════════════════════════════ */}
+   815→        {/* TAB: Ressources                                   */}
+   816→        {/* ═══════════════════════════════════════════════════ */}
+   817→        <TabsContent value="ressources" className="mt-4">
+   818→          <div className="flex flex-col gap-4">
+   819→            <p className="text-sm text-muted-foreground">
+   820→              Livres et cours recommandés pour chaque compétence doctorale
+   821→            </p>
+   822→
+   823→            <Accordion type="multiple" className="w-full">
+   824→              {COMPETENCY_CATEGORIES.map((category) => {
+   825→                const Icon = category.icon;
+   826→                return (
+   827→                  <AccordionItem key={category.id} value={category.id}>
+   828→                    <AccordionTrigger className="hover:no-underline">
+   829→                      <div className="flex items-center gap-3">
+   830→                        <Icon className={`h-5 w-5 shrink-0 ${category.color}`} />
+   831→                        <span className="font-semibold">{category.label}</span>
+   832→                        <Badge variant="outline" className="text-xs">
+   833→                          {category.skills.length} compétences
+   834→                        </Badge>
+   835→                      </div>
+   836→                    </AccordionTrigger>
+   837→                    <AccordionContent>
+   838→                      <div className="grid gap-4 pt-2">
+   839→                        {category.skills.map((skill) => (
+   840→                          <div key={skill.id} className="rounded-lg border p-4">
+   841→                            <p className="font-medium text-sm mb-1">{skill.label}</p>
+   842→                            <p className="text-xs text-muted-foreground mb-3">{skill.description}</p>
+   843→                            <div className="grid gap-2">
+   844→                              {skill.resources.map((res, i) => (
+   845→                                <a
+   846→                                  key={i}
+   847→                                  href={res.link}
+   848→                                  target="_blank"
+   849→                                  rel="noopener noreferrer"
+   850→                                  className="flex items-start gap-2 rounded-md p-2 hover:bg-muted/50 transition-colors group"
+   851→                                >
+   852→                                  <BookOpen className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
+   853→                                  <div className="flex-1 min-w-0">
+   854→                                    <p className="text-sm font-medium group-hover:underline truncate">
+   855→                                      {res.title}
+   856→                                    </p>
+   857→                                    <p className="text-xs text-muted-foreground">
+   858→                                      {res.author}
+   859→                                    </p>
+   860→                                  </div>
+   861→                                  <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground mt-1" />
+   862→                                </a>
+   863→                              ))}
+   864→                            </div>
+   865→                          </div>
+   866→                        ))}
+   867→                      </div>
+   868→                    </AccordionContent>
+   869→                  </AccordionItem>
+   870→                );
+   871→              })}
+   872→            </Accordion>
+   873→          </div>
+   874→        </TabsContent>
+   875→
+   876→        {/* ═══════════════════════════════════════════════════ */}
+   877→        {/* TAB: Progression                                  */}
+   878→        {/* ═══════════════════════════════════════════════════ */}
+   879→        <TabsContent value="progression" className="mt-4">
+   880→          <div className="grid gap-6 md:grid-cols-2">
+   881→            {/* Strongest categories */}
+   882→            <Card>
+   883→              <CardHeader className="pb-3">
+   884→                <div className="flex items-center gap-2">
+   885→                  <TrendingUp className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+   886→                  <CardTitle className="text-base">Domaines de force</CardTitle>
+   887→                </div>
+   888→              </CardHeader>
+   889→              <CardContent>
+   890→                <div className="flex flex-col gap-3">
+   891→                  {strongestCategories.map((cat) => {
+   892→                    const Icon = cat.icon;
+   893→                    return (
+   894→                      <div key={cat.id} className="flex items-center gap-3">
+   895→                        <Icon className={`h-4 w-4 shrink-0 ${cat.color}`} />
+   896→                        <div className="flex-1 min-w-0">
+   897→                          <p className="text-sm font-medium truncate">{cat.label}</p>
+   898→                          <div className="flex items-center gap-2">
+   899→                            <Progress value={cat.score} className="h-2 flex-1" />
+   900→                            <span className="text-xs font-medium tabular-nums w-8 text-right">
+   901→                              {cat.score}%
+   902→                            </span>
+   903→                          </div>
+   904→                        </div>
+   905→                      </div>
+   906→                    );
+   907→                  })}
+   908→                </div>
+   909→              </CardContent>
+   910→            </Card>
+   911→
+   912→            {/* Weakest categories */}
+   913→            <Card>
+   914→              <CardHeader className="pb-3">
+   915→                <div className="flex items-center gap-2">
+   916→                  <Lightbulb className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+   917→                  <CardTitle className="text-base">Axes d'amélioration</CardTitle>
+   918→                </div>
+   919→              </CardHeader>
+   920→              <CardContent>
+   921→                <div className="flex flex-col gap-3">
+   922→                  {weakestCategories.map((cat) => {
+   923→                    const Icon = cat.icon;
+   924→                    return (
+   925→                      <div key={cat.id} className="flex items-center gap-3">
+   926→                        <Icon className={`h-4 w-4 shrink-0 ${cat.color}`} />
+   927→                        <div className="flex-1 min-w-0">
+   928→                          <p className="text-sm font-medium truncate">{cat.label}</p>
+   929→                          <div className="flex items-center gap-2">
+   930→                            <Progress value={cat.score} className="h-2 flex-1" />
+   931→                            <span className="text-xs font-medium tabular-nums w-8 text-right">
+   932→                              {cat.score}%
+   933→                            </span>
+   934→                          </div>
+   935→                        </div>
+   936→                      </div>
+   937→                    );
+   938→                  })}
+   939→                </div>
+   940→              </CardContent>
+   941→            </Card>
+   942→
+   943→            {/* Detailed per-category breakdown */}
+   944→            <Card className="md:col-span-2">
+   945→              <CardHeader className="pb-3">
+   946→                <div className="flex items-center gap-2">
+   947→                  <BarChart3 className="h-5 w-5 text-muted-foreground" />
+   948→                  <CardTitle className="text-base">Répartition détaillée</CardTitle>
+   949→                </div>
+   950→              </CardHeader>
+   951→              <CardContent>
+   952→                <div className="space-y-4">
+   953→                  {categoryScores.map((cat) => {
+   954→                    const Icon = cat.icon;
+   955→                    return (
+   956→                      <div key={cat.id}>
+   957→                        <div className="flex items-center gap-2 mb-2">
+   958→                          <Icon className={`h-4 w-4 ${cat.color}`} />
+   959→                          <span className="text-sm font-medium">{cat.label}</span>
+   960→                          <Badge variant="secondary" className="text-xs ml-auto">
+   961→                            {cat.score}%
+   962→                          </Badge>
+   963→                        </div>
+   964→                        <div className="ml-6 space-y-1.5">
+   965→                          {cat.skills.map((skill) => {
+   966→                            const level = currentSkills[skill.id] || "Débutant";
+   967→                            const value = PROFICIENCY_VALUES[level];
+   968→                            return (
+   969→                              <div key={skill.id} className="flex items-center gap-2">
+   970→                                <p className="text-xs text-muted-foreground w-44 sm:w-64 truncate">
+   971→                                  {skill.label}
+   972→                                </p>
+   973→                                <Progress value={value} className="h-1.5 flex-1" />
+   974→                                <Badge
+   975→                                  variant="outline"
+   976→                                  className={`text-xs shrink-0 ${PROFICIENCY_COLORS[level]}`}
+   977→                                >
+   978→                                  {level}
+   979→                                </Badge>
+   980→                              </div>
+   981→                            );
+   982→                          })}
+   983→                        </div>
+   984→                        <Separator className="mt-3" />
+   985→                      </div>
+   986→                    );
+   987→                  })}
+   988→                </div>
+   989→              </CardContent>
+   990→            </Card>
+   991→
+   992→            {/* Assessment History */}
+   993→            <Card className="md:col-span-2">
+   994→              <CardHeader className="pb-3">
+   995→                <div className="flex items-center gap-2">
+   996→                  <CalendarDays className="h-5 w-5 text-muted-foreground" />
+   997→                  <CardTitle className="text-base">Historique des évaluations</CardTitle>
+   998→                </div>
+   999→                <CardDescription>
+  1000→                  {assessmentHistory.length === 0
+  1001→                    ? 'Sauvegardez votre première évaluation pour commencer le suivi'
+  1002→                    : `${assessmentHistory.length} évaluation${assessmentHistory.length > 1 ? "s" : ""} enregistrée${assessmentHistory.length > 1 ? "s" : ""}`}
+  1003→                </CardDescription>
+  1004→              </CardHeader>
+  1005→              <CardContent>
+  1006→                {assessmentHistory.length === 0 ? (
+  1007→                  <div className="text-center py-8 text-muted-foreground">
+  1008→                    <CalendarDays className="h-8 w-8 mx-auto mb-2 opacity-50" />
+  1009→                    <p className="text-sm">Aucune évaluation sauvegardée</p>
+  1010→                    <p className="text-xs mt-1">
+  1011→                      Allez dans l'onglet Auto-évaluation et cliquez sur "Sauvegarder l'évaluation"
+  1012→                    </p>
+  1013→                  </div>
+  1014→                ) : (
+  1015→                  <div className="max-h-96 overflow-y-auto space-y-2">
+  1016→                    {assessmentHistory.map((record, idx) => {
+  1017→                      const prevScore =
+  1018→                        idx < assessmentHistory.length - 1
+  1019→                          ? assessmentHistory[idx + 1].overallScore
+  1020→                          : null;
+  1021→                      const diff = prevScore !== null ? record.overallScore - prevScore : null;
+  1022→                      return (
+  1023→                        <div
+  1024→                          key={idx}
+  1025→                          className="flex items-center gap-3 rounded-lg border p-3"
+  1026→                        >
+  1027→                          <div className="flex-1 min-w-0">
+  1028→                            <p className="text-sm font-medium">{record.date}</p>
+  1029→                            <Progress value={record.overallScore} className="h-1.5 mt-1" />
+  1030→                          </div>
+  1031→                          <div className="text-right shrink-0">
+  1032→                            <p className={`text-lg font-bold ${getScoreColor(record.overallScore)}`}>
+  1033→                              {record.overallScore}
+  1034→                            </p>
+  1035→                            {diff !== null && (
+  1036→                              <p
+  1037→                                className={`text-xs font-medium ${
+  1038→                                  diff > 0
+  1039→                                    ? "text-emerald-600 dark:text-emerald-400"
+  1040→                                    : diff < 0
+  1041→                                      ? "text-rose-600 dark:text-rose-400"
+  1042→                                      : "text-muted-foreground"
+  1043→                                }`}
+  1044→                              >
+  1045→                                {diff > 0 ? `+${diff}` : diff === 0 ? "=" : `${diff}`}
+  1046→                              </p>
+  1047→                            )}
+  1048→                          </div>
+  1049→                        </div>
+  1050→                      );
+  1051→                    })}
+  1052→                  </div>
+  1053→                )}
+  1054→              </CardContent>
+  1055→            </Card>
+  1056→          </div>
+  1057→        </TabsContent>
+  1058→
+  1059→        {/* ═══════════════════════════════════════════════════ */}
+  1060→        {/* TAB: IA                                          */}
+  1061→        {/* ═══════════════════════════════════════════════════ */}
+  1062→        <TabsContent value="ia" className="mt-4">
+  1063→          <div className="flex flex-col gap-4">
+  1064→            <Card>
+  1065→              <CardHeader className="pb-3">
+  1066→                <div className="flex items-center gap-2">
+  1067→                  <Sparkles className="h-5 w-5 text-amber-500" />
+  1068→                  <CardTitle className="text-base">Recommandations personnalisées par IA</CardTitle>
+  1069→                </div>
+  1070→                <CardDescription>
+  1071→                  L'IA analyse vos compétences actuelles et propose un plan d'apprentissage
+  1072→                  priorisé avec des ressources ciblées
+  1073→                </CardDescription>
+  1074→              </CardHeader>
+  1075→              <CardContent>
+  1076→                <div className="flex items-center gap-3 mb-4 p-3 rounded-lg bg-muted/50">
+  1077→                  <Target className="h-4 w-4 text-muted-foreground shrink-0" />
+  1078→                  <p className="text-sm text-muted-foreground">
+  1079→                    Votre score actuel :{" "}
+  1080→                    <span className={`font-semibold ${getScoreColor(overallScore)}`}>
+  1081→                      {overallScore}/100
+  1082→                    </span>{" "}
+  1083→                    — {getScoreLabel(overallScore)}
+  1084→                  </p>
+  1085→                </div>
+  1086→
+  1087→                {weakestCategories.length > 0 && (
+  1088→                  <div className="mb-4">
+  1089→                    <p className="text-sm font-medium mb-2 flex items-center gap-1.5">
+  1090→                      <Lightbulb className="h-3.5 w-3.5" />
+  1091→                      Catégories à renforcer détectées :
+  1092→                    </p>
+  1093→                    <div className="flex flex-wrap gap-2">
+  1094→                      {weakestCategories.map((cat) => {
+  1095→                        const Icon = cat.icon;
+  1096→                        return (
+  1097→                          <Badge key={cat.id} variant="outline" className="text-xs gap-1.5">
+  1098→                            <Icon className={`h-3 w-3 ${cat.color}`} />
+  1099→                            {cat.label} ({cat.score}%)
+  1100→                          </Badge>
+  1101→                        );
+  1102→                      })}
+  1103→                    </div>
+  1104→                  </div>
+  1105→                )}
+  1106→
+  1107→                <Button
+  1108→                  onClick={handleAiRecommendation}
+  1109→                  disabled={aiLoading}
+  1110→                  className="w-full sm:w-auto"
+  1111→                >
+  1112→                  {aiLoading ? (
+  1113→                    <>
+  1114→                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+  1115→                      Analyse en cours...
+  1116→                    </>
+  1117→                  ) : (
+  1118→                    <>
+  1119→                      <Sparkles className="h-4 w-4 mr-2" />
+  1120→                      Générer mes recommandations IA
+  1121→                    </>
+  1122→                  )}
+  1123→                </Button>
+  1124→              </CardContent>
+  1125→            </Card>
+  1126→
+  1127→            {aiRecommendation && (
+  1128→              <Card>
+  1129→                <CardHeader className="pb-3">
+  1130→                  <div className="flex items-center gap-2">
+  1131→                    <Lightbulb className="h-5 w-5 text-amber-500" />
+  1132→                    <CardTitle className="text-base">Votre plan d'apprentissage personnalisé</CardTitle>
+  1133→                  </div>
+  1134→                </CardHeader>
+  1135→                <CardContent>
+  1136→                  <div className="prose prose-sm dark:prose-invert max-w-none">
+  1137→                    {aiRecommendation.split("\n").map((line, i) => {
+  1138→                      if (!line.trim()) return <br key={i} />;
+  1139→                      if (line.startsWith("# ")) {
+  1140→                        return (
+  1141→                          <h3 key={i} className="text-lg font-bold mt-4 mb-2">
+  1142→                            {line.replace("# ", "")}
+  1143→                          </h3>
+  1144→                        );
+  1145→                      }
+  1146→                      if (line.startsWith("## ")) {
+  1147→                        return (
+  1148→                          <h4 key={i} className="text-base font-semibold mt-3 mb-1.5">
+  1149→                            {line.replace("## ", "")}
+  1150→                          </h4>
+  1151→                        );
+  1152→                      }
+  1153→                      if (line.startsWith("### ")) {
+  1154→                        return (
+  1155→                          <h5 key={i} className="text-sm font-semibold mt-2 mb-1">
+  1156→                            {line.replace("### ", "")}
+  1157→                          </h5>
+  1158→                        );
+  1159→                      }
+  1160→                      if (line.startsWith("- ") || line.startsWith("* ")) {
+  1161→                        return (
+  1162→                          <div key={i} className="flex items-start gap-2 ml-2 mb-1">
+  1163→                            <ChevronRight className="h-3.5 w-3.5 mt-1 shrink-0 text-amber-500" />
+  1164→                            <span className="text-sm">{line.replace(/^[-*]\s+/, "")}</span>
+  1165→                          </div>
+  1166→                        );
+  1167→                      }
+  1168→                      if (line.match(/^\d+\.\s/)) {
+  1169→                        return (
+  1170→                          <div key={i} className="flex items-start gap-2 ml-2 mb-1">
+  1171→                            <span className="text-sm font-semibold mt-0.5 shrink-0">
+  1172→                              {line.match(/^(\d+)\./)?.[1]}.
+  1173→                            </span>
+  1174→                            <span className="text-sm">{line.replace(/^\d+\.\s+/, "")}</span>
+  1175→                          </div>
+  1176→                        );
+  1177→                      }
+  1178→                      if (line.startsWith("**") && line.endsWith("**")) {
+  1179→                        return (
+  1180→                          <p key={i} className="font-semibold text-sm mt-2">
+  1181→                            {line.replace(/\*\*/g, "")}
+  1182→                          </p>
+  1183→                        );
+  1184→                      }
+  1185→                      return (
+  1186→                        <p key={i} className="text-sm mb-1">
+  1187→                          {line.replace(/\*\*(.+?)\*\*/g, "$1")}
+  1188→                        </p>
+  1189→                      );
+  1190→                    })}
+  1191→                  </div>
+  1192→                </CardContent>
+  1193→              </Card>
+  1194→            )}
+  1195→          </div>
+  1196→        </TabsContent>
+  1197→      </Tabs>
+  1198→    </div>
+  1199→  );
+  1200→}
+  1201→

@@ -544,3 +544,25 @@ Stage Summary:
 - 9 fichiers corrigés pour le typage TypeScript strict (0 erreurs restantes dans src/)
 - 3 commits poussés successifs : 60ca236 → 52f2a38 → 3e923e6
 - Déploiement Vercel en cours sur https://ma-th-6mw3ct7we-freemind25-2831s-projects.vercel.app
+
+---
+Task ID: 2b
+Agent: main + subagent
+Task: Propager config IA client→serveur dans toutes les pages
+
+Work Log:
+- Diagnosed root cause: pages sent fetch() to /api/ai-writing without _aiConfig → server used defaults (zai)
+- Fixed getDefaultConfig(): provider-specific API key selection (OPENAI_API_KEY/ANTHROPIC_API_KEY/MISTRAL_API_KEY)
+- Added provider-specific default models (gpt-4o-mini, claude-3-haiku, mistral-small-latest)
+- Base URL fallback chain: AI_BASE_URL → OPENAI_BASE_URL
+- Added useAiConfig() + withAiConfig() to 16 module pages (18 POST fetch calls wrapped)
+- Fixed useCallback dependency arrays for withAiConfig in 6 files
+- Configured Vercel env vars: AI_PROVIDER, AI_MODEL, AI_BASE_URL, MISTRAL_API_KEY, ANTHROPIC_API_KEY
+- Updated OPENAI_API_KEY and DATABASE_URL on Vercel
+- Clean orphan push to remove .env from git history (GitHub secret scanning)
+- Lint: 0 errors, 9 warnings (all pre-existing)
+
+Stage Summary:
+- AI provider config now flows: client localStorage → _aiConfig body → server providerConfig → generateCompletion()
+- User can select Mistral/OpenAI/Anthropic in ⚙ Settings → AI Provider → Save → all modules use it
+- Sandbox uses z.ai SDK by default; Vercel uses external API

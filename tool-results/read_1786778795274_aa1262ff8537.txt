@@ -1,0 +1,710 @@
+   125→    case "folder": return <Folder className="h-5 w-5 text-amber-500" />;
+   126→    case "image": return <Image className="h-5 w-5 text-amber-600" />;
+   127→    case "data": return <Database className="h-5 w-5 text-red-500" />;
+   128→    case "code": return <FileCode2 className="h-5 w-5 text-violet-600" />;
+   129→    case "reference": return <BookOpen className="h-5 w-5 text-cyan-600" />;
+   130→    default: return <FileText className="h-5 w-5 text-emerald-600" />;
+   131→  }
+   132→}
+   133→
+   134→// ═══════════════════════════════════════
+   135→// Initial data
+   136→// ═══════════════════════════════════════
+   137→
+   138→const INITIAL_FOLDERS: FolderItem[] = [
+   139→  { id: "folder-1", name: "Chapitres de thèse", parentId: null },
+   140→  { id: "folder-2", name: "Articles", parentId: null },
+   141→  { id: "folder-3", name: "Données d\u2019enquête", parentId: null },
+   142→  { id: "folder-4", name: "Code d\u2019analyse", parentId: null },
+   143→  { id: "folder-5", name: "Bibliographie", parentId: null },
+   144→  { id: "folder-1a", name: "Introduction", parentId: "folder-1" },
+   145→  { id: "folder-1b", name: "Cadre théorique", parentId: "folder-1" },
+   146→  { id: "folder-2a", name: "Soumissions", parentId: "folder-2" },
+   147→];
+   148→
+   149→const INITIAL_FILES: CloudFile[] = [
+   150→  { id: "file-1", name: "Introduction_générale.docx", type: "document", category: "Documents", size: 245_760, date: "2025-01-15T10:30:00", parentId: "folder-1a", extension: "docx" },
+   151→  { id: "file-2", name: "Revue_littérature.pdf", type: "document", category: "Documents", size: 1_572_864, date: "2025-02-20T14:15:00", parentId: "folder-1b", extension: "pdf" },
+   152→  { id: "file-3", name: "cadre_theorique.tex", type: "document", category: "Documents", size: 89_600, date: "2025-03-05T09:00:00", parentId: "folder-1b", extension: "tex" },
+   153→  { id: "file-4", name: "donnees_enquete.csv", type: "data", category: "Données", size: 5_242_880, date: "2025-03-10T16:45:00", parentId: "folder-3", extension: "csv" },
+   154→  { id: "file-5", name: "analyse_pca.py", type: "code", category: "Code", size: 15_360, date: "2025-03-12T11:20:00", parentId: "folder-4", extension: "py" },
+   155→  { id: "file-6", name: "visualisation.R", type: "code", category: "Code", size: 8_192, date: "2025-03-14T08:30:00", parentId: "folder-4", extension: "r" },
+   156→  { id: "file-7", name: "figure_methodologie.png", type: "image", category: "Images", size: 3_145_728, date: "2025-03-15T13:00:00", parentId: null, extension: "png" },
+   157→  { id: "file-8", name: "article_soumis.pdf", type: "reference", category: "Références", size: 2_097_152, date: "2025-03-18T15:30:00", parentId: "folder-2a", extension: "pdf" },
+   158→  { id: "file-9", name: "biblio_complete.bib", type: "reference", category: "Références", size: 419_430, date: "2025-03-20T10:00:00", parentId: "folder-5", extension: "bib" },
+   159→  { id: "file-10", name: "résultats_enquête.xlsx", type: "data", category: "Données", size: 3_145_728, date: "2025-03-22T09:15:00", parentId: "folder-3", extension: "xlsx" },
+   160→  { id: "file-11", name: "protocole_expérience.md", type: "document", category: "Documents", size: 32_768, date: "2025-03-25T14:00:00", parentId: null, extension: "md" },
+   161→  { id: "file-12", name: "diagramme_architecture.svg", type: "image", category: "Images", size: 156_672, date: "2025-03-26T11:45:00", parentId: null, extension: "svg" },
+   162→];
+   163→
+   164→// ═══════════════════════════════════════
+   165→// Component
+   166→// ═══════════════════════════════════════
+   167→
+   168→export function BoxCloudPage() {
+   169→  // ── State ──
+   170→  const [files, setFiles] = useState<CloudFile[]>(INITIAL_FILES);
+   171→  const [folders, setFolders] = useState<FolderItem[]>(INITIAL_FOLDERS);
+   172→  const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
+   173→  const [searchQuery, setSearchQuery] = useState("");
+   174→  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+   175→  const [isUploading, setIsUploading] = useState(false);
+   176→  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+   177→  const [newFolderName, setNewFolderName] = useState("");
+   178→  const [renamingFolderId, setRenamingFolderId] = useState<string | null>(null);
+   179→  const [renameValue, setRenameValue] = useState("");
+   180→  const [uploadName, setUploadName] = useState("");
+   181→
+   182→  // ── Computed ──
+   183→  const currentFolders = useMemo(
+   184→    () => folders.filter((f) => f.parentId === currentFolderId),
+   185→    [folders, currentFolderId]
+   186→  );
+   187→
+   188→  const currentFiles = useMemo(() => {
+   189→    let filtered = files.filter((f) => f.parentId === currentFolderId);
+   190→    if (searchQuery.trim()) {
+   191→      const q = searchQuery.toLowerCase();
+   192→      filtered = files.filter((f) => f.name.toLowerCase().includes(q));
+   193→    }
+   194→    return filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+   195→  }, [files, currentFolderId, searchQuery]);
+   196→
+   197→  const recentFiles = useMemo(
+   198→    () => [...files].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5),
+   199→    [files]
+   200→  );
+   201→
+   202→  const totalUsed = useMemo(() => files.reduce((s, f) => s + f.size, 0), [files]);
+   203→  const usagePercent = useMemo(() => Math.min((totalUsed / TOTAL_STORAGE_BYTES) * 100, 100), [totalUsed]);
+   204→
+   205→  const categoryStats = useMemo((): CategoryStats[] => {
+   206→ const cats: FileCategory[] = ["Documents", "Images", "Données", "Code", "Références"];
+   207→    return cats.map((cat) => {
+   208→      const catFiles = files.filter((f) => f.category === cat);
+   209→      return {
+   210→        label: cat,
+   211→        category: cat,
+   212→        totalSize: catFiles.reduce((s, f) => s + f.size, 0),
+   213→        fileCount: catFiles.length,
+   214→        color: CATEGORY_CONFIG[cat].color,
+   215→      };
+   216→    });
+   217→  }, [files]);
+   218→
+   219→  const breadcrumbPath = useMemo(() => {
+   220→    const path: { id: string | null; name: string }[] = [{ id: null, name: "Racine" }];
+   221→    let pid = currentFolderId;
+   222→    while (pid) {
+   223→      const f = folders.find((fo) => fo.id === pid);
+   224→      if (f) {
+   225→        path.unshift({ id: f.id, name: f.name });
+   226→        pid = f.parentId;
+   227→      } else break;
+   228→    }
+   229→    return path;
+   230→  }, [currentFolderId, folders]);
+   231→
+   232→  // ── Handlers ──
+   233→  const handleUpload = useCallback(() => {
+   234→    if (!uploadName.trim()) {
+   235→      toast.error("Veuillez entrer un nom de fichier");
+   236→      return;
+   237→    }
+   238→    setIsUploading(true);
+   239→    const dotIdx = uploadName.lastIndexOf(".");
+   240→    const ext = dotIdx > 0 ? uploadName.slice(dotIdx + 1) : "docx";
+   241→    const { category, type } = categorizeByExtension(ext);
+   242→    const simulatedSize = Math.floor(Math.random() * 4_000_000) + 50_000;
+   243→
+   244→    setTimeout(() => {
+   245→      const newFile: CloudFile = {
+   246→        id: generateId(),
+   247→        name: uploadName.trim(),
+   248→        type,
+   249→        category,
+   250→        size: simulatedSize,
+   251→        date: new Date().toISOString(),
+   252→        parentId: currentFolderId,
+   253→        extension: ext,
+   254→      };
+   255→      setFiles((prev) => [...prev, newFile]);
+   256→      setIsUploading(false);
+   257→      setUploadName("");
+   258→      toast.success(`Fichier « ${newFile.name} » téléversé avec succès`);
+   259→    }, 800);
+   260→  }, [uploadName, currentFolderId]);
+   261→
+   262→  const handleCreateFolder = useCallback(() => {
+   263→    if (!newFolderName.trim()) {
+   264→      toast.error("Veuillez entrer un nom de dossier");
+   265→      return;
+   266→    }
+   267→    const exists = folders.some(
+   268→      (f) => f.name.toLowerCase() === newFolderName.trim().toLowerCase() && f.parentId === currentFolderId
+   269→    );
+   270→    if (exists) {
+   271→      toast.error("Un dossier avec ce nom existe déjà");
+   272→      return;
+   273→    }
+   274→    const newFolder: FolderItem = {
+   275→      id: `folder-${Date.now()}`,
+   276→      name: newFolderName.trim(),
+   277→      parentId: currentFolderId,
+   278→    };
+   279→    setFolders((prev) => [...prev, newFolder]);
+   280→    setNewFolderName("");
+   281→    setIsCreatingFolder(false);
+   282→    toast.success(`Dossier « ${newFolder.name} » créé`);
+   283→  }, [newFolderName, currentFolderId, folders]);
+   284→
+   285→  const handleDeleteFolder = useCallback(
+   286→    (folderId: string) => {
+   287→      const folder = folders.find((f) => f.id === folderId);
+   288→      if (!folder) return;
+   289→      const childFolderIds = new Set<string>();
+   290→      const collectChildFolders = (pid: string) => {
+   291→        childFolderIds.add(pid);
+   292→        folders.filter((f) => f.parentId === pid).forEach((f) => collectChildFolders(f.id));
+   293→      };
+   294→      collectChildFolders(folderId);
+   295→      setFolders((prev) => prev.filter((f) => !childFolderIds.has(f.id)));
+   296→      setFiles((prev) => prev.filter((f) => !childFolderIds.has(f.parentId || "")));
+   297→      toast.success(`Dossier « ${folder.name} » supprimé`);
+   298→    },
+   299→    [folders]
+   300→  );
+   301→
+   302→  const handleRenameFolder = useCallback(
+   303→    (folderId: string) => {
+   304→      if (!renameValue.trim()) {
+   305→        toast.error("Veuillez entrer un nom");
+   306→        return;
+   307→      }
+   308→      setFolders((prev) =>
+   309→        prev.map((f) => (f.id === folderId ? { ...f, name: renameValue.trim() } : f))
+   310→      );
+   311→      setRenamingFolderId(null);
+   312→      setRenameValue("");
+   313→      toast.success("Dossier renommé");
+   314→    },
+   315→    [renameValue]
+   316→  );
+   317→
+   318→  const handleDeleteFile = useCallback((fileId: string) => {
+   319→    setFiles((prev) => {
+   320→      const file = prev.find((f) => f.id === fileId);
+   321→      if (file) toast.success(`Fichier « ${file.name} » supprimé`);
+   322→      return prev.filter((f) => f.id !== fileId);
+   323→    });
+   324→  }, []);
+   325→
+   326→  const navigateToFolder = useCallback((folderId: string | null) => {
+   327→ setCurrentFolderId(folderId);
+   328→    setSearchQuery("");
+   329→  }, []);
+   330→
+   331→  // ── Render ──
+   332→  return (
+   333→    <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+   334→      {/* Header */}
+   335→      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+   336→        <div>
+   337→          <h1 className="text-2xl font-bold tracking-tight">Box Cloud</h1>
+   338→          <p className="text-muted-foreground text-sm mt-1">
+   339→            Stockage cloud simulé pour vos fichiers de thèse
+   340→          </p>
+   341→        </div>
+   342→        <div className="flex items-center gap-2">
+   343→          <Button
+   344→            variant="outline"
+   345→            size="sm"
+   346→            onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+   347→          >
+   348→            {viewMode === "grid" ? <List className="h-4 w-4 mr-1.5" /> : <Grid3X3 className="h-4 w-4 mr-1.5" />}
+   349→            {viewMode === "grid" ? "Liste" : "Grille"}
+   350→          </Button>
+   351→        </div>
+   352→      </div>
+   353→
+   354→      {/* Storage stats + Recent files row */}
+   355→      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+   356→        {/* Storage overview */}
+   357→        <Card className="lg:col-span-2">
+   358→          <CardHeader className="pb-3">
+   359→            <CardTitle className="text-base font-semibold flex items-center gap-2">
+   360→              <HardDrive className="h-4 w-4 text-emerald-600" />
+   361→              Stockage utilisé
+   362→            </CardTitle>
+   363→          </CardHeader>
+   364→          <CardContent className="space-y-4">
+   365→            <div className="flex items-end justify-between text-sm">
+   366→              <span className="font-medium">{formatSize(totalUsed)}</span>
+   367→              <span className="text-muted-foreground">sur {TOTAL_STORAGE_GB} Go</span>
+   368→            </div>
+   369→            <Progress value={usagePercent} className="h-3" />
+   370→            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+   371→              {categoryStats.map((cat) => {
+   372→                const catPercent = totalUsed > 0 ? (cat.totalSize / TOTAL_STORAGE_BYTES) * 100 : 0;
+   373→                return (
+   374→                  <div key={cat.category} className="flex items-center gap-3">
+   375→                    <div
+   376→                      className="h-2.5 w-2.5 rounded-full shrink-0"
+   377→                      style={{ backgroundColor: cat.color }}
+   378→                    />
+   379→                    <div className="flex-1 min-w-0">
+   380→                      <div className="flex items-center justify-between text-xs mb-1">
+   381→                        <span className="font-medium truncate">{cat.label}</span>
+   382→                        <span className="text-muted-foreground shrink-0 ml-2">
+   383→                          {cat.fileCount} fichier{cat.fileCount !== 1 ? "s" : ""} · {formatSize(cat.totalSize)}
+   384→                        </span>
+   385→                      </div>
+   386→                      <Progress value={catPercent} className="h-1.5" />
+   387→                    </div>
+   388→                  </div>
+   389→                );
+   390→              })}
+   391→            </div>
+   392→          </CardContent>
+   393→        </Card>
+   394→
+   395→        {/* Recent files */}
+   396→        <Card>
+   397→          <CardHeader className="pb-3">
+   398→            <CardTitle className="text-base font-semibold flex items-center gap-2">
+   399→              <Clock className="h-4 w-4 text-amber-600" />
+   400→              Fichiers récents
+   401→            </CardTitle>
+   402→          </CardHeader>
+   403→          <CardContent>
+   404→            <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin">
+   405→              {recentFiles.map((file) => (
+   406→                <button
+   407→                  key={file.id}
+   408→                  className="w-full flex items-center gap-2.5 p-2 rounded-md hover:bg-muted/60 transition-colors text-left"
+   409→                  onClick={() => {
+   410→                    if (file.parentId) navigateToFolder(file.parentId);
+   411→                  }}
+   412→                >
+   413→                  {getFileIcon(file.type)}
+   414→                  <div className="flex-1 min-w-0">
+   415→                    <p className="text-sm font-medium truncate">{file.name}</p>
+   416→                    <p className="text-xs text-muted-foreground">{formatDate(file.date)}</p>
+   417→                  </div>
+   418→                  <span className="text-xs text-muted-foreground shrink-0">{formatSize(file.size)}</span>
+   419→                </button>
+   420→              ))}
+   421→            </div>
+   422→          </CardContent>
+   423→        </Card>
+   424→      </div>
+   425→
+   426→      <Separator />
+   427→
+   428→      {/* Toolbar */}
+   429→      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+   430→        {/* Breadcrumbs */}
+   431→        <div className="flex items-center gap-1 text-sm flex-1 min-w-0 overflow-x-auto">
+   432→          {breadcrumbPath.map((crumb, i) => (
+   433→            <span key={crumb.id ?? "root"} className="flex items-center gap-1 shrink-0">
+   434→              {i > 0 && <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
+   435→              <button
+   436→                className={`hover:underline ${crumb.id === currentFolderId ? "font-semibold text-foreground" : "text-muted-foreground"}`}
+   437→                onClick={() => navigateToFolder(crumb.id)}
+   438→              >
+   439→                {i === 0 ? <Folder className="h-3.5 w-3.5 inline mr-0.5" /> : null}
+   440→                {crumb.name}
+   441→              </button>
+   442→            </span>
+   443→          ))}
+   444→        </div>
+   445→
+   446→        <div className="flex items-center gap-2 shrink-0">
+   447→          <div className="relative">
+   448→            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+   449→            <Input
+   450→              placeholder="Rechercher un fichier..."
+   451→              value={searchQuery}
+   452→              onChange={(e) => setSearchQuery(e.target.value)}
+   453→              className="pl-8 h-9 w-52"
+   454→            />
+   455→            {searchQuery && (
+   456→              <button
+   457→                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+   458→                onClick={() => setSearchQuery("")}
+   459→              >
+   460→                <X className="h-3.5 w-3.5" />
+   461→              </button>
+   462→            )}
+   463→          </div>
+   464→          <Button variant="outline" size="sm" onClick={() => setIsCreatingFolder(true)}>
+   465→            <FolderPlus className="h-4 w-4 mr-1.5" />
+   466→            Dossier
+   467→          </Button>
+   468→        </div>
+   469→      </div>
+   470→
+   471→      {/* New folder input */}
+   472→      {isCreatingFolder && (
+   473→        <Card className="border-dashed border-2 border-amber-400/50 bg-amber-50/50 dark:bg-amber-950/20">
+   474→          <CardContent className="p-4 flex items-center gap-2">
+   475→            <Folder className="h-5 w-5 text-amber-500 shrink-0" />
+   476→            <Input
+   477→              placeholder="Nom du nouveau dossier"
+   478→              value={newFolderName}
+   479→              onChange={(e) => setNewFolderName(e.target.value)}
+   480→              onKeyDown={(e) => {
+   481→                if (e.key === "Enter") handleCreateFolder();
+   482→                if (e.key === "Escape") { setIsCreatingFolder(false); setNewFolderName(""); }
+   483→              }}
+   484→              className="h-9"
+   485→              autoFocus
+   486→            />
+   487→            <Button size="sm" onClick={handleCreateFolder}>
+   488→              <Check className="h-4 w-4 mr-1" />
+   489→              Créer
+   490→            </Button>
+   491→            <Button
+   492→              size="sm"
+   493→              variant="ghost"
+   494→              onClick={() => { setIsCreatingFolder(false); setNewFolderName(""); }}
+   495→            >
+   496→              <X className="h-4 w-4" />
+   497→            </Button>
+   498→          </CardContent>
+   499→        </Card>
+   500→      )}
+   501→
+   502→      {/* File content area */}
+   503→      <div className="flex-1">
+   504→        {viewMode === "list" ? (
+   505→          <Card>
+   506→            {/* List header */}
+   507→            <div className="flex items-center px-4 py-2.5 text-xs font-medium text-muted-foreground border-b">
+   508→              <div className="flex-1 min-w-0">Nom</div>
+   509→              <div className="w-28 text-right hidden sm:block">Catégorie</div>
+   510→              <div className="w-20 text-right hidden sm:block">Taille</div>
+   511→              <div className="w-28 text-right hidden md:block">Date</div>
+   512→              <div className="w-10" />
+   513→            </div>
+   514→
+   515→            {/* Folders */}
+   516→            {currentFolders.length > 0 && (
+   517→              <div className="divide-y">
+   518→                {currentFolders.map((folder) => (
+   519→                  <div
+   520→                    key={folder.id}
+   521→                    className="flex items-center px-4 py-2.5 hover:bg-muted/50 transition-colors group"
+   522→                  >
+   523→                    {renamingFolderId === folder.id ? (
+   524→                      <div className="flex items-center gap-2 flex-1">
+   525→                        <Folder className="h-5 w-5 text-amber-500 shrink-0" />
+   526→                        <Input
+   527→                          value={renameValue}
+   528→                          onChange={(e) => setRenameValue(e.target.value)}
+   529→                          onKeyDown={(e) => {
+   530→                            if (e.key === "Enter") handleRenameFolder(folder.id);
+   531→                            if (e.key === "Escape") { setRenamingFolderId(null); setRenameValue(""); }
+   532→                          }}
+   533→                          className="h-8"
+   534→                          autoFocus
+   535→                        />
+   536→                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => handleRenameFolder(folder.id)}>
+   537→                          <Check className="h-3.5 w-3.5" />
+   538→                        </Button>
+   539→                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => { setRenamingFolderId(null); setRenameValue(""); }}>
+   540→                          <X className="h-3.5 w-3.5" />
+   541→                        </Button>
+   542→                      </div>
+   543→                    ) : (
+   544→                      <>
+   545→                        <button
+   546→                          className="flex items-center gap-3 flex-1 min-w-0 text-left"
+   547→                          onClick={() => navigateToFolder(folder.id)}
+   548→                        >
+   549→                          <Folder className="h-5 w-5 text-amber-500 shrink-0" />
+   550→                          <span className="text-sm font-medium truncate">{folder.name}</span>
+   551→                          <Badge variant="secondary" className="text-xs shrink-0 hidden sm:inline-flex">
+   552→                            {folders.filter((f) => f.parentId === folder.id).length +
+   553→                              files.filter((f) => f.parentId === folder.id).length}
+   554→                          </Badge>
+   555→                        </button>
+   556→                        <div className="w-28 hidden sm:block" />
+   557→                        <div className="w-20 hidden sm:block" />
+   558→                        <div className="w-28 hidden md:block" />
+   559→                        <div className="w-10">
+   560→                          <DropdownMenu>
+   561→                            <DropdownMenuTrigger asChild>
+   562→                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
+   563→                                <MoreHorizontal className="h-4 w-4" />
+   564→                              </Button>
+   565→                            </DropdownMenuTrigger>
+   566→                            <DropdownMenuContent align="end">
+   567→                              <DropdownMenuItem onClick={() => { setRenamingFolderId(folder.id); setRenameValue(folder.name); }}>
+   568→                                <Pencil className="h-4 w-4 mr-2" />
+   569→                                Renommer
+   570→                              </DropdownMenuItem>
+   571→                              <DropdownMenuSeparator />
+   572→                              <DropdownMenuItem
+   573→                                className="text-red-600 focus:text-red-600"
+   574→                                onClick={() => handleDeleteFolder(folder.id)}
+   575→                              >
+   576→                                <Trash2 className="h-4 w-4 mr-2" />
+   577→                                Supprimer
+   578→                              </DropdownMenuItem>
+   579→                            </DropdownMenuContent>
+   580→                          </DropdownMenu>
+   581→                        </div>
+   582→                      </>
+   583→                    )}
+   584→                  </div>
+   585→                ))}
+   586→              </div>
+   587→            )}
+   588→
+   589→            {/* Files */}
+   590→            {currentFiles.length > 0 && (
+   591→              <div className="divide-y">
+   592→                {currentFiles.map((file) => (
+   593→                  <div
+   594→                    key={file.id}
+   595→                    className="flex items-center px-4 py-2.5 hover:bg-muted/50 transition-colors group"
+   596→                  >
+   597→                    <div className="flex items-center gap-3 flex-1 min-w-0">
+   598→                      {getFileIcon(file.type)}
+   599→                      <span className="text-sm truncate">{file.name}</span>
+   600→                    </div>
+   601→                    <div className="w-28 text-right hidden sm:block">
+   602→                      <Badge
+   603→                        variant="secondary"
+   604→                        className={`${CATEGORY_CONFIG[file.category].bgClass} ${CATEGORY_CONFIG[file.category].textClass} text-xs`}
+   605→                      >
+   606→                        {file.category}
+   607→                      </Badge>
+   608→                    </div>
+   609→                    <div className="w-20 text-right text-sm text-muted-foreground hidden sm:block">
+   610→                      {formatSize(file.size)}
+   611→                    </div>
+   612→                    <div className="w-28 text-right text-sm text-muted-foreground hidden md:block">
+   613→                      {formatDate(file.date)}
+   614→                    </div>
+   615→                    <div className="w-10">
+   616→                      <DropdownMenu>
+   617→                        <DropdownMenuTrigger asChild>
+   618→                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
+   619→                            <MoreHorizontal className="h-4 w-4" />
+   620→                          </Button>
+   621→                        </DropdownMenuTrigger>
+   622→                        <DropdownMenuContent align="end">
+   623→                          <DropdownMenuItem
+   624→                            className="text-red-600 focus:text-red-600"
+   625→                            onClick={() => handleDeleteFile(file.id)}
+   626→                          >
+   627→                            <Trash2 className="h-4 w-4 mr-2" />
+   628→                            Supprimer
+   629→                          </DropdownMenuItem>
+   630→                        </DropdownMenuContent>
+   631→                      </DropdownMenu>
+   632→                    </div>
+   633→                  </div>
+   634→                ))}
+   635→              </div>
+   636→            )}
+   637→
+   638→            {/* Empty state */}
+   639→            {currentFolders.length === 0 && currentFiles.length === 0 && (
+   640→              <div className="flex flex-col items-center justify-center py-16 text-center">
+   641→                <File className="h-12 w-12 text-muted-foreground/40 mb-3" />
+   642→                <p className="text-sm font-medium text-muted-foreground">
+   643→                  {searchQuery
+   644→                    ? `Aucun fichier trouvé pour « ${searchQuery} »`
+   645→                    : "Ce dossier est vide"}
+   646→                </p>
+   647→                {!searchQuery && (
+   648→                  <p className="text-xs text-muted-foreground/70 mt-1">
+   649→                    Téléversez un fichier ou créez un dossier
+   650→                  </p>
+   651→                )}
+   652→              </div>
+   653→            )}
+   654→          </Card>
+   655→        ) : (
+   656→          /* Grid view */
+   657→          <>
+   658→            {/* Folders grid */}
+   659→            {currentFolders.length > 0 && (
+   660→              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-6">
+   661→                {currentFolders.map((folder) => (
+   662→                  <div key={folder.id} className="group relative">
+   663→                    {renamingFolderId === folder.id ? (
+   664→                      <Card className="border-dashed border-2 border-amber-400/50">
+   665→                        <CardContent className="p-3 flex flex-col gap-2">
+   666→                          <Folder className="h-8 w-8 text-amber-500 mx-auto" />
+   667→                          <Input
+   668→                            value={renameValue}
+   669→                            onChange={(e) => setRenameValue(e.target.value)}
+   670→                            onKeyDown={(e) => {
+   671→                              if (e.key === "Enter") handleRenameFolder(folder.id);
+   672→                              if (e.key === "Escape") { setRenamingFolderId(null); setRenameValue(""); }
+   673→                            }}
+   674→                            className="h-7 text-xs"
+   675→                            autoFocus
+   676→                          />
+   677→                          <div className="flex gap-1">
+   678→                            <Button size="sm" variant="ghost" className="h-6 flex-1 text-xs" onClick={() => handleRenameFolder(folder.id)}>
+   679→                              <Check className="h-3 w-3 mr-1" /> OK
+   680→                            </Button>
+   681→                            <Button size="sm" variant="ghost" className="h-6 flex-1 text-xs" onClick={() => { setRenamingFolderId(null); setRenameValue(""); }}>
+   682→                              <X className="h-3 w-3" />
+   683→                            </Button>
+   684→                          </div>
+   685→                        </CardContent>
+   686→                      </Card>
+   687→                    ) : (
+   688→                      <Card
+   689→                        className="cursor-pointer hover:shadow-md transition-shadow"
+   690→                        onClick={() => navigateToFolder(folder.id)}
+   691→                      >
+   692→                        <CardContent className="p-3 flex flex-col items-center text-center gap-2">
+   693→                          <DropdownMenu>
+   694→                            <DropdownMenuTrigger asChild>
+   695→                              <button className="absolute top-1.5 right-1.5 h-6 w-6 rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-muted transition-all">
+   696→                                <MoreHorizontal className="h-3.5 w-3.5" />
+   697→                              </button>
+   698→                            </DropdownMenuTrigger>
+   699→                            <DropdownMenuContent align="end">
+   700→                              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setRenamingFolderId(folder.id); setRenameValue(folder.name); }}>
+   701→                                <Pencil className="h-4 w-4 mr-2" />
+   702→                                Renommer
+   703→                              </DropdownMenuItem>
+   704→                              <DropdownMenuSeparator />
+   705→                              <DropdownMenuItem
+   706→                                className="text-red-600 focus:text-red-600"
+   707→                                onClick={(e) => { e.stopPropagation(); handleDeleteFolder(folder.id); }}
+   708→                              >
+   709→                                <Trash2 className="h-4 w-4 mr-2" />
+   710→                                Supprimer
+   711→                              </DropdownMenuItem>
+   712→                            </DropdownMenuContent>
+   713→                          </DropdownMenu>
+   714→                          <Folder className="h-10 w-10 text-amber-500" />
+   715→                          <p className="text-xs font-medium truncate w-full">{folder.name}</p>
+   716→                          <Badge variant="secondary" className="text-[10px]">
+   717→                            {folders.filter((f) => f.parentId === folder.id).length +
+   718→                              files.filter((f) => f.parentId === folder.id).length} éléments
+   719→                          </Badge>
+   720→                        </CardContent>
+   721→                      </Card>
+   722→                    )}
+   723→                  </div>
+   724→                ))}
+   725→              </div>
+   726→            )}
+   727→
+   728→            {/* Files grid */}
+   729→            {currentFiles.length > 0 && (
+   730→              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+   731→                {currentFiles.map((file) => (
+   732→                  <Card key={file.id} className="group relative hover:shadow-md transition-shadow">
+   733→                    <DropdownMenu>
+   734→                      <DropdownMenuTrigger asChild>
+   735→                        <button className="absolute top-1.5 right-1.5 z-10 h-6 w-6 rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-muted transition-all">
+   736→                          <MoreHorizontal className="h-3.5 w-3.5" />
+   737→                        </button>
+   738→                      </DropdownMenuTrigger>
+   739→                      <DropdownMenuContent align="end">
+   740→                        <DropdownMenuItem
+   741→                          className="text-red-600 focus:text-red-600"
+   742→                          onClick={() => handleDeleteFile(file.id)}
+   743→                        >
+   744→                          <Trash2 className="h-4 w-4 mr-2" />
+   745→                          Supprimer
+   746→                        </DropdownMenuItem>
+   747→                      </DropdownMenuContent>
+   748→                    </DropdownMenu>
+   749→                    <CardContent className="p-3 flex flex-col items-center text-center gap-2">
+   750→                      <div className={`${CATEGORY_CONFIG[file.category].bgClass} rounded-lg p-3`}>
+   751→                        {getFileIcon(file.type)}
+   752→                      </div>
+   753→                      <p className="text-xs font-medium truncate w-full">{file.name}</p>
+   754→                      <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+   755→                        <span>{formatSize(file.size)}</span>
+   756→                        <span>·</span>
+   757→                        <span>{formatDate(file.date)}</span>
+   758→                      </div>
+   759→                      <Badge
+   760→                        variant="secondary"
+   761→                        className={`${CATEGORY_CONFIG[file.category].bgClass} ${CATEGORY_CONFIG[file.category].textClass} text-[10px]`}
+   762→                      >
+   763→                        {file.category}
+   764→                      </Badge>
+   765→                    </CardContent>
+   766→                  </Card>
+   767→                ))}
+   768→              </div>
+   769→            )}
+   770→
+   771→            {/* Empty state grid */}
+   772→            {currentFolders.length === 0 && currentFiles.length === 0 && (
+   773→              <div className="flex flex-col items-center justify-center py-16 text-center">
+   774→                <File className="h-12 w-12 text-muted-foreground/40 mb-3" />
+   775→                <p className="text-sm font-medium text-muted-foreground">
+   776→                  {searchQuery
+   777→                    ? `Aucun fichier trouvé pour « ${searchQuery} »`
+   778→                    : "Ce dossier est vide"}
+   779→                </p>
+   780→                {!searchQuery && (
+   781→                  <p className="text-xs text-muted-foreground/70 mt-1">
+   782→                    Téléversez un fichier ou créez un dossier
+   783→                  </p>
+   784→                )}
+   785→              </div>
+   786→            )}
+   787→          </>
+   788→        )}
+   789→      </div>
+   790→
+   791→      <Separator />
+   792→
+   793→      {/* Upload area */}
+   794→      <Card>
+   795→        <CardHeader className="pb-3">
+   796→          <CardTitle className="text-base font-semibold flex items-center gap-2">
+   797→            <Upload className="h-4 w-4 text-emerald-600" />
+   798→            Téléverser un fichier
+   799→          </CardTitle>
+   800→        </CardHeader>
+   801→        <CardContent>
+   802→          <div className="flex flex-col sm:flex-row gap-3">
+   803→            <Input
+   804→              placeholder="nom-du-fichier.pdf"
+   805→              value={uploadName}
+   806→              onChange={(e) => setUploadName(e.target.value)}
+   807→              onKeyDown={(e) => {
+   808→                if (e.key === "Enter") handleUpload();
+   809→              }}
+   810→              className="h-9 flex-1"
+   811→            />
+   812→            <Button onClick={handleUpload} disabled={isUploading || !uploadName.trim()}>
+   813→              {isUploading ? (
+   814→                <>
+   815→                  <Upload className="h-4 w-4 mr-1.5 animate-pulse" />
+   816→                  Téléversement...
+   817→                </>
+   818→              ) : (
+   819→                <>
+   820→                  <Upload className="h-4 w-4 mr-1.5" />
+   821→                  Téléverser
+   822→                </>
+   823→              )}
+   824→            </Button>
+   825→          </div>
+   826→          <p className="text-xs text-muted-foreground mt-2">
+   827→            Saisissez un nom de fichier avec son extension (ex : rapport.pdf, donnees.csv, script.py). Le fichier sera classé automatiquement par catégorie.
+   828→          </p>
+   829→        </CardContent>
+   830→      </Card>
+   831→    </div>
+   832→  );
+   833→}
+   834→

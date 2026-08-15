@@ -1,0 +1,1013 @@
+    70→
+    71→interface NotebookEntry {
+    72→  id: string;
+    73→  question: string;
+    74→  answer: string;
+    75→  tags?: string | null;
+    76→  sourceId?: string | null;
+    77→  source?: { id: string; title: string; type: string } | null;
+    78→  createdAt: string;
+    79→  updatedAt: string;
+    80→}
+    81→
+    82→// ═══════════════════════════════════════
+    83→// Constants
+    84→// ═══════════════════════════════════════
+    85→
+    86→const SOURCE_TYPES = [
+    87→  { value: "article", label: "Article" },
+    88→  { value: "book", label: "Livre" },
+    89→  { value: "thesis", label: "Thèse" },
+    90→  { value: "report", label: "Rapport" },
+    91→] as const;
+    92→
+    93→const SOURCE_TYPE_COLORS: Record<string, string> = {
+    94→  article: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    95→  book: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+    96→  thesis: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+    97→  report: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+    98→};
+    99→
+   100→const AI_CONSENSUS_MODES = [
+   101→  {
+   102→    id: "scientific-writing",
+   103→    label: "Rédaction",
+   104→    icon: PenTool,
+   105→    description: "Rédaction scientifique académique",
+   106→  },
+   107→  {
+   108→    id: "peer-review",
+   109→    label: "Revue critique",
+   110→    icon: SearchCheck,
+   111→    description: "Relecture critique et évaluation",
+   112→  },
+   113→  {
+   114→    id: "hypothesis",
+   115→    label: "Suggestion",
+   116→    icon: Lightbulb,
+   117→    description: "Suggestions et hypothèses de recherche",
+   118→  },
+   119→] as const;
+   120→
+   121→// ═══════════════════════════════════════
+   122→// Main Page
+   123→// ═══════════════════════════════════════
+   124→
+   125→export function AiToolsPage() {
+   126→  return (
+   127→    <div className="flex flex-col gap-6 p-6 max-w-6xl mx-auto w-full">
+   128→      {/* Header */}
+   129→      <div className="flex flex-col gap-2">
+   130→        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+   131→          <Wrench className="h-6 w-6 text-primary" />
+   132→          Outils IA
+   133→        </h1>
+   134→        <p className="text-sm text-muted-foreground">
+   135→          Carnet de recherche, consensus multi-sources et visualisation
+   136→        </p>
+   137→      </div>
+   138→
+   139→      {/* Tabs */}
+   140→      <Tabs defaultValue="notebook" className="w-full">
+   141→        <TabsList className="w-full justify-start">
+   142→          <TabsTrigger value="notebook" className="gap-2">
+   143→            <BookOpen className="h-4 w-4" />
+   144→            Carnet de recherche
+   145→          </TabsTrigger>
+   146→          <TabsTrigger value="consensus" className="gap-2">
+   147→            <GitCompareArrows className="h-4 w-4" />
+   148→            Consensus IA
+   149→          </TabsTrigger>
+   150→          <TabsTrigger value="visualization" className="gap-2">
+   151→            <Network className="h-4 w-4" />
+   152→            Visualisation
+   153→          </TabsTrigger>
+   154→        </TabsList>
+   155→
+   156→        <TabsContent value="notebook" className="mt-4">
+   157→          <ResearchNotebookTab />
+   158→        </TabsContent>
+   159→        <TabsContent value="consensus" className="mt-4">
+   160→          <AiConsensusTab />
+   161→        </TabsContent>
+   162→        <TabsContent value="visualization" className="mt-4">
+   163→          <VisualizationTab />
+   164→        </TabsContent>
+   165→      </Tabs>
+   166→    </div>
+   167→  );
+   168→}
+   169→
+   170→// ═══════════════════════════════════════
+   171→// Tab 1: Carnet de recherche
+   172→// ═══════════════════════════════════════
+   173→
+   174→function ResearchNotebookTab() {
+   175→  const queryClient = useQueryClient();
+   176→  const [addSourceOpen, setAddSourceOpen] = useState(false);
+   177→  const [addEntryOpen, setAddEntryOpen] = useState(false);
+   178→
+   179→  // ─── Fetch Sources ───
+   180→  const { data: sources, isLoading: sourcesLoading } = useQuery({
+   181→    queryKey: ["sources"],
+   182→    queryFn: async () => {
+   183→      const res = await fetch("/api/sources");
+   184→      const json = await res.json();
+   185→      return json.data as ResearchSource[];
+   186→    },
+   187→  });
+   188→
+   189→  // ─── Fetch Entries ───
+   190→  const { data: entries, isLoading: entriesLoading } = useQuery({
+   191→    queryKey: ["entries"],
+   192→    queryFn: async () => {
+   193→      const res = await fetch("/api/entries");
+   194→      const json = await res.json();
+   195→      return json.data as NotebookEntry[];
+   196→    },
+   197→  });
+   198→
+   199→  // ─── Create Source ───
+   200→  const createSource = useMutation({
+   201→    mutationFn: async (data: {
+   202→      title: string;
+   203→      authors: string;
+   204→      year: string;
+   205→      type: string;
+   206→      url: string;
+   207→      notes: string;
+   208→    }) => {
+   209→      const payload: Record<string, unknown> = {
+   210→        title: data.title,
+   211→        type: data.type,
+   212→      };
+   213→      if (data.authors.trim()) payload.authors = data.authors.trim();
+   214→      if (data.year) payload.year = parseInt(data.year, 10);
+   215→      if (data.url.trim()) payload.url = data.url.trim();
+   216→      if (data.notes.trim()) payload.notes = data.notes.trim();
+   217→
+   218→      const res = await fetch("/api/sources", {
+   219→        method: "POST",
+   220→        headers: { "Content-Type": "application/json" },
+   221→        body: JSON.stringify(payload),
+   222→      });
+   223→      if (!res.ok) {
+   224→        const err = await res.json();
+   225→        throw new Error(err.error || "Erreur lors de la création");
+   226→      }
+   227→      return res.json();
+   228→    },
+   229→    onSuccess: () => {
+   230→      queryClient.invalidateQueries({ queryKey: ["sources"] });
+   231→      setAddSourceOpen(false);
+   232→      toast.success("Source ajoutée avec succès");
+   233→    },
+   234→    onError: (err) => {
+   235→      toast.error(err.message);
+   236→    },
+   237→  });
+   238→
+   239→  // ─── Create Entry ───
+   240→  const createEntry = useMutation({
+   241→    mutationFn: async (data: {
+   242→      question: string;
+   243→      answer: string;
+   244→      tags: string;
+   245→      sourceId: string;
+   246→    }) => {
+   247→      const payload: Record<string, unknown> = {
+   248→        question: data.question,
+   249→        answer: data.answer,
+   250→      };
+   251→      if (data.tags.trim()) payload.tags = data.tags.trim();
+   252→      if (data.sourceId) payload.sourceId = data.sourceId;
+   253→
+   254→      const res = await fetch("/api/entries", {
+   255→        method: "POST",
+   256→        headers: { "Content-Type": "application/json" },
+   257→        body: JSON.stringify(payload),
+   258→      });
+   259→      if (!res.ok) {
+   260→        const err = await res.json();
+   261→        throw new Error(err.error || "Erreur lors de la création");
+   262→      }
+   263→      return res.json();
+   264→    },
+   265→    onSuccess: () => {
+   266→      queryClient.invalidateQueries({ queryKey: ["entries"] });
+   267→      queryClient.invalidateQueries({ queryKey: ["sources"] });
+   268→      setAddEntryOpen(false);
+   269→      toast.success("Entrée ajoutée avec succès");
+   270→    },
+   271→    onError: (err) => {
+   272→      toast.error(err.message);
+   273→    },
+   274→  });
+   275→
+   276→  // ─── Delete Source ───
+   277→  const deleteSource = useMutation({
+   278→    mutationFn: async (id: string) => {
+   279→      await fetch(`/api/sources/${id}`, { method: "DELETE" });
+   280→    },
+   281→    onSuccess: () => {
+   282→      queryClient.invalidateQueries({ queryKey: ["sources"] });
+   283→      toast.success("Source supprimée");
+   284→    },
+   285→  });
+   286→
+   287→  // ─── Delete Entry ───
+   288→  const deleteEntry = useMutation({
+   289→    mutationFn: async (id: string) => {
+   290→      await fetch(`/api/entries/${id}`, { method: "DELETE" });
+   291→    },
+   292→    onSuccess: () => {
+   293→      queryClient.invalidateQueries({ queryKey: ["entries"] });
+   294→      queryClient.invalidateQueries({ queryKey: ["sources"] });
+   295→      toast.success("Entrée supprimée");
+   296→    },
+   297→  });
+   298→
+   299→  return (
+   300→    <div className="flex flex-col gap-6">
+   301→      {/* Sources Section */}
+   302→      <div className="flex flex-col gap-4">
+   303→        <div className="flex items-center justify-between">
+   304→          <h2 className="text-lg font-semibold flex items-center gap-2">
+   305→            <StickyNote className="h-5 w-5 text-primary" />
+   306→            Sources de recherche
+   307→            {sources && (
+   308→              <Badge variant="secondary" className="text-[10px] h-5">
+   309→                {sources.length}
+   310→              </Badge>
+   311→            )}
+   312→          </h2>
+   313→          <Dialog open={addSourceOpen} onOpenChange={setAddSourceOpen}>
+   314→            <DialogTrigger asChild>
+   315→              <Button className="gap-2" size="sm">
+   316→                <Plus className="h-4 w-4" />
+   317→                Ajouter une source
+   318→              </Button>
+   319→            </DialogTrigger>
+   320→            <DialogContent className="sm:max-w-[500px]">
+   321→              <DialogHeader>
+   322→                <DialogTitle>Nouvelle source de recherche</DialogTitle>
+   323→                <DialogDescription>
+   324→                  Ajoutez une source à votre carnet de recherche
+   325→                </DialogDescription>
+   326→              </DialogHeader>
+   327→              <AddSourceForm
+   328→                onSubmit={(data) => createSource.mutate(data)}
+   329→                isPending={createSource.isPending}
+   330→              />
+   331→            </DialogContent>
+   332→          </Dialog>
+   333→        </div>
+   334→
+   335→        {/* Sources Grid */}
+   336→        {sourcesLoading ? (
+   337→          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+   338→            {[1, 2, 3].map((i) => (
+   339→              <Skeleton key={i} className="h-36 rounded-lg" />
+   340→            ))}
+   341→          </div>
+   342→        ) : sources && sources.length > 0 ? (
+   343→          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+   344→            {sources.map((source) => (
+   345→              <Card key={source.id} className="flex flex-col">
+   346→                <CardHeader className="pb-2">
+   347→                  <div className="flex items-start justify-between gap-2">
+   348→                    <div className="flex-1 min-w-0">
+   349→                      <CardTitle className="text-sm leading-tight line-clamp-2">
+   350→                        {source.title}
+   351→                      </CardTitle>
+   352→                      {source.authors && (
+   353→                        <CardDescription className="text-xs mt-1 truncate">
+   354→                          {source.authors}
+   355→                        </CardDescription>
+   356→                      )}
+   357→                    </div>
+   358→                    <Button
+   359→                      variant="ghost"
+   360→                      size="icon"
+   361→                      className="h-7 w-7 shrink-0"
+   362→                      onClick={() => deleteSource.mutate(source.id)}
+   363→                    >
+   364→                      <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+   365→                    </Button>
+   366→                  </div>
+   367→                </CardHeader>
+   368→                <CardContent className="flex flex-col gap-2 flex-1">
+   369→                  <div className="flex items-center gap-2">
+   370→                    <Badge
+   371→                      variant="secondary"
+   372→                      className={`text-[10px] h-5 ${
+   373→                        SOURCE_TYPE_COLORS[source.type] || ""
+   374→                      }`}
+   375→                    >
+   376→                      {SOURCE_TYPES.find((t) => t.value === source.type)?.label ||
+   377→                        source.type}
+   378→                    </Badge>
+   379→                    {source.year && (
+   380→                      <span className="text-xs text-muted-foreground tabular-nums">
+   381→                        {source.year}
+   382→                      </span>
+   383→                    )}
+   384→                    {source._count && source._count.entries > 0 && (
+   385→                      <Badge variant="outline" className="text-[10px] h-5">
+   386→                        {source._count.entries}{" "}
+   387→                        {source._count.entries > 1 ? "entrées" : "entrée"}
+   388→                      </Badge>
+   389→                    )}
+   390→                  </div>
+   391→                  {source.notes && (
+   392→                    <p className="text-xs text-muted-foreground line-clamp-2 flex-1">
+   393→                      {source.notes}
+   394→                    </p>
+   395→                  )}
+   396→                </CardContent>
+   397→              </Card>
+   398→            ))}
+   399→          </div>
+   400→        ) : (
+   401→          <Card>
+   402→            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+   403→              <BookOpen className="h-10 w-10 text-muted-foreground/30 mb-3" />
+   404→              <h3 className="text-sm font-medium">Aucune source de recherche</h3>
+   405→              <p className="text-xs text-muted-foreground mt-1">
+   406→                Ajoutez votre première source pour commencer votre carnet de recherche
+   407→              </p>
+   408→            </CardContent>
+   409→          </Card>
+   410→        )}
+   411→      </div>
+   412→
+   413→      <Separator />
+   414→
+   415→      {/* Notebook Entries Section */}
+   416→      <div className="flex flex-col gap-4">
+   417→        <div className="flex items-center justify-between">
+   418→          <h2 className="text-lg font-semibold flex items-center gap-2">
+   419→            <FileQuestion className="h-5 w-5 text-primary" />
+   420→            Notes et questions
+   421→            {entries && (
+   422→              <Badge variant="secondary" className="text-[10px] h-5">
+   423→                {entries.length}
+   424→              </Badge>
+   425→            )}
+   426→          </h2>
+   427→          <Dialog open={addEntryOpen} onOpenChange={setAddEntryOpen}>
+   428→            <DialogTrigger asChild>
+   429→              <Button className="gap-2" size="sm">
+   430→                <Plus className="h-4 w-4" />
+   431→                Ajouter une entrée
+   432→              </Button>
+   433→            </DialogTrigger>
+   434→            <DialogContent className="sm:max-w-[500px]">
+   435→              <DialogHeader>
+   436→                <DialogTitle>Nouvelle entrée de carnet</DialogTitle>
+   437→                <DialogDescription>
+   438→                  Notez une question, une observation ou une idée de recherche
+   439→                </DialogDescription>
+   440→              </DialogHeader>
+   441→              <AddEntryForm
+   442→                sources={sources || []}
+   443→                onSubmit={(data) => createEntry.mutate(data)}
+   444→                isPending={createEntry.isPending}
+   445→              />
+   446→            </DialogContent>
+   447→          </Dialog>
+   448→        </div>
+   449→
+   450→        {/* Entries List */}
+   451→        {entriesLoading ? (
+   452→          <div className="space-y-3">
+   453→            {[1, 2, 3].map((i) => (
+   454→              <Skeleton key={i} className="h-24 rounded-lg" />
+   455→            ))}
+   456→          </div>
+   457→        ) : entries && entries.length > 0 ? (
+   458→          <div className="flex flex-col gap-3 max-h-[600px] overflow-y-auto pr-1">
+   459→            {entries.map((entry) => (
+   460→              <Card key={entry.id}>
+   461→                <CardContent className="p-4">
+   462→                  <div className="flex items-start justify-between gap-3">
+   463→                    <div className="flex-1 min-w-0">
+   464→                      <p className="text-sm font-semibold leading-tight">
+   465→                        {entry.question}
+   466→                      </p>
+   467→                      <p className="text-xs text-muted-foreground mt-2 whitespace-pre-wrap line-clamp-3">
+   468→                        {entry.answer}
+   469→                      </p>
+   470→                      <div className="flex items-center gap-2 mt-3 flex-wrap">
+   471→                        {entry.tags &&
+   472→                          entry.tags.split(",").map((tag, i) => (
+   473→                            <Badge
+   474→                              key={i}
+   475→                              variant="outline"
+   476→                              className="text-[10px] h-5"
+   477→                            >
+   478→                              {tag.trim()}
+   479→                            </Badge>
+   480→                          ))}
+   481→                        {entry.source && (
+   482→                          <Badge
+   483→                            variant="secondary"
+   484→                            className="text-[10px] h-5 gap-1"
+   485→                          >
+   486→                            <BookOpen className="h-3 w-3" />
+   487→                            {entry.source.title.length > 30
+   488→                              ? entry.source.title.substring(0, 30) + "..."
+   489→                              : entry.source.title}
+   490→                          </Badge>
+   491→                        )}
+   492→                      </div>
+   493→                    </div>
+   494→                    <Button
+   495→                      variant="ghost"
+   496→                      size="icon"
+   497→                      className="h-7 w-7 shrink-0"
+   498→                      onClick={() => deleteEntry.mutate(entry.id)}
+   499→                    >
+   500→                      <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+   501→                    </Button>
+   502→                  </div>
+   503→                </CardContent>
+   504→              </Card>
+   505→            ))}
+   506→          </div>
+   507→        ) : (
+   508→          <Card>
+   509→            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+   510→              <FileQuestion className="h-10 w-10 text-muted-foreground/30 mb-3" />
+   511→              <h3 className="text-sm font-medium">Aucune note</h3>
+   512→              <p className="text-xs text-muted-foreground mt-1">
+   513→                Ajoutez des questions, observations et idées de recherche
+   514→              </p>
+   515→            </CardContent>
+   516→          </Card>
+   517→        )}
+   518→      </div>
+   519→    </div>
+   520→  );
+   521→}
+   522→
+   523→// ═══════════════════════════════════════
+   524→// Add Source Form
+   525→// ═══════════════════════════════════════
+   526→
+   527→function AddSourceForm({
+   528→  onSubmit,
+   529→  isPending,
+   530→}: {
+   531→  onSubmit: (data: {
+   532→    title: string;
+   533→    authors: string;
+   534→    year: string;
+   535→    type: string;
+   536→    url: string;
+   537→    notes: string;
+   538→  }) => void;
+   539→  isPending: boolean;
+   540→}) {
+   541→  const [form, setForm] = useState({
+   542→    title: "",
+   543→    authors: "",
+   544→    year: "",
+   545→    type: "article" as string,
+   546→    url: "",
+   547→    notes: "",
+   548→  });
+   549→
+   550→  const handleChange = (key: string, value: string) => {
+   551→    setForm((prev) => ({ ...prev, [key]: value }));
+   552→  };
+   553→
+   554→  return (
+   555→    <div className="grid gap-4 py-4">
+   556→      <div className="grid gap-2">
+   557→        <label className="text-sm font-medium">Titre *</label>
+   558→        <Input
+   559→          placeholder="Titre de la source"
+   560→          value={form.title}
+   561→          onChange={(e) => handleChange("title", e.target.value)}
+   562→        />
+   563→      </div>
+   564→      <div className="grid gap-2">
+   565→        <label className="text-sm font-medium">Auteurs</label>
+   566→        <Input
+   567→          placeholder="Nom, Prénom (séparés par ;)"
+   568→          value={form.authors}
+   569→          onChange={(e) => handleChange("authors", e.target.value)}
+   570→        />
+   571→      </div>
+   572→      <div className="grid grid-cols-2 gap-4">
+   573→        <div className="grid gap-2">
+   574→          <label className="text-sm font-medium">Année</label>
+   575→          <Input
+   576→            placeholder="2024"
+   577→            value={form.year}
+   578→            onChange={(e) => handleChange("year", e.target.value)}
+   579→          />
+   580→        </div>
+   581→        <div className="grid gap-2">
+   582→          <label className="text-sm font-medium">Type *</label>
+   583→          <Select value={form.type} onValueChange={(v) => handleChange("type", v)}>
+   584→            <SelectTrigger>
+   585→              <SelectValue />
+   586→            </SelectTrigger>
+   587→            <SelectContent>
+   588→              {SOURCE_TYPES.map((t) => (
+   589→                <SelectItem key={t.value} value={t.value}>
+   590→                  {t.label}
+   591→                </SelectItem>
+   592→              ))}
+   593→            </SelectContent>
+   594→          </Select>
+   595→        </div>
+   596→      </div>
+   597→      <div className="grid gap-2">
+   598→        <label className="text-sm font-medium">URL</label>
+   599→        <Input
+   600→          placeholder="https://..."
+   601→          value={form.url}
+   602→          onChange={(e) => handleChange("url", e.target.value)}
+   603→        />
+   604→      </div>
+   605→      <div className="grid gap-2">
+   606→        <label className="text-sm font-medium">Notes</label>
+   607→        <Textarea
+   608→          placeholder="Notes sur cette source..."
+   609→          value={form.notes}
+   610→          onChange={(e) => handleChange("notes", e.target.value)}
+   611→          rows={3}
+   612→          className="resize-none"
+   613→        />
+   614→      </div>
+   615→      <DialogFooter>
+   616→        <Button
+   617→          onClick={() => onSubmit(form)}
+   618→          disabled={!form.title.trim() || isPending}
+   619→        >
+   620→          {isPending ? "Ajout..." : "Ajouter"}
+   621→        </Button>
+   622→      </DialogFooter>
+   623→    </div>
+   624→  );
+   625→}
+   626→
+   627→// ═══════════════════════════════════════
+   628→// Add Entry Form
+   629→// ═══════════════════════════════════════
+   630→
+   631→function AddEntryForm({
+   632→  sources,
+   633→  onSubmit,
+   634→  isPending,
+   635→}: {
+   636→  sources: ResearchSource[];
+   637→  onSubmit: (data: {
+   638→    question: string;
+   639→    answer: string;
+   640→    tags: string;
+   641→    sourceId: string;
+   642→  }) => void;
+   643→  isPending: boolean;
+   644→}) {
+   645→  const [form, setForm] = useState({
+   646→    question: "",
+   647→    answer: "",
+   648→    tags: "",
+   649→    sourceId: "",
+   650→  });
+   651→
+   652→  const handleChange = (key: string, value: string) => {
+   653→    setForm((prev) => ({ ...prev, [key]: value }));
+   654→  };
+   655→
+   656→  return (
+   657→    <div className="grid gap-4 py-4">
+   658→      <div className="grid gap-2">
+   659→        <label className="text-sm font-medium">Question *</label>
+   660→        <Input
+   661→          placeholder="Quelle est votre question de recherche ?"
+   662→          value={form.question}
+   663→          onChange={(e) => handleChange("question", e.target.value)}
+   664→        />
+   665→      </div>
+   666→      <div className="grid gap-2">
+   667→        <label className="text-sm font-medium">Réponse / Notes *</label>
+   668→        <Textarea
+   669→          placeholder="Documentez votre réflexion, observation ou réponse..."
+   670→          value={form.answer}
+   671→          onChange={(e) => handleChange("answer", e.target.value)}
+   672→          rows={4}
+   673→          className="resize-none"
+   674→        />
+   675→      </div>
+   676→      <div className="grid grid-cols-2 gap-4">
+   677→        <div className="grid gap-2">
+   678→          <label className="text-sm font-medium">Tags (séparés par ,)</label>
+   679→          <Input
+   680→            placeholder="méthodologie, échantillon"
+   681→            value={form.tags}
+   682→            onChange={(e) => handleChange("tags", e.target.value)}
+   683→          />
+   684→        </div>
+   685→        <div className="grid gap-2">
+   686→          <label className="text-sm font-medium">Source associée</label>
+   687→          <Select value={form.sourceId} onValueChange={(v) => handleChange("sourceId", v)}>
+   688→            <SelectTrigger>
+   689→              <SelectValue placeholder="Aucune" />
+   690→            </SelectTrigger>
+   691→            <SelectContent>
+   692→              <SelectItem value="none">Aucune source</SelectItem>
+   693→              {sources.map((s) => (
+   694→                <SelectItem key={s.id} value={s.id}>
+   695→                  {s.title.length > 40 ? s.title.substring(0, 40) + "..." : s.title}
+   696→                </SelectItem>
+   697→              ))}
+   698→            </SelectContent>
+   699→          </Select>
+   700→        </div>
+   701→      </div>
+   702→      <DialogFooter>
+   703→        <Button
+   704→          onClick={() => onSubmit(form)}
+   705→          disabled={!form.question.trim() || !form.answer.trim() || isPending}
+   706→        >
+   707→          {isPending ? "Ajout..." : "Ajouter"}
+   708→        </Button>
+   709→      </DialogFooter>
+   710→    </div>
+   711→  );
+   712→}
+   713→
+   714→// ═══════════════════════════════════════
+   715→// Tab 2: Consensus IA
+   716→// ═══════════════════════════════════════
+   717→
+   718→function AiConsensusTab() {
+   719→  const [prompt, setPrompt] = useState("");
+   720→  const [selectedModes, setSelectedModes] = useState<Set<string>>(
+   721→    new Set(["scientific-writing", "peer-review"])
+   722→  );
+   723→  const [results, setResults] = useState<
+   724→    Array<{ mode: string; content: string }>
+   725→  >([]);
+   726→  const [isComparing, setIsComparing] = useState(false);
+   727→
+   728→  const toggleMode = (modeId: string) => {
+   729→    setSelectedModes((prev) => {
+   730→      const next = new Set(prev);
+   731→      if (next.has(modeId)) {
+   732→        next.delete(modeId);
+   733→      } else {
+   734→        next.add(modeId);
+   735→      }
+   736→      return next;
+   737→    });
+   738→  };
+   739→
+   740→  const handleCompare = async () => {
+   741→    if (!prompt.trim() || selectedModes.size === 0) return;
+   742→
+   743→    setIsComparing(true);
+   744→    setResults([]);
+   745→    const newResults: Array<{ mode: string; content: string }> = [];
+   746→
+   747→    for (const modeId of selectedModes) {
+   748→      try {
+   749→        const res = await fetch("/api/ai-writing", {
+   750→          method: "POST",
+   751→          headers: { "Content-Type": "application/json" },
+   752→          body: JSON.stringify({ mode: modeId, prompt: prompt.trim() }),
+   753→        });
+   754→        if (!res.ok) {
+   755→          const err = await res.json();
+   756→          newResults.push({
+   757→            mode: modeId,
+   758→            content: `Erreur : ${err.error || "Erreur de génération"}`,
+   759→          });
+   760→        } else {
+   761→          const json = await res.json();
+   762→          newResults.push({
+   763→            mode: modeId,
+   764→            content: json.data.content,
+   765→          });
+   766→        }
+   767→      } catch {
+   768→        newResults.push({
+   769→          mode: modeId,
+   770→          content: "Erreur de connexion au service IA",
+   771→        });
+   772→      }
+   773→    }
+   774→
+   775→    setResults(newResults);
+   776→    setIsComparing(false);
+   777→  };
+   778→
+   779→  const getModeInfo = (modeId: string) =>
+   780→    AI_CONSENSUS_MODES.find((m) => m.id === modeId);
+   781→
+   782→  return (
+   783→    <div className="flex flex-col gap-6">
+   784→      {/* Input Section */}
+   785→      <Card>
+   786→        <CardHeader className="pb-3">
+   787→          <CardTitle className="text-sm flex items-center gap-2">
+   788→            <MessageSquare className="h-4 w-4" />
+   789→            Comparaison multi-modes
+   790→          </CardTitle>
+   791→          <CardDescription className="text-xs">
+   792→            Saisissez un texte ou une question et comparez les réponses de plusieurs modes IA
+   793→          </CardDescription>
+   794→        </CardHeader>
+   795→        <CardContent className="flex flex-col gap-4">
+   796→          <Textarea
+   797→            placeholder="Saisissez votre texte, question ou extrait à analyser..."
+   798→            value={prompt}
+   799→            onChange={(e) => setPrompt(e.target.value)}
+   800→            rows={5}
+   801→            className="resize-none text-sm"
+   802→            disabled={isComparing}
+   803→          />
+   804→
+   805→          {/* Mode Selection */}
+   806→          <div className="flex flex-col gap-2">
+   807→            <label className="text-sm font-medium">Modes IA à comparer</label>
+   808→            <div className="flex flex-wrap gap-2">
+   809→              {AI_CONSENSUS_MODES.map((mode) => {
+   810→                const Icon = mode.icon;
+   811→                const isSelected = selectedModes.has(mode.id);
+   812→                return (
+   813→                  <button
+   814→                    key={mode.id}
+   815→                    onClick={() => toggleMode(mode.id)}
+   816→                    className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-all hover:bg-muted/50 ${
+   817→                      isSelected
+   818→                        ? "border-primary bg-primary/5 text-primary"
+   819→                        : "border-border text-muted-foreground"
+   820→                    }`}
+   821→                  >
+   822→                    <Icon className="h-4 w-4" />
+   823→                    {mode.label}
+   824→                  </button>
+   825→                );
+   826→              })}
+   827→            </div>
+   828→          </div>
+   829→
+   830→          <div className="flex items-center justify-between">
+   831→            <span className="text-xs text-muted-foreground">
+   832→              {selectedModes.size} mode(s) sélectionné(s) · {prompt.length} caractères
+   833→            </span>
+   834→            <Button
+   835→              onClick={handleCompare}
+   836→              disabled={!prompt.trim() || selectedModes.size === 0 || isComparing}
+   837→              className="gap-2"
+   838→            >
+   839→              {isComparing ? (
+   840→                <>
+   841→                  <Loader2 className="h-4 w-4 animate-spin" />
+   842→                  Analyse en cours...
+   843→                </>
+   844→              ) : (
+   845→                <>
+   846→                  <GitCompareArrows className="h-4 w-4" />
+   847→                  Comparer
+   848→                </>
+   849→              )}
+   850→            </Button>
+   851→          </div>
+   852→        </CardContent>
+   853→      </Card>
+   854→
+   855→      {/* Results */}
+   856→      {isComparing && (
+   857→        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+   858→          {Array.from(selectedModes).map((modeId) => {
+   859→            const mode = getModeInfo(modeId);
+   860→            return (
+   861→              <Card key={modeId}>
+   862→                <CardHeader className="pb-3">
+   863→                  <CardTitle className="text-sm flex items-center gap-2">
+   864→                    {mode && <mode.icon className="h-4 w-4" />}
+   865→                    {mode?.label || modeId}
+   866→                  </CardTitle>
+   867→                </CardHeader>
+   868→                <CardContent>
+   869→                  <div className="space-y-2">
+   870→                    <Skeleton className="h-4 w-3/4" />
+   871→                    <Skeleton className="h-4 w-full" />
+   872→                    <Skeleton className="h-4 w-5/6" />
+   873→                    <Skeleton className="h-4 w-2/3" />
+   874→                  </div>
+   875→                </CardContent>
+   876→              </Card>
+   877→            );
+   878→          })}
+   879→        </div>
+   880→      )}
+   881→
+   882→      {results.length > 0 && !isComparing && (
+   883→        <>
+   884→          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+   885→            {results.map((result) => {
+   886→              const mode = getModeInfo(result.mode);
+   887→              return (
+   888→                <Card key={result.mode}>
+   889→                  <CardHeader className="pb-3">
+   890→                    <CardTitle className="text-sm flex items-center gap-2">
+   891→                      {mode && <mode.icon className="h-4 w-4 text-primary" />}
+   892→                      {mode?.label || result.mode}
+   893→                    </CardTitle>
+   894→                  </CardHeader>
+   895→                  <CardContent>
+   896→                    <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+   897→                      {result.content.split("\n").map((line, i) => {
+   898→                        if (line.trim() === "") return <br key={i} />;
+   899→                        return <p key={i}>{line}</p>;
+   900→                      })}
+   901→                    </div>
+   902→                  </CardContent>
+   903→                </Card>
+   904→              );
+   905→            })}
+   906→          </div>
+   907→
+   908→          {/* Synthèse */}
+   909→          {results.length >= 2 && (
+   910→            <Card className="border-primary/30 bg-primary/5">
+   911→              <CardHeader className="pb-3">
+   912→                <CardTitle className="text-sm flex items-center gap-2">
+   913→                  <Sparkles className="h-4 w-4 text-primary" />
+   914→                  Synthèse comparative
+   915→                </CardTitle>
+   916→                <CardDescription className="text-xs">
+   917→                  Vue d&apos;ensemble des réponses des {results.length} modes IA sélectionnés
+   918→                </CardDescription>
+   919→              </CardHeader>
+   920→              <CardContent>
+   921→                <div className="flex flex-col gap-3">
+   922→                  {results.map((result) => {
+   923→                    const mode = getModeInfo(result.mode);
+   924→                    const preview =
+   925→                      result.content.length > 150
+   926→                        ? result.content.substring(0, 150) + "..."
+   927→                        : result.content;
+   928→                    return (
+   929→                      <div
+   930→                        key={result.mode}
+   931→                        className="flex items-start gap-3 p-3 rounded-lg bg-background/50"
+   932→                      >
+   933→                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+   934→                          {mode && <mode.icon className="h-4 w-4 text-primary" />}
+   935→                        </div>
+   936→                        <div className="flex-1 min-w-0">
+   937→                          <p className="text-xs font-semibold">
+   938→                            {mode?.label || result.mode}
+   939→                          </p>
+   940→                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+   941→                            {preview.split("\n").filter((l) => l.trim())[0] || preview}
+   942→                          </p>
+   943→                        </div>
+   944→                      </div>
+   945→                    );
+   946→                  })}
+   947→                  <div className="flex items-center gap-2 pt-2">
+   948→                    <Eye className="h-4 w-4 text-muted-foreground" />
+   949→                    <p className="text-xs text-muted-foreground">
+   950→                      Consultez les réponses détaillées ci-dessus pour analyser les convergences
+   951→                      et divergences entre les modes
+   952→                    </p>
+   953→                  </div>
+   954→                </div>
+   955→              </CardContent>
+   956→            </Card>
+   957→          )}
+   958→        </>
+   959→      )}
+   960→    </div>
+   961→  );
+   962→}
+   963→
+   964→// ═══════════════════════════════════════
+   965→// Tab 3: Visualisation (Placeholder)
+   966→// ═══════════════════════════════════════
+   967→
+   968→function VisualizationTab() {
+   969→  return (
+   970→    <div className="flex flex-col gap-6">
+   971→      {/* Placeholder Card */}
+   972→      <Card className="border-dashed">
+   973→        <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+   974→          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-4">
+   975→            <Brain className="h-8 w-8 text-primary" />
+   976→          </div>
+   977→          <h2 className="text-lg font-semibold">Visualisation de connaissances</h2>
+   978→          <p className="text-sm text-muted-foreground mt-2 max-w-md">
+   979→            Cartographie conceptuelle générée par IA à partir de vos sources et notes de recherche.
+   980→            Visualisez les liens entre concepts, auteurs et théories.
+   981→          </p>
+   982→          <Badge variant="secondary" className="mt-4 gap-1.5">
+   983→            <Sparkles className="h-3 w-3" />
+   984→            Bientôt disponible
+   985→          </Badge>
+   986→        </CardContent>
+   987→      </Card>
+   988→
+   989→      {/* Feature Preview Skeleton */}
+   990→      <Card>
+   991→        <CardHeader className="pb-3">
+   992→          <CardTitle className="text-sm flex items-center gap-2">
+   993→            <Network className="h-4 w-4 text-primary" />
+   994→            Aperçu de la fonctionnalité
+   995→          </CardTitle>
+   996→          <CardDescription className="text-xs">
+   997→            Cette fonctionnalité sera disponible dans une prochaine version
+   998→          </CardDescription>
+   999→        </CardHeader>
+  1000→        <CardContent>
+  1001→          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+  1002→            {/* Concept Map Skeleton */}
+  1003→            <Card className="border-dashed">
+  1004→              <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+  1005→                <Network className="h-10 w-10 text-muted-foreground/30 mb-3" />
+  1006→                <p className="text-xs font-medium text-muted-foreground">
+  1007→                  Carte conceptuelle
+  1008→                </p>
+  1009→                <p className="text-[10px] text-muted-foreground/70 mt-1">
+  1010→                  Visualisation graphique des liens entre concepts
+  1011→                </p>
+  1012→                <div className="mt-4 flex gap-2 flex-wrap justify-center">
+  1013→                  <Skeleton className="h-5 w-16 rounded-full" />
+  1014→                  <Skeleton className="h-5 w-20 rounded-full" />
+  1015→                  <Skeleton className="h-5 w-14 rounded-full" />
+  1016→                  <Skeleton className="h-5 w-18 rounded-full" />
+  1017→                </div>
+  1018→              </CardContent>
+  1019→            </Card>
+  1020→
+  1021→            {/* Author Network Skeleton */}
+  1022→            <Card className="border-dashed">
+  1023→              <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+  1024→                <Brain className="h-10 w-10 text-muted-foreground/30 mb-3" />
+  1025→                <p className="text-xs font-medium text-muted-foreground">
+  1026→                  Réseau d&apos;auteurs
+  1027→                </p>
+  1028→                <p className="text-[10px] text-muted-foreground/70 mt-1">
+  1029→                  Co-citations et influences entre chercheurs
+  1030→                </p>
+  1031→                <div className="mt-4 flex gap-3 justify-center">
+  1032→                  <Skeleton className="h-8 w-8 rounded-full" />
+  1033→                  <Skeleton className="h-8 w-8 rounded-full" />
+  1034→                  <Skeleton className="h-8 w-8 rounded-full" />
+  1035→                  <Skeleton className="h-8 w-8 rounded-full" />
+  1036→                </div>
+  1037→              </CardContent>
+  1038→            </Card>
+  1039→
+  1040→            {/* Timeline Skeleton */}
+  1041→            <Card className="border-dashed">
+  1042→              <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+  1043→                <Eye className="h-10 w-10 text-muted-foreground/30 mb-3" />
+  1044→                <p className="text-xs font-medium text-muted-foreground">
+  1045→                  Chronologie thématique
+  1046→                </p>
+  1047→                <p className="text-[10px] text-muted-foreground/70 mt-1">
+  1048→                  Évolution des concepts dans le temps
+  1049→                </p>
+  1050→                <div className="mt-4 flex flex-col gap-1.5 w-full max-w-[140px]">
+  1051→                  <Skeleton className="h-2 w-full rounded" />
+  1052→                  <Skeleton className="h-2 w-3/4 rounded" />
+  1053→                  <Skeleton className="h-2 w-5/6 rounded" />
+  1054→                  <Skeleton className="h-2 w-2/3 rounded" />
+  1055→                </div>
+  1056→              </CardContent>
+  1057→            </Card>
+  1058→          </div>
+  1059→        </CardContent>
+  1060→      </Card>
+  1061→
+  1062→      {/* Info Card */}
+  1063→      <Card className="bg-muted/30">
+  1064→        <CardContent className="p-4">
+  1065→          <div className="flex items-start gap-3">
+  1066→            <Lightbulb className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+  1067→            <div className="flex-1">
+  1068→              <p className="text-sm font-medium">Conseil pour la visualisation</p>
+  1069→              <p className="text-xs text-muted-foreground mt-1">
+  1070→                Pour tirer le meilleur parti de cette fonctionnalité à venir, commencez par
+  1071→                alimenter votre carnet de recherche avec des sources et des notes dans
+  1072→                l&apos;onglet &quot;Carnet de recherche&quot;. Plus vous ajouterez de contenu,
+  1073→                plus les visualisations seront riches et pertinentes.
+  1074→              </p>
+  1075→            </div>
+  1076→          </div>
+  1077→        </CardContent>
+  1078→      </Card>
+  1079→    </div>
+  1080→  );
+  1081→}
+  1082→

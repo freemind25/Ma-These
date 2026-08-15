@@ -1,0 +1,760 @@
+   598→      );
+   599→    } finally {
+   600→      setConsistencyLoading(false);
+   601→    }
+   602→  }, [consistencyValues]);
+   603→
+   604→  /* ══════════════════════════════════════════════════════════
+   605→     Report Generation Logic
+   606→     ══════════════════════════════════════════════════════════ */
+   607→
+   608→  const generateReport = useCallback(() => {
+   609→    const lines: string[] = [];
+   610→    const now = new Date().toLocaleDateString("fr-FR", {
+   611→      dateStyle: "full",
+   612→    });
+   613→
+   614→    lines.push("═══════════════════════════════════════════════");
+   615→    lines.push("  RAPPORT D'AUDIT MÉTHODOLOGIQUE — ThesisFrame");
+   616→    lines.push("═══════════════════════════════════════════════");
+   617→    lines.push(`Date : ${now}`);
+   618→    lines.push("");
+   619→
+   620→    // Overall score
+   621→    lines.push("── SCORE GLOBAL ─────────────────────────────");
+   622→    const badge = scoreBadge(overallScore);
+   623→    lines.push(`Note : ${overallScore}/100 — ${badge.label}`);
+   624→    lines.push(`Sections évaluées : ${sectionScores.filter((s) => s.assessed).length}/${AUDIT_SECTIONS.length}`);
+   625→    lines.push(`Critères évalués : ${assessedCount.assessed}/${assessedCount.total}`);
+   626→    lines.push("");
+   627→
+   628→    // Per-section scores
+   629→    lines.push("── SCORES PAR SECTION ────────────────────────");
+   630→    sectionScores.forEach((sec) => {
+   631→      const mark = sec.assessed ? `${sec.score}/100` : "Non évalué";
+   632→      lines.push(`  • ${sec.title} : ${mark}`);
+   633→    });
+   634→    lines.push("");
+   635→
+   636→    // Detailed audit
+   637→    lines.push("── DÉTAIL DE L'AUDIT ──────────────────────────");
+   638→    AUDIT_SECTIONS.forEach((section) => {
+   639→      lines.push(`\n▶ ${section.title}`);
+   640→      lines.push(`  ${section.description}`);
+   641→      section.items.forEach((item) => {
+   642→        const status = auditStatus[item.id];
+   643→        const statusLabel =
+   644→          status === "valid"
+   645→            ? "✓ Conforme"
+   646→            : status === "partial"
+   647→              ? "◐ Partiellement"
+   648→              : status === "invalid"
+   649→                ? "✗ Non conforme"
+   650→                : "— Non évalué";
+   651→        lines.push(`  ${statusLabel} | ${item.label}`);
+   652→      });
+   653→    });
+   654→
+   655→    // AI results
+   656→    if (aiResult) {
+   657→      lines.push("\n── ANALYSE IA ─────────────────────────────");
+   658→      lines.push(`Score IA : ${aiResult.overallScore}/100`);
+   659→      lines.push("\nForces identifiées :");
+   660→      aiResult.strengths.forEach((s) => lines.push(`  + ${s}`));
+   661→      lines.push("\nFaiblesses détectées :");
+   662→      aiResult.weaknesses.forEach((w) => lines.push(`  - ${w}`));
+   663→      lines.push("\nRecommandations :");
+   664→      aiResult.recommendations.forEach((r) => lines.push(`  → ${r}`));
+   665→      lines.push("\nRisques identifiés :");
+   666→      aiResult.risks.forEach((r) => lines.push(`  ⚠ ${r}`));
+   667→    }
+   668→
+   669→    // Consistency
+   670→    if (consistencyResult) {
+   671→      lines.push("\n── VÉRIFICATION DE COHÉRENCE ────────────────");
+   672→      lines.push(consistencyResult);
+   673→    }
+   674→
+   675→    lines.push("\n═══════════════════════════════════════════════");
+   676→    lines.push("  Rapport généré par ThesisFrame");
+   677→    lines.push("═══════════════════════════════════════════════");
+   678→
+   679→    return lines.join("\n");
+   680→  }, [auditStatus, aiResult, consistencyResult, overallScore, sectionScores, assessedCount]);
+   681→
+   682→  const downloadReport = useCallback(() => {
+   683→    const report = generateReport();
+   684→    const blob = new Blob([report], { type: "text/plain;charset=utf-8" });
+   685→    const url = URL.createObjectURL(blob);
+   686→    const a = document.createElement("a");
+   687→    a.href = url;
+   688→    a.download = `audit-methodo-${new Date().toISOString().slice(0, 10)}.txt`;
+   689→    a.click();
+   690→    URL.revokeObjectURL(url);
+   691→  }, [generateReport]);
+   692→
+   693→  /* ═══════════════════════════════════════════════════════════════
+   694→     Render
+   695→     ═══════════════════════════════════════════════════════════════ */
+   696→
+   697→  return (
+   698→    <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+   699→      {/* ─── Header ─── */}
+   700→      <div>
+   701→        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+   702→          <ShieldCheck className="h-6 w-6 text-primary" />
+   703→          Vérification méthodologique
+   704→        </h1>
+   705→        <p className="text-sm text-muted-foreground mt-1">
+   706→          Auditez, vérifiez et améliorez la rigueur méthodologique de votre thèse
+   707→          grâce à un contrôle complet et à l'analyse IA
+   708→        </p>
+   709→      </div>
+   710→
+   711→      <Separator />
+   712→
+   713→      {/* ─── Tabs ─── */}
+   714→      <Tabs defaultValue="audit" className="flex flex-col gap-6">
+   715→        <TabsList className="w-full flex flex-wrap h-auto gap-1 p-1">
+   716→          <TabsTrigger value="audit" className="flex items-center gap-2 text-xs sm:text-sm">
+   717→            <ShieldCheck className="h-4 w-4" />
+   718→            Audit
+   719→          </TabsTrigger>
+   720→          <TabsTrigger value="ai-verify" className="flex items-center gap-2 text-xs sm:text-sm">
+   721→            <Brain className="h-4 w-4" />
+   722→            Vérification IA
+   723→          </TabsTrigger>
+   724→          <TabsTrigger value="consistency" className="flex items-center gap-2 text-xs sm:text-sm">
+   725→            <Link2 className="h-4 w-4" />
+   726→            Cohérence
+   727→          </TabsTrigger>
+   728→          <TabsTrigger value="progress" className="flex items-center gap-2 text-xs sm:text-sm">
+   729→            <BarChart3 className="h-4 w-4" />
+   730→            Suivi
+   731→          </TabsTrigger>
+   732→          <TabsTrigger value="report" className="flex items-center gap-2 text-xs sm:text-sm">
+   733→            <FileText className="h-4 w-4" />
+   734→            Rapport
+   735→          </TabsTrigger>
+   736→        </TabsList>
+   737→
+   738→        {/* ═══════════════════════════════════════════════════
+   739→            TAB 1 : Audit méthodologique
+   740→            ═══════════════════════════════════════════════════ */}
+   741→        <TabsContent value="audit" className="flex flex-col gap-6">
+   742→          {/* Overall progress card */}
+   743→          <Card>
+   744→            <CardHeader className="pb-3">
+   745→              <div className="flex items-center justify-between flex-wrap gap-2">
+   746→                <div>
+   747→                  <CardTitle className="text-base">Progression de l'audit</CardTitle>
+   748→                  <CardDescription>
+   749→                    Cliquez sur chaque critère pour changer son statut : ✓ → ◐ → ✗ → —
+   750→                  </CardDescription>
+   751→                </div>
+   752→                <div className="flex items-center gap-3">
+   753→                  <Badge variant={scoreBadge(overallScore).variant}>
+   754→                    {overallScore}/100 — {scoreBadge(overallScore).label}
+   755→                  </Badge>
+   756→                  <span className="text-xs text-muted-foreground">
+   757→                    {assessedCount.assessed}/{assessedCount.total} critères
+   758→                  </span>
+   759→                </div>
+   760→              </div>
+   761→            </CardHeader>
+   762→            <CardContent>
+   763→              <Progress value={overallScore} className="h-3" />
+   764→              <div className="flex items-center gap-4 mt-4 flex-wrap">
+   765→                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+   766→                  <CheckCircle2 className="h-3.5 w-3.5 text-chart-1" /> Conforme
+   767→                </div>
+   768→                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+   769→                  <AlertTriangle className="h-3.5 w-3.5 text-chart-3" /> Partiellement
+   770→                </div>
+   771→                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+   772→                  <XCircle className="h-3.5 w-3.5 text-chart-4" /> Non conforme
+   773→                </div>
+   774→                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+   775→                  <span className="text-muted-foreground">—</span> Non évalué
+   776→                </div>
+   777→              </div>
+   778→            </CardContent>
+   779→          </Card>
+   780→
+   781→          {/* Per-section accordion */}
+   782→          <Accordion
+   783→            type="multiple"
+   784→            value={expandedSections}
+   785→            onValueChange={setExpandedSections}
+   786→            className="flex flex-col gap-3"
+   787→          >
+   788→            {AUDIT_SECTIONS.map((section) => {
+   789→              const SectionIcon = section.icon;
+   790→              const secScore = sectionScores.find((s) => s.id === section.id);
+   791→              const secBadge = secScore ? scoreBadge(secScore.score) : null;
+   792→
+   793→              return (
+   794→                <AccordionItem
+   795→                  key={section.id}
+   796→                  value={section.id}
+   797→                  className="border rounded-lg px-4"
+   798→                >
+   799→                  <AccordionTrigger className="hover:no-underline">
+   800→                    <div className="flex items-center gap-3 flex-1 pr-4">
+   801→                      <SectionIcon className="h-4 w-4 text-primary shrink-0" />
+   802→                      <div className="flex flex-col items-start gap-1 flex-1 min-w-0">
+   803→                        <span className="text-sm font-semibold truncate">
+   804→                          {section.title}
+   805→                        </span>
+   806→                        <span className="text-xs text-muted-foreground hidden sm:block">
+   807→                          {section.description}
+   808→                        </span>
+   809→                      </div>
+   810→                      {secScore?.assessed && secBadge && (
+   811→                        <div className="flex items-center gap-2 shrink-0">
+   812→                          <Progress value={secScore.score} className="h-1.5 w-16" />
+   813→                          <Badge variant={secBadge.variant} className="text-[10px] shrink-0">
+   814→                            {secScore.score}%
+   815→                          </Badge>
+   816→                        </div>
+   817→                      )}
+   818→                    </div>
+   819→                  </AccordionTrigger>
+   820→                  <AccordionContent>
+   821→                    <div className="flex flex-col gap-2 pt-2">
+   822→                      {section.items.map((item) => {
+   823→                        const status = auditStatus[item.id] || "na";
+   824→                        return (
+   825→                          <button
+   826→                            key={item.id}
+   827→                            onClick={() => cycleStatus(item.id)}
+   828→                            className={`
+   829→                              flex items-start gap-3 rounded-lg border p-3 text-left
+   830→                              transition-colors w-full cursor-pointer
+   831→                              ${status === "valid"
+   832→                                ? "bg-chart-1/5 border-chart-1/30"
+   833→                                : status === "partial"
+   834→                                  ? "bg-chart-3/5 border-chart-3/30"
+   835→                                  : status === "invalid"
+   836→                                    ? "bg-chart-4/5 border-chart-4/30"
+   837→                                    : "hover:bg-accent"
+   838→                              }
+   839→                            `}
+   840→                          >
+   841→                            <div className="mt-0.5 shrink-0">
+   842→                              {statusIcon(status)}
+   843→                            </div>
+   844→                            <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+   845→                              <div className="flex items-center gap-2 flex-wrap">
+   846→                                <span className="text-sm">{item.label}</span>
+   847→                                {item.weight >= 3 && (
+   848→                                  <Badge variant="outline" className="text-[10px] shrink-0">
+   849→                                    Critique
+   850→                                  </Badge>
+   851→                                )}
+   852→                              </div>
+   853→                              <span className="text-xs text-muted-foreground">
+   854→                                {item.helpText}
+   855→                              </span>
+   856→                            </div>
+   857→                          </button>
+   858→                        );
+   859→                      })}
+   860→                    </div>
+   861→                  </AccordionContent>
+   862→                </AccordionItem>
+   863→              );
+   864→            })}
+   865→          </Accordion>
+   866→        </TabsContent>
+   867→
+   868→        {/* ═══════════════════════════════════════════════════
+   869→            TAB 2 : Vérification IA
+   870→            ═══════════════════════════════════════════════════ */}
+   871→        <TabsContent value="ai-verify" className="flex flex-col gap-6">
+   872→          <Card>
+   873→            <CardHeader>
+   874→              <div className="flex items-center gap-3">
+   875→                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+   876→                  <Brain className="h-5 w-5 text-primary" />
+   877→                </div>
+   878→                <div>
+   879→                  <CardTitle className="text-base">Analyse IA de la méthodologie</CardTitle>
+   880→                  <CardDescription>
+   881→                    Collez votre texte méthodologique pour obtenir une analyse détaillée
+   882→                    des forces, faiblesses et risques
+   883→                  </CardDescription>
+   884→                </div>
+   885→              </div>
+   886→            </CardHeader>
+   887→            <CardContent className="flex flex-col gap-4">
+   888→              <Textarea
+   889→                placeholder="Collez ici le texte de votre méthodologie de recherche (question de recherche, cadre théorique, méthode de collecte, méthode d'analyse, considérations éthiques...)"
+   890→                value={methodologyText}
+   891→                onChange={(e) => setMethodologyText(e.target.value)}
+   892→                className="min-h-[200px] resize-y"
+   893→              />
+   894→              <div className="flex items-center gap-3">
+   895→                <Button
+   896→                  onClick={runAiVerification}
+   897→                  disabled={aiLoading || !methodologyText.trim()}
+   898→                  className="gap-2"
+   899→                >
+   900→                  {aiLoading ? (
+   901→                    <Loader2 className="h-4 w-4 animate-spin" />
+   902→                  ) : (
+   903→                    <ArrowRight className="h-4 w-4" />
+   904→                  )}
+   905→                  {aiLoading ? "Analyse en cours..." : "Lancer l'analyse IA"}
+   906→                </Button>
+   907→                <Button
+   908→                  variant="outline"
+   909→                  onClick={() => {
+   910→                    setMethodologyText("");
+   911→                    setAiResult(null);
+   912→                    setAiError(null);
+   913→                  }}
+   914→                  className="gap-2"
+   915→                >
+   916→                  <RefreshCcw className="h-4 w-4" />
+   917→                  Réinitialiser
+   918→                </Button>
+   919→                <span className="text-xs text-muted-foreground">
+   920→                  {methodologyText.length > 0 &&
+   921→                    `${methodologyText.length} caractères`}
+   922→                </span>
+   923→              </div>
+   924→            </CardContent>
+   925→          </Card>
+   926→
+   927→          {aiError && (
+   928→            <Card className="border-chart-4/30 bg-chart-4/5">
+   929→              <CardContent className="flex items-start gap-3 pt-4">
+   930→                <AlertOctagon className="h-5 w-5 text-chart-4 shrink-0" />
+   931→                <div>
+   932→                  <p className="text-sm font-medium text-chart-4">Erreur</p>
+   933→                  <p className="text-xs text-muted-foreground mt-1">{aiError}</p>
+   934→                </div>
+   935→              </CardContent>
+   936→            </Card>
+   937→          )}
+   938→
+   939→          {aiResult && (
+   940→            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+   941→              {/* Overall AI Score */}
+   942→              <Card className="lg:col-span-2">
+   943→                <CardContent className="pt-4">
+   944→                  <div className="flex items-center justify-between flex-wrap gap-3">
+   945→                    <div className="flex items-center gap-3">
+   946→                      <TrendingUp className={`h-5 w-5 ${scoreColor(aiResult.overallScore)}`} />
+   947→                      <span className="text-sm font-medium">Score global IA</span>
+   948→                    </div>
+   949→                    <div className="flex items-center gap-3">
+   950→                      <Progress
+   951→                        value={aiResult.overallScore}
+   952→                        className="h-3 w-48"
+   953→                      />
+   954→                      <Badge variant={scoreBadge(aiResult.overallScore).variant}>
+   955→                        {aiResult.overallScore}/100
+   956→                      </Badge>
+   957→                    </div>
+   958→                  </div>
+   959→                </CardContent>
+   960→              </Card>
+   961→
+   962→              {/* Strengths */}
+   963→              <Card>
+   964→                <CardHeader className="pb-3">
+   965→                  <CardTitle className="text-sm flex items-center gap-2 text-chart-1">
+   966→                    <CheckCircle2 className="h-4 w-4" />
+   967→                    Forces identifiées ({aiResult.strengths.length})
+   968→                  </CardTitle>
+   969→                </CardHeader>
+   970→                <CardContent>
+   971→                  <ul className="flex flex-col gap-2">
+   972→                    {aiResult.strengths.map((s, i) => (
+   973→                      <li key={i} className="flex items-start gap-2 text-sm">
+   974→                        <span className="text-chart-1 font-bold shrink-0">+</span>
+   975→                        <span>{s}</span>
+   976→                      </li>
+   977→                    ))}
+   978→                  </ul>
+   979→                </CardContent>
+   980→              </Card>
+   981→
+   982→              {/* Weaknesses */}
+   983→              <Card>
+   984→                <CardHeader className="pb-3">
+   985→                  <CardTitle className="text-sm flex items-center gap-2 text-chart-4">
+   986→                    <AlertTriangle className="h-4 w-4" />
+   987→                    Faiblesses détectées ({aiResult.weaknesses.length})
+   988→                  </CardTitle>
+   989→                </CardHeader>
+   990→                <CardContent>
+   991→                  <ul className="flex flex-col gap-2">
+   992→                    {aiResult.weaknesses.map((w, i) => (
+   993→                      <li key={i} className="flex items-start gap-2 text-sm">
+   994→                        <span className="text-chart-4 font-bold shrink-0">−</span>
+   995→                        <span>{w}</span>
+   996→                      </li>
+   997→                    ))}
+   998→                  </ul>
+   999→                </CardContent>
+  1000→              </Card>
+  1001→
+  1002→              {/* Recommendations */}
+  1003→              <Card>
+  1004→                <CardHeader className="pb-3">
+  1005→                  <CardTitle className="text-sm flex items-center gap-2">
+  1006→                    <Lightbulb className="h-4 w-4 text-chart-2" />
+  1007→                    Recommandations ({aiResult.recommendations.length})
+  1008→                  </CardTitle>
+  1009→                </CardHeader>
+  1010→                <CardContent>
+  1011→                  <ul className="flex flex-col gap-2">
+  1012→                    {aiResult.recommendations.map((r, i) => (
+  1013→                      <li key={i} className="flex items-start gap-2 text-sm">
+  1014→                        <ArrowRight className="h-3.5 w-3.5 text-chart-2 mt-0.5 shrink-0" />
+  1015→                        <span>{r}</span>
+  1016→                      </li>
+  1017→                    ))}
+  1018→                  </ul>
+  1019→                </CardContent>
+  1020→              </Card>
+  1021→
+  1022→              {/* Risks */}
+  1023→              <Card className="border-chart-4/20">
+  1024→                <CardHeader className="pb-3">
+  1025→                  <CardTitle className="text-sm flex items-center gap-2 text-chart-4">
+  1026→                    <AlertOctagon className="h-4 w-4" />
+  1027→                    Risques identifiés ({aiResult.risks.length})
+  1028→                  </CardTitle>
+  1029→                </CardHeader>
+  1030→                <CardContent>
+  1031→                  <ul className="flex flex-col gap-2">
+  1032→                    {aiResult.risks.map((r, i) => (
+  1033→                      <li key={i} className="flex items-start gap-2 text-sm">
+  1034→                        <span className="text-chart-4 font-bold shrink-0">⚠</span>
+  1035→                        <span>{r}</span>
+  1036→                      </li>
+  1037→                    ))}
+  1038→                  </ul>
+  1039→                </CardContent>
+  1040→              </Card>
+  1041→            </div>
+  1042→          )}
+  1043→        </TabsContent>
+  1044→
+  1045→        {/* ═══════════════════════════════════════════════════
+  1046→            TAB 3 : Vérificateur de cohérence
+  1047→            ═══════════════════════════════════════════════════ */}
+  1048→        <TabsContent value="consistency" className="flex flex-col gap-6">
+  1049→          <Card>
+  1050→            <CardHeader>
+  1051→              <div className="flex items-center gap-3">
+  1052→                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+  1053→                  <Link2 className="h-5 w-5 text-primary" />
+  1054→                </div>
+  1055→                <div>
+  1056→                  <CardTitle className="text-base">Vérificateur de cohérence</CardTitle>
+  1057→                  <CardDescription>
+  1058→                    Vérifiez que vos choix méthodologiques sont alignés entre eux
+  1059→                    et cohérents avec votre paradigme de recherche
+  1060→                  </CardDescription>
+  1061→                </div>
+  1062→              </div>
+  1063→            </CardHeader>
+  1064→            <CardContent className="flex flex-col gap-4">
+  1065→              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  1066→                {CONSISTENCY_FIELDS.map((field) => (
+  1067→                  <div key={field.id} className="flex flex-col gap-1.5">
+  1068→                    <label className="text-sm font-medium">{field.label}</label>
+  1069→                    <Textarea
+  1070→                      placeholder={`Décrivez : ${field.label.toLowerCase()}`}
+  1071→                      value={consistencyValues[field.id]}
+  1072→                      onChange={(e) =>
+  1073→                        setConsistencyValues((prev) => ({
+  1074→                          ...prev,
+  1075→                          [field.id]: e.target.value,
+  1076→                        }))
+  1077→                      }
+  1078→                      className="min-h-[60px] resize-y text-sm"
+  1079→                    />
+  1080→                  </div>
+  1081→                ))}
+  1082→              </div>
+  1083→
+  1084→              <div className="flex items-center gap-3">
+  1085→                <Button
+  1086→                  onClick={runConsistencyCheck}
+  1087→                  disabled={consistencyLoading}
+  1088→                  className="gap-2"
+  1089→                >
+  1090→                  {consistencyLoading ? (
+  1091→                    <Loader2 className="h-4 w-4 animate-spin" />
+  1092→                  ) : (
+  1093→                    <Link2 className="h-4 w-4" />
+  1094→                  )}
+  1095→                  {consistencyLoading
+  1096→                    ? "Vérification en cours..."
+  1097→                    : "Vérifier la cohérence"}
+  1098→                </Button>
+  1099→                <Button
+  1100→                  variant="outline"
+  1101→                  onClick={() => {
+  1102→                    const empty = Object.fromEntries(
+  1103→                      CONSISTENCY_FIELDS.map((f) => [f.id, ""])
+  1104→                    );
+  1105→                    setConsistencyValues(empty);
+  1106→                    setConsistencyResult(null);
+  1107→                  }}
+  1108→                  className="gap-2"
+  1109→                >
+  1110→                  <RefreshCcw className="h-4 w-4" />
+  1111→                  Réinitialiser
+  1112→                </Button>
+  1113→                <span className="text-xs text-muted-foreground">
+  1114→                  Remplissez au moins 2 champs pour lancer la vérification
+  1115→                </span>
+  1116→              </div>
+  1117→            </CardContent>
+  1118→          </Card>
+  1119→
+  1120→          {consistencyResult && (
+  1121→            <Card>
+  1122→              <CardHeader className="pb-3">
+  1123→                <CardTitle className="text-base flex items-center gap-2">
+  1124→                  <Link2 className="h-4 w-4 text-primary" />
+  1125→                  Résultat de la vérification de cohérence
+  1126→                </CardTitle>
+  1127→              </CardHeader>
+  1128→              <CardContent>
+  1129→                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-line leading-relaxed">
+  1130→                  {consistencyResult}
+  1131→                </div>
+  1132→              </CardContent>
+  1133→            </Card>
+  1134→          )}
+  1135→        </TabsContent>
+  1136→
+  1137→        {/* ═══════════════════════════════════════════════════
+  1138→            TAB 4 : Suivi de progression
+  1139→            ═══════════════════════════════════════════════════ */}
+  1140→        <TabsContent value="progress" className="flex flex-col gap-6">
+  1141→          {/* Overall score hero */}
+  1142→          <Card>
+  1143→            <CardContent className="pt-6 flex flex-col items-center gap-4 text-center">
+  1144→              <div
+  1145→                className={`flex h-24 w-24 items-center justify-center rounded-full border-4 ${overallScore >= 80 ? "border-chart-1 text-chart-1" : overallScore >= 50 ? "border-chart-3 text-chart-3" : "border-chart-4 text-chart-4"}`}
+  1146→              >
+  1147→                <span className="text-3xl font-bold">{overallScore}</span>
+  1148→              </div>
+  1149→              <div>
+  1150→                <p className="text-lg font-semibold">Score méthodologique global</p>
+  1151→                <p className="text-sm text-muted-foreground mt-1">
+  1152→                  Basé sur {sectionScores.filter((s) => s.assessed).length} section(s) évaluée(s)
+  1153→                  — {assessedCount.assessed} critères sur {assessedCount.total}
+  1154→                </p>
+  1155→              </div>
+  1156→              <Badge variant={scoreBadge(overallScore).variant} className="text-sm px-4 py-1">
+  1157→                {scoreBadge(overallScore).label}
+  1158→              </Badge>
+  1159→            </CardContent>
+  1160→          </Card>
+  1161→
+  1162→          {/* Per-section progress bars */}
+  1163→          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  1164→            {AUDIT_SECTIONS.map((section) => {
+  1165→              const secScore = sectionScores.find((s) => s.id === section.id);
+  1166→              const SectionIcon = section.icon;
+  1167→              const barColor =
+  1168→                secScore && secScore.score >= 80
+  1169→                  ? "bg-chart-1"
+  1170→                  : secScore && secScore.score >= 50
+  1171→                    ? "bg-chart-3"
+  1172→                    : "bg-chart-4";
+  1173→
+  1174→              return (
+  1175→                <Card key={section.id}>
+  1176→                  <CardHeader className="pb-2">
+  1177→                    <div className="flex items-center justify-between">
+  1178→                      <CardTitle className="text-sm flex items-center gap-2">
+  1179→                        <SectionIcon className="h-4 w-4 text-primary" />
+  1180→                        {section.title}
+  1181→                      </CardTitle>
+  1182→                      <Badge
+  1183→                        variant={
+  1184→                          secScore?.assessed
+  1185→                            ? scoreBadge(secScore.score).variant
+  1186→                            : "outline"
+  1187→                        }
+  1188→                        className="text-[10px]"
+  1189→                      >
+  1190→                        {secScore?.assessed ? `${secScore.score}%` : "—"}
+  1191→                      </Badge>
+  1192→                    </div>
+  1193→                  </CardHeader>
+  1194→                  <CardContent>
+  1195→                    <div className="flex flex-col gap-1.5">
+  1196→                      <div className="relative h-3 w-full rounded-full bg-muted overflow-hidden">
+  1197→                        <div
+  1198→                          className={`absolute inset-y-0 left-0 rounded-full transition-all duration-500 ${barColor}`}
+  1199→                          style={{
+  1200→                            width: secScore?.assessed ? `${secScore.score}%` : "0%",
+  1201→                          }}
+  1202→                        />
+  1203→                      </div>
+  1204→                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+  1205→                        <span>
+  1206→                          {section.items.filter(
+  1207→                            (i) =>
+  1208→                              auditStatus[i.id] &&
+  1209→                              auditStatus[i.id] !== "na"
+  1210→                          ).length}{" "}
+  1211→                          / {section.items.length} critères
+  1212→                        </span>
+  1213→                        <span className={secScore?.assessed ? scoreColor(secScore.score) : ""}>
+  1214→                          {secScore?.assessed
+  1215→                            ? scoreBadge(secScore.score).label
+  1216→                            : "En attente"}
+  1217→                        </span>
+  1218→                      </div>
+  1219→                    </div>
+  1220→                  </CardContent>
+  1221→                </Card>
+  1222→              );
+  1223→            })}
+  1224→          </div>
+  1225→
+  1226→          {/* Summary statistics */}
+  1227→          <Card>
+  1228→            <CardHeader className="pb-3">
+  1229→              <CardTitle className="text-base">Statistiques de l'audit</CardTitle>
+  1230→            </CardHeader>
+  1231→            <CardContent>
+  1232→              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+  1233→                <div className="flex flex-col items-center gap-1 p-3 rounded-lg bg-chart-1/5 border border-chart-1/20">
+  1234→                  <span className="text-2xl font-bold text-chart-1">
+  1235→                    {Object.values(auditStatus).filter((s) => s === "valid").length}
+  1236→                  </span>
+  1237→                  <span className="text-xs text-muted-foreground">Conformes</span>
+  1238→                </div>
+  1239→                <div className="flex flex-col items-center gap-1 p-3 rounded-lg bg-chart-3/5 border border-chart-3/20">
+  1240→                  <span className="text-2xl font-bold text-chart-3">
+  1241→                    {Object.values(auditStatus).filter((s) => s === "partial").length}
+  1242→                  </span>
+  1243→                  <span className="text-xs text-muted-foreground">Partiels</span>
+  1244→                </div>
+  1245→                <div className="flex flex-col items-center gap-1 p-3 rounded-lg bg-chart-4/5 border border-chart-4/20">
+  1246→                  <span className="text-2xl font-bold text-chart-4">
+  1247→                    {Object.values(auditStatus).filter((s) => s === "invalid").length}
+  1248→                  </span>
+  1249→                  <span className="text-xs text-muted-foreground">Non conformes</span>
+  1250→                </div>
+  1251→                <div className="flex flex-col items-center gap-1 p-3 rounded-lg bg-muted border">
+  1252→                  <span className="text-2xl font-bold">
+  1253→                    {AUDIT_SECTIONS.reduce(
+  1254→                      (t, s) => t + s.items.filter((i) => !auditStatus[i.id]).length,
+  1255→                      0
+  1256→                    )}
+  1257→                  </span>
+  1258→                  <span className="text-xs text-muted-foreground">Non évalués</span>
+  1259→                </div>
+  1260→              </div>
+  1261→            </CardContent>
+  1262→          </Card>
+  1263→        </TabsContent>
+  1264→
+  1265→        {/* ═══════════════════════════════════════════════════
+  1266→            TAB 5 : Rapport d'audit
+  1267→            ═══════════════════════════════════════════════════ */}
+  1268→        <TabsContent value="report" className="flex flex-col gap-6">
+  1269→          <Card>
+  1270→            <CardHeader>
+  1271→              <div className="flex items-center justify-between flex-wrap gap-3">
+  1272→                <div className="flex items-center gap-3">
+  1273→                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+  1274→                    <FileText className="h-5 w-5 text-primary" />
+  1275→                  </div>
+  1276→                  <div>
+  1277→                    <CardTitle className="text-base">Rapport d'audit méthodologique</CardTitle>
+  1278→                    <CardDescription>
+  1279→                      Générez et téléchargez un rapport complet de votre audit
+  1280→                    </CardDescription>
+  1281→                  </div>
+  1282→                </div>
+  1283→                <div className="flex items-center gap-2">
+  1284→                  <Button onClick={downloadReport} className="gap-2">
+  1285→                    <Download className="h-4 w-4" />
+  1286→                    Télécharger le rapport
+  1287→                  </Button>
+  1288→                  <Button
+  1289→                    variant="outline"
+  1290→                    size="sm"
+  1291→                    onClick={() => setReportExpanded(!reportExpanded)}
+  1292→                    className="gap-1"
+  1293→                  >
+  1294→                    {reportExpanded ? (
+  1295→                      <ChevronUp className="h-4 w-4" />
+  1296→                    ) : (
+  1297→                      <ChevronDown className="h-4 w-4" />
+  1298→                    )}
+  1299→                    Aperçu
+  1300→                  </Button>
+  1301→                </div>
+  1302→              </div>
+  1303→            </CardHeader>
+  1304→            <CardContent>
+  1305→              {/* Report info cards */}
+  1306→              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+  1307→                <div className="flex flex-col gap-0.5 p-3 rounded-lg bg-muted">
+  1308→                  <span className="text-xs text-muted-foreground">Score global</span>
+  1309→                  <span className={`text-lg font-bold ${scoreColor(overallScore)}`}>
+  1310→                    {overallScore}/100
+  1311→                  </span>
+  1312→                </div>
+  1313→                <div className="flex flex-col gap-0.5 p-3 rounded-lg bg-muted">
+  1314→                  <span className="text-xs text-muted-foreground">Sections évaluées</span>
+  1315→                  <span className="text-lg font-bold">
+  1316→                    {sectionScores.filter((s) => s.assessed).length}/{AUDIT_SECTIONS.length}
+  1317→                  </span>
+  1318→                </div>
+  1319→                <div className="flex flex-col gap-0.5 p-3 rounded-lg bg-muted">
+  1320→                  <span className="text-xs text-muted-foreground">Analyse IA</span>
+  1321→                  <span className="text-lg font-bold">
+  1322→                    {aiResult ? `${aiResult.overallScore}/100` : "Non effectuée"}
+  1323→                  </span>
+  1324→                </div>
+  1325→                <div className="flex flex-col gap-0.5 p-3 rounded-lg bg-muted">
+  1326→                  <span className="text-xs text-muted-foreground">Cohérence</span>
+  1327→                  <span className="text-lg font-bold">
+  1328→                    {consistencyResult ? "Vérifiée" : "Non vérifiée"}
+  1329→                  </span>
+  1330→                </div>
+  1331→              </div>
+  1332→
+  1333→              {/* Report preview */}
+  1334→              {reportExpanded && (
+  1335→                <div className="rounded-lg border bg-muted/30 p-4 max-h-[500px] overflow-y-auto">
+  1336→                  <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono leading-relaxed">
+  1337→                    {generateReport()}
+  1338→                  </pre>
+  1339→                </div>
+  1340→              )}
+  1341→
+  1342→              {!reportExpanded && (
+  1343→                <div className="rounded-lg border bg-muted/30 p-8 flex flex-col items-center gap-2">
+  1344→                  <FileText className="h-8 w-8 text-muted-foreground/40" />
+  1345→                  <p className="text-sm text-muted-foreground">
+  1346→                    Cliquez sur &quot;Aperçu&quot; pour voir le rapport complet
+  1347→                  </p>
+  1348→                </div>
+  1349→              )}
+  1350→            </CardContent>
+  1351→          </Card>
+  1352→        </TabsContent>
+  1353→      </Tabs>
+  1354→    </div>
+  1355→  );
+  1356→}
+  1357→

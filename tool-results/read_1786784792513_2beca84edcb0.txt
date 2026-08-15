@@ -1,0 +1,1562 @@
+     1→"use client";
+     2→
+     3→import { useState, useCallback } from "react";
+     4→import {
+     5→  GitBranch,
+     6→  Plus,
+     7→  Trash2,
+     8→  Send,
+     9→  Download,
+    10→  RotateCcw,
+    11→  CheckCircle2,
+    12→  HelpCircle,
+    13→  FileSpreadsheet,
+    14→  ClipboardCheck,
+    15→  BarChart3,
+    16→  Loader2,
+    17→  Sparkles,
+    18→  ArrowDown,
+    19→  Filter,
+    20→  Search,
+    21→  X,
+    22→} from "lucide-react";
+    23→import {
+    24→  Card,
+    25→  CardContent,
+    26→  CardDescription,
+    27→  CardHeader,
+    28→  CardTitle,
+    29→} from "@/components/ui/card";
+    30→import { Badge } from "@/components/ui/badge";
+    31→import { Button } from "@/components/ui/button";
+    32→import { Input } from "@/components/ui/input";
+    33→import { Textarea } from "@/components/ui/textarea";
+    34→import {
+    35→  Select,
+    36→  SelectContent,
+    37→  SelectItem,
+    38→  SelectTrigger,
+    39→  SelectValue,
+    40→} from "@/components/ui/select";
+    41→import { Checkbox } from "@/components/ui/checkbox";
+    42→import { Progress } from "@/components/ui/progress";
+    43→import { Separator } from "@/components/ui/separator";
+    44→import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+    45→import {
+    46→  Dialog,
+    47→  DialogContent,
+    48→  DialogDescription,
+    49→  DialogFooter,
+    50→  DialogHeader,
+    51→  DialogTitle,
+    52→  DialogTrigger,
+    53→} from "@/components/ui/dialog";
+    54→import {
+    55→  Table,
+    56→  TableBody,
+    57→  TableCell,
+    58→  TableHead,
+    59→  TableHeader,
+    60→  TableRow,
+    61→} from "@/components/ui/table";
+    62→import { Label } from "@/components/ui/label";
+    63→import { toast } from "sonner";
+    64→
+    65→/* ═══════════════════════════════════════════════════
+    66→   Types
+    67→   ═══════════════════════════════════════════════════ */
+    68→
+    69→type ScreeningDecision = "include" | "exclude" | "maybe" | null;
+    70→
+    71→interface PrismaStage {
+    72→  id: string;
+    73→  label: string;
+    74→  count: number;
+    75→  subStages?: PrismaStage[];
+    76→}
+    77→
+    78→interface ArticleItem {
+    79→  id: string;
+    80→  title: string;
+    81→  authors: string;
+    82→  year: number;
+    83→  source: string;
+    84→  decision: ScreeningDecision;
+    85→  notes: string;
+    86→  stage: "identification" | "screening" | "eligibility" | "included";
+    87→}
+    88→
+    89→interface PicoField {
+    90→  id: string;
+    91→  component: string;
+    92→  label: string;
+    93→  value: string;
+    94→}
+    95→
+    96→interface Criterion {
+    97→  id: string;
+    98→  text: string;
+    99→  type: "inclusion" | "exclusion";
+   100→}
+   101→
+   102→interface QualityItem {
+   103→  id: string;
+   104→  text: string;
+   105→  checked: boolean;
+   106→  note: string;
+   107→}
+   108→
+   109→/* ═══════════════════════════════════════════════════
+   110→   Initial data
+   111→   ═══════════════════════════════════════════════════ */
+   112→
+   113→const INITIAL_PRISMA: PrismaStage[] = [
+   114→  {
+   115→    id: "identification",
+   116→    label: "Identification",
+   117→    count: 245,
+   118→    subStages: [
+   119→      { id: "databases", label: "Bases de données", count: 180 },
+   120→      { id: "other", label: "Autres sources", count: 65 },
+   121→      { id: "duplicates", label: "Doublons supprimés", count: 42 },
+   122→    ],
+   123→  },
+   124→  {
+   125→    id: "screening",
+   126→    label: "Dépistage (screening)",
+   127→    count: 203,
+   128→    subStages: [
+   129→      { id: "screen-excluded", label: "Exclus (titre/résumé)", count: 128 },
+   130→    ],
+   131→  },
+   132→  {
+   133→    id: "eligibility",
+   134→    label: "Admissibilité (eligibility)",
+   135→    count: 75,
+   136→    subStages: [
+   137→      { id: "elig-excluded", label: "Exclus (texte intégral)", count: 48 },
+   138→    ],
+   139→  },
+   140→  {
+   141→    id: "included",
+   142→    label: "Inclus",
+   143→    count: 27,
+   144→    subStages: [
+   145→      { id: "qualitative", label: "Études qualitatives", count: 15 },
+   146→      { id: "quantitative", label: "Études quantitatives", count: 8 },
+   147→      { id: "mixed", label: "Études mixtes", count: 4 },
+   148→    ],
+   149→  },
+   150→];
+   151→
+   152→const DEMO_ARTICLES: ArticleItem[] = [
+   153→  {
+   154→    id: "a1",
+   155→    title: "Impact de l'intelligence artificielle sur l'enseignement supérieur : une méta-analyse",
+   156→    authors: "Dupont, M.; Martin, L.; Bernard, S.",
+   157→    year: 2023,
+   158→    source: "Science Direct",
+   159→    decision: "include",
+   160→    notes: "Très pertinent, méthodologie solide",
+   161→    stage: "included",
+   162→  },
+   163→  {
+   164→    id: "a2",
+   165→    title: "Adoption des technologies éducatives en contexte universitaire francophone",
+   166→    authors: "Leblanc, P.; Moreau, A.",
+   167→    year: 2022,
+   168→    source: "Erudit",
+   169→    decision: "include",
+   170→    notes: "Contexte francophone pertinent",
+   171→    stage: "included",
+   172→  },
+   173→  {
+   174→    id: "a3",
+   175→    title: "Machine learning for student performance prediction",
+   176→    authors: "Wang, X.; Zhang, Y.",
+   177→    year: 2023,
+   178→    source: "IEEE Xplore",
+   179→    decision: "maybe",
+   180→    notes: "Domaine connexe mais contexte K-12",
+   181→    stage: "eligibility",
+   182→  },
+   183→  {
+   184→    id: "a4",
+   185→    title: "Les MOOC dans l'enseignement supérieur : une revue systématique",
+   186→    authors: "Garcia, R.; Petit, F.",
+   187→    year: 2021,
+   188→    source: "HAL",
+   189→    decision: "exclude",
+   190→    notes: "Hors sujet — focus sur MOOC uniquement",
+   191→    stage: "screening",
+   192→  },
+   193→  {
+   194→    id: "a5",
+   195→    title: "Hybrid teaching approaches in post-secondary education",
+   196→    authors: "Johnson, K.; Williams, D.",
+   197→    year: 2022,
+   198→    source: "SpringerLink",
+   199→    decision: "include",
+   200→    notes: "",
+   201→    stage: "eligibility",
+   202→  },
+   203→  {
+   204→    id: "a6",
+   205→    title: "Neural networks for automated grading systems",
+   206→    authors: "Chen, H.; Li, M.",
+   207→    year: 2023,
+   208→    source: "ACM Digital Library",
+   209→    decision: "exclude",
+   210→    notes: "Hors sujet — focus évaluation automatisée",
+   211→    stage: "screening",
+   212→  },
+   213→  {
+   214→    id: "a7",
+   215→    title: "Transformation numérique des universités : enjeux et perspectives",
+   216→    authors: "Robert, E.; Durand, C.",
+   217→    year: 2024,
+   218→    source: "CAIRN",
+   219→    decision: "maybe",
+   220→    notes: "Cadre théorique intéressant",
+   221→    stage: "screening",
+   222→  },
+   223→  {
+   224→    id: "a8",
+   225→    title: "Adaptive learning systems in higher education : a systematic review",
+   226→    authors: "Kim, S.; Park, J.; Lee, T.",
+   227→    year: 2023,
+   228→    source: "Web of Science",
+   229→    decision: "include",
+   230→    notes: "Revue systématique de haute qualité",
+   231→    stage: "included",
+   232→  },
+   233→];
+   234→
+   235→const INITIAL_PICO: PicoField[] = [
+   236→  { id: "p", component: "P", label: "Population / Participants", value: "Étudiants de l'enseignement supérieur" },
+   237→  { id: "i", component: "I", label: "Intervention / Phénomène d'intérêt", value: "Utilisation de l'intelligence artificielle éducative" },
+   238→  { id: "c", component: "C", label: "Comparaison", value: "Enseignement traditionnel ou sans IA" },
+   239→  { id: "o", component: "O", label: "Résultats / Outcomes", value: "Résultats d'apprentissage, engagement, satisfaction" },
+   240→  { id: "s", component: "S", label: "Contexte / Setting", value: "Universités francophones et internationales" },
+   241→];
+   242→
+   243→const INITIAL_CRITERIA: Criterion[] = [
+   244→  { id: "ic1", text: "Articles de revues à comité de lecture (peer-reviewed)", type: "inclusion" },
+   245→  { id: "ic2", text: "Publié entre 2018 et 2024", type: "inclusion" },
+   246→  { id: "ic3", text: "Langue : français ou anglais", type: "inclusion" },
+   247→  { id: "ic4", text: "Contexte d'enseignement supérieur", type: "inclusion" },
+   248→  { id: "ec1", text: "Articles non soumis à un processus d'évaluation par les pairs", type: "exclusion" },
+   249→  { id: "ec2", text: "Études portant uniquement sur le primaire ou le secondaire", type: "exclusion" },
+   250→  { id: "ec3", text: "Éditoriaux, lettres, résumés de conférence", type: "exclusion" },
+   251→];
+   252→
+   253→const CASP_CHECKLIST: QualityItem[] = [
+   254→  { id: "casp1", text: "L'objectif de l'étude est-il clairement énoncé ?", checked: false, note: "" },
+   255→  { id: "casp2", text: "Le cadre méthodologique est-il approprié ?", checked: false, note: "" },
+   256→  { id: "casp3", text: "La stratégie de recrutement est-elle adéquate ?", checked: false, note: "" },
+   257→  { id: "casp4", text: "La collecte de données est-elle rigoureusement décrite ?", checked: false, note: "" },
+   258→  { id: "casp5", text: "La relation chercheur-participant est-elle prise en compte ?", checked: false, note: "" },
+   259→  { id: "casp6", text: "Les considérations éthiques sont-elles respectées ?", checked: false, note: "" },
+   260→  { id: "casp7", text: "L'analyse des données est-elle rigoureuse ?", checked: false, note: "" },
+   261→  { id: "casp8", text: "Les résultats sont-ils clairement présentés ?", checked: false, note: "" },
+   262→  { id: "casp9", text: "La discussion est-elle suffisante et argumentée ?", checked: false, note: "" },
+   263→  { id: "casp10", text: "La valeur de la recherche est-elle justifiée ?", checked: false, note: "" },
+   264→];
+   265→
+   266→const EXTRACTION_FIELDS = [
+   267→  { id: "ef1", label: "Auteur(s)", example: "Dupont, M. et al." },
+   268→  { id: "ef2", label: "Année de publication", example: "2023" },
+   269→  { id: "ef3", label: "Titre de l'article", example: "Impact de l'IA..." },
+   270→  { id: "ef4", label: "Journal / Source", example: "Computers & Education" },
+   271→  { id: "ef5", label: "Pays / Contexte", example: "France" },
+   272→  { id: "ef6", label: "Cadre méthodologique", example: "Quantitatif, quasi-expérimental" },
+   273→  { id: "ef7", label: "Taille de l'échantillon", example: "N = 350" },
+   274→  { id: "ef8", label: "Population étudiée", example: "Étudiants de 1er cycle" },
+   275→  { id: "ef9", label: "Intervention / Variable indépendante", example: "Tuteur IA adaptatif" },
+   276→  { id: "ef10", label: "Variable dépendante / Résultat mesuré", example: "Score d'apprentissage" },
+   277→  { id: "ef11", label: "Principaux résultats", example: "+15% sur les tests standardisés" },
+   278→  { id: "ef12", label: "Limites identifiées", example: "Pas de groupe contrôle" },
+   279→  { id: "ef13", label: "Implications pratiques", example: "Recommandation d'intégration" },
+   280→  { id: "ef14", label: "Score de qualité", example: "8/10 (CASP)" },
+   281→];
+   282→
+   283→const DATABASES_OPTIONS = [
+   284→  "Web of Science",
+   285→  "Scopus",
+   286→  "PubMed",
+   287→  "ERIC",
+   288→  "IEEE Xplore",
+   289→  "ACM Digital Library",
+   290→  "SpringerLink",
+   291→  "Science Direct",
+   292→  "HAL",
+   293→  "Persée",
+   294→  "CAIRN",
+   295→  "Erudit",
+   296→  "Google Scholar",
+   297→  "OpenAlex",
+   298→  "BASE (Bielefeld)",
+   299→];
+   300→
+   301→/* ═══════════════════════════════════════════════════
+   302→   Component
+   303→   ═══════════════════════════════════════════════════ */
+   304→
+   305→export function OutilsSlrPage() {
+   306→  // PRISMA state
+   307→  const [prismaStages, setPrismaStages] = useState<PrismaStage[]>(INITIAL_PRISMA);
+   308→
+   309→  // Article screening state
+   310→  const [articles, setArticles] = useState<ArticleItem[]>(DEMO_ARTICLES);
+   311→  const [articleFilter, setArticleFilter] = useState<"all" | ScreeningDecision>("all");
+   312→  const [searchQuery, setSearchQuery] = useState("");
+   313→
+   314→  // Protocol state
+   315→  const [picoFields, setPicoFields] = useState<PicoField[]>(INITIAL_PICO);
+   316→  const [criteria, setCriteria] = useState<Criterion[]>(INITIAL_CRITERIA);
+   317→  const [selectedDatabases, setSelectedDatabases] = useState<string[]>(["Web of Science", "Scopus", "HAL", "Erudit"]);
+   318→  const [keywords, setKeywords] = useState<string>("intelligence artificielle; enseignement supérieur; apprentissage adaptatif; technologie éducative");
+   319→  const [dateFrom, setDateFrom] = useState("2018");
+   320→  const [dateTo, setDateTo] = useState("2024");
+   321→
+   322→  // Quality assessment state
+   323→  const [qualityItems, setQualityItems] = useState<QualityItem[]>(CASP_CHECKLIST);
+   324→  const [qualityFramework, setQualityFramework] = useState<"casp" | "jbi">("casp");
+   325→
+   326→  // Data extraction state
+   327→  const [extractionData, setExtractionData] = useState<Record<string, string>>({});
+   328→  const [selectedExtractionArticle, setSelectedExtractionArticle] = useState<string>("a1");
+   329→
+   330→  // AI assistant state
+   331→  const [aiPrompt, setAiPrompt] = useState("");
+   332→  const [aiLoading, setAiLoading] = useState(false);
+   333→  const [aiResult, setAiResult] = useState("");
+   334→
+   335→  // Dialog states
+   336→  const [addCriteriaOpen, setAddCriteriaOpen] = useState(false);
+   337→  const [newCriteriaText, setNewCriteriaText] = useState("");
+   338→  const [newCriteriaType, setNewCriteriaType] = useState<"inclusion" | "exclusion">("inclusion");
+   339→  const [addKeywordOpen, setAddKeywordOpen] = useState(false);
+   340→  const [newKeyword, setNewKeyword] = useState("");
+   341→
+   342→  // ─── Helper functions ───
+   343→
+   344→  const updatePrismaCount = (stageId: string, subStageId: string | null, newCount: number) => {
+   345→    setPrismaStages((prev) =>
+   346→      prev.map((stage) => {
+   347→        if (stage.id === stageId) {
+   348→          if (!subStageId) return { ...stage, count: newCount };
+   349→          return {
+   350→            ...stage,
+   351→            count: stage.subStages?.reduce((acc, s) => (s.id === subStageId ? acc + newCount : acc + s.count), 0) ?? newCount,
+   352→            subStages: stage.subStages?.map((s) => (s.id === subStageId ? { ...s, count: newCount } : s)),
+   353→          };
+   354→        }
+   355→        return stage;
+   356→      })
+   357→    );
+   358→  };
+   359→
+   360→  const updateArticleDecision = (articleId: string, decision: ScreeningDecision) => {
+   361→    setArticles((prev) =>
+   362→      prev.map((a) => {
+   363→        if (a.id === articleId) {
+   364→          const stageMap: Record<string, ArticleItem["stage"]> = {
+   365→            include: "included",
+   366→            exclude: "screening",
+   367→            maybe: "eligibility",
+   368→          };
+   369→          return { ...a, decision, stage: decision ? stageMap[decision] : a.stage };
+   370→        }
+   371→        return a;
+   372→      })
+   373→    );
+   374→  };
+   375→
+   376→  const updateArticleNotes = (articleId: string, notes: string) => {
+   377→    setArticles((prev) => prev.map((a) => (a.id === articleId ? { ...a, notes } : a)));
+   378→  };
+   379→
+   380→  const addCriterion = () => {
+   381→    if (!newCriteriaText.trim()) return;
+   382→    const newCrit: Criterion = {
+   383→      id: `c-${Date.now()}`,
+   384→      text: newCriteriaText.trim(),
+   385→      type: newCriteriaType,
+   386→    };
+   387→    setCriteria((prev) => [...prev, newCrit]);
+   388→    setNewCriteriaText("");
+   389→    setAddCriteriaOpen(false);
+   390→    toast.success("Critère ajouté");
+   391→  };
+   392→
+   393→  const removeCriterion = (id: string) => {
+   394→    setCriteria((prev) => prev.filter((c) => c.id !== id));
+   395→    toast.success("Critère supprimé");
+   396→  };
+   397→
+   398→  const toggleDatabase = (db: string) => {
+   399→    setSelectedDatabases((prev) =>
+   400→      prev.includes(db) ? prev.filter((d) => d !== db) : [...prev, db]
+   401→    );
+   402→  };
+   403→
+   404→  const handleAddKeyword = () => {
+   405→    if (!newKeyword.trim()) return;
+   406→    setKeywords((prev) => (prev ? `${prev}; ${newKeyword.trim()}` : newKeyword.trim()));
+   407→    setNewKeyword("");
+   408→    setAddKeywordOpen(false);
+   409→    toast.success("Mot-clé ajouté");
+   410→  };
+   411→
+   412→  const updatePicoField = (id: string, value: string) => {
+   413→    setPicoFields((prev) => prev.map((f) => (f.id === id ? { ...f, value } : f)));
+   414→  };
+   415→
+   416→  const toggleQualityItem = (id: string) => {
+   417→    setQualityItems((prev) =>
+   418→      prev.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item))
+   419→    );
+   420→  };
+   421→
+   422→  const updateQualityNote = (id: string, note: string) => {
+   423→    setQualityItems((prev) =>
+   424→      prev.map((item) => (item.id === id ? { ...item, note } : item))
+   425→    );
+   426→  };
+   427→
+   428→  const generateResearchQuestion = useCallback(() => {
+   429→    const p = picoFields.find((f) => f.id === "p")?.value || "";
+   430→    const i = picoFields.find((f) => f.id === "i")?.value || "";
+   431→    const c = picoFields.find((f) => f.id === "c")?.value || "";
+   432→    const o = picoFields.find((f) => f.id === "o")?.value || "";
+   433→    return `Quelle est l'effet de ${i || "[Intervention]"} sur ${o || "[Résultats]"} chez ${p || "[Population]"} comparativement à ${c || "[Comparaison]"} ?`;
+   434→  }, [picoFields]);
+   435→
+   436→  const handleAiAssist = useCallback(async () => {
+   437→    if (!aiPrompt.trim()) return;
+   438→    setAiLoading(true);
+   439→    setAiResult("");
+   440→    try {
+   441→      const res = await fetch("/api/ai-writing", {
+   442→        method: "POST",
+   443→        headers: { "Content-Type": "application/json" },
+   444→        body: JSON.stringify({
+   445→          mode: "revue-litterature",
+   446→          prompt: aiPrompt,
+   447→          context: `Revue systématique en cours. Cadre PICO: ${generateResearchQuestion()}. Critères: ${criteria.map((c) => c.text).join("; ")}. Bases: ${selectedDatabases.join(", ")}.`,
+   448→        }),
+   449→      });
+   450→      if (!res.ok) throw new Error("Erreur API");
+   451→      const data = await res.json();
+   452→      setAiResult(data.data?.content || "Aucune réponse générée.");
+   453→    } catch {
+   454→      toast.error("Erreur lors de la génération IA");
+   455→      setAiResult("Impossible de générer une réponse. Vérifiez votre connexion.");
+   456→    } finally {
+   457→      setAiLoading(false);
+   458→    }
+   459→  }, [aiPrompt, criteria, selectedDatabases, generateResearchQuestion]);
+   460→
+   461→  // ─── Computed values ───
+   462→
+   463→  const filteredArticles = articles.filter((a) => {
+   464→    const matchDecision = articleFilter === "all" || a.decision === articleFilter;
+   465→    const matchSearch =
+   466→      !searchQuery ||
+   467→      a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+   468→      a.authors.toLowerCase().includes(searchQuery.toLowerCase());
+   469→    return matchDecision && matchSearch;
+   470→  });
+   471→
+   472→  const includeCount = articles.filter((a) => a.decision === "include").length;
+   473→  const excludeCount = articles.filter((a) => a.decision === "exclude").length;
+   474→  const maybeCount = articles.filter((a) => a.decision === "maybe").length;
+   475→  const totalCount = articles.length;
+   476→  const qualityChecked = qualityItems.filter((q) => q.checked).length;
+   477→  const qualityPercent = Math.round((qualityChecked / qualityItems.length) * 100);
+   478→  const researchQuestion = generateResearchQuestion();
+   479→
+   480→  return (
+   481→    <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+   482→      {/* ─── Header ─── */}
+   483→      <div>
+   484→        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+   485→          <GitBranch className="h-6 w-6 text-primary" />
+   486→          Outils SLR
+   487→        </h1>
+   488→        <p className="text-sm text-muted-foreground mt-1">
+   489→          Revue systématique de la littérature — Diagramme PRISMA, criblage, extraction et évaluation de la qualité
+   490→        </p>
+   491→      </div>
+   492→
+   493→      <Separator />
+   494→
+   495→      {/* ─── Main Tabs ─── */}
+   496→      <Tabs defaultValue="prisma" className="flex flex-col gap-6">
+   497→        <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 w-full h-auto">
+   498→          <TabsTrigger value="prisma" className="text-xs py-2">
+   499→            <GitBranch className="h-3.5 w-3.5 mr-1.5" />
+   500→            PRISMA
+   501→          </TabsTrigger>
+   502→          <TabsTrigger value="protocol" className="text-xs py-2">
+   503→            <FileSpreadsheet className="h-3.5 w-3.5 mr-1.5" />
+   504→            Protocole
+   505→          </TabsTrigger>
+   506→          <TabsTrigger value="screening" className="text-xs py-2">
+   507→            <Filter className="h-3.5 w-3.5 mr-1.5" />
+   508→            Criblage
+   509→          </TabsTrigger>
+   510→          <TabsTrigger value="extraction" className="text-xs py-2">
+   511→            <ClipboardCheck className="h-3.5 w-3.5 mr-1.5" />
+   512→            Extraction
+   513→          </TabsTrigger>
+   514→          <TabsTrigger value="quality" className="text-xs py-2">
+   515→            <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
+   516→            Qualité
+   517→          </TabsTrigger>
+   518→          <TabsTrigger value="progress" className="text-xs py-2">
+   519→            <BarChart3 className="h-3.5 w-3.5 mr-1.5" />
+   520→            Suivi
+   521→          </TabsTrigger>
+   522→        </TabsList>
+   523→
+   524→        {/* ═══════════════════════════════════════
+   525→           Tab 1 — PRISMA Flow Diagram
+   526→           ═══════════════════════════════════════ */}
+   527→        <TabsContent value="prisma" className="flex flex-col gap-6">
+   528→          <Card>
+   529→            <CardHeader>
+   530→              <div className="flex items-center justify-between">
+   531→                <div>
+   532→                  <CardTitle className="text-base">Diagramme PRISMA 2020</CardTitle>
+   533→                  <CardDescription>
+   534→                    Représentation visuelle du processus de sélection des études
+   535→                  </CardDescription>
+   536→                </div>
+   537→                <Badge variant="outline" className="text-[10px]">
+   538→                  PRISMA Flowchart
+   539→                </Badge>
+   540→              </div>
+   541→            </CardHeader>
+   542→            <CardContent>
+   543→              <div className="flex flex-col items-center gap-3 py-4">
+   544→                {prismaStages.map((stage, idx) => {
+   545→                  const totalSubCount = stage.subStages?.reduce((a, s) => a + s.count, 0) ?? 0;
+   546→                  return (
+   547→                    <div key={stage.id} className="flex flex-col items-center gap-3 w-full max-w-xl">
+   548→                      {/* Main stage box */}
+   549→                      <div className="w-full rounded-lg border-2 border-primary/30 bg-primary/5 p-4">
+   550→                        <div className="flex items-center justify-between mb-2">
+   551→                          <span className="text-sm font-semibold">{stage.label}</span>
+   552→                          <div className="flex items-center gap-2">
+   553→                            <Input
+   554→                              type="number"
+   555→                              value={stage.count}
+   556→                              onChange={(e) =>
+   557→                                updatePrismaCount(stage.id, null, parseInt(e.target.value) || 0)
+   558→                              }
+   559→                              className="w-20 h-7 text-xs text-center"
+   560→                              min={0}
+   561→                            />
+   562→                            <Badge variant="secondary" className="text-[10px]">
+   563→                              {stage.count} articles
+   564→                            </Badge>
+   565→                          </div>
+   566→                        </div>
+   567→                        {/* Sub-stages */}
+   568→                        {stage.subStages && stage.subStages.length > 0 && (
+   569→                          <div className="flex flex-col gap-2 mt-3 pl-4 border-l-2 border-primary/20">
+   570→                            {stage.subStages.map((sub) => (
+   571→                              <div
+   572→                                key={sub.id}
+   573→                                className="flex items-center justify-between text-xs text-muted-foreground"
+   574→                              >
+   575→                                <span>{sub.label}</span>
+   576→                                <Input
+   577→                                  type="number"
+   578→                                  value={sub.count}
+   579→                                  onChange={(e) =>
+   580→                                    updatePrismaCount(
+   581→                                      stage.id,
+   582→                                      sub.id,
+   583→                                      parseInt(e.target.value) || 0
+   584→                                    )
+   585→                                  }
+   586→                                  className="w-16 h-6 text-xs text-center"
+   587→                                  min={0}
+   588→                                />
+   589→                              </div>
+   590→                            ))}
+   591→                            {totalSubCount !== stage.count && (
+   592→                              <div className="flex items-center justify-between text-[10px] text-amber-600 dark:text-amber-400">
+   593→                                <span>Total sous-étapes : {totalSubCount}</span>
+   594→                                <span>≠ {stage.count}</span>
+   595→                              </div>
+   596→                            )}
+   597→                          </div>
+   598→                        )}
+   599→                      </div>
+   600→                      {/* Arrow between stages */}
+   601→                      {idx < prismaStages.length - 1 && (
+   602→                        <div className="flex flex-col items-center gap-0.5 text-muted-foreground">
+   603→                          <ArrowDown className="h-5 w-5" />
+   604→                          <span className="text-[10px]">
+   605→                            {prismaStages[idx + 1].count} retenus
+   606→                          </span>
+   607→                        </div>
+   608→                      )}
+   609→                    </div>
+   610→                  );
+   611→                })}
+   612→              </div>
+   613→            </CardContent>
+   614→          </Card>
+   615→        </TabsContent>
+   616→
+   617→        {/* ═══════════════════════════════════════
+   618→           Tab 2 — Research Protocol Builder
+   619→           ═══════════════════════════════════════ */}
+   620→        <TabsContent value="protocol" className="flex flex-col gap-6">
+   621→          {/* PICO/PICOS */}
+   622→          <Card>
+   623→            <CardHeader>
+   624→              <div className="flex items-center justify-between">
+   625→                <div>
+   626→                  <CardTitle className="text-base">Cadre PICO / PICOS</CardTitle>
+   627→                  <CardDescription>
+   628→                    Définissez les composantes de votre question de recherche
+   629→                  </CardDescription>
+   630→                </div>
+   631→                <Badge variant="secondary" className="text-[10px]">
+   632→                  PICOS
+   633→                </Badge>
+   634→              </div>
+   635→            </CardHeader>
+   636→            <CardContent className="flex flex-col gap-4">
+   637→              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+   638→                {picoFields.map((field) => (
+   639→                  <div key={field.id} className="flex flex-col gap-1.5">
+   640→                    <Label className="text-xs font-medium flex items-center gap-2">
+   641→                      <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground text-[10px] font-bold">
+   642→                        {field.component}
+   643→                      </span>
+   644→                      {field.label}
+   645→                    </Label>
+   646→                    <Input
+   647→                      value={field.value}
+   648→                      onChange={(e) => updatePicoField(field.id, e.target.value)}
+   649→                      placeholder={field.label}
+   650→                      className="text-sm"
+   651→                    />
+   652→                  </div>
+   653→                ))}
+   654→              </div>
+   655→              <Separator />
+   656→              <div className="rounded-lg border bg-muted/50 p-4">
+   657→                <p className="text-xs font-medium text-muted-foreground mb-1.5">
+   658→                  Question de recherche générée
+   659→                </p>
+   660→                <p className="text-sm font-medium leading-relaxed">{researchQuestion}</p>
+   661→              </div>
+   662→            </CardContent>
+   663→          </Card>
+   664→
+   665→          {/* Inclusion / Exclusion Criteria */}
+   666→          <Card>
+   667→            <CardHeader>
+   668→              <div className="flex items-center justify-between">
+   669→                <div>
+   670→                  <CardTitle className="text-base">Critères d'inclusion / exclusion</CardTitle>
+   671→                  <CardDescription>
+   672→                    Définissez les critères de sélection des articles
+   673→                  </CardDescription>
+   674→                </div>
+   675→                <Dialog open={addCriteriaOpen} onOpenChange={setAddCriteriaOpen}>
+   676→                  <DialogTrigger asChild>
+   677→                    <Button size="sm" variant="outline" className="text-xs">
+   678→                      <Plus className="h-3.5 w-3.5 mr-1" />
+   679→                      Ajouter
+   680→                    </Button>
+   681→                  </DialogTrigger>
+   682→                  <DialogContent>
+   683→                    <DialogHeader>
+   684→                      <DialogTitle className="text-base">Nouveau critère</DialogTitle>
+   685→                      <DialogDescription>Ajoutez un critère d'inclusion ou d'exclusion</DialogDescription>
+   686→                    </DialogHeader>
+   687→                    <div className="flex flex-col gap-4 py-2">
+   688→                      <Select
+   689→                        value={newCriteriaType}
+   690→                        onValueChange={(v) => setNewCriteriaType(v as "inclusion" | "exclusion")}
+   691→                      >
+   692→                        <SelectTrigger>
+   693→                          <SelectValue />
+   694→                        </SelectTrigger>
+   695→                        <SelectContent>
+   696→                          <SelectItem value="inclusion">Critère d'inclusion</SelectItem>
+   697→                          <SelectItem value="exclusion">Critère d'exclusion</SelectItem>
+   698→                        </SelectContent>
+   699→                      </Select>
+   700→                      <Textarea
+   701→                        value={newCriteriaText}
+   702→                        onChange={(e) => setNewCriteriaText(e.target.value)}
+   703→                        placeholder="Décrivez le critère..."
+   704→                        rows={3}
+   705→                      />
+   706→                    </div>
+   707→                    <DialogFooter>
+   708→                      <Button onClick={addCriterion} disabled={!newCriteriaText.trim()}>
+   709→                        Ajouter
+   710→                      </Button>
+   711→                    </DialogFooter>
+   712→                  </DialogContent>
+   713→                </Dialog>
+   714→              </div>
+   715→            </CardHeader>
+   716→            <CardContent className="flex flex-col gap-4">
+   717→              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+   718→                {/* Inclusion */}
+   719→                <div className="flex flex-col gap-2">
+   720→                  <div className="flex items-center gap-2">
+   721→                    <CheckCircle2 className="h-4 w-4 text-chart-2" />
+   722→                    <span className="text-xs font-semibold text-chart-2">
+   723→                      Inclusion ({criteria.filter((c) => c.type === "inclusion").length})
+   724→                    </span>
+   725→                  </div>
+   726→                  <div className="flex flex-col gap-2">
+   727→                    {criteria
+   728→                      .filter((c) => c.type === "inclusion")
+   729→                      .map((c) => (
+   730→                        <div
+   731→                          key={c.id}
+   732→                          className="flex items-start gap-2 rounded-md border border-chart-2/20 bg-chart-2/5 p-3 text-sm"
+   733→                        >
+   734→                          <span className="text-chart-2 mt-0.5 shrink-0">✓</span>
+   735→                          <span className="flex-1 leading-relaxed">{c.text}</span>
+   736→                          <Button
+   737→                            variant="ghost"
+   738→                            size="sm"
+   739→                            className="h-6 w-6 p-0 shrink-0 text-muted-foreground hover:text-destructive"
+   740→                            onClick={() => removeCriterion(c.id)}
+   741→                          >
+   742→                            <Trash2 className="h-3 w-3" />
+   743→                          </Button>
+   744→                        </div>
+   745→                      ))}
+   746→                  </div>
+   747→                </div>
+   748→                {/* Exclusion */}
+   749→                <div className="flex flex-col gap-2">
+   750→                  <div className="flex items-center gap-2">
+   751→                    <X className="h-4 w-4 text-chart-4" />
+   752→                    <span className="text-xs font-semibold text-chart-4">
+   753→                      Exclusion ({criteria.filter((c) => c.type === "exclusion").length})
+   754→                    </span>
+   755→                  </div>
+   756→                  <div className="flex flex-col gap-2">
+   757→                    {criteria
+   758→                      .filter((c) => c.type === "exclusion")
+   759→                      .map((c) => (
+   760→                        <div
+   761→                          key={c.id}
+   762→                          className="flex items-start gap-2 rounded-md border border-chart-4/20 bg-chart-4/5 p-3 text-sm"
+   763→                        >
+   764→                          <span className="text-chart-4 mt-0.5 shrink-0">✗</span>
+   765→                          <span className="flex-1 leading-relaxed">{c.text}</span>
+   766→                          <Button
+   767→                            variant="ghost"
+   768→                            size="sm"
+   769→                            className="h-6 w-6 p-0 shrink-0 text-muted-foreground hover:text-destructive"
+   770→                            onClick={() => removeCriterion(c.id)}
+   771→                          >
+   772→                            <Trash2 className="h-3 w-3" />
+   773→                          </Button>
+   774→                        </div>
+   775→                      ))}
+   776→                  </div>
+   777→                </div>
+   778→              </div>
+   779→            </CardContent>
+   780→          </Card>
+   781→
+   782→          {/* Search Strategy */}
+   783→          <Card>
+   784→            <CardHeader>
+   785→              <div className="flex items-center justify-between">
+   786→                <div>
+   787→                  <CardTitle className="text-base">Stratégie de recherche</CardTitle>
+   788→                  <CardDescription>
+   789→                    Bases de données, mots-clés et période de publication
+   790→                  </CardDescription>
+   791→                </div>
+   792→              </div>
+   793→            </CardHeader>
+   794→            <CardContent className="flex flex-col gap-6">
+   795→              {/* Databases */}
+   796→              <div className="flex flex-col gap-2">
+   797→                <Label className="text-xs font-medium">Bases de données sélectionnées</Label>
+   798→                <div className="flex flex-wrap gap-2">
+   799→                  {DATABASES_OPTIONS.map((db) => (
+   800→                    <Badge
+   801→                      key={db}
+   802→                      variant={selectedDatabases.includes(db) ? "default" : "outline"}
+   803→                      className="cursor-pointer text-xs transition-all hover:opacity-80"
+   804→                      onClick={() => toggleDatabase(db)}
+   805→                    >
+   806→                      {selectedDatabases.includes(db) && "✓ "}
+   807→                      {db}
+   808→                    </Badge>
+   809→                  ))}
+   810→                </div>
+   811→                <p className="text-[11px] text-muted-foreground">
+   812→                  {selectedDatabases.length} base(s) sélectionnée(s) — cliquez pour basculer
+   813→                </p>
+   814→              </div>
+   815→
+   816→              <Separator />
+   817→
+   818→              {/* Keywords */}
+   819→              <div className="flex flex-col gap-2">
+   820→                <div className="flex items-center justify-between">
+   821→                  <Label className="text-xs font-medium">Mots-clés de recherche</Label>
+   822→                  <Dialog open={addKeywordOpen} onOpenChange={setAddKeywordOpen}>
+   823→                    <DialogTrigger asChild>
+   824→                      <Button size="sm" variant="outline" className="text-xs h-7">
+   825→                        <Plus className="h-3 w-3 mr-1" />
+   826→                        Mot-clé
+   827→                      </Button>
+   828→                    </DialogTrigger>
+   829→                    <DialogContent>
+   830→                      <DialogHeader>
+   831→                        <DialogTitle className="text-base">Ajouter un mot-clé</DialogTitle>
+   832→                        <DialogDescription>Entrez un mot-clé ou une expression de recherche</DialogDescription>
+   833→                      </DialogHeader>
+   834→                      <Input
+   835→                        value={newKeyword}
+   836→                        onChange={(e) => setNewKeyword(e.target.value)}
+   837→                        placeholder="ex : blended learning"
+   838→                        onKeyDown={(e) => e.key === "Enter" && handleAddKeyword()}
+   839→                      />
+   840→                      <DialogFooter>
+   841→                        <Button onClick={handleAddKeyword} disabled={!newKeyword.trim()}>
+   842→                          Ajouter
+   843→                        </Button>
+   844→                      </DialogFooter>
+   845→                    </DialogContent>
+   846→                  </Dialog>
+   847→                </div>
+   848→                <div className="flex flex-wrap gap-2">
+   849→                  {keywords.split(";").map((kw, i) => (
+   850→                    <Badge key={i} variant="secondary" className="text-xs">
+   851→                      {kw.trim()}
+   852→                    </Badge>
+   853→                  ))}
+   854→                </div>
+   855→              </div>
+   856→
+   857→              <Separator />
+   858→
+   859→              {/* Date range */}
+   860→              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+   861→                <div className="flex flex-col gap-1.5">
+   862→                  <Label className="text-xs font-medium">Date de début</Label>
+   863→                  <Input
+   864→                    type="number"
+   865→                    value={dateFrom}
+   866→                    onChange={(e) => setDateFrom(e.target.value)}
+   867→                    placeholder="2018"
+   868→                    className="text-sm"
+   869→                  />
+   870→                </div>
+   871→                <div className="flex flex-col gap-1.5">
+   872→                  <Label className="text-xs font-medium">Date de fin</Label>
+   873→                  <Input
+   874→                    type="number"
+   875→                    value={dateTo}
+   876→                    onChange={(e) => setDateTo(e.target.value)}
+   877→                    placeholder="2024"
+   878→                    className="text-sm"
+   879→                  />
+   880→                </div>
+   881→              </div>
+   882→
+   883→              <Separator />
+   884→
+   885→              {/* AI Assistant */}
+   886→              <div className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-4">
+   887→                <div className="flex items-center gap-2">
+   888→                  <Sparkles className="h-4 w-4 text-primary" />
+   889→                  <span className="text-xs font-semibold">Assistant IA — Protocole</span>
+   890→                </div>
+   891→                <Textarea
+   892→                  value={aiPrompt}
+   893→                  onChange={(e) => setAiPrompt(e.target.value)}
+   894→                  placeholder="Ex : Aidez-moi à affiner ma stratégie de recherche pour une revue systématique sur l'IA dans l'enseignement..."
+   895→                  rows={3}
+   896→                  className="text-sm"
+   897→                />
+   898→                <div className="flex items-center gap-2">
+   899→                  <Button
+   900→                    size="sm"
+   901→                    onClick={handleAiAssist}
+   902→                    disabled={aiLoading || !aiPrompt.trim()}
+   903→                  >
+   904→                    {aiLoading ? (
+   905→                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+   906→                    ) : (
+   907→                      <Send className="h-3.5 w-3.5 mr-1.5" />
+   908→                    )}
+   909→                    Générer
+   910→                  </Button>
+   911→                  {aiResult && (
+   912→                    <Button
+   913→                      size="sm"
+   914→                      variant="outline"
+   915→                      onClick={() => {
+   916→                        navigator.clipboard.writeText(aiResult);
+   917→                        toast.success("Copié dans le presse-papiers");
+   918→                      }}
+   919→                    >
+   920→                      Copier
+   921→                    </Button>
+   922→                  )}
+   923→                </div>
+   924→                {aiResult && (
+   925→                  <div className="rounded-md border bg-background p-3 mt-2 max-h-48 overflow-y-auto">
+   926→                    <p className="text-xs whitespace-pre-wrap leading-relaxed">{aiResult}</p>
+   927→                  </div>
+   928→                )}
+   929→              </div>
+   930→            </CardContent>
+   931→          </Card>
+   932→        </TabsContent>
+   933→
+   934→        {/* ═══════════════════════════════════════
+   935→           Tab 3 — Article Screening
+   936→           ═══════════════════════════════════════ */}
+   937→        <TabsContent value="screening" className="flex flex-col gap-6">
+   938→          {/* Summary badges */}
+   939→          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+   940→            <Card className="p-4">
+   941→              <div className="flex flex-col items-center gap-1">
+   942→                <span className="text-2xl font-bold">{totalCount}</span>
+   943→                <span className="text-[10px] text-muted-foreground">Total</span>
+   944→              </div>
+   945→            </Card>
+   946→            <Card className="p-4">
+   947→              <div className="flex flex-col items-center gap-1">
+   948→                <span className="text-2xl font-bold text-chart-2">{includeCount}</span>
+   949→                <span className="text-[10px] text-muted-foreground">Inclus</span>
+   950→              </div>
+   951→            </Card>
+   952→            <Card className="p-4">
+   953→              <div className="flex flex-col items-center gap-1">
+   954→                <span className="text-2xl font-bold text-chart-4">{excludeCount}</span>
+   955→                <span className="text-[10px] text-muted-foreground">Exclus</span>
+   956→              </div>
+   957→            </Card>
+   958→            <Card className="p-4">
+   959→              <div className="flex flex-col items-center gap-1">
+   960→                <span className="text-2xl font-bold text-chart-5">{maybeCount}</span>
+   961→                <span className="text-[10px] text-muted-foreground">Peut-être</span>
+   962→              </div>
+   963→            </Card>
+   964→            <Card className="p-4">
+   965→              <div className="flex flex-col items-center gap-1">
+   966→                <Progress
+   967→                  value={totalCount > 0 ? (includeCount / totalCount) * 100 : 0}
+   968→                  className="h-2 w-full"
+   969→                />
+   970→                <span className="text-[10px] text-muted-foreground">
+   971→                  {totalCount > 0 ? Math.round((includeCount / totalCount) * 100) : 0}% inclus
+   972→                </span>
+   973→              </div>
+   974→            </Card>
+   975→          </div>
+   976→
+   977→          {/* Filters */}
+   978→          <Card>
+   979→            <CardContent className="p-4">
+   980→              <div className="flex flex-col sm:flex-row gap-3">
+   981→                <div className="relative flex-1">
+   982→                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+   983→                  <Input
+   984→                    value={searchQuery}
+   985→                    onChange={(e) => setSearchQuery(e.target.value)}
+   986→                    placeholder="Rechercher par titre ou auteur..."
+   987→                    className="pl-9 text-sm"
+   988→                  />
+   989→                </div>
+   990→                <Select value={articleFilter} onValueChange={(v) => setArticleFilter(v as typeof articleFilter)}>
+   991→                  <SelectTrigger className="w-full sm:w-44">
+   992→                    <SelectValue />
+   993→                  </SelectTrigger>
+   994→                  <SelectContent>
+   995→                    <SelectItem value="all">Tous</SelectItem>
+   996→                    <SelectItem value="include">Inclus</SelectItem>
+   997→                    <SelectItem value="exclude">Exclus</SelectItem>
+   998→                    <SelectItem value="maybe">Peut-être</SelectItem>
+   999→                  </SelectContent>
+  1000→                </Select>
+  1001→              </div>
+  1002→            </CardContent>
+  1003→          </Card>
+  1004→
+  1005→          {/* Articles table */}
+  1006→          <Card>
+  1007→            <CardContent className="p-0">
+  1008→              <div className="max-h-[500px] overflow-y-auto">
+  1009→                <Table>
+  1010→                  <TableHeader>
+  1011→                    <TableRow>
+  1012→                      <TableHead className="w-10 text-xs">Décision</TableHead>
+  1013→                      <TableHead className="text-xs min-w-[250px]">Article</TableHead>
+  1014→                      <TableHead className="text-xs w-24">Année</TableHead>
+  1015→                      <TableHead className="text-xs w-32">Source</TableHead>
+  1016→                      <TableHead className="text-xs w-24">Étape</TableHead>
+  1017→                      <TableHead className="text-xs min-w-[200px]">Notes</TableHead>
+  1018→                    </TableRow>
+  1019→                  </TableHeader>
+  1020→                  <TableBody>
+  1021→                    {filteredArticles.map((article) => (
+  1022→                      <TableRow key={article.id}>
+  1023→                        <TableCell>
+  1024→                          <div className="flex items-center gap-1">
+  1025→                            <Button
+  1026→                              variant="ghost"
+  1027→                              size="sm"
+  1028→                              className={`h-7 w-7 p-0 ${
+  1029→                                article.decision === "include"
+  1030→                                  ? "text-chart-2 bg-chart-2/10"
+  1031→                                  : "text-muted-foreground"
+  1032→                              }`}
+  1033→                              title="Inclure"
+  1034→                              onClick={() =>
+  1035→                                updateArticleDecision(
+  1036→                                  article.id,
+  1037→                                  article.decision === "include" ? null : "include"
+  1038→                                )
+  1039→                              }
+  1040→                            >
+  1041→                              <CheckCircle2 className="h-3.5 w-3.5" />
+  1042→                            </Button>
+  1043→                            <Button
+  1044→                              variant="ghost"
+  1045→                              size="sm"
+  1046→                              className={`h-7 w-7 p-0 ${
+  1047→                                article.decision === "exclude"
+  1048→                                  ? "text-chart-4 bg-chart-4/10"
+  1049→                                  : "text-muted-foreground"
+  1050→                              }`}
+  1051→                              title="Exclure"
+  1052→                              onClick={() =>
+  1053→                                updateArticleDecision(
+  1054→                                  article.id,
+  1055→                                  article.decision === "exclude" ? null : "exclude"
+  1056→                                )
+  1057→                              }
+  1058→                            >
+  1059→                              <X className="h-3.5 w-3.5" />
+  1060→                            </Button>
+  1061→                            <Button
+  1062→                              variant="ghost"
+  1063→                              size="sm"
+  1064→                              className={`h-7 w-7 p-0 ${
+  1065→                                article.decision === "maybe"
+  1066→                                  ? "text-chart-5 bg-chart-5/10"
+  1067→                                  : "text-muted-foreground"
+  1068→                              }`}
+  1069→                              title="Peut-être"
+  1070→                              onClick={() =>
+  1071→                                updateArticleDecision(
+  1072→                                  article.id,
+  1073→                                  article.decision === "maybe" ? null : "maybe"
+  1074→                                )
+  1075→                              }
+  1076→                            >
+  1077→                              <HelpCircle className="h-3.5 w-3.5" />
+  1078→                            </Button>
+  1079→                          </div>
+  1080→                        </TableCell>
+  1081→                        <TableCell>
+  1082→                          <div className="flex flex-col gap-0.5">
+  1083→                            <span className="text-xs font-medium leading-relaxed line-clamp-2">
+  1084→                              {article.title}
+  1085→                            </span>
+  1086→                            <span className="text-[10px] text-muted-foreground">
+  1087→                              {article.authors}
+  1088→                            </span>
+  1089→                          </div>
+  1090→                        </TableCell>
+  1091→                        <TableCell className="text-xs text-muted-foreground">{article.year}</TableCell>
+  1092→                        <TableCell>
+  1093→                          <Badge variant="outline" className="text-[10px]">
+  1094→                            {article.source}
+  1095→                          </Badge>
+  1096→                        </TableCell>
+  1097→                        <TableCell>
+  1098→                          <Badge
+  1099→                            variant="secondary"
+  1100→                            className={`text-[10px] ${
+  1101→                              article.stage === "included"
+  1102→                                ? "bg-chart-2/10 text-chart-2"
+  1103→                                : article.stage === "eligibility"
+  1104→                                  ? "bg-chart-5/10 text-chart-5"
+  1105→                                  : "bg-muted text-muted-foreground"
+  1106→                            }`}
+  1107→                          >
+  1108→                            {article.stage === "included"
+  1109→                              ? "Inclus"
+  1110→                              : article.stage === "eligibility"
+  1111→                                ? "Admissible"
+  1112→                                : article.stage === "screening"
+  1113→                                  ? "Dépistage"
+  1114→                                  : "Identification"}
+  1115→                          </Badge>
+  1116→                        </TableCell>
+  1117→                        <TableCell>
+  1118→                          <Input
+  1119→                            value={article.notes}
+  1120→                            onChange={(e) => updateArticleNotes(article.id, e.target.value)}
+  1121→                            placeholder="Ajouter une note..."
+  1122→                            className="text-xs h-8"
+  1123→                          />
+  1124→                        </TableCell>
+  1125→                      </TableRow>
+  1126→                    ))}
+  1127→                    {filteredArticles.length === 0 && (
+  1128→                      <TableRow>
+  1129→                        <TableCell colSpan={6} className="text-center py-8">
+  1130→                          <div className="flex flex-col items-center gap-2 text-muted-foreground">
+  1131→                            <Filter className="h-6 w-6" />
+  1132→                            <span className="text-xs">Aucun article ne correspond aux filtres</span>
+  1133→                          </div>
+  1134→                        </TableCell>
+  1135→                      </TableRow>
+  1136→                    )}
+  1137→                  </TableBody>
+  1138→                </Table>
+  1139→              </div>
+  1140→            </CardContent>
+  1141→          </Card>
+  1142→        </TabsContent>
+  1143→
+  1144→        {/* ═══════════════════════════════════════
+  1145→           Tab 4 — Data Extraction Template
+  1146→           ═══════════════════════════════════════ */}
+  1147→        <TabsContent value="extraction" className="flex flex-col gap-6">
+  1148→          <Card>
+  1149→            <CardHeader>
+  1150→              <div className="flex items-center justify-between">
+  1151→                <div>
+  1152→                  <CardTitle className="text-base">Template d'extraction des données</CardTitle>
+  1153→                  <CardDescription>
+  1154→                    Champs prédéfinis pour l'extraction systématique des données des études incluses
+  1155→                  </CardDescription>
+  1156→                </div>
+  1157→                <Badge variant="outline" className="text-[10px]">
+  1158→                  {EXTRACTION_FIELDS.length} champs
+  1159→                </Badge>
+  1160→              </div>
+  1161→            </CardHeader>
+  1162→            <CardContent className="flex flex-col gap-6">
+  1163→              {/* Article selector */}
+  1164→              <div className="flex flex-col sm:flex-row gap-3 items-start">
+  1165→                <Label className="text-xs font-medium shrink-0 pt-2">Article :</Label>
+  1166→                <Select value={selectedExtractionArticle} onValueChange={setSelectedExtractionArticle}>
+  1167→                  <SelectTrigger className="text-sm">
+  1168→                    <SelectValue />
+  1169→                  </SelectTrigger>
+  1170→                  <SelectContent>
+  1171→                    {articles
+  1172→                      .filter((a) => a.decision === "include")
+  1173→                      .map((a) => (
+  1174→                        <SelectItem key={a.id} value={a.id}>
+  1175→                          {a.title.length > 60 ? a.title.slice(0, 60) + "..." : a.title}
+  1176→                        </SelectItem>
+  1177→                      ))}
+  1178→                  </SelectContent>
+  1179→                </Select>
+  1180→              </div>
+  1181→
+  1182→              <Separator />
+  1183→
+  1184→              {/* Extraction fields */}
+  1185→              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  1186→                {EXTRACTION_FIELDS.map((field) => (
+  1187→                  <div key={field.id} className="flex flex-col gap-1.5">
+  1188→                    <div className="flex items-center gap-2">
+  1189→                      <Label className="text-xs font-medium">{field.label}</Label>
+  1190→                      <span className="text-[10px] text-muted-foreground">
+  1191→                        ex : {field.example}
+  1192→                      </span>
+  1193→                    </div>
+  1194→                    {field.label === "Principaux résultats" ||
+  1195→                    field.label === "Limites identifiées" ||
+  1196→                    field.label === "Implications pratiques" ? (
+  1197→                      <Textarea
+  1198→                        value={extractionData[`${selectedExtractionArticle}-${field.id}`] || ""}
+  1199→                        onChange={(e) =>
+  1200→                          setExtractionData((prev) => ({
+  1201→                            ...prev,
+  1202→                            [`${selectedExtractionArticle}-${field.id}`]: e.target.value,
+  1203→                          }))
+  1204→                        }
+  1205→                        placeholder={field.example}
+  1206→                        rows={3}
+  1207→                        className="text-xs"
+  1208→                      />
+  1209→                    ) : (
+  1210→                      <Input
+  1211→                        value={extractionData[`${selectedExtractionArticle}-${field.id}`] || ""}
+  1212→                        onChange={(e) =>
+  1213→                          setExtractionData((prev) => ({
+  1214→                            ...prev,
+  1215→                            [`${selectedExtractionArticle}-${field.id}`]: e.target.value,
+  1216→                          }))
+  1217→                        }
+  1218→                        placeholder={field.example}
+  1219→                        className="text-xs"
+  1220→                      />
+  1221→                    )}
+  1222→                  </div>
+  1223→                ))}
+  1224→              </div>
+  1225→
+  1226→              <Separator />
+  1227→
+  1228→              {/* Export */}
+  1229→              <div className="flex items-center gap-3">
+  1230→                <Button
+  1231→                  variant="outline"
+  1232→                  size="sm"
+  1233→                  onClick={() => {
+  1234→                    const data = EXTRACTION_FIELDS.map((f) => ({
+  1235→                      Champ: f.label,
+  1236→                      Valeur: extractionData[`${selectedExtractionArticle}-${f.id}`] || "",
+  1237→                    }));
+  1238→                    const csv = [
+  1239→                      Object.keys(data[0]).join(","),
+  1240→                      ...data.map((row) => Object.values(row).map((v) => `"${v}"`).join(",")),
+  1241→                    ].join("\n");
+  1242→                    const blob = new Blob([csv], { type: "text/csv" });
+  1243→                    const url = URL.createObjectURL(blob);
+  1244→                    const a = document.createElement("a");
+  1245→                    a.href = url;
+  1246→                    a.download = `extraction-${selectedExtractionArticle}.csv`;
+  1247→                    a.click();
+  1248→                    URL.revokeObjectURL(url);
+  1249→                    toast.success("Export CSV téléchargé");
+  1250→                  }}
+  1251→                >
+  1252→                  <Download className="h-3.5 w-3.5 mr-1.5" />
+  1253→                  Exporter en CSV
+  1254→                </Button>
+  1255→                <Button
+  1256→                  variant="outline"
+  1257→                  size="sm"
+  1258→                  onClick={() => {
+  1259→                    const filledCount = EXTRACTION_FIELDS.filter(
+  1260→                      (f) => extractionData[`${selectedExtractionArticle}-${f.id}`]
+  1261→                    ).length;
+  1262→                    toast.info(`${filledCount} / ${EXTRACTION_FIELDS.length} champs remplis`);
+  1263→                  }}
+  1264→                >
+  1265→                  <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+  1266→                  Progression
+  1267→                </Button>
+  1268→              </div>
+  1269→            </CardContent>
+  1270→          </Card>
+  1271→        </TabsContent>
+  1272→
+  1273→        {/* ═══════════════════════════════════════
+  1274→           Tab 5 — Quality Assessment
+  1275→           ═══════════════════════════════════════ */}
+  1276→        <TabsContent value="quality" className="flex flex-col gap-6">
+  1277→          <Card>
+  1278→            <CardHeader>
+  1279→              <div className="flex items-center justify-between">
+  1280→                <div>
+  1281→                  <CardTitle className="text-base">Évaluation de la qualité</CardTitle>
+  1282→                  <CardDescription>
+  1283→                    Grille d'évaluation basée sur les standards CASP et JBI
+  1284→                  </CardDescription>
+  1285→                </div>
+  1286→                <Select value={qualityFramework} onValueChange={(v) => setQualityFramework(v as "casp" | "jbi")}>
+  1287→                  <SelectTrigger className="w-36 text-xs h-8">
+  1288→                    <SelectValue />
+  1289→                  </SelectTrigger>
+  1290→                  <SelectContent>
+  1291→                    <SelectItem value="casp">CASP</SelectItem>
+  1292→                    <SelectItem value="jbi">JBI</SelectItem>
+  1293→                  </SelectContent>
+  1294→                </Select>
+  1295→              </div>
+  1296→            </CardHeader>
+  1297→            <CardContent className="flex flex-col gap-4">
+  1298→              {/* Article selector */}
+  1299→              <div className="flex flex-col sm:flex-row gap-3 items-start">
+  1300→                <Label className="text-xs font-medium shrink-0 pt-2">Évaluer :</Label>
+  1301→                <Select value={selectedExtractionArticle} onValueChange={setSelectedExtractionArticle}>
+  1302→                  <SelectTrigger className="text-sm">
+  1303→                    <SelectValue />
+  1304→                  </SelectTrigger>
+  1305→                  <SelectContent>
+  1306→                    {articles
+  1307→                      .filter((a) => a.decision === "include")
+  1308→                      .map((a) => (
+  1309→                        <SelectItem key={a.id} value={a.id}>
+  1310→                          {a.title.length > 60 ? a.title.slice(0, 60) + "..." : a.title}
+  1311→                        </SelectItem>
+  1312→                      ))}
+  1313→                  </SelectContent>
+  1314→                </Select>
+  1315→              </div>
+  1316→
+  1317→              {/* Progress */}
+  1318→              <div className="flex flex-col gap-2">
+  1319→                <div className="flex items-center justify-between text-xs">
+  1320→                  <span className="text-muted-foreground">
+  1321→                    Score de qualité — {qualityFramework.toUpperCase()}
+  1322→                  </span>
+  1323→                  <span className="font-medium">
+  1324→                    {qualityChecked} / {qualityItems.length} — {qualityPercent}%
+  1325→                  </span>
+  1326→                </div>
+  1327→                <Progress value={qualityPercent} className="h-2" />
+  1328→              </div>
+  1329→
+  1330→              <Separator />
+  1331→
+  1332→              {/* Checklist */}
+  1333→              <div className="flex flex-col gap-3">
+  1334→                {qualityItems.map((item, idx) => (
+  1335→                  <div
+  1336→                    key={item.id}
+  1337→                    className={`rounded-lg border p-4 transition-colors ${
+  1338→                      item.checked
+  1339→                        ? "bg-chart-2/5 border-chart-2/20"
+  1340→                        : "hover:bg-muted/50"
+  1341→                    }`}
+  1342→                  >
+  1343→                    <div className="flex items-start gap-3">
+  1344→                      <Checkbox
+  1345→                        checked={item.checked}
+  1346→                        onCheckedChange={() => toggleQualityItem(item.id)}
+  1347→                        className="mt-0.5"
+  1348→                      />
+  1349→                      <div className="flex flex-col gap-2 flex-1">
+  1350→                        <div className="flex items-center gap-2">
+  1351→                          <span className="text-xs font-medium">
+  1352→                            {idx + 1}. {item.text}
+  1353→                          </span>
+  1354→                          {item.checked && (
+  1355→                            <Badge variant="secondary" className="text-[9px] h-4 bg-chart-2/10 text-chart-2">
+  1356→                              OK
+  1357→                            </Badge>
+  1358→                          )}
+  1359→                        </div>
+  1360→                        <Input
+  1361→                          value={item.note}
+  1362→                          onChange={(e) => updateQualityNote(item.id, e.target.value)}
+  1363→                          placeholder="Observations, justification..."
+  1364→                          className="text-xs h-7"
+  1365→                        />
+  1366→                      </div>
+  1367→                    </div>
+  1368→                  </div>
+  1369→                ))}
+  1370→              </div>
+  1371→            </CardContent>
+  1372→          </Card>
+  1373→        </TabsContent>
+  1374→
+  1375→        {/* ═══════════════════════════════════════
+  1376→           Tab 6 — Progress Tracking
+  1377→           ═══════════════════════════════════════ */}
+  1378→        <TabsContent value="progress" className="flex flex-col gap-6">
+  1379→          {/* PRISMA Summary */}
+  1380→          <Card>
+  1381→            <CardHeader>
+  1382→              <CardTitle className="text-base">Suivi du processus PRISMA</CardTitle>
+  1383→              <CardDescription>
+  1384→                Vue d'ensemble de la progression de la revue systématique à chaque étape
+  1385→              </CardDescription>
+  1386→            </CardHeader>
+  1387→            <CardContent className="flex flex-col gap-6">
+  1388→              {/* Stage progress bars */}
+  1389→              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  1390→                {prismaStages.map((stage, idx) => {
+  1391→                  const prevCount = idx > 0 ? prismaStages[idx - 1].count : stage.count;
+  1392→                  const ratio = prevCount > 0 ? (stage.count / prevCount) * 100 : 100;
+  1393→                  return (
+  1394→                    <div key={stage.id} className="flex flex-col gap-2 rounded-lg border p-4">
+  1395→                      <div className="flex items-center justify-between">
+  1396→                        <span className="text-xs font-semibold">{stage.label}</span>
+  1397→                        <Badge variant="secondary" className="text-[10px]">
+  1398→                          {stage.count}
+  1399→                        </Badge>
+  1400→                      </div>
+  1401→                      <Progress value={ratio} className="h-2" />
+  1402→                      <p className="text-[10px] text-muted-foreground">
+  1403→                        {stage.count} article(s) — {Math.round(ratio)}% conservé(s)
+  1404→                      </p>
+  1405→                      {stage.subStages && (
+  1406→                        <div className="flex flex-col gap-1 mt-1">
+  1407→                          {stage.subStages.map((sub) => (
+  1408→                            <div key={sub.id} className="flex items-center justify-between text-[10px] text-muted-foreground">
+  1409→                              <span>{sub.label}</span>
+  1410→                              <span className="font-medium">{sub.count}</span>
+  1411→                            </div>
+  1412→                          ))}
+  1413→                        </div>
+  1414→                      )}
+  1415→                    </div>
+  1416→                  );
+  1417→                })}
+  1418→              </div>
+  1419→
+  1420→              <Separator />
+  1421→
+  1422→              {/* Screening breakdown */}
+  1423→              <div className="flex flex-col gap-4">
+  1424→                <h3 className="text-sm font-semibold">Répartition du criblage</h3>
+  1425→                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+  1426→                  <div className="flex flex-col items-center gap-2 rounded-lg border border-chart-2/20 bg-chart-2/5 p-4">
+  1427→                    <CheckCircle2 className="h-6 w-6 text-chart-2" />
+  1428→                    <span className="text-2xl font-bold text-chart-2">{includeCount}</span>
+  1429→                    <span className="text-xs text-muted-foreground">Inclus</span>
+  1430→                  </div>
+  1431→                  <div className="flex flex-col items-center gap-2 rounded-lg border border-chart-4/20 bg-chart-4/5 p-4">
+  1432→                    <X className="h-6 w-6 text-chart-4" />
+  1433→                    <span className="text-2xl font-bold text-chart-4">{excludeCount}</span>
+  1434→                    <span className="text-xs text-muted-foreground">Exclus</span>
+  1435→                  </div>
+  1436→                  <div className="flex flex-col items-center gap-2 rounded-lg border border-chart-5/20 bg-chart-5/5 p-4">
+  1437→                    <HelpCircle className="h-6 w-6 text-chart-5" />
+  1438→                    <span className="text-2xl font-bold text-chart-5">{maybeCount}</span>
+  1439→                    <span className="text-xs text-muted-foreground">En attente</span>
+  1440→                  </div>
+  1441→                </div>
+  1442→              </div>
+  1443→
+  1444→              <Separator />
+  1445→
+  1446→              {/* Quality assessment progress */}
+  1447→              <div className="flex flex-col gap-4">
+  1448→                <h3 className="text-sm font-semibold">Évaluation de la qualité</h3>
+  1449→                <div className="flex flex-col gap-3 rounded-lg border p-4">
+  1450→                  <div className="flex items-center justify-between text-xs">
+  1451→                    <span className="text-muted-foreground">
+  1452→                      Grille {qualityFramework.toUpperCase()} — article sélectionné
+  1453→                    </span>
+  1454→                    <span className="font-medium">
+  1455→                      {qualityChecked} / {qualityItems.length}
+  1456→                    </span>
+  1457→                  </div>
+  1458→                  <Progress value={qualityPercent} className="h-3" />
+  1459→                  <div className="flex items-center justify-center gap-1 mt-1">
+  1460→                    {qualityItems.map((item) => (
+  1461→                      <div
+  1462→                        key={item.id}
+  1463→                        className={`h-2 w-2 rounded-full ${
+  1464→                          item.checked ? "bg-chart-2" : "bg-muted-foreground/20"
+  1465→                        }`}
+  1466→                      />
+  1467→                    ))}
+  1468→                  </div>
+  1469→                  <p className="text-[10px] text-center text-muted-foreground">
+  1470→                    {qualityPercent >= 80
+  1471→                      ? "Excellente couverture de l'évaluation"
+  1472→                      : qualityPercent >= 50
+  1473→                        ? "Évaluation en cours"
+  1474→                        : "Évaluation à compléter"}
+  1475→                  </p>
+  1476→                </div>
+  1477→              </div>
+  1478→
+  1479→              <Separator />
+  1480→
+  1481→              {/* Overall funnel visualization */}
+  1482→              <div className="flex flex-col gap-4">
+  1483→                <h3 className="text-sm font-semibold">Entonnoir de sélection</h3>
+  1484→                <div className="flex flex-col items-center gap-1 py-4">
+  1485→                  {prismaStages.map((stage, idx) => {
+  1486→                    const maxWidth = 100;
+  1487→                    const minWidth = 25;
+  1488→                    const firstCount = prismaStages[0].count || 1;
+  1489→                    const widthPercent = minWidth + ((stage.count / firstCount) * (maxWidth - minWidth));
+  1490→                    return (
+  1491→                      <div key={stage.id} className="flex flex-col items-center gap-1">
+  1492→                        <div
+  1493→                          className="flex items-center justify-center rounded-md bg-primary/10 border border-primary/20 transition-all"
+  1494→                          style={{ width: `${widthPercent}%`, minHeight: "48px" }}
+  1495→                        >
+  1496→                          <div className="flex flex-col items-center py-2">
+  1497→                            <span className="text-sm font-bold">{stage.count}</span>
+  1498→                            <span className="text-[10px] text-muted-foreground">{stage.label}</span>
+  1499→                          </div>
+  1500→                        </div>
+  1501→                        {idx < prismaStages.length - 1 && (
+  1502→                          <ArrowDown className="h-4 w-4 text-muted-foreground my-0.5" />
+  1503→                        )}
+  1504→                      </div>
+  1505→                    );
+  1506→                  })}
+  1507→                </div>
+  1508→              </div>
+  1509→
+  1510→              <Separator />
+  1511→
+  1512→              {/* Criteria summary */}
+  1513→              <div className="flex flex-col gap-4">
+  1514→                <h3 className="text-sm font-semibold">Résumé du protocole</h3>
+  1515→                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  1516→                  <div className="flex flex-col gap-1 rounded-lg border p-3">
+  1517→                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+  1518→                      Cadre
+  1519→                    </span>
+  1520→                    <span className="text-sm font-medium">PICOS</span>
+  1521→                    <span className="text-[10px] text-muted-foreground">
+  1522→                      {picoFields.filter((f) => f.value.trim()).length}/5 champs remplis
+  1523→                    </span>
+  1524→                  </div>
+  1525→                  <div className="flex flex-col gap-1 rounded-lg border p-3">
+  1526→                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+  1527→                      Critères
+  1528→                    </span>
+  1529→                    <span className="text-sm font-medium">{criteria.length} critères</span>
+  1530→                    <span className="text-[10px] text-muted-foreground">
+  1531→                      {criteria.filter((c) => c.type === "inclusion").length} inclusion,{" "}
+  1532→                      {criteria.filter((c) => c.type === "exclusion").length} exclusion
+  1533→                    </span>
+  1534→                  </div>
+  1535→                  <div className="flex flex-col gap-1 rounded-lg border p-3">
+  1536→                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+  1537→                      Bases de données
+  1538→                    </span>
+  1539→                    <span className="text-sm font-medium">{selectedDatabases.length} bases</span>
+  1540→                    <span className="text-[10px] text-muted-foreground">
+  1541→                      Période {dateFrom}–{dateTo}
+  1542→                    </span>
+  1543→                  </div>
+  1544→                  <div className="flex flex-col gap-1 rounded-lg border p-3">
+  1545→                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+  1546→                      Extraction
+  1547→                    </span>
+  1548→                    <span className="text-sm font-medium">{EXTRACTION_FIELDS.length} champs</span>
+  1549→                    <span className="text-[10px] text-muted-foreground">
+  1550→                      Template standardisé
+  1551→                    </span>
+  1552→                  </div>
+  1553→                </div>
+  1554→              </div>
+  1555→            </CardContent>
+  1556→          </Card>
+  1557→        </TabsContent>
+  1558→      </Tabs>
+  1559→    </div>
+  1560→  );
+  1561→}
+  1562→
