@@ -1,0 +1,5 @@
+src-tauri/
+*.rs
+Cargo.toml
+Cargo.lock
+TAURI_BUILD.md
