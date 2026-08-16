@@ -221,10 +221,9 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
           label="Prédiction IA (Tab pour accepter)"
           pressed={useAiPredictionEnabled(editor)}
           onClick={() => {
-            const extension = editor.extensionManager.get("aiPrediction");
-            if (extension) {
-              (extension as unknown as { toggleEnabled: () => void }).toggleEnabled();
-            }
+            import("@/modules/editor/extensions/ai-prediction").then(({ toggleAiPrediction }) => {
+              toggleAiPrediction(editor);
+            });
           }}
         />
       </div>

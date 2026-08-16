@@ -61,6 +61,7 @@ type PredictionMeta =
   | { type: "setLoading"; value: boolean }
   | { type: "toggleEnabled" };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const AiPrediction = Extension.create({
   name: "aiPrediction",
 
@@ -330,21 +331,21 @@ export const AiPrediction = Extension.create({
     ];
   },
 
-  // ─── Public methods ───
-  toggleEnabled() {
-    this.storage.enabled = !this.storage.enabled;
-    if (this.editor) {
-      this.editor.view.dispatch(
-        this.editor.state.tr.setMeta(AI_PREDICTION_KEY, {
-          type: "toggleEnabled",
-        } satisfies PredictionMeta)
-      );
-    }
-  },
-
-  get isEnabled(): boolean {
-    if (!this.editor) return true;
-    const state = AI_PREDICTION_KEY.getState(this.editor.state);
-    return state?.enabled ?? true;
-  },
 });
+
+// ─── Public helpers (called via toggleAiPrediction(editor)) ───
+export function toggleAiPrediction(editor: import('@tiptap/core').Editor) {
+  const pluginState = AI_PREDICTION_KEY.getState(editor.state);
+  if (pluginState) {
+    editor.view.dispatch(
+      editor.state.tr.setMeta(AI_PREDICTION_KEY, {
+        type: "toggleEnabled",
+      } satisfies PredictionMeta)
+    );
+  }
+}
+
+export function isAiPredictionEnabled(editor: import('@tiptap/core').Editor): boolean {
+  const state = AI_PREDICTION_KEY.getState(editor.state);
+  return state?.enabled ?? true;
+}

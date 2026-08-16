@@ -32,7 +32,8 @@ export function PredictionPopup({ editor }: PredictionPopupProps) {
 
         if (newSuggestion && enabled) {
           setSuggestion(newSuggestion);
-          setAlternatives(editor.storage.aiPrediction?.alternatives || []);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setAlternatives((editor.storage as any)?.aiPrediction?.alternatives || []);
 
           // Position popup near cursor
           const { from } = editor.state.selection;

@@ -7,8 +7,8 @@ import { db } from "@/lib/db";
 import {
   generateCompletion,
   type AiCompletionOptions,
-  type AiProviderConfig,
 } from "@/lib/ai/zai-client";
+import type { AiProviderConfig } from "@/lib/ai/ai-types";
 
 // ───────────────────────────────────────
 // Types
