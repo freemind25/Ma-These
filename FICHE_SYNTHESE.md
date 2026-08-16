@@ -1,7 +1,7 @@
 # FICHE SYNTHESE — ThesisFrame
 
 > **Document de référence et de traçabilité du projet.**
-> Mis à jour le : 28 juin 2025
+> Mis à jour le : 10 juillet 2025
 
 ---
 
@@ -14,6 +14,12 @@
 | 28/06/2025 | 738ef73 | Feat: import références BibTeX/RIS/CSL-JSON + Mendeley + dashboard | Antérieure au protocole |
 | 28/06/2025 | 732c298 | Fix: useAiConfig infinite re-render bug | Bugfix (hors protocole) |
 | 28/06/2025 | f9c0a2a | Fix: client-side crash Vercel — separate server fs code | Bugfix (hors protocole) |
+| 10/07/2025 | 7910b91 | Feat: add RoutesMe as AI provider — 1 API key for 20+ models | Autorisé |
+| 10/07/2025 | c7cd748 | Fix: improve AI error messages — friendly French messages for 503, 429, 401 | Bugfix (hors protocole) |
+| 10/07/2025 | 6356496 | Feat: fix Mistral AI provider — dual error parsing, dynamic models, tri-par-niveaux | Autorisé |
+| 10/07/2025 | c3cf721 | Feat: RAG module "Mon IA de thèse" — indexation + chat + sources citées | Autorisé |
+| 10/07/2025 | 33ed114 | Feat: guide d'utilisation + raccourcis clavier + à propos dans bouton "?" | Autorisé |
+| 10/07/2025 | a33cc90 | Feat: prédiction de texte IA dans l'éditeur (ghost text + popup suggestions) | Autorisé |
 
 ---
 
@@ -65,7 +71,7 @@
 | **État client** | Zustand (persist middleware) | ^5.0.6 |
 | **Serveur state** | TanStack React Query | ^5.82.0 |
 | **Base de données** | SQLite via Prisma ORM | ^6.11.1 |
-| **Éditeur riche** | Tiptap (+ 6 extensions) | ^3.29.2 |
+| **Éditeur riche** | Tiptap (+ 7 extensions, incl. AI prediction) | ^3.29.2 |
 | **Formulaires** | React Hook Form + Zod v4 | ^7.60.0 / ^4.0.2 |
 | **Graphiques** | Recharts | ^2.15.4 |
 | **Drag & Drop** | dnd-kit | ^6.3.1 |
@@ -83,7 +89,7 @@ src/
 │   ├── layout.tsx                # Layout racine (server component, lang="fr")
 │   ├── page.tsx                  # Page unique — SPA via Zustand currentView
 │   ├── globals.css               # Styles globaux + variables CSS
-│   └── api/                      # 36 routes API (REST, zéro server action)
+│   └── api/                      # 39 routes API (REST, zéro server action)
 │       ├── route.ts              # Health check
 │       ├── stats/route.ts        # Agrégations dashboard
 │       ├── thesis/               # CRUD thèses + chapitres + cadrages
@@ -100,19 +106,23 @@ src/
 │       ├── ai-writing/           # Génération IA modes d'écriture
 │       ├── directeur-chat/       # Chat IA directeur de thèse
 │       ├── ai-test/              # Test connexion fournisseur IA
+│       ├── ai-models/            # Liste dynamique modèles (mistral, routesme, custom)
 │       ├── ai-config/            # Configurations IA CRUD
+│       ├── thesis-rag/           # RAG — indexation + requêtes sémantiques
+│       ├── text-prediction/      # Prédiction de texte IA dans l'éditeur
 │       ├── search/               # Recherche plein texte booléenne
 │       └── journaux-oa/          # Recherche journaux OpenAlex/DOAJ
 │
 ├── components/
-│   ├── layout/                  # AppHeader, AppSidebar, AppFooter, ModulePlaceholder
+│   ├── layout/                  # AppHeader, AppSidebar, AppFooter, ModulePlaceholder,
+│   │                                # UsageGuideDialog, AboutDialog, ShortcutsDialog
 │   ├── dashboard/                # DashboardPage (stats, actions, modules)
 │   ├── providers/                # QueryProvider (React Query)
 │   ├── theme-provider.tsx        # ThemeProvider (next-themes)
 │   └── ui/                       # 44 composants shadcn/ui
 │
-├── modules/                      # 27 modules fonctionnels (tous "use client")
-│   ├── editor/                   # + composants Tiptap + hooks
+├── modules/                      # 29 modules fonctionnels (tous "use client")
+│   ├── editor/                   # + composants Tiptap + hooks + AI prediction extension
 │   ├── ai-writing/               # 11 modes d'écriture IA
 │   ├── references/               # Biblio CRUD + import + export
 │   ├── ai-tools/                  # Carnet de recherche + consensus
@@ -138,21 +148,24 @@ src/
 │   ├── export-pdf/              # Export PDF
 │   ├── equilibre-chapitres/     # Équilibre chapitres IA
 │   ├── diagrammes/              # Diagrammes visuels
-│   └── harper/                  # Résumé/paraphrase/extraction IA
+│   ├── harper/                  # Résumé/paraphrase/extraction IA
+│   └── thesis-rag/              # Chat RAG "Mon IA de thèse" + indexation
 │
 ├── hooks/                       # useAiConfig, useMobile, useToast
 ├── lib/
 │   ├── ai/                       # Architecture IA dual-backend
-│   │   ├── ai-types.ts           # Types client-safe + constantes
+│   │   ├── ai-types.ts           # Types client-safe + constantes + DYNAMIC_MODEL_PROVIDERS
 │   │   ├── ai-provider.ts        # Détection backend server-only (fs/os)
-│   │   └── zai-client.ts         # Client IA (SDK + API OpenAI-compat)
+│   │   └── zai-client.ts         # Client IA (SDK + API OpenAI-compat, dual error parsing)
+│   ├── rag/                      # Service RAG (chunking, indexation, retrieval)
+│   │   └── rag-service.ts         # chunkText, indexThesisContent, retrieveChunks, generateRagResponse
 │   ├── parsers/                  # Parsers bibliographiques
 │   │   ├── bibtex-parser.ts      # Parser BibTeX (.bib)
 │   │   ├── ris-parser.ts         # Parser RIS (.ris)
 │   │   ├── csl-json-parser.ts    # Parser CSL-JSON (.json)
 │   │   └── index.ts              # Auto-détection format
 │   ├── stores/
-│   │   └── app-store.ts          # Zustand (27 vues, thème, IA provider)
+│   │   └── app-store.ts          # Zustand (29 vues, thème, IA provider)
 │   ├── api-schemas.ts            # Schemas Zod pour toutes les routes
 │   ├── db.ts                     # Prisma Client singleton
 │   └── utils.ts                  # Utilitaires (cn, etc.)
@@ -169,7 +182,7 @@ src/
 **Générateur :** prisma-client-js
 **Client :** Singleton via globalThis (dev HMR-safe) dans `src/lib/db.ts`
 
-#### Schéma (14 modèles)
+#### Schéma (15 modèles)
 
 **THÈSE**
 ```
@@ -238,6 +251,14 @@ AgileStory ← AgileSprint (Cascade)
   priority (low|medium|high|critical), storyPoints?, sortOrder
 ```
 
+**RAG**
+```
+DocumentChunk (standalone)
+  id, sourceType (chapter|reference|notebook|cadrage),
+  sourceId, content, chunkIndex, metadata (JSON)
+  Indexes: [sourceType], [sourceId], [content]
+```
+
 **AUTRES**
 ```
 CustomBookSkill    → id, title, author?, content, tags?
@@ -284,7 +305,8 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
   - Statut du chapitre (non commencé / en cours / brouillon / révision / terminé)
   - Feedback directeur sur chaque chapitre
   - Panel latéral liste des thèses
-- **Données :** CRUD /api/thesis, /api/thesis/[id], /api/thesis/[id]/chapters, /api/chapters/[id]
+  - **Prédiction de texte IA** (v1.3.0) : ghost text gris après le curseur, popup avec suggestion principale + 2 alternatives, Tab pour accepter, Esc pour dismiss, toggle dans la toolbar
+- **Données :** CRUD /api/thesis, /api/thesis/[id], /api/thesis/[id]/chapters, /api/chapters/[id], POST /api/text-prediction
 
 ### 2.3 Assistant IA d'écriture (`AiWritingPage`)
 - **Statut :** Stable
@@ -423,6 +445,21 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 - **Statut :** Stable
 - **Rôle :** Résumé IA, paraphrase, extraction de textes
 
+### 2.29 Mon IA de thèse — RAG (`ThesisRagPage`) 🆕
+- **Statut :** Stable (v1.3.0)
+- **Rôle :** Chat IA contextuel indexant le contenu de la thèse pour répondre avec des sources citées
+- **Fonctionnalités :**
+  - Indexation de 4 sources de données : chapitres (plainText), références (abstract/notes), entrées carnet de recherche (Q&A), champs de cadrage
+  - Chunking automatique (taille configurable) avec métadonnées
+  - Recherche par mots-clés dans les chunks indexés
+  - Génération de réponse IA avec injection du contexte récupéré
+  - Interface chat avec rendu markdown, badges de sources (chapter=emerald, reference=sky, notebook=amber, cadrage=violet)
+  - Chips de suggestions pour questions rapides
+  - Barre d'indexation avec stats (nombre de chunks indexés par type)
+  - Input sticky en bas de page
+- **Données :** POST /api/thesis-rag (actions: index, query)
+- **Architecture :** RAG léger (keyword-based), SQLite-only, aucun vector DB externe
+
 ---
 
 ## 3. Logiques métier
@@ -439,6 +476,16 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 **Détection backend (`detectBackend`) :**
 - Si `provider ≠ "zai"` → toujours `"api"` (OpenAI-compatible fetch)
 - Si `provider = "zai"` → vérifie existence de `/etc/.z-ai-config` (sandbox) → `"zai"` sinon `"api"`
+
+**Fournisseurs dynamiques (`DYNAMIC_MODEL_PROVIDERS`) :**
+- `routesme`, `mistral`, `custom` — fetch auto des modèles disponibles via `GET /v1/models`
+- Tri par 3 niveaux : top models → chat models → utility models (embed, ocr, tts, etc.)
+- Le premier modèle du top tier est auto-sélectionné
+
+**Dual error parsing (v1.2.0+) :**
+- OpenAI : `{"error": {"type": "...", "message": "..."}}` → extraction depuis `error.message`
+- Mistral : `{"object": "error", "message": "...", "code": "..."}` → extraction depuis `message` (top-level)
+- Mistral /models : `{"detail": "Invalid API Key"}` → extraction depuis `detail`
 
 **Fallback serveur (`getDefaultConfig`) :**
 - Lit `AI_PROVIDER` env var → switch sur `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `MISTRAL_API_KEY`
@@ -483,6 +530,28 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 - Score de pertinence, snippets de résultat
 - Filtre par chapitre et dates
 
+### 3.8 RAG — Mon IA de thèse (v1.3.0)
+- **Indexation :** 4 sources → chunking automatique → stockage en DocumentChunk (SQLite)
+  - Chapters : plainText découpé en chunks de ~500 caractères
+  - References : abstract + notes concaténés
+  - NotebookEntries : question + answer concaténés
+  - ThesisCadrageFields : label + value concaténés
+- **Requêtage :** mots-clés → recherche case-insensitive dans `DocumentChunk.content` → tri par score de matching
+- **Génération :** contexte top-10 chunks injecté dans prompt système IA → réponse avec instruction de citer les sources
+- **Pas de vector DB externe :** approche keyword-based légère, entièrement SQLite
+
+### 3.9 Prédiction de texte IA (v1.3.0)
+- **Extension TipTap** `ai-prediction.ts` : ProseMirror plugin avec widget decoration
+  - Ghost text gris et italique après le curseur (suggestion preview)
+  - Dots animés pendant l'appel API
+  - Debounce 1s après arrêt de la frappe
+  - Tab = accepter suggestion, Esc = dismiss
+  - AbortController pour annuler les requêtes en vol
+- **API route** `/api/text-prediction` : prompt système français académique, retourne suggestion principale + 2 alternatives (format : `"primary|||alt1|||alt2"`)
+- **Popup** `prediction-popup.tsx` : carte flottante (React Portal) avec suggestion principale (clic) + alternatives (clic), animation fade in/out
+- **Toggle** : bouton ✨ Sparkles dans la toolbar pour activer/désactiver
+- Fonctionne avec tous les fournisseurs configurés (Z.ai, Mistral, OpenAI, Anthropic, RoutesMe, Custom)
+
 ---
 
 ## 4. Points sensibles et dette technique
@@ -492,13 +561,15 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 | Fichier | Risque | Justification |
 |---------|--------|---------------|
 | `src/hooks/use-ai-config.ts` | 🔴 Critique | Bug de re-render infini corrigé par cache module-level. Toute modification du cycle useSyncExternalStore peut casser toute l'application. |
-| `src/lib/ai/zai-client.ts` | 🔴 Critique | Dual-backend IA. Retry logic, détection backend. Tous les modules IA en dépendent. |
+| `src/lib/ai/zai-client.ts` | 🔴 Critique | Dual-backend IA. Dual error parsing (OpenAI+Mistral). Retry logic, détection backend. Tous les modules IA en dépendent. |
 | `src/lib/ai/ai-provider.ts` | 🔴 Critique | Utilise `require("fs")`/`require("os")` — ne doit JAMAIS être importé côté client. |
-| `src/lib/ai/ai-types.ts` | 🟡 Important | Types client-safe. Modification = impact sur toute la chaîne config IA. |
-| `src/lib/stores/app-store.ts` | 🟡 Important | 27 vues, navigation, thème. Modification = impact sur toute la navigation. |
+| `src/lib/ai/ai-types.ts` | 🟡 Important | Types client-safe + DYNAMIC_MODEL_PROVIDERS. Modification = impact sur toute la chaîne config IA. |
+| `src/lib/stores/app-store.ts` | 🟡 Important | 29 vues, navigation, thème. Modification = impact sur toute la navigation. |
 | `src/app/page.tsx` | 🟡 Important | Routeur SPA central. Tout nouveau module doit y être ajouté. |
-| `prisma/schema.prisma` | 🔴 Critique | Schéma de données. Toute modification nécessite `db:push` + test régression. |
+| `prisma/schema.prisma` | 🔴 Critique | Schéma de données (15 modèles incl. DocumentChunk). Toute modification nécessite `db:push` + test régression. |
 | `src/lib/api-schemas.ts` | 🟡 Important | Validation Zod pour toutes les routes. Modification = impact sur validation côté serveur. |
+| `src/lib/rag/rag-service.ts` | 🟡 Important | Service RAG central. Chunking, indexation, retrieval. Dépend de zai-client.ts. |
+| `src/modules/editor/extensions/ai-prediction.ts` | 🟡 Important | Extension TipTap ProseMirror complexe. Plugin state machine + AbortController. |
 
 ### 4.2 Dette technique identifiée
 
