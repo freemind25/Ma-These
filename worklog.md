@@ -224,3 +224,39 @@ Stage Summary:
 - All commits pushed to origin/main
 - FICHE_SYNTHESE updated to v1.3.0 with all new features documented
 - GitHub release v1.3.0 published with full changelog
+
+---
+Task ID: 7
+Agent: Main orchestrator
+Task: Restore Tauri v2 integration for Windows .exe/.msi desktop build
+
+Work Log:
+- Verified old repo had Tauri v2 (scripts tauri:dev/tauri:build, deps @tauri-apps/api v2, @tauri-apps/cli v2)
+- Added Tauri deps to package.json: @tauri-apps/api ^2, @tauri-apps/plugin-shell ^2, @tauri-apps/cli ^2
+- Added scripts: tauri, tauri:dev, tauri:build, build:tauri
+- Created src-tauri/ directory with complete Tauri v2 setup:
+  - Cargo.toml (tauri v2, serde, shell plugin)
+  - build.rs (tauri_build)
+  - tauri.conf.json (window 1400x900, NSIS FR/EN, MSI, resources db/* + public/*)
+  - capabilities/default.json (core:default, shell:allow-open, shell:allow-execute)
+  - src/main.rs (windows_subsystem="windows")
+  - src/lib.rs (setup: Windows DB path, data dir creation, env var)
+- Generated icons via sharp: 32x32, 128x128, 128x128@2x, icon.png (512), icon.ico
+- Updated next.config.ts: images.unoptimized = true (Tauri compatibility)
+- Updated .gitignore: src-tauri/target/, src-tauri/gen/, scripts/, *.exe, *.msi
+- Created TAURI_BUILD.md: complete build guide (prerequisites, build steps, artifacts, structure)
+- Updated FICHE_SYNTHESE:
+  - §1.1 Stack: added Rust (Tauri v2), Desktop shell, Tauri plugins
+  - §1.2 Structure: added src-tauri/ tree, TAURI_BUILD.md, Caddyfile
+  - §3.2 Distribution desktop: full architecture, workflow, artifacts, scripts, prerequisites
+  - Renumbered §3.3→§3.10 accordingly
+  - §4.4 Config Next.js: added images.unoptimized
+  - §4.5 Config Tauri v2: tauri.conf.json, capabilities, Cargo.toml, scripts
+- Updated GitHub release v1.3.0: new name "RAG, Prédiction IA, Tauri Desktop", added desktop section
+
+Stage Summary:
+- Tauri v2 integration fully restored with all config files
+- 16 files committed (6 new, 10 modified)
+- FICHE_SYNTHESE updated across 6 sections (1.1, 1.2, 3.2, 3.3-3.10, 4.4, 4.5)
+- Release v1.3.0 updated with Tauri desktop section
+- Lint: 0 errors, 15 warnings (all pre-existing)
