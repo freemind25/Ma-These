@@ -42,11 +42,27 @@ export async function GET(request: NextRequest) {
     });
 
     if (!res.ok) {
-      const errorText = await res.text().catch(() => "Unknown error");
+      let errorText = await res.text().catch(() => "Unknown error");
+      // Parse error for friendlier messages (Mistral uses {detail: ...} or {message: ...})
+      try {
+        const errJson = JSON.parse(errorText) as {
+          detail?: string;
+          message?: string;
+          error?: { message?: string };
+        };
+        const errMsg = errJson.detail || errJson.message || errJson.error?.message || "";
+        if (res.status === 401) {
+          errorText = `Clé API invalide (${res.status}). ${errMsg || "Vérifiez votre clé API."}`;
+        } else if (errMsg) {
+          errorText = `${errMsg} (${res.status})`;
+        } else {
+          errorText = `Impossible de récupérer les modèles (${res.status}): ${errorText.slice(0, 100)}`;
+        }
+      } catch {
+        errorText = `Impossible de récupérer les modèles (${res.status}): ${errorText.slice(0, 100)}`;
+      }
       return NextResponse.json(
-        {
-          error: `Impossible de récupérer les modèles (${res.status}): ${errorText.slice(0, 200)}`,
-        },
+        { error: errorText },
         { status: 502 }
       );
     }

@@ -78,17 +78,33 @@ export async function POST(request: NextRequest) {
       let errorText = await res.text().catch(() => "Unknown error");
 
       // Parse known error types for friendlier messages
+      // Handles both OpenAI format (error.type/message) and Mistral format (top-level message/code)
       try {
-        const errJson = JSON.parse(errorText) as { error?: { type?: string; message?: string }; model?: string };
-        const errType = errJson.error?.type;
-        const errMsg = errJson.error?.message || "";
+        const errJson = JSON.parse(errorText) as {
+          error?: { type?: string; message?: string };
+          message?: string;
+          code?: string;
+          detail?: string;
+          type?: string;
+          model?: string;
+        };
+        // OpenAI nested format: { error: { type, message } }
+        const errType = errJson.error?.type || errJson.type || errJson.code || "";
+        const errMsg = errJson.error?.message || errJson.message || errJson.detail || "";
 
         if (errType === "all_keys_failed" || res.status === 503) {
           errorText = `Service temporairement indisponible (${res.status}). Le modèle "${errJson.model || model}" est peut-être surchargé. Réessayez dans quelques instants ou choisissez un autre modèle.`;
         } else if (errType === "rate_limit_exceeded" || res.status === 429) {
           errorText = `Limite de requêtes atteinte (${res.status}). ${errMsg || "Attendez quelques secondes avant de réessayer."}`;
-        } else if (errType === "invalid_api_key" || res.status === 401) {
-          errorText = `Clé API invalide (${res.status}). Vérifiez votre clé et réessayez.`;
+        } else if (
+          errType === "invalid_api_key" ||
+          errType === "invalid_request_error" ||
+          errJson.code === "invalid_api_key" ||
+          res.status === 401
+        ) {
+          errorText = `Clé API invalide (${res.status}). ${errMsg || "Vérifiez votre clé et réessayez."}`;
+        } else if (res.status === 404) {
+          errorText = `Modèle "${model}" introuvable (${res.status}). Vérifiez le nom du modèle.`;
         } else if (errMsg) {
           errorText = `${errMsg} (modèle: ${errJson.model || model})`;
         }

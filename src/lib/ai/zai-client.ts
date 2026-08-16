@@ -149,17 +149,33 @@ async function generateWithAPI(
     let errorText = await response.text();
 
     // Parse known error types for friendlier messages
+    // Handles both OpenAI format (error.type/message) and Mistral format (top-level message/code)
     try {
-      const errJson = JSON.parse(errorText) as { error?: { type?: string; message?: string }; model?: string };
-      const errType = errJson.error?.type;
-      const errMsg = errJson.error?.message || "";
+      const errJson = JSON.parse(errorText) as {
+        error?: { type?: string; message?: string };
+        message?: string;
+        code?: string;
+        detail?: string;
+        type?: string;
+        model?: string;
+      };
+      // OpenAI nested format: { error: { type, message } }
+      const errType = errJson.error?.type || errJson.type || errJson.code || "";
+      const errMsg = errJson.error?.message || errJson.message || errJson.detail || "";
 
       if (errType === "all_keys_failed" || response.status === 503) {
         errorText = `Service temporairement indisponible. Modèle "${errJson.model || model}" surchargé. Réessayez dans quelques instants ou changez de modèle.`;
       } else if (errType === "rate_limit_exceeded" || response.status === 429) {
         errorText = `Limite de requêtes atteinte. ${errMsg || "Attendez quelques secondes."}`;
-      } else if (errType === "invalid_api_key" || response.status === 401) {
-        errorText = `Clé API invalide. Vérifiez votre configuration.`;
+      } else if (
+        errType === "invalid_api_key" ||
+        errType === "invalid_request_error" ||
+        errJson.code === "invalid_api_key" ||
+        response.status === 401
+      ) {
+        errorText = `Clé API invalide. ${errMsg || "Vérifiez votre configuration."}`;
+      } else if (response.status === 404) {
+        errorText = `Modèle "${model}" introuvable. Vérifiez le nom du modèle.`;
       } else if (errMsg) {
         errorText = `${errMsg}`;
       }

@@ -107,7 +107,7 @@ function AiConfigDialog({
     setConfig(saved);
   }, []);
 
-  // Fetch dynamic models when provider is routesme/custom and apiKey is set
+  // Fetch dynamic models when provider is dynamic and apiKey is set
   const fetchDynamicModels = useCallback(async () => {
     const fields = getProviderFields(config.provider);
     if (!fields.dynamicModels) {
@@ -117,38 +117,50 @@ function AiConfigDialog({
 
     const baseUrl =
       config.baseUrl || PROVIDER_BASE_URLS[config.provider] || "";
-    if (!baseUrl) return;
+    if (!baseUrl || !config.apiKey) {
+      setDynamicModels([]);
+      return;
+    }
 
     setLoadingModels(true);
     try {
       const params = new URLSearchParams({ baseUrl });
       if (config.apiKey) params.set("apiKey", config.apiKey);
       const res = await fetch(`/api/ai-models?${params}`);
-      const data = (await res.json()) as { models?: string[]; error?: string };
-      if (data.models && data.models.length > 0) {
+      const data = (await res.json()) as { models?: string[]; error?: string; cached?: boolean };
+      if (data.error) {
+        toast.error(data.error);
+        setDynamicModels([]);
+      } else if (data.models && data.models.length > 0) {
         setDynamicModels(data.models);
-        // Auto-select first model if none selected
-        if (!config.model) {
+        // Auto-select first model if none selected or previously selected model not in list
+        if (!config.model || !data.models.includes(config.model)) {
           setConfig((prev) => ({ ...prev, model: data.models![0] }));
         }
       } else {
         setDynamicModels([]);
+        if (!data.cached) {
+          toast.info("Aucun modèle trouvé pour ce fournisseur.");
+        }
       }
-    } catch {
+    } catch (err) {
+      toast.error(`Erreur réseau: ${err instanceof Error ? err.message : String(err)}`);
       setDynamicModels([]);
     } finally {
       setLoadingModels(false);
     }
   }, [config.provider, config.baseUrl, config.apiKey, config.model]);
 
-  // Auto-fetch when provider changes to routesme/custom
+  // Auto-fetch when provider changes to dynamic model providers or when apiKey is entered
   useEffect(() => {
-    if (DYNAMIC_MODEL_PROVIDERS.includes(config.provider)) {
+    if (DYNAMIC_MODEL_PROVIDERS.includes(config.provider) && config.apiKey) {
       const timer = setTimeout(fetchDynamicModels, 300);
       return () => clearTimeout(timer);
     }
-    setDynamicModels([]);
-  }, [config.provider, fetchDynamicModels]);
+    if (!config.apiKey) {
+      setDynamicModels([]);
+    }
+  }, [config.provider, config.apiKey, fetchDynamicModels]);
 
   const handleProviderChange = useCallback((value: string) => {
     const newProvider = value as AiProviderId;
@@ -159,7 +171,13 @@ function AiConfigDialog({
       baseUrl:
         newProvider === "routesme"
           ? PROVIDER_BASE_URLS.routesme
-          : prev.baseUrl,
+          : newProvider === "mistral"
+            ? PROVIDER_BASE_URLS.mistral
+            : newProvider === "openai"
+              ? PROVIDER_BASE_URLS.openai
+              : newProvider === "anthropic"
+                ? PROVIDER_BASE_URLS.anthropic
+                : prev.baseUrl,
     }));
     setTestResult(null);
   }, []);
@@ -244,7 +262,12 @@ function AiConfigDialog({
               ⚡ RoutesMe — 1 clé API, 20+ modèles (GLM, GPT, Claude, DeepSeek, Gemini…)
             </p>
           )}
-          {config.provider !== "zai" && config.provider !== "routesme" && (
+          {config.provider === "mistral" && (
+            <p className="text-[11px] text-sky-600 dark:text-sky-400">
+              ↯ Mistral AI — API compatible OpenAI, modèles français de pointe
+            </p>
+          )}
+          {config.provider !== "zai" && config.provider !== "routesme" && config.provider !== "mistral" && (
             <p className="text-[11px] text-muted-foreground">
               ↔ Utilisera l&apos;API compatible OpenAI
             </p>
@@ -261,7 +284,9 @@ function AiConfigDialog({
                 placeholder={
                   config.provider === "routesme"
                     ? "rm-xxxxxxxxxxxxxxxx"
-                    : "sk-..."
+                    : config.provider === "mistral"
+                      ? "xxxxxxxxxxxxxxxxxxxxxxxx"
+                      : "sk-..."
                 }
                 value={config.apiKey || ""}
                 onChange={(e) =>
@@ -292,6 +317,19 @@ function AiConfigDialog({
                   className="underline text-amber-600 dark:text-amber-400 hover:text-amber-700"
                 >
                   routesme.online
+                </a>
+              </p>
+            )}
+            {config.provider === "mistral" && (
+              <p className="text-[11px] text-muted-foreground">
+                Obtenez votre clé sur{" "}
+                <a
+                  href="https://console.mistral.ai"
+                  target="_blank"
+                  rel="noopener"
+                  className="underline text-sky-600 dark:text-sky-400 hover:text-sky-700"
+                >
+                  console.mistral.ai
                 </a>
               </p>
             )}
@@ -371,7 +409,7 @@ function AiConfigDialog({
                   setConfig((prev) => ({ ...prev, model: e.target.value }))
                 }
               />
-              {config.provider === "routesme" && (
+              {(config.provider === "routesme" || config.provider === "mistral") && (
                 <p className="text-[11px] text-muted-foreground">
                   Entrez votre clé API ci-dessus pour charger la liste des modèles disponibles.
                 </p>
@@ -407,6 +445,26 @@ function AiConfigDialog({
             </p>
             <p>
               • <span className="font-medium">VIP ($20/mois)</span> : Tous les modèles, 20M tokens/jour
+            </p>
+          </div>
+        )}
+
+        {/* Mistral info banner */}
+        {config.provider === "mistral" && (
+          <div className="rounded-lg border border-sky-200 dark:border-sky-800/50 bg-sky-50 dark:bg-sky-950/20 p-3 text-[11px] text-sky-800 dark:text-sky-300 space-y-1">
+            <p className="font-semibold">Mistral AI — Modèles IA français</p>
+            <p>
+              Mistral Large, Medium, Small et Codestral. API 100% compatible OpenAI.
+            </p>
+            <p>
+              • <span className="font-medium">Gratuit</span> : Créez un compte sur{" "}
+              <a href="https://console.mistral.ai" target="_blank" rel="noopener" className="underline hover:text-sky-600">
+                console.mistral.ai
+              </a>{" "}
+              pour obtenir des crédits gratuits.
+            </p>
+            <p>
+              • <span className="font-medium">Format clé</span> : Chaîne alphanumérique (pas de préfixe sk-)
             </p>
           </div>
         )}

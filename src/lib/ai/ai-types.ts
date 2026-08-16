@@ -44,7 +44,7 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
 /**
  * Providers whose model list should be fetched dynamically from their /models endpoint.
  */
-export const DYNAMIC_MODEL_PROVIDERS: AiProviderId[] = ["routesme", "custom"];
+export const DYNAMIC_MODEL_PROVIDERS: AiProviderId[] = ["mistral", "routesme", "custom"];
 
 /**
  * Get a human-readable label for a provider
@@ -82,6 +82,6 @@ export function getProviderFields(provider: AiProviderId): {
     showApiKey: true,
     showModel: true,
     showBaseUrl: provider === "custom",
-    dynamicModels: provider === "routesme" || provider === "custom",
+    dynamicModels: provider === "mistral" || provider === "routesme" || provider === "custom",
   };
 }
