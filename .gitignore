@@ -62,3 +62,10 @@ tool-results/
 pdf-gen/
 roadmap-thesisframe.pdf
 agent-ctx/
+
+# Tauri build artifacts
+src-tauri/target/
+src-tauri/gen/
+scripts/
+*.exe
+*.msi

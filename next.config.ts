@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "2mb",
     },
   },
+  // Tauri: image optimization not needed for desktop builds
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

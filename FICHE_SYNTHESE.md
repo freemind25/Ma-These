@@ -20,6 +20,7 @@
 | 10/07/2025 | c3cf721 | Feat: RAG module "Mon IA de thèse" — indexation + chat + sources citées | Autorisé |
 | 10/07/2025 | 33ed114 | Feat: guide d'utilisation + raccourcis clavier + à propos dans bouton "?" | Autorisé |
 | 10/07/2025 | a33cc90 | Feat: prédiction de texte IA dans l'éditeur (ghost text + popup suggestions) | Autorisé |
+| 10/07/2025 | — | Feat: restauration intégration Tauri v2 — build .exe/.msi Windows desktop | Autorisé |
 
 ---
 
@@ -64,6 +65,7 @@
 | **Framework** | Next.js (App Router) | ^16.1.1 |
 | **Runtime** | Bun | (lockfile) |
 | **Langage** | TypeScript | ^5 |
+| **Backend desktop** | Rust (Tauri v2) | stable |
 | **UI** | React | ^19.0.0 |
 | **CSS** | Tailwind CSS 4 + tw-animate-css | ^4 |
 | **Composants UI** | shadcn/ui (style New York) | — |
@@ -80,10 +82,30 @@
 | **Toast** | Sonner | ^2.0.6 |
 | **Thème** | next-themes (class-based) | ^0.4.6 |
 | **Auth (disponible)** | NextAuth v4 | ^4.24.11 |
+| **Desktop shell** | Tauri v2 (Rust) | ^2 |
+| **Tauri plugins** | @tauri-apps/api, @tauri-apps/plugin-shell | ^2 |
 
 ### 1.2 Structure des dossiers
 
 ```
+.
+├── src/                          # Source Next.js (frontend + backend)
+│
+├── src-tauri/                    # Shell desktop Tauri v2 (Rust)
+│   ├── Cargo.toml                # Config Rust (dependencies tauri, serde, shell)
+│   ├── build.rs                  # Script de build Tauri
+│   ├── tauri.conf.json           # Config Tauri v2 (fenêtre 1400×900, NSIS, MSI)
+│   ├── capabilities/
+│   │   └── default.json           # Permissions (core:default, shell:allow-open)
+│   ├── icons/                    # 5 icônes (32, 128, 128@2x, ico, 512)
+│   └── src/
+│       ├── main.rs               # Point d'entrée (windows_subsystem="windows")
+│       └── lib.rs                # Setup Tauri (DB path Windows, plugins)
+│
+├── TAURI_BUILD.md                # Guide de build desktop Windows
+├── Caddyfile                     # Reverse proxy (dev sandbox)
+└── FICHE_SYNTHESE.md             # Ce document
+
 src/
 ├── app/                          # Routeur Next.js App Router
 │   ├── layout.tsx                # Layout racine (server component, lang="fr")
@@ -495,23 +517,52 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 
 **⚠️ Point sensible :** Le hook `useAiConfig` utilise un cache module-level pour éviter les re-renders infinis. Toute modification de ce hook nécessite une attention particulière au cycle de vie React.
 
-### 3.2 Création de thèse
+### 3.2 Distribution desktop — Tauri v2 (Windows .exe / .msi)
+
+**Architecture :** Tauri v2 embarque le frontend Next.js standalone dans un shell Rust natif.
+- **Frontend** : build Next.js `output: "standalone"` → `.next/standalone/`
+- **Shell** : Rust (Tauri v2) → fenêtre native avec WebView2 (Edge)
+- **Installateurs** : NSIS (.exe) et MSI, langues FR/EN
+- **Portée** : `currentUser` (pas besoin d'admin pour installer)
+
+**Workflow de build :**
+1. `bun install` → installe deps Node + Tauri CLI
+2. `bun run build:tauri` → `prisma generate && next build` (standalone output)
+3. `bun run tauri:build` → Rust compile + crée `.exe` + `.msi` dans `src-tauri/target/release/bundle/`
+
+**Artifacts produits :**
+- `src-tauri/target/release/bundle/nsis/ThesisFrame_1.x.x_x64-setup.exe`
+- `src-tauri/target/release/bundle/msi/ThesisFrame_1.x.x_x64_en-US.msi`
+
+**Scripts npm :**
+- `bun run tauri:dev` → dev mode (hot reload Next.js + WebView Tauri)
+- `bun run tauri:build` → build production (crée .exe/.msi)
+- `bun run build:tauri` → build Next.js standalone uniquement
+
+**Prérequis build Windows :**
+- Rust stable (rustup)
+- Visual Studio C++ Build Tools
+- WebView2 Runtime (préinstallé Windows 11)
+
+**⚠️ Point sensible :** Le dossier `src-tauri/target/` (artifacts Rust) est dans `.gitignore`. Seuls les fichiers source Rust sont versionnés.
+
+### 3.3 Création de thèse
 - Formulaire : titre (requis), auteur (requis), email, institution, laboratoire, discipline, directeur
 - Crée automatiquement 7 chapitres par défaut avec des statuts "not_started"
 - Structure par défaut : "chapters" (alternative "parts" possible)
 
-### 3.3 Auto-save de l'éditeur
+### 3.4 Auto-save de l'éditeur
 - Délai configurable (débounced)
 - Sauvegarde le contenu HTML + texte brut + compteur de mots
 - Se déclenche sur chaque modification du Tiptap editor
 
-### 3.4 Cadrage (versionning)
+### 3.5 Cadrage (versionning)
 - Chaque thèse peut avoir plusieurs cadrages, un seul actif à la fois
 - L'activation d'un cadrage désactive les autres (transaction Prisma)
 - Chaque cadrage a des champs clé-valeur + des versions (snapshots JSON)
 - Possibilité de suggestions IA par champ
 
-### 3.5 Import de références bibliographiques
+### 3.6 Import de références bibliographiques
 - **BibTeX :** Regex `@type{key, fields}` → parse field=value → map type → map authors/keywords
 - **RIS :** Split par `ER -` → parse `TAG - value` (multi-lignes supportées) → map type
 - **CSL-JSON :** JSON parse → map authors (family/given/literal) → map type
@@ -519,18 +570,18 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 - Maximum : 10 Mo par fichier, 500 références par import
 - Le champ `source` est automatiquement renseigné selon le format
 
-### 3.6 Sprints agiles
+### 3.7 Sprints agiles
 - 5 phases : phase_0 (Idéation) → phase_4 (Finalisation)
 - Stories avec priorité (low/medium/high/critical) et story points
 - Kanban visuel avec drag & drop (dnd-kit)
 
-### 3.7 Recherche plein texte
+### 3.8 Recherche plein texte
 - Indexation de tous les chapitres (plainText)
 - Opérateurs booléens : AND, OR, NOT
 - Score de pertinence, snippets de résultat
 - Filtre par chapitre et dates
 
-### 3.8 RAG — Mon IA de thèse (v1.3.0)
+### 3.9 RAG — Mon IA de thèse (v1.3.0)
 - **Indexation :** 4 sources → chunking automatique → stockage en DocumentChunk (SQLite)
   - Chapters : plainText découpé en chunks de ~500 caractères
   - References : abstract + notes concaténés
@@ -540,7 +591,7 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 - **Génération :** contexte top-10 chunks injecté dans prompt système IA → réponse avec instruction de citer les sources
 - **Pas de vector DB externe :** approche keyword-based légère, entièrement SQLite
 
-### 3.9 Prédiction de texte IA (v1.3.0)
+### 3.10 Prédiction de texte IA (v1.3.0)
 - **Extension TipTap** `ai-prediction.ts` : ProseMirror plugin avec widget decoration
   - Ghost text gris et italique après le curseur (suggestion preview)
   - Dots animés pendant l'appel API
@@ -598,10 +649,34 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 
 ### 4.4 Configuration Next.js
 
-- `output: "standalone"` — Déploiement conteneurisé
+- `output: "standalone"` — Déploiement conteneurisé + build Tauri
 - `serverExternalPackages: ["z-ai-web-dev-sdk"]` — SDK non bundlé côté client
+- `images.unoptimized: true` — Pas d'optimisation images (mode desktop Tauri)
 - `typescript.ignoreBuildErrors: false` — Errors bloquent le build
 - `tsconfig.json` exclut : node_modules, examples, tests, tool-results, agent-ctx, pdf-gen, mini-services, skills
+
+### 4.5 Configuration Tauri v2
+
+**Fichier :** `src-tauri/tauri.conf.json`
+- **Fenêtre** : 1400×900, min 1024×700, centrée, thème light
+- **Bundle targets** : `nsis` (.exe) + `msi`
+- **NSIS** : langues FR/EN, `currentUser` (sans admin), SHA-256
+- **Ressources embarquées** : `db/*` (SQLite), `public/*` (static assets)
+- **Dev URL** : `http://localhost:3000`
+- **Frontend dist** : `../.next/standalone`
+
+**Fichier :** `src-tauri/capabilities/default.json`
+- Permissions : `core:default`, `shell:allow-open`, `shell:allow-execute`
+
+**Fichier :** `src-tauri/Cargo.toml`
+- Dependencies : `tauri v2`, `tauri-plugin-shell v2`, `serde v1`, `serde_json v1`
+- Crate type : `staticlib`, `cdylib`, `rlib`
+
+**Scripts package.json :**
+- `tauri` → commande CLI Tauri
+- `tauri:dev` → mode développement (frontend + WebView)
+- `tauri:build` → build production (.exe + .msi)
+- `build:tauri` → build Next.js standalone (prérequis au build Tauri)
 
 ---
 
