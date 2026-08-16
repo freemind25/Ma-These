@@ -682,3 +682,30 @@ Stage Summary:
 - Build script simplified: `prisma generate && next build` (Vercel-compatible)
 - postinstall hook ensures Prisma client exists on Vercel
 - Application verified working end-to-end
+
+---
+Task ID: routesme-integration
+Agent: main
+Task: Add RoutesMe as AI provider — 1 API key for 20+ models
+
+Work Log:
+- Added "routesme" to AiProviderId type union in ai-types.ts
+- Added PROVIDER_BASE_URLS["routesme"] = "https://routesme.online/v1"
+- Added DYNAMIC_MODEL_PROVIDERS concept for providers that fetch models from /models endpoint
+- Created /api/ai-models API route with 5-min cache, fetches from OpenAI-compatible /models endpoint
+- Rewrote AI config dialog in app-header.tsx with:
+  - Dynamic model loading when apiKey is entered
+  - Refresh button for model list
+  - RoutesMe info banner (free vs VIP plans)
+  - Auto-select first model after loading
+  - Link to routesme.online for key signup
+- Updated Zod aiProviders enum and createAiConfigSchema
+- Updated zai-client.ts getDefaultConfig() with routesme case (ROUTESME_API_KEY env var, GLM5.2-free default model)
+- Build passes: 0 errors, 8 warnings (all minor)
+- Browser verification: dialog opens, RoutesMe appears in provider list, info banner displays correctly
+
+Stage Summary:
+- RoutesMe fully integrated as 6th AI provider
+- Dynamic model fetching from /v1/models endpoint
+- One RoutesMe API key gives access to 20+ models (GLM, GPT, Claude, DeepSeek, Gemini...)
+- Pushed commit 7910b91
