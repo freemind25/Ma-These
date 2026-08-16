@@ -11,6 +11,8 @@ import CharacterCount from "@tiptap/extension-character-count";
 import Typography from "@tiptap/extension-typography";
 import { useCallback, useEffect } from "react";
 import { EditorToolbar } from "./editor-toolbar";
+import { PredictionPopup } from "./prediction-popup";
+import { AiPrediction } from "../extensions/ai-prediction";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Save, Check, AlertCircle, Loader2 } from "lucide-react";
@@ -43,6 +45,11 @@ const THESIS_EXTENSIONS = [
   }),
   CharacterCount,
   Typography,
+  AiPrediction.configure({
+    debounceMs: 1000,
+    minChars: 15,
+    maxContext: 400,
+  }),
 ];
 
 export function TiptapEditor({
@@ -108,8 +115,10 @@ export function TiptapEditor({
       <Separator />
 
       {/* Editor area */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
+      <div className="flex-1 overflow-y-auto scrollbar-thin relative">
         <EditorContent editor={editor} />
+        {/* AI Prediction popup (rendered via portal) */}
+        <PredictionPopup editor={editor} />
       </div>
 
       {/* Status bar */}

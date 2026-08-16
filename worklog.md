@@ -158,3 +158,38 @@ Stage Summary:
 - "Raccourcis clavier" — 4 groups (Navigation, Éditeur, Fenêtre, Aide) with styled kbd elements
 - "À propos de ThesisFrame" — version, stats (30+ modules, 5 IA providers), tech stack badges, GitHub link
 - Zero disruption to existing functionality
+
+---
+Task ID: 5
+Agent: Main orchestrator
+Task: Implement AI-powered text prediction (ghost text + popup) in thesis editor
+
+Work Log:
+- Analyzed GitHub repo DivanshiJain2005/text-prediction (LSTM-based Python) — adapted concept for Next.js using AI providers
+- Created `src/app/api/text-prediction/route.ts` — API endpoint for academic text completion (French-tuned system prompt, returns primary + 2 alternatives, format: "primary|||alt1|||alt2")
+- Created `src/modules/editor/extensions/ai-prediction.ts` — TipTap extension with ProseMirror plugin:
+  - Ghost text widget decoration (grey italic text after cursor)
+  - Loading dots animation while API call in progress
+  - Debounced (1s) API call on typing pause
+  - Tab key to accept suggestion, Esc to dismiss
+  - AbortController for cancelling in-flight requests on cursor movement
+  - Plugin state machine: suggestion → loading → idle, with proper clearing on doc/selection changes
+- Created `src/modules/editor/components/prediction-popup.tsx` — Floating popup (React Portal) near cursor:
+  - Shows primary suggestion with Sparkles icon (clickable)
+  - Up to 2 alternative completions (clickable)
+  - Tab hint + Esc/X dismiss button
+  - Fade in/out animation
+- Updated `src/modules/editor/components/tiptap-editor.tsx` — Added AiPrediction extension + PredictionPopup component
+- Updated `src/modules/editor/components/editor-toolbar.tsx` — Added Sparkles toggle button (AI prediction on/off)
+- Fixed SSR error: guarded `this.editor` access in isEnabled getter and toggleEnabled
+- Lint: 0 errors, 8 pre-existing warnings (no new)
+- Browser E2E: editor renders correctly, toolbar includes prediction toggle, no runtime errors
+
+Stage Summary:
+- NEW FEATURE: AI text prediction in thesis editor (like Gmail Smart Compose)
+- Architecture: TipTap extension (ProseMirror plugin) → API route → configured AI provider
+- Ghost text: inline grey italic text appears after cursor when user pauses typing
+- Popup: floating card with primary + alternative suggestions, Tab to accept, Esc to dismiss
+- Toggle: Sparkles button in toolbar to enable/disable prediction
+- Works with all configured providers (Z.ai, Mistral, OpenAI, Anthropic, RoutesMe, Custom)
+- Zero modification to existing editor functionality

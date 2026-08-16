@@ -22,7 +22,9 @@ import {
   Link,
   Undo,
   Redo,
+  Sparkles,
 } from "lucide-react";
+import { AI_PREDICTION_KEY } from "../extensions/ai-prediction";
 
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
@@ -37,6 +39,15 @@ import { cn } from "@/lib/utils";
 
 interface EditorToolbarProps {
   editor: Editor;
+}
+
+function useAiPredictionEnabled(editor: Editor): boolean {
+  try {
+    const state = AI_PREDICTION_KEY.getState(editor.state);
+    return state?.enabled ?? true;
+  } catch {
+    return true;
+  }
 }
 
 export function EditorToolbar({ editor }: EditorToolbarProps) {
@@ -198,6 +209,21 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
               if (url) {
                 editor.chain().focus().setLink({ href: url }).run();
               }
+            }
+          }}
+        />
+
+        <ToolbarSeparator />
+
+        {/* AI Prediction toggle */}
+        <ToolbarButton
+          icon={Sparkles}
+          label="Prédiction IA (Tab pour accepter)"
+          pressed={useAiPredictionEnabled(editor)}
+          onClick={() => {
+            const extension = editor.extensionManager.get("aiPrediction");
+            if (extension) {
+              (extension as unknown as { toggleEnabled: () => void }).toggleEnabled();
             }
           }}
         />
