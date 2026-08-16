@@ -52,3 +52,30 @@ Stage Summary:
 - Error parsing correctly handles Mistral format (top-level message/detail)
 - Dynamic model fetching only triggers when API key is present
 - UI shows clear guidance for Mistral users
+
+---
+Task ID: 3
+Agent: Main
+Task: Test Mistral API with user's key and fix model sorting
+
+Work Log:
+- User provided Mistral API key for testing
+- Direct curl tests confirmed Mistral API works from sandbox:
+  - GET /v1/models → 55+ models returned
+  - POST /v1/chat/completions → valid response from mistral-small-latest
+- Internal API routes also work:
+  - POST /api/ai-test → {"ok":true,"provider":"mistral","model":"mistral-small-latest"}
+  - GET /api/ai-models → list of 55+ models
+- Browser E2E test: Opened AI config → Selected Mistral → Entered key → Models auto-loaded → Test passed ("Connecté !")
+- Improved model sorting in /api/ai-models:
+  - Three-tier sorting: top models → chat models → utility models
+  - Top tier (manual priority): mistral-small-latest, mistral-medium-latest, mistral-large-latest, gpt-4o-mini, etc.
+  - Utility models (embed, ocr, tts, etc.) pushed to bottom
+  - mistral-small-latest now auto-selected by default
+
+Stage Summary:
+- Mistral integration fully working end-to-end
+- User's key confirmed valid, test passes with "Connecté !"
+- Model list properly sorted: chat models first, utility models at bottom
+- mistral-small-latest auto-selected as default model
+- All previous fixes (error parsing, dynamic fetch, UI) verified working
