@@ -146,8 +146,28 @@ async function generateWithAPI(
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`AI API error (${response.status}): ${errorText}`);
+    let errorText = await response.text();
+
+    // Parse known error types for friendlier messages
+    try {
+      const errJson = JSON.parse(errorText) as { error?: { type?: string; message?: string }; model?: string };
+      const errType = errJson.error?.type;
+      const errMsg = errJson.error?.message || "";
+
+      if (errType === "all_keys_failed" || response.status === 503) {
+        errorText = `Service temporairement indisponible. Modèle "${errJson.model || model}" surchargé. Réessayez dans quelques instants ou changez de modèle.`;
+      } else if (errType === "rate_limit_exceeded" || response.status === 429) {
+        errorText = `Limite de requêtes atteinte. ${errMsg || "Attendez quelques secondes."}`;
+      } else if (errType === "invalid_api_key" || response.status === 401) {
+        errorText = `Clé API invalide. Vérifiez votre configuration.`;
+      } else if (errMsg) {
+        errorText = `${errMsg}`;
+      }
+    } catch {
+      // keep raw errorText
+    }
+
+    throw new Error(`Erreur IA (${response.status}): ${errorText.slice(0, 300)}`);
   }
 
   const data = await response.json() as Record<string, unknown>;

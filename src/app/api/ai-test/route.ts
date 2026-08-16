@@ -75,9 +75,29 @@ export async function POST(request: NextRequest) {
     });
 
     if (!res.ok) {
-      const errorText = await res.text();
+      let errorText = await res.text().catch(() => "Unknown error");
+
+      // Parse known error types for friendlier messages
+      try {
+        const errJson = JSON.parse(errorText) as { error?: { type?: string; message?: string }; model?: string };
+        const errType = errJson.error?.type;
+        const errMsg = errJson.error?.message || "";
+
+        if (errType === "all_keys_failed" || res.status === 503) {
+          errorText = `Service temporairement indisponible (${res.status}). Le modèle "${errJson.model || model}" est peut-être surchargé. Réessayez dans quelques instants ou choisissez un autre modèle.`;
+        } else if (errType === "rate_limit_exceeded" || res.status === 429) {
+          errorText = `Limite de requêtes atteinte (${res.status}). ${errMsg || "Attendez quelques secondes avant de réessayer."}`;
+        } else if (errType === "invalid_api_key" || res.status === 401) {
+          errorText = `Clé API invalide (${res.status}). Vérifiez votre clé et réessayez.`;
+        } else if (errMsg) {
+          errorText = `${errMsg} (modèle: ${errJson.model || model})`;
+        }
+      } catch {
+        // keep raw errorText
+      }
+
       return NextResponse.json(
-        { ok: false, error: `HTTP ${res.status}: ${errorText.slice(0, 200)}` },
+        { ok: false, error: errorText.slice(0, 300) },
         { status: 502 }
       );
     }
