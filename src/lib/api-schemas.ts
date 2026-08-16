@@ -310,6 +310,7 @@ export const aiProviders = [
   "openai",
   "anthropic",
   "mistral",
+  "routesme",
   "zai",
   "custom",
 ] as const;

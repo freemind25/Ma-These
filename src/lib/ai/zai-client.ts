@@ -277,6 +277,10 @@ function getDefaultConfig(): AiProviderConfig {
       apiKey = process.env.MISTRAL_API_KEY || "";
       model = process.env.AI_MODEL || "mistral-small-latest";
       break;
+    case "routesme":
+      apiKey = process.env.ROUTESME_API_KEY || process.env.OPENAI_API_KEY || "";
+      model = process.env.AI_MODEL || "GLM5.2-free";
+      break;
     case "custom":
       apiKey = process.env.OPENAI_API_KEY || "";
       model = process.env.AI_MODEL || "gpt-4o-mini";

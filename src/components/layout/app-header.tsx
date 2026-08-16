@@ -38,6 +38,8 @@ import {
   Loader2,
   Eye,
   EyeOff,
+  RefreshCw,
+  Zap,
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
@@ -47,6 +49,8 @@ import {
   getProviderLabel,
   getProviderFields,
   PROVIDER_MODELS,
+  PROVIDER_BASE_URLS,
+  DYNAMIC_MODEL_PROVIDERS,
 } from "@/lib/ai/ai-types";
 
 // Saved config stored in localStorage
@@ -74,6 +78,15 @@ function saveConfig(config: AiProviderConfig): void {
 // AI Config Dialog
 // ═══════════════════════════════════════
 
+const ALL_PROVIDERS: AiProviderId[] = [
+  "zai",
+  "openai",
+  "anthropic",
+  "mistral",
+  "routesme",
+  "custom",
+];
+
 function AiConfigDialog({
   onOpenChange,
 }: {
@@ -85,6 +98,8 @@ function AiConfigDialog({
   const [showKey, setShowKey] = useState(false);
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<"success" | "fail" | null>(null);
+  const [dynamicModels, setDynamicModels] = useState<string[]>([]);
+  const [loadingModels, setLoadingModels] = useState(false);
 
   // Sync from store on mount
   useEffect(() => {
@@ -92,14 +107,61 @@ function AiConfigDialog({
     setConfig(saved);
   }, []);
 
+  // Fetch dynamic models when provider is routesme/custom and apiKey is set
+  const fetchDynamicModels = useCallback(async () => {
+    const fields = getProviderFields(config.provider);
+    if (!fields.dynamicModels) {
+      setDynamicModels([]);
+      return;
+    }
+
+    const baseUrl =
+      config.baseUrl || PROVIDER_BASE_URLS[config.provider] || "";
+    if (!baseUrl) return;
+
+    setLoadingModels(true);
+    try {
+      const params = new URLSearchParams({ baseUrl });
+      if (config.apiKey) params.set("apiKey", config.apiKey);
+      const res = await fetch(`/api/ai-models?${params}`);
+      const data = (await res.json()) as { models?: string[]; error?: string };
+      if (data.models && data.models.length > 0) {
+        setDynamicModels(data.models);
+        // Auto-select first model if none selected
+        if (!config.model) {
+          setConfig((prev) => ({ ...prev, model: data.models![0] }));
+        }
+      } else {
+        setDynamicModels([]);
+      }
+    } catch {
+      setDynamicModels([]);
+    } finally {
+      setLoadingModels(false);
+    }
+  }, [config.provider, config.baseUrl, config.apiKey, config.model]);
+
+  // Auto-fetch when provider changes to routesme/custom
+  useEffect(() => {
+    if (DYNAMIC_MODEL_PROVIDERS.includes(config.provider)) {
+      const timer = setTimeout(fetchDynamicModels, 300);
+      return () => clearTimeout(timer);
+    }
+    setDynamicModels([]);
+  }, [config.provider, fetchDynamicModels]);
+
   const handleProviderChange = useCallback((value: string) => {
     const newProvider = value as AiProviderId;
     setConfig((prev) => ({
       provider: newProvider,
       apiKey: newProvider === "zai" ? undefined : prev.apiKey,
       model: newProvider === "zai" ? undefined : prev.model,
-      baseUrl: prev.baseUrl,
+      baseUrl:
+        newProvider === "routesme"
+          ? PROVIDER_BASE_URLS.routesme
+          : prev.baseUrl,
     }));
+    setTestResult(null);
   }, []);
 
   const handleSave = useCallback(() => {
@@ -113,7 +175,6 @@ function AiConfigDialog({
     setTesting(true);
     setTestResult(null);
     try {
-      // Use server-side API route to test connection (avoids importing SDK in browser)
       const res = await fetch("/api/ai-test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -124,7 +185,7 @@ function AiConfigDialog({
           baseUrl: config.baseUrl,
         }),
       });
-      const data = await res.json() as { ok?: boolean; error?: string };
+      const data = (await res.json()) as { ok?: boolean; error?: string };
       if (!res.ok || !data.ok) {
         throw new Error(data.error || `HTTP ${res.status}`);
       }
@@ -132,14 +193,18 @@ function AiConfigDialog({
       toast.success("Connexion réussie !");
     } catch (err) {
       setTestResult("fail");
-      toast.error(`Échec : ${err instanceof Error ? err.message : String(err)}`);
+      toast.error(
+        `Échec : ${err instanceof Error ? err.message : String(err)}`
+      );
     } finally {
       setTesting(false);
     }
   }, [config]);
 
   const fields = getProviderFields(config.provider);
-  const providerModels = PROVIDER_MODELS[config.provider] || [];
+  const staticModels = PROVIDER_MODELS[config.provider] || [];
+  const models =
+    dynamicModels.length > 0 ? dynamicModels : staticModels;
 
   return (
     <DialogContent className="sm:max-w-md">
@@ -162,20 +227,28 @@ function AiConfigDialog({
               <SelectValue placeholder="Choisir un fournisseur" />
             </SelectTrigger>
             <SelectContent>
-              {(["zai", "openai", "anthropic", "mistral", "custom"] as AiProviderId[]).map(
-                (p) => (
-                  <SelectItem key={p} value={p}>
+              {ALL_PROVIDERS.map((p) => (
+                <SelectItem key={p} value={p}>
+                  <span className="flex items-center gap-2">
+                    {p === "routesme" && (
+                      <Zap className="h-3.5 w-3.5 text-amber-500" />
+                    )}
                     {getProviderLabel(p)}
-                  </SelectItem>
-                )
-              )}
+                  </span>
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
-          <p className="text-[11px] text-muted-foreground">
-            {config.provider === "zai"
-              ? "✓ SDK natif (sandbox) ou clé API non requise"
-              : "↔ Utilisera l'API compatible OpenAI"}
-          </p>
+          {config.provider === "routesme" && (
+            <p className="text-[11px] text-amber-600 dark:text-amber-400">
+              ⚡ RoutesMe — 1 clé API, 20+ modèles (GLM, GPT, Claude, DeepSeek, Gemini…)
+            </p>
+          )}
+          {config.provider !== "zai" && config.provider !== "routesme" && (
+            <p className="text-[11px] text-muted-foreground">
+              ↔ Utilisera l&apos;API compatible OpenAI
+            </p>
+          )}
         </div>
 
         {/* API Key */}
@@ -185,7 +258,11 @@ function AiConfigDialog({
             <div className="relative">
               <Input
                 type={showKey ? "text" : "password"}
-                placeholder="sk-..."
+                placeholder={
+                  config.provider === "routesme"
+                    ? "rm-xxxxxxxxxxxxxxxx"
+                    : "sk-..."
+                }
                 value={config.apiKey || ""}
                 onChange={(e) =>
                   setConfig((prev) => ({ ...prev, apiKey: e.target.value }))
@@ -205,13 +282,42 @@ function AiConfigDialog({
                 )}
               </Button>
             </div>
+            {config.provider === "routesme" && (
+              <p className="text-[11px] text-muted-foreground">
+                Obtenez votre clé sur{" "}
+                <a
+                  href="https://routesme.online"
+                  target="_blank"
+                  rel="noopener"
+                  className="underline text-amber-600 dark:text-amber-400 hover:text-amber-700"
+                >
+                  routesme.online
+                </a>
+              </p>
+            )}
           </div>
         )}
 
-        {/* Model select */}
-        {fields.showModel && providerModels.length > 0 && (
+        {/* Model select — static or dynamic */}
+        {fields.showModel && models.length > 0 && (
           <div className="flex flex-col gap-1.5">
-            <Label>Modèle</Label>
+            <div className="flex items-center justify-between">
+              <Label>Modèle</Label>
+              {fields.dynamicModels && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6"
+                  onClick={fetchDynamicModels}
+                  disabled={loadingModels}
+                >
+                  <RefreshCw
+                    className={`h-3 w-3 ${loadingModels ? "animate-spin" : ""}`}
+                  />
+                </Button>
+              )}
+            </div>
             <Select
               value={config.model || ""}
               onValueChange={(v) =>
@@ -219,18 +325,59 @@ function AiConfigDialog({
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Choisir un modèle" />
+                <SelectValue placeholder={
+                  loadingModels ? "Chargement des modèles…" : "Choisir un modèle"
+                } />
               </SelectTrigger>
-              <SelectContent>
-                {providerModels.map((m) => (
+              <SelectContent className="max-h-60 overflow-y-auto">
+                {models.map((m) => (
                   <SelectItem key={m} value={m}>
-                    {m}
+                    <span className="flex items-center gap-1.5">
+                      {m}
+                      {m.toLowerCase().includes("free") && (
+                        <Badge
+                          variant="secondary"
+                          className="text-[9px] px-1 py-0 h-3.5"
+                        >
+                          FREE
+                        </Badge>
+                      )}
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {loadingModels && (
+              <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Récupération des modèles disponibles…
+              </p>
+            )}
           </div>
         )}
+
+        {/* Model input for dynamic providers when no models loaded */}
+        {fields.showModel &&
+          fields.dynamicModels &&
+          models.length === 0 &&
+          !loadingModels && (
+            <div className="flex flex-col gap-1.5">
+              <Label>Modèle</Label>
+              <Input
+                type="text"
+                placeholder="Nom du modèle (ex: GLM5.2-free)"
+                value={config.model || ""}
+                onChange={(e) =>
+                  setConfig((prev) => ({ ...prev, model: e.target.value }))
+                }
+              />
+              {config.provider === "routesme" && (
+                <p className="text-[11px] text-muted-foreground">
+                  Entrez votre clé API ci-dessus pour charger la liste des modèles disponibles.
+                </p>
+              )}
+            </div>
+          )}
 
         {/* Base URL (custom provider only) */}
         {fields.showBaseUrl && (
@@ -247,6 +394,23 @@ function AiConfigDialog({
           </div>
         )}
 
+        {/* RoutesMe info banner */}
+        {config.provider === "routesme" && (
+          <div className="rounded-lg border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/20 p-3 text-[11px] text-amber-800 dark:text-amber-300 space-y-1">
+            <p className="font-semibold">RoutesMe — One API for every AI model</p>
+            <p>
+              Accédez à 20+ modèles (GLM 5.2, GPT-5.6, Claude Fable 5, DeepSeek V4, Kimi K3, Gemini…)
+              avec une seule clé API compatible OpenAI.
+            </p>
+            <p>
+              • <span className="font-medium">Gratuit</span> : GLM 5.2-Free, 2 000 tokens/jour
+            </p>
+            <p>
+              • <span className="font-medium">VIP ($20/mois)</span> : Tous les modèles, 20M tokens/jour
+            </p>
+          </div>
+        )}
+
         {/* Actions */}
         <div className="flex items-center gap-2 pt-2">
           <Button
@@ -254,14 +418,21 @@ function AiConfigDialog({
             size="sm"
             className="flex-1"
             onClick={handleTest}
-            disabled={testing || (config.provider !== "zai" && !config.apiKey)}
+            disabled={
+              testing ||
+              (config.provider !== "zai" && !config.apiKey)
+            }
           >
             {testing ? (
               <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
             ) : testResult === "success" ? (
               <Check className="h-4 w-4 mr-1.5 text-emerald-500" />
             ) : null}
-            {testing ? "Test..." : testResult === "success" ? "Connecté !" : "Tester"}
+            {testing
+              ? "Test…"
+              : testResult === "success"
+                ? "Connecté !"
+                : "Tester"}
           </Button>
           <Button size="sm" className="flex-1" onClick={handleSave}>
             <Check className="h-4 w-4 mr-1.5" />

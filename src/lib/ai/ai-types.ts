@@ -4,7 +4,7 @@
 // This file is safe to import from "use client" components
 // ═══════════════════════════════════════
 
-export type AiProviderId = "zai" | "openai" | "anthropic" | "mistral" | "custom";
+export type AiProviderId = "zai" | "openai" | "anthropic" | "mistral" | "routesme" | "custom";
 
 export interface AiProviderConfig {
   provider: AiProviderId;
@@ -25,6 +25,7 @@ export const PROVIDER_BASE_URLS: Record<AiProviderId, string> = {
   openai: "https://api.openai.com/v1",
   anthropic: "https://api.anthropic.com/v1",
   mistral: "https://api.mistral.ai/v1",
+  routesme: "https://routesme.online/v1",
   custom: "",
 };
 
@@ -36,8 +37,14 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
   openai: ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "o1-mini", "o3-mini"],
   anthropic: ["claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022", "claude-3-haiku-20240307"],
   mistral: ["mistral-large-latest", "mistral-medium-latest", "mistral-small-latest", "codestral-latest"],
+  routesme: [],
   custom: [],
 };
+
+/**
+ * Providers whose model list should be fetched dynamically from their /models endpoint.
+ */
+export const DYNAMIC_MODEL_PROVIDERS: AiProviderId[] = ["routesme", "custom"];
 
 /**
  * Get a human-readable label for a provider
@@ -48,6 +55,7 @@ export function getProviderLabel(provider: AiProviderId): string {
     openai: "OpenAI",
     anthropic: "Anthropic (Claude)",
     mistral: "Mistral AI",
+    routesme: "RoutesMe (multi-modèles)",
     custom: "Personnalisé (API compatible)",
   };
   return labels[provider] || provider;
@@ -60,9 +68,20 @@ export function getProviderFields(provider: AiProviderId): {
   showApiKey: boolean;
   showModel: boolean;
   showBaseUrl: boolean;
+  dynamicModels: boolean;
 } {
   if (provider === "zai") {
-    return { showApiKey: false, showModel: false, showBaseUrl: false };
+    return {
+      showApiKey: false,
+      showModel: false,
+      showBaseUrl: false,
+      dynamicModels: false,
+    };
   }
-  return { showApiKey: true, showModel: true, showBaseUrl: provider === "custom" };
+  return {
+    showApiKey: true,
+    showModel: true,
+    showBaseUrl: provider === "custom",
+    dynamicModels: provider === "routesme" || provider === "custom",
+  };
 }
