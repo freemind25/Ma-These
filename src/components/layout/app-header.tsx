@@ -40,6 +40,9 @@ import {
   EyeOff,
   RefreshCw,
   Zap,
+  BookOpen,
+  Keyboard,
+  Info,
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
@@ -52,6 +55,9 @@ import {
   PROVIDER_BASE_URLS,
   DYNAMIC_MODEL_PROVIDERS,
 } from "@/lib/ai/ai-types";
+import { UsageGuideDialog } from "./usage-guide-dialog";
+import { AboutDialog } from "./about-dialog";
+import { ShortcutsDialog } from "./shortcuts-dialog";
 
 // Saved config stored in localStorage
 const STORAGE_KEY = "thesisframe-ai-config";
@@ -510,6 +516,9 @@ export function AppHeader() {
   const { currentView, aiProvider } = useAppStore();
   const currentNav = NAVIGATION_ITEMS.find((item) => item.id === currentView);
   const [configOpen, setConfigOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-4">
@@ -538,9 +547,33 @@ export function AppHeader() {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>Aide &amp; Support</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Guide d&apos;utilisation</DropdownMenuItem>
-            <DropdownMenuItem>Raccourcis clavier</DropdownMenuItem>
-            <DropdownMenuItem>À propos de ThesisFrame</DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setGuideOpen(true);
+              }}
+            >
+              <BookOpen className="h-4 w-4 mr-2" />
+              Guide d&apos;utilisation
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setShortcutsOpen(true);
+              }}
+            >
+              <Keyboard className="h-4 w-4 mr-2" />
+              Raccourcis clavier
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setAboutOpen(true);
+              }}
+            >
+              <Info className="h-4 w-4 mr-2" />
+              À propos de ThesisFrame
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -586,6 +619,15 @@ export function AppHeader() {
       <Dialog open={configOpen} onOpenChange={setConfigOpen}>
         <AiConfigDialog open={configOpen} onOpenChange={setConfigOpen} />
       </Dialog>
+
+      {/* Usage Guide Dialog */}
+      <UsageGuideDialog open={guideOpen} onOpenChange={setGuideOpen} />
+
+      {/* Shortcuts Dialog */}
+      <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+
+      {/* About Dialog */}
+      <AboutDialog open={aboutOpen} onOpenChange={setAboutOpen} />
     </header>
   );
 }

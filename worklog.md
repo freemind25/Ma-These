@@ -137,3 +137,24 @@ Stage Summary:
 - Backend: chunking, keyword retrieval, AI response with context injection
 - Frontend: professional chat UI with markdown rendering, source badges, suggestion chips
 - Zero disruption: new module only, no existing code modified (except app-store.ts and page.tsx for registration)
+
+---
+Task ID: 4
+Agent: Main orchestrator
+Task: Implement usage guide in "?" button next to Configuration
+
+Work Log:
+- Created `src/components/layout/usage-guide-dialog.tsx` — comprehensive guide with 7 categories, 31 sections covering all modules
+- Created `src/components/layout/about-dialog.tsx` — About dialog with version info, tech stack, stats
+- Created `src/components/layout/shortcuts-dialog.tsx` — Keyboard shortcuts dialog with 4 groups
+- Updated `src/components/layout/app-header.tsx` — wired all 3 dropdown menu items to their dialogs, added icons (BookOpen, Keyboard, Info)
+- Guide features: search filter, accordion navigation by category, keyword matching, responsive layout
+- Categories: Démarrage rapide, Rédaction, Assistants IA, Bibliographie, Méthodologie, Qualité, Organisation, Export
+- Lint: 0 errors, 8 pre-existing warnings (no new warnings)
+- Browser E2E verified: all 3 dialogs open correctly from "?" dropdown menu
+
+Stage Summary:
+- "Guide d'utilisation" — searchable, accordion-based, 31 documented modules across 7 categories
+- "Raccourcis clavier" — 4 groups (Navigation, Éditeur, Fenêtre, Aide) with styled kbd elements
+- "À propos de ThesisFrame" — version, stats (30+ modules, 5 IA providers), tech stack badges, GitHub link
+- Zero disruption to existing functionality
