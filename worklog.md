@@ -79,3 +79,61 @@ Stage Summary:
 - Model list properly sorted: chat models first, utility models at bottom
 - mistral-small-latest auto-selected as default model
 - All previous fixes (error parsing, dynamic fetch, UI) verified working
+
+---
+Task ID: 2
+Agent: Backend RAG Builder
+Task: Build RAG backend (schema, service, API routes)
+
+Work Log:
+- Added DocumentChunk model to Prisma schema
+- Ran db:push successfully
+- Created rag-service.ts with chunkText, indexThesisContent, retrieveChunks, generateRagResponse
+- Created /api/thesis-rag route with index and query actions
+- Ran lint (0 errors)
+
+Stage Summary:
+- DocumentChunk table created with sourceType, sourceId, content, metadata
+- RAG service handles chunking, indexing, retrieval, and generation
+- API route exposes POST /api/thesis-rag with index and query actions
+---
+Task ID: 3
+Agent: Frontend RAG Builder
+Task: Build RAG frontend module "Mon IA de thèse"
+
+Work Log:
+- Created thesis-rag-page.tsx with chat UI, indexing, and query flow
+- Registered "thesis-rag" in ViewId, NAVIGATION_ITEMS, and page.tsx router
+- Lint passed (0 errors)
+
+Stage Summary:
+- Chat module with indexed document search
+- Suggestion chips for quick questions
+- Source badges with color coding per type
+- Sticky input bar, auto-scroll, responsive layout
+
+---
+Task ID: main
+Agent: Main orchestrator
+Task: Build "Mon IA de thèse" RAG module end-to-end
+
+Work Log:
+- Analyzed all existing data sources: Chapter (plainText), Reference (abstract/notes), NotebookEntry (Q&A), ThesisCadrageField (values)
+- Designed RAG architecture: keyword-based retrieval, no external vector DB, SQLite-only
+- Backend agent: Created DocumentChunk Prisma model, rag-service.ts, /api/thesis-rag route
+- Frontend agent: Created thesis-rag-page.tsx chat UI, registered in navigation + page router
+- Verified lint: 0 errors, 8 pre-existing warnings
+- Browser E2E test: module renders correctly with all UI elements
+  - Title with Brain icon gradient
+  - Warning banner when no thesis selected
+  - Index bar with stats display
+  - Chat area with empty state and 5 suggestion chips
+  - Sticky input bar with Send button
+  - Source badges (chapter=emerald, reference=sky, notebook=amber, cadrage=violet)
+
+Stage Summary:
+- NEW MODULE: "Mon IA de thèse" — RAG-based chat that indexes thesis content and answers questions with cited sources
+- 4 data sources indexed: Chapters, References, NotebookEntries, Cadrage fields
+- Backend: chunking, keyword retrieval, AI response with context injection
+- Frontend: professional chat UI with markdown rendering, source badges, suggestion chips
+- Zero disruption: new module only, no existing code modified (except app-store.ts and page.tsx for registration)

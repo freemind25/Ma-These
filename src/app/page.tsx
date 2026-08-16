@@ -32,6 +32,7 @@ import { ExportPdfPage } from "@/modules/export-pdf/export-pdf-page";
 import { EquilibreChapitresPage } from "@/modules/equilibre-chapitres/equilibre-chapitres-page";
 import { DiagrammesPage } from "@/modules/diagrammes/diagrammes-page";
 import { HarperPage } from "@/modules/harper/harper-page";
+import { ThesisRagPage } from "@/modules/thesis-rag/thesis-rag-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -97,6 +98,8 @@ function CurrentView() {
       return <DiagrammesPage />;
     case "harper":
       return <HarperPage />;
+    case "thesis-rag":
+      return <ThesisRagPage />;
     default:
       return <DashboardPage />;
   }

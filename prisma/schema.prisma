@@ -269,3 +269,22 @@ model LicenseKey {
 
   @@index([licenseType])
 }
+
+// ═══════════════════════════════════════
+// RAG — "Mon IA de thèse" Index sémantique
+// ═══════════════════════════════════════
+
+model DocumentChunk {
+  id            String   @id @default(cuid())
+  sourceType    String   // chapter | reference | notebook | cadrage
+  sourceId      String   // FK to the original record
+  sourceTitle   String   // Title of the source (chapter title, reference title, etc.)
+  content       String   // The chunk text
+  chunkIndex    Int      // Index of chunk within the source
+  metadata      String   @default("{}") // JSON: { chapterNumber, authors, year, tags, etc. }
+  tokenCount    Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  @@index([sourceType])
+  @@index([sourceId])
+}

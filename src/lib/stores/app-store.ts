@@ -33,7 +33,8 @@ export type ViewId =
   | "export-pdf"
   | "equilibre-chapitres"
   | "diagrammes"
-  | "harper";
+  | "harper"
+  | "thesis-rag";
 
 export interface NavigationItem {
   id: ViewId;
@@ -62,6 +63,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "Sparkles",
     description: "10 modes d'écriture assistée par IA",
     badge: "IA",
+  },
+  {
+    id: "thesis-rag",
+    label: "Mon IA de thèse",
+    icon: "Brain",
+    description: "Interrogez votre thèse avec l'IA contextuelle",
+    badge: "RAG",
   },
   {
     id: "methodology",
