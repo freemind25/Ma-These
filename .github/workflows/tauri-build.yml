@@ -50,32 +50,51 @@ jobs:
         run: bun install --frozen-lockfile || bun install
 
       - name: Build Next.js standalone server
-        run: |
-          bun run build
-        env:
-          NEXT_OUTPUT: standalone
+        run: bun run build
 
       - name: Prepare Tauri resources (copy standalone server)
         shell: bash
         run: |
-          echo "Copying standalone build to src-tauri/resources/standalone..."
+          echo "=== Preparing standalone server for Tauri bundling ==="
+
+          # Create the resources directory
           mkdir -p src-tauri/resources
-          # Copy the standalone server files (excluding node_modules — they'll be restored)
+
+          # Copy the standalone server files
           cp -r .next/standalone src-tauri/resources/
+
           # Copy static assets from .next/static to standalone/.next/static
           mkdir -p src-tauri/resources/standalone/.next/static
           cp -r .next/static/* src-tauri/resources/standalone/.next/static/
+
           # Copy public assets
           if [ -d "public" ]; then
+            mkdir -p src-tauri/resources/standalone/public
             cp -r public/* src-tauri/resources/standalone/public/ 2>/dev/null || true
           fi
-          # Restore node_modules in standalone (production only)
+
+          # Copy prisma schema (needed for runtime)
+          mkdir -p src-tauri/resources/standalone/prisma
+          cp prisma/schema.prisma src-tauri/resources/standalone/prisma/
+
+          # Copy the database file if it exists
+          if [ -f "db/custom.db" ]; then
+            mkdir -p src-tauri/resources/standalone/db
+            cp db/custom.db src-tauri/resources/standalone/db/
+          fi
+
+          # Install production dependencies (skip postinstall to avoid prisma error)
           cd src-tauri/resources/standalone
-          bun install --production --frozen-lockfile 2>/dev/null || bun install --production
-          echo "Standalone server prepared:"
-          ls -la
-          echo "node_modules count:"
-          ls node_modules | wc -l
+          bun install --production --ignore-scripts
+
+          # Generate Prisma client for the standalone server
+          cd ../../..
+          npx prisma generate --schema=src-tauri/resources/standalone/prisma/schema.prisma
+
+          echo "=== Standalone server prepared ==="
+          ls src-tauri/resources/standalone/
+          echo "=== node_modules count ==="
+          ls src-tauri/resources/standalone/node_modules | wc -l
 
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
@@ -104,15 +123,11 @@ jobs:
           if [ -n "$NSIS_EXE" ]; then
             echo "nsis_exe=$NSIS_EXE" >> $GITHUB_OUTPUT
             echo "Found NSIS: $NSIS_EXE"
-          else
-            echo "No NSIS exe found"
           fi
 
           if [ -n "$MSI_FILE" ]; then
             echo "msi_file=$MSI_FILE" >> $GITHUB_OUTPUT
             echo "Found MSI: $MSI_FILE"
-          else
-            echo "No MSI file found"
           fi
 
       - name: Upload NSIS installer to release
