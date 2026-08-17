@@ -2,12 +2,12 @@
   "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-cli/schema.json",
   "productName": "ThesisFrame",
   "version": "1.3.0",
-  "identifier": "com.thesisframe.app",
+  "identifier": "com.thesisframe.desktop",
   "build": {
     "beforeDevCommand": "bun run dev",
-    "beforeBuildCommand": "bun run build:tauri",
+    "beforeBuildCommand": "",
     "devUrl": "http://localhost:3000",
-    "frontendDist": "../.next/standalone"
+    "frontendDist": "../dist-tauri"
   },
   "app": {
     "windows": [
@@ -38,8 +38,7 @@
       "icons/icon.png"
     ],
     "resources": {
-      "../db/*": "db/",
-      "../public/*": "public/"
+      "standalone/**/*": "standalone/"
     },
     "windows": {
       "nsis": {
