@@ -12,6 +12,9 @@ env:
   APP_NAME: ThesisFrame
   APP_VERSION: '1.3.0'
 
+permissions:
+  contents: write
+
 jobs:
   build-windows:
     name: Build Windows NSIS installer
