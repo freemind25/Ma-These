@@ -1,0 +1,116 @@
+name: Build Tauri Windows Installer
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_id:
+        description: 'GitHub Release ID to upload assets to'
+        required: true
+        default: '371380716'
+      upload_to_release:
+        description: 'Upload .exe and .msi to release?'
+        required: true
+        default: 'true'
+        type: boolean
+
+env:
+  APP_NAME: ThesisFrame
+  APP_VERSION: '1.3.0'
+
+jobs:
+  build-windows:
+    name: Build Windows NSIS/MSI installer
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Bun
+        run: |
+          powershell -c "irm bun.sh/install.ps1 | iex"
+          echo "$env:USERPROFILE\.bun\bin" | Out-File -Append $env:GITHUB_PATH
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: 'src-tauri -> target'
+
+      - name: Install frontend dependencies
+        run: bun install --frozen-lockfile || bun install
+
+      - name: Build Next.js standalone
+        run: bun run build:tauri
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v${{ env.APP_VERSION }}
+          releaseName: 'ThesisFrame v${{ env.APP_VERSION }}'
+          releaseBody: 'See the assets to download and install this version.'
+          releaseDraft: false
+          releasePrerelease: false
+          args: --target x86_64-pc-windows-msvc
+
+      - name: Find build artifacts
+        id: find-artifacts
+        shell: bash
+        run: |
+          echo "=== NSIS artifacts ==="
+          ls -la src-tauri/target/release/bundle/nsis/ 2>/dev/null || echo "No NSIS dir"
+          echo "=== MSI artifacts ==="
+          ls -la src-tauri/target/release/bundle/msi/ 2>/dev/null || echo "No MSI dir"
+
+          NSIS_EXE=$(find src-tauri/target/release/bundle/nsis/ -name "*.exe" -type f 2>/dev/null | head -1)
+          MSI_FILE=$(find src-tauri/target/release/bundle/msi/ -name "*.msi" -type f 2>/dev/null | head -1)
+
+          if [ -n "$NSIS_EXE" ]; then
+            echo "nsis_exe=$NSIS_EXE" >> $GITHUB_OUTPUT
+            echo "Found NSIS: $NSIS_EXE"
+          else
+            echo "No NSIS exe found"
+          fi
+
+          if [ -n "$MSI_FILE" ]; then
+            echo "msi_file=$MSI_FILE" >> $GITHUB_OUTPUT
+            echo "Found MSI: $MSI_FILE"
+          else
+            echo "No MSI file found"
+          fi
+
+      - name: Upload NSIS installer to release
+        if: steps.find-artifacts.outputs.nsis_exe != '' && inputs.upload_to_release == true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ github.event.inputs.release_id }} "${{ steps.find-artifacts.outputs.nsis_exe }}" --clobber
+        shell: bash
+
+      - name: Upload MSI installer to release
+        if: steps.find-artifacts.outputs.msi_file != '' && inputs.upload_to_release == true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ github.event.inputs.release_id }} "${{ steps.find-artifacts.outputs.msi_file }}" --clobber
+        shell: bash
+
+      - name: Upload artifacts for download
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installers
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+          if-no-files-found: warn

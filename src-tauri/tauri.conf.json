@@ -48,9 +48,7 @@
         "languages": ["French", "English"],
         "installMode": "currentUser",
         "displayLanguageSelector": true,
-        "installerIcon": "icons/icon.ico",
-        "headerImage": "icons/header.bmp",
-        "sidebarImage": "icons/sidebar.bmp"
+        "installerIcon": "icons/icon.ico"
       },
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
