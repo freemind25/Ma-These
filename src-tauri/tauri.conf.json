@@ -10,7 +10,6 @@
     "frontendDist": "../.next/standalone"
   },
   "app": {
-    "title": "ThesisFrame",
     "windows": [
       {
         "title": "ThesisFrame — Assistant de thèse",
@@ -21,8 +20,7 @@
         "resizable": true,
         "fullscreen": false,
         "center": true,
-        "decorations": true,
-        "theme": "light"
+        "decorations": true
       }
     ],
     "security": {

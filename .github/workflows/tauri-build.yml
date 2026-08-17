@@ -61,7 +61,7 @@ jobs:
           releaseName: 'ThesisFrame v${{ env.APP_VERSION }}'
           releaseBody: 'See the assets to download and install this version.'
           releaseDraft: false
-          releasePrerelease: false
+          prerelease: false
           args: --target x86_64-pc-windows-msvc
 
       - name: Find build artifacts
