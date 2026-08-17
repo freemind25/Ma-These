@@ -66,10 +66,11 @@ jobs:
           cp prisma/schema.prisma src-tauri/standalone/prisma/
           cd src-tauri/standalone
           bun install --production --ignore-scripts
+          cd ../..
           NODE_EXE=$(which node.exe 2>/dev/null || which node 2>/dev/null)
           echo "Node.js location: $NODE_EXE"
           if [ -f "$NODE_EXE" ]; then
-            cp "$NODE_EXE" ../node.exe
+            cp "$NODE_EXE" src-tauri/node.exe
             echo "Copied node.exe to src-tauri/"
           else
             echo "ERROR: node.exe not found!"
