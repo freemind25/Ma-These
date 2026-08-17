@@ -169,35 +169,11 @@ jobs:
 
       - name: Upload NSIS installer to release
         if: success()
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_ID: '371380716'
-        run: |
-          EXE_FILE=$(find src-tauri/target/release/bundle/nsis/ -name "*.exe" -type f 2>/dev/null | head -1)
-          if [ -z "$EXE_FILE" ]; then
-            echo "ERROR: No NSIS .exe found"
-            exit 1
-          fi
-          EXE_NAME=$(basename "$EXE_FILE")
-          echo "Uploading $EXE_NAME ($(du -h "$EXE_FILE" | cut -f1)) to release $RELEASE_ID..."
-
-          HTTP_CODE=$(curl -s -o /tmp/upload_resp.txt -w "%{http_code}" \
-            -X POST \
-            -H "Authorization: token $GH_TOKEN" \
-            -H "Content-Type: application/octet-stream" \
-            --data-binary "@$EXE_FILE" \
-            "https://uploads.github.com/repos/freemind25/Ma-These/releases/$RELEASE_ID/assets?name=$EXE_NAME")
-
-          echo "HTTP response: $HTTP_CODE"
-          cat /tmp/upload_resp.txt
-
-          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
-            echo "Upload successful!"
-          else
-            echo "Upload failed"
-            exit 1
-          fi
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.3.0
+          files: src-tauri/target/release/bundle/nsis/*.exe
+          fail_on_unmatched_files: true
 
       - name: Upload build artifacts
         if: always()
