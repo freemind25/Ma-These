@@ -52,49 +52,90 @@ jobs:
       - name: Build Next.js standalone server
         run: bun run build
 
-      - name: Prepare Tauri resources (copy standalone server)
+      - name: Prepare server bundle for Tauri
         shell: bash
         run: |
-          echo "=== Preparing standalone server for Tauri bundling ==="
+          echo "=== Preparing ThesisFrame server bundle ==="
 
-          # Create the resources directory
-          mkdir -p src-tauri/resources
+          # Create the standalone directory inside src-tauri (resource root)
+          mkdir -p src-tauri/standalone
+          mkdir -p src-tauri/standalone/.next/static
 
-          # Copy the standalone server files
-          cp -r .next/standalone src-tauri/resources/
+          # Copy standalone server files
+          cp -r .next/standalone/* src-tauri/standalone/
 
-          # Copy static assets from .next/static to standalone/.next/static
-          mkdir -p src-tauri/resources/standalone/.next/static
-          cp -r .next/static/* src-tauri/resources/standalone/.next/static/
+          # Copy static assets
+          cp -r .next/static/* src-tauri/standalone/.next/static/
 
           # Copy public assets
-          if [ -d "public" ]; then
-            mkdir -p src-tauri/resources/standalone/public
-            cp -r public/* src-tauri/resources/standalone/public/ 2>/dev/null || true
-          fi
+          mkdir -p src-tauri/standalone/public
+          cp -r public/* src-tauri/standalone/public/ 2>/dev/null || true
 
-          # Copy prisma schema (needed for runtime)
-          mkdir -p src-tauri/resources/standalone/prisma
-          cp prisma/schema.prisma src-tauri/resources/standalone/prisma/
+          # Copy prisma schema
+          mkdir -p src-tauri/standalone/prisma
+          cp prisma/schema.prisma src-tauri/standalone/prisma/
 
-          # Copy the database file if it exists
-          if [ -f "db/custom.db" ]; then
-            mkdir -p src-tauri/resources/standalone/db
-            cp db/custom.db src-tauri/resources/standalone/db/
-          fi
-
-          # Install production dependencies (skip postinstall to avoid prisma error)
-          cd src-tauri/resources/standalone
+          # Install production dependencies (skip postinstall)
+          cd src-tauri/standalone
           bun install --production --ignore-scripts
 
-          # Generate Prisma client for the standalone server
-          cd ../../..
-          npx prisma generate --schema=src-tauri/resources/standalone/prisma/schema.prisma
+          # Copy node.exe from the runner's Node.js installation
+          # Find node.exe location
+          NODE_EXE=$(which node.exe 2>/dev/null || which node 2>/dev/null)
+          echo "Node.js location: $NODE_EXE"
 
-          echo "=== Standalone server prepared ==="
-          ls src-tauri/resources/standalone/
-          echo "=== node_modules count ==="
-          ls src-tauri/resources/standalone/node_modules | wc -l
+          if [ -f "$NODE_EXE" ]; then
+            cp "$NODE_EXE" ../node.exe
+            echo "Copied node.exe to src-tauri/"
+          else
+            echo "ERROR: node.exe not found!"
+            exit 1
+          fi
+
+          echo "=== Bundle prepared ==="
+          echo "Standalone files:"
+          ls src-tauri/standalone/ | head -20
+          echo "node_modules count:"
+          find src-tauri/standalone/node_modules -maxdepth 1 -type d | wc -l
+
+      - name: Update tauri.conf.json resources dynamically
+        shell: bash
+        run: |
+          # Add the standalone and node.exe resources to tauri.conf.json
+          # This must be done after files are copied so Tauri can find them
+          cd /d/a/Ma-These/Ma-These 2>/dev/null || cd $GITHUB_WORKSPACE
+
+          python3 -c "
+import json
+with open('src-tauri/tauri.conf.json', 'r') as f:
+    cfg = json.load(f)
+
+cfg['bundle']['resources'] = {
+    '../db/*': 'db/',
+    'standalone/**/*': 'standalone/',
+    'node.exe': ''
+}
+
+with open('src-tauri/tauri.conf.json', 'w') as f:
+    json.dump(cfg, f, indent=2)
+print('Updated resources in tauri.conf.json')
+" 2>/dev/null || python -c "
+import json
+with open('src-tauri/tauri.conf.json', 'r') as f:
+    cfg = json.load(f)
+
+cfg['bundle']['resources'] = {
+    '../db/*': 'db/',
+    'standalone/**/*': 'standalone/',
+    'node.exe': ''
+}
+
+with open('src-tauri/tauri.conf.json', 'w') as f:
+    json.dump(cfg, f, indent=2)
+print('Updated resources in tauri.conf.json')
+"
+
+          cat src-tauri/tauri.conf.json
 
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0

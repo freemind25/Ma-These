@@ -38,7 +38,7 @@
       "icons/icon.png"
     ],
     "resources": {
-      "standalone/**/*": "standalone/"
+      "../db/*": "db/"
     },
     "windows": {
       "nsis": {
