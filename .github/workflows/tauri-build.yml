@@ -3,10 +3,10 @@ name: Build Tauri Windows Installer
 on:
   workflow_dispatch:
     inputs:
-      release_id:
-        description: 'GitHub Release ID to upload assets to'
+      release_tag:
+        description: 'Git tag to upload assets to (e.g. v1.3.0)'
         required: true
-        default: '371380716'
+        default: 'v1.3.0'
 
 env:
   APP_NAME: ThesisFrame
@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install Bun
         shell: bash
@@ -50,7 +50,6 @@ jobs:
           choco install nsis -y --no-progress
           Write-Host "NSIS version:"
           makensis /VERSION
-          Write-Host "NSIS location:"
           Get-Command makensis | Select-Object Source
 
       - name: Install WebView2 SDK
@@ -60,19 +59,13 @@ jobs:
           $downloadUrl = "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2/1.0.2903.40"
           $outputZip = "$env:TEMP\webview2-sdk.zip"
           $extractDir = "$env:TEMP\webview2-sdk"
-          
+
           [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
           Invoke-WebRequest -Uri $downloadUrl -OutFile $outputZip
           Expand-Archive -Path $outputZip -DestinationPath $extractDir -Force
-          
-          $sdkDir = "$extractDir\build\native\x64"
-          Write-Host "WebView2 SDK extracted to: $sdkDir"
-          Write-Host "SDK contents:"
-          Get-ChildItem -Path $sdkDir -Recurse | Select-Object FullName | Format-Table -AutoSize
-          
-          Write-Host "##vso[task.prependpath]$extractDir\build\native\include"
+
+          Write-Host "WebView2 SDK extracted to: $extractDir\build\native"
           echo "WEBVIEW2_SDK_PATH=$extractDir\build\native" >> $env:GITHUB_ENV
-          echo "WI_IXML_XML_PATH=$extractDir\build\native" >> $env:GITHUB_ENV
 
       - name: Install frontend dependencies
         shell: bash
@@ -88,30 +81,24 @@ jobs:
           set -e
           echo "=== Preparing ThesisFrame server bundle ==="
 
-          # Copy standalone output
           mkdir -p src-tauri/standalone
           cp -r .next/standalone/* src-tauri/standalone/
 
-          # Copy static assets
           mkdir -p src-tauri/standalone/.next/static
           cp -r .next/static/* src-tauri/standalone/.next/static/
 
-          # Copy public assets
           if [ -d "public" ]; then
             mkdir -p src-tauri/standalone/public
             cp -r public/* src-tauri/standalone/public/ 2>/dev/null || true
           fi
 
-          # Copy prisma schema
           mkdir -p src-tauri/standalone/prisma
           cp prisma/schema.prisma src-tauri/standalone/prisma/
 
-          # Install production dependencies in standalone
           cd src-tauri/standalone
           bun install --production --ignore-scripts
           cd "$GITHUB_WORKSPACE"
 
-          # Copy node.exe
           NODE_PATH="$(which node 2>/dev/null || which node.exe 2>/dev/null)"
           echo "Node.js path: $NODE_PATH"
           if [ -f "$NODE_PATH" ]; then
@@ -123,16 +110,15 @@ jobs:
             exit 1
           fi
 
-          # Verify server.js exists
           if [ -f "src-tauri/standalone/server.js" ]; then
             echo "OK: server.js found in standalone bundle"
           else
-            echo "ERROR: server.js NOT found in standalone bundle"
+            echo "ERROR: server.js NOT found"
             ls -la src-tauri/standalone/
             exit 1
           fi
 
-          echo "=== Bundle prepared successfully ==="
+          echo "=== Bundle prepared ==="
 
       - name: Update tauri.conf.json for build
         shell: bash
@@ -148,7 +134,7 @@ jobs:
             'node.exe': ''
           };
           fs.writeFileSync('src-tauri/tauri.conf.json', JSON.stringify(cfg, null, 2));
-          console.log('Updated tauri.conf.json:');
+          console.log('Updated tauri.conf.json bundle:');
           console.log(JSON.stringify(cfg.bundle, null, 2));
           "
 
@@ -156,26 +142,30 @@ jobs:
         shell: bash
         run: |
           cd "$GITHUB_WORKSPACE"
-          echo "=== Starting Tauri build ==="
-          echo "Working directory: $(pwd)"
+          echo "=== Tauri build starting ==="
+          echo "CWD: $(pwd)"
+          echo "Rust version:"
+          rustc --version
+          echo "Cargo version:"
+          cargo --version
+          echo "Node version:"
+          node --version
           echo "Tauri config:"
           cat src-tauri/tauri.conf.json
-          echo "=== Running cargo tauri build ==="
-          bunx --bun tauri build --verbose 2>&1
-          echo "=== Tauri build completed ==="
+          echo "=== Building ==="
+          npx @tauri-apps/cli build --verbose
+          echo "=== Build finished ==="
 
       - name: List build outputs
         shell: bash
         run: |
           echo "=== NSIS bundle ==="
-          ls -la src-tauri/target/release/bundle/nsis/ 2>/dev/null || echo "NSIS dir not found"
-          echo "=== Release binaries ==="
-          ls -la src-tauri/target/release/*.exe 2>/dev/null || echo "No .exe in release root"
-          echo "=== All bundle types ==="
-          ls -R src-tauri/target/release/bundle/ 2>/dev/null || echo "No bundle dir"
+          find src-tauri/target/release/bundle/nsis/ -type f 2>/dev/null || echo "NSIS dir not found"
+          echo "=== Release exe ==="
+          find src-tauri/target/release/ -maxdepth 1 -name "*.exe" -type f 2>/dev/null || echo "No exe"
 
       - name: Upload NSIS installer to release
-        if: always()
+        if: success()
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -184,10 +174,11 @@ jobs:
           if [ -n "$EXE_FILE" ]; then
             echo "Uploading: $EXE_FILE"
             ls -la "$EXE_FILE"
-            gh release upload "${{ github.event.inputs.release_id }}" "$EXE_FILE" --clobber
+            gh release upload "${{ github.event.inputs.release_tag }}" "$EXE_FILE" --clobber
             echo "Upload successful!"
           else
             echo "No NSIS .exe found to upload"
+            exit 1
           fi
 
       - name: Upload build artifacts
