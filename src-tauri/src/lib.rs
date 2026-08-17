@@ -9,8 +9,7 @@ pub fn run() {
 
             #[cfg(target_os = "windows")]
             {
-                use tauri::utils::platform::current_exe;
-                let exe = current_exe().unwrap();
+                let exe = std::env::current_exe().unwrap();
                 let exe_dir = exe.parent().unwrap();
 
                 // Database setup
