@@ -260,3 +260,25 @@ Stage Summary:
 - FICHE_SYNTHESE updated across 6 sections (1.1, 1.2, 3.2, 3.3-3.10, 4.4, 4.5)
 - Release v1.3.0 updated with Tauri desktop section
 - Lint: 0 errors, 15 warnings (all pre-existing)
+---
+Task ID: 8
+Agent: Main orchestrator
+Task: Build verification-carto module (Module A rule-based + Module B socratic questioner)
+
+Work Log:
+- Added 3 Prisma models: ElementAnalyse, TypeAnalyseMethodologique, SessionVerification
+- Pushed schema to SQLite DB successfully
+- Created API routes: /api/elements-analyse (CRUD), /api/types-analyse (CRUD + seed), /api/verification-carto (Module A + B + sessions)
+- Created referential seed: analyse_urbaine with 4 phases, 37 typeElements, socratic prompt
+- Built frontend module: verification-carto-page.tsx (~1229 lines, 3 tabs)
+- Registered module in app-store.ts and page.tsx
+- Lint: 0 errors, 9 pre-existing warnings
+- API tests: all 7 endpoints verified (seed, list types, create elements, list elements, completude blocking, completude phases, sessions)
+- Module A correctly implements: prerequisite blocking, phase evaluation, rule-based (no LLM)
+
+Stage Summary:
+- NEW MODULE: Vérification cartographique — methodological completeness checker + socratic questioner
+- Module A: rule-based list comparison (no AI), prerequisite blocking, 37 elements in 5 phases
+- Module B: LLM-powered socratic questioner with strict guardrails (no declarative sentences)
+- Referential: analyse_urbaine with BENYOUCEF/PANERAI methodology (cadrage, anatomie, physiologie, transversales)
+- Generalized architecture: adding a new discipline = adding one row in TypeAnalyseMethodologique

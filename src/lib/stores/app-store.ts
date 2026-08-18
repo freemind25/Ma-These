@@ -34,7 +34,8 @@ export type ViewId =
   | "equilibre-chapitres"
   | "diagrammes"
   | "harper"
-  | "thesis-rag";
+  | "thesis-rag"
+  | "verification-carto";
 
 export interface NavigationItem {
   id: ViewId;
@@ -228,6 +229,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Harper",
     icon: "Type",
     description: "Résumeur, paraphraseur et extracteur IA",
+    badge: "IA",
+  },
+  {
+    id: "verification-carto",
+    label: "Vérification cartographique",
+    icon: "MapPin",
+    description: "Complétude cartographique et questionneur socratique IA",
     badge: "IA",
   },
 ];

@@ -271,6 +271,53 @@ model LicenseKey {
 }
 
 // ═══════════════════════════════════════
+// VÉRIFICATION MÉTHODOLOGIQUE (Module A + B)
+// ═══════════════════════════════════════
+
+model ElementAnalyse {
+  id            String   @id @default(cuid())
+  nom           String
+  typeElement   String   // ex: "trame_viaire", "parcellaire", "gabarit_bati" (spatial) — ou "entretien_saturation", "grille_codage" (autre discipline)
+  natureElement String   // "spatial" | "bibliographique" | "donnee_enquete" | "document"
+  sousAnalyse   String?  // ex: "forme_batie_espaces_publics", "cadrage_spatial"
+  source        String   // ex: "OSM", "GADM", "WorldCover", "import_utilisateur", "terrain"
+  dateSource    DateTime?
+  geojson       String?  // JSON string — renseigné uniquement si natureElement = "spatial"
+  styleConfig   String?  // JSON string — couleur, opacité, ordre d'affichage
+  chapitreId    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([typeElement])
+  @@index([natureElement])
+}
+
+model TypeAnalyseMethodologique {
+  id                 String   @id @default(cuid())
+  discipline         String   // ex: "analyse_urbaine", "patrimoine", "sociologie_urbaine"
+  nom                String   // ex: "diagnostic morphologique", "analyse de mobilité"
+  elementsAttendus   String   // JSON string — liste de typeElement attendus, structurée par phase
+  promptQuestionneur String?  // override du prompt module B pour cette discipline ; null = prompt générique
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([discipline])
+}
+
+model SessionVerification {
+  id               String   @id @default(cuid())
+  siteEtudeId      String
+  typeAnalyseId    String
+  elementsManquants String   // JSON string — résultat du module A
+  questionsPosees  String   // JSON string — historique des questions du module B
+  reponses         String?  // JSON string — notes libres du chercheur
+  createdAt        DateTime @default(now())
+
+  @@index([siteEtudeId])
+  @@index([typeAnalyseId])
+}
+
+// ═══════════════════════════════════════
 // RAG — "Mon IA de thèse" Index sémantique
 // ═══════════════════════════════════════
 

@@ -33,6 +33,7 @@ import { EquilibreChapitresPage } from "@/modules/equilibre-chapitres/equilibre-
 import { DiagrammesPage } from "@/modules/diagrammes/diagrammes-page";
 import { HarperPage } from "@/modules/harper/harper-page";
 import { ThesisRagPage } from "@/modules/thesis-rag/thesis-rag-page";
+import { VerificationCartoPage } from "@/modules/verification-carto/verification-carto-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -100,6 +101,8 @@ function CurrentView() {
       return <HarperPage />;
     case "thesis-rag":
       return <ThesisRagPage />;
+    case "verification-carto":
+      return <VerificationCartoPage />;
     default:
       return <DashboardPage />;
   }
