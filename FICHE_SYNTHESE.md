@@ -1,7 +1,7 @@
 # FICHE SYNTHESE — ThesisFrame
 
 > **Document de référence et de traçabilité du projet.**
-> Mis à jour le : 10 juillet 2025
+> Mis à jour le : 11 juillet 2025
 
 ---
 
@@ -21,6 +21,7 @@
 | 10/07/2025 | 33ed114 | Feat: guide d'utilisation + raccourcis clavier + à propos dans bouton "?" | Autorisé |
 | 10/07/2025 | a33cc90 | Feat: prédiction de texte IA dans l'éditeur (ghost text + popup suggestions) | Autorisé |
 | 10/07/2025 | — | Feat: restauration intégration Tauri v2 — build .exe/.msi Windows desktop | Autorisé |
+| 11/07/2025 | — | Feat: vérification cartographique — Module A rule-based (complétude) + Module B socratique (LLM), référentiel analyse_urbaine (37 éléments, 5 phases), 3 modèles Prisma, 6 routes API | Autorisé |
 
 ---
 
@@ -161,6 +162,7 @@ src/
 │   ├── analyse-champ-recherche/  # Cartographie IA du champ
 │   ├── apa-composer/            # Formatage APA 7e édition
 │   ├── verification-methodo/    # Audit méthodologique IA
+│   ├── verification-carto/     # Vérif. complétude (rule-based) + questionneur socratique (IA)
 │   ├── boite-doctorale/         # Boîte à outils doctorale
 │   ├── box-cloud/               # Stockage cloud
 │   ├── routesme/                # Comparaison multi-modèles IA
@@ -187,7 +189,7 @@ src/
 │   │   ├── csl-json-parser.ts    # Parser CSL-JSON (.json)
 │   │   └── index.ts              # Auto-détection format
 │   ├── stores/
-│   │   └── app-store.ts          # Zustand (29 vues, thème, IA provider)
+│   │   └── app-store.ts          # Zustand (30 vues, thème, IA provider)
 │   ├── api-schemas.ts            # Schemas Zod pour toutes les routes
 │   ├── db.ts                     # Prisma Client singleton
 │   └── utils.ts                  # Utilitaires (cn, etc.)
@@ -204,7 +206,7 @@ src/
 **Générateur :** prisma-client-js
 **Client :** Singleton via globalThis (dev HMR-safe) dans `src/lib/db.ts`
 
-#### Schéma (15 modèles)
+#### Schéma (18 modèles)
 
 **THÈSE**
 ```
@@ -279,6 +281,24 @@ DocumentChunk (standalone)
   id, sourceType (chapter|reference|notebook|cadrage),
   sourceId, content, chunkIndex, metadata (JSON)
   Indexes: [sourceType], [sourceId], [content]
+```
+
+**VÉRIFICATION MÉTHODOLOGIQUE (Module A rule-based + Module B socratique)**
+```
+ElementAnalyse (standalone)
+  id, nom, typeElement, natureElement (spatial|bibliographique|donnee_enquete|document),
+  sousAnalyse?, source, dateSource?, geojson (JSON)?, styleConfig (JSON)?, chapitreId?
+  Indexes: [typeElement], [natureElement]
+
+TypeAnalyseMethodologique (standalone)
+  id, discipline (ex: analyse_urbaine, patrimoine, sociologie_urbaine),
+  nom, elementsAttendus (JSON structuré par phase), promptQuestionneur?
+  Indexes: [discipline]
+
+SessionVerification (standalone)
+  id, siteEtudeId, typeAnalyseId,
+  elementsManquants (JSON), questionsPosees (JSON), reponses (JSON)?
+  Indexes: [siteEtudeId], [typeAnalyseId]
 ```
 
 **AUTRES**
@@ -482,6 +502,18 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 - **Données :** POST /api/thesis-rag (actions: index, query)
 - **Architecture :** RAG léger (keyword-based), SQLite-only, aucun vector DB externe
 
+### 2.30 Vérification cartographique (`VerificationCartoPage`) 🆕
+- **Statut :** Stable (v1.3.1)
+- **Rôle :** Vérification de complétude méthodologique (Module A rule-based) + questionneur socratique (Module B LLM), généralisable par discipline
+- **Principe directeur :** aucun des deux modules ne génère d'interprétation à la place du chercheur. Ils vérifient la complétude et posent des questions ; le chercheur reste seul auteur de toute lecture de son objet d'étude. Cohérent avec la doctrine `directeur-prompt.ts`.
+- **Fonctionnalités :**
+  - **Onglet Éléments** : CRUD d'éléments d'analyse (nom, typeElement, natureElement, sousAnalyse, source, dateSource) avec formulaire dynamique peuplé depuis le référentiel, groupement par phase en accordéon
+  - **Onglet Vérification** : deux sous-sections — Module A (bouton « Vérifier la complétude ») + Module B (bouton « Poser des questions méthodologiques »)
+  - **Onglet Historique** : liste des sessions de vérification passées (filtrées par site d'étude)
+  - **Site d'étude** : champ texte libre en entête, identifiant les éléments par contexte
+- **Données :** CRUD /api/elements-analyse, /api/elements-analyse/[id], GET/POST /api/types-analyse, POST /api/types-analyse/seed, POST /api/verification-carto (actions: completude, questionneur, save-session), GET /api/verification-carto
+- **Architecture :** 3 modèles Prisma, 6 routes API, moteur générique (discipline = clé de configuration)
+
 ---
 
 ## 3. Logiques métier
@@ -603,6 +635,47 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 - **Toggle** : bouton ✨ Sparkles dans la toolbar pour activer/désactiver
 - Fonctionne avec tous les fournisseurs configurés (Z.ai, Mistral, OpenAI, Anthropic, RoutesMe, Custom)
 
+### 3.11 Vérification cartographique — Module A (complétude) + Module B (socratique) (v1.3.1)
+
+**Principe directeur :** Aucun des deux modules ne génère d'interprétation à la place du chercheur. Ils vérifient la complétude méthodologique et posent des questions ; le chercheur reste seul auteur de toute lecture de son objet d'étude. Cohérent avec la doctrine `directeur-prompt.ts`.
+
+**Décision de généralisation :** Le moteur (comparaison de listes + questionneur) est générique par nature — seul son contenu (référentiel, prompt) est spécifique à une discipline. On généralise le modèle de données et le vocabulaire dès maintenant, sans construire d'infrastructure de plugins : une table de configuration (`TypeAnalyseMethodologique`) suffit tant qu'un seul enseignant alimente les référentiels.
+
+**Module A — Vérificateur de complétude (rule-based, JAMAIS de LLM) :**
+- Compare les `typeElement` des éléments renseignés pour un site d'étude au référentiel attendu pour la discipline déclarée
+- **Prérequis bloquant** : si le référentiel définit un préalable (ex. cadrage spatial en analyse_urbaine), tant qu'il est incomplet les phases suivantes ne sont pas évaluées (`bloquant: true`, `etape: "prealable"`)
+- Une fois le préalable complet, évalue toutes les phases et retourne la liste des `manquants` (typeElement + label)
+- Sortie UI : simple liste à puces, aucun texte généré, aucune phrase de synthèse rédigée
+- Règle d'implémentation stricte : ce module ne doit **jamais** appeler le LLM
+
+**Module B — Questionneur socratique (LLM, prompt par discipline) :**
+- Pose des questions ouvertes sur la cohérence méthodologique des éléments renseignés, sans jamais affirmer quoi que ce soit sur l'objet d'étude
+- Déclencheurs : après vérification incomplète (module A), avant export, sur demande explicite — **jamais automatiquement en continu**
+- Prompt système : `typeAnalyse.promptQuestionneur ?? PROMPT_GENERIQUE`
+  - Le prompt générique interdit : phrases déclaratives sur l'objet d'étude, suggestions de cause/explication, évaluations de qualité
+  - Format de sortie strict : `{"questions": ["...", "..."]}`
+  - Maximum 3 questions par appel
+- **Garde-fous post-traitement (identiques pour toutes disciplines) :**
+  1. Rejeter toute réponse dont un élément ne se termine pas par `?`
+  2. Rejeter toute réponse contenant des verbes déclaratifs en tête de phrase (patterns regex : "cette zone est", "on observe", "cela montre")
+  3. En cas de rejet : **ne rien afficher** plutôt que de corriger automatiquement (la correction risquerait de réintroduire une interprétation implicite)
+
+**Référentiel analyse_urbaine (instance disciplinaire, 37 éléments, 5 phases) :**
+- Méthodologie inspirée de BENYOUCEF et PANERAI (IGTU-UC3)
+- Phase 1 (préalable bloquant) — Cadrage spatial : situation_generale, perimetre_urbain, perimetre_administratif, perimetre_etude
+- Phase 1B — Entités homogènes (zonage) : zonage_fonctionnel, zonage_typo_morphologique, zonage_social_environnemental
+- Phase 2A — Anatomie (17 éléments) : historique/morphologique, statut foncier, forme bâtie et espaces publics, flux et accessibilité, repères et identité
+- Phase 2B — Physiologie socio-économique (9 éléments, natureElement = donnee_enquete) : démographie, économie, logement
+- Phase 2C — Transversales (5 éléments spatiaux + 2 catégories document) : environnement, usages (document), gouvernance (document)
+- Le référentiel vit dans `TypeAnalyseMethodologique.elementsAttendus` (JSON structuré) — éditable sans toucher au code
+
+**Généralisation à d'autres disciplines :**
+- Ajouter une discipline = ajouter 1 ligne `TypeAnalyseMethodologique` avec son propre `elementsAttendus` et `promptQuestionneur`
+- Exemples possibles : `sociologie_urbaine` (grille_entretien, saturation_theorique, echantillon_justifie), `patrimoine` (releve_etat_conservation, perimetre_protection, chronologie_edifice)
+- Le moteur A et les garde-fous B restent identiques — seul le contenu change
+
+**⚠️ Point sensible :** Le prompt générique et les garde-fous post-traitement constituent la garantie doctrinale. Toute modification du prompt ou de la logique de filtrage doit être validée au préalable car elle touche au positionnement éthique du module (pas d'interprétation par l'IA).
+
 ---
 
 ## 4. Points sensibles et dette technique
@@ -615,12 +688,14 @@ LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academi
 | `src/lib/ai/zai-client.ts` | 🔴 Critique | Dual-backend IA. Dual error parsing (OpenAI+Mistral). Retry logic, détection backend. Tous les modules IA en dépendent. |
 | `src/lib/ai/ai-provider.ts` | 🔴 Critique | Utilise `require("fs")`/`require("os")` — ne doit JAMAIS être importé côté client. |
 | `src/lib/ai/ai-types.ts` | 🟡 Important | Types client-safe + DYNAMIC_MODEL_PROVIDERS. Modification = impact sur toute la chaîne config IA. |
-| `src/lib/stores/app-store.ts` | 🟡 Important | 29 vues, navigation, thème. Modification = impact sur toute la navigation. |
+| `src/lib/stores/app-store.ts` | 🟡 Important | 30 vues, navigation, thème. Modification = impact sur toute la navigation. |
 | `src/app/page.tsx` | 🟡 Important | Routeur SPA central. Tout nouveau module doit y être ajouté. |
-| `prisma/schema.prisma` | 🔴 Critique | Schéma de données (15 modèles incl. DocumentChunk). Toute modification nécessite `db:push` + test régression. |
+| `prisma/schema.prisma` | 🔴 Critique | Schéma de données (18 modèles incl. DocumentChunk + 3 modèles vérification). Toute modification nécessite `db:push` + test régression. |
 | `src/lib/api-schemas.ts` | 🟡 Important | Validation Zod pour toutes les routes. Modification = impact sur validation côté serveur. |
 | `src/lib/rag/rag-service.ts` | 🟡 Important | Service RAG central. Chunking, indexation, retrieval. Dépend de zai-client.ts. |
 | `src/modules/editor/extensions/ai-prediction.ts` | 🟡 Important | Extension TipTap ProseMirror complexe. Plugin state machine + AbortController. |
+| `src/app/api/verification-carto/route.ts` | 🔴 Critique | Moteur Module A (rule-based) + Module B (socratique LLM). Le prompt générique et les garde-fous post-traitement constituent la garantie doctrinale du module. Modification = impact éthique et positionnement. |
+| `src/app/api/types-analyse/seed/route.ts` | 🟡 Important | Référentiel analyse_urbaine (37 éléments, 5 phases). Modification = changement du référentiel méthodologique validé. |
 
 ### 4.2 Dette technique identifiée
 
