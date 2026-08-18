@@ -15,6 +15,10 @@ import {
   History,
   Search,
   HelpCircle,
+  Globe,
+  Satellite,
+  Zap,
+  Layers,
 } from "lucide-react";
 import {
   Card,
@@ -122,6 +126,30 @@ interface SessionVerification {
   createdAt: string;
 }
 
+interface GeoEnrichResult {
+  mcp_available: boolean;
+  enrichments: Array<{
+    type: string;
+    label: string;
+    value: string;
+    tool: string;
+  }>;
+  count: number;
+}
+
+interface McpToolInfo {
+  name: string;
+  description: string;
+}
+
+interface McpHealthStatus {
+  status: string;
+  tools_count?: number;
+  tools?: McpToolInfo[];
+  error?: string;
+  hint?: string;
+}
+
 const NATURE_OPTIONS = [
   { value: "spatial", label: "Spatial" },
   { value: "bibliographique", label: "Bibliographique" },
@@ -176,6 +204,12 @@ export function VerificationCartoPage() {
   // ─── Loading state ───
   const [loadingInit, setLoadingInit] = useState(true);
   const [submittingElement, setSubmittingElement] = useState(false);
+
+  // --- MCP / Geographic state ---
+  const [mcpHealth, setMcpHealth] = useState<McpHealthStatus | null>(null);
+  const [geoEnrichResult, setGeoEnrichResult] = useState<GeoEnrichResult | null>(null);
+  const [loadingGeoEnrich, setLoadingGeoEnrich] = useState(false);
+  const [loadingMcpHealth, setLoadingMcpHealth] = useState(false);
 
   // ─── Derived: parsed referential ───
   const referentiel = useMemo<ReferentielData>(() => {
@@ -281,6 +315,12 @@ export function VerificationCartoPage() {
 
         setTypesAnalyse(types);
         setElements(elems);
+
+        // 3. Check MCP health (non-blocking)
+        fetch("/api/geo-mcp?action=health")
+          .then((r) => r.json())
+          .then((data) => setMcpHealth(data))
+          .catch(() => setMcpHealth({ status: "unavailable" }));
 
         // Use the first typeAnalyse as default
         if (types.length > 0 && !selectedTypeAnalyseId) {
@@ -431,6 +471,59 @@ export function VerificationCartoPage() {
       setLoadingQuestionneur(false);
     }
   }, [siteEtudeId, selectedTypeAnalyseId, elements, selectedTypeAnalyse, withAiConfig]);
+
+  /* ═══════════════════════════════════════
+     Module C: Geo MCP Enrichment
+     ═══════════════════════════════════════ */
+
+  const handleGeoEnrich = useCallback(async () => {
+    if (!siteEtudeId.trim() || !selectedTypeAnalyseId || elements.length === 0) return;
+
+    setLoadingGeoEnrich(true);
+    setGeoEnrichResult(null);
+    try {
+      const elemsPayload = elements.map((e) => ({
+        typeElement: e.typeElement,
+        nom: e.nom,
+        source: e.source,
+        dateSource: e.dateSource,
+        geojson: e.geojson ? JSON.parse(e.geojson) : undefined,
+      }));
+
+      const res = await fetch("/api/verification-carto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "geo-enrich",
+          siteEtudeId: siteEtudeId.trim(),
+          typeAnalyseId: selectedTypeAnalyseId,
+          elements: elemsPayload,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.data) {
+        setGeoEnrichResult(data.data);
+      }
+    } catch (err) {
+      console.error("[VerificationCarto] Geo-enrich error:", err);
+    } finally {
+      setLoadingGeoEnrich(false);
+    }
+  }, [siteEtudeId, selectedTypeAnalyseId, elements]);
+
+  const refreshMcpHealth = useCallback(async () => {
+    setLoadingMcpHealth(true);
+    try {
+      const res = await fetch("/api/geo-mcp?action=health");
+      const data = await res.json();
+      setMcpHealth(data);
+    } catch {
+      setMcpHealth({ status: "unavailable" });
+    } finally {
+      setLoadingMcpHealth(false);
+    }
+  }, []);
 
   /* ═══════════════════════════════════════
      History
@@ -633,6 +726,13 @@ export function VerificationCartoPage() {
           <TabsTrigger value="historique" className="gap-2">
             <History className="size-4" />
             Historique
+          </TabsTrigger>
+          <TabsTrigger value="mcp" className="gap-2">
+            <Globe className="size-4" />
+            Carto MCP
+            {mcpHealth?.status === "ok" && (
+              <span className="size-2 rounded-full bg-emerald-500" />
+            )}
           </TabsTrigger>
         </TabsList>
 
@@ -1222,6 +1322,209 @@ export function VerificationCartoPage() {
               })}
             </div>
           )}
+        </TabsContent>
+
+        {/* ═══════════════════════════════════
+           Tab 4: Carto MCP (Module C — Geographic enrichment)
+           ═══════════════════════════════════ */}
+        <TabsContent value="mcp" className="space-y-6 mt-4">
+          {/* MCP Service Status */}
+          <Card>
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Globe className="size-5 text-primary" />
+                  <div>
+                    <CardTitle className="text-base">
+                      Service MCP géographique
+                    </CardTitle>
+                    <CardDescription className="mt-1">
+                      Outils de cartographie exposés via le protocole MCP (inspiré d'ArcGIS MCP)
+                    </CardDescription>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={refreshMcpHealth}
+                  disabled={loadingMcpHealth}
+                  className="gap-2"
+                >
+                  {loadingMcpHealth ? (
+                    <Loader2 className="size-3 animate-spin" />
+                  ) : (
+                    <Zap className="size-3" />
+                  )}
+                  Actualiser
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {mcpHealth?.status === "ok" ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="size-3 rounded-full bg-emerald-500" />
+                    <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
+                      Service connecté — {mcpHealth.tools_count || 0} outil(s) disponible(s)
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                    {mcpHealth.tools?.map((tool) => (
+                      <div
+                        key={tool.name}
+                        className="flex items-start gap-2 rounded-md border p-3 bg-muted/30"
+                      >
+                        <Satellite className="size-4 mt-0.5 shrink-0 text-primary" />
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium font-mono">{tool.name}</p>
+                          <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+                            {tool.description}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-950/30 p-4">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="size-5 text-amber-600 dark:text-amber-400" />
+                    <span className="font-semibold text-amber-800 dark:text-amber-300">
+                      Service MCP non disponible
+                    </span>
+                  </div>
+                  <p className="text-sm text-amber-700 dark:text-amber-400 mt-2">
+                    {mcpHealth?.hint || "Le service géographique MCP (port 3005) doit être démarré pour utiliser les outils de cartographie."}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Module C — Geo Enrichment */}
+          <Card>
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-2">
+                <Layers className="size-5 text-primary" />
+                <div>
+                  <CardTitle className="text-base">
+                    Module C — Enrichissement géographique MCP
+                  </CardTitle>
+                  <CardDescription className="mt-1">
+                    Utilise les outils MCP pour enrichir automatiquement vos éléments spatiaux :
+                    géocodage, validation de coordonnées, calcul de superficie, altitude, etc.
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button
+                onClick={handleGeoEnrich}
+                disabled={
+                  loadingGeoEnrich ||
+                  !siteEtudeId.trim() ||
+                  !selectedTypeAnalyseId ||
+                  elements.length === 0 ||
+                  mcpHealth?.status !== "ok"
+                }
+                className="gap-2"
+              >
+                {loadingGeoEnrich ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Satellite className="size-4" />
+                )}
+                Enrichir les éléments avec le MCP géographique
+              </Button>
+
+              {mcpHealth?.status !== "ok" && (
+                <p className="text-xs text-muted-foreground">
+                  Le service MCP doit être connecté pour utiliser l'enrichissement géographique.
+                </p>
+              )}
+              {mcpHealth?.status === "ok" && elements.length === 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Ajoutez au moins un élément dans l'onglet « Éléments ».
+                </p>
+              )}
+
+              {/* Geo Enrichment Results */}
+              {geoEnrichResult && (
+                <div className="space-y-3">
+                  {geoEnrichResult.count > 0 ? (
+                    <>
+                      <div className="flex items-center gap-2 text-sm font-medium">
+                        <CheckCircle2 className="size-4 text-emerald-600" />
+                        {geoEnrichResult.count} enrichissement(s) géographique(s) via MCP
+                      </div>
+                      <div className="space-y-2 max-h-96 overflow-y-auto">
+                        {geoEnrichResult.enrichments.map((enr, i) => (
+                          <div
+                            key={i}
+                            className="rounded-md border p-3 bg-muted/30 space-y-2"
+                          >
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <Badge variant="outline" className="text-xs font-mono">
+                                {enr.tool}
+                              </Badge>
+                              <Badge
+                                variant="secondary"
+                                className="text-xs"
+                              >
+                                {enr.type}
+                              </Badge>
+                              <span className="text-xs text-muted-foreground">
+                                {enr.label}
+                              </span>
+                            </div>
+                            <p className="text-sm leading-relaxed">{enr.value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center py-6 text-muted-foreground">
+                      <MapPin className="size-8 mx-auto mb-2 opacity-30" />
+                      <p className="text-sm">
+                        Aucun enrichissement géographique possible.
+                      </p>
+                      <p className="text-xs mt-1">
+                        Les éléments doivent contenir des coordonnées, des noms de lieux,
+                        ou des données GeoJSON pour déclencher l'enrichissement.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Info card about MCP */}
+          <Card className="bg-muted/30">
+            <CardContent className="py-4">
+              <div className="flex items-start gap-3">
+                <HelpCircle className="size-5 mt-0.5 shrink-0 text-muted-foreground" />
+                <div className="text-sm text-muted-foreground space-y-2">
+                  <p className="font-medium text-foreground">
+                    À propos du protocole MCP pour la cartographie
+                  </p>
+                  <p>
+                    Le Model Context Protocol (MCP) est un protocole ouvert qui connecte les
+                    agents IA à des outils spécialisés. Inspiré de l'intégration MCP d'ArcGIS
+                    (Esri, 2026), ce service expose des outils de géocodage, validation de
+                    coordonnées, calcul de superficie et d'altitude à l'agent de vérification
+                    méthodologique.
+                  </p>
+                  <p>
+                    L'agent IA peut ainsi découvrir automatiquement les outils disponibles,
+                    comprendre leurs capacités et les utiliser pour enrichir ses questions
+                    méthodologiques avec un contexte géographique réel (coordonnées validées,
+                    distances, surfaces, altitudes).
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

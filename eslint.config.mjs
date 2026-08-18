@@ -36,6 +36,7 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "examples/**",
+      "mini-services/**",
       "skills",
       "prisma/seed.ts",
     ],

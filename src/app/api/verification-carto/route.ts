@@ -3,6 +3,16 @@ import { db } from "@/lib/db";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { z } from "zod/v4";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import {
+  isGeoMcpAvailable,
+  geocodeForContext,
+  validateCoordsForContext,
+  distanceForContext,
+  elevationForContext,
+  bboxForContext,
+  validateGeojsonForContext,
+  areaForContext,
+} from "@/lib/geo-mcp-client";
 
 // ═══════════════════════════════════════
 // Types
@@ -111,7 +121,7 @@ function stripFences(text: string): string {
 // ═══════════════════════════════════════
 
 const verificationSchema = z.object({
-  action: z.enum(["completude", "questionneur", "save-session"]),
+  action: z.enum(["completude", "questionneur", "save-session", "geo-enrich"]),
   siteEtudeId: z.string().min(1),
   typeAnalyseId: z.string().min(1),
   // For completude
@@ -122,12 +132,15 @@ const verificationSchema = z.object({
     nom: z.string(),
     source: z.string(),
     dateSource: z.string().optional(),
+    geojson: z.unknown().optional(),
   })).optional(),
   typeAnalyseNom: z.string().optional(),
   // For save-session
   elementsManquants: z.unknown().optional(),
   questionsPosees: z.unknown().optional(),
   reponses: z.unknown().optional(),
+  // For geo-enrich
+  geoContext: z.unknown().optional(),
   _aiConfig: z.unknown().optional(),
 });
 
@@ -235,6 +248,85 @@ export async function POST(request: NextRequest) {
         },
       });
       return NextResponse.json({ data: session }, { status: 201 });
+    }
+
+    // ─── ACTION: geo-enrich (Module C — MCP geographic enrichment) ───
+    if (v.action === "geo-enrich") {
+      const mcpAvailable = await isGeoMcpAvailable();
+      const enrichments: Array<{ type: string; label: string; value: string; tool: string }> = [];
+
+      if (mcpAvailable && v.elements) {
+        // Enrich each spatial element with MCP geographic data
+        const spatialElements = v.elements.filter(
+          (e) => e.typeElement.includes('perimetre') ||
+                 e.typeElement.includes('situation') ||
+                 e.nom.match(/\d+\.\d+.*\d+\.\d+/) || // contains coordinates
+                 e.geojson
+        );
+
+        for (const elem of spatialElements.slice(0, 5)) { // Limit to 5 for performance
+          // Try to extract coordinates from name or geojson
+          const coordMatch = elem.nom.match(/(-?\d+\.\d+)\s*[,;\s]\s*(-?\d+\.\d+)/);
+          const geojson = elem.geojson as Record<string, unknown> | undefined;
+
+          if (coordMatch) {
+            const lat = parseFloat(coordMatch[1]);
+            const lon = parseFloat(coordMatch[2]);
+            const coordInfo = await validateCoordsForContext(lat, lon);
+            if (coordInfo) enrichments.push({ type: 'coords', label: elem.nom, value: coordInfo, tool: 'validate_coords' });
+
+            const elevInfo = await elevationForContext(lat, lon);
+            if (elevInfo) enrichments.push({ type: 'elevation', label: elem.nom, value: elevInfo, tool: 'elevation_query' });
+          }
+
+          if (geojson && geojson.type) {
+            const validInfo = await validateGeojsonForContext(geojson);
+            if (validInfo) enrichments.push({ type: 'geojson', label: elem.nom, value: validInfo, tool: 'geojson_validate' });
+
+            if (geojson.type === 'Polygon' || geojson.type === 'MultiPolygon') {
+              const areaInfo = await areaForContext(geojson);
+              if (areaInfo) enrichments.push({ type: 'area', label: elem.nom, value: areaInfo, tool: 'compute_area' });
+            }
+
+            if (geojson.coordinates) {
+              const coords = geojson.coordinates as number[][];
+              if (Array.isArray(coords[0]) && typeof coords[0][0] === 'number' && coords.length >= 2) {
+                const bboxInfo = await bboxForContext(coords);
+                if (bboxInfo) enrichments.push({ type: 'bbox', label: elem.nom, value: bboxInfo, tool: 'compute_bbox' });
+              }
+            }
+          }
+
+          // Try geocoding the element name if it looks like a place
+          if (!coordMatch && !geojson && elem.nom.length > 3 && elem.nom.length < 100) {
+            const geoInfo = await geocodeForContext(elem.nom);
+            if (geoInfo) enrichments.push({ type: 'geocode', label: elem.nom, value: geoInfo, tool: 'geocode' });
+          }
+        }
+
+        // If we have two spatial elements, compute distance
+        if (spatialElements.length >= 2) {
+          const first = spatialElements[0];
+          const second = spatialElements[1];
+          const m1 = first.nom.match(/(-?\d+\.\d+)\s*[,;\s]\s*(-?\d+\.\d+)/);
+          const m2 = second.nom.match(/(-?\d+\.\d+)\s*[,;\s]\s*(-?\d+\.\d+)/);
+          if (m1 && m2) {
+            const distInfo = await distanceForContext(
+              parseFloat(m1[1]), parseFloat(m1[2]),
+              parseFloat(m2[1]), parseFloat(m2[2])
+            );
+            if (distInfo) enrichments.push({ type: 'distance', label: `${first.nom} → ${second.nom}`, value: distInfo, tool: 'distance_between' });
+          }
+        }
+      }
+
+      return NextResponse.json({
+        data: {
+          mcp_available: mcpAvailable,
+          enrichments,
+          count: enrichments.length,
+        },
+      });
     }
 
     return NextResponse.json({ error: "Action non reconnue" }, { status: 400 });
