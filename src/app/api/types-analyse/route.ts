@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 const createSchema = z.object({
   discipline: z.string().min(1),
   nom: z.string().min(1),
-  elementsAttendus: z.record(z.unknown()), // structured object
+  elementsAttendus: z.record(z.string(), z.unknown()), // structured object
   promptQuestionneur: z.string().optional(),
 });
 

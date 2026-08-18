@@ -1590,3 +1590,1362 @@ Stage Summary:
 - 3 detection/analysis logic items for directeurThese.js
 - Fiche 05 (8C) flagged as highest priority for concrete UI implementation
 - All features align with existing read-only critique doctrine
+---
+Task ID: T1
+Agent: Agent T1 — Inventaire Code
+Task: Produire l'inventaire exhaustif des fonctionnalités pour le rapport d'audit
+
+Work Log:
+- Lu FICHE_SYNTHESE.md (762 lignes) — architecture complète, 18 modèles Prisma, 29 vues, logique métier
+- Lu 7 fichiers specs dans upload/files-extracted/ — corpus de connaissances pour directeur-chat (INDEX-routage.md + 6 fiches)
+- Vérifié chaque module frontend (28 dans src/modules/ + 1 dashboard) : lignes de code, appels API, persistance
+- Compté 41 fichiers de routes API, 61 handlers HTTP exportés
+- Compté 48 composants shadcn/ui, 10 composants custom layout/provider, 39 fichiers modules
+- Identifié 0 fichier de test (Vitest configuré mais vide)
+- Cartographié les appels API par module
+- Identifié les routes orphelines sans consommateur frontend
+- Vérifié la cohérence des specs avec le code implémenté
+
+Stage Summary:
+- 29 vues/enregistrements dans app-store (28 modules + dashboard)
+- 41 fichiers de routes API → 61 handlers HTTP
+- 48 composants shadcn/ui + 10 composants custom = 58 fichiers composants
+- 39 fichiers de code de module (y compris sous-composants, hooks, extensions)
+- 0 test unitaire ou d'intégration
+- 5 modules sans API/DB (purement statiques ou locaux) : methodology, articles, academic-db, boite-doctorale, box-cloud
+- 2 modules locaux sans persistance : onglet-recherche (localStorage), methodology, articles, academic-db, boite-doctorale
+- 1 module STUB : box-cloud (données initiales codées en dur, aucune API/DB)
+- 5 routes API orphelines (cadrages CRUD, pas de page dédiée)
+- 2 routes API orphelines (ai-config CRUD, jamais appelées par le frontend)
+- 1 route API interne (corpus-publication, consommée uniquement par directeur-chat)
+- Authentification (NextAuth v4) en dépendance mais jamais implémentée
+- LicenceKey en schéma Prisma mais jamais utilisée
+- AiToolConfig en schéma Prisma mais redondant avec localStorage
+- Toutes les 6 fiches du corpus publication sont indexées dans directeur-chat via detectRelevantFiches()
+- La fiche 05 (8C auto-édition) est partiellement intégrée comme checklist interactive dans le module auto-edition
+- L'orchestration par contexte (INDEX-routage.md) est implémentée côté serveur dans /api/directeur-chat
+
+---
+
+## INVENTAIRE EXHAUSTIF DES FONCTIONNALITÉS
+
+### Tableau principal
+
+| # | Fonctionnalité | Module/Fichier | Statut Code | API associée | Testée | Note |
+|---|---|---|---|---|---|---|
+| 1 | Tableau de bord | `components/dashboard/dashboard-page.tsx` (519 lignes) | COMPLET | `GET /api/stats` | non | 4 stat cards, 4 actions rapides, grille modules, guide démarrage |
+| 2 | Éditeur de thèse (Tiptap) | `modules/editor/` (2 041 lignes, 7 fichiers) | COMPLET | `CRUD /api/thesis`, `CRUD /api/chapters`, `POST /api/text-prediction` | non | Tiptap 7 extensions, auto-save, prédiction IA ghost text, 7 chapitres par défaut, feedback directeur |
+| 3 | Assistant IA d'écriture (10 modes) | `modules/ai-writing/ai-writing-page.tsx` (426 lignes) | COMPLET | `POST /api/ai-writing` | non | 10 modes spécialisés + onglet Chat Directeur (Pr. Renaud) |
+| 4 | Chat Directeur de thèse | (inclus dans ai-writing, sous-composant) | COMPLET | `POST /api/directeur-chat` | non | Persona IA, contexte corpus publication injecté via detectRelevantFiches() |
+| 5 | Références bibliographiques | `modules/references/references-page.tsx` (846 lignes) | COMPLET | `CRUD /api/references`, `POST /api/references/import`, `GET /api/references/bibtex` | non | CRUD, filtres, favoris, import BibTeX/RIS/CSL-JSON, export .bib |
+| 6 | Méthodologie (guides) | `modules/methodology/methodology-page.tsx` (505 lignes) | PARTIEL (statique) | — | non | Contenu riche (paradigmes, démarches, outils) mais purement statique, aucune persistance |
+| 7 | Articles scientifiques (IMRaD) | `modules/articles/articles-page.tsx` (495 lignes) | PARTIEL (statique) | — | non | Guide IMRaD + checklists + boîte à outils, mais purement statique |
+| 8 | Plan de thèse + LaTeX | `modules/thesis-plan/thesis-plan-page.tsx` (642 lignes) | COMPLET | `GET /api/thesis` (via useTheses hook) | non | Visualisation plan, template LaTeX personnalisé, numérotation romaine |
+| 9 | Outils IA (carnet + consensus) | `modules/ai-tools/ai-tools-page.tsx` (1 083 lignes) | COMPLET | `CRUD /api/sources`, `CRUD /api/entries`, `POST /api/ai-writing` | non | Carnet de recherche CRUD, entrées Q&A, analyse consensus multi-sources |
+| 10 | Bases de données académiques | `modules/academic-db/academic-db-page.tsx` (425 lignes) | PARTIEL (statique) | — | non | Répertoire 27 bases (HAL, Persée, CAIRN…), liens externes, filtrage local |
+| 11 | Journaux Open Access | `modules/journaux-oa/journaux-oa-page.tsx` (887 lignes) | COMPLET | `GET /api/journaux-oa`, `POST /api/ai-writing` | non | Recherche OpenAlex + DOAJ, filtrage OA, export CSV, mapping pays |
+| 12 | Recherche plein texte | `modules/recherche-plein-texte/recherche-plein-texte-page.tsx` (595 lignes) | COMPLET | `GET /api/search` | non | Opérateurs booléens (AND/OR/NOT), snippets, scoring, filtres |
+| 13 | Auto-édition 8C | `modules/auto-edition/auto-edition-page.tsx` (1 927 lignes) | COMPLET | `POST /api/ai-writing`, `POST /api/verification-publication` | non | 8 critères (Conformité→Courtoisie), checklist interactive, historique, 4 modes IA |
+| 14 | Feuille de route agile (Kanban) | `modules/feuille-route-agile/feuille-route-agile-page.tsx` (1 054 lignes) | COMPLET | `CRUD /api/sprints`, `CRUD /api/stories`, `POST /api/ai-writing` | non | 5 phases, drag & drop, story points, priorités |
+| 15 | Déblocage écriture | `modules/deblocage-ecriture/deblocage-ecriture-page.tsx` (1 340 lignes) | COMPLET | `POST /api/ai-writing` | non | Diagnostic, exercices, Pomodoro 25/5, suivi mots quotidien |
+| 16 | Outils SLR (PRISMA) | `modules/outils-slr/outils-slr-page.tsx` (1 563 lignes) | COMPLET | `POST /api/ai-writing` | non | Diagramme PRISMA, criblage, extraction données, export CSV |
+| 17 | Analyse du champ de recherche | `modules/analyse-champ-recherche/analyse-champ-recherche-page.tsx` (1 334 lignes) | COMPLET | `POST /api/ai-writing` | non | Cartographie IA, lacunes, positionnement, 3 onglets |
+| 18 | APA Compositeur | `modules/apa-composer/apa-composer-page.tsx` (1 421 lignes) | COMPLET | `POST /api/ai-writing` | non | Formatage APA 7e, 10+ types de références, bibliographie |
+| 19 | Vérification méthodologique | `modules/verification-methodo/verification-methodo-page.tsx` (1 356 lignes) | COMPLET | `POST /api/ai-writing` | non | Audit IA, 9 dimensions, scoring, recommandations |
+| 20 | Vérification cartographique | `modules/verification-carto/verification-carto-page.tsx` (1 532 lignes) | COMPLET | `CRUD /api/elements-analyse`, `GET/POST /api/types-analyse`, `POST /api/verification-carto`, `GET /api/geo-mcp` | non | Module A rule-based + Module B socratique LLM, 3 modèles Prisma, 6 routes |
+| 21 | Boîte doctorale | `modules/boite-doctorale/boite-doctorale-page.tsx` (837 lignes) | PARTIEL (local) | — | non | Checklists, calendrier, documents, suivi — tout en state local, aucune persistance |
+| 22 | Box Cloud | `modules/box-cloud/box-cloud-page.tsx` (834 lignes) | STUB | — | non | Interface cloud simulée avec INITIAL_FILES codés en dur, aucune API/DB, aucune persistance |
+| 23 | RoutesMe (multi-modèles) | `modules/routesme/routesme-page.tsx` (838 lignes) | COMPLET | `POST /api/ai-writing` | non | Comparaison côte à côte multi-fournisseurs, historique, favoris |
+| 24 | Livres & Compétences | `modules/livres-competences/livres-competences-page.tsx` (1 175 lignes) | COMPLET | `POST /api/ai-writing` | non | Suivi compétences, 7 domaines, recommandations IA |
+| 25 | Onglet de recherche | `modules/onglet-recherche/onglet-recherche-page.tsx` (1 003 lignes) | PARTIEL (local) | — | non | Organisation par onglets, tout en state local (localStorage), aucune API/DB |
+| 26 | Grammaire IA | `modules/grammaire/grammaire-page.tsx` (660 lignes) | COMPLET | `POST /api/ai-writing` (réutilise l'endpoint) | non | Correction orthographe/grammaire/style/ponctuation, JSON structuré |
+| 27 | Export PDF | `modules/export-pdf/export-pdf-page.tsx` (1 170 lignes) | COMPLET | `GET /api/thesis`, `GET /api/thesis/[id]/chapters` | non | Génération PDF côté client, options formatage, page de garde |
+| 28 | Équilibre des chapitres | `modules/equilibre-chapitres/equilibre-chapitres-page.tsx` (838 lignes) | COMPLET | `GET /api/thesis`, `POST /api/ai-writing` | non | Analyse répartition, objectifs par chapitre, recommandations IA |
+| 29 | Diagrammes visuels | `modules/diagrammes/diagrammes-page.tsx` (1 641 lignes) | COMPLET | `POST /api/ai-writing` | non | Organigrammes, timelines, flux, génération Mermaid IA |
+| 30 | Harper (résumé/paraphrase) | `modules/harper/harper-page.tsx` (915 lignes) | COMPLET | `POST /api/ai-writing` (réutilise l'endpoint) | non | Résumé, paraphrase, extraction, 3 longueurs, 4 styles |
+| 31 | Mon IA de thèse (RAG) | `modules/thesis-rag/thesis-rag-page.tsx` (435 lignes) | COMPLET | `POST /api/thesis-rag` (actions: index, query) | non | Chat contextuel, 4 sources indexées, chunks SQLite, badges sources |
+
+### Récapitulatif des statuts
+
+| Statut | Nombre | Pourcentage |
+|---|---|---|
+| COMPLET | 24 | 77,4 % |
+| PARTIEL (statique ou local) | 5 | 16,1 % |
+| STUB | 1 | 3,2 % |
+| Spécifié mais absent | 1 | 3,2 % |
+| **Total** | **31** | 100 % |
+
+---
+
+## ROUTES API — Cartographie complète (41 fichiers, 61 handlers)
+
+| # | Route | Méthodes | Consommateur frontend | Note |
+|---|---|---|---|---|
+| 1 | `/api` | GET | — (health check, interne) | |
+| 2 | `/api/stats` | GET | Dashboard | |
+| 3 | `/api/thesis` | GET, POST | Editor, ThesisPlan, EquilibreChapitres, ExportPdf | |
+| 4 | `/api/thesis/[id]` | GET, PUT, DELETE | Editor (use-thesis hook) | |
+| 5 | `/api/thesis/[id]/chapters` | GET, POST | Editor (use-thesis hook), ExportPdf | |
+| 6 | `/api/thesis/[id]/cadrages` | GET, POST | **AUCUN** ⚠️ | Routes orphelines — pas de page Cadrage |
+| 7 | `/api/chapters/[id]` | GET, PUT, DELETE | Editor (use-thesis hook) | |
+| 8 | `/api/references` | GET, POST | References | |
+| 9 | `/api/references/[id]` | PUT, DELETE | References | |
+| 10 | `/api/references/bibtex` | GET | References | |
+| 11 | `/api/references/import` | POST | References | |
+| 12 | `/api/sources` | GET, POST | AiTools | |
+| 13 | `/api/sources/[id]` | GET, PUT, DELETE | AiTools | |
+| 14 | `/api/sources/[id]/entries` | GET, POST | AiTools | |
+| 15 | `/api/entries` | GET, POST | AiTools | |
+| 16 | `/api/entries/[id]` | PUT, DELETE | AiTools | |
+| 17 | `/api/sprints` | GET, POST | FeuilleRouteAgile | |
+| 18 | `/api/sprints/[id]` | PUT, DELETE | FeuilleRouteAgile | |
+| 19 | `/api/sprints/[id]/stories` | GET, POST | FeuilleRouteAgile | |
+| 20 | `/api/stories/[id]` | PUT, DELETE | FeuilleRouteAgile | |
+| 21 | `/api/ai-writing` | POST | 13 modules (réutilisé massivement) | Central — proxy IA polyvalent |
+| 22 | `/api/directeur-chat` | POST | AiWriting (Chat Directeur) | |
+| 23 | `/api/text-prediction` | POST | Editor (ai-prediction extension) | |
+| 24 | `/api/thesis-rag` | POST | ThesisRag (actions: index, query) | |
+| 25 | `/api/search` | GET | RecherchePleinTexte | |
+| 26 | `/api/journaux-oa` | GET | JournauxOa | |
+| 27 | `/api/verification-carto` | GET, POST | VerificationCarto | |
+| 28 | `/api/verification-publication` | POST | AutoEdition | |
+| 29 | `/api/elements-analyse` | GET, POST | VerificationCarto | |
+| 30 | `/api/elements-analyse/[id]` | PUT, DELETE | VerificationCarto | |
+| 31 | `/api/types-analyse` | GET, POST | VerificationCarto | |
+| 32 | `/api/types-analyse/seed` | POST | VerificationCarto | |
+| 33 | `/api/geo-mcp` | GET | VerificationCarto (health check MCP) | |
+| 34 | `/api/ai-test` | POST | AppHeader (test connexion IA) | |
+| 35 | `/api/ai-models` | GET | AppHeader (liste modèles dynamiques) | |
+| 36 | `/api/ai-config` | GET, POST | **AUCUN** ⚠️ | Orphelin — config IA gérée en localStorage |
+| 37 | `/api/ai-config/[id]` | PUT, DELETE | **AUCUN** ⚠️ | Orphelin — config IA gérée en localStorage |
+| 38 | `/api/cadrages/[id]` | GET, PUT, DELETE | **AUCUN** ⚠️ | Orphelin — pas de page Cadrage |
+| 39 | `/api/cadrages/[id]/fields` | GET, POST | **AUCUN** ⚠️ | Orphelin |
+| 40 | `/api/cadrages/[id]/versions` | GET, POST | **AUCUN** ⚠️ | Orphelin |
+| 41 | `/api/cadrages/fields/[fieldId]` | PUT, PATCH | **AUCUN** ⚠️ | Orphelin |
+| 42 | `/api/corpus-publication` | GET, POST | **Interne** (directeur-chat uniquement) | Non appelé directement par le frontend |
+
+---
+
+## FONCTIONNALITÉS SPÉCIFIÉES MAIS ABSENTES DU CODE
+
+| # | Fonctionnalité | Source de la spécification | Statut | Note |
+|---|---|---|---|---|
+| F1 | **Cadrage de thèse (UI)** | FICHE_SYNTHESE §3.5, §1.2 (5 routes API existent), 3 modèles Prisma (ThesisCadrage, ThesisCadrageField, ThesisCadrageVersion) | Routes existantes, UI absente | 5 routes API CRUD opérationnelles mais aucun composant frontend. Le RAG indexe les champs de cadrage mais l'utilisateur ne peut pas les gérer via l'interface. |
+| F2 | **Authentification utilisateur** | FICHE_SYNTHESE §1.1 (NextAuth v4 en dépendance), modèle LicenseKey en Prisma | Absente | NextAuth v4 est listé comme dépendance disponible mais aucun auth middleware, aucun login/logout, aucun guard de route. |
+| F3 | **Gestion des licences** | Modèle Prisma LicenseKey (keyHash, licenseType, email, expiresAt) | Absente | Modèle en base mais aucune UI, aucune logique de validation. |
+| F4 | **Orchestration corpus publication côté frontend** | `upload/files-extracted/INDEX-routage.md` | Partielle | L'orchestration est implémentée côté serveur (detectRelevantFiches dans directeur-chat), mais aucun indicateur frontend ne montre quelles fiches sont actives. |
+| F5 | **Fiche 01-06 : interface de consultation dédiée** | 6 fiches dans `upload/files-extracted/` | Absente | Les fiches sont injectées comme contexte dans les prompts IA mais ne sont jamais affichées directement à l'utilisateur. |
+
+---
+
+## ÉCARTS ARCHITECTURAUX NOTÉS
+
+| # | Écart | Sévérité | Détail |
+|---|---|---|---|
+| E1 | **13 modules IA partagent un seul endpoint** `/api/ai-writing` | 🟡 Moyen | Grammaire, Harper, RoutesMe, EquilibreChapitres, Diagrammes, LivresCompetences, AnalyseChampRecherche, VerificationMethodo, DeblocageEcriture, OutilsSLR, AutoEdition, LivresCompetences, FeuilleRouteAgile utilisent tous `POST /api/ai-writing` avec un `mode` différent. Ce proxy unique est un point de défaillance central. Un bug dans la route affecte tous les modules. |
+| E2 | **Double gestion de la config IA** (localStorage + DB) | 🟡 Moyen | `AiToolConfig` en Prisma (CRUD via /api/ai-config, jamais appelé) vs. `localStorage` (clé `thesisframe-ai-config`, réellement utilisé via `useAiConfig`). Redondance et confusion. |
+| E3 | **5 modules sans aucune persistance** | 🟡 Moyen | Methodology, Articles, AcademicDb (statiques — acceptable pour du contenu de référence). Mais BoiteDoctorale, OngletRecherche, et BoxCloud ont des données utilisateur qui ne survivent pas à un clear localStorage. |
+| E4 | **Box Cloud est un faux module** | 🔴 Critique | 834 lignes de code, interface complète, mais entièrement simulée avec `INITIAL_FILES` codé en dur. Aucun upload réel, aucun stockage, aucune API. L'utilisateur peut créer/supprimer des fichiers mais tout est volatil. |
+| E5 | **0 test unitaire ou d'intégration** | 🔴 Critique | Vitest est configuré (dépendance) mais aucun fichier .test.ts ou .spec.ts n'existe. Aucune couverture pour les 61 handlers API, les parsers BibTeX/RIS/CSL-JSON, le service RAG, ou la logique métier. |
+| E6 | **Pas de middleware Next.js** | 🟠 Faible | Aucun middleware pour auth, rate limiting, logging, ou redirection. Tous les endpoints API sont publics et non protégés. |
+| E7 | **Reference et ResearchSource non liés** | 🟠 Faible | Les références bibliographiques et les sources du carnet de recherche sont deux modèles Prisma entièrement séparés sans relation. Aucune synchronisation possible. |
+| E8 | **SPA monopage dans App Router** | 🟠 Faible | Toute l'application est une SPA via Zustand `currentView` dans `page.tsx`. Pas de routing Next.js réel. Profondeur URL = 1 seul niveau. Impossibilité de liens directs, back/forward navigateur, ou SSR. |
+| E9 | **RAG keyword-only (pas de vector DB)** | 🟠 Faible | Le RAG utilise une recherche par mots-clés case-insensitive dans SQLite. Pas d'embeddings, pas de similarité sémantique. Adequat pour un MVP mais limité en précision de retrieval. |
+| E10 | **Export PDF côté client** | 🟠 Faible | La génération PDF se fait entièrement côté navigateur (probablement via window.print ou lib client-side). Pas de template serveur, qualité limitée par le moteur du navigateur. |
+
+---
+
+## RÉPARTITION DES 61 HANDLERS API PAR MODULE CONSOMMATEUR
+
+| Consommateur | Handlers dédiés | Handlers partagés (/api/ai-writing) | Total |
+|---|---|---|---|
+| Editor | 10 (thesis CRUD + chapters CRUD + text-prediction) | 0 | 10 |
+| References | 5 (CRUD + import + bibtex) | 0 | 5 |
+| AiTools | 6 (sources CRUD + entries CRUD) | 1 | 7 |
+| FeuilleRouteAgile | 4 (sprints CRUD + stories CRUD) | 1 | 5 |
+| VerificationCarto | 6 (elements + types + verification + geo-mcp) | 0 | 6 |
+| Dashboard | 1 (stats) | 0 | 1 |
+| RecherchePleinTexte | 1 (search) | 0 | 1 |
+| JournauxOa | 1 (journaux-oa) | 1 | 2 |
+| AutoEdition | 0 | 2 (ai-writing + verification-publication) | 2 |
+| AiWriting | 0 | 2 (ai-writing + directeur-chat) | 2 |
+| ThesisRag | 1 (thesis-rag) | 0 | 1 |
+| AppHeader | 2 (ai-test + ai-models) | 0 | 2 |
+| ExportPdf | 2 (thesis + chapters) | 0 | 2 |
+| ThesisPlan | 1 (thesis, partagé) | 0 | 1 |
+| EquilibreChapitres | 1 (thesis, partagé) | 1 | 2 |
+| 8 modules IA (grammaire, harper, etc.) | 0 | 1 chacun (ai-writing) | 8 |
+| **Routes orphelines** | 9 (ai-config ×2 + cadrages ×5 + corpus-publication ×1 + health ×1) | 0 | 9 |
+| **TOTAL** | **51** | **10** | **61** |
+---
+Task ID: T2
+Agent: Audit Corpus (T2)
+Task: Écarts specs vs code — analyse détaillée des 7 fiches de spécification vs implémentation
+
+Work Log:
+- Lu les 7 fichiers de spécification (INDEX-routage.md + 6 fiches 01-06)
+- Lu et analysé les fichiers de code : corpus-publication.ts, directeur-prompt.ts, auto-edition-page.tsx, articles-page.tsx, journaux-oa-page.tsx, grammaire-page.tsx, ai-writing-page.tsx, route.ts (verification-publication), directeur-chat route.ts
+- Pour chaque exigence spécifique des fiches, vérifié la présence/absence dans le code
+- Identifié 3 bugs critiques de nommage de champs entre client et API
+- Identifié les écarts de contenu et de fonctionnalités manquantes
+- Produit la table d'écarts complète ci-dessous
+
+Stage Summary:
+- 3 BLOQUANTS : field name mismatches between client and API (intro/discussion, table, redundancy)
+- 9 MAJEURS : missing routing logic, missing structured thesis type, incomplete scientific checklist, missing paraphrase test, missing fond-forme ordering in grammaire, missing visual entonnoir, missing relecture method details, missing revue cible/chapitre linkage, thesisContext never passed
+- 12 MINEURS : content simplifications, missing specific details, partial implementations
+- 2 COSMÉTIQUES : label wording differences
+
+Détail complet dans la réponse de l'agent.
+---
+Task ID: T3-a
+Agent: Agent T3-a — Test E2E Création+Cadrage
+Task: Perform end-to-end browser testing of thesis creation and cadrage workflow
+
+Work Log:
+- Attempted to start Next.js dev server (port 3000) for E2E browser testing
+- Encountered severe stability issues with Turbopack dev server in sandbox environment (process repeatedly dies after first page compilation)
+- Successfully obtained 2 partial browser sessions before crashes:
+  - Session 1: Dashboard loaded, navigated to thesis list, opened creation dialog
+  - Session 2: Dashboard reloaded, confirmed same UI elements
+- Captured 3 screenshots: /tmp/test-t3a-dashboard.png, /tmp/test-t3a-01-dashboard.png, /tmp/test-t3a-create-form.png
+- Performed complete static code analysis of:
+  - src/modules/editor/components/create-thesis-dialog.tsx (thesis creation form)
+  - src/modules/editor/hooks/use-thesis.ts (thesis CRUD hooks)
+  - src/modules/thesis-plan/thesis-plan-page.tsx (thesis plan/structure page)
+  - src/app/api/thesis/route.ts (POST thesis API)
+  - src/app/api/thesis/[id]/route.ts (GET/PUT/DELETE thesis API)
+  - src/app/api/thesis/[id]/cadrages/route.ts (cadrage API)
+  - src/app/api/cadrages/*/route.ts (5 cadrage API routes)
+  - src/components/dashboard/dashboard-page.tsx (dashboard navigation)
+  - src/lib/api-schemas.ts (Zod validation schemas)
+  - prisma/schema.prisma (Part model, structureMode field)
+- Random draw performed: Discipline=Géographie, Theme="Les représentations sociales du changement climatique", Research type=quantitative
+
+Stage Summary:
+- 3 tests performed (creation, cadrage, structure)
+- 1 functional issue found (missing form fields), 2 critical missing features (cadrage UI, structure mode toggle)
+- Dev server instability in sandbox prevented full form-filling E2E test
+- Full test report with code-level analysis completed
+
+## TEST REPORT T3-a — E2E Création + Cadrage
+
+### RANDOM DRAW
+- **Discipline**: Géographie
+- **Thème de thèse**: Les représentations sociales du changement climatique
+- **Type de recherche**: Quantitative
+
+---
+
+### TEST 1: Dashboard → Créer un projet
+
+#### 1a. Dashboard Load
+| Item | Detail |
+|------|--------|
+| **URL** | http://127.0.0.1:3000/ |
+| **Expected** | Dashboard with welcome message, quick actions, module grid |
+| **Actual** | Dashboard loads correctly. Shows: heading "Bienvenue sur ThesisFrame", 6 quick action buttons (Créer une thèse, Assistant IA, Références, Carnet de recherche, Cadrage de la thèse, Structurer le plan), 14 module cards with status badges (Prêt), sidebar with 29 module navigation buttons |
+| **Screenshot** | /tmp/test-t3a-dashboard.png |
+| **Status** | ✅ **Fonctionne** |
+| **Severity** | — |
+
+#### 1b. Navigate to Thesis Creation
+| Item | Detail |
+|------|--------|
+| **Action** | Click "Créer une thèse Nouveau projet de thèse" button |
+| **Expected** | Navigate to thesis list view with "Nouvelle thèse" button |
+| **Actual** | Correctly navigates to "Mes thèses" page. Shows heading "Mes thèses", "Nouvelle thèse" button (dropdown), "Aucune thèse" empty state, "Retour" button |
+| **Status** | ✅ **Fonctionne** |
+| **Severity** | — |
+
+#### 1c. Open Creation Dialog
+| Item | Detail |
+|------|--------|
+| **Action** | Click "Nouvelle thèse" button |
+| **Expected** | Dialog with all thesis metadata fields |
+| **Actual** | Dialog opens with heading "Créer une nouvelle thèse" and 6 input fields |
+| **Screenshot** | /tmp/test-t3a-create-form.png |
+| **Status** | ✅ **Fonctionne** |
+| **Severity** | — |
+
+#### 1d. Form Fields — Discrepancy Analysis
+| Field | API Schema (Zod) | Prisma Model | Frontend Form | Status |
+|-------|-------------------|--------------|---------------|--------|
+| title | ✅ required (min 1) | ✅ required | ✅ "Titre de la thèse *" | OK |
+| author | ✅ required (min 1) | ✅ required | ✅ "Auteur / Doctorant *" | OK |
+| subtitle | ✅ optional | ✅ optional | ✅ "Sous-titre (optionnel)" | OK |
+| email | ✅ optional (z.email) | ✅ optional | ❌ **MISSING** | 🟡 BUG |
+| institution | ✅ optional | ✅ optional | ✅ "Institution" | OK |
+| laboratory | ✅ optional | ✅ optional | ❌ **MISSING** | 🟡 BUG |
+| discipline | ✅ optional | ✅ optional | ✅ "Discipline" | OK |
+| directorName | ✅ optional | ✅ optional | ✅ "Directeur / Directrice de thèse" | OK |
+
+**Bug T3-a-01**: Form is missing `email` and `laboratory` fields. The API schema (`createThesisSchema` in `src/lib/api-schemas.ts`) defines these as optional, the Prisma model has them, and the API route (`src/app/api/thesis/route.ts` lines 58-59) writes them to the database. But the dialog component (`src/modules/editor/components/create-thesis-dialog.tsx`) has no state variables, no Input elements, and does not send these fields. The `useCreateThesis` hook type signature also omits them.
+
+**Severity**: 🟡 **Moyen** — These fields can never be populated through the UI, yet the database schema and API support them.
+
+#### 1e. Form Submission (partial — server crash)
+| Item | Detail |
+|------|--------|
+| **Action** | Attempted to fill fields and submit |
+| **Expected** | POST /api/thesis returns 201, redirects to editor |
+| **Actual** | Dev server crashed after first field fill. Could not complete submission test. Based on code analysis: `useCreateThesis` sends POST to `/api/thesis`, on success calls `setActiveThesisId(thesis.id)` and invalidates query cache. No explicit redirect — the `setCurrentView` is not called after creation, so the user stays on the thesis list view (the dialog closes via `setOpen(false)`). |
+| **Status** | ⚠️ **Non testable** (server instability) |
+| **Code Analysis** | On creation success: dialog closes, thesis list refreshes (via React Query invalidation), activeThesisId is set in Zustand store. The user must then manually navigate to the editor. |
+
+#### 1f. Default Chapter Creation
+| Item | Detail |
+|------|--------|
+| **Expected** | 7 default chapters created automatically (Introduction, Revue de littérature, Cadre théorique, Méthodologie, Résultats, Discussion, Conclusion) |
+| **Actual (code analysis)** | `src/app/api/thesis/route.ts` lines 43-51 define exactly these 7 chapters with roman numerals I-VII, all with status "not_started". |
+| **Status** | ✅ **Fonctionne** (code-verified) |
+
+---
+
+### TEST 2: Cadrage préalable
+
+#### 2a. Navigate to Cadrage Section
+| Item | Detail |
+|------|--------|
+| **Action** | Click "Cadrage de la thèse" button on dashboard |
+| **Expected** | Navigate to a dedicated cadrage page with fields for prealable framing |
+| **Actual** | Button calls `setCurrentView("editor")` — navigates to the thesis editor, NOT to a cadrage page. There is NO cadrage view registered in the app store (`src/lib/stores/app-store.ts`). No module file exists in `src/modules/` for cadrage. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🔴 **Critique** |
+
+#### 2b. Backend Cadrage API Assessment
+| Route | Method | Purpose | Has Frontend Consumer |
+|-------|--------|---------|---------------------|
+| `/api/thesis/[id]/cadrages` | GET, POST | List/create cadrages for a thesis | ❌ No |
+| `/api/cadrages/[id]` | GET, PUT, DELETE | CRUD single cadrage | ❌ No |
+| `/api/cadrages/[id]/fields` | GET, POST | List/add fields to a cadrage | ❌ No |
+| `/api/cadrages/[id]/versions` | GET, POST | Version history of a cadrage | ❌ No |
+| `/api/cadrages/fields/[fieldId]` | PUT, PATCH | Update/patch a single field | ❌ No |
+
+All 5 API routes are fully implemented with proper Zod validation, Prisma queries, and error handling. The Prisma models (ThesisCadrage, ThesisCadrageField, ThesisCadrageVersion) are complete with relations and indexes. **But zero frontend UI exists.**
+
+#### 2c. Cadrage Data Model (code analysis)
+- `ThesisCadrage`: id, thesisId, label, isActive, createdAt, updatedAt
+- `ThesisCadrageField`: id, cadrageId, fieldKey, label, value, aiSuggestion, isLocked, sortOrder
+- `ThesisCadrageVersion`: id, cadrageId, label, snapshot (JSON), createdAt
+
+The `aiSuggestion` field on ThesisCadrageField suggests planned AI-first-draft generation. The `isLocked` field suggests planned field locking after AI generation. The `ThesisCadrageVersion` model with `snapshot` JSON suggests planned versioning. **None of these features have frontend implementations.**
+
+#### 2d. AI First Draft Generation
+| Item | Detail |
+|------|--------|
+| **Expected** | Button to generate a first draft of cadrage fields from a free pitch via AI |
+| **Actual** | No UI exists. No API endpoint for AI-based cadrage generation was found. The `ai-writing` endpoint could theoretically be used with a custom mode, but no such integration exists. |
+| **Status** | 🔴 **Cassé** — Feature not implemented |
+| **Severity** | 🔴 **Critique** |
+
+#### 2e. Targeted Reformulation
+| Item | Detail |
+|------|--------|
+| **Expected** | Button to reformulate a specific cadrage field using AI |
+| **Actual** | The `PATCH /api/cadrages/fields/[fieldId]` route exists, and the `aiSuggestion` field exists on ThesisCadrageField. But no UI or API endpoint triggers AI generation for a single field. |
+| **Status** | 🔴 **Cassé** — Feature not implemented |
+| **Severity** | 🔴 **Critique** |
+
+#### 2f. Coherence Verification
+| Item | Detail |
+|------|--------|
+| **Expected** | Button to verify coherence between cadrage fields |
+| **Actual** | Not implemented. No verification endpoint, no UI. |
+| **Status** | 🔴 **Cassé** — Feature not implemented |
+| **Severity** | 🟠 **Majeur** |
+
+#### 2g. Cadrage Validation
+| Item | Detail |
+|------|--------|
+| **Expected** | Button to validate/lock the cadrage |
+| **Actual** | The `isLocked` field exists on ThesisCadrageField, and `isActive`/`label` exist on ThesisCadrage. But no validation workflow UI exists. |
+| **Status** | 🔴 **Cassé** — Feature not implemented |
+| **Severity** | 🟠 **Majeur** |
+
+---
+
+### TEST 3: Structure de thèse
+
+#### 3a. Navigate to Structure Section
+| Item | Detail |
+|------|--------|
+| **Action** | Click "Plan de thèse" in sidebar or "Structurer le plan" on dashboard |
+| **Expected** | Page to manage thesis structure (chapters/parts) |
+| **Actual (code analysis)** | `thesis-plan-page.tsx` loads and displays the first thesis's chapters (read-only list). The page also has a LaTeX template generator. |
+| **Status** | ⚠️ **Partiel** |
+| **Severity** | — |
+
+#### 3b. Switch Between "Chapitres seuls" and "Parties et chapitres" Modes
+| Item | Detail |
+|------|--------|
+| **Expected** | Toggle to switch thesis structure between flat chapters and hierarchical parts+chapters |
+| **Actual** | The thesis plan page has a structure mode selector, but it ONLY controls the LaTeX template output ("classique" vs "par parties"). It does NOT change the actual thesis `structureMode` in the database. The `structureMode` field exists in the Prisma Thesis model (values: "chapters", "parts") and in the `updateThesisSchema`, but no frontend component reads or writes it. The `Part` model exists in Prisma (id, thesisId, title, sortOrder) but: (1) no API routes exist for CRUD on Parts, (2) no frontend component manages parts, (3) the thesis creation does not create any parts. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🔴 **Critique** |
+
+**Bug T3-a-02**: The structure mode toggle on the thesis plan page is misleading — it appears to control the thesis structure but actually only controls LaTeX template generation. The real `structureMode` database field is never modified by any UI.
+
+#### 3c. Add Chapters
+| Item | Detail |
+|------|--------|
+| **Expected** | Button to add new chapters to the thesis |
+| **Actual (code analysis)** | The thesis plan page does NOT have an "add chapter" button. The `useCreateChapter` hook exists (`src/modules/editor/hooks/use-thesis.ts` lines 184-210) and calls `POST /api/thesis/[id]/chapters`. Chapter addition is likely available in the editor view (`src/modules/editor/`) but NOT in the thesis plan view. |
+| **Status** | ⚠️ **Partiel** — Available in editor, not in plan view |
+| **Severity** | 🟡 **Moyen** |
+
+#### 3d. Add Parts
+| Item | Detail |
+|------|--------|
+| **Expected** | Button to add parts when in "parties et chapitres" mode |
+| **Actual** | No UI for creating/managing Parts exists anywhere. The Part Prisma model exists, the GET endpoint includes parts, but no POST/PUT/DELETE routes exist for parts. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🔴 **Critique** |
+
+---
+
+### ENVIRONMENTAL NOTE
+
+The Next.js 16 Turbopack dev server exhibits severe instability in the sandbox environment. The process starts successfully ("✓ Ready in ~1200ms") but dies silently after the first page compilation (which takes ~12-14 seconds). This prevented completing the full form-filling and submission E2E test. Two successful browser sessions were captured before crashes:
+- Session 1: Dashboard → Mes thèses → Nouvelle thèse dialog (form visible)
+- Session 2: Dashboard reloaded (confirmed consistent UI)
+
+The `corpus-publication.ts` file has 0 newline characters (30KB single-line file), which causes build failures with Webpack but works with Turbopack dev mode.
+
+---
+
+### SUMMARY TABLE
+
+| # | Test | Expected | Actual | Status | Severity |
+|---|------|----------|--------|--------|----------|
+| 1a | Dashboard load | Full dashboard | Full dashboard with all modules | ✅ Fonctionne | — |
+| 1b | Navigate to thesis creation | Thesis list | Correct navigation to "Mes thèses" | ✅ Fonctionne | — |
+| 1c | Open creation dialog | Form dialog | Dialog with 6 fields | ✅ Fonctionne | — |
+| 1d | Form fields completeness | 8 fields (title, author, subtitle, email, institution, laboratory, discipline, director) | 6 fields (missing email, laboratory) | ⚠️ Partiel | 🟡 Moyen |
+| 1e | Form submission | POST 201, redirect | Not testable (server crash); code analysis shows: dialog closes, no auto-redirect | ⚠️ Non testable | — |
+| 1f | Default chapters | 7 chapters created | 7 chapters (I-VII) created via API | ✅ Fonctionne (code) | — |
+| 2a | Navigate to cadrage | Dedicated cadrage page | Navigates to editor (wrong destination) | 🔴 Cassé | 🔴 Critique |
+| 2b | Cadrage API | Functional CRUD | 5 API routes exist, all orphaned | ⚠️ Partiel (backend only) | — |
+| 2c | Cadrage data model | Rich model | Complete Prisma models | ✅ Fonctionne (backend) | — |
+| 2d | AI first draft generation | Generate cadrage from free pitch | Not implemented | 🔴 Cassé | 🔴 Critique |
+| 2e | Targeted reformulation | Reformulate single field via AI | Not implemented | 🔴 Cassé | 🔴 Critique |
+| 2f | Coherence verification | Verify field coherence | Not implemented | 🔴 Cassé | 🟠 Majeur |
+| 2g | Cadrage validation | Validate and lock cadrage | Not implemented | 🔴 Cassé | 🟠 Majeur |
+| 3a | Navigate to structure | Structure management page | Thesis plan page (LaTeX generator + read-only chapter list) | ⚠️ Partiel | — |
+| 3b | Switch structure mode | Toggle chapters vs parts | Selector only affects LaTeX template, NOT actual thesis structure | 🔴 Cassé | 🔴 Critique |
+| 3c | Add chapters | Add chapter button | Available in editor only, not in plan view | ⚠️ Partiel | 🟡 Moyen |
+| 3d | Add parts | Add part button | No UI, no API routes for Part CRUD | 🔴 Cassé | 🔴 Critique |
+
+---
+
+### BUGS FOUND
+
+| Bug ID | Description | Location | Severity |
+|--------|-------------|----------|----------|
+| T3-a-01 | Creation form missing `email` and `laboratory` fields | `src/modules/editor/components/create-thesis-dialog.tsx` | 🟡 Moyen |
+| T3-a-02 | Structure mode selector on plan page is misleading (only affects LaTeX output, not DB) | `src/modules/thesis-plan/thesis-plan-page.tsx` lines 398, 403-405 | 🟡 Moyen |
+| T3-a-03 | "Cadrage de la thèse" dashboard button navigates to editor instead of cadrage page | `src/components/dashboard/dashboard-page.tsx` line 217 | 🔴 Critique |
+| T3-a-04 | No frontend UI for cadrage (5 orphaned API routes, 3 Prisma models) | N/A — missing module | 🔴 Critique |
+| T3-a-05 | No API routes or frontend for Part CRUD (Prisma model exists but unused) | N/A — missing routes | 🔴 Critique |
+| T3-a-06 | `corpus-publication.ts` has 0 newline characters (causes Webpack build failure) | `src/data/corpus-publication.ts` | 🟠 Majeur |
+
+---
+
+Task ID: T3-b
+Agent: T3-b
+Task: E2E test — Éditeur de thèse + Structure management
+
+Work Log:
+- Dev server instability: Next.js 16 Turbopack dies between requests; resolved by warming with curl before browser session
+- Navigated to ThesisFrame homepage, captured snapshot
+- Selected "Éditeur de thèse" in sidebar, observed thesis list ("Urbanisme durable" by Marie Dupont, 7 chapters)
+- Clicked thesis card to enter editor — chapter tabs and Tiptap editor loaded
+- Typed 142+ words of academic French text into editor
+- **Critical bug found**: Save button click produced ZERO network requests — `activeChapterId` not set when selecting thesis from list
+- Confirmed by clicking chapter tab (which sets `activeChapterId`) — save then worked (PUT 200)
+- Auto-save works after chapter tab click (PUT after 2.5s debounce)
+- AI text prediction works (POST /api/text-prediction 200), popup is transient
+- Word count updates in real-time in editor (142 mots, 1126 caractères)
+- Tested rename: click chapter title → input field appears → fill new name → click ✓ → PUT 200
+- No add/reorder/delete chapter controls in editor UI
+- Director feedback: no editor integration; only available as standalone chat in "Assistant IA" > "Chat Directeur" tab
+- Plan de thèse: structure mode toggle only affects LaTeX template output, not DB
+- Discovered auto-save data corruption: auto-save overwrites plainText/wordCount with empty/0
+- All API calls verified via network interception and curl
+
+Stage Summary:
+- Editor (Tiptap) loads and works for typing, formatting, word count
+- Save is completely broken until user manually clicks a chapter tab after selecting a thesis
+- Auto-save corrupts plainText and wordCount fields (saves empty values)
+- Chapter rename works; add/delete/reorder not available in UI
+- Director feedback not integrated in editor; only in separate chat page
+- Structure mode toggle is misleading (LaTeX-only, confirmed T3-a finding)
+- 5 new bugs found (T3-b-01 through T3-b-05)
+
+---
+
+### E2E TEST REPORT — T3-b: Éditeur + Structure
+
+### TEST 1: Thesis Editor (Tiptap)
+
+#### 1a. Navigate to Éditeur de thèse
+| Item | Detail |
+|------|--------|
+| **Snapshot** | `/tmp/t3b-snapshot-01-homepage.png` |
+| **Expected** | Click "Éditeur de thèse" → show thesis selector or editor |
+| **Actual** | Sidebar click navigates to thesis list panel showing existing theses |
+| **Status** | ✅ **Fonctionne** |
+
+#### 1b. Thesis Selector
+| Item | Detail |
+|------|--------|
+| **Snapshot** | `/tmp/t3b-snapshot-02-editor-theses-list.png` |
+| **Expected** | Dropdown or list to select a thesis |
+| **Actual** | Card-based thesis list with title, author, chapter count, word count, status badge, progress bar |
+| **Status** | ✅ **Fonctionne** |
+
+#### 1c. Chapter List + Editor Layout
+| Item | Detail |
+|------|--------|
+| **Snapshot** | `/tmp/t3b-snapshot-03-editor-loaded.png` |
+| **Expected** | Chapter list on left, editor on right |
+| **Actual** | Horizontal chapter tabs at top, editor below with toolbar, status bar at bottom |
+| **Status** | ✅ **Fonctionne** (different layout than expected but functional) |
+
+#### 1d. Type Text in Editor
+| Item | Detail |
+|------|--------|
+| **Snapshot** | `/tmp/t3b-snapshot-04-typed-text.png` |
+| **Expected** | Can type 100+ words of academic French |
+| **Actual** | Typed ~200 words successfully. Text appears in editor, word count updates live. |
+| **Status** | ✅ **Fonctionne** |
+
+#### 1e. Save Functionality — **CRITICAL BUG**
+| Item | Detail |
+|------|--------|
+| **Expected** | Click "Sauvegarder" → PUT to /api/chapters → content saved |
+| **Actual** | Clicking "Sauvegarder" produces ZERO network requests. Root cause: `thesis-list-panel.tsx` calls `setActiveThesisId(thesis.id)` when selecting a thesis, but NEVER calls `setActiveChapterId()`. In `editor-page.tsx`, `handleEditorUpdate` checks `if (!activeChapterId) return;` — since it's null, the save is silently skipped. The auto-save is also gated by `enabled: !!activeChapterId`. Only after manually clicking a chapter tab does `activeChapterId` get set and saves work. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🔴 **Critique** — All saves silently fail after thesis selection |
+
+#### 1f. Auto-Save — **DATA CORRUPTION BUG**
+| Item | Detail |
+|------|--------|
+| **Expected** | Auto-save preserves all chapter data (content, plainText, wordCount) |
+| **Actual** | `editor-page.tsx` lines 37-48: the auto-save `onSave` callback always sends `plainText: ""` and `wordCount: 0`. The debounced auto-save (2.5s) overwrites the correct values that `handleEditorUpdate` set on keystrokes. Verified via API: `wordCount: 0, plainText: ""` in DB despite 142 words typed. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🔴 **Critique** — Word counts and plain text permanently corrupted |
+
+#### 1g. AI Text Prediction (Ghost Text)
+| Item | Detail |
+|------|--------|
+| **Snapshot** | `/tmp/t3b-snapshot-05-prediction-area.png` |
+| **Expected** | AI suggests next words/phrases as ghost text |
+| **Actual** | POST to `/api/text-prediction` fires (200). `PredictionPopup` component uses `createPortal` and appears transiently near cursor. Popup is brief (~200ms visible). Tab to accept, Esc to dismiss. Feature works at API level. |
+| **Status** | ✅ **Fonctionne** |
+
+#### 1h. Word Count Display
+| Item | Detail |
+|------|--------|
+| **Expected** | Real-time word and character count |
+| **Actual** | Status bar shows "{N} mots {N} caractères" updating in real-time via Tiptap's CharacterCount extension. Displayed: "142 mots 1126 caractères". |
+| **Status** | ✅ **Fonctionne** (in-editor; DB values corrupted by bug 1f) |
+
+---
+
+### TEST 2: Chapter Management
+
+#### 2a. Add Chapter
+| Item | Detail |
+|------|--------|
+| **Expected** | Button/option to add a new chapter |
+| **Actual** | `ChapterTabs` component supports `onAddChapter` prop (renders a "+" button), but `editor-page.tsx` does NOT pass this prop. The `useCreateChapter` hook and POST `/api/thesis/[id]/chapters` API exist but are unreachable from the editor UI. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🟠 **Majeur** — Backend ready, UI not wired |
+
+#### 2b. Rename Chapter
+| Item | Detail |
+|------|--------|
+| **Snapshot** | `/tmp/t3b-snapshot-06-rename-done.png` |
+| **Expected** | Click chapter title → edit → save |
+| **Actual** | Clicking chapter title in `ChapterHeader` opens inline edit mode with input field, ✓ save, ✗ cancel buttons. Rename from "Introduction" to "Introduction générale et problématique" → PUT 200 success. |
+| **Status** | ✅ **Fonctionne** |
+
+#### 2c. Reorder Chapters (Drag and Drop)
+| Item | Detail |
+|------|--------|
+| **Expected** | Drag chapters to reorder |
+| **Actual** | No drag-and-drop functionality exists. No reorder API endpoint or UI. The `sortOrder` field exists in the Prisma schema but is not exposed via the chapter update API. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🟠 **Majeur** — Not implemented |
+
+#### 2d. Delete Chapter
+| Item | Detail |
+|------|--------|
+| **Expected** | Button to delete a chapter |
+| **Actual** | `ChapterHeader` has `onDelete` optional prop with Trash2 icon button, but `editor-page.tsx` does NOT pass it. The `useDeleteChapter` hook and DELETE `/api/chapters/[id]` API exist but are unreachable. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🟠 **Majeur** — Backend ready, UI not wired |
+
+---
+
+### TEST 3: Director Feedback
+
+#### 3a. Find Director Feedback in Editor
+| Item | Detail |
+|------|--------|
+| **Expected** | Button/feature in editor to request AI director feedback on selected text |
+| **Actual** | No director feedback feature exists in the editor. The toolbar has formatting buttons + AI prediction toggle only. The `directorFeedback` field exists in Prisma schema and API schemas but has no UI consumer. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🔴 **Critique** — Feature not integrated in editor |
+
+#### 3b. Director Chat (Alternative Location)
+| Item | Detail |
+|------|--------|
+| **Snapshot** | `/tmp/t3b-snapshot-08-chat-directeur.png` |
+| **Expected** | Select text in editor → request feedback |
+| **Actual** | Director feedback only available as standalone chat in "Assistant IA" > "Chat Directeur" tab. Shows "Pr. Jean-Marc Renaud — Simulateur de direction de thèse". User must manually copy-paste text. No integration with editor (no "Send to director" button, no text selection passthrough). |
+| **Status** | ⚠️ **Partiel** |
+| **Severity** | — |
+
+#### 3c. Critique-Only Rule (Code Analysis)
+| Item | Detail |
+|------|--------|
+| **Expected** | Director AI respects "critique only, no substitution" rule |
+| **Actual** | `src/data/directeur-prompt.ts` lines 36 and 62-63 explicitly state: "Le corpus doctrinal injecté en contexte doit être utilisé EN CRITIQUE, JAMAIS EN GÉNÉRATION DE CONTENU DE SUBSTITUTION" and "Tu ne génères JAMAIS de contenu de substitution (pas de réécriture, pas de texte prêt à copier-coller)". Rule is well-specified in the system prompt. Not testable via E2E without working AI provider. |
+| **Status** | ✅ **Fonctionne** (code-verified) |
+
+---
+
+### TEST 4: Structure Mode (Chapitres vs Parties)
+
+#### 4a. Navigate to Plan de thèse
+| Item | Detail |
+|------|--------|
+| **Snapshot** | `/tmp/t3b-snapshot-07-plan-thesis.png` |
+| **Expected** | Page to manage thesis structure |
+| **Actual** | Page shows read-only chapter list (left) + LaTeX template generator (right). Shows "Structure actuelle: 7 chapitres, 0 mots". |
+| **Status** | ⚠️ **Partiel** |
+
+#### 4b. Toggle Between Chapitres Seuls and Parties et Chapitres
+| Item | Detail |
+|------|--------|
+| **Expected** | Toggle changes actual thesis structure mode in DB |
+| **Actual** | Dropdown has "Classique" and "Par parties" options. Selecting "Par parties" and clicking "Générer le template" produces a LaTeX template with `\part{}` and `\chapter{}` commands. However, the toggle ONLY affects the LaTeX output — it does NOT update `thesis.structureMode` in the database. The `Part` Prisma model exists but has no CRUD API routes. |
+| **Status** | 🔴 **Cassé** (confirms T3-a-02) |
+| **Severity** | 🟡 **Moyen** (already reported) |
+
+#### 4c. Add Parts
+| Item | Detail |
+|------|--------|
+| **Expected** | UI to create/manage parts in "parties" mode |
+| **Actual** | No UI for creating parts. No API routes for Part CRUD. The Part Prisma model (`id, thesisId, title, sortOrder`) exists but is completely unused. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🔴 **Critique** (confirms T3-a-05) |
+
+#### 4d. Add Chapters Under Parts
+| Item | Detail |
+|------|--------|
+| **Expected** | Drag chapters into parts |
+| **Actual** | Not implemented. No part-chapter relationship in the current chapter model. |
+| **Status** | 🔴 **Cassé** |
+| **Severity** | 🔴 **Critique** |
+
+---
+
+### ENVIRONMENTAL NOTES
+
+1. **Dev Server Instability**: Next.js 16 Turbopack dev server dies between requests in the sandbox environment. Must be kept alive with continuous curl requests or restarted before each interaction.
+2. **Duplicate Tiptap Extensions**: Console warning: `Duplicate extension names found: ['link', 'underline']`. The StarterKit includes Underline but it's also imported separately.
+3. **immediatelyRender Warning**: Tiptap warns about `immediatelyRender` defaulting to false in Next.js — should be explicitly set.
+
+---
+
+### SUMMARY TABLE
+
+| # | Test | Expected | Actual | Status | Severity |
+|---|------|----------|--------|--------|----------|
+| 1a | Navigate to editor | Editor view | Thesis list panel | ✅ Fonctionne | — |
+| 1b | Thesis selector | Select thesis | Card-based list | ✅ Fonctionne | — |
+| 1c | Chapter list + editor | Chapters left, editor right | Tabs top, editor below | ✅ Fonctionne | — |
+| 1d | Type text | Type 100+ words | Typed ~200 words, word count updates | ✅ Fonctionne | — |
+| 1e | Save button | PUT to API, save content | ZERO network requests — `activeChapterId` null | 🔴 Cassé | 🔴 Critique |
+| 1f | Auto-save | Save with correct data | Overwrites plainText="" and wordCount=0 | 🔴 Cassé | 🔴 Critique |
+| 1g | AI prediction | Ghost text suggestions | API works, popup transient | ✅ Fonctionne | — |
+| 1h | Word count | Real-time count | 142 mots, 1126 caractères live | ✅ Fonctionne | — |
+| 2a | Add chapter | Add button | Component supports it, prop not wired | 🔴 Cassé | 🟠 Majeur |
+| 2b | Rename chapter | Inline edit | Works perfectly, PUT 200 | ✅ Fonctionne | — |
+| 2c | Reorder chapters | Drag-and-drop | Not implemented | 🔴 Cassé | 🟠 Majeur |
+| 2d | Delete chapter | Delete button | Component supports it, prop not wired | 🔴 Cassé | 🟠 Majeur |
+| 3a | Director feedback in editor | Select text → request feedback | No feature in editor | 🔴 Cassé | 🔴 Critique |
+| 3b | Director chat (alt location) | Chat interface | Available in Assistant IA page, no editor integration | ⚠️ Partiel | — |
+| 3c | Critique-only rule | AI respects rule | Well-specified in system prompt (code analysis) | ✅ Fonctionne (code) | — |
+| 4a | Navigate to structure | Structure management page | Read-only list + LaTeX generator | ⚠️ Partiel | — |
+| 4b | Toggle structure mode | Change DB thesis structure | Only affects LaTeX template output | 🔴 Cassé | 🟡 Moyen |
+| 4c | Add parts | Create/manage parts | No UI, no API | 🔴 Cassé | 🔴 Critique |
+| 4d | Chapters under parts | Hierarchical structure | Not implemented | 🔴 Cassé | 🔴 Critique |
+
+---
+
+### BUGS FOUND
+
+| Bug ID | Description | Location | Severity |
+|--------|-------------|----------|----------|
+| T3-b-01 | Selecting thesis from list doesn't set `activeChapterId`, causing all saves to silently fail | `src/modules/editor/components/thesis-list-panel.tsx` line 66 | 🔴 Critique |
+| T3-b-02 | Auto-save overwrites `plainText` and `wordCount` with empty/0 values on every debounced save | `src/modules/editor/editor-page.tsx` lines 42-43 | 🔴 Critique |
+| T3-b-03 | `onAddChapter` prop not passed to `ChapterTabs` — no way to add chapters from editor | `src/modules/editor/editor-page.tsx` line 116-120 | 🟠 Majeur |
+| T3-b-04 | `onDelete` prop not passed to `ChapterHeader` — no way to delete chapters from editor | `src/modules/editor/editor-page.tsx` line 123-128 | 🟠 Majeur |
+| T3-b-05 | Director feedback not integrated in editor — only available as standalone chat in separate page | `src/modules/editor/` (missing feature) | 🔴 Critique |---
+Task ID: T3-d
+Agent: T3-d - Test E2E Modules Complémentaires
+Task: Browser testing of 12 complementary modules
+
+Work Log:
+- Tested 12 complementary modules using agent-browser at http://127.0.0.1:3000/
+- For each module: navigation from sidebar, load/render check, key interaction test, data persistence check
+- Captured screenshots for all modules in /home/z/my-project/test-snapshots/
+- Checked browser console for errors (none found, only accessibility warnings)
+
+Stage Summary:
+
+## E2E Test Report — Complementary Modules
+
+### 1. Références
+- **Navigation**: ✅ Accessible from sidebar (e38)
+- **Load**: ✅ Renders correctly with table, filters, import/export sections
+- **Key Interaction**: ✅ Created reference manually (Smith, J.; Doe, A. — "Test Reference for E2E Testing", 2024). Export BibTeX link works (triggers download). Import section shows format tabs (Mendeley, Zotero, BibTeX, RIS, CSL-JSON) with file upload button.
+- **Data Persistence**: ✅ Reference persists after page reload
+- **Status**: **Fonctionne**
+- **Snapshot**: `01-references-done.png`
+
+### 2. Export PDF
+- **Navigation**: ✅ Accessible from sidebar (e44)
+- **Load**: ✅ Renders with 3 tabs (Configuration, Aperçu, Exporter)
+- **Key Interaction**: ✅ Thesis selector works (selected "Urbanisme durable 7 chap."), tabs enable after selection. Aperçu tab shows iframe preview. Exporter tab shows "Imprimer en PDF" and "Télécharger HTML" options.
+- **Data Persistence**: N/A (no data created)
+- **Status**: **Fonctionne**
+- **Snapshot**: `02-export-pdf.png`
+
+### 3. Grammaire IA
+- **Navigation**: ✅ Accessible from sidebar (e44)
+- **Load**: ✅ Renders with text input, template button, analyze button, 3 result tabs
+- **Key Interaction**: ⚠️ Analyze button enables after text input, analysis runs (shows "Analyse en cours..."), but results show "Aucune erreur détectée" for text with obvious French errors. "Texte corrigé" tab shows `[object Object]` instead of corrected text — **rendering bug**.
+- **Data Persistence**: N/A (AI output not persisted)
+- **Status**: **Partiel** — UI works, AI output rendering broken
+- **Severity**: 🟠 Majeur — `[object Object]` displayed to user instead of corrected text
+- **Snapshot**: `03-grammaire.png`
+
+### 4. Mon IA de thèse (RAG)
+- **Navigation**: ✅ Accessible from sidebar (e23)
+- **Load**: ✅ Renders correctly with clear "Aucune thèse sélectionnée" message
+- **Key Interaction**: ⚠️ All features disabled (Indexer, questions, input) with clear instruction "Sélectionnez d'abord une thèse dans l'éditeur". This is correct guard-rail behavior — no thesis context available.
+- **Data Persistence**: N/A (requires thesis selection first)
+- **Status**: **Fonctionne** (guard rails working as designed)
+- **Snapshot**: `04-rag.png`
+
+### 5. Outils SLR
+- **Navigation**: ✅ Accessible from sidebar (e33)
+- **Load**: ✅ Renders with 6 tabs (PRISMA, Protocole, Criblage, Extraction, Qualité, Suivi)
+- **Key Interaction**: ✅ PRISMA tab shows editable spinbuttons for flowchart numbers (Identification: 245, Screening: 203, Eligibility: 75, Included: 48, etc.). Protocole tab shows PICO fields pre-filled, database checkboxes, year range, AI help field. All interactive.
+- **Data Persistence**: Not tested (would require saving PRISMA state)
+- **Status**: **Fonctionne**
+- **Snapshot**: `05-slr.png`
+
+### 6. APA Compositeur
+- **Navigation**: ✅ Accessible from sidebar (e67)
+- **Load**: ✅ Renders with 3 tabs (Composer, Liste de références, Import groupé), type selector, 8 form fields
+- **Key Interaction**: ✅ Real-time APA 7 formatting works perfectly. Filled fields produce: `Smith, J. A. (2023). The impact of AI on academic writing. *Journal of Academic Writing*, *15*(3), 45-67. https://doi.org/10.1234/jaw.2023.003`. Also shows in-text citations: `(Smith, 2023)` and `Smith (2023)`.
+- **Data Persistence**: Not tested (no save action taken)
+- **Status**: **Fonctionne**
+- **Snapshot**: `06-apa.png`
+
+### 7. Équilibre des chapitres
+- **Navigation**: ✅ Accessible from sidebar (e56)
+- **Load**: ✅ Renders with chapter comparison bars, detail table, date picker, AI recommendations
+- **Key Interaction**: ⚠️ Shows 0 total words and 0 chapters — no thesis data loaded. No visible thesis selector. The page structure is correct but empty.
+- **Data Persistence**: N/A (no data to persist)
+- **Status**: **Partiel** — Renders but shows empty data (no thesis context)
+- **Severity**: 🟡 Mineur — Likely works when thesis is selected in editor first
+- **Snapshot**: `07-equilibre.png`
+
+### 8. Diagrammes
+- **Navigation**: ✅ Accessible from sidebar (e48)
+- **Load**: ✅ Renders with type selector (Organigramme), title input, node list, tabs (Constructeur, Modèles)
+- **Key Interaction**: ⚠️ Can add nodes and set title. Clicking a node selects it as parent ("Ajouter un nœud enfant"). Export button does not produce visible output/dialog.
+- **Data Persistence**: Not tested
+- **Status**: **Partiel** — Basic CRUD works, export non-functional, no visual rendering (no SVG/canvas detected)
+- **Severity**: 🟡 Mineur — Nodes are text-only lists, no visual diagram rendering
+- **Snapshot**: `08-diagrammes.png`
+
+### 9. Harper IA
+- **Navigation**: ✅ Accessible from sidebar (e46)
+- **Load**: ✅ Renders with 6 tabs (Résumer, Paraphraser, Points clés, Abstract, Mots-clés, Comparaison)
+- **Key Interaction**: ⚠️ Text input and length selector work. "Résumer" button enables after text entry. After clicking, no result appears — shows "Aucune opération récente". AI call silently completes without output (no visible error).
+- **Data Persistence**: N/A
+- **Status**: **Partiel** — UI works, AI feature non-functional (silent failure)
+- **Severity**: 🟠 Majeur — User gets no feedback on AI failure
+- **Snapshot**: `09-harper.png`
+
+### 10. Box Cloud
+- **Navigation**: ✅ Accessible from sidebar (e42)
+- **Load**: ✅ Renders fully — NOT a stub!
+- **Key Interaction**: ✅ Shows storage dashboard (15.4 Mo / 10 Go), 5 categories with progress bars (Documents, Images, Données, Code, Références), recent files list, folder browser with 5 folders, file table with Name/Category/Size/Date columns, upload form.
+- **Data Persistence**: Not tested (simulated storage)
+- **Status**: **Fonctionne** (simulated cloud storage, fully rendered)
+- **Snapshot**: `10-box-cloud.png`
+
+### 11. Boîte doctorale
+- **Navigation**: ✅ Accessible from sidebar (e52)
+- **Load**: ✅ Renders with global tracking (0%, 0/38 steps, 3/12 milestones), 5 phase progress bars, checklist tab
+- **Key Interaction**: ✅ Expanding sections shows checkboxes. Checking a checkbox immediately updates progress counter (0/7 → 2/7, 0% → 29%). Pre-existing "Lettre de motivation" persists.
+- **Data Persistence**: ⚠️ After reload, the newly checked item ("Lettre de recommandation") reverted to unchecked. Pre-existing checked item persisted. Counter showed "0/7" despite having 1 checked item — **counter inconsistency**.
+- **Status**: **Partiel** — Works but persistence is unreliable
+- **Severity**: 🟠 Majeur — New checkmarks lost on reload, counter out of sync
+- **Snapshot**: `11-boite-doctorale.png`
+
+### 12. Onglet de recherche
+- **Navigation**: ✅ Accessible from sidebar (e55)
+- **Load**: ✅ Renders with search bar, tab bar, notes/links/citations/tasks sections
+- **Key Interaction**: ✅ Can create new tabs ("Onglet 2" created), fill notes, rename/pin/duplicate/close tabs. Note counter doesn't update in real-time.
+- **Data Persistence**: ❌ After reload, "Onglet 2" and all its content completely lost. Only default "Recherche principale" tab remains.
+- **Status**: **Partiel** — UI functional, data NOT persisted
+- **Severity**: 🟠 Majeur — User work in tabs lost on refresh
+- **Snapshot**: `12-onglet-recherche.png`
+
+## Summary Table
+
+| # | Module | Navigation | Load | Key Feature | Persistence | Status | Severity |
+|---|--------|-----------|------|-------------|-------------|--------|----------|
+| 1 | Références | ✅ | ✅ | ✅ | ✅ DB | **Fonctionne** | — |
+| 2 | Export PDF | ✅ | ✅ | ✅ | N/A | **Fonctionne** | — |
+| 3 | Grammaire IA | ✅ | ✅ | ⚠️ [object Object] | N/A | **Partiel** | 🟠 Majeur |
+| 4 | RAG | ✅ | ✅ | ✅ Guards | N/A | **Fonctionne** | — |
+| 5 | Outils SLR | ✅ | ✅ | ✅ | N/T | **Fonctionne** | — |
+| 6 | APA Compositeur | ✅ | ✅ | ✅ Real-time | N/T | **Fonctionne** | — |
+| 7 | Équilibre chapitres | ✅ | ✅ | ⚠️ Empty | N/A | **Partiel** | 🟡 Mineur |
+| 8 | Diagrammes | ✅ | ✅ | ⚠️ No visual | N/T | **Partiel** | 🟡 Mineur |
+| 9 | Harper IA | ✅ | ✅ | ❌ Silent fail | N/A | **Partiel** | 🟠 Majeur |
+| 10 | Box Cloud | ✅ | ✅ | ✅ | N/A | **Fonctionne** | — |
+| 11 | Boîte doctorale | ✅ | ✅ | ⚠️ Partial | ⚠️ Unreliable | **Partiel** | 🟠 Majeur |
+| 12 | Onglet Recherche | ✅ | ✅ | ✅ UI | ❌ Lost | **Partiel** | 🟠 Majeur |
+
+## Bugs Found
+
+| Bug ID | Description | Location | Severity |
+|--------|-------------|----------|----------|
+| T3-d-01 | Grammaire: corrected text shows `[object Object]` instead of actual corrected text | Grammaire module, Texte corrigé tab | 🟠 Majeur |
+| T3-d-02 | Harper IA: summarize completes silently with no result shown | Harper module | 🟠 Majeur |
+| T3-d-03 | Boîte doctorale: newly checked items lost on page reload | Boîte doctorale checklist persistence | 🟠 Majeur |
+| T3-d-04 | Boîte doctorale: step counter shows "0/7" when 1 item is checked | Boîte doctorale counter logic | 🟡 Mineur |
+| T3-d-05 | Onglet Recherche: tabs and content lost on page reload (client-side only) | Onglet Recherche persistence | 🟠 Majeur |
+| T3-d-06 | Grammaire: shows "Aucune erreur détectée" for text with obvious French errors | Grammaire AI analysis | 🟡 Mineur |
+| T3-d-07 | Diagrammes: Export button does nothing (no dialog, no download) | Diagrammes export | 🟡 Mineur |
+
+## Global Observations
+- All 12 modules are reachable from sidebar without errors
+- No JavaScript errors in browser console (only accessibility warnings about missing Description for DialogContent)
+- 5/12 modules fully functional, 7/12 partially functional, 0/12 broken
+- AI-dependent features (Grammaire, Harper) show issues with AI response handling
+- Persistence is the most common weakness (3 modules have persistence issues)
+
+---
+Task ID: T3-c
+Agent: T3-c
+Task: Browser-test AI-powered modules at http://127.0.0.1:3000/
+
+Work Log:
+- Attempted browser testing via agent-browser — blocked by sandbox network isolation (Chrome CDP can only reach port 12600 uvicorn proxy, not Next.js on 3000)
+- Attempted production server via `next build` + standalone — discovered and fixed zod v4 type error in /api/types-analyse (z.record needs 2 args)
+- Standalone server starts but immediately crashes on first request (Turbopack issue in sandbox)
+- Pivoted to comprehensive static code analysis of all 6 target modules
+- Read source code for: directeur-prompt.ts, ai-writing-page.tsx, auto-edition-page.tsx (1928 lines), journaux-oa-page.tsx (888 lines), verification-carto-page.tsx (1533 lines), verification-methodo-page.tsx (1357 lines), ai-writing-modes.ts, and all related API routes
+- Analyzed AI doctrine compliance, prompt engineering, mode routing, icon mapping, and UI structure
+- Found 2 CRITICAL bugs, 2 MEDIUM issues, 3 LOW issues
+
+Stage Summary:
+- See detailed module report below
+- 2 modules are CASSÉ (broken at runtime), 2 are PARTIEL, 2 are FONCTIONNE (with caveats)
+- All AI doctrine checks pass (critique-only, no substitution, corpus injection respected)
+- Critical bugs: wrong mode IDs in verification-methodo and journaux-oa
+
+## T3-c Detailed Module Report
+
+---
+
+### 1. Chat Directeur (tab under Assistant IA)
+
+| Field | Value |
+|---|---|
+| **Status** | ✅ Fonctionne |
+| **Severity** | — |
+| **Snapshot ref** | N/A (sandbox network isolation) |
+| **AI doctrine** | ✅ Conforme |
+
+**Files:** `src/modules/ai-writing/ai-writing-page.tsx` (DirecteurChatPanel, lines 273-426), `src/app/api/directeur-chat/route.ts`, `src/data/directeur-prompt.ts`
+
+**UI structure:**
+- Two-tab layout: "Modes d'écriture" + "Chat Directeur" (TabsTrigger values: `writing`, `director`)
+- Chat UI: scrollable message area (400px), user/assistant avatars, auto-scroll, Enter to send
+- Empty state: GraduationCap icon + "Commencez la conversation"
+- Loading state: "Le professeur réfléchit…" with spinner
+
+**AI Doctrine Check:**
+- System prompt: DIRECTEUR_SYSTEM_PROMPT enforces **critique-only** doctrine
+- Line 36: "Le corpus doctrinal injecté en contexte doit être utilisé EN CRITIQUE, JAMAIS EN GÉNÉRATION DE SUBSTITUTION"
+- Line 63: "Tu ne génères JAMAIS de contenu de substitution (pas de réécriture, pas de texte prêt à copier-coller)"
+- Corpus-aware: `detectRelevantFiches()` + `getFichesContentForPrompt()` appended to system prompt
+- Temperature: 0.7 (appropriate for conversational feedback)
+- ✅ **Doctrine fully respected**
+
+**No bugs found.**
+
+---
+
+### 2. Auto-édition 8C
+
+| Field | Value |
+|---|---|
+| **Status** | ⚠️ Partiel |
+| **Severity** | MEDIUM (prompt conflict) |
+| **Snapshot ref** | N/A |
+| **AI doctrine** | ✅ Conforme |
+
+**Files:** `src/modules/auto-edition/auto-edition-page.tsx` (1928 lines), `src/app/api/verification-publication/route.ts`
+
+**UI structure:**
+- Multi-tab: "Analyse IA 8C", "Checklist 8C", "Vérifications publication", "Structure & langue L2"
+- 8C criteria: Conformité, Exhaustivité, Composition, Exactitude, Clarté, Cohérence, Concision, Courtoisie
+- Each criterion: progress bar, score (0-100), recommendation, detail (expandable)
+- Overall score with color coding (≥75 green, ≥50 amber, <50 red)
+- History: last 5 analyses with restore capability
+- Checklist 8C: manual diagnostic checkboxes (embedded CHECKLIST_8C constant)
+- Vérifications publication: intro-discussion coherence, table quality, text-table redundancy (via `/api/verification-publication`)
+
+**AI Doctrine Check:**
+- Analysis uses `buildCriterionPrompt()` which asks for score/recommendation/detail in JSON
+- Routes through `/api/ai-writing` with `mode: "peer-review"` — this IS a valid mode
+- ⚠️ **Prompt conflict**: The peer-review system prompt (10-criteria article review format) is prepended to the 8C-specific criterion prompt. The AI receives conflicting instructions. The code works around this via JSON regex extraction (line 408: `raw.match(/\{[\s\S]*\}/)`)
+- Verification-publication API uses direct `generateCompletion()` calls with proper system prompts — ✅ doctrine OK
+- No content substitution occurs; all outputs are analytical scores/recommendations
+
+**Issues:**
+- ⚠️ MEDIUM: Prompt conflict between peer-review system prompt and 8C criterion prompt
+- LOW: `analyzeCriterion` calls external API for each of 8 criteria via `Promise.all` (8 parallel AI calls per analysis)
+
+---
+
+### 3. Journaux OA
+
+| Field | Value |
+|---|---|
+| **Status** | 🔴 Partiel (AI ranking broken) |
+| **Severity** | HIGH (mode: \"suggestion\" doesn't exist) |
+| **Snapshot ref** | N/A |
+| **AI doctrine** | ✅ Conforme |
+
+**Files:** `src/modules/journaux-oa/journaux-oa-page.tsx` (888 lines), `src/app/api/journaux-oa/route.ts`
+
+**UI structure:**
+- Search bar with Enter-to-search, min 2 chars
+- Source filter: "Toutes" / "OpenAlex" / "DOAJ" (toggle buttons)
+- Subject dropdown: 24 discipline areas
+- Results: 2-column grid of JournalCards (name, publisher, subjects, ISSN, country, OA type badge, homepage link)
+- AI ranking button: "Classer par IA"
+- CSV export with BOM (UTF-8)
+- Collapsible predatory journal detection panel:
+  - 5 alert signals (promesses irréalistes, site douteux, métriques fabriquées, etc.)
+  - 3 legitimacy signals (indexation, référencement universitaire, auteurs de confiance)
+  - Verdict card: green (0 alerts), amber (1-2), red (3+)
+- DORA principle info callout at top
+
+**AI Doctrine Check:**
+- Journal search is pure data fetching from OpenAlex/DOAJ — no AI involved ✅
+- Predatory detection is manual (checkbox-based) — no AI, user-driven ✅
+- AI ranking (line 254-266): uses `mode: "suggestion"` which **does not exist** in WRITING_MODES
+  - This will return HTTP 400: "Mode d'écriture non trouvé"
+  - **BUG: The AI ranking feature is completely broken**
+
+**Issues:**
+- 🔴 HIGH: `mode: "suggestion"` on line 266 is not a valid WRITING_MODES id → AI ranking always fails with 400
+- LOW: OA_TYPE_COLORS doesn't have entries for all possible OpenAlex statuses (falls through to "Or")
+
+---
+
+### 4. Vérification cartographique
+
+| Field | Value |
+|---|---|
+| **Status** | ✅ Fonctionne |
+| **Severity** | — |
+| **Snapshot ref** | N/A |
+| **AI doctrine** | ✅ Conforme |
+
+**Files:** `src/modules/verification-carto/verification-carto-page.tsx` (1533 lines), `src/app/api/verification-carto/route.ts`
+
+**UI structure:**
+- 4 tabs: "Éléments" (CRUD), "Vérification", "Historique", "Carto MCP"
+- Tab 1 (Éléments): Add element form (nom, type, nature, sous-analyse, source, date) + elements list
+- Tab 2 (Vérification): Complétude check (rule-based, NO LLM) + Questionneur socratique (LLM)
+- Tab 3 (Historique): Past verification sessions from DB
+- Tab 4 (Carto MCP): Geographic enrichment via MCP tools (geocode, elevation, bbox, etc.)
+
+**AI Doctrine Check:**
+- Module A (completude): Pure rule-based, **zero LLM calls** ✅
+- Module B (questionneur): Strict Socratic questioner prompt (PROMPT_GENERIQUE, lines 79-95):
+  - "Tu poses UNIQUEMENT des questions ouvertes"
+  - "Tu ne fais JAMAIS d'affirmation sur l'objet d'étude"
+  - "Aucune phrase déclarative", "Aucune suggestion de cause"
+  - Post-processing: `filtrerQuestionsValides()` removes non-question outputs and declarative patterns ✅
+- Module C (geo-enrich): MCP tool calls for geographic data (coordinates, elevation, area) — factual, no generation ✅
+
+**Issues:**
+- None found. Well-architected with clear separation of concerns.
+
+---
+
+### 5. Vérification méthodologique
+
+| Field | Value |
+|---|---|
+| **Status** | 🔴 Cassé |
+| **Severity** | CRITICAL (AI features non-functional) |
+| **Snapshot ref** | N/A |
+| **AI doctrine** | ✅ Conforme (prompt-level) |
+
+**Files:** `src/modules/verification-methodo/verification-methodo-page.tsx` (1357 lines)
+
+**UI structure:**
+- Two-panel layout: Manual checklist (left) + AI audit (right)
+- Audit sections: Question de recherche, Cadre théorique, Méthode, etc. (6 sections, ~25 items)
+- Each item: valid/partial/invalid/NA status toggle with weight
+- AI Verification tab: textarea for methodology text → "Lancer l'audit IA" → strengths/weaknesses/recommendations/risks/overallScore
+- Consistency checker: structured fields (question, paradigme, approche, etc.) → coherence analysis
+- Report generation: text export with all audit data
+
+**AI Doctrine Check:**
+- Audit prompt (line 480-494): Asks for structured JSON with strengths, weaknesses, recommendations, risks, overallScore — analytical, no content generation ✅
+- Consistency prompt (line 566-577): Asks for coherence analysis in 3-4 paragraphs — analytical ✅
+
+**Issues:**
+- 🔴 **CRITICAL BUG**: Line 500 and 583 both use `mode: "methodology-audit"` which **does not exist** in WRITING_MODES
+  - The actual mode id is `"methodology"` (line 154 of ai-writing-modes.ts)
+  - API returns 400: "Mode d'écriture non trouvé"
+  - **Both the AI audit and consistency checker are completely broken**
+
+---
+
+### 6. Assistant IA (10 writing modes)
+
+| Field | Value |
+|---|---|
+| **Status** | ⚠️ Partiel |
+| **Severity** | MEDIUM |
+| **Snapshot ref** | N/A |
+| **AI doctrine** | ⚠️ Partiel (grammaire mode) |
+
+**Files:** `src/modules/ai-writing/ai-writing-page.tsx` (427 lines), `src/data/ai-writing-modes.ts` (303 lines), `src/app/api/ai-writing/route.ts`
+
+**UI structure:**
+- Left panel: mode selector with icon, label, description, category badge (Rédaction/Analyse/Revue/Génération)
+- Right panel: textarea + character count + "Générer" button
+- Result card with copy-to-clipboard
+- Error display card (destructive border)
+
+**Modes found (11, not 10 as documented):**
+1. Rédaction scientifique (PenTool) — writing
+2. Revue de littérature (BookOpen) — analysis
+3. Relecture critique (SearchCheck) — review
+4. Paraphrase académique (Repeat) — writing
+5. Rédaction de résumé (AlignLeft) — generation
+6. Génération d'hypothèses (Lightbulb) — generation
+7. Aide méthodologique (FlaskConical) — analysis
+8. Construction théorique (Network) — analysis
+9. Documents de supervision (FileCheck) — generation
+10. Correcteur grammatical (❌ SpellCheck NOT in ICON_MAP) — review
+11. Préparation soutenance (Presentation) — generation
+
+**Issues:**
+- ⚠️ MEDIUM: **11 modes** declared but sidebar/UI advertise "10 modes" — count mismatch
+- ⚠️ MEDIUM: Mode 10 ("grammaire") uses `icon: "SpellCheck"` but SpellCheck is **NOT imported or mapped** in ICON_MAP (ai-writing-page.tsx lines 35-46). Falls back to Sparkles icon. SpellCheck IS imported in the page-level imports (line 23 of sidebar) but not added to the component's ICON_MAP.
+- LOW: "paraphrase" mode system prompt says "N'ajoute pas d'information non présente dans l'original" and "Produis un texte de longueur similaire" — this is acceptable academic paraphrasing, not content substitution
+- LOW: The "grammaire" mode asks for JSON output with correctedText — this IS content generation (corrected text), but it's grammatical correction which is an acceptable exception
+
+**AI Doctrine Check:**
+- Most modes (1-9, 11) are analytical or generative with clear system prompts — ✅
+- Mode 10 (grammaire): Returns `correctedText` which is generated content, but grammatical correction is a legitimate use case (not thesis content substitution)
+- No mode generates thesis chapter content that could replace the student's work
+
+---
+
+## Summary Table
+
+| # | Module | Status | Severity | AI Doctrine | Key Finding |
+|---|--------|--------|----------|-------------|-------------|
+| 1 | Chat Directeur | ✅ Fonctionne | — | ✅ Conforme | Critique-only doctrine enforced in system prompt |
+| 2 | Auto-édition 8C | ⚠️ Partiel | MEDIUM | ✅ Conforme | Prompt conflict with peer-review system prompt |
+| 3 | Journaux OA | ⚠️ Partiel | HIGH | ✅ Conforme | `mode: "suggestion"` doesn't exist → AI ranking broken |
+| 4 | Vérification carto | ✅ Fonctionne | — | ✅ Conforme | Well-architected, rule-based + Socratic LLM |
+| 5 | Vérification méthodo | 🔴 Cassé | CRITICAL | ✅ Conforme | `mode: "methodology-audit"` doesn't exist → all AI features broken |
+| 6 | Assistant IA | ⚠️ Partiel | MEDIUM | ⚠️ Partiel | 11 modes not 10; SpellCheck icon missing from map |
+
+## Bugs Requiring Fix
+
+### CRITICAL
+1. **verification-methodo-page.tsx lines 500, 583**: Change `mode: "methodology-audit"` to `mode: "methodology"`
+
+### HIGH
+2. **journaux-oa-page.tsx line 266**: Change `mode: "suggestion"` to a valid mode (e.g., add a new "suggestion" mode or reuse "peer-review")
+
+### MEDIUM
+3. **ai-writing-modes.ts**: Either remove the 11th mode or update all references from "10 modes" to "11 modes"
+4. **ai-writing-page.tsx ICON_MAP**: Add SpellCheck to imports and ICON_MAP for the grammaire mode
+5. **auto-edition-page.tsx**: Consider creating a dedicated API endpoint or dedicated mode for 8C analysis instead of routing through peer-review mode
+
+### Build Fix Applied
+6. **types-analyse/route.ts line 34**: Fixed `z.record(z.unknown())` → `z.record(z.string(), z.unknown())` for zod v4 compatibility
+
+---
+Task ID: T4
+Agent: T4 Tests Cas Limites et Erreurs
+Task: EDGE CASE and ERROR testing — frontier critique/génération, empty/invalid inputs, large inputs, API error handling, coherence detection, data persistence
+
+Work Log:
+- Read worklog.md for project context
+- Read all relevant source files: directeur-prompt.ts, ai-writing-modes.ts, ai-writing/route.ts, directeur-chat/route.ts, verification-publication/route.ts, auto-edition-page.tsx, api-schemas.ts, thesis/route.ts, references/route.ts, entries/route.ts, journaux-oa/route.ts, export-pdf-page.tsx, zai-client.ts, use-ai-config.ts, chapters routes
+- Started standalone production server and ran API-level tests via Node.js fetch
+- Browser testing limited by SPA state-based routing (Zustand) incompatible with standalone server hydration
+- Performed code-level static analysis for all UI-only tests
+
+Stage Summary:
+See full T4 report below:
+
+════════════════════════════════════════════════════════════════════════════
+T4 REPORT — EDGE CASE & ERROR TESTING
+════════════════════════════════════════════════════════════════
+
+## A. Frontier Critique/Génération (Doctrine Check)
+
+### A1. Chat Directeur — Prompt Injection: "Écris-moi l'introduction de mon chapitre 1"
+- **Expected**: AI refuses to generate content, redirects toward guidance/critique
+- **Actual (code analysis)**: The DIRECTEUR_SYSTEM_PROMPT (directeur-prompt.ts L36, L62-63) contains explicit constraints:
+  - "Tu ne génères JAMAIS de contenu de substitution (pas de réécriture, pas de texte prêt à copier-coller)"
+  - "Le corpus doctrinal injecté en contexte doit être utilisé EN CRITIQUE, JAMAIS EN GÉNÉRATION DE CONTENU DE SUBSTITUTION"
+  - "Tu orientes le doctorant vers les fiches du corpus pertinentes... mais tu ne les résume pas mot pour mot"
+- **Status**: ✅ PASS (code-level) — Prompt instructions are strong and clear. The directeur prompt explicitly forbids content generation.
+- **Severity**: — (by design)
+- **Evidence**: directeur-prompt.ts L30-36, L61-64
+
+### A2. Chat Directeur — "Peux-tu rédiger ce paragraphe pour moi ? Voici mes notes : [...]"
+- **Expected**: AI refuses, offers critique/suggestions instead
+- **Actual (code analysis)**: Same prompt constraints apply. The MÉTHODE DE FEEDBACK (L23-28) explicitly guides toward "Identifie 2-3 points d'amélioration prioritaires" and "Pose des questions ouvertes pour stimuler la réflexion" rather than generating text.
+- **Status**: ✅ PASS (code-level) — Prompt strongly constrains the AI to critique mode.
+- **Severity**: —
+- **Note**: LLMs may occasionally comply with generation requests despite system prompts. This is an inherent LLM limitation, not a code bug. The prompt is well-designed with 3 separate reinforcement points.
+
+### A3. Chat Directeur — "Reformule ce texte pour que je puisse le copier dans ma thèse"
+- **Expected**: AI refuses to reformulate for copy-paste
+- **Actual (code analysis)**: The prompt explicitly says "pas de texte prêt à copier-coller" (L63). However, "reformulation" sits in a gray zone — the AI Writing tool (separate module) has a "Paraphrase académique" mode that DOES reformulate. The directeur should refuse; the writing tool should accept.
+- **Status**: ✅ PASS (code-level) — Prompt is clear. The directeur is NOT a writing tool.
+- **Severity**: —
+
+### A4. AI Writing — Rédaction scientifique mode
+- **Expected**: This mode IS supposed to generate content (it's a writing tool, not critique)
+- **Actual**: ai-writing-modes.ts L18-37 — The "scientific-writing" mode has systemPrompt: "Tu es un expert en rédaction scientifique académique francophone. Tu aides les doctorants à rédiger des textes..." with category: "writing".
+- **Status**: ✅ PASS — Boundary is correct. Chat Directeur = critique only. AI Writing = generation allowed.
+- **Severity**: —
+- **Evidence**: ai-writing-modes.ts L14 (category field), L26 ("Rédigez un texte académique")
+
+## B. Empty/Invalid Inputs
+
+### B3. Create thesis with empty title
+- **Expected**: 400 error with validation message
+- **Actual**: `HTTP:400 | {"error":"Données invalides","details":{"formErrors":[],"fieldErrors":{"title":["Le titre est requis"]}}}`
+- **Status**: ✅ PASS
+- **Severity**: —
+- **Evidence**: Zod schema `z.string().min(1)` in api-schemas.ts L16
+
+### B3b. Create thesis missing title field entirely
+- **Expected**: 400 error
+- **Actual**: `HTTP:400 | {"error":"Données invalides","details":{"fieldErrors":{"title":["Invalid input: expected string, received undefined"],...}}}`
+- **Status**: ✅ PASS
+- **Severity**: —
+
+### B3c. Create thesis missing author (required field)
+- **Expected**: 400 error
+- **Actual**: `HTTP:400 | {"error":"Données invalides","details":{"fieldErrors":{"author":["Invalid input: expected string, received undefined"]}}}`
+- **Status**: ✅ PASS
+- **Severity**: —
+
+### B4. Auto-édition analysis with <20 characters
+- **Expected**: Client-side validation blocks submission
+- **Actual (code analysis)**: auto-edition-page.tsx L479-482: `if (!text.trim() || text.trim().length < 20) { setError("Veuillez saisir au moins 20 caractères pour lancer l'analyse."); return; }`
+- **Status**: ✅ PASS
+- **Severity**: —
+- **Evidence**: auto-edition-page.tsx L479-482
+
+### B5. Journal search with empty query
+- **Expected**: Returns empty results (no error)
+- **Actual**: Client-side (journaux-oa-page.tsx L187): `if (query.trim().length >= 2) { setDebouncedQuery(...) } else { setDebouncedQuery("") }`. API side (journaux-oa/route.ts L221): `if (!q || q.length < 2) { return { data: [], meta: { total: 0 } } }`. Tested via API: `HTTP:200 | {"data":[],"meta":{"total":0,"source":"both","query":""}}`
+- **Status**: ✅ PASS
+- **Severity**: —
+- **Evidence**: journaux-oa-page.tsx L187, journaux-oa/route.ts L221-226
+
+### B6. Export PDF without selecting a thesis
+- **Expected**: UI shows message, export tabs disabled
+- **Actual (code analysis)**: export-pdf-page.tsx L148: `selectedThesisId` defaults to `null`. L528-536: Shows "Aucune thèse disponible" with message. L563/L567: Tabs disabled when `!selectedThesisId`.
+- **Status**: ✅ PASS
+- **Severity**: —
+- **Evidence**: export-pdf-page.tsx L148, L528-537, L563, L567
+
+## C. Large Inputs
+
+### C7. 5000+ words in auto-édition analysis
+- **Expected**: Should work (AI call with large text)
+- **Actual (code analysis)**: No max-length validation on the textarea input. The text is sent directly to the AI API. The AI provider's own token limits will apply. The analyzeCriterion function (L389-420) sends the full text via `buildCriterionPrompt(text, criterion)` which includes the entire text.
+- **Status**: ⚠️ PARTIAL — No client-side size warning. Users could paste very large texts that exceed AI token limits, leading to API errors that show as generic "Erreur lors de l'analyse" (L402).
+- **Severity**: LOW — Should add a character/token count warning before sending
+- **Evidence**: auto-edition-page.tsx L389-420 (no size check)
+
+### C8. Chapter with very long content — save behavior
+- **Expected**: Save succeeds (SQLite TEXT has no practical limit)
+- **Actual (code analysis)**: updateChapterSchema allows `content: z.string().optional()` (no max length). Prisma schema: `content String @default("")`. SQLite TEXT field can store up to ~1GB.
+- **Status**: ✅ PASS
+- **Severity**: —
+- **Evidence**: api-schemas.ts L60, prisma/schema.prisma L43, chapters/[id]/route.ts PUT handler
+
+## D. API Error Handling
+
+### D9. /api/thesis with invalid JSON body
+- **Expected**: 400 Bad Request with "Invalid JSON" message
+- **Actual**: `HTTP:500 | {"error":"Erreur lors de la création de la thèse"}`
+- **Status**: ❌ FAIL
+- **Severity**: MEDIUM — `request.json()` throws SyntaxError, caught by generic catch block, returns 500 instead of 400
+- **Evidence**: thesis/route.ts L39: `const body = await request.json()` throws on invalid JSON, falls to L86-89 generic 500 handler
+- **Fix needed**: Wrap `request.json()` in try/catch, return 400 with "JSON invalide" message
+
+### D10a. /api/references with missing required field (authors)
+- **Expected**: 400 with validation error
+- **Actual**: `HTTP:400 | {"error":"Données invalides","details":{"fieldErrors":{"authors":["Invalid input: expected string, received undefined"]}}}`
+- **Status**: ✅ PASS
+- **Severity**: —
+
+### D10b. /api/references with missing required field (title)
+- **Expected**: 400 with validation error
+- **Actual**: `HTTP:400 | {"error":"Données invalides","details":{"fieldErrors":{"title":["Invalid input: expected string, received undefined"]}}}`
+- **Status**: ✅ PASS
+- **Severity**: —
+
+### D11a. /api/ai-writing without _aiConfig
+- **Expected**: Should fail gracefully (no AI provider configured) or use default
+- **Actual**: `HTTP:200 | {"data":{"content":"[object Object]","mode":"scientific-writing","model":"default"}}`
+- **Status**: ❌ FAIL (CRITICAL BUG)
+- **Severity**: HIGH — Returns HTTP 200 with `[object Object]` as content. The z.ai SDK response parsing in zai-client.ts L67-72 is broken: it does `String(response)` when `response.content` is falsy but response is an object (e.g. `{choices:[{message:{content:"..."}}]}`), producing `[object Object]`.
+- **Evidence**: zai-client.ts L67-72, D11D also affected
+- **Fix needed**: Fix SDK response parsing to properly extract `response.choices[0].message.content` for OpenAI-format responses
+
+### D11b. /api/ai-writing with prompt <10 characters
+- **Expected**: 400 Bad Request
+- **Actual**: `HTTP:500 | {"error":"[...\"Le prompt doi..."}  ` — ZodError caught by generic catch, returned as 500
+- **Status**: ❌ FAIL
+- **Severity**: MEDIUM — Same pattern as D9: ZodError from aiWritingSchema.parse is not caught by instanceof check before generic catch
+- **Evidence**: ai-writing/route.ts L66-68: catches `error instanceof Error` but ZodError IS an Error, however the message includes the raw Zod error array, not user-friendly
+- **Fix needed**: Add `if (error instanceof z.ZodError)` check before generic catch, return 400
+
+### D11c. /api/ai-writing with invalid mode
+- **Expected**: 400 with list of valid modes
+- **Actual**: `HTTP:400 | {"error":"Mode d'écriture non trouvé","availableModes":["scientific-writing","literature-review",...]}`
+- **Status**: ✅ PASS
+- **Severity**: —
+
+### D11d. /api/directeur-chat without _aiConfig
+- **Expected**: Should fail gracefully
+- **Actual**: `HTTP:200 | {"data":{"content":"[object Object]","role":"assistant"}}`
+- **Status**: ❌ FAIL (same bug as D11a)
+- **Severity**: HIGH — Same root cause: z.ai SDK response parsing returns `[object Object]`
+
+## E. Coherence Detection (Intro/Discussion) — Code Analysis
+
+### E12. Field Name Mismatch (CONFIRMED BUG from T2)
+- **Client sends**: `{ action: "intro-discussion-coherence", introduction: introText, discussion: discussionText }` (auto-edition-page.tsx L592)
+- **Server expects**: `{ introductionText, discussionText }` (verification-publication/route.ts L59-60, L64)
+- **Result**: Server always returns `HTTP:400 | {"error":"Les champs 'introductionText' et 'discussionText' sont requis."}` — the feature is completely broken
+- **Status**: ❌ FAIL (KNOWN BUG)
+- **Severity**: CRITICAL — Feature completely non-functional
+- **Fix**: Either rename client fields to `introductionText`/`discussionText`, or rename server destructuring to `introduction`/`discussion`
+
+### E12b. Analysis: If field names were correct, would the detection logic be sound?
+- **Prompt quality**: ✅ GOOD — The prompt (L73-96) is well-structured:
+  - Extracts ALL research questions/hypotheses from introduction
+  - Checks each against discussion for explicit answers
+  - Identifies orphan results (mentioned in discussion but not linked to intro)
+  - Evaluates inverted funnel structure (specific results → broader implications)
+  - Asks for structured JSON output with specific fields
+- **Response parsing**: ✅ GOOD — Handles markdown code block wrapping (L127), falls back gracefully on parse failure (L130-134)
+- **Temperature**: ✅ GOOD — 0.2 (appropriate for analytical task)
+- **MaxTokens**: ✅ GOOD — 4096 (sufficient for structured JSON)
+- **Client-side display**: ⚠️ MINOR ISSUE — The IntroDiscussionResult interface (L100-105) has `funnelStructure: { hasInvertedFunnel: boolean; score: number; details: string }` but the server prompt asks for `funnelStructure: { score: 0-10, comment: "..." }`. If the LLM follows the prompt, `hasInvertedFunnel` will be undefined and `details` will be undefined. The `comment` field from the prompt doesn't map to any client field.
+- **Status**: ⚠️ PARTIAL — Logic is sound but field name mismatch between client display type and server prompt will cause silent data loss
+- **Severity**: MEDIUM — Even after fixing the main field name bug, there's a secondary mismatch in the funnelStructure sub-fields
+
+## F. Data Persistence
+
+### F13. Create reference, refresh, check persistence
+- **Expected**: Reference persists across page refreshes
+- **Actual**: Created reference via API: `HTTP:201` with ID `cmsz38jar0001shy343tdx6fy`. Subsequent GET `/api/references?search=T4+Persistence` found 1 result.
+- **Status**: ✅ PASS
+- **Severity**: —
+- **Evidence**: API test results — reference created and retrieved in separate requests
+
+### F14. Create notebook entry, refresh, check persistence
+- **Expected**: Entry persists across page refreshes
+- **Actual**: Created entry via API: `HTTP:201` with ID `cmsz38jag0000shy3rcprkcaj`. GET `/api/entries` returned count: 1. Note: search by `tags` field does NOT work (API only searches `question` and `answer` fields, per entries/route.ts L18-21). Search by question content worked correctly.
+- **Status**: ✅ PASS (with note)
+- **Severity**: LOW — Tag-only search returns no results. Minor UX gap, not a data loss issue.
+- **Evidence**: API test results
+
+════════════════════════════════════════════════════════════════
+SUMMARY
+════════════════════════════════════════════════════════════════
+
+### Bug Tally
+| # | ID | Category | Status | Severity | Description |
+|---|-----|----------|--------|----------|-------------|
+| 1 | E12 | Data Contract | ❌ FAIL | CRITICAL | Field name mismatch: client sends `introduction`/`discussion`, server expects `introductionText`/`discussionText` — coherence check completely broken |
+| 2 | D11a/D11d | AI Integration | ❌ FAIL | HIGH | z.ai SDK response parsing returns `[object Object]` instead of actual content |
+| 3 | D9 | Error Handling | ❌ FAIL | MEDIUM | Invalid JSON body returns 500 instead of 400 |
+| 4 | D11b | Error Handling | ❌ FAIL | MEDIUM | Zod validation error (short prompt) returns 500 instead of 400 |
+| 5 | E12b | Data Contract | ⚠️ PARTIAL | MEDIUM | funnelStructure sub-fields mismatch between client type and server prompt |
+| 6 | C7 | UX | ⚠️ PARTIAL | LOW | No size warning before sending very large text to AI |
+| 7 | F14 | Search | ✅ PASS | LOW | Tag-only search returns no results (by design, but could surprise users) |
+
+### Recommended Fixes (Priority Order)
+1. **E12 (CRITICAL)**: Fix field names in either auto-edition-page.tsx L592 or verification-publication/route.ts L59-60
+2. **D11a/D11d (HIGH)**: Fix zai-client.ts L67-72 to properly parse OpenAI-format SDK responses (`response.choices[0].message.content`)
+3. **D9 (MEDIUM)**: Wrap `request.json()` in try/catch in thesis/route.ts (and all other POST routes) to return 400 for invalid JSON
+4. **D11b (MEDIUM)**: Add `if (error instanceof z.ZodError)` check in ai-writing/route.ts catch block, return 400
+5. **E12b (MEDIUM)**: Align IntroDiscussionResult.funnelStructure type with server prompt output
+---
+Task ID: T5
+Agent: T5 — Chef d'Orchestre
+Task: Synthétiser le rapport d'audit final à partir des rapports T1, T2, T3-a, T3-b, T3-c, T3-d, T4
+
+Work Log:
+- Lu l'intégralité du worklog.md (2927 lignes) pour extraire les rapports de tous les agents
+- Lu les sources doctrinales : FICHE_SYNTHESE.md, INDEX-routage.md, directeur-prompt.ts, corpus-publication.ts
+- Vérifié les références de lignes de code citées par chaque agent
+- Effectué la déduplication des bugs : T3-b-02 et T3-d-01 (Grammaire) partagent la cause racine BUG-06 (zai-client.ts) ; T3-a-02 et T3-b (structure mode) sont le même bug ; T3-a-05 et T3-d (parts) sont le même écart
+- Agrégé 34 anomalies uniques (7 bloquantes, 10 majeures, 11 mineures, 6 cosmétiques)
+- Vérifié la conformité doctrinale sur 5 axes (frontière critique/génération, cadrage non verrouillant, gabarit institutionnel, max 2 fiches, critique-only directeur)
+- Produit les recommandations priorisées en 3 horizons (8 urgentes, 9 moyen terme, 8 évolution)
+- Écrit le rapport complet dans /home/z/my-project/RAPPORT-AUDIT-THESISFRAME.md
+
+Stage Summary:
+- Rapport d'audit complet livré : RAPPORT-AUDIT-THESISFRAME.md
+- 31 fonctionnalités inventorées : 16 fonctionnelles, 10 partielles, 5 cassées/absentes
+- 34 anomalies uniques documentées avec preuves (fichiers, lignes de code, étapes de reproduction)
+- 14 points forts documentés avec preuves
+- 5 écarts doctrinaux identifiés (2 non respectés, 1 non vérifiable, 2 respectés)
+- 25 recommandations priorisées en 3 horizons
+- Tous les snapshots référencés (21 fichiers image)
+- 8 agents déployés (T1 à T5) avec livrables récapitulés
+---

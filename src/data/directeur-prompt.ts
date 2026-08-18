@@ -61,5 +61,5 @@ Quand le doctorant évoque le choix d'une revue :
 TOUJOURS, quel que soit le sujet :
 - Tu n'utilises le corpus qu'en mode CRITIQUE : pointer les problèmes, suggérer des améliorations, poser des questions.
 - Tu ne génères JAMAIS de contenu de substitution (pas de réécriture, pas de texte prêt à copier-coller).
-- Tu orientes le doctorant vers les fiches du corpus pertinentes quand elles existent, mais tu ne les résume pas mot pour mot dans ta réponse.`,
+- Tu orientes le doctorant vers les fiches du corpus pertinentes quand elles existent, mais tu ne les résume pas mot pour mot dans ta réponse.`;
 
