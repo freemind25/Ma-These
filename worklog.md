@@ -282,3 +282,283 @@ Stage Summary:
 - Module B: LLM-powered socratic questioner with strict guardrails (no declarative sentences)
 - Referential: analyse_urbaine with BENYOUCEF/PANERAI methodology (cadrage, anatomie, physiologie, transversales)
 - Generalized architecture: adding a new discipline = adding one row in TypeAnalyseMethodologique
+
+---
+Task ID: 2
+Agent: fullstack-dev
+Task: Fix auto-edition module with correct 8C criteria, interactive checklists, and scientific article checklist
+
+Work Log:
+- Analyzed existing auto-edition-page.tsx: had 8 WRONG criteria (Clarté, Cohérence, Concision, Correction, Complétude, Crédibilité, Cohésion, Contextualisation)
+- Read fiche 05 (auto-edition-8c) from corpus-publication.ts to extract correct 8C definitions, diagnostic questions, and scientific checklist
+- Replaced all 8 criteria with correct Gastel & Day 8C:
+  1. Conformité (Shield) — compliance with templates/terminology conventions
+  2. Exhaustivité (Layers) — completeness of expected elements
+  3. Composition (Workflow) — appropriate overall structure
+  4. Exactitude (CheckCircle) — correctness in text, tables, figures, references
+  5. Clarté (Eye) — ambiguous terms defined, abbreviations explained
+  6. Cohérence (Link) — consistent numbers across text/tables, stable terminology
+  7. Concision (Minimize2) — no redundancies or tangential content
+  8. Courtoisie (Heart) — neutral tone toward prior work, inclusive language
+- Restructured component with 3 Tabs (shadcn/ui Tabs):
+  - Tab 1 "Analyse IA": Kept existing AI scoring with parallel analysis via /api/ai-writing (mode: peer-review), 8 criteria cards, progress, accordion report, history
+  - Tab 2 "Checklist 8C": Interactive manual diagnostic checklist — each C has diagnostic question as header + 2-4 sub-item checkboxes, progress bar, reading method guidance card at top
+  - Tab 3 "Checklist article": 7-item scientific article specialized checklist with numbered items, checkboxes, progress bar, completion message
+- Added "Valeur ajoutée unique" rose-colored badge on Courtoisie in both AI analysis grid/cards and checklist 8C, since it's not covered by standard grammar checkers
+- Added Info card at top of Tab 2: "Vérifier les 8C en passes successives. La dernière passe doit être linéaire, du début à la fin."
+- Embedded diagnostic questions from fiche 05 directly in CHECKLIST_8C constant (avoided importing corpus-publication.ts due to single-line file causing TypeScript module resolution issues)
+- Fixed Unicode box-drawing character (═) in JSX comments causing TS1005 parse errors — removed offending comment lines
+- Used existing shadcn/ui components: Card, Tabs, TabsList, TabsTrigger, TabsContent, Checkbox, Badge, Progress, Accordion, Separator
+- Used Lucide icons: Eye, Link, Minimize2, CheckCircle, Layers, Shield, Workflow, Heart, Sparkles, FileText, Info, ClipboardCheck, BookOpenCheck, Star
+- Lint: 0 errors, 9 pre-existing warnings (all pre-existing, none new)
+- TypeScript: 0 new errors (1 pre-existing in types-analyse/route.ts)
+
+Stage Summary:
+- Rewrote auto-edition-page.tsx: 3 tabs, correct 8C criteria (Gastel & Day), interactive checklists
+- Tab 1 (Analyse IA): Parallel AI scoring of 8 correct criteria with progress, grid, accordion, history
+- Tab 2 (Checklist 8C): Manual diagnostic tool with 8 groups, 26 sub-items, progress bar, reading method guidance
+- Tab 3 (Checklist article): 7-item scientific article specialized checklist with progress
+- Courtoisie highlighted with "Valeur ajoutée unique" badge (rose-colored) in both AI and checklist tabs
+- Diagnostic questions sourced from fiche 05 (auto-edition-8c) questionsDiagnostics, embedded in component
+
+---
+Task ID: 3
+Agent: Main orchestrator
+Task: Enrich directeur-chat system with corpus-aware contextual fiche injection
+
+Work Log:
+- Read existing directeur-chat API route (src/app/api/directeur-chat/route.ts) — simple POST with system prompt, thesis context, conversation history, AI completion
+- Read directeur-prompt.ts — 5 sections (personality, role, feedback method, constraints)
+- Read corpus-publication.ts — 6 fiches with exported functions: detectRelevantFiches(), getFichesContentForPrompt(), getAllFiches(), getFicheById()
+- Enriched DIRECTEUR_SYSTEM_PROMPT in directeur-prompt.ts with:
+  - Doctrine note in CONTRAINTES: "corpus doctrinal injecté en contexte doit être utilisé EN CRITIQUE, JAMAIS EN GÉNÉRATION DE CONTENU DE SUBSTITUTION"
+  - New section "CRITÈRES SUPPLÉMENTAIRES (corpus publication scientifique)" with 4 topic-specific triggers:
+    - Ethics/plagiarism: paraphrase insuffisance, salami science, ethical declarations, auto-plagiat
+    - Results/discussion: intro/discussion coherence, text/table redundancy, orphan results or discussions
+    - Non-native speaker: "fond avant forme" principle, reassurance on content vs language, practical resources
+    - Journal choice: predatory signals, DORA principles, indexing verification (Scopus/WoS/DOAJ)
+  - Always rule: critique only, NEVER generate substitution content, point to fiches without quoting verbatim
+- Modified directeur-chat API route:
+  - Added imports for detectRelevantFiches and getFichesContentForPrompt from @/data/corpus-publication
+  - Extracts latest user message from conversation history (reverse search for role=user)
+  - Calls detectRelevantFiches() on latest user message
+  - If fiches detected, appends getFichesContentForPrompt() output to the system prompt
+  - All existing functionality preserved (thesis context, conversation history, provider config, error handling)
+- Created new API route /api/corpus-publication/route.ts:
+  - GET: Returns all 6 fiches via getAllFiches()
+  - POST { message: string, maxFiches?: number }: Returns detected fiche IDs + their full objects + formatted prompt content
+  - Zod validation on POST body, proper error handling
+- Lint: 0 errors, 9 pre-existing warnings (no new)
+- Dev server: running normally, no compilation errors
+
+Stage Summary:
+- Directeur-chat now corpus-aware: relevant fiches automatically injected into system prompt based on user message content
+- System prompt enriched with 4 topic-specific criteria zones (ethics, results/discussion, non-native, journal choice) + always-on critique-only doctrine
+- New API route /api/corpus-publication with GET (all fiches) and POST (signal detection + content retrieval)
+- Zero disruption: all existing directeur-chat functionality preserved unchanged
+
+---
+Task ID: 4
+Agent: Main
+Task: Add predatory journal detection to journaux-oa module
+
+Work Log:
+- Read worklog.md for project context and existing journaux-oa-page.tsx implementation
+- Added DORA principle info callout at top of page (sky/blue styling with Info icon)
+- Added collapsible section "Évaluer la légitimité d'une revue" using shadcn/ui Collapsible component
+- Created ALERT_SIGNALS constant (5 items): unrealistic promises, dubious website, fabricated metrics, no verifiable articles, aggressive solicitation
+- Created LEGITIMACY_SIGNALS constant (3 items): recognized indexing, university catalog, trusted authors
+- Built reactive verdict card with 3 levels: green (0 alerts), amber (1-2 alerts), red (3+ alerts)
+- Legitimacy count displayed in verdict: "X/3 signaux de légitimité confirmés"
+- Warning checkboxes use destructive/red styling (red borders, backgrounds, text)
+- Legitimacy checkboxes use emerald/green styling (green borders, backgrounds, text)
+- Used shadcn/ui components: Card, Checkbox, Collapsible/CollapsibleTrigger/CollapsibleContent, Separator, Button, Badge
+- Used Lucide icons: AlertTriangle (red), ShieldCheck (green), Info (blue), ChevronDown, CheckCircle2, TriangleAlert, XCircle
+- State management: local useState for alertChecks and legitimacyChecks, verdict computed via useMemo
+- All existing functionality preserved: search, filters, AI ranking, CSV export, journal cards, skeleton loader
+- Lint: 0 errors, 9 warnings (all pre-existing)
+
+Stage Summary:
+- NEW FEATURE: Predatory journal detection section in Journaux OA module
+- DORA principle callout at top of page with Info icon and blue styling
+- Collapsible "Évaluer la légitimité d'une revue" section with:
+  - 5 alert signal checkboxes (red/destructive styling) with helper descriptions
+  - 3 legitimacy signal checkboxes (emerald/green styling) with helper descriptions
+  - Reactive verdict card: green/amber/red based on alert count
+  - Legitimacy count indicator
+- Zero disruption: all existing search, filter, rank, export functionality unchanged
+
+---
+Task ID: 5
+Agent: Main
+Task: Create /api/verification-publication route with 4 publication verification actions
+
+Work Log:
+- Read worklog.md for project context and existing patterns
+- Read ai-writing/route.ts to understand generateCompletion usage (messages, temperature, providerConfig)
+- Read zai-client.ts to understand AiMessage, AiCompletionOptions, AiProviderConfig types
+- Created src/app/api/verification-publication/route.ts with 4 actions:
+  - Action 1 "intro-discussion-coherence": LLM-based analysis of intro/discussion coherence
+    - Extracts research questions/hypotheses from introduction
+    - Checks if discussion explicitly answers each question
+    - Identifies orphan results in discussion
+    - Evaluates inverted funnel structure (specific → broader)
+    - Returns: questions[], orphanResults[], funnelStructure{}, overallCoherence (0-10)
+  - Action 2 "table-quality": Rule-based + LLM hybrid
+    - Rule-based: parseTable() handles markdown, tab-separated, CSV formats
+    - Signal 1: Identical column values (>70% threshold)
+    - Signal 2: Binary symbols (+, -, +/-) >70% of data cells
+    - Signal 3: Non-significant results ("non significatif", "ns", "p > 0.05")
+    - LLM: asks if table could be replaced by a sentence without information loss
+    - Returns: signals[], llmVerdict{}, overallScore (0-10)
+  - Action 3 "paragraph-structure": LLM-based paragraph analysis
+    - Splits text into paragraphs by double newline
+    - LLM identifies paragraphs without direct topic sentence opening
+    - LLM detects paragraphs that circle around the point
+    - Returns: paragraphs[] with index, preview (80 chars), hasDirectOpening, issue
+  - Action 4 "text-table-redundancy": LLM-based redundancy check
+    - LLM checks if text redundantly reformulates table/figure content
+    - Distinguishes acceptable interpretation vs pure data repetition
+    - Returns: isRedundant, redundantPhrases[], suggestion
+- All actions: robust JSON parsing (strips markdown code blocks), proper error handling, French error messages
+- Used NextRequest/NextResponse, generateCompletion with providerConfig
+- Lint: 0 errors, 9 pre-existing warnings (no new)
+
+Stage Summary:
+- NEW API: POST /api/verification-publication with 4 verification actions
+- intro-discussion-coherence: full LLM analysis of question/answer coherence between intro and discussion
+- table-quality: 3 rule-based signals (identical columns, binary symbols, non-significant) + LLM justification verdict
+- paragraph-structure: L2 writing support detecting paragraphs needing topic sentence restructure
+- text-table-redundancy: detects redundant data reformulation between text and tables/figures
+- All responses JSON with robust parsing, French error messages, _aiConfig support
+
+---
+Task ID: 6
+Agent: Main
+Task: Add L2 support features to auto-edition module and integrate verification-publication API
+
+Work Log:
+- Read existing auto-edition-page.tsx (3 tabs: Analyse IA, Checklist 8C, Checklist article, 1192 lines)
+- Read worklog.md for project context and verification-publication API (4 actions created in Task 5)
+- Added imports: useToast, Dialog components, Collapsible components, new Lucide icons (ArrowRightLeft, Table2, CopyX, ChevronDown, XCircle, Languages, AlignLeft)
+- Added 5 new TypeScript interfaces: ParagraphResult, IntroDiscussionResult, TableQualitySignal, TableQualityResult, RedundancyResult
+- Added state management for Tab 4 (L2): l2StructureText, l2IsAnalyzing, l2ParagraphResults, l2FondFormeChecks
+- Added state management for Tab 1 verification dialogs: intro/discussion texts + results, table content + results, redundancy texts + results, 3 dialog open states
+- Changed TabsList from grid-cols-3 to grid-cols-4, added Tab 4 trigger with Languages icon
+- Added Tab 4 "Langue seconde & structure" with:
+  - Section A: "Fond avant forme" info card (sky/blue background) with principle explanation, 2 checkboxes, progress indicator
+  - Section B: "Analyse de la structure des paragraphes" — Textarea + "Analyser les paragraphes" button calling POST /api/verification-publication action "paragraph-structure"
+  - Results display: paragraph list with number, preview (80 chars), green checkmark / red X for hasDirectOpening, amber warning for issues
+- Added Tab 1 "Vérifications publication" collapsible section with 3 Dialog-based tools:
+  1. "Cohérence intro/discussion" (ArrowRightLeft icon) — 2 textareas + verify button → shows questions with green/red X, orphan results, funnel structure score
+  2. "Qualité d'un tableau" (Table2 icon) — 1 textarea + analyze button → shows 3 color signals (green/gray/red), LLM verdict
+  3. "Redondance texte/tableau" (CopyX icon) — 2 textareas + verify button → shows verdict + redundant phrases
+- All 3 dialog features use useAiConfig withAiConfig pattern, loading states with Loader2, error handling with toast
+- Fixed JSX parsing error: missing closing `}` in template literal className expression on LLM Verdict div
+- Lint: 0 errors, 9 pre-existing warnings (no new)
+
+Stage Summary:
+- Tab 4 "Langue seconde & structure" added to auto-edition module
+- Section A: "Fond avant forme" principle card with 2 checkboxes + progress (content-first editing philosophy)
+- Section B: AI-powered paragraph structure analysis via /api/verification-publication paragraph-structure action
+- Tab 1 enriched: "Vérifications publication" collapsible with 3 dialog-based verification tools
+- Cohérence intro/discussion: checks question/answer mapping + inverted funnel structure
+- Qualité d'un tableau: 3 rule-based signals + LLM verdict on table value
+- Redondance texte/tableau: detects redundant data reformulation between text and tables/figures
+- Zero disruption: all existing 3 tabs and functionality preserved unchanged---
+Task ID: 1
+Agent: Main
+Task: Créer le corpus de données publication scientifique (6 fiches structurées + orchestration)
+
+Work Log:
+- Créé src/data/corpus-publication.ts avec 6 fiches (ethique, choisir-revue, resultats-discussion, tableaux-figures, auto-edition-8c, langue-seconde)
+- Chaque fiche contient: id, titre, source, signaux (keywords), contenu markdown, questionsDiagnostics, pointsIntegration
+- Implémenté detectRelevantFiches() pour le routage contextuel basé sur les signaux
+- Implémenté getFichesContentForPrompt() pour l'injection dans les prompts système
+- Ajouté CORPUS_ORCHESTRATION_RULES (max 2 fiches, pair complémentaire 03/04, doctrine critique-only)
+
+Stage Summary:
+- Fichier créé: src/data/corpus-publication.ts (30KB)
+- 6 fiches structurées avec détection de signaux
+- Système d'orchestration opérationnel
+
+---
+Task ID: 2
+Agent: fullstack-dev
+Task: Corriger le module auto-édition avec les vrais 8C + checklist interactive + checklist scientifique
+
+Work Log:
+- Remplacé les 8 critères faux (Clarté/Cohérence/Concision/Correction/Complétude/Crédibilité/Cohésion/Contextualisation) par les vrais (Conformité/Exhaustivité/Composition/Exactitude/Clarté/Cohérence/Concision/Courtoisie)
+- Ajouté 3 onglets: Analyse IA, Checklist 8C, Checklist article
+- Tab 2: checklist interactive manuelle avec 26 sous-items, barre de progression, guide de méthode de relecture
+- Tab 3: 7 items de la checklist scientifique spécialisée
+- Badge "Valeur ajoutée unique" sur la Courtoisie
+
+Stage Summary:
+- Fichier modifié: src/modules/auto-edition/auto-edition-page.tsx (1927 lignes)
+- 0 erreurs lint
+
+---
+Task ID: 3
+Agent: fullstack-dev
+Task: Enrichir directeur-chat avec injection contextuelle du corpus + API corpus
+
+Work Log:
+- Modifié src/data/directeur-prompt.ts: ajout section CRITÈRES SUPPLÉMENTAIRES (ethique, resultats/discussion, L2, choix revue)
+- Modifié src/app/api/directeur-chat/route.ts: détection automatique des fiches pertinentes + injection dans le prompt système
+- Créé src/app/api/corpus-publication/route.ts: GET (toutes fiches) + POST (détection + contenu)
+
+Stage Summary:
+- 2 fichiers modifiés, 1 créé
+- Le directeur-chat injecte désormais automatiquement le contenu des fiches pertinentes
+- 0 erreurs lint
+
+---
+Task ID: 4
+Agent: fullstack-dev
+Task: Ajouter la détection de revues prédatrices dans journaux-oa
+
+Work Log:
+- Ajouté un bandeau info DORA en haut du module
+- Ajouté section collapsible « Évaluer la légitimité d'une revue »
+- 5 signaux d'alerte (checkboxes rouges) + 3 signaux de légitimité (checkboxes verts)
+- Verdict réactif: vert (0 alertes), ambre (1-2), rouge (3+)
+
+Stage Summary:
+- Fichier modifié: src/modules/journaux-oa/journaux-oa-page.tsx (887 lignes)
+- 0 erreurs lint
+
+---
+Task ID: 5
+Agent: fullstack-dev
+Task: Créer l'API de vérification publication
+
+Work Log:
+- Créé src/app/api/verification-publication/route.ts avec 4 actions:
+  1. intro-discussion-coherence (LLM): extraction questions, vérification réponses, entonnoir inversé
+  2. table-quality (rules + LLM): 3 signaux rule-based + verdict LLM
+  3. paragraph-structure (LLM): détection paragraphes sans phrase d'ouverture directe
+  4. text-table-redundancy (LLM): détection redondance texte/tableau
+
+Stage Summary:
+- Fichier créé: src/app/api/verification-publication/route.ts (20KB)
+- 0 erreurs lint
+
+---
+Task ID: 6
+Agent: fullstack-dev
+Task: Ajouter le support L2 et les vérifications publication au module auto-édition
+
+Work Log:
+- Ajouté Tab 4 « Langue seconde & structure » avec:
+  - Section « Fond avant forme » (carte info + 2 checkboxes + progression)
+  - Section « Analyse structure paragraphes » (textarea + appel API paragraph-structure + résultats)
+- Ajouté section collapsible « Vérifications publication » dans Tab 1 avec 3 Dialog:
+  1. Cohérence intro/discussion (2 textareas + résultats questions/orphan/entonnoir)
+  2. Qualité d'un tableau (1 textarea + 3 signaux + verdict LLM)
+  3. Redondance texte/tableau (2 textareas + verdict + phrases redondantes)
+
+Stage Summary:
+- Fichier modifié: src/modules/auto-edition/auto-edition-page.tsx
+- 0 erreurs lint, 0 nouvelles warnings
+- Serveur de dév fonctionnel

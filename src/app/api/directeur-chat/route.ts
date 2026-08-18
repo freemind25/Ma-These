@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { DIRECTEUR_SYSTEM_PROMPT } from "@/data/directeur-prompt";
+import { detectRelevantFiches, getFichesContentForPrompt } from "@/data/corpus-publication";
 import { z } from "zod/v4";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
 
 // ═══════════════════════════════════════
 // POST /api/directeur-chat — Chat with AI thesis director
+// Corpus-aware: injects relevant fiches from the publication corpus
 // ═══════════════════════════════════════
 
 const directeurChatSchema = z.object({
@@ -24,9 +26,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validated = directeurChatSchema.parse(body);
 
+    // Extract the latest user message for fiche detection
+    const latestUserMessage = [...validated.messages]
+      .reverse()
+      .find((m) => m.role === "user");
+
+    // Detect relevant fiches from the latest user message
+    const relevantFicheIds = latestUserMessage
+      ? detectRelevantFiches(latestUserMessage.content)
+      : [];
+
+    // Build the system prompt, appending fiche content if any were detected
+    let systemPrompt = DIRECTEUR_SYSTEM_PROMPT;
+    if (relevantFicheIds.length > 0) {
+      const ficheContent = getFichesContentForPrompt(relevantFicheIds);
+      systemPrompt += ficheContent;
+    }
+
     // Build messages array for AI
     const aiMessages: AiMessage[] = [
-      { role: "system", content: DIRECTEUR_SYSTEM_PROMPT },
+      { role: "system", content: systemPrompt },
     ];
 
     // Add thesis context if provided
