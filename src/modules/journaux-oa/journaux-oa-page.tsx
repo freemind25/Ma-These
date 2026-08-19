@@ -263,7 +263,7 @@ Réponds UNIQUEMENT avec un objet JSON valide (pas de markdown) contenant un tab
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           withAiConfig({
-            mode: "suggestion",
+            mode: "peer-review",
             prompt,
           })
         ),

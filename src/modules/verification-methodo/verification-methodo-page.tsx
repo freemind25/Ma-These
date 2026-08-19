@@ -497,7 +497,7 @@ Fournissez votre analyse STRICTEMENT au format JSON suivant (pas de markdown, pa
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(withAiConfig({
-          mode: "methodology-audit",
+          mode: "methodology",
           prompt,
         })),
       });
@@ -580,7 +580,7 @@ Fournissez une analyse en français en 3-4 paragraphes concis. Identifiez les in
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(withAiConfig({
-          mode: "methodology-audit",
+          mode: "methodology",
           prompt,
         })),
       });

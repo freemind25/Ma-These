@@ -100,7 +100,7 @@ interface ParagraphResult {
 interface IntroDiscussionResult {
   questions: { question: string; answered: boolean; evidence: string }[];
   orphanResults: string[];
-  funnelStructure: { hasInvertedFunnel: boolean; score: number; details: string };
+  funnelStructure: { score: number; comment: string };
   overallCoherence: number;
 }
 
@@ -589,7 +589,7 @@ export function AutoEditionPage() {
       const res = await fetch("/api/verification-publication", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(withAiConfig({ action: "intro-discussion-coherence", introduction: introText, discussion: discussionText })),
+        body: JSON.stringify(withAiConfig({ action: "intro-discussion-coherence", introductionText: introText, discussionText: discussionText })),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Erreur réseau" }));
@@ -615,7 +615,7 @@ export function AutoEditionPage() {
       const res = await fetch("/api/verification-publication", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(withAiConfig({ action: "table-quality", tableContent })),
+        body: JSON.stringify(withAiConfig({ action: "table-quality", tableData: tableContent })),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Erreur réseau" }));
@@ -641,7 +641,7 @@ export function AutoEditionPage() {
       const res = await fetch("/api/verification-publication", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(withAiConfig({ action: "text-table-redundancy", text: redundancyText, tableDescription: redundancyTableDesc })),
+        body: JSON.stringify(withAiConfig({ action: "text-table-redundancy", text: redundancyText, tableOrFigureDescription: redundancyTableDesc })),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Erreur réseau" }));
@@ -941,7 +941,7 @@ export function AutoEditionPage() {
                               <div className="flex flex-col gap-2">
                                 <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Structure en entonnoir</h4>
                                 <div className="flex items-center gap-2 rounded-lg border p-3">
-                                  {introDiscussionResult.funnelStructure.hasInvertedFunnel ? (
+                                  {introDiscussionResult.funnelStructure.score >= 5 ? (
                                     <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                                   ) : (
                                     <XCircle className="h-4 w-4 text-red-600 dark:text-red-400 shrink-0" />
@@ -951,7 +951,7 @@ export function AutoEditionPage() {
                                       Score : {introDiscussionResult.funnelStructure.score}/10
                                     </p>
                                     <p className="text-xs text-muted-foreground">
-                                      {introDiscussionResult.funnelStructure.details}
+                                      {introDiscussionResult.funnelStructure.comment}
                                     </p>
                                   </div>
                                 </div>

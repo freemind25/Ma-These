@@ -64,12 +64,32 @@ async function generateWithSDK(
     temperature: options.temperature ?? 0.7,
   });
 
-  const content =
-    typeof response === "string"
-      ? response
-      : (response as Record<string, unknown>).content
-        ? String((response as Record<string, unknown>).content)
-        : String(response);
+  let content = "";
+  if (typeof response === "string") {
+    content = response;
+  } else if (response && typeof response === "object") {
+    const resp = response as Record<string, unknown>;
+    // Direct content field
+    if (typeof resp.content === "string") {
+      content = resp.content;
+    } else if (resp.content != null && typeof resp.content === "object") {
+      // content might be a structured object — stringify it
+      content = JSON.stringify(resp.content);
+    }
+    // OpenAI-compatible format: choices[0].message.content
+    if (!content && Array.isArray(resp.choices)) {
+      const firstChoice = resp.choices[0] as Record<string, unknown> | undefined;
+      const message = firstChoice?.message as Record<string, unknown> | undefined;
+      if (typeof message?.content === "string") {
+        content = message.content;
+      }
+    }
+    // Last resort: if still empty, try JSON stringify for debugging
+    if (!content) {
+      console.warn("[zai-client] Unexpected SDK response format:", typeof response, response);
+      content = "";
+    }
+  }
 
   return {
     content: content.trim(),

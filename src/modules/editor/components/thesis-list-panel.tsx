@@ -18,7 +18,7 @@ import { formatDistanceToNow } from "date-fns";
 export function ThesisListPanel() {
   const { data: theses, isLoading } = useTheses();
   const deleteThesis = useDeleteThesis();
-  const { activeThesisId, setActiveThesisId, setCurrentView } = useAppStore();
+  const { activeThesisId, setActiveThesisId, setActiveChapterId, setCurrentView } = useAppStore();
 
   if (isLoading) {
     return (
@@ -64,6 +64,7 @@ export function ThesisListPanel() {
                 }`}
                 onClick={() => {
                   setActiveThesisId(thesis.id);
+                  setActiveChapterId(thesis.chapters[0]?.id ?? null);
                   setCurrentView("editor");
                 }}
               >

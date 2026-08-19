@@ -214,7 +214,7 @@ export function DashboardPage() {
               number={1}
               label="Cadrage de la thèse"
               done={!!stepsCompleted[0]}
-              onClick={() => setCurrentView("editor")}
+              onClick={() => setCurrentView("cadrage")}
             />
             <StepItem
               number={2}

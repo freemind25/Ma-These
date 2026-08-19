@@ -10,7 +10,7 @@ import { ThesisListPanel } from "@/modules/editor/components/thesis-list-panel";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 
 export function EditorPage() {
   const { activeThesisId, activeChapterId, setActiveChapterId, setCurrentView } =
@@ -18,6 +18,10 @@ export function EditorPage() {
 
   const { data: thesis, isLoading } = useThesis(activeThesisId);
   const updateChapter = useUpdateChapter();
+
+  // Keep latest plainText and wordCount from the editor so auto-save can use them
+  const plainTextRef = useRef("");
+  const wordCountRef = useRef(0);
 
   const activeChapter = thesis?.chapters.find(
     (ch) => ch.id === activeChapterId
@@ -40,8 +44,8 @@ export function EditorPage() {
         await updateChapter.mutateAsync({
           id: data.chapterId,
           content: data.content,
-          plainText: "", // Will be set by editor callback
-          wordCount: 0,
+          plainText: plainTextRef.current,
+          wordCount: wordCountRef.current,
         });
       },
       [updateChapter]
@@ -51,6 +55,9 @@ export function EditorPage() {
   const handleEditorUpdate = useCallback(
     (html: string, plainText: string, wordCount: number) => {
       if (!activeChapterId) return;
+      // Store latest values for auto-save to read
+      plainTextRef.current = plainText;
+      wordCountRef.current = wordCount;
       updateChapter.mutate({
         id: activeChapterId,
         content: html,

@@ -8,6 +8,7 @@ import { persist } from "zustand/middleware";
 export type ViewId =
   | "dashboard"
   | "editor"
+  | "cadrage"
   | "ai-writing"
   | "methodology"
   | "articles"
@@ -57,6 +58,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Éditeur de thèse",
     icon: "FileText",
     description: "Rédigez et structurez vos chapitres",
+  },
+  {
+    id: "cadrage",
+    label: "Cadrage de thèse",
+    icon: "ClipboardList",
+    description: "Cadrage préalable du projet de recherche",
   },
   {
     id: "ai-writing",

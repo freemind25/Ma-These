@@ -2949,3 +2949,226 @@ Stage Summary:
 - Tous les snapshots référencés (21 fichiers image)
 - 8 agents déployés (T1 à T5) avec livrables récapitulés
 ---
+---
+Task ID: LOT1-BUG-01
+Agent: Correction Agent
+Task: Fix BUG-01 - setActiveChapterId not called on thesis selection
+
+Work Log:
+- Read thesis-list-panel.tsx to understand the click handler and data available
+- Confirmed thesis objects include `chapters` array (used for word count, progress, chapter count)
+- Read app-store.ts to confirm `setActiveChapterId` exists in the store
+- Read editor-page.tsx to verify the bug: `handleEditorUpdate` early-returns at line 53 when `activeChapterId` is null
+- Applied two-line fix to thesis-list-panel.tsx:
+  - Line 21: Added `setActiveChapterId` to the destructured values from `useAppStore()`
+  - Line 67: Added `setActiveChapterId(thesis.chapters[0]?.id ?? null)` in the onClick handler, right after `setActiveThesisId(thesis.id)`
+- Verified file correctness by re-reading after edit
+- Ran `bun run lint` — 0 errors, 0 new warnings (9 pre-existing warnings unchanged)
+
+Stage Summary:
+- Fixed BUG-01: selecting a thesis from the list panel now also sets `activeChapterId` to the first chapter of that thesis
+- Data flow verified: thesis list response includes chapters → first chapter ID passed to `setActiveChapterId` → `handleEditorUpdate` in editor-page.tsx no longer early-returns → saves (manual and auto-save) work correctly
+- Used optional chaining (`thesis.chapters[0]?.id ?? null`) to safely handle edge case of a thesis with zero chapters
+---
+Task ID: LOT1-BUG-02
+Agent: Correction Agent
+Task: Fix BUG-02 - Auto-save overwrites plainText and wordCount with empty values
+
+Work Log:
+- Read src/modules/editor/editor-page.tsx to identify the bug
+- Read src/modules/editor/hooks/use-auto-save.ts to understand the debounce mechanism
+- Read src/modules/editor/components/tiptap-editor.tsx to understand how plainText and wordCount are produced
+- Confirmed: onSave callback on line 43-44 hardcoded `plainText: ""` and `wordCount: 0`
+- Confirmed: handleEditorUpdate on line 51-62 correctly receives plainText and wordCount from the TiptapEditor
+- Added `useRef` import alongside existing `useCallback`
+- Added `plainTextRef` and `wordCountRef` refs initialized to `""` and `0` respectively
+- Updated `handleEditorUpdate` to store plainText and wordCount into the refs on every editor update
+- Updated `onSave` callback to read from `plainTextRef.current` and `wordCountRef.current` instead of hardcoded values
+- Verified file correctness by re-reading the entire file
+- Ran `bun run lint` — 0 errors, no new warnings
+
+Stage Summary:
+- Fixed 3 lines in src/modules/editor/editor-page.tsx:
+  - Line 13: Added `useRef` to the React import
+  - Lines 23-24: Added `plainTextRef` and `wordCountRef` refs
+  - Lines 47-48: Changed `plainText: ""` → `plainText: plainTextRef.current` and `wordCount: 0` → `wordCount: wordCountRef.current`
+  - Lines 59-60: Added ref updates in `handleEditorUpdate`
+- The auto-save now uses the real plainText and wordCount extracted from the Tiptap editor, aligning with the manual save logic in handleEditorUpdate
+
+---
+Task ID: LOT1-BUG-04
+Agent: Correction Agent
+Task: Fix invalid mode ID "methodology-audit" in verification-methodo module
+
+Work Log:
+- Read entire file `src/modules/verification-methodo/verification-methodo-page.tsx` (1357 lines)
+- Confirmed two occurrences of `"methodology-audit"` at lines 500 and 583
+- Verified that `"methodology-audit"` does NOT exist in `WRITING_MODES` (src/data/ai-writing-modes.ts)
+- Verified that `"methodology"` DOES exist in `WRITING_MODES` at line 154 (id: "methodology")
+- Replaced both occurrences of `"methodology-audit"` with `"methodology"` using replace_all
+- Post-fix verification: confirmed zero remaining occurrences of `"methodology-audit"`
+- Post-fix verification: confirmed both lines 500 and 583 now read `mode: "methodology"`
+
+Changes Made:
+- Line 500: `mode: "methodology-audit"` → `mode: "methodology"`
+- Line 583: `mode: "methodology-audit"` → `mode: "methodology"`
+
+Stage Summary:
+- The verification methodologique module now sends the correct mode ID `"methodology"` which exists in WRITING_MODES
+- This fixes the 400 "Mode d'écriture non trouvé" error when running AI audit and consistency check in the methodology verification module
+- No other files were touched
+---
+Task ID: LOT1-BUG-17
+Agent: correction-agent
+Task: Reformat src/data/corpus-publication.ts — add proper newlines to fix 30KB single-line Webpack build break
+
+Work Log:
+- Read file and inspected its structure
+- Found the file is already properly formatted with 268 lines and 268 newline characters
+- File size: 29,964 bytes
+- File contains: 1 interface definition, 1 const array export (15+ CorpusFiche objects), 2 helper functions
+- All template literals (backtick strings with markdown content) are properly preserved
+- Verified with `bun run lint` — 0 errors in corpus-publication.ts (only 9 pre-existing warnings in other files)
+- No changes were needed — the bug does not exist in the current file state
+
+Stage Summary:
+- FILE ALREADY FIXED: corpus-publication.ts already has proper newlines and formatting
+- 268 lines, well-indented TypeScript code structure
+- Template literal content (markdown) correctly preserved without code-structure newlines injected
+- Lint passes cleanly for this file
+- No content changes were made (no-op correction)
+
+---
+Task ID: LOT1-BUG-06
+Agent: Correction Agent
+Task: Fix broken content extraction in generateWithSDK (zai-client.ts)
+File: src/lib/ai/zai-client.ts
+Date: 2025-07-25
+
+**Bug**: Lines 67-72 used `String(response)` as fallback when `response.content` was falsy, producing `"[object Object]"`.
+
+**Fix**: Replaced 6-line ternary chain with robust extraction logic:
+1. String response → used directly
+2. Object with `content` string → extracted
+3. Object with `content` as nested object → JSON.stringify
+4. OpenAI-compatible format (`choices[0].message.content`) → extracted
+5. Unrecognized format → console.warn + empty string (no more `[object Object]`)
+
+**Verification**:
+- 6 scenarios traced manually (all pass)
+- `generateWithAPI` function untouched
+- No function signatures or exports changed
+- ESLint: 0 errors, 9 pre-existing warnings (none from this file)
+
+---
+Task ID: LOT1-BUG-11
+Agent: Correction Agent
+Task: Fix invalid mode ID "suggestion" in journaux-oa module
+File: src/modules/journaux-oa/journaux-oa-page.tsx
+Date: 2025-07-25
+
+**Bug**: Line 266 sent `mode: "suggestion"` to `/api/ai-writing`, but this mode ID does not exist in WRITING_MODES, causing a 400 error.
+
+**Fix**: Replaced `mode: "suggestion"` with `mode: "peer-review"` — an existing mode designed for analysis/evaluation tasks, appropriate for ranking/suggesting journals.
+
+**Verification**:
+- Grep confirmed exactly 1 occurrence of `mode: "suggestion"` in the file (line 266)
+- Post-fix grep: 0 occurrences of `"suggestion"`, 1 occurrence of `"peer-review"`
+- No other files touched
+- WRITING_MODES not modified
+
+---
+---
+Task ID: LOT1-BUG-05-16
+Agent: Correction Agent
+Task: Fix field name mismatches between client and server for verification-publication API
+
+Work Log:
+- Read server file `src/app/api/verification-publication/route.ts` to extract the contract:
+  - intro-discussion-coherence expects `{ introductionText, discussionText }` in request body
+  - funnelStructure LLM response format: `{ score: 0-10, comment: "..." }`
+  - table-quality expects `{ tableData }` in request body
+  - text-table-redundancy expects `{ text, tableOrFigureDescription }` in request body
+- Read client file `src/modules/auto-edition/auto-edition-page.tsx` (1928 lines) to identify mismatches
+- Applied 6 edits to the client file (server file untouched):
+  1. Type `IntroDiscussionResult.funnelStructure`: `{ hasInvertedFunnel, score, details }` → `{ score, comment }`
+  2. Fetch body intro-discussion: `introduction: introText, discussion: discussionText` → `introductionText: introText, discussionText: discussionText`
+  3. Fetch body table-quality: `tableContent` → `tableData: tableContent`
+  4. Fetch body text-table-redundancy: `tableDescription: redundancyTableDesc` → `tableOrFigureDescription: redundancyTableDesc`
+  5. Rendering funnelStructure icon: `hasInvertedFunnel` → `score >= 5`
+  6. Rendering funnelStructure text: `.details` → `.comment`
+- Verified all 4 request bodies now match server's expected field names exactly
+- Verified `funnelStructure` type matches server's LLM prompt response format
+- Lint passes with 0 errors (9 pre-existing warnings unchanged)
+
+Stage Summary:
+- BUG-05 fixed: Client now sends `introductionText`/`discussionText` matching server schema
+- BUG-16 fixed: `funnelStructure` type aligned to server's `{ score, comment }` format
+- Additional: `tableContent`→`tableData` and `tableDescription`→`tableOrFigureDescription` fixed
+- Server file was NOT modified (contract preserved)
+---
+Task ID: LOT1-BUG-03a
+Agent: Correction Agent
+Task: Build missing frontend for Cadrage module (BUG-03 corrective fix)
+
+Work Log:
+- Read verification-methodo-page.tsx and auto-edition-page.tsx for convention reference
+- Read all 5 existing API routes: thesis/[id]/cadrages, cadrages/[id], cadrages/[id]/fields, cadrages/fields/[fieldId], cadrages/[id]/versions
+- Read Prisma schema (3 models: ThesisCadrage, ThesisCadrageField, ThesisCadrageVersion)
+- Read ai-writing-modes.ts — no "brainstorming" mode exists; used "methodology" for draft and "peer-review" for coherence
+- Read api-schemas.ts for Zod validation shapes
+- Read useAiConfig hook and existing module patterns (useTheses, useQuery, toast from sonner, withAiConfig)
+- Created src/modules/cadrage/cadrage-page.tsx (new file only, no existing files touched)
+
+Implementation details:
+- Export: `CadragePage` (named export, matches convention)
+- 3 Tabs: "Cadrage" (field editing + AI draft), "Vérification" (coherence check), "Historique" (version history)
+- Thesis selector pattern matches equilibre-chapitres-page.tsx (Button variant toggle)
+- Progress bar: X/12 fields filled with percentage
+- 5-step UX flow implemented:
+  1. Thesis selector (useTheses query, Button toggle)
+  2. "Créer le cadrage" button → POST /api/thesis/[id]/cadrages with 12 default fields
+  3. 12 field cards in 2-col grid: Textarea, lock/unlock, save, AI suggestion badge
+  4. "Générer un premier jet IA" → POST /api/ai-writing (mode: methodology) with JSON parse; suggestions stored via PUT /api/cadrages/fields/[fieldId] (aiSuggestion field)
+  5. "Valider ce cadrage" → POST /api/cadrages/[id]/versions (snapshot) + toast
+- AI suggestions marked with amber badge "Suggestion IA — à valider" and clear accept/ignore buttons
+- Coherence check uses peer-review mode, shows results as remarks (not auto-corrections)
+- Version history with Collapsible items showing field snapshots
+- All UI text in French
+- Uses shadcn/ui: Card, CardHeader, CardContent, CardTitle, CardDescription, Badge, Button, Textarea, Progress, Separator, Skeleton, Tabs, TabsContent, TabsList, TabsTrigger, Collapsible, CollapsibleContent, CollapsibleTrigger
+- Uses: useQuery (TanStack Query), useAiConfig, toast (sonner) — matches existing patterns
+- Local state for unsaved edits (localFieldValues), per-field save, optimistic lock toggle
+- Lint: 0 errors, 0 warnings for cadrage-page.tsx
+
+Stage Summary:
+- New file: src/modules/cadrage/cadrage-page.tsx (~600 lines)
+- No existing files modified
+- All 5 API contracts consumed correctly
+- AI draft is suggestion-only with clear visual marking (amber border + badge)
+- Coherence check is non-destructive remarks only
+- Version snapshot on validation
+---
+Task ID: LOT1-BUG-03b
+Agent: Correction Agent
+Task: Wire CadragePage module into application
+
+Work Log:
+- Verified CadragePage module exists at src/modules/cadrage/cadrage-page.tsx
+- FILE 1 (src/lib/stores/app-store.ts):
+  - Added "cadrage" to ViewId type union (line 11, between "editor" and "ai-writing")
+  - Added navigation item { id: "cadrage", label: "Cadrage de thèse", icon: "ClipboardList", description: "Cadrage préalable du projet de recherche" } to NAVIGATION_ITEMS array, placed after "editor" and before "ai-writing"
+- FILE 2 (src/app/page.tsx):
+  - Added import: import { CadragePage } from "@/modules/cadrage/cadrage-page"; (line 9)
+  - Added case "cadrage" in CurrentView switch, returning <CadragePage />, placed after "editor" and before "ai-writing" (lines 51-52)
+- FILE 3 (src/components/dashboard/dashboard-page.tsx):
+  - Changed "Cadrage de la thèse" step's onClick from setCurrentView("editor") to setCurrentView("cadrage") (line 217)
+- Verification:
+  - Re-read all 3 files to confirm correct insertion points
+  - Confirmed "cadrage" is valid ViewId in the type union
+  - Confirmed import path matches module location
+  - Ran bun run lint: 0 errors, 9 warnings (all pre-existing)
+
+Stage Summary:
+- CadragePage module fully wired: type, navigation, routing, and dashboard shortcut all point to "cadrage"
+- No code restructured or renamed — 3 files modified with minimal surgical edits
+- Lint clean (0 new errors/warnings)

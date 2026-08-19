@@ -6,6 +6,7 @@ import { AppHeader } from "@/components/layout/app-header";
 import { AppFooter } from "@/components/layout/app-footer";
 import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { EditorPage } from "@/modules/editor/editor-page";
+import { CadragePage } from "@/modules/cadrage/cadrage-page";
 import { ReferencesPage } from "@/modules/references/references-page";
 import { AiWritingPage } from "@/modules/ai-writing/ai-writing-page";
 import { MethodologyPage } from "@/modules/methodology/methodology-page";
@@ -47,6 +48,8 @@ function CurrentView() {
       return <DashboardPage />;
     case "editor":
       return <EditorPage />;
+    case "cadrage":
+      return <CadragePage />;
     case "ai-writing":
       return <AiWritingPage />;
     case "references":
