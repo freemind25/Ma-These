@@ -175,6 +175,20 @@ export const updateReferenceSchema = z.object({
 });
 
 // ═══════════════════════════════════════
+// PART
+// ═══════════════════════════════════════
+
+export const createPartSchema = z.object({
+  title: z.string().min(1, "Le titre est requis"),
+  sortOrder: z.number().int().min(0).optional(),
+});
+
+export const updatePartSchema = z.object({
+  title: z.string().min(1).optional(),
+  sortOrder: z.number().int().min(0).optional(),
+});
+
+// ═══════════════════════════════════════
 // CADRAGE
 // ═══════════════════════════════════════
 
@@ -202,7 +216,7 @@ export const createCadrageFieldSchema = z.object({
   fieldKey: z.string().min(1, "La clé est requise"),
   label: z.string().min(1, "Le libellé est requis"),
   value: z.string().optional(),
-  aiSuggestion: z.string().optional(),
+  aiSuggestion: z.string().nullable().optional(),
   isLocked: z.boolean().optional(),
   sortOrder: z.number().int().min(0).optional(),
 });
@@ -210,7 +224,7 @@ export const createCadrageFieldSchema = z.object({
 export const updateCadrageFieldSchema = z.object({
   label: z.string().optional(),
   value: z.string().optional(),
-  aiSuggestion: z.string().optional(),
+  aiSuggestion: z.string().nullable().optional(),
   isLocked: z.boolean().optional(),
   sortOrder: z.number().int().min(0).optional(),
 });
@@ -346,3 +360,5 @@ export type CreateNotebookEntryInput = z.infer<typeof createNotebookEntrySchema>
 export type CreateSprintInput = z.infer<typeof createSprintSchema>;
 export type CreateStoryInput = z.infer<typeof createStorySchema>;
 export type CreateAiConfigInput = z.infer<typeof createAiConfigSchema>;
+export type CreatePartInput = z.infer<typeof createPartSchema>;
+export type UpdatePartInput = z.infer<typeof updatePartSchema>;

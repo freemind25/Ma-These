@@ -272,7 +272,7 @@ export function CadragePage() {
 
   // ── Save a single field ──
   const saveField = useCallback(
-    async (fieldId: string, data: { value?: string; aiSuggestion?: string; isLocked?: boolean }) => {
+    async (fieldId: string, data: { value?: string; aiSuggestion?: string | null; isLocked?: boolean }) => {
       setSavingFieldId(fieldId);
       try {
         const res = await fetch(`/api/cadrages/fields/${fieldId}`, {

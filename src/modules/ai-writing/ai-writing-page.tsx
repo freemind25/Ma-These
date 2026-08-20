@@ -55,7 +55,7 @@ export function AiWritingPage() {
           Assistant IA d&apos;écriture
         </h1>
         <p className="text-sm text-muted-foreground">
-          10 modes spécialisés pour vous assister dans la rédaction de votre thèse
+          {WRITING_MODES.length} modes spécialisés pour vous assister dans la rédaction de votre thèse
         </p>
       </div>
 

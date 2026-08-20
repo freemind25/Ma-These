@@ -184,7 +184,7 @@ export function DashboardPage() {
             <ActionButton
               icon={Sparkles}
               label="Assistant IA"
-              description="10 modes d'écriture"
+              description="Modes d'écriture IA"
               onClick={() => setCurrentView("ai-writing")}
             />
             <ActionButton
@@ -271,7 +271,7 @@ export function DashboardPage() {
             />
             <ModuleCard
               title="Assistant IA"
-              description="10 modes spécialisés : rédaction, revue de littérature, peer review..."
+              description="Modes spécialisés : rédaction, revue de littérature, peer review..."
               status="IA"
               onClick={() => setCurrentView("ai-writing")}
             />

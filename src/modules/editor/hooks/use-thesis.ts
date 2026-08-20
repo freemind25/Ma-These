@@ -19,6 +19,17 @@ export interface ThesisChapter {
   status: string;
   directorFeedback?: string | null;
   sortOrder: number;
+  parentId?: string | null;
+}
+
+export interface ThesisPart {
+  id: string;
+  thesisId: string;
+  title: string;
+  sortOrder: number;
+  chapters?: ThesisChapter[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Thesis {
@@ -51,6 +62,8 @@ export const thesisKeys = {
   detail: (id: string) => [...thesisKeys.details(), id] as const,
   chapters: (thesisId: string) =>
     [...thesisKeys.detail(thesisId), "chapters"] as const,
+  parts: (thesisId: string) =>
+    [...thesisKeys.detail(thesisId), "parts"] as const,
 };
 
 // ═══════════════════════════════════════
@@ -165,7 +178,7 @@ export function useUpdateChapter() {
     mutationFn: async ({
       id,
       ...data
-    }: { id: string; title?: string; content?: string; plainText?: string; wordCount?: number; status?: string; sortOrder?: number }) => {
+    }: { id: string; title?: string; content?: string; plainText?: string; wordCount?: number; status?: string; sortOrder?: number; parentId?: string | null }) => {
       const res = await fetch(`/api/chapters/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -216,6 +229,78 @@ export function useDeleteChapter() {
     mutationFn: async (id: string) => {
       const res = await fetch(`/api/chapters/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Erreur de suppression");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+    },
+  });
+}
+
+// ═══════════════════════════════════════
+// Hooks — Part CRUD
+// ═══════════════════════════════════════
+
+export function useParts(thesisId: string | null) {
+  return useQuery({
+    queryKey: thesisKeys.parts(thesisId ?? ""),
+    queryFn: async () => {
+      if (!thesisId) return [];
+      const res = await fetch(`/api/thesis/${thesisId}/parts`);
+      if (!res.ok) throw new Error("Erreur de chargement des parties");
+      const json = await res.json();
+      return json.data as ThesisPart[];
+    },
+    enabled: !!thesisId,
+  });
+}
+
+export function useCreatePart() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ thesisId, title }: { thesisId: string; title: string }) => {
+      const res = await fetch(`/api/thesis/${thesisId}/parts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
+      });
+      if (!res.ok) throw new Error("Erreur de création de la partie");
+      const json = await res.json();
+      return json.data as ThesisPart;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+    },
+  });
+}
+
+export function useUpdatePart() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, ...data }: { id: string; title?: string; sortOrder?: number }) => {
+      const res = await fetch(`/api/parts/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Erreur de mise à jour de la partie");
+      const json = await res.json();
+      return json.data as ThesisPart;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+    },
+  });
+}
+
+export function useDeletePart() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/parts/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Erreur de suppression de la partie");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: thesisKeys.all });

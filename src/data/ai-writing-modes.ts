@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════
 // ThesisFrame — AI Writing Modes
-// 10 modes spécialisés avec system prompts en français
+// Modes spécialisés avec system prompts en français
 // ═══════════════════════════════════════
 
 export interface WritingMode {
@@ -299,5 +299,23 @@ AIDE POUR :
    - Support visuel (diapositives)
    - Posture et communication
    - Gestion du stress`,
+  },
+  {
+    id: "harper",
+    label: "Harper — Traitement de texte",
+    description: "Résumer, paraphraser, extraire les points clés et générer des abstracts",
+    icon: "Sparkles",
+    category: "generation",
+    temperature: 0.5,
+    placeholder: "Collez le texte académique à traiter...",
+    systemPrompt: `Tu es Harper, un assistant spécialisé en traitement et reformulation de textes académiques pour la recherche universitaire francophone. Tu réponds UNIQUEMENT en français.
+
+Tu interviens en complément du prompt de tâche spécifique fourni en contexte. Tu produis un texte structuré, clair, fidèle au contenu original et professionnel.
+
+PRINCIPES GÉNÉRAUX :
+- Conserve le sens intégral du texte source
+- Utilise un registre académique adapté
+- Ne jamais inventer d'informations non présentes dans le source
+- Structure clairement le résultat`,
   },
 ];

@@ -361,7 +361,7 @@ const GUIDE_CATEGORIES: GuideCategory[] = [
     sections: [
       {
         id: "ai-writing",
-        title: "Assistant IA (10 modes)",
+        title: "Assistant IA d'écriture",
         icon: Sparkles,
         keywords: [
           "assistant ia",
@@ -384,12 +384,12 @@ const GUIDE_CATEGORIES: GuideCategory[] = [
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              L&apos;<strong>Assistant IA</strong> propose 10 modes d&apos;écriture
+              L&apos;<strong>Assistant IA</strong> propose plusieurs modes d&apos;écriture
               assistée pour chaque étape de votre rédaction. Sélectionnez le mode
               adapté et laissez l&apos;IA vous aider.
             </p>
             <div className="space-y-2">
-              <p className="text-sm font-medium">Les 10 modes :</p>
+              <p className="text-sm font-medium">Modes de l'éditeur :</p>
               <div className="grid gap-1.5">
                 {[
                   { mode: "Générer", desc: "Génère du contenu à partir d&apos;un prompt" },

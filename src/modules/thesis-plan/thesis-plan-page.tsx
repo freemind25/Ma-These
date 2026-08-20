@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   ListTree,
   Copy,
@@ -8,6 +8,10 @@ import {
   FileText,
   AlertCircle,
   ArrowRight,
+  Plus,
+  Trash2,
+  GripVertical,
+  Pencil,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +30,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import {
   useTheses,
+  useUpdateThesis,
+  useParts,
+  useCreatePart,
+  useUpdatePart,
+  useDeletePart,
+  useCreateChapter,
+  useUpdateChapter,
   type ThesisChapter,
+  type ThesisPart,
 } from "@/modules/editor/hooks/use-thesis";
 import { useAppStore } from "@/lib/stores/app-store";
 import { toast } from "sonner";
@@ -36,21 +48,9 @@ import { toast } from "sonner";
 // ═══════════════════════════════════════
 
 const ROMAN_NUMERALS = [
-  "I",
-  "II",
-  "III",
-  "IV",
-  "V",
-  "VI",
-  "VII",
-  "VIII",
-  "IX",
-  "X",
-  "XI",
-  "XII",
-  "XIII",
-  "XIV",
-  "XV",
+  "I", "II", "III", "IV", "V",
+  "VI", "VII", "VIII", "IX", "X",
+  "XI", "XII", "XIII", "XIV", "XV",
 ];
 
 const DISCIPLINES = [
@@ -139,7 +139,7 @@ function generateLatexTemplate(
 
 % ═══════════════════════════════════════
 % Informations de la thèse
-% ═══════\\═════════════════════════════
+% ═══════\\\\═══════════════════════════
 \\title{Titre de la Thèse}
 \\subtitle{Sous-titre éventuel}
 \\author{Prénom Nom}
@@ -320,7 +320,7 @@ Conclusion du chapitre.
 // Sub-components
 // ═══════════════════════════════════════
 
-function ChapterRow({ chapter }: { chapter: ThesisChapter }) {
+function ChapterRow({ chapter }: { chapter: ThesisChapter; onAttach?: (ch: ThesisChapter) => void }) {
   const statusInfo = STATUS_MAP[chapter.status] ?? STATUS_MAP.not_started;
   const progress =
     chapter.targetWordCount > 0
@@ -338,12 +338,14 @@ function ChapterRow({ chapter }: { chapter: ThesisChapter }) {
             {chapter.title}
           </span>
         </div>
-        <Badge
-          variant="outline"
-          className={statusInfo.className}
-        >
-          {statusInfo.label}
-        </Badge>
+        <div className="flex items-center gap-1.5">
+          {chapter.parentId && (
+            <Badge variant="outline" className="text-[10px] text-muted-foreground">rattaché</Badge>
+          )}
+          <Badge variant="outline" className={statusInfo.className}>
+            {statusInfo.label}
+          </Badge>
+        </div>
       </div>
       <div className="flex items-center gap-3 pl-1">
         <Progress value={progress} className="h-1.5 flex-1" />
@@ -355,6 +357,112 @@ function ChapterRow({ chapter }: { chapter: ThesisChapter }) {
           mots
         </span>
       </div>
+    </div>
+  );
+}
+
+function PartBlock({
+  part,
+  chapters,
+  onRename,
+  onDelete,
+  onAddChapter,
+  onAttachChapter,
+  onDetachChapter,
+  onMoveUp,
+  onMoveDown,
+  isFirst,
+  isLast,
+}: {
+  part: ThesisPart;
+  chapters: ThesisChapter[];
+  onRename: (id: string, title: string) => void;
+  onDelete: (id: string) => void;
+  onAddChapter: (partId: string) => void;
+  onAttachChapter: (chapter: ThesisChapter, partId: string) => void;
+  onDetachChapter: (chapterId: string) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
+  isFirst: boolean;
+  isLast: boolean;
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(part.title);
+  const attachedChapters = chapters.filter((ch) => ch.parentId === part.id);
+  const partWords = attachedChapters.reduce((s, ch) => s + ch.wordCount, 0);
+
+  const handleSave = () => {
+    if (editTitle.trim()) {
+      onRename(part.id, editTitle.trim());
+      setIsEditing(false);
+    }
+  };
+
+  return (
+    <div className="rounded-lg border bg-muted/20 p-4 space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <GripVertical className="h-4 w-4 text-muted-foreground shrink-0" />
+          {!isEditing ? (
+            <>
+              <h3 className="text-sm font-semibold truncate">{part.title}</h3>
+              <Badge variant="outline" className="text-[10px] shrink-0">
+                {attachedChapters.length} chap.{attachedChapters.length > 1 ? "s" : ""}
+              </Badge>
+              <Badge variant="outline" className="text-[10px] shrink-0">
+                {partWords.toLocaleString("fr-FR")} mots
+              </Badge>
+            </>
+          ) : (
+            <Input
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              onBlur={handleSave}
+              onKeyDown={(e) => { if (e.key === "Enter") handleSave(); if (e.key === "Escape") setIsEditing(false); }}
+              className="h-7 text-sm"
+              autoFocus
+            />
+          )}
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          {!isEditing && (
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { setEditTitle(part.title); setIsEditing(true); }}>
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+          )}
+          <Button variant="ghost" size="icon" className="h-7 w-7" disabled={isFirst} onClick={() => onMoveUp(part.id)}>
+            <ArrowRight className="h-3.5 w-3.5 rotate-[-90deg]" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-7 w-7" disabled={isLast} onClick={() => onMoveDown(part.id)}>
+            <ArrowRight className="h-3.5 w-3.5 rotate-90" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => onDelete(part.id)}>
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Attached chapters */}
+      {attachedChapters.length > 0 && (
+        <div className="flex flex-col gap-2 pl-6">
+          {attachedChapters.sort((a, b) => a.sortOrder - b.sortOrder).map((ch) => (
+            <div key={ch.id} className="flex items-center gap-2 rounded border bg-background p-2">
+              <Badge variant="outline" className="shrink-0 font-mono text-[10px]">
+                {ch.romanNumeral ?? ROMAN_NUMERALS[ch.number - 1] ?? ch.number}
+              </Badge>
+              <span className="text-xs font-medium truncate flex-1">{ch.title}</span>
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => onDetachChapter(ch.id)}>
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => onAddChapter(part.id)}>
+        <Plus className="h-3 w-3" />
+        Ajouter un chapitre
+      </Button>
     </div>
   );
 }
@@ -391,17 +499,132 @@ export function ThesisPlanPage() {
   // --- Fetch thesis list ---
   const { data: theses, isLoading } = useTheses();
   const activeThesis = theses?.[0] ?? null;
+  const thesisId = activeThesis?.id ?? null;
+
+  // --- Parts ---
+  const { data: parts, isLoading: partsLoading } = useParts(thesisId);
+  const createPart = useCreatePart();
+  const updatePart = useUpdatePart();
+  const deletePart = useDeletePart();
+
+  // --- Thesis update (structureMode) ---
+  const updateThesis = useUpdateThesis();
+
+  // --- Chapters ---
+  const createChapter = useCreateChapter();
+  const updateChapter = useUpdateChapter();
 
   // --- Template form state ---
   const [discipline, setDiscipline] = useState("lettres");
   const [chapterCount, setChapterCount] = useState(5);
-  const [structureMode, setStructureMode] = useState<"classique" | "par parties">("classique");
+  const [templateStructureMode, setTemplateStructureMode] = useState<"classique" | "par parties">("classique");
   const [generatedTemplate, setGeneratedTemplate] = useState("");
   const [copied, setCopied] = useState(false);
+  const [newPartTitle, setNewPartTitle] = useState("");
+
+  const isPartsMode = activeThesis?.structureMode === "parts";
 
   // --- Handlers ---
+  const handleStructureModeChange = useCallback(
+    (value: string) => {
+      if (!activeThesis) return;
+      const newMode = value === "parts" ? "parts" : "chapters";
+      updateThesis.mutate(
+        { id: activeThesis.id, structureMode: newMode },
+        {
+          onSuccess: () => toast.success(`Mode de structure : ${newMode === "parts" ? "par parties" : "par chapitres"}`),
+          onError: () => toast.error("Erreur lors du changement de mode"),
+        }
+      );
+    },
+    [activeThesis, updateThesis]
+  );
+
+  const handleCreatePart = useCallback(() => {
+    if (!thesisId || !newPartTitle.trim()) return;
+    createPart.mutate(
+      { thesisId, title: newPartTitle.trim() },
+      {
+        onSuccess: () => {
+          setNewPartTitle("");
+          toast.success("Partie créée");
+        },
+        onError: () => toast.error("Erreur lors de la création"),
+      }
+    );
+  }, [thesisId, newPartTitle, createPart]);
+
+  const handleRenamePart = useCallback(
+    (id: string, title: string) => {
+      updatePart.mutate({ id, title }, { onError: () => toast.error("Erreur lors du renommage") });
+    },
+    [updatePart]
+  );
+
+  const handleDeletePart = useCallback(
+    (id: string) => {
+      deletePart.mutate(id, {
+        onSuccess: () => toast.success("Partie supprimée"),
+        onError: () => toast.error("Erreur lors de la suppression"),
+      });
+    },
+    [deletePart]
+  );
+
+  const handleMovePart = useCallback(
+    (id: string, direction: "up" | "down") => {
+      if (!parts) return;
+      const idx = parts.findIndex((p) => p.id === id);
+      if (idx < 0) return;
+      const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+      if (swapIdx < 0 || swapIdx >= parts.length) return;
+      // Swap sortOrders
+      updatePart.mutate({ id: parts[idx].id, sortOrder: swapIdx });
+      updatePart.mutate({ id: parts[swapIdx].id, sortOrder: idx });
+    },
+    [parts, updatePart]
+  );
+
+  const handleAddChapterToPart = useCallback(
+    (partId: string) => {
+      if (!thesisId) return;
+      const partParts = parts?.sort((a, b) => a.sortOrder - b.sortOrder) ?? [];
+      const partIndex = partParts.findIndex((p) => p.id === partId);
+      const nextChapterNum = (activeThesis?.chapters.length ?? 0) + 1;
+      createChapter.mutate(
+        {
+          thesisId,
+          title: `Chapitre ${ROMAN_NUMERALS[nextChapterNum - 1] ?? nextChapterNum}`,
+          romanNumeral: ROMAN_NUMERALS[nextChapterNum - 1],
+        },
+        {
+          onSuccess: (newCh) => {
+            // Attach the newly created chapter to the part
+            updateChapter.mutate({ id: newCh.id, parentId: partId, sortOrder: partIndex });
+            toast.success("Chapitre ajouté à la partie");
+          },
+          onError: () => toast.error("Erreur lors de l'ajout"),
+        }
+      );
+    },
+    [thesisId, parts, activeThesis, createChapter, updateChapter]
+  );
+
+  const handleDetachChapter = useCallback(
+    (chapterId: string) => {
+      updateChapter.mutate(
+        { id: chapterId, parentId: null },
+        {
+          onSuccess: () => toast.success("Chapitre détaché de la partie"),
+          onError: () => toast.error("Erreur lors du détachement"),
+        }
+      );
+    },
+    [updateChapter]
+  );
+
   const handleGenerate = () => {
-    const mode = structureMode === "par parties" ? "par_parts" : "chapters";
+    const mode = templateStructureMode === "par parties" ? "par_parts" : "chapters";
     const template = generateLatexTemplate(discipline, chapterCount, mode);
     setGeneratedTemplate(template);
     setCopied(false);
@@ -420,10 +643,12 @@ export function ThesisPlanPage() {
   };
 
   // --- Compute summary stats ---
-  const totalWords = activeThesis?.chapters.reduce((sum, ch) => sum + ch.wordCount, 0) ?? 0;
-  const completedChapters =
-    activeThesis?.chapters.filter((ch) => ch.status === "completed").length ?? 0;
-  const totalChapters = activeThesis?.chapters.length ?? 0;
+  const allChapters = activeThesis?.chapters ?? [];
+  const totalWords = allChapters.reduce((sum, ch) => sum + ch.wordCount, 0);
+  const completedChapters = allChapters.filter((ch) => ch.status === "completed").length;
+  const totalChapters = allChapters.length;
+  const totalParts = parts?.length ?? 0;
+  const attachedChapters = allChapters.filter((ch) => ch.parentId).length;
 
   return (
     <div className="max-w-6xl mx-auto w-full p-6">
@@ -447,9 +672,22 @@ export function ThesisPlanPage() {
         {/* ─── Left panel: Structure actuelle ─── */}
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold">
-              Structure actuelle
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base font-semibold">
+                Structure actuelle
+              </CardTitle>
+              {activeThesis && (
+                <Select value={activeThesis.structureMode} onValueChange={handleStructureModeChange}>
+                  <SelectTrigger className="w-[130px] h-7 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="chapters">Par chapitres</SelectItem>
+                    <SelectItem value="parts">Par parties</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -488,18 +726,20 @@ export function ThesisPlanPage() {
                       {activeThesis.subtitle}
                     </p>
                   )}
-                  <div className="flex items-center gap-2 pt-1">
+                  <div className="flex items-center gap-2 pt-1 flex-wrap">
                     <Badge variant="outline" className="text-xs">
                       {totalChapters} chapitre{totalChapters > 1 ? "s" : ""}
                     </Badge>
+                    {isPartsMode && (
+                      <Badge variant="outline" className="text-xs">
+                        {totalParts} partie{totalParts > 1 ? "s" : ""}
+                      </Badge>
+                    )}
                     <Badge variant="outline" className="text-xs">
                       {totalWords.toLocaleString("fr-FR")} mots
                     </Badge>
                     {completedChapters > 0 && (
-                      <Badge
-                        variant="outline"
-                        className={STATUS_MAP.completed.className}
-                      >
+                      <Badge variant="outline" className={STATUS_MAP.completed.className}>
                         {completedChapters} terminé{completedChapters > 1 ? "s" : ""}
                       </Badge>
                     )}
@@ -508,16 +748,84 @@ export function ThesisPlanPage() {
 
                 <div className="h-px bg-border" />
 
-                {/* Chapter tree */}
-                <ScrollArea className="max-h-[420px] overflow-y-auto">
-                  <div className="flex flex-col gap-3 pr-2">
-                    {activeThesis.chapters
-                      .sort((a, b) => a.sortOrder - b.sortOrder)
-                      .map((chapter) => (
-                        <ChapterRow key={chapter.id} chapter={chapter} />
-                      ))}
+                {/* Parts mode view */}
+                {isPartsMode ? (
+                  <div className="flex flex-col gap-4">
+                    {/* Add part input */}
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={newPartTitle}
+                        onChange={(e) => setNewPartTitle(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter") handleCreatePart(); }}
+                        placeholder="Titre de la nouvelle partie..."
+                        className="h-8 text-sm"
+                      />
+                      <Button
+                        size="sm"
+                        className="gap-1 shrink-0 h-8"
+                        disabled={!newPartTitle.trim() || createPart.isPending}
+                        onClick={handleCreatePart}
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        Ajouter
+                      </Button>
+                    </div>
+
+                    {/* Parts list */}
+                    <ScrollArea className="max-h-[420px] overflow-y-auto">
+                      <div className="flex flex-col gap-3 pr-2">
+                        {partsLoading ? (
+                          Array.from({ length: 2 }).map((_, i) => (
+                            <Skeleton key={i} className="h-20 w-full rounded-lg" />
+                          ))
+                        ) : parts && parts.length > 0 ? (
+                          parts
+                            .sort((a, b) => a.sortOrder - b.sortOrder)
+                            .map((part, idx) => (
+                              <PartBlock
+                                key={part.id}
+                                part={part}
+                                chapters={allChapters}
+                                onRename={handleRenamePart}
+                                onDelete={handleDeletePart}
+                                onAddChapter={handleAddChapterToPart}
+                                onAttachChapter={(ch, partId) => {
+                                  updateChapter.mutate({ id: ch.id, parentId: partId });
+                                  toast.success(`Chapitre rattaché à la partie`);
+                                }}
+                                onDetachChapter={handleDetachChapter}
+                                onMoveUp={(id) => handleMovePart(id, "up")}
+                                onMoveDown={(id) => handleMovePart(id, "down")}
+                                isFirst={idx === 0}
+                                isLast={idx === (parts.length - 1)}
+                              />
+                            ))
+                        ) : (
+                          <p className="text-sm text-muted-foreground text-center py-4">
+                            Aucune partie créée. Utilisez le champ ci-dessus pour ajouter des parties.
+                          </p>
+                        )}
+                      </div>
+                    </ScrollArea>
+
+                    {attachedChapters > 0 && (
+                      <p className="text-[11px] text-muted-foreground">
+                        {attachedChapters} chapitre{attachedChapters > 1 ? "s" : ""} rattaché{attachedChapters > 1 ? "s" : ""} à des parties
+                      </p>
+                    )}
                   </div>
-                </ScrollArea>
+                ) : (
+                  /* Chapters mode view */
+                  <ScrollArea className="max-h-[420px] overflow-y-auto">
+                    <div className="flex flex-col gap-3 pr-2">
+                      {allChapters
+                        .sort((a, b) => a.sortOrder - b.sortOrder)
+                        .map((chapter) => (
+                          <ChapterRow key={chapter.id} chapter={chapter} />
+                        ))}
+                    </div>
+                  </ScrollArea>
+                )}
               </div>
             )}
           </CardContent>
@@ -579,9 +887,9 @@ export function ThesisPlanPage() {
                   Mode de structure
                 </Label>
                 <Select
-                  value={structureMode}
+                  value={templateStructureMode}
                   onValueChange={(v) =>
-                    setStructureMode(v as "classique" | "par parties")
+                    setTemplateStructureMode(v as "classique" | "par parties")
                   }
                 >
                   <SelectTrigger id="structureMode" className="w-full">

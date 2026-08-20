@@ -69,7 +69,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     id: "ai-writing",
     label: "Assistant IA",
     icon: "Sparkles",
-    description: "10 modes d'écriture assistée par IA",
+    description: "Modes d'écriture assistée par IA",
     badge: "IA",
   },
   {
