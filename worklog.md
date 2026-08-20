@@ -3526,3 +3526,28 @@ Stage Summary:
 - §4 : 10 tests ajoutés pour research-tabs/[id]/route.ts. Suite : 1290 tests, 0 échec.
 - Rapport produit : RAPPORT-LOT-6BIS-CLARIFICATIONS.md
 - Fichier de test créé : src/app/api/research-tabs/[id]/route.test.ts
+
+---
+Task ID: gouvernance
+Agent: Main Agent
+Task: Lot Gouvernance — ETAT-PROJET-THESISFRAME.md + Proposition de séquencement
+
+Work Log:
+- Lecture du document PROMPT-STRATEGIE-GOUVERNANCE-THESISFRAME.md (133 lignes)
+- Lecture intégrale de AUDIT-FORENSIQUE-THESISFRAME.md (490 lignes) — 31 fonctionnalités, 34 bugs, 12 DT
+- Lecture intégrale de RAPPORT-LOT-6-CORRECTIONS.md (282 lignes)
+- Lecture intégrale de RAPPORT-LOT-6BIS-CLARIFICATIONS.md
+- Lecture du worklog (3528 lignes) pour l'historique des lots
+- Lecture de FICHE_SYNTHESE.md (762 lignes)
+- Revérification BUG-08, 09, 10 avec preuve à l'instant : tous 3 confirmés non résolus
+- Réconciliation des statuts post-Lot 6 et post-Lot 6bis vs audit forensique
+- Création de ETAT-PROJET-THESISFRAME.md (7 sections : fonctionnalités, backlog, DT, décisions, historique, métriques, fiabilité des rapports)
+- Création de PROPOSITION-SEQUENCEMENT-LOTS.md (Lot 7 à 10 avec fichiers, risques, effort, critères de clôture)
+- 5 divergences factuelles identifiées avec la priorisation du document de gouvernance
+
+Stage Summary:
+- ETAT-PROJET-THESISFRAME.md créé — document unique de vérité
+- PROPOSITION-SEQUENCEMENT-LOTS.md créé — Lot 7 (A), 8 (B), 9 (C), 10 (D)
+- BUG-22 recommandé exclu du Lot 10 (effort disproportionné) → décision produit
+- DT-05 à 10 recommandés comme « à décider » plutôt que « à corriger »
+- BUG-08, 09, 10 revérifiés : confirmés non résolus
