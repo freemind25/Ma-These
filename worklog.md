@@ -3433,3 +3433,25 @@ Stage Summary:
 - 50 test files created, 1247 tests passing, 0 failures
 - 0 lint errors (152 pre-existing warnings)
 - Dev server running, browser verified
+---
+Task ID: forensic-audit
+Agent: Main Agent
+Task: Audit forensique complet ThesisFrame — AUDIT-FORENSIQUE-THESISFRAME.md
+
+Work Log:
+- Lu le document PROMPT-AUDIT-FORENSIQUE-THESISFRAME.md (instructions de mission)
+- Lu les 3 rapports antérieurs : RAPPORT-AUDIT-THESISFRAME.md, RAPPORT-LOT1-CORRECTIONS.md, RAPPORT-LOT-5BIS-CLOTURE.md
+- Lu le worklog complet (3436 lignes) pour reconstituer la chronologie
+- Lancé 3 agents d'investigation parallèles pour vérifier les 34 bugs, l'architecture, et la doctrine
+- Exécuté les vérifications d'exécution : tests (1254 passants), lint (0 erreur, 152 warnings), build (ÉCHEC)
+- Découvert 3 anomalies non documentées : répertoires malformés, build cassé (cadrage-page.tsx:332), mode harper absent
+- Identifié 7 écarts entre statuts annoncés et statuts réels vérifiés
+- Produit le rapport AUDIT-FORENSIQUE-THESISFRAME.md (490 lignes)
+
+Stage Summary:
+- 15/34 bugs résolus, 18 non résolus, 1 partiellement résolu
+- Build cassé par erreur TypeScript (cadrage-page.tsx:332)
+- Harper (#30) cassé : mode "harper" absent de WRITING_MODES (jamais identifié)
+- 3 modèles Prisma orphelins (Part, CustomBookSkill, LicenseKey)
+- 12 éléments de dette technique non documentés dans les rapports antérieurs
+- 3 points de doctrine conformes (critique-only, max 2 fiches, 7 chapitres romain)
