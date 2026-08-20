@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
   Briefcase,
   GraduationCap,
@@ -20,6 +22,8 @@ import {
   StickyNote,
   Target,
   TrendingUp,
+  Loader2,
+  Save,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,6 +33,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tabs,
   TabsContent,
@@ -90,6 +95,25 @@ interface UsefulLink {
   url: string;
   category: string;
   description: string;
+}
+
+interface Thesis {
+  id: string;
+  title: string;
+  author?: string;
+  discipline?: string;
+}
+
+interface DoctoralToolboxData {
+  id: string;
+  thesisId: string;
+  checklist: string;
+  milestones: string;
+  documents: string;
+  contacts: string;
+  notes: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // ═══════════════════════════════════════
@@ -198,6 +222,12 @@ const INITIAL_DOCUMENTS: RequiredDocument[] = [
   { id: "doc-8", name: "Fiche de renseignements doctoraux", description: "Formulaire officiel de l'école doctorale", status: "absent", notes: "" },
   { id: "doc-9", name: "Rapports préalables des rapporteurs", description: "Deux rapports écrits par les rapporteurs du jury", status: "absent", notes: "" },
   { id: "doc-10", name: "Résumé (fr/en, 300 mots)", description: "Résumés en français et en anglais de la thèse", status: "absent", notes: "" },
+  { id: "doc-11", name: "Mots-clés (fr/en)", description: "Liste de mots-clés en français et en anglais", status: "absent", notes: "" },
+  { id: "doc-12", name: "Plan de la thèse", description: "Table des matières détaillée", status: "absent", notes: "" },
+  { id: "doc-13", name: "Bibliographie complète", description: "Liste complète des références citées", status: "absent", notes: "" },
+  { id: "doc-14", name: "Annexes", description: "Documents complémentaires (tableaux, figures, preuves)", status: "absent", notes: "" },
+  { id: "doc-15", name: "Résumé des formations suivies", description: "Attestations de formation doctorale validée", status: "absent", notes: "" },
+  { id: "doc-16", name: "Déclaration de non-plagiat", description: "Attestation sur l'honneur de travail original", status: "absent", notes: "" },
 ];
 
 const INITIAL_CONTACTS: Contact[] = [
@@ -332,13 +362,218 @@ function formatDate(dateStr: string): string {
 }
 
 // ═══════════════════════════════════════
+// Loading skeleton
+// ═══════════════════════════════════════
+
+function LoadingSkeleton() {
+  return (
+    <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+      <Skeleton className="h-10 w-80" />
+      <Skeleton className="h-4 w-96" />
+      <Skeleton className="h-32 w-full" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-16 w-full" />
+        ))}
+      </div>
+      <Skeleton className="h-96 w-full" />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+// Serialization helpers
+// ═══════════════════════════════════════
+
+function serializeChecklist(phases: ChecklistPhase[]): string {
+  const map: Record<string, ChecklistItem[]> = {};
+  for (const phase of phases) {
+    map[phase.id] = phase.items;
+  }
+  return JSON.stringify(map);
+}
+
+function deserializeChecklist(json: string): ChecklistPhase[] {
+  try {
+    const map = JSON.parse(json) as Record<string, ChecklistItem[]>;
+    return INITIAL_PHASES.map((phase) => {
+      const storedItems = map[phase.id];
+      if (!storedItems || !Array.isArray(storedItems)) return phase;
+      return { ...phase, items: storedItems };
+    });
+  } catch {
+    return INITIAL_PHASES;
+  }
+}
+
+function safeParse<T>(json: string, fallback: T): T {
+  try {
+    const parsed = JSON.parse(json);
+    if (Array.isArray(parsed)) return parsed as T;
+    return fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+// ═══════════════════════════════════════
 // Main Component
 // ═══════════════════════════════════════
 
 export function BoiteDoctoralePage() {
-  // ── Checklist State ──
-  const [phases, setPhases] = useState<ChecklistPhase[]>(INITIAL_PHASES);
+  const queryClient = useQueryClient();
 
+  // ── Fetch theses ──
+  const { data: theses, isLoading: thesesLoading } = useQuery<Thesis[]>({
+    queryKey: ["thesis"],
+    queryFn: async () => {
+      const res = await fetch("/api/thesis");
+      if (!res.ok) throw new Error("Erreur lors du chargement des thèses");
+      const json = await res.json();
+      return json.data as Thesis[];
+    },
+    staleTime: 10 * 1000,
+  });
+
+  // ── Thesis selection ──
+  const [selectedThesisId, setSelectedThesisId] = useState<string | null>(null);
+
+  const selectedThesis = useMemo(() => {
+    if (!theses || theses.length === 0) return null;
+    const id = selectedThesisId || theses[0].id;
+    return theses.find((t) => t.id === id) || theses[0];
+  }, [theses, selectedThesisId]);
+
+  const thesisId = selectedThesis?.id ?? null;
+
+  // ── Fetch toolbox data ──
+  const { data: toolboxData, isLoading: toolboxLoading } = useQuery<DoctoralToolboxData | null>({
+    queryKey: ["doctoral-toolbox", thesisId],
+    queryFn: async () => {
+      if (!thesisId) return null;
+      const res = await fetch(`/api/thesis/${thesisId}/doctoral-toolbox`);
+      if (!res.ok) throw new Error("Erreur lors du chargement de la boîte doctorale");
+      const json = await res.json();
+      return json.data as DoctoralToolboxData | null;
+    },
+    enabled: !!thesisId,
+    staleTime: 5 * 1000,
+  });
+
+  // Track whether a toolbox record exists in DB
+  const toolboxExists = !!toolboxData;
+  const toolboxExistsRef = useRef(toolboxExists);
+  useEffect(() => {
+    toolboxExistsRef.current = toolboxExists;
+  }, [toolboxExists]);
+
+  // ── Local State (initialized from DB or INITIAL_* constants) ──
+  const [phases, setPhases] = useState<ChecklistPhase[]>(INITIAL_PHASES);
+  const [milestones, setMilestones] = useState<Milestone[]>(INITIAL_MILESTONES);
+  const [documents, setDocuments] = useState<RequiredDocument[]>(INITIAL_DOCUMENTS);
+  const [contacts, setContacts] = useState<Contact[]>(INITIAL_CONTACTS);
+  const [notes, setNotes] = useState("");
+
+  // Sync local state from fetched DB data
+  const initializedThesisRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!thesisId || toolboxLoading) return;
+    // Re-initialize when switching thesis
+    if (initializedThesisRef.current !== thesisId) {
+      initializedThesisRef.current = thesisId;
+      if (toolboxData) {
+        setPhases(deserializeChecklist(toolboxData.checklist));
+        setMilestones(safeParse<Milestone[]>(toolboxData.milestones, INITIAL_MILESTONES));
+        setDocuments(safeParse<RequiredDocument[]>(toolboxData.documents, INITIAL_DOCUMENTS));
+        setContacts(safeParse<Contact[]>(toolboxData.contacts, INITIAL_CONTACTS));
+        setNotes(toolboxData.notes || "");
+      } else {
+        setPhases(INITIAL_PHASES);
+        setMilestones(INITIAL_MILESTONES);
+        setDocuments(INITIAL_DOCUMENTS);
+        setContacts(INITIAL_CONTACTS);
+        setNotes("");
+      }
+    }
+  }, [thesisId, toolboxData, toolboxLoading]);
+
+  // ── Save status ──
+  const [savingStatus, setSavingStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+
+  // ── Auto-save with 1.5s debounce ──
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isSavingRef = useRef(false);
+  const lastSavedRef = useRef("");
+
+  const doSave = useCallback(async () => {
+    if (!thesisId || isSavingRef.current) return;
+
+    const payload = {
+      checklist: serializeChecklist(phases),
+      milestones: JSON.stringify(milestones),
+      documents: JSON.stringify(documents),
+      contacts: JSON.stringify(contacts),
+      notes,
+    };
+    const payloadStr = JSON.stringify(payload);
+    if (payloadStr === lastSavedRef.current) return;
+
+    isSavingRef.current = true;
+    setSavingStatus("saving");
+
+    try {
+      if (toolboxExistsRef.current) {
+        // PUT update
+        const res = await fetch(`/api/thesis/${thesisId}/doctoral-toolbox`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Erreur lors de la sauvegarde");
+      } else {
+        // POST create
+        const res = await fetch(`/api/thesis/${thesisId}/doctoral-toolbox`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Erreur lors de la création");
+        toolboxExistsRef.current = true;
+      }
+
+      lastSavedRef.current = payloadStr;
+      setSavingStatus("saved");
+      await queryClient.invalidateQueries({ queryKey: ["doctoral-toolbox", thesisId] });
+      setTimeout(() => setSavingStatus("idle"), 2000);
+    } catch {
+      setSavingStatus("error");
+      toast.error("Erreur lors de la sauvegarde de la boîte doctorale");
+      setTimeout(() => setSavingStatus("idle"), 3000);
+    } finally {
+      isSavingRef.current = false;
+    }
+  }, [thesisId, phases, milestones, documents, contacts, notes, queryClient]);
+
+  // Debounce effect — triggers 1.5s after any state change
+  useEffect(() => {
+    if (!thesisId || toolboxLoading) return;
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      doSave();
+    }, 1500);
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [thesisId, phases, milestones, documents, contacts, notes, toolboxLoading, doSave]);
+
+  // ── Checklist handlers ──
   const toggleItem = (phaseId: string, itemId: string) => {
     setPhases((prev) =>
       prev.map((phase) =>
@@ -355,8 +590,6 @@ export function BoiteDoctoralePage() {
   };
 
   // ── Milestones State ──
-  const [milestones, setMilestones] = useState<Milestone[]>(INITIAL_MILESTONES);
-
   const toggleMilestone = (id: string) => {
     setMilestones((prev) =>
       prev.map((m) => (m.id === id ? { ...m, done: !m.done } : m))
@@ -364,8 +597,6 @@ export function BoiteDoctoralePage() {
   };
 
   // ── Documents State ──
-  const [documents, setDocuments] = useState<RequiredDocument[]>(INITIAL_DOCUMENTS);
-
   const cycleDocStatus = (id: string) => {
     setDocuments((prev) =>
       prev.map((d) => {
@@ -383,8 +614,6 @@ export function BoiteDoctoralePage() {
   };
 
   // ── Contacts State ──
-  const [contacts, setContacts] = useState<Contact[]>(INITIAL_CONTACTS);
-
   const updateContact = (id: string, field: keyof Contact, value: string) => {
     setContacts((prev) =>
       prev.map((c) => (c.id === id ? { ...c, [field]: value } : c))
@@ -407,7 +636,7 @@ export function BoiteDoctoralePage() {
     setContacts((prev) => prev.filter((c) => c.id !== id));
   };
 
-  // ── Links State ──
+  // ── Links State (static) ──
   const [links] = useState<UsefulLink[]>(INITIAL_LINKS);
 
   // ── Progress Calculations ──
@@ -433,7 +662,33 @@ export function BoiteDoctoralePage() {
   const progressColor = overallProgress >= 75 ? "text-emerald-600" : overallProgress >= 40 ? "text-amber-600" : "text-rose-600";
 
   // ═══════════════════════════════════════
-  // Render
+  // Render — loading & empty states
+  // ═══════════════════════════════════════
+
+  if (thesesLoading) return <LoadingSkeleton />;
+
+  if (!theses || theses.length === 0) {
+    return (
+      <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
+            <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
+              <FileText className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold">Aucune thèse disponible</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Créez d&apos;abord une thèse dans l&apos;éditeur pour utiliser la boîte doctorale.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════
+  // Render — main content
   // ═══════════════════════════════════════
   return (
     <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
@@ -450,6 +705,44 @@ export function BoiteDoctoralePage() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* ── Thesis Selector ── */}
+      {theses.length > 1 && (
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="text-sm font-medium">Thèse :</span>
+          {theses.map((t) => (
+            <Button
+              key={t.id}
+              variant={t.id === selectedThesis?.id ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedThesisId(t.id)}
+            >
+              {t.title}
+            </Button>
+          ))}
+        </div>
+      )}
+
+      {/* ── Saving indicator ── */}
+      <div className="flex items-center gap-2 text-xs text-muted-foreground h-4">
+        {savingStatus === "saving" && (
+          <>
+            <Loader2 className="h-3 w-3 animate-spin" />
+            <span>Sauvegarde...</span>
+          </>
+        )}
+        {savingStatus === "saved" && (
+          <>
+            <Save className="h-3 w-3 text-emerald-600" />
+            <span className="text-emerald-600">Sauvegardé</span>
+          </>
+        )}
+        {savingStatus === "error" && (
+          <>
+            <span className="text-rose-600">Erreur de sauvegarde</span>
+          </>
+        )}
       </div>
 
       {/* ── Suivi global ── */}

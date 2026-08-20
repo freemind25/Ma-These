@@ -29,9 +29,11 @@ model Thesis {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  chapters      Chapter[]
-  parts         Part[]
-  cadrages      ThesisCadrage[]
+  chapters         Chapter[]
+  parts            Part[]
+  cadrages         ThesisCadrage[]
+  doctoralToolbox  DoctoralToolbox?
+  researchTabs     ResearchTab[]
 }
 
 model Chapter {
@@ -115,6 +117,48 @@ model ThesisCadrageVersion {
   cadrage     ThesisCadrage @relation(fields: [cadrageId], references: [id], onDelete: Cascade)
 
   @@index([cadrageId])
+}
+
+// ═══════════════════════════════════════
+// BOÎTE DOCTORALE — Persistance 1:1 avec Thesis
+// ═══════════════════════════════════════
+
+model DoctoralToolbox {
+  id          String   @id @default(cuid())
+  thesisId    String   @unique
+  checklist   String   @default("{}") // JSON : { [phaseId]: { items: [{ id, label, checked }] } }
+  milestones  String   @default("[]") // JSON : [{ id, title, date, type, done }]
+  documents   String   @default("[]") // JSON : [{ id, name, description, status, fileUrl }]
+  contacts    String   @default("[]") // JSON : [{ id, name, role, email, phone, institution }]
+  notes       String   @default("")  // Notes libres
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  thesis      Thesis   @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+
+  @@index([thesisId])
+}
+
+// ═══════════════════════════════════════
+// ONGLET RECHERCHE — Persistance N:1 avec Thesis
+// ═══════════════════════════════════════
+
+model ResearchTab {
+  id        String   @id @default(cuid())
+  thesisId  String
+  title     String
+  pinned    Boolean  @default(false)
+  notes     String   @default("")
+  links     String   @default("[]") // JSON : [{ id, title, url }]
+  quotes    String   @default("[]") // JSON : [{ id, text, author }]
+  todos     String   @default("[]") // JSON : [{ id, text, done }]
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  thesis    Thesis   @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+
+  @@index([thesisId])
 }
 
 // ═══════════════════════════════════════

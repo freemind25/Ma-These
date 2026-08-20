@@ -502,5 +502,63 @@ describe("POST /api/verification-publication", () => {
       const data = await res.json();
       expect(data.data.suggestion).toBe("");
     });
+
+    // ── T1 Bug: generateCompletion rejection handling ─────────
+    describe("T1 bug: generateCompletion rejection handling", () => {
+      it("should return 502 when generateCompletion rejects for intro-discussion-coherence", async () => {
+        mockGenerateCompletion.mockRejectedValue(new Error("Service AI indisponible"));
+
+        const req = makeRequest({
+          action: "intro-discussion-coherence",
+          introductionText: "Some intro text",
+          discussionText: "Some discussion text",
+        });
+        const res = await POST(req);
+        expect(res.status).toBe(502);
+        const data = await res.json();
+        expect(data.error).toBe("Service AI indisponible");
+      });
+
+      it("should return 502 when generateCompletion rejects for paragraph-structure", async () => {
+        mockGenerateCompletion.mockRejectedValue(new Error("Rate limit"));
+
+        const req = makeRequest({
+          action: "paragraph-structure",
+          text: "Some text to analyze.",
+        });
+        const res = await POST(req);
+        expect(res.status).toBe(502);
+        const data = await res.json();
+        expect(data.error).toBe("Rate limit");
+      });
+
+      it("should return 502 when generateCompletion rejects for text-table-redundancy", async () => {
+        mockGenerateCompletion.mockRejectedValue(new Error("Modèle introuvable"));
+
+        const req = makeRequest({
+          action: "text-table-redundancy",
+          text: "Text content.",
+          tableOrFigureDescription: "Table description.",
+        });
+        const res = await POST(req);
+        expect(res.status).toBe(502);
+        const data = await res.json();
+ expect(data.error).toBe("Modèle introuvable");
+      });
+
+      it("should return 502 with generic message for non-Error rejection", async () => {
+        mockGenerateCompletion.mockRejectedValue("string error");
+
+        const req = makeRequest({
+          action: "intro-discussion-coherence",
+          introductionText: "A",
+          discussionText: "B",
+        });
+        const res = await POST(req);
+        expect(res.status).toBe(502);
+        const data = await res.json();
+        expect(data.error).toBe("Erreur lors de l'appel à l'IA.");
+      });
+    });
   });
 });

@@ -54,7 +54,7 @@ export function parseCSLJSON(content: string): ParsedReference[] {
   }
 
   return records
-    .filter((r) => r.type)
+    .filter((r): r is CslRecord => r != null && typeof r === "object" && !!r.type)
     .map(mapCslToInternal);
 }
 

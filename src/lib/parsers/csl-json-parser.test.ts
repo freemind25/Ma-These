@@ -618,6 +618,35 @@ describe("parseCSLJSON", () => {
     });
   });
 
+  // ─── Null entries in array (BUG §2.2) ───────────────────────
+  describe("null entries in array", () => {
+    it("filters out null entries without crashing", () => {
+      const input = JSON.stringify([
+        null,
+        { type: "article-journal", title: "Valid" },
+        null,
+        { type: "book", title: "Also Valid" },
+      ]);
+      const result = parseCSLJSON(input);
+      expect(result).toHaveLength(2);
+      expect(result[0].title).toBe("Valid");
+      expect(result[1].title).toBe("Also Valid");
+    });
+
+    it("handles array with only null entries", () => {
+      const input = JSON.stringify([null, null, null]);
+      expect(parseCSLJSON(input)).toEqual([]);
+    });
+
+    it("handles undefined entries in parsed array", () => {
+      // This tests the filter handles non-null, non-object entries
+      const input = '[{"type":"article-journal"},42,true,"hello",null]';
+      const result = parseCSLJSON(input);
+      expect(result).toHaveLength(1);
+      expect(result[0].type).toBe("article-journal");
+    });
+  });
+
   // ─── Output type structure ─────────────────────────────────────
   describe("output type structure", () => {
     it("returns objects with ParsedReference shape", () => {

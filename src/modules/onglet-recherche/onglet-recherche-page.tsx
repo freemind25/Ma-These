@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo, startTransition } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAppStore } from "@/lib/stores/app-store";
 import {
   Card,
   CardContent,
@@ -76,34 +78,342 @@ interface ResearchTab {
   todos: TodoItem[];
 }
 
+/** Shape returned by the API (JSON fields are raw strings). */
+interface DbResearchTab {
+  id: string;
+  thesisId: string;
+  title: string;
+  pinned: boolean;
+  notes: string;
+  links: string;
+  quotes: string;
+  todos: string;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Helpers ─────────────────────────────────────────────
+
 function uid(): string {
   return crypto.randomUUID().slice(0, 8);
 }
 
-function createTab(title: string): ResearchTab {
+function parseJsonField<T>(raw: string | null | undefined, fallback: T): T {
+  if (!raw) return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function parseTab(db: DbResearchTab): ResearchTab {
   return {
-    id: uid(),
-    title,
-    pinned: false,
-    notes: "",
-    links: [],
-    quotes: [],
-    todos: [],
+    id: db.id,
+    title: db.title,
+    pinned: db.pinned,
+    notes: db.notes ?? "",
+    links: parseJsonField<QuickLink[]>(db.links, []),
+    quotes: parseJsonField<KeyQuote[]>(db.quotes, []),
+    todos: parseJsonField<TodoItem[]>(db.todos, []),
   };
+}
+
+// ── Data hooks ──────────────────────────────────────────
+
+interface Thesis {
+  id: string;
+  title: string;
+  author?: string;
+  discipline?: string;
+}
+
+function useTheses() {
+  return useQuery<Thesis[]>({
+    queryKey: ["thesis"],
+    queryFn: async () => {
+      const res = await fetch("/api/thesis");
+      if (!res.ok) throw new Error("Erreur lors du chargement des thèses");
+      const json = await res.json();
+      return json.data as Thesis[];
+    },
+    staleTime: 10 * 1000,
+  });
 }
 
 // ── Component ───────────────────────────────────────────
 
 export function OngletRecherchePage() {
-  // Tabs state
-  const [tabs, setTabs] = useState<ResearchTab[]>(() => [
-    createTab("Recherche principale"),
-  ]);
-  const [activeTabId, setActiveTabId] = useState<string>(
-    () => tabs[0]?.id ?? ""
+  const queryClient = useQueryClient();
+  const { data: theses, isLoading: thesesLoading } = useTheses();
+  const storeThesisId = useAppStore((s) => s.activeThesisId);
+  const setStoreThesisId = useAppStore((s) => s.setActiveThesisId);
+
+  // Thesis selection (same pattern as cadrage-page.tsx)
+  const selectedThesis = useMemo(() => {
+    if (!theses || theses.length === 0) return null;
+    const id = storeThesisId || theses[0].id;
+    return theses.find((t) => t.id === id) || theses[0];
+  }, [theses, storeThesisId]);
+
+  const thesisId = selectedThesis?.id ?? null;
+
+  // ── Fetch research tabs ──
+  const { data: dbTabs, isLoading: tabsLoading } = useQuery<DbResearchTab[]>({
+    queryKey: ["research-tabs", thesisId],
+    queryFn: async () => {
+      if (!thesisId) return [];
+      const res = await fetch(`/api/thesis/${thesisId}/research-tabs`);
+      if (!res.ok) throw new Error("Erreur lors du chargement des onglets");
+      const json = await res.json();
+      return json.data as DbResearchTab[];
+    },
+    enabled: !!thesisId,
+    staleTime: 5 * 1000,
+  });
+
+  // Parse DB tabs → UI tabs
+  const tabs = useMemo(() => (dbTabs ?? []).map(parseTab), [dbTabs]);
+
+  // Active tab ID (local UI state)
+  const [activeTabId, setActiveTabId] = useState<string>("");
+
+  // Track which thesis had its default tab auto-created
+  const [autoCreatedFor, setAutoCreatedFor] = useState<string | null>(null);
+  const prevThesisRef = useRef<string | null>(null);
+
+  // ── Per-tab debounce timers ──
+  const debounceRefs = useRef<
+    Map<string, ReturnType<typeof setTimeout>>
+  >(new Map());
+
+  // Reset active tab when thesis changes
+  useEffect(() => {
+    if (thesisId !== prevThesisRef.current) {
+      prevThesisRef.current = thesisId;
+      startTransition(() => {
+        setActiveTabId("");
+      });
+      // Clear all pending debounce timers
+      debounceRefs.current.forEach((timer) => clearTimeout(timer));
+      debounceRefs.current.clear();
+    }
+  }, [thesisId]);
+
+  // Sync active tab when tabs change
+  useEffect(() => {
+    if (tabs.length === 0) return;
+    if (!activeTabId || !tabs.find((t) => t.id === activeTabId)) {
+      startTransition(() => {
+        setActiveTabId(tabs[0].id);
+      });
+    }
+  }, [tabs, activeTabId]);
+
+  // ── Create mutation (POST) ──
+  const createMutation = useMutation({
+    mutationFn: async (data: {
+      title: string;
+      pinned?: boolean;
+      notes?: string;
+      links?: QuickLink[];
+      quotes?: KeyQuote[];
+      todos?: TodoItem[];
+    }) => {
+      if (!thesisId) throw new Error("No thesis");
+      const res = await fetch(`/api/thesis/${thesisId}/research-tabs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Erreur");
+      return res.json() as Promise<{ data: DbResearchTab }>;
+    },
+    onMutate: async (data) => {
+      if (!thesisId) return { prev: undefined, tempId: "" };
+      await queryClient.cancelQueries({
+        queryKey: ["research-tabs", thesisId],
+      });
+      const prev = queryClient.getQueryData<DbResearchTab[]>([
+        "research-tabs",
+        thesisId,
+      ]);
+      const tempId = `temp-${uid()}`;
+      const optimistic: DbResearchTab = {
+        id: tempId,
+        thesisId,
+        title: data.title,
+        pinned: data.pinned ?? false,
+        notes: data.notes || "",
+        links: JSON.stringify(data.links || []),
+        quotes: JSON.stringify(data.quotes || []),
+        todos: JSON.stringify(data.todos || []),
+        sortOrder: prev?.length ?? 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      queryClient.setQueryData<DbResearchTab[]>(
+        ["research-tabs", thesisId],
+        [...(prev || []), optimistic]
+      );
+      return { prev, tempId };
+    },
+    onSuccess: (data, _vars, context) => {
+      if (thesisId && context) {
+        queryClient.setQueryData<DbResearchTab[]>(
+          ["research-tabs", thesisId],
+          (old) =>
+            old?.map((t) => (t.id === context.tempId ? data.data : t))
+        );
+      }
+      if (thesisId) {
+        queryClient.invalidateQueries({
+          queryKey: ["research-tabs", thesisId],
+        });
+      }
+    },
+    onError: (_err, _vars, context) => {
+      if (thesisId && context?.prev) {
+        queryClient.setQueryData(
+          ["research-tabs", thesisId],
+          context.prev
+        );
+      }
+      toast.error("Erreur lors de la création de l'onglet");
+    },
+  });
+
+  // Auto-create default tab on first visit
+  useEffect(() => {
+    if (
+      thesisId &&
+      !tabsLoading &&
+      tabs.length === 0 &&
+      autoCreatedFor !== thesisId
+    ) {
+      startTransition(() => {
+        setAutoCreatedFor(thesisId);
+      });
+      createMutation.mutate({ title: "Recherche principale" });
+    }
+  }, [thesisId, tabsLoading, tabs.length, autoCreatedFor, createMutation]);
+
+  // ── Save mutation (PUT) ──
+  const saveTabMutation = useMutation({
+    mutationFn: async (tabId: string) => {
+      if (!thesisId) return;
+      const cached = queryClient.getQueryData<DbResearchTab[]>([
+        "research-tabs",
+        thesisId,
+      ]);
+      const tab = cached?.find((t) => t.id === tabId);
+      if (!tab) return;
+      const res = await fetch(`/api/research-tabs/${tabId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: tab.title,
+          pinned: tab.pinned,
+          notes: tab.notes,
+          links: tab.links,
+          quotes: tab.quotes,
+          todos: tab.todos,
+        }),
+      });
+      if (!res.ok) throw new Error("Erreur lors de la sauvegarde");
+    },
+    onSuccess: () => {
+      if (thesisId) {
+        queryClient.invalidateQueries({
+          queryKey: ["research-tabs", thesisId],
+        });
+      }
+    },
+    onError: () => {
+      toast.error("Erreur lors de la sauvegarde");
+      if (thesisId) {
+        queryClient.invalidateQueries({
+          queryKey: ["research-tabs", thesisId],
+        });
+      }
+    },
+  });
+
+  // ── Delete mutation (DELETE) ──
+  const deleteMutation = useMutation({
+    mutationFn: async (tabId: string) => {
+      const res = await fetch(`/api/research-tabs/${tabId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Erreur");
+    },
+    onSuccess: (_data, tabId) => {
+      if (thesisId) {
+        queryClient.invalidateQueries({
+          queryKey: ["research-tabs", thesisId],
+        });
+      }
+      if (tabId === activeTabId) {
+        setActiveTabId("");
+      }
+    },
+    onError: () => {
+      toast.error("Erreur lors de la suppression de l'onglet");
+    },
+  });
+
+  // Unmount cleanup for debounce timers
+  useEffect(() => {
+    const currentMap = debounceRefs.current;
+    return () => {
+      currentMap.forEach((timer) => clearTimeout(timer));
+    };
+  }, []);
+
+  const scheduleSave = useCallback(
+    (tabId: string) => {
+      const existing = debounceRefs.current.get(tabId);
+      if (existing) clearTimeout(existing);
+      const timer = setTimeout(() => {
+        debounceRefs.current.delete(tabId);
+        saveTabMutation.mutate(tabId);
+      }, 1500);
+      debounceRefs.current.set(tabId, timer);
+    },
+    [saveTabMutation]
   );
 
-  // UI state
+  // ── Optimistic updateTab (updates cache + schedules debounced save) ──
+  const updateTab = useCallback(
+    (tabId: string, patch: Partial<ResearchTab>) => {
+      if (!thesisId) return;
+      queryClient.setQueryData<DbResearchTab[]>(
+        ["research-tabs", thesisId],
+        (old) => {
+          if (!old) return old;
+          return old.map((t) => {
+            if (t.id !== tabId) return t;
+            const updated = { ...t };
+            if (patch.title !== undefined) updated.title = patch.title;
+            if (patch.pinned !== undefined) updated.pinned = patch.pinned;
+            if (patch.notes !== undefined) updated.notes = patch.notes;
+            if (patch.links !== undefined)
+              updated.links = JSON.stringify(patch.links);
+            if (patch.quotes !== undefined)
+              updated.quotes = JSON.stringify(patch.quotes);
+            if (patch.todos !== undefined)
+              updated.todos = JSON.stringify(patch.todos);
+            return updated;
+          });
+        }
+      );
+      scheduleSave(tabId);
+    },
+    [thesisId, queryClient, scheduleSave]
+  );
+
+  // ── UI state ──
   const [searchQuery, setSearchQuery] = useState("");
   const [showSummary, setShowSummary] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -124,83 +434,71 @@ export function OngletRecherchePage() {
   // Derived
   const activeTab = tabs.find((t) => t.id === activeTabId);
 
-  // ── Tab helpers ──
-  const updateTab = useCallback(
-    (tabId: string, patch: Partial<ResearchTab>) => {
-      setTabs((prev) =>
-        prev.map((t) => (t.id === tabId ? { ...t, ...patch } : t))
-      );
-    },
-    []
-  );
-
+  // ── Tab handlers (DB-backed) ──
   const addTab = useCallback(
     (title?: string) => {
-      const newTab = createTab(title ?? `Onglet ${tabs.length + 1}`);
-      setTabs((prev) => [...prev, newTab]);
-      setActiveTabId(newTab.id);
+      if (!thesisId) return;
+      const tabTitle = title ?? `Onglet ${tabs.length + 1}`;
+      createMutation.mutate(
+        { title: tabTitle },
+        {
+          onSuccess: (data) => {
+            setActiveTabId(data.data.id);
+          },
+        }
+      );
     },
-    [tabs.length]
+    [thesisId, tabs.length, createMutation]
   );
 
   const closeTab = useCallback(
     (tabId: string) => {
-      setTabs((prev) => {
-        const filtered = prev.filter((t) => t.id !== tabId);
-        if (filtered.length === 0) {
-          const fresh = createTab("Recherche principale");
-          setActiveTabId(fresh.id);
-          return [fresh];
-        }
-        if (activeTabId === tabId) {
-          const idx = prev.findIndex((t) => t.id === tabId);
-          const next = filtered[Math.min(idx, filtered.length - 1)];
-          setActiveTabId(next.id);
-        }
-        return filtered;
-      });
+      // Cancel any pending debounce for this tab
+      const existing = debounceRefs.current.get(tabId);
+      if (existing) {
+        clearTimeout(existing);
+        debounceRefs.current.delete(tabId);
+      }
+      deleteMutation.mutate(tabId);
     },
-    [activeTabId]
+    [deleteMutation]
   );
 
   const duplicateTab = useCallback(
     (tabId: string) => {
       const source = tabs.find((t) => t.id === tabId);
-      if (!source) return;
-      const copy: ResearchTab = {
-        ...source,
-        id: uid(),
-        title: `${source.title} (copie)`,
-        links: source.links.map((l) => ({ ...l, id: uid() })),
-        quotes: source.quotes.map((q) => ({ ...q, id: uid() })),
-        todos: source.todos.map((td) => ({ ...td, id: uid() })),
-      };
-      setTabs((prev) => [...prev, copy]);
-      setActiveTabId(copy.id);
-      toast.success("Onglet dupliqué");
+      if (!source || !thesisId) return;
+      createMutation.mutate(
+        {
+          title: `${source.title} (copie)`,
+          notes: source.notes,
+          links: source.links,
+          quotes: source.quotes,
+          todos: source.todos,
+        },
+        {
+          onSuccess: (data) => {
+            setActiveTabId(data.data.id);
+            toast.success("Onglet dupliqué");
+          },
+        }
+      );
     },
-    [tabs]
+    [tabs, thesisId, createMutation]
   );
 
   const pinTab = useCallback(
     (tabId: string) => {
-      setTabs((prev) =>
-        prev.map((t) =>
-          t.id === tabId ? { ...t, pinned: !t.pinned } : t
-        )
-      );
+      const tab = tabs.find((t) => t.id === tabId);
+      if (!tab) return;
+      updateTab(tabId, { pinned: !tab.pinned });
     },
-    []
+    [tabs, updateTab]
   );
 
   const clearTab = useCallback(
     (tabId: string) => {
-      updateTab(tabId, {
-        notes: "",
-        links: [],
-        quotes: [],
-        todos: [],
-      });
+      updateTab(tabId, { notes: "", links: [], quotes: [], todos: [] });
       toast.success("Contenu de l'onglet effacé");
     },
     [updateTab]
@@ -209,26 +507,32 @@ export function OngletRecherchePage() {
   // ── Search → new tab ──
   const handleSearch = useCallback(() => {
     const q = searchQuery.trim();
-    if (!q) return;
-    const newTab = createTab(`Recherche : ${q}`);
-    newTab.notes = `Recherche lancée : « ${q} »\n\nRésultats et notes à venir…`;
-    newTab.links.push({
+    if (!q || !thesisId) return;
+    const scholarLink: QuickLink = {
       id: uid(),
       title: `Google Scholar — ${q}`,
       url: `https://scholar.google.com/scholar?q=${encodeURIComponent(q)}`,
-    });
-    newTab.links.push({
+    };
+    const openAlexLink: QuickLink = {
       id: uid(),
       title: `OpenAlex — ${q}`,
       url: `https://api.openalex.org/works?search=${encodeURIComponent(q)}&per_page=25`,
-    });
-    setTabs((prev) => [...prev, newTab]);
-    setActiveTabId(newTab.id);
-    setSearchQuery("");
-    toast.success(`Nouvel onglet créé pour « ${q} »`);
-  },
-  [searchQuery]
-  );
+    };
+    createMutation.mutate(
+      {
+        title: `Recherche : ${q}`,
+        notes: `Recherche lancée : « ${q} »\n\nRésultats et notes à venir…`,
+        links: [scholarLink, openAlexLink],
+      },
+      {
+        onSuccess: (data) => {
+          setActiveTabId(data.data.id);
+          setSearchQuery("");
+          toast.success(`Nouvel onglet créé pour « ${q} »`);
+        },
+      }
+    );
+  }, [searchQuery, thesisId, createMutation]);
 
   // ── Rename ──
   const startRename = useCallback(
@@ -246,9 +550,7 @@ export function OngletRecherchePage() {
     }
     setRenamingId(null);
     setRenameValue("");
-  },
-  [renamingId, renameValue, updateTab]
-  );
+  }, [renamingId, renameValue, updateTab]);
 
   // ── Links ──
   const addLink = useCallback(() => {
@@ -266,9 +568,7 @@ export function OngletRecherchePage() {
     setLinkTitle("");
     setLinkUrl("");
     setLinkDialogOpen(false);
-  },
-  [activeTab, linkTitle, linkUrl, updateTab]
-  );
+  }, [activeTab, linkTitle, linkUrl, updateTab]);
 
   const removeLink = useCallback(
     (linkId: string) => {
@@ -294,9 +594,7 @@ export function OngletRecherchePage() {
     setQuoteText("");
     setQuoteAuthor("");
     setQuoteDialogOpen(false);
-  },
-  [activeTab, quoteText, quoteAuthor, updateTab]
-  );
+  }, [activeTab, quoteText, quoteAuthor, updateTab]);
 
   const removeQuote = useCallback(
     (quoteId: string) => {
@@ -320,9 +618,7 @@ export function OngletRecherchePage() {
       todos: [...activeTab.todos, newTodo],
     });
     setTodoInput("");
-  },
-  [activeTab, todoInput, updateTab]
-  );
+  }, [activeTab, todoInput, updateTab]);
 
   const toggleTodo = useCallback(
     (todoId: string) => {
@@ -367,6 +663,58 @@ export function OngletRecherchePage() {
   // Render
   // ────────────────────────────────────────────────────
 
+  // No theses at all
+  if (thesesLoading) {
+    return (
+      <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-2/15">
+            <PanelLeftOpen className="h-5 w-5 text-chart-2" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Onglet Recherche
+            </h1>
+            <p className="text-sm text-muted-foreground">Chargement…</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!theses || theses.length === 0) {
+    return (
+      <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-2/15">
+            <PanelLeftOpen className="h-5 w-5 text-chart-2" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Onglet Recherche
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Parcourez et organisez vos recherches dans des onglets
+            </p>
+          </div>
+        </div>
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
+            <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
+              <FileText className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold">Aucune thèse</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Créez d'abord une thèse pour utiliser les onglets de recherche.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
       {/* Header */}
@@ -404,6 +752,23 @@ export function OngletRecherchePage() {
         </div>
       </div>
 
+      {/* ─── Thesis Selector ─── */}
+      {theses.length > 1 && (
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="text-sm font-medium">Thèse :</span>
+          {theses.map((t) => (
+            <Button
+              key={t.id}
+              variant={t.id === selectedThesis?.id ? "default" : "outline"}
+              size="sm"
+              onClick={() => setStoreThesisId(t.id)}
+            >
+              {t.title}
+            </Button>
+          ))}
+        </div>
+      )}
+
       {/* ─── Session Summary ─── */}
       {showSummary && (
         <Card>
@@ -413,7 +778,7 @@ export function OngletRecherchePage() {
               <CardTitle className="text-lg">Résumé de session</CardTitle>
             </div>
             <CardDescription>
-              Vue d’ensemble de tous vos onglets de recherche
+              Vue d'ensemble de tous vos onglets de recherche
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
@@ -604,7 +969,7 @@ export function OngletRecherchePage() {
                 e.stopPropagation();
                 closeTab(tab.id);
               }}
-              aria-label="Fermer l’onglet"
+              aria-label="Fermer l'onglet"
             >
               <X className="h-3 w-3" />
             </button>
@@ -621,7 +986,15 @@ export function OngletRecherchePage() {
       </div>
 
       {/* ─── Active Tab Content ─── */}
-      {activeTab && (
+      {tabsLoading && tabs.length === 0 ? (
+        <Card>
+          <CardContent className="flex items-center justify-center py-12">
+            <p className="text-sm text-muted-foreground">
+              Chargement des onglets…
+            </p>
+          </CardContent>
+        </Card>
+      ) : activeTab ? (
         <div className="flex flex-col gap-6">
           {/* Tab Header with Quick Actions */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -734,7 +1107,7 @@ export function OngletRecherchePage() {
                         <DialogHeader>
                           <DialogTitle>Ajouter un lien</DialogTitle>
                           <DialogDescription>
-                            Entrez le titre et l’URL du lien.
+                            Entrez le titre et l'URL du lien.
                           </DialogDescription>
                         </DialogHeader>
                         <div className="flex flex-col gap-3 py-2">
@@ -997,7 +1370,7 @@ export function OngletRecherchePage() {
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

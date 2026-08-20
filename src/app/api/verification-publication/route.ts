@@ -112,17 +112,22 @@ Analyse la cohérence entre ces deux sections selon les 4 points demandés. Rép
     { role: "user", content: userPrompt },
   ];
 
-  const result = await generateCompletion({
-    messages,
-    temperature: 0.2,
-    maxTokens: 4096,
-    providerConfig,
-  });
+  let result: Awaited<ReturnType<typeof generateCompletion>>;
+  try {
+    result = await generateCompletion({
+      messages,
+      temperature: 0.2,
+      maxTokens: 4096,
+      providerConfig,
+    });
+  } catch (aiError) {
+    const msg = aiError instanceof Error ? aiError.message : "Erreur lors de l'appel à l'IA.";
+    return NextResponse.json({ error: msg }, { status: 502 });
+  }
 
   // Parse the LLM JSON response
   let parsed;
   try {
-    // Try to extract JSON from possible markdown code blocks
     const raw = result.content.trim();
     const jsonMatch = raw.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, raw];
     parsed = JSON.parse(jsonMatch[1] || raw);
@@ -522,12 +527,18 @@ Pour chaque paragraphe, indique s'il a une ouverture directe ou un problème de 
     { role: "user", content: userPrompt },
   ];
 
-  const result = await generateCompletion({
-    messages,
-    temperature: 0.2,
-    maxTokens: 4096,
-    providerConfig,
-  });
+  let result: Awaited<ReturnType<typeof generateCompletion>>;
+  try {
+    result = await generateCompletion({
+      messages,
+      temperature: 0.2,
+      maxTokens: 4096,
+      providerConfig,
+    });
+  } catch (aiError) {
+    const msg = aiError instanceof Error ? aiError.message : "Erreur lors de l'appel à l'IA.";
+    return NextResponse.json({ error: msg }, { status: 502 });
+  }
 
   let parsed;
   try {
@@ -614,12 +625,18 @@ Le texte reformule-t-il redondamment ce que le tableau/la figure montre déjà ?
     { role: "user", content: userPrompt },
   ];
 
-  const result = await generateCompletion({
-    messages,
-    temperature: 0.2,
-    maxTokens: 2048,
-    providerConfig,
-  });
+  let result: Awaited<ReturnType<typeof generateCompletion>>;
+  try {
+    result = await generateCompletion({
+      messages,
+      temperature: 0.2,
+      maxTokens: 2048,
+      providerConfig,
+    });
+  } catch (aiError) {
+    const msg = aiError instanceof Error ? aiError.message : "Erreur lors de l'appel à l'IA.";
+    return NextResponse.json({ error: msg }, { status: 502 });
+  }
 
   let parsed;
   try {
