@@ -54,7 +54,7 @@ export async function POST(
         number: nextNumber,
         title: validated.title,
         romanNumeral: validated.romanNumeral,
-        parentId: validated.parentId,
+        partId: validated.partId,
         sortOrder: validated.sortOrder ?? existingCount,
         status: "not_started",
       },

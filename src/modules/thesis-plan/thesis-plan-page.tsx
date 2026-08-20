@@ -339,7 +339,7 @@ function ChapterRow({ chapter }: { chapter: ThesisChapter; onAttach?: (ch: Thesi
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          {chapter.parentId && (
+          {chapter.partId && (
             <Badge variant="outline" className="text-[10px] text-muted-foreground">rattaché</Badge>
           )}
           <Badge variant="outline" className={statusInfo.className}>
@@ -388,7 +388,7 @@ function PartBlock({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(part.title);
-  const attachedChapters = chapters.filter((ch) => ch.parentId === part.id);
+  const attachedChapters = chapters.filter((ch) => ch.partId === part.id);
   const partWords = attachedChapters.reduce((s, ch) => s + ch.wordCount, 0);
 
   const handleSave = () => {
@@ -600,7 +600,7 @@ export function ThesisPlanPage() {
         {
           onSuccess: (newCh) => {
             // Attach the newly created chapter to the part
-            updateChapter.mutate({ id: newCh.id, parentId: partId, sortOrder: partIndex });
+            updateChapter.mutate({ id: newCh.id, partId, sortOrder: partIndex });
             toast.success("Chapitre ajouté à la partie");
           },
           onError: () => toast.error("Erreur lors de l'ajout"),
@@ -613,7 +613,7 @@ export function ThesisPlanPage() {
   const handleDetachChapter = useCallback(
     (chapterId: string) => {
       updateChapter.mutate(
-        { id: chapterId, parentId: null },
+        { id: chapterId, partId: null },
         {
           onSuccess: () => toast.success("Chapitre détaché de la partie"),
           onError: () => toast.error("Erreur lors du détachement"),
@@ -648,7 +648,7 @@ export function ThesisPlanPage() {
   const completedChapters = allChapters.filter((ch) => ch.status === "completed").length;
   const totalChapters = allChapters.length;
   const totalParts = parts?.length ?? 0;
-  const attachedChapters = allChapters.filter((ch) => ch.parentId).length;
+  const attachedChapters = allChapters.filter((ch) => ch.partId).length;
 
   return (
     <div className="max-w-6xl mx-auto w-full p-6">
@@ -790,7 +790,7 @@ export function ThesisPlanPage() {
                                 onDelete={handleDeletePart}
                                 onAddChapter={handleAddChapterToPart}
                                 onAttachChapter={(ch, partId) => {
-                                  updateChapter.mutate({ id: ch.id, parentId: partId });
+                                  updateChapter.mutate({ id: ch.id, partId });
                                   toast.success(`Chapitre rattaché à la partie`);
                                 }}
                                 onDetachChapter={handleDetachChapter}

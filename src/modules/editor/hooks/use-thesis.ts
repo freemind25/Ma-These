@@ -19,7 +19,7 @@ export interface ThesisChapter {
   status: string;
   directorFeedback?: string | null;
   sortOrder: number;
-  parentId?: string | null;
+  partId?: string | null;
 }
 
 export interface ThesisPart {
@@ -178,7 +178,7 @@ export function useUpdateChapter() {
     mutationFn: async ({
       id,
       ...data
-    }: { id: string; title?: string; content?: string; plainText?: string; wordCount?: number; status?: string; sortOrder?: number; parentId?: string | null }) => {
+    }: { id: string; title?: string; content?: string; plainText?: string; wordCount?: number; status?: string; sortOrder?: number; partId?: string | null }) => {
       const res = await fetch(`/api/chapters/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

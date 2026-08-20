@@ -1,8 +1,8 @@
 # ETAT-PROJET-THESISFRAME.md
 
 > **Document unique de vérité — mis à jour après chaque lot.**
-> Dernière mise à jour : Lot 6bis (exécution instantanée)
-> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md
+> Dernière mise à jour : Lot 7 (Phase A — migration parentId→partId FK Prisma)
+> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md
 
 ---
 
@@ -19,7 +19,7 @@
 | 5 | Références bibliographiques | ✅ Fonctionne | Audit forensique | CRUD, filtres, favoris, import BibTeX/RIS/CSL-JSON, export | — |
 | 6 | Méthodologie (guides) | ✅ Fonctionne | Audit forensique | Contenu statique, checklist interactive | — |
 | 7 | Articles scientifiques (IMRaD) | ✅ Fonctionne | Audit forensique | Guide IMRaD statique + checklist soumission | — |
-| 8 | Plan de thèse + LaTeX | ✅ Fonctionne | Lot 6bis | CRUD Parties (Lot 6), toggle structureMode persisté (Lot 6), LaTeX. **parentId utilisé au lieu de partId FK** (H2-03 Lot 2) | Dette intégrité parentId/partId |
+| 8 | Plan de thèse + LaTeX | ✅ Fonctionne | Lot 7 | CRUD Parties (Lot 6), toggle structureMode persisté (Lot 6), LaTeX. **FK Prisma `partId` avec `onDelete: SetNull`** (Lot 7 — dette d'intégrité résolue) | — |
 | 9 | Outils IA (carnet + consensus) | ✅ Fonctionne | Audit forensique | CRUD sources/entrées, consensus IA | — |
 | 10 | Bases de données académiques | ✅ Fonctionne | Audit forensique | Répertoire statique de 27 bases | — |
 | 11 | Journaux Open Access | ✅ Fonctionne | Audit forensique | Recherche OpenAlex + DOAJ, BUG-11 corrigé | — |
@@ -97,9 +97,9 @@
 
 ### 2.4 — Dette d'intégrité référentielle
 
-| Élément | Priorité | Phase | Description |
-|---|---|---|---|
-| `parentId` → `partId` FK Prisma | 🔴 Critique | A | La relation Chapter↔Part utilise un champ générique `parentId` sans contrainte d'intégrité. Le Lot 2 affirmait avoir ajouté `partId` avec FK typée et `onDelete: SetNull` — **jamais fait** (H2-03 confirmé Lot 6bis). |
+| Élément | Priorité | Phase | Description | Statut |
+|---|---|---|---|---|
+| `parentId` → `partId` FK Prisma | 🔴 Critique | A | La relation Chapter↔Part utilisait un champ générique `parentId` sans contrainte. Le Lot 2 affirmait avoir ajouté `partId` avec FK — **jamais fait** (H2-03). | ✅ **Résolu par Lot 7** |
 
 ---
 
@@ -148,6 +148,7 @@
 | Audit forensique | Août 2025 | État des lieux exhaustif (aucune correction) | ❌ Échec (cadrage-page.tsx:332) | 1 254 tests, 50 fichiers | 0 erreurs, 152 warnings | AUDIT-FORENSIQUE-THESISFRAME.md |
 | Lot 6 | Août 2025 | 4 chantiers : (1) build, (2) Harper, (3) CRUD Part + structureMode, (4) tests | ✅ OK (49 routes) | 1 280 tests, 53 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-6-CORRECTIONS.md |
 | Lot 6bis | Août 2025 | Clarifications : §1 parentId/partId, §2 routes, §3 tests, §4 research-tabs/[id] | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | — (non exécuté) | RAPPORT-LOT-6BIS-CLARIFICATIONS.md |
+| Lot 7 | Août 2025 | Phase A : migration `parentId` → `partId` FK Prisma (onDelete: SetNull) | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-7-CORRECTIONS.md |
 
 ---
 
@@ -161,7 +162,8 @@
 | Routes API | 47 dynamiques + 2 pages statiques = 49 totales | Lot 6bis |
 | Modèles Prisma | 20 | Audit forensique |
 | Fonctionnalités | 24 ✅ / 5 ⚠️ / 1 🔴 / 31 total | Lot 6bis |
-| Bugs ouverts | 14 BUG + 5 modes IA orphelins + 1 dette intégrité | Lot 6bis |
+| Bugs ouverts | 14 BUG + 5 modes IA orphelins | Lot 7 |
+| Dette intégrité | ✅ Résolue (Lot 7) | Lot 7 |
 | DT ouverte | 6 | Lot 6bis |
 | Décisions en attente | 2 (E2, E-Cat) | Lot 6bis |
 
@@ -181,3 +183,4 @@
 | AUDIT-FORENSIQUE-THESISFRAME.md | ✅ Fiable | Vérification directe du code, pré-règles de preuve |
 | RAPPORT-LOT-6-CORRECTIONS.md | ✅ Fiable | Pré-règles de preuve respectées. Incohérence mineure sur le comptage de routes (§2 du Lot 6bis) |
 | RAPPORT-LOT-6BIS-CLARIFICATIONS.md | ✅ Fiable | Pré-règles de preuve respectées |
+| RAPPORT-LOT-7-CORRECTIONS.md | ✅ Fiable | Pré-règles de preuve respectées |

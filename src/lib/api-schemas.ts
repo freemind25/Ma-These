@@ -51,7 +51,7 @@ export const chapterStatuses = [
 export const createChapterSchema = z.object({
   title: z.string().min(1, "Le titre est requis"),
   romanNumeral: z.string().optional(),
-  parentId: z.string().optional(),
+  partId: z.string().optional(),
   sortOrder: z.number().int().min(0).optional(),
 });
 
@@ -65,6 +65,7 @@ export const updateChapterSchema = z.object({
   directorFeedback: z.string().optional(),
   sortOrder: z.number().int().min(0).optional(),
   romanNumeral: z.string().optional(),
+  partId: z.string().optional(),
 });
 
 // ═══════════════════════════════════════

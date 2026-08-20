@@ -320,7 +320,7 @@ describe("createChapterSchema", () => {
     const data = {
       title: "Chapter 1",
       romanNumeral: "I",
-      parentId: "parent-123",
+      partId: "parent-123",
       sortOrder: 0,
     };
     expect(createChapterSchema.parse(data)).toEqual(data);

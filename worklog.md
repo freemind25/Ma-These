@@ -3551,3 +3551,30 @@ Stage Summary:
 - BUG-22 recommandé exclu du Lot 10 (effort disproportionné) → décision produit
 - DT-05 à 10 recommandés comme « à décider » plutôt que « à corriger »
 - BUG-08, 09, 10 revérifiés : confirmés non résolus
+
+---
+Task ID: Lot-7
+Agent: Main Agent
+Task: Lot 7 — Phase A : Migration parentId → partId FK Prisma
+
+Work Log:
+- Git checkpoint pre-Lot 7 (commit 6db2c44)
+- Vérifié que parentId sur Chapter est utilisé exclusivement pour le rattachement aux Parts (box-cloud, diagrammes, analyse-champ utilisent parentId sur leurs propres types locaux)
+- Modifié prisma/schema.prisma : parentId → partId, ajout FK part Part? avec onDelete: SetNull, ajout chapters Chapter[] sur Part
+- Modifié src/lib/api-schemas.ts : createChapterSchema et updateChapterSchema : parentId → partId
+- Modifié src/modules/editor/hooks/use-thesis.ts : ThesisChapter et useUpdateChapter : parentId → partId
+- Modifié src/app/api/thesis/[id]/chapters/route.ts : parentId → partId dans db.chapter.create
+- Modifié src/modules/thesis-plan/thesis-plan-page.tsx : 6 occurrences parentId → partId (filtre, mutation, badge, detach)
+- Modifié 3 fichiers de test : api-schemas.test.ts, thesis/[id]/chapters/route.test.ts, chapters/[id]/route.test.ts
+- bun run db:push → schéma synchronisé, Prisma Client régénéré
+- Vérifié 0 chapitres avec partId en base (données vierges, pas de migration nécessaire)
+- Vérifié zéro occurrence de parentId dans le code source Chapter-related
+
+Stage Summary:
+- Build : ✅ Compiled successfully (49 routes)
+- Tests : 1 290 passants, 54 fichiers, 0 échec
+- Lint : 0 erreur, 154 warnings
+- FK Prisma partId avec onDelete: SetNull : implémentée et vérifiée
+- Aucun double mécanisme : parentId complètement supprimé de Chapter
+- Rapport : RAPPORT-LOT-7-CORRECTIONS.md
+- ETAT-PROJET-THESISFRAME.md mis à jour

@@ -28,7 +28,7 @@ const mockChapter = (overrides = {}) => ({
   content: '',
   plainText: '',
   wordCount: 0,
-  parentId: null,
+  partId: null,
   createdAt: new Date(),
   updatedAt: new Date(),
   ...overrides,

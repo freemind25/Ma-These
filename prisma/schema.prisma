@@ -48,15 +48,16 @@ model Chapter {
   targetWordCount Int       @default(0)
   status          String    @default("not_started") // not_started | in_progress | draft | review | completed
   directorFeedback String?
-  parentId        String?
+  partId          String?
   sortOrder       Int       @default(0)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
   thesis          Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+  part            Part?     @relation(fields: [partId], references: [id], onDelete: SetNull)
 
   @@index([thesisId])
-  @@index([parentId])
+  @@index([partId])
 }
 
 model Part {
@@ -67,7 +68,8 @@ model Part {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  thesis    Thesis  @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+  thesis    Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+  chapters  Chapter[]
 
   @@index([thesisId])
 }
