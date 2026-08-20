@@ -3501,3 +3501,28 @@ Stage Summary:
 - BUG-19 (structureMode toggle): ✅ Corrigé
 - BUG-25 (désynchronisation modes): ✅ Corrigé
 - Build error (cadrage-page): ✅ Corrigé
+
+---
+Task ID: 1
+Agent: Main Agent (Lot 6bis)
+Task: Lot 6bis — Clarifications et levée des incohérences (PROMPT-LOT6BIS-CLARIFICATIONS.md)
+
+Work Log:
+- Lecture du document de mission PROMPT-LOT6BIS-CLARIFICATIONS.md
+- §1 : Lecture intégrale de prisma/schema.prisma — modèles Chapter et Part extraits. Recherche rg 'partId' et 'parentId' sur le codebase.
+- §1 constat : partId n'existe PAS dans le schéma Prisma. parentId seul est utilisé. Cas H2-03 Lot 2 confirmé.
+- §2 : npx next build exécuté. Sortie complète capturée. 49 routes totales (47 API + 2 pages statiques).
+- §2 constat : Le rapport Lot 6 affirmait "45 routes (47 dont 2 nouvelles)" — incohérent. Le vrai chiffre est 49.
+- §3 : Analyse de la répartition des 26 tests entre chantiers. Chantier 3 = 9 tests (Parts), Chantier 4 = 17 tests (doctoral-toolbox + research-tabs liste).
+- §4 : Vérifié que src/app/api/research-tabs/[id]/route.ts EXISTE (GET/PUT/DELETE). Aucun fichier .test.ts présent.
+- §4 action : Créé src/app/api/research-tabs/[id]/route.test.ts avec 10 tests (3 GET + 5 PUT + 2 DELETE). Tous passent.
+- Suite complète après correction : 54 fichiers, 1290 tests, 0 échec.
+- Rédaction du rapport RAPPORT-LOT-6BIS-CLARIFICATIONS.md.
+
+Stage Summary:
+- §1 : Anomalie H2-03 confirmée (partId jamais ajouté par Lot 2). Aucun double mécanisme. Migration parentId→partId proposée pour lot futur.
+- §2 : 49 routes (47 API + 2 pages). Le "45 routes (47 dont 2 nouvelles)" du Lot 6 était incohérent.
+- §3 : Attribution corrigée : Chantier 3 = 9 tests, Chantier 4 = 17 tests (pas 26 au Chantier 3).
+- §4 : 10 tests ajoutés pour research-tabs/[id]/route.ts. Suite : 1290 tests, 0 échec.
+- Rapport produit : RAPPORT-LOT-6BIS-CLARIFICATIONS.md
+- Fichier de test créé : src/app/api/research-tabs/[id]/route.test.ts
