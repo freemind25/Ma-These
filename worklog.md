@@ -3628,3 +3628,29 @@ Stage Summary:
 - 12 → 17 modes dans WRITING_MODES
 - Fonctionnalité #3 (Assistant IA) passe de ⚠️ Partiel à ✅ Fonctionne
 - Aucune extension de périmètre
+---
+Task ID: Lot-8bis
+Agent: Main Agent
+Task: Lot 8bis — Vérification runtime des 5 modes IA
+
+Work Log:
+- Checkpoint Git : tag pre-lot-8bis sur commit c499009
+- Serveur dev Turbopack instable (crash après 1-2 requêtes) — basculé sur build production standalone
+- npx next build → Compiled successfully (20.7s, 49 routes)
+- node .next/standalone/server.js sur port 3001
+- Testé 5 modes par curl -X POST /api/ai-writing :
+  - academic-reformulation → 200, 4 reformulations académiques
+  - deblocage → 200, stratégies + exercices + ressources bibliographiques
+  - freeform → 200, JSON valide 3 nœuds + 2 connexions (context: diagrammes)
+  - improvement → 200, plan P1/P2/P3 avec 9 ressources (context: compétences)
+  - revue-litterature → 200, structure PRISMA 6 sections (context: PICO)
+- npx vitest run → 54 fichiers, 1290 tests, 0 échec
+- bun run lint → 0 erreur, 154 warnings
+- Mis à jour ETAT-PROJET-THESISFRAME.md (ajout ligne Lot 8bis)
+- Créé RAPPORT-LOT-8BIS-VERIFICATION.md
+
+Stage Summary:
+- Les 5 modes retournent tous HTTP 200 avec contenu exploitable
+- Aucune correction de code nécessaire
+- Phase B closes
+- Point cosmétique documenté : 3 icônes absentes de ICON_MAP (hors périmètre)
