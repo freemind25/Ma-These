@@ -147,6 +147,42 @@ describe('PUT /api/chapters/[id]', () => {
       expect.objectContaining({ where: { id: 'ch-99' } }),
     );
   });
+
+  // ── Lot 9bis : sortOrder update (handleMoveChapter) ─────────────────────
+  it('updates chapter sortOrder for chapter reorder (BUG-09)', async () => {
+    const updated = mockChapter({ sortOrder: 2 });
+    mockUpdate.mockResolvedValue(updated);
+
+    const res = await PUT(
+      makeRequest('PUT', { sortOrder: 2 }),
+      { params: makeParams('ch-1') },
+    );
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json.data.sortOrder).toBe(2);
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'ch-1' },
+        data: { sortOrder: 2 },
+      }),
+    );
+  });
+
+  it('accepts sortOrder: 0 (first position)', async () => {
+    const updated = mockChapter({ sortOrder: 0 });
+    mockUpdate.mockResolvedValue(updated);
+
+    const res = await PUT(
+      makeRequest('PUT', { sortOrder: 0 }),
+      { params: makeParams() },
+    );
+
+    expect(res.status).toBe(200);
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { sortOrder: 0 } }),
+    );
+  });
 });
 
 // ── DELETE /api/chapters/[id] ────────────────────────────────────────────

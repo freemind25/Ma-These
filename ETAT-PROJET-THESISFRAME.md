@@ -1,8 +1,8 @@
 # ETAT-PROJET-THESISFRAME.md
 
 > **Document unique de vérité — mis à jour après chaque lot.**
-> Dernière mise à jour : Lot 9 (Phase C — BUG-08/09/10/18/20)
-> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md, RAPPORT-LOT-9-VERIFICATION.md
+> Dernière mise à jour : Lot 9bis (complément gouvernance + preuve fonctionnelle)
+> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md, RAPPORT-LOT-9-VERIFICATION.md, RAPPORT-LOT-9BIS-VERIFICATION.md
 
 ---
 
@@ -136,6 +136,7 @@
 | Lot 8 | Août 2025 | Phase B : 5 modes IA orphelins ajoutés dans WRITING_MODES | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-8-CORRECTIONS.md |
 | Lot 8bis | Août 2025 | Complément : vérification runtime des 5 modes (200 + contenu exploitable) | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-8BIS-VERIFICATION.md |
 | Lot 9 | Août 2025 | Phase C : vérification + correction de BUG-08/09/10/18/20 (5/5 annoncés à tort par Lot 2) | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-9-VERIFICATION.md |
+| Lot 9bis | Août 2025 | Complément : §7.1 fiabilité Lot 2 (0/7), 2 tests ciblés sortOrder (BUG-09), mise à jour ETAT-PROJET | ✅ OK (49 routes) | 1 292 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-9BIS-VERIFICATION.md |
 
 ---
 
@@ -144,7 +145,7 @@
 | Métrique | Valeur | Dernière vérification |
 |---|---|---|
 | Build | ✅ Compiled successfully | Lot 9 |
-| Tests | 1 290 passants, 0 échec, 54 fichiers | Lot 6bis |
+| Tests | 1 292 passants, 0 échec, 54 fichiers | Lot 9bis |
 | Lint | 0 erreur, 154 warnings (inchangé depuis Lot 6) | Lot 7bis |
 | Routes API | 47 dynamiques + 2 pages statiques = 49 totales | Lot 6bis |
 | Modèles Prisma | 20 | Audit forensique |
@@ -160,10 +161,28 @@
 
 > Après la découverte de deux cas H2-03 (Lot 2 affirmant un travail jamais réalisé), tout rapport antérieur à l'audit forensique est considéré **non fiable par défaut**. Seules les affirmations revérifiées avec preuve dans l'audit forensique ou dans les Lots 6/6bis font foi.
 
+### 7.1 — Inventaire détaillé de la fiabilité du Lot 2
+
+> Le Lot 2 (juin 2025) est le lot le plus problématique du projet. Il n'a produit aucun rapport structuré (seul un worklog). Sur les **7 affirmations vérifiables** depuis l'audit forensique, **zéro (0/7) est confirmée comme correctement exécutée par le Lot 2**.
+
+| # | Affirmation du Lot 2 | Vérifié par | Résultat | Détail |
+|---|---|---|---|---|
+| 1 | Persistance Boîte doctorale (DB) | Lot 6bis (H2-03) | ❌ Attribution incertaine | Le code fonctionne aujourd'hui, mais le motif H2-03 identifié par l'audit indique que le Lot 2 affirmait un travail dont la paternité ne peut être établie |
+| 2 | Persistance Onglet recherche (DB) | Lot 6bis (H2-03) | ❌ Attribution incertaine | Même pattern que #1 — fonctionne mais attribution Lot 2 non confirmable |
+| 3 | Ajout FK `partId` avec contrainte (relation Part↔Chapter) | Lot 7 (audit + code) | ❌ Jamais fait | Le Lot 2 affirmait avoir migré `parentId` → `partId` avec FK. L'audit a prouvé que `parentId` était toujours en place. Lot 7 a réellement effectué cette migration |
+| 4 | BUG-08 corrigé (props `onAddChapter`/`onDelete`) | Lot 9 (lecture de code) | ❌ Non corrigé | `ChapterTabs` et `ChapterHeader` n'avaient jamais reçu ces props. Corrigé par Lot 9 |
+| 5 | BUG-09 corrigé (réordonnancement chapitres) | Lot 9 (lecture de code) | ❌ Non corrigé | Zéro ligne de code drag/reorder dans le module éditeur. Corrigé par Lot 9 |
+| 6 | BUG-10 corrigé (`directorChatContext`) | Lot 9 (lecture de code) | ❌ Non corrigé | Aucun `thesisContext` passé au chat directeur. Corrigé par Lot 9 |
+| 7 | 604 tests créés | Lot 4-5 (reconstruction) | ❌ Perdus | Les tests étaient censés exister mais ont été perdus. Lot 4-5 a dû reconstruire 1 247 tests à partir de zéro |
+
+**Bilan : 0/7 confirmé correct.** Le Lot 2 est le seul lot du projet sans aucun rapport structuré et avec un taux de vérification négatif (toutes les affirmations revérifiables se sont avérées fausses ou non attribuables).
+
+### 7.2 — Table de fiabilité
+
 | Rapport | Fiabilité | Justification |
 |---|---|---|
 | RAPPORT-LOT1-CORRECTIONS.md | ⚠️ Partiellement fiable | Corrections BUG-01 à 06 vérifiées conformes. Mais : build non vérifié après intervention, et le module Cadrage créé (BUG-03) a introduit l'erreur de build DT-01 |
-| Lot 2 (worklog seul) | ❌ Non fiable | Deux cas H2-03 confirmés : persistance Boîte doctorale/Onglet recherche (bien que finalement fonctionnel) et relation Part↔Chapter (jamais implémentée). Aucun rapport structuré |
+| Lot 2 (worklog seul) | ❌ Non fiable | **0/7 items revérifiés confirmés corrects.** Voir §7.1 pour l'inventaire exhaustif. Deux cas H2-03 confirmés (boîte doctorale/onglet recherche + Part↔Chapter). 3 bugs (08, 09, 10) annoncés corrigés mais non corrigés (vérifié Lot 9). Tests créés puis perdus. Aucun rapport structuré. |
 | Lot 3 (worklog seul) | ❌ Non vérifiable | Aucun rapport. Les tests créés ont été perdus |
 | Lot 4-5 (worklog seul) | ⚠️ Partiellement fiable | Reconstruction de tests documentée mais non vérifiable comme fonctionnellement équivalente à l'original |
 | RAPPORT-LOT-5BIS-CLOTURE.md | ⚠️ Partiellement fiable | BUG-12 et BUG-23 déclarés ouverts alors qu'ils sont résolus (écarts D-01 et D-03 de l'audit) |
@@ -174,3 +193,4 @@
 | RAPPORT-LOT-7BIS-GOUVERNANCE.md | ✅ Fiable | Vérifications indépendantes avec preuve |
 | RAPPORT-LOT-8-CORRECTIONS.md | ✅ Fiable | Pré-règles de preuve respectées, validation explicite du périmètre |
 | RAPPORT-LOT-9-VERIFICATION.md | ✅ Fiable | Pré-règles de preuve respectées, vérification avant correction, validation explicite du périmètre |
+| RAPPORT-LOT-9BIS-VERIFICATION.md | ✅ Fiable | Complément gouvernance, tests ciblés ajoutés, mise à jour fiabilité Lot 2 |
