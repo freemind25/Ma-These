@@ -1,8 +1,8 @@
 # ETAT-PROJET-THESISFRAME.md
 
 > **Document unique de vérité — mis à jour après chaque lot.**
-> Dernière mise à jour : Lot 7bis (complément de gouvernance)
-> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md
+> Dernière mise à jour : Lot 8 (Phase B — 5 modes IA orphelins)
+> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md
 
 ---
 
@@ -14,7 +14,7 @@
 |---|---|---|---|---|---|
 | 1 | Tableau de bord | ✅ Fonctionne | Lot 6bis | 4 stat cards, 6 actions rapides, grille 14 modules | — |
 | 2 | Éditeur de thèse (Tiptap) | ⚠️ Partiel | Lot 6bis | Éditeur fonctionnel, auto-save 2.5s. BUG-01,02,06,07 corrigés | BUG-08, 09, 10 |
-| 3 | Assistant IA (modes d'écriture) | ⚠️ Partiel | Lot 6bis | 12 modes dans WRITING_MODES (dont harper ajouté Lot 6). 5 modes manquants hors périmètre | BUG-26, 5 modes orphelins |
+| 3 | Assistant IA (modes d'écriture) | ✅ Fonctionne | Lot 8 | 17 modes dans WRITING_MODES. 5 modes orphelins ajoutés Lot 8 (academic-reformulation, deblocage, freeform, improvement, revue-litterature) | BUG-26 |
 | 4 | Chat Directeur | ✅ Fonctionne | Audit forensique | Critique-only, max 2 fiches, auto-scroll | BUG-10 |
 | 5 | Références bibliographiques | ✅ Fonctionne | Audit forensique | CRUD, filtres, favoris, import BibTeX/RIS/CSL-JSON, export | — |
 | 6 | Méthodologie (guides) | ✅ Fonctionne | Audit forensique | Contenu statique, checklist interactive | — |
@@ -48,10 +48,10 @@
 
 | Statut | Nombre | IDs |
 |---|---|---|
-| ✅ Fonctionne | **24** | 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 25, 26, 28, 30, 31 |
-| ⚠️ Partiel | **5** | 3, 13, 23, 24, 27, 29 |
+| ✅ Fonctionne | **25** | 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 25, 26, 28, 30, 31 |
+| ⚠️ Partiel | **4** | 13, 23, 24, 27, 29 |
 | 🔴 Cassé / Faux | **1** | 22 |
-| **Total** | **31** (note : 24+5+1=30 — la fonctionnalité 3 « Assistant IA » et le Chat Directeur #4 sont comptés séparément) | |
+| **Total** | **31** | |
 
 ---
 
@@ -87,13 +87,7 @@
 
 ### 2.3 — Modes IA orphelins (découverts Lot 6)
 
-| Mode | Page qui l'appelle | Priorité | Phase |
-|---|---|---|---|
-| `academic-reformulation` | Page dédiée | 🟠 Impact utilisateur | B |
-| `deblocage` | Page dédiée | 🟠 Impact utilisateur | B |
-| `freeform` | Page dédiée | 🟠 Impact utilisateur | B |
-| `improvement` | Page dédiée | 🟠 Impact utilisateur | B |
-| `revue-litterature` | Page dédiée | 🟠 Impact utilisateur | B |
+> ✅ **Résolu par Lot 8** — les 5 modes ont été ajoutés dans `WRITING_MODES` avec des systemPrompt adaptés à leur contexte d'appel.
 
 ### 2.4 — Dette d'intégrité référentielle
 
@@ -150,6 +144,7 @@
 | Lot 6bis | Août 2025 | Clarifications : §1 parentId/partId, §2 routes, §3 tests, §4 research-tabs/[id] | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | — (non exécuté) | RAPPORT-LOT-6BIS-CLARIFICATIONS.md |
 | Lot 7 | Août 2025 | Phase A : migration `parentId` → `partId` FK Prisma (onDelete: SetNull) | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-7-CORRECTIONS.md |
 | Lot 7bis | Août 2025 | Complément gouvernance : 4 points de conformité (aucune correction technique) | — (pas de build) | — (pas de tests) | 154 warnings (inchangé) | RAPPORT-LOT-7BIS-GOUVERNANCE.md |
+| Lot 8 | Août 2025 | Phase B : 5 modes IA orphelins ajoutés dans WRITING_MODES | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-8-CORRECTIONS.md |
 
 ---
 
@@ -162,8 +157,8 @@
 | Lint | 0 erreur, 154 warnings (inchangé depuis Lot 6) | Lot 7bis |
 | Routes API | 47 dynamiques + 2 pages statiques = 49 totales | Lot 6bis |
 | Modèles Prisma | 20 | Audit forensique |
-| Fonctionnalités | 24 ✅ / 5 ⚠️ / 1 🔴 / 31 total | Lot 6bis |
-| Bugs ouverts | 14 BUG + 5 modes IA orphelins | Lot 7 |
+| Fonctionnalités | 25 ✅ / 4 ⚠️ / 1 🔴 / 31 total | Lot 8 |
+| Bugs ouverts | 14 BUG + 0 mode orphelin | Lot 8 |
 | Dette intégrité | ✅ Résolue (Lot 7) | Lot 7 |
 | DT ouverte | 6 | Lot 6bis |
 | Décisions en attente | 2 (E2, E-Cat) | Lot 6bis |
@@ -185,3 +180,5 @@
 | RAPPORT-LOT-6-CORRECTIONS.md | ✅ Fiable | Pré-règles de preuve respectées. Incohérence mineure sur le comptage de routes (§2 du Lot 6bis) |
 | RAPPORT-LOT-6BIS-CLARIFICATIONS.md | ✅ Fiable | Pré-règles de preuve respectées |
 | RAPPORT-LOT-7-CORRECTIONS.md | ✅ Fiable | Pré-règles de preuve respectées |
+| RAPPORT-LOT-7BIS-GOUVERNANCE.md | ✅ Fiable | Vérifications indépendantes avec preuve |
+| RAPPORT-LOT-8-CORRECTIONS.md | ✅ Fiable | Pré-règles de preuve respectées, validation explicite du périmètre |

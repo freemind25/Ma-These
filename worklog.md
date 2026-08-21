@@ -3597,3 +3597,34 @@ Stage Summary:
 - §3 : ✅ Conforme (les 2 warnings n'existent pas, aucune correction nécessaire)
 - §4 : ❌ Non conforme (aucune validation explicite du séquencement avant Lot 7)
 - Phase B reste en attente de validation explicite
+---
+Task ID: Lot-8
+Agent: Main Agent
+Task: Lot 8 — Phase B : 5 modes IA orphelins
+
+Work Log:
+- Checkpoint Git : tag pre-lot-8 sur commit 69cfe23
+- Lu WRITING_MODES (12 modes existants, format WritingMode)
+- Lu les 5 pages appelantes pour comprendre le contexte de chaque mode
+- Découvert que PROPOSITION-SEQUENCEMENT avait inversé les correspondances (academic-reformulation ↔ improvement)
+- Correspondance réelle vérifiée par rg : academic-reformulation→apa-composer, improvement→livres-competences
+- Ajouté 5 entrées dans src/data/ai-writing-modes.ts :
+  - academic-reformulation (reformulation académique, apa-composer, t=0.5, writing)
+  - deblocage (coach anti-blocage doctoral, deblocage-ecriture, t=0.8, writing)
+  - freeform (génération libre déléguée au context, diagrammes, t=0.6, generation)
+  - improvement (conseiller pédagogique, livres-competences, t=0.6, generation)
+  - revue-litterature (expert SLR/PRISMA, outils-slr, t=0.5, analysis)
+- 3 icônes absentes de ICON_MAP (RefreshCcw, AlertTriangle, TrendingUp) → fallback Sparkles (hors périmètre)
+- npx next build → ✅ Compiled successfully (49 routes)
+- npx vitest run → 54 fichiers, 1290 tests, 0 échec
+- bun run lint → 0 erreur, 154 warnings (inchangé)
+- Mis à jour ETAT-PROJET-THESISFRAME.md (#3→✅, bilan 25✅/4⚠️/1🔴, §2.3 résolu)
+- Créé RAPPORT-LOT-8-CORRECTIONS.md
+
+Stage Summary:
+- Build : ✅ Compiled successfully (49 routes)
+- Tests : 1 290 passants, 54 fichiers, 0 échec
+- Lint : 0 erreur, 154 warnings (inchangé)
+- 12 → 17 modes dans WRITING_MODES
+- Fonctionnalité #3 (Assistant IA) passe de ⚠️ Partiel à ✅ Fonctionne
+- Aucune extension de périmètre
