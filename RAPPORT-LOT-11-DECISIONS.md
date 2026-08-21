@@ -106,4 +106,4 @@ Justification : périmètre SaaS multi-utilisateur, incompatible avec le cas d'u
 | Décisions en attente | 0 |
 | DT ouvertes | 2 (DT-05, DT-07) |
 | Extensions de périmètre | Aucune |
-| Commit | `PLACEHOLDER_HASH` |
+| Commit | `311381c9ea542f79230d00d5c918489a10e7869b` |
