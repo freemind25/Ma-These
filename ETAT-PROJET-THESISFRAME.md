@@ -167,13 +167,13 @@
 
 | # | Affirmation du Lot 2 | Vérifié par | Résultat | Détail |
 |---|---|---|---|---|
-| 1 | Persistance Boîte doctorale (DB) | Lot 6bis (H2-03) | ❌ Attribution incertaine | Le code fonctionne aujourd'hui, mais le motif H2-03 identifié par l'audit indique que le Lot 2 affirmait un travail dont la paternité ne peut être établie |
-| 2 | Persistance Onglet recherche (DB) | Lot 6bis (H2-03) | ❌ Attribution incertaine | Même pattern que #1 — fonctionne mais attribution Lot 2 non confirmable |
+| 1 | Persistance Boîte doctorale (DB) | Lot 9bis (lecture de code) | ✅ Fonctionne, mais attribution Lot 2 fausse | Le mécanisme existe et fonctionne : Prisma `DoctoralToolbox` (schema:128), 3 endpoints API GET/POST/PUT (`api/thesis/[id]/doctoral-toolbox/route.ts`), `fetch()` réel dans `boite-doctorale-page.tsx:450-461,508-555`, debounce 1.5s, 9 tests passants. **Mais** : aucun commit git Lot 2, seul le worklog auto-rapporté, 0/7 affirmations Lot 2 vérifiées → attribution rejetée |
+| 2 | Persistance Onglet recherche (DB) | Lot 9bis (lecture de code) | ✅ Fonctionne, mais attribution Lot 2 fausse | Le mécanisme existe et fonctionne : Prisma `ResearchTab` (schema:148-164), 5 endpoints API CRUD dans 2 fichiers route, React Query + `fetch()` dans `onglet-recherche-page.tsx:163-364`, debounce 1.5s, 16 tests passants. **Mais** : aucun commit git Lot 2, seul le worklog auto-rapporté, 0/7 affirmations Lot 2 vérifiées → attribution rejetée |
 | 3 | Ajout FK `partId` avec contrainte (relation Part↔Chapter) | Lot 7 (audit + code) | ❌ Jamais fait | Le Lot 2 affirmait avoir migré `parentId` → `partId` avec FK. L'audit a prouvé que `parentId` était toujours en place. Lot 7 a réellement effectué cette migration |
 | 4 | BUG-08 corrigé (props `onAddChapter`/`onDelete`) | Lot 9 (lecture de code) | ❌ Non corrigé | `ChapterTabs` et `ChapterHeader` n'avaient jamais reçu ces props. Corrigé par Lot 9 |
 | 5 | BUG-09 corrigé (réordonnancement chapitres) | Lot 9 (lecture de code) | ❌ Non corrigé | Zéro ligne de code drag/reorder dans le module éditeur. Corrigé par Lot 9 |
 | 6 | BUG-10 corrigé (`directorChatContext`) | Lot 9 (lecture de code) | ❌ Non corrigé | Aucun `thesisContext` passé au chat directeur. Corrigé par Lot 9 |
-| 7 | 604 tests créés | Lot 4-5 (reconstruction) | ❌ Perdus | Les tests étaient censés exister mais ont été perdus. Lot 4-5 a dû reconstruire 1 247 tests à partir de zéro |
+| 7 | 604 tests créés | Lot 9bis (traçabilité) | ❌ Non vérifiable indépendamment | Source primaire : `worklog.md` Task IDs 2-a (254 tests parsers), 2-b (260 tests schemas Zod), 2-c (90 tests utilitaires), total 604. Cité par `AUDIT-FORENSIQUE-THESISFRAME.md:110`. Ce sont des chiffres auto-rapportés par les agents du Lot 2 eux-mêmes — aucun commit git, aucune exécution `vitest` conservée, les fichiers `.test.ts` ont été perdus avant Lot 4-5. Lot 4-5 a reconstruit 1 247 tests différents. Le chiffre 604 ne peut être ni confirmé ni infirmé |
 
 **Bilan : 0/7 confirmé correct.** Le Lot 2 est le seul lot du projet sans aucun rapport structuré et avec un taux de vérification négatif (toutes les affirmations revérifiables se sont avérées fausses ou non attribuables).
 

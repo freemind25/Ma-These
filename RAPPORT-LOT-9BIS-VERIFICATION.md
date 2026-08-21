@@ -10,7 +10,7 @@
 ### 0.1 — Checkpoint Git
 
 - **Tag** : `pre-lot-9bis`
-- **Commit** : (après validation build/tests/lint)
+- **Commit** : `PLACEHOLDER_HASH`
 
 ### 0.2 — Vérification qualité
 
@@ -34,13 +34,13 @@ Ajout d'une section « Inventaire détaillé de la fiabilité du Lot 2 » dans E
 
 | # | Affirmation Lot 2 | Résultat |
 |---|---|---|
-| 1 | Persistance Boîte doctorale | ❌ Attribution incertaine (H2-03) |
-| 2 | Persistance Onglet recherche | ❌ Attribution incertaine (H2-03) |
+| 1 | Persistance Boîte doctorale | ✅ Fonctionne, attribution Lot 2 rejetée (Lot 9bis) |
+| 2 | Persistance Onglet recherche | ✅ Fonctionne, attribution Lot 2 rejetée (Lot 9bis) |
 | 3 | FK `partId` (Part↔Chapter) | ❌ Jamais fait (Lot 7 a corrigé) |
 | 4 | BUG-08 corrigé | ❌ Non corrigé (Lot 9 a corrigé) |
 | 5 | BUG-09 corrigé | ❌ Non corrigé (Lot 9 a corrigé) |
 | 6 | BUG-10 corrigé | ❌ Non corrigé (Lot 9 a corrigé) |
-| 7 | 604 tests créés | ❌ Perdus (Lot 4-5 a reconstruit) |
+| 7 | 604 tests créés | ❌ Non vérifiable (auto-rapporté worklog, Lot 9bis) |
 
 **Bilan : 0/7 confirmé correct.**
 
