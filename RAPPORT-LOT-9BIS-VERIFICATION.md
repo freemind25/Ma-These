@@ -10,7 +10,7 @@
 ### 0.1 — Checkpoint Git
 
 - **Tag** : `pre-lot-9bis`
-- **Commit** : `PLACEHOLDER_HASH`
+- **Commit** : `2069b0c7e5be042f7bea523cb967944c8b4f602d`
 
 ### 0.2 — Vérification qualité
 
