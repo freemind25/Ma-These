@@ -3723,3 +3723,27 @@ Stage Summary:
 - 3 points traités, 0 en suspens
 - Catégorie « attribution incertaine » éliminée du §7.1
 - Lot 9/9bis totalement clos
+
+---
+Task ID: lot-10
+Agent: Main agent
+Task: Lot 10 Phase D partie 1 — vérification préalable BUG-22
+
+Work Log:
+- Checkpoint git pre-lot-10 créé (tag sur ca191ae)
+- Lecture fraîche de diagrammes-page.tsx (1642 lignes)
+- Découverte : 5 renderers CSS/HTML dédiés existent (OrganigrammeRenderer:301-358, ChronologieRenderer:360-403, ComparatifRenderer:405-451, ConceptMapRenderer:453-521, ProcessusRenderer:523-567)
+- Le diagnostic audit « pas de rendu visuel vrai (liste de Cards textuels) » est obsolète
+- Aucune correction de code nécessaire — BUG-22 clos
+- Point résiduel identifié : conflit Tailwind/inline style dans OrganigrammeRenderer lignes 328-336 (reclassé amélioration mineure)
+- ETAT-PROJET-THESISFRAME.md mis à jour : §1 #29, §1 bilan, §2.1, §5, §6, §7.2 (audit rétrogradé ⚠️)
+- RAPPORT-LOT-10-VERIFICATION.md rédigé
+- git diff pre-lot-10 --stat → sortie vide (0 lignes modifiées)
+- Commits : 60e89d1 (substantif), 29932fe (hash rapport)
+
+Stage Summary:
+- BUG-22 clos sans correction (diagnostic obsolète)
+- Fonctionnalités : 26✅ / 4⚠️ / 1🔴 / 31 total
+- Bugs ouverts : 9 (−1)
+- Audit forensique rétrogradé en §7.2 (obsolescence BUG-22 documentée)
+- Aucune extension de périmètre
