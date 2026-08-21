@@ -395,7 +395,7 @@ async function analyzeCriterion(
   const res = await fetch("/api/ai-writing", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(withAiConfig({ mode: "peer-review", prompt })),
+    body: JSON.stringify(withAiConfig({ mode: "auto-edition-8c", prompt })),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: "Erreur réseau" }));
@@ -475,9 +475,15 @@ export function AutoEditionPage() {
 
   // ═══ Tab 1: AI Analysis handlers ═══
 
+  const MAX_TEXT_LENGTH = 50_000;
+
   const handleAnalyze = useCallback(async () => {
     if (!text.trim() || text.trim().length < 20) {
       setError("Veuillez saisir au moins 20 caractères pour lancer l'analyse.");
+      return;
+    }
+    if (text.length > MAX_TEXT_LENGTH) {
+      setError(`Le texte dépasse la limite de ${(MAX_TEXT_LENGTH / 1000).toFixed(0)} 000 caractères (${text.length.toLocaleString("fr-FR")} saisis). Réduisez le texte ou analysez par sections.`);
       return;
     }
 
@@ -793,10 +799,16 @@ export function AutoEditionPage() {
                       Minimum 20 caractères requis
                     </span>
                   )}
+                  {text.length > MAX_TEXT_LENGTH && (
+                    <span className="text-xs text-destructive flex items-center gap-1">
+                      <XCircle className="h-3 w-3" />
+                      Limite de {(MAX_TEXT_LENGTH / 1000).toFixed(0)} 000 caractères dépassée
+                    </span>
+                  )}
                 </div>
                 <Button
                   onClick={handleAnalyze}
-                  disabled={!text.trim() || text.trim().length < 20 || isAnalyzing}
+                  disabled={!text.trim() || text.trim().length < 20 || text.length > MAX_TEXT_LENGTH || isAnalyzing}
                   className="gap-2"
                 >
                   {isAnalyzing ? (

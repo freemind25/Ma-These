@@ -81,7 +81,6 @@ describe("setCurrentView", () => {
       "apa-composer",
       "verification-methodo",
       "boite-doctorale",
-      "box-cloud",
       "routesme",
       "livres-competences",
       "onglet-recherche",

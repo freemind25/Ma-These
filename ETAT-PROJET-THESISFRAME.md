@@ -1,8 +1,8 @@
 # ETAT-PROJET-THESISFRAME.md
 
 > **Document unique de vérité — mis à jour après chaque lot.**
-> Dernière mise à jour : Lot 11 (décisions E2 + E-Cat)
-> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md, RAPPORT-LOT-9-VERIFICATION.md, RAPPORT-LOT-9BIS-VERIFICATION.md, RAPPORT-LOT-10-VERIFICATION.md, RAPPORT-LOT-11-DECISIONS.md
+> Dernière mise à jour : Lot 12 (Phase D — nettoyage final)
+> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md, RAPPORT-LOT-9-VERIFICATION.md, RAPPORT-LOT-9BIS-VERIFICATION.md, RAPPORT-LOT-10-VERIFICATION.md, RAPPORT-LOT-11-DECISIONS.md, RAPPORT-LOT-12-PHASE-D.md
 
 ---
 
@@ -14,7 +14,7 @@
 |---|---|---|---|---|---|
 | 1 | Tableau de bord | ✅ Fonctionne | Lot 6bis | 4 stat cards, 6 actions rapides, grille 14 modules | — |
 | 2 | Éditeur de thèse (Tiptap) | ✅ Fonctionne | Lot 9 | Éditeur fonctionnel, auto-save 2.5s. BUG-01,02,06,07,08,09 corrigés. Ajout/suppression chapitres, réordonnancement ( Monter/Descendre) | — |
-| 3 | Assistant IA (modes d'écriture) | ✅ Fonctionne | Lot 8 | 17 modes dans WRITING_MODES. 5 modes orphelins ajoutés Lot 8 (academic-reformulation, deblocage, freeform, improvement, revue-litterature) | BUG-26 |
+| 3 | Assistant IA (modes d'écriture) | ✅ Fonctionne | Lot 12 | 18 modes dans WRITING_MODES (auto-edition-8c ajouté Lot 12). 5 modes orphelins ajoutés Lot 8 | — |
 | 4 | Chat Directeur | ✅ Fonctionne | Lot 9 | Critique-only, max 2 fiches, auto-scroll. **BUG-10 corrigé (Lot 9)** : thesisContext passé depuis la thèse active | — |
 | 5 | Références bibliographiques | ✅ Fonctionne | Audit forensique | CRUD, filtres, favoris, import BibTeX/RIS/CSL-JSON, export | — |
 | 6 | Méthodologie (guides) | ✅ Fonctionne | Audit forensique | Contenu statique, checklist interactive | — |
@@ -24,23 +24,23 @@
 | 10 | Bases de données académiques | ✅ Fonctionne | Audit forensique | Répertoire statique de 27 bases | — |
 | 11 | Journaux Open Access | ✅ Fonctionne | Audit forensique | Recherche OpenAlex + DOAJ, BUG-11 corrigé | — |
 | 12 | Recherche plein texte | ✅ Fonctionne | Audit forensique | Opérateurs booléens, scoring, filtres | — |
-| 13 | Auto-édition 8C | ⚠️ Partiel | Lot 6bis | 8 critères, checklist. BUG-05,16 corrigés | BUG-27 |
+| 13 | Auto-édition 8C | ✅ Fonctionne | Lot 12 | 8 critères, checklist. Mode `auto-edition-8c` dédié (Lot 12), validation taille max 50k car. (BUG-27,34) | — |
 | 14 | Feuille de route agile | ✅ Fonctionne | Audit forensique | CRUD sprints/stories, Kanban 5 phases | — |
 | 15 | Déblocage écriture | ✅ Fonctionne | Audit forensique | Diagnostic, exercices, Pomodoro 25/5 | — |
 | 16 | Outils SLR (PRISMA) | ✅ Fonctionne | Audit forensique | Diagramme PRISMA 4 étapes, criblage, extraction, export CSV | — |
 | 17 | Analyse du champ de recherche | ✅ Fonctionne | Audit forensique | Cartographie IA, positionnement | — |
-| 18 | APA Compositeur | ✅ Fonctionne | Audit forensique | APA 7e édition, 10+ types de source | BUG-30 (accessibilité Dialog) |
+| 18 | APA Compositeur | ✅ Fonctionne | Lot 12 | APA 7e édition, 10+ types de source. DialogDescription ajouté (BUG-30) | — |
 | 19 | Vérification méthodologique | ✅ Fonctionne | Audit forensique | BUG-04 corrigé, checklist + audit IA | — |
 | 20 | Vérification cartographique | ✅ Fonctionne | Audit forensique | Module A rule-based + Module B socratique | — |
 | 21 | Boîte doctorale | ✅ Fonctionne | Lot 6bis | Persistance DB, debounce 1.5s, BUG-14 corrigé (H2-03) | — |
-| 22 | Box Cloud | 🔴 Faux module | Audit forensique | Interface complète mais entièrement simulée. Aucun upload réel, aucune API | — |
+| 22 | Box Cloud | 🗑️ Supprimé | Lot 12 | Module supprimé (décision produit). Fichier, import, store, usage guide retirés | — |
 | 23 | RoutesMe (multi-modèles) | ⚠️ Partiel | Audit forensique | Labels visuels GPT-4/Claude/Mistral/Llama mais pas de vraie comparaison multi-fournisseurs | DT-08 |
 | 24 | Livres & Compétences | ⚠️ Partiel | Audit forensique | Livres codés en dur, pas de persistance DB, CustomBookSkill orphelin | DT-09 |
 | 25 | Onglet de recherche | ✅ Fonctionne | Lot 6bis | CRUD via API, persistance DB, BUG-15 corrigé (H2-03), testé (Lot 6bis) | — |
 | 26 | Grammaire IA | ✅ Fonctionne | Lot 9 | Parsing JSON typé, BUG-06/12/20 corrigés. **BUG-20** : avertissement « Analyse incomplète » au lieu de faux négatif | — |
-| 27 | Export PDF | ⚠️ Partiel | Audit forensique | Utilise `window.print()` — pas de vraie génération PDF programmatique | DT-07 |
+| 27 | Export PDF | ✅ Fonctionne | Lot 12 | Vrai export PDF programmatique (jspdf + html2canvas-pro). `window.print()` conservé comme alternative | — |
 | 28 | Équilibre des chapitres | ✅ Fonctionne | Lot 6bis | Sélecteur de thèse, équilibre IA, BUG-23 corrigé | — |
-| 29 | Diagrammes visuels | ✅ Fonctionne | Lot 10 (vérif. préalable) | 5 renderers CSS/HTML dédiés (OrganigrammeRenderer, ChronologieRenderer, ComparatifRenderer, ConceptMapRenderer, ProcessusRenderer). CRUD nœuds OK. **BUG-22 clos** : diagnostic initial audit (« liste de Cards textuels ») obsolète — le code a évolué. Point résiduel : connecteur horizontal OrganigrammeRenderer (conflit Tailwind/inline style, amélioration mineure reclassée) | BUG-21 |
+| 29 | Diagrammes visuels | ✅ Fonctionne | Lot 12 | 5 renderers CSS/HTML dédiés. CRUD nœuds OK. Export PNG (html2canvas-pro) ajouté Lot 12 (BUG-21). BUG-22 clos Lot 10 | — |
 | 30 | Harper (résumé/paraphrase) | ✅ Fonctionne | Lot 6bis | Mode « harper » ajouté dans WRITING_MODES (Lot 6), 12ème mode | — |
 | 31 | Mon IA de thèse (RAG) | ✅ Fonctionne | Audit forensique | Chat contextuel, 4 sources indexées, keyword-only SQLite | — |
 
@@ -48,30 +48,20 @@
 
 | Statut | Nombre | IDs |
 |---|---|---|
-| ✅ Fonctionne | **26** | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 25, 26, 28, 29, 30, 31 |
-| ⚠️ Partiel | **4** | 13, 23, 24, 27 |
-| 🔴 Cassé / Faux | **1** | 22 |
+| ✅ Fonctionne | **28** | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 25, 26, 27, 28, 29, 30, 31 |
+| ⚠️ Partiel | **2** | 23, 24 |
+| 🗑️ Supprimé | **1** | 22 |
 | **Total** | **31** | |
 
 ---
 
 ## 2. Bugs ouverts — backlog priorisé
 
-> Seuls les bugs **non résolus** sont listés. Les bugs résolus (BUG-01 à 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 33) sont retirés du backlog. **BUG-22** clos par Lot 10 (vérification préalable : diagnostic audit obsolète, 5 renderers existent).
+> Seuls les bugs **non résolus** sont listés. Les bugs résolus (BUG-01 à 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34) sont retirés du backlog. **BUG-22** clos par Lot 10. **BUG-21 à 34** (sauf BUG-20/33) résolus par Lot 12.
 
 ### 2.1 — Bugs confirmés non résolus
 
-| ID | Description | Priorité | Phase | Fichier(s) concerné(s) |
-|---|---|---|---|---|
-| BUG-21 | Diagrammes : pas d'export fichier (seul clipboard) | 🟡 Mineur | D | `diagrammes-page.tsx` |
-| BUG-26 | Icône `SpellCheck` manquante dans `ICON_MAP` → fallback `Sparkles` | 🟡 Mineur | D | `ai-writing-page.tsx` |
-| BUG-27 | Auto-édition : `mode: "peer-review"` au lieu du mode 8C dédié | 🟡 Moyen | D | `auto-edition-page.tsx` |
-| BUG-28 | Recherche entrées : `tags` exclu de la recherche plein texte | 🟡 Mineur | D | `entries/route.ts` |
-| BUG-29 | Tiptap : `immediatelyRender` non défini (rendu mineur) | 🟡 Mineur | D | `tiptap-editor.tsx` |
-| BUG-30 | Accessibilité : `DialogContent` sans `DialogDescription` (3 instances) | 🟡 Mineur | D | `dialog.tsx`, `apa-composer-page.tsx` |
-| BUG-31 | API thesis : `SyntaxError` (JSON invalide) → 500 au lieu de 400 | 🟡 Mineur | D | `thesis/route.ts` |
-| BUG-32 | API ai-writing : pas de vérification `instanceof z.ZodError` dans le catch | 🟡 Mineur | D | `ai-writing/route.ts` |
-| BUG-34 | Auto-édition : pas de validation de taille maximale du texte | 🟡 Mineur | D | `auto-edition-page.tsx` |
+*(Aucun — tous les bugs de Phase D ont été résolus par le Lot 12)*
 
 ### 2.3 — Modes IA orphelins (découverts Lot 6)
 
@@ -85,12 +75,14 @@
 
 ---
 
-## 3. Dette technique ouverte
+## 3. Dette technique
+
+*(Toutes les dettes techniques sont résolues. Les DT-05 et DT-07 sont les dernières à avoir été fermées par le Lot 12.)*
 
 | # | Élément | Statut | Fichier(s) | Priorité | Phase |
 |---|---|---|---|---|---|
-| DT-05 | DocumentChunk sans route API dédiée | Ouvert | `rag-service.ts` | 🟡 Faible | D |
-| DT-07 | Export PDF via `window.print()` | Ouvert | `export-pdf-page.tsx` | 🟡 Faible | D |
+| DT-05 | DocumentChunk sans route API dédiée | ✅ Résolu par Lot 12 | `api/document-chunks/route.ts` (nouveau) | 🟡 Faible | D |
+| DT-07 | Export PDF via `window.print()` | ✅ Résolu par Lot 12 | `export-pdf-page.tsx` (jspdf + html2canvas-pro) | 🟡 Faible | D |
 
 ### DT résolus depuis l'audit forensique
 
@@ -138,6 +130,7 @@
 | Lot 9bis | Août 2025 | Complément : §7.1 fiabilité Lot 2 (0/7), 2 tests ciblés sortOrder (BUG-09), mise à jour ETAT-PROJET | ✅ OK (49 routes) | 1 292 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-9BIS-VERIFICATION.md |
 | Lot 10 | Août 2025 | Phase D partie 1 : vérification préalable BUG-22 → diagnostic audit obsolète, BUG-22 clos sans correction | — (aucune modif. code) | 1 292 tests, 54 fichiers | — (inchangé) | RAPPORT-LOT-10-VERIFICATION.md |
 | Lot 11 | Août 2025 | Décisions E2 + E-Cat : suppression ai-config orphelines + archivage Horizon 2/3, fermeture DT-06/08/09/10 | ✅ OK (47 routes) | 1 263 tests, 52 fichiers | 0 erreurs, 122 warnings | RAPPORT-LOT-11-DECISIONS.md |
+| Lot 12 | Août 2025 | Phase D nettoyage final : BUG-21,26,27,28,29,30,31,32,34 (9/9), DT-05, DT-07, suppression Box Cloud (#22) | ✅ OK (48 routes) | 1 277 tests, 53 fichiers | 0 erreurs, 122 warnings | RAPPORT-LOT-12-PHASE-D.md |
 
 ---
 
@@ -145,15 +138,15 @@
 
 | Métrique | Valeur | Dernière vérification |
 |---|---|---|
-| Build | ✅ Compiled successfully | Lot 11 |
-| Tests | 1 263 passants, 0 échec, 52 fichiers | Lot 11 |
-| Lint | 0 erreur, 122 warnings | Lot 11 |
-| Routes API | 45 dynamiques + 2 pages statiques = 47 totales | Lot 11 |
+| Build | ✅ Compiled successfully | Lot 12 |
+| Tests | 1 277 passants, 0 échec, 53 fichiers | Lot 12 |
+| Lint | 0 erreur, 122 warnings | Lot 12 |
+| Routes API | 46 dynamiques + 2 pages statiques = 48 totales | Lot 12 |
 | Modèles Prisma | 19 | Lot 11 |
-| Fonctionnalités | 26 ✅ / 4 ⚠️ / 1 🔴 / 31 total | Lot 10 |
-| Bugs ouverts | 9 BUG + 0 mode orphelin | Lot 10 |
+| Fonctionnalités | 28 ✅ / 2 ⚠️ (archivés) / 1 🗑️ / 31 total | Lot 12 |
+| Bugs ouverts | 0 BUG (BUG-20 avertissement mineur) + 0 mode orphelin | Lot 12 |
 | Dette intégrité | ✅ Résolue (Lot 7) | Lot 7 |
-| DT ouverte | 2 (DT-05, DT-07) | Lot 11 |
+| DT ouverte | 0 | Lot 12 |
 | Décisions en attente | 0 | Lot 11 |
 
 ---

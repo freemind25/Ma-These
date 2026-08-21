@@ -25,6 +25,7 @@ import {
   Check,
   GraduationCap,
   User,
+  SpellCheck,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
@@ -38,6 +39,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
   PenTool,
   BookOpen,
   SearchCheck,
+  SpellCheck,
   Repeat,
   AlignLeft,
   Lightbulb,

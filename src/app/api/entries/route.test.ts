@@ -77,6 +77,7 @@ describe('GET /api/entries', () => {
     expect(whereArg.OR).toEqual([
       { question: { contains: 'machine' } },
       { answer: { contains: 'machine' } },
+      { tags: { contains: 'machine' } },
     ]);
   });
 

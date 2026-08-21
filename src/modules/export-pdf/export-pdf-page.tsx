@@ -34,7 +34,11 @@ import {
   Calendar,
   Users,
   List,
+  Loader2,
 } from "lucide-react";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas-pro';
+import { toast } from 'sonner';
 
 // ═══════════════════════════════════════════════════
 // Types
@@ -172,6 +176,8 @@ export function ExportPdfPage() {
     includeToc: true,
     includeCoverPage: true,
   });
+
+  const [pdfGenerating, setPdfGenerating] = useState(false);
 
   const previewRef = useRef<HTMLIFrameElement>(null);
 
@@ -486,6 +492,80 @@ export function ExportPdfPage() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }, [generatePrintHtml, metadata.title]);
+
+  // Download real PDF via jsPDF + html2canvas
+  const handleDownloadPdf = useCallback(async () => {
+    setPdfGenerating(true);
+    setError(null);
+    try {
+      const html = generatePrintHtml();
+
+      // Create off-screen container with just the body content
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.left = '-9999px';
+      container.style.top = '0';
+      container.style.width = '210mm'; // A4 width
+      container.style.background = 'white';
+
+      // Extract body content from full HTML
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      container.innerHTML = doc.body.innerHTML;
+      // Copy styles from the HTML
+      const styleEl = doc.querySelector('style');
+      if (styleEl) {
+        const s = document.createElement('style');
+        s.textContent = styleEl.textContent;
+        container.prepend(s);
+      }
+      document.body.appendChild(container);
+
+      // Wait for rendering
+      await new Promise(r => setTimeout(r, 200));
+
+      const canvas = await html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+      });
+
+      // Create PDF
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 10; // mm
+
+      const imgWidth = pageWidth - 2 * margin;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = margin;
+
+      // First page
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', margin, margin, imgWidth, imgHeight);
+      heightLeft -= (pageHeight - 2 * margin);
+
+      // Additional pages
+      while (heightLeft > 0) {
+        position = -(pageHeight - 2 * margin - margin) + margin;
+        pdf.addPage();
+        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', margin, position - margin, imgWidth, imgHeight);
+        heightLeft -= (pageHeight - 2 * margin);
+      }
+
+      const filename = `${(metadata.title || 'these').replace(/[^a-zA-Z0-9àâäéèêëïîôùûüç\s-]/g, '_').trim().replace(/\s+/g, '_')}.pdf`;
+      pdf.save(filename);
+
+      document.body.removeChild(container);
+      toast.success('PDF téléchargé avec succès');
+    } catch (err) {
+      console.error('PDF generation error:', err);
+      setError('Erreur lors de la génération du PDF. Veuillez réessayer.');
+    } finally {
+      setPdfGenerating(false);
+    }
   }, [generatePrintHtml, metadata.title]);
 
   // ═══════════════════════════════════════════════════
@@ -1125,7 +1205,7 @@ export function ExportPdfPage() {
             </Card>
 
             {/* Export Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Card className="hover:shadow-md transition-shadow cursor-pointer group" onClick={handlePrint}>
                 <CardContent className="p-6 flex flex-col items-center text-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
@@ -1140,6 +1220,24 @@ export function ExportPdfPage() {
                   <Button className="gap-2 mt-2">
                     <Printer className="h-4 w-4" />
                     Imprimer / Sauvegarder PDF
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className={`hover:shadow-md transition-shadow ${pdfGenerating ? 'opacity-70 pointer-events-none' : 'cursor-pointer group'}`} onClick={pdfGenerating ? undefined : handleDownloadPdf}>
+                <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 group-hover:bg-blue-500/20 transition-colors">
+                    {pdfGenerating ? <Loader2 className="h-6 w-6 animate-spin" /> : <FileDown className="h-6 w-6" />}
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold">Télécharger PDF</h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Génère et télécharge un fichier PDF directement sans passer par l'impression
+                    </p>
+                  </div>
+                  <Button className="gap-2 mt-2" disabled={pdfGenerating}>
+                    {pdfGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
+                    {pdfGenerating ? 'Génération en cours…' : 'Télécharger PDF'}
                   </Button>
                 </CardContent>
               </Card>

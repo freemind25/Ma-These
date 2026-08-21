@@ -23,6 +23,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -1362,6 +1363,9 @@ ${aiInput}`
               <Sparkles className="h-4 w-4 text-primary" />
               Aide IA pour le formatage
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              Assistance IA pour formater les références APA
+            </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4">
             <Textarea

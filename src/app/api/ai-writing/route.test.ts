@@ -154,7 +154,7 @@ describe("POST /api/ai-writing", () => {
     expect(data.availableModes).toBeInstanceOf(Array);
   });
 
-  it("should return 500 when prompt is too short (< 10 chars)", async () => {
+  it("should return 400 when prompt is too short (< 10 chars)", async () => {
     const res = await POST(
       createRequest({
         mode: "scientific-writing",
@@ -162,26 +162,26 @@ describe("POST /api/ai-writing", () => {
       }) as any
     );
 
-    // Zod validation error → 500 (caught by general catch)
-    expect(res.status).toBe(500);
+    // Zod validation error → 400 (caught by ZodError handler)
+    expect(res.status).toBe(400);
   });
 
-  it("should return 500 when prompt is missing", async () => {
+  it("should return 400 when prompt is missing", async () => {
     const res = await POST(
       createRequest({
         mode: "scientific-writing",
       }) as any
     );
 
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(400);
   });
 
-  it("should return 500 when body is empty", async () => {
+  it("should return 400 when body is empty", async () => {
     const res = await POST(
       createRequest({}) as any
     );
 
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(400);
   });
 
   it("should return 500 when body is not valid JSON", async () => {

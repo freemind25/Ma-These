@@ -35,8 +35,16 @@ export async function GET() {
 // POST /api/thesis — Create a new thesis
 // ═══════════════════════════════════════
 export async function POST(request: NextRequest) {
+  let body: unknown;
   try {
-    const body = await request.json();
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Corps de la requête JSON invalide" },
+      { status: 400 }
+    );
+  }
+  try {
     const validated = createThesisSchema.parse(body);
 
     // Default chapter structure for a thesis

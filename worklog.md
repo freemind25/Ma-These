@@ -3747,3 +3747,134 @@ Stage Summary:
 - Bugs ouverts : 9 (−1)
 - Audit forensique rétrogradé en §7.2 (obsolescence BUG-22 documentée)
 - Aucune extension de périmètre
+
+---
+Task ID: lot12-1
+Agent: general-purpose
+Task: BUG-21 — Ajouter l'export PNG sur la page diagrammes
+
+Work Log:
+- Vérifié que `html2canvas-pro` est installé dans `node_modules/` (exports ESM + CJS)
+- Lu `diagrammes-page.tsx` pour comprendre la structure existante (imports, handler handleCopy, bouton Export, zone de rendu du diagramme)
+- Ajouté `Download` aux imports lucide-react
+- Ajouté `import html2canvas from "html2canvas-pro";` après l'import `cn`
+- Ajouté le handler `handleExportPng` (useCallback) après `handleCopy` :
+  - Récupère l'élément `#diagram-render-area`
+  - Appelle `html2canvas(el, { scale: 2, backgroundColor: '#ffffff' })`
+  - Crée un lien `<a>` avec `canvas.toDataURL('image/png')` et déclenche le téléchargement
+  - Toasts succès/erreur
+- Ajouté le bouton « Télécharger PNG » (icône Download) avant le bouton « Exporter » existant
+- Ajouté `id="diagram-render-area"` sur le `<div>` conteneur des renderers de diagramme
+- Vérifié : `tsc --noEmit` ne signale aucune erreur dans `diagrammes-page.tsx`
+- Fonctionnalité existante (Copier dans le presse-papiers) préservée intacte
+
+Stage Summary:
+- Export PNG fonctionnel via `html2canvas-pro` avec résolution 2x et fond blanc
+- Bouton « Télécharger PNG » placé à côté du bouton « Exporter » existant
+- Aucune régression, 0 erreur TypeScript sur le fichier modifié---
+Task ID: lot12-11
+Agent: general-purpose
+Task: Box Cloud module removal (#22)
+
+Work Log:
+- Deleted entire directory `/home/z/my-project/src/modules/box-cloud/`
+- Removed `BoxCloudPage` import and `case "box-cloud"` block from `src/app/page.tsx`
+- Removed `"box-cloud"` from the `ViewId` type union in `src/lib/stores/app-store.ts`
+- Removed the box-cloud navigation item object from `NAVIGATION_ITEMS` array in `src/lib/stores/app-store.ts`
+- Removed `"box-cloud"` from the valid views test array in `src/lib/stores/app-store.test.ts`
+- Removed the box-cloud guide entry (id, title, icon, keywords, content) from `src/components/layout/usage-guide-dialog.tsx`
+- Removed unused `Cloud` icon import from `usage-guide-dialog.tsx`
+- Verified: zero remaining references to `box-cloud` in `src/`
+- Verified: all 27 app-store tests pass
+- Verified: no new TypeScript errors introduced (pre-existing errors in unrelated files only)
+
+Stage Summary:
+- Box Cloud faux module (#22) completely removed from the project
+- All 5 files modified/1 directory deleted as specified
+- No other functionality broken
+
+---
+Task ID: lot12-9
+Agent: general-purpose
+Task: DocumentChunks API route
+
+Work Log:
+- Read existing route patterns from entries/route.ts, ai-writing/route.ts, entries/[id]/route.ts
+- Read test patterns from entries/route.test.ts and entries/[id]/route.test.ts
+- Created `/home/z/my-project/src/app/api/document-chunks/route.ts`:
+  - GET: list chunks with optional filters (sourceType, sourceId, search), ordered by createdAt desc
+  - DELETE: delete chunks with optional query param filters; requires `{ confirmAll: true }` body when no filters
+  - Zod validation for delete body, ZodError catch pattern matching project convention
+  - French error messages matching project style
+- Created `/home/z/my-project/src/app/api/document-chunks/route.test.ts`:
+  - 14 tests covering GET (7 tests) and DELETE (7 tests)
+  - Tests for filtering, empty results, combined filters, error handling, confirmAll guard
+  - All 14 tests passing
+
+Stage Summary:
+- New API route at `/api/document-chunks` exposing the DocumentChunk Prisma model
+- GET with ?sourceType, ?sourceId, ?search query params
+- DELETE with query param filters or { confirmAll: true } body for bulk delete
+- Full test coverage: 14/14 passing
+
+---
+Task ID: lot12-10
+Agent: general-purpose
+Task: Add real programmatic PDF export (jsPDF + html2canvas-pro) alongside existing print-based export
+
+Work Log:
+- Added imports: `jsPDF`, `html2canvas-pro`, `toast` from `sonner`, `Loader2` from lucide-react
+- Added `pdfGenerating` boolean state variable for loading UI
+- Added `handleDownloadPdf` async callback that:
+  - Calls `generatePrintHtml()` to get the full document HTML
+  - Parses HTML with DOMParser, extracts body content + `<style>` block
+  - Creates off-screen container (position: fixed, left: -9999px, width: 210mm)
+  - Captures with `html2canvas` at 2x scale, white background, CORS enabled
+  - Builds multi-page A4 PDF with 10mm margins using `jsPDF`
+  - Saves PDF with sanitized thesis title as filename
+  - Cleans up off-screen container, shows success toast on completion
+  - Sets error state on failure
+- Changed export buttons grid from `sm:grid-cols-2` to `sm:grid-cols-3`
+- Added new "Télécharger PDF" card (blue theme) with:
+  - Loader2 spinner when `pdfGenerating` is true
+  - Disabled button state during generation
+  - Descriptive subtitle explaining it bypasses browser print dialog
+- Existing "Imprimer en PDF" (handlePrint) and "Télécharger HTML" (handleDownloadHtml) cards preserved unchanged
+- ESLint: 0 errors
+- TypeScript: no new errors (all pre-existing)
+
+Stage Summary:
+- Real PDF download button added alongside existing print-based export
+- Uses jsPDF + html2canvas-pro for client-side PDF generation with multi-page support
+- Full loading/error/success UX with toast notification
+- No regressions to existing print or HTML download functionality
+---
+Task ID: lot12-0
+Agent: Main (orchestration) + 4 subagents
+Task: Lot 12 — Phase D nettoyage final (9 bugs + 2 DT + suppression Box Cloud)
+
+Work Log:
+- Préparation : lecture des 15 fichiers clés, installation jspdf + html2canvas-pro
+- BUG-26 (direct) : SpellCheck ajouté à l'import et ICON_MAP dans ai-writing-page.tsx
+- BUG-28 (direct) : tags ajouté dans le OR de recherche plein texte dans entries/route.ts
+- BUG-29 (direct) : immediatelyRender: false ajouté dans tiptap-editor.tsx
+- BUG-30 (direct) : DialogDescription ajouté dans apa-composer-page.tsx
+- BUG-31 (direct) : try/catch JSON.parse dans thesis/route.ts → 400
+- BUG-32 (direct) : ZodError catch ajouté dans ai-writing/route.ts
+- BUG-27 + BUG-34 (direct) : mode auto-edition-8c dédié créé dans WRITING_MODES, remplacement peer-review, validation 50k car.
+- BUG-21 (subagent) : export PNG via html2canvas-pro dans diagrammes-page.tsx
+- DT-05 (subagent) : route API /api/document-chunks créée (GET + DELETE, 14 tests)
+- DT-07 (subagent) : vrai export PDF via jspdf + html2canvas-pro dans export-pdf-page.tsx
+- Suppression Box Cloud (subagent) : fichier, imports, store, usage guide, tests nettoyés
+- Tests mis à jour : entries/route.test.ts (+ tags), ai-writing/route.test.ts (500→400)
+- ETAT-PROJET mis à jour
+
+Stage Summary:
+- 9/9 bugs résolus (BUG-21, 26, 27, 28, 29, 30, 31, 32, 34)
+- 2/2 DT résolues (DT-05, DT-07)
+- 1 module supprimé (Box Cloud #22)
+- Bilan : 28 ✅ / 2 ⚠️ (archivés E-Cat) / 1 🗑️ / 31 total
+- 0 bug ouvert, 0 DT ouverte
+- Lint : 0 erreur, 122 warnings (inchangés)
+- Tests : 1 277 passants, 0 échec, 53 fichiers
+- Routes API : 48 totales (46 dynamiques + 2 statiques)

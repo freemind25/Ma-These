@@ -59,6 +59,7 @@ export function TiptapEditor({
   saveStatus,
 }: TiptapEditorProps) {
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: THESIS_EXTENSIONS,
     content: content || "",
     editorProps: {

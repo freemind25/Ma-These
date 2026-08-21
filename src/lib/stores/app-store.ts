@@ -26,7 +26,6 @@ export type ViewId =
   | "apa-composer"
   | "verification-methodo"
   | "boite-doctorale"
-  | "box-cloud"
   | "routesme"
   | "livres-competences"
   | "onglet-recherche"
@@ -179,12 +178,6 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Boîte doctorale",
     icon: "Briefcase",
     description: "Checklist, calendrier, documents et suivi doctoral",
-  },
-  {
-    id: "box-cloud",
-    label: "Box Cloud",
-    icon: "Cloud",
-    description: "Stockage cloud pour vos fichiers de thèse",
   },
   {
     id: "routesme",

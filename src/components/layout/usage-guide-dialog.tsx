@@ -36,7 +36,6 @@ import {
   FileCheck,
   ShieldCheck,
   Briefcase,
-  Cloud,
   GitCompareArrows,
   Type,
   SpellCheck,
@@ -1101,29 +1100,6 @@ const GUIDE_CATEGORIES: GuideCategory[] = [
               Les <strong>Diagrammes</strong> vous permettent de créer des visuels pour
               votre thèse : organigrammes, chronologies, diagrammes de flux, cartes
               conceptuelles.
-            </p>
-          </div>
-        ),
-      },
-      {
-        id: "box-cloud",
-        title: "Box Cloud",
-        icon: Cloud,
-        keywords: [
-          "cloud",
-          "stockage",
-          "sauvegarde",
-          "box",
-          "backup",
-          "fichier",
-          "synchro",
-        ],
-        content: (
-          <div className="space-y-3">
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              <strong>Box Cloud</strong> offre un stockage cloud sécurisé pour vos
-              fichiers de thèse. Sauvegardez, synchronisez et accédez à vos documents
-              depuis n&apos;importe où.
             </p>
           </div>
         ),

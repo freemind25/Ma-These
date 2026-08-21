@@ -19,6 +19,7 @@ import {
   Workflow,
   Edit3,
   LayoutTemplate,
+  Download,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +57,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import html2canvas from "html2canvas-pro";
 import { useAiConfig } from "@/hooks/use-ai-config";
 
 // ═══════════════════════════════════════════════
@@ -912,6 +914,24 @@ Pour une carte conceptuelle : utilise parentId.`;
     setTimeout(() => setCopied(false), 2000);
   }, [diagram]);
 
+  const handleExportPng = useCallback(async () => {
+    const el = document.getElementById("diagram-render-area");
+    if (!el) {
+      toast.error("Aucun diagramme à exporter");
+      return;
+    }
+    try {
+      const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff' });
+      const link = document.createElement("a");
+      link.download = `diagramme-${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      toast.success("Diagramme exporté en PNG");
+    } catch {
+      toast.error("Erreur lors de l'export PNG");
+    }
+  }, []);
+
   // ---- Edit node dialog ----
 
   const openEditDialog = useCallback((node: DiagramNode) => {
@@ -1039,6 +1059,10 @@ Pour une carte conceptuelle : utilise parentId.`;
           </Dialog>
 
           {/* Export */}
+          <Button variant="outline" size="sm" className="gap-2" onClick={handleExportPng}>
+            <Download className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Télécharger PNG</span>
+          </Button>
           <Button variant="outline" size="sm" className="gap-2" onClick={handleCopy}>
             {copied ? (
               <Check className="h-3.5 w-3.5 text-emerald-500" />
@@ -1358,7 +1382,7 @@ Pour une carte conceptuelle : utilise parentId.`;
                 </CardHeader>
                 <Separator />
                 <CardContent className="pt-4">
-                  <div>
+                  <div id="diagram-render-area">
                     {diagram.type === "organigramme" && (
                       <OrganigrammeRenderer nodes={diagram.nodes} />
                     )}

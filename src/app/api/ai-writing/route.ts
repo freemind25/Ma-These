@@ -63,6 +63,12 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Données invalides", details: error.flatten() },
+        { status: 400 }
+      );
+    }
     console.error("[POST /api/ai-writing] Error:", error);
     const message = error instanceof Error ? error.message : "Erreur lors de la génération";
     return NextResponse.json({ error: message }, { status: 500 });

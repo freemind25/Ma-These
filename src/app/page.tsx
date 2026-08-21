@@ -24,7 +24,6 @@ import { OutilsSlrPage } from "@/modules/outils-slr/outils-slr-page";
 import { ApaComposerPage } from "@/modules/apa-composer/apa-composer-page";
 import { VerificationMethodoPage } from "@/modules/verification-methodo/verification-methodo-page";
 import { BoiteDoctoralePage } from "@/modules/boite-doctorale/boite-doctorale-page";
-import { BoxCloudPage } from "@/modules/box-cloud/box-cloud-page";
 import { RoutesMePage } from "@/modules/routesme/routesme-page";
 import { LivresCompetencesPage } from "@/modules/livres-competences/livres-competences-page";
 import { OngletRecherchePage } from "@/modules/onglet-recherche/onglet-recherche-page";
@@ -84,8 +83,6 @@ function CurrentView() {
       return <VerificationMethodoPage />;
     case "boite-doctorale":
       return <BoiteDoctoralePage />;
-    case "box-cloud":
-      return <BoxCloudPage />;
     case "routesme":
       return <RoutesMePage />;
     case "livres-competences":
