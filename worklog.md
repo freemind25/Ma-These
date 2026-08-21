@@ -3654,3 +3654,30 @@ Stage Summary:
 - Aucune correction de code nécessaire
 - Phase B closes
 - Point cosmétique documenté : 3 icônes absentes de ICON_MAP (hors périmètre)
+---
+Task ID: 1
+Agent: Main
+Task: Lot 9 (Phase C) — Vérification et correction de BUG-08/09/10/18/20
+
+Work Log:
+- Lecture de l'ETAT-PROJET et de l'audit forensique pour comprendre les 5 bugs
+- Lecture de code pour chaque bug (editor-page.tsx, chapter-tabs.tsx, chapter-header.tsx, ai-writing-page.tsx, app-store.ts, create-thesis-dialog.tsx, api-schemas.ts, thesis/route.ts, grammaire-page.tsx, directeur-chat/route.ts, use-thesis.ts)
+- Verdict : les 5 bugs étaient TOUS non corrigés (annoncés à tort par le Lot 2)
+- Checkpoint git : tag pre-lot-9
+- BUG-08 : ajout de handleAddChapter/handleDeleteChapter dans editor-page.tsx, passage de props onAddChapter et onDelete
+- BUG-09 : boutons ChevronUp/ChevronDown dans ChapterHeader, logique de swap sortOrder dans editor-page.tsx
+- BUG-10 : construction de thesisContext depuis la thèse active (useThesis) et passage au body de /api/directeur-chat
+- BUG-18 : champs email et laboratory ajoutés au formulaire create-thesis-dialog.tsx, type useCreateThesis mis à jour
+- BUG-20 : parseError dans GrammarResult, catch retourne totalErrors:-1 + message, UI affiche avertissement amber au lieu de faux négatif vert
+- npx next build → compiled successfully (49 routes)
+- npx vitest run → 54 fichiers, 1290 tests, 0 échec
+- bun run lint → 0 erreur, 154 warnings (inchangé)
+- Rapport RAPPORT-LOT-9-VERIFICATION.md rédigé
+- ETAT-PROJET-THESISFRAME.md mis à jour (fonctionnalités 27✅, bugs ouverts 9)
+
+Stage Summary:
+- 5/5 bugs du Lot 2 étaient non corrigés → tous corrigés
+- Fichier modifiés : editor-page.tsx, chapter-header.tsx, create-thesis-dialog.tsx, use-thesis.ts, ai-writing-page.tsx, grammaire-page.tsx
+- Fonctionnalités : 27 ✅ / 4 ⚠️ / 1 🔴 (vs 25/4/1 avant)
+- Bugs ouverts : 9 (vs 14 avant)
+- Aucune extension de périmètre
