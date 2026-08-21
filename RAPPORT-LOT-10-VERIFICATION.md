@@ -77,4 +77,4 @@ BUG-22 est clos. Aucune correction de code n'était nécessaire — le bug n'exi
 | Correction de code | Non requise |
 | Lignes de code modifiées | 0 |
 | Extensions de périmètre | Aucune |
-| Commit de clôture | `PLACEHOLDER_HASH` |
+| Commit de clôture | `60e89d18dd115043bedad7b48b77e45ad5f1554d` |
