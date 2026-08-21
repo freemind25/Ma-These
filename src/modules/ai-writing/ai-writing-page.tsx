@@ -30,6 +30,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import { WRITING_MODES, type WritingMode } from "@/data/ai-writing-modes";
 import { useAiConfig } from "@/hooks/use-ai-config";
+import { useAppStore } from "@/lib/stores/app-store";
+import { useThesis } from "@/modules/editor/hooks/use-thesis";
 
 // ═══ Icon Map ═══
 const ICON_MAP: Record<string, React.ElementType> = {
@@ -272,11 +274,27 @@ function AiWritingPanel() {
 // ═══ Directeur Chat Panel ═══
 function DirecteurChatPanel() {
   const { withAiConfig } = useAiConfig();
+  const { activeThesisId } = useAppStore();
+  const { data: thesis } = useThesis(activeThesisId);
   const [messages, setMessages] = useState<
     Array<{ role: "user" | "assistant"; content: string }>
   >([]);
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Build thesis context for the directeur chat (BUG-10)
+  const thesisContext = thesis
+    ? [
+        `Titre : ${thesis.title}${thesis.subtitle ? ` — ${thesis.subtitle}` : ""}`,
+        `Auteur : ${thesis.author}`,
+        thesis.directorName ? `Directeur : ${thesis.directorName}` : null,
+        thesis.institution ? `Institution : ${thesis.institution}` : null,
+        thesis.discipline ? `Discipline : ${thesis.discipline}` : null,
+        `Chapitres (${thesis.chapters.length}) : ${thesis.chapters.map((ch) => ch.title).join(", ")}`,
+      ]
+        .filter(Boolean)
+        .join("\n")
+    : undefined;
 
   const chat = useMutation({
     mutationFn: async (userMessage: string) => {
@@ -284,7 +302,7 @@ function DirecteurChatPanel() {
       const res = await fetch("/api/directeur-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(withAiConfig({ messages: allMessages })),
+        body: JSON.stringify(withAiConfig({ messages: allMessages, thesisContext })),
       });
       if (!res.ok) {
         const err = await res.json();

@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Pencil, Check, X, Trash2 } from "lucide-react";
+import { Pencil, Check, X, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import type { ThesisChapter } from "@/modules/editor/hooks/use-thesis";
 
@@ -18,6 +18,10 @@ interface ChapterHeaderProps {
   onTitleChange: (title: string) => void;
   onStatusChange: (status: string) => void;
   onDelete?: () => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
   isUpdating: boolean;
 }
 
@@ -35,6 +39,10 @@ export function ChapterHeader({
   onTitleChange,
   onStatusChange,
   onDelete,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp = false,
+  canMoveDown = false,
   isUpdating,
 }: ChapterHeaderProps) {
   const [isEditing, setIsEditing] = useState(false);
@@ -149,6 +157,28 @@ export function ChapterHeader({
           </SelectContent>
         </Select>
 
+        {onMoveUp && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+            onClick={onMoveUp}
+            disabled={!canMoveUp || isUpdating}
+          >
+            <ChevronUp className="h-3.5 w-3.5" />
+          </Button>
+        )}
+        {onMoveDown && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+            onClick={onMoveDown}
+            disabled={!canMoveDown || isUpdating}
+          >
+            <ChevronDown className="h-3.5 w-3.5" />
+          </Button>
+        )}
         {onDelete && (
           <Button
             variant="ghost"

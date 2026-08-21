@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppStore } from "@/lib/stores/app-store";
-import { useThesis, useUpdateChapter } from "@/modules/editor/hooks/use-thesis";
+import { useThesis, useUpdateChapter, useCreateChapter, useDeleteChapter } from "@/modules/editor/hooks/use-thesis";
 import { useAutoSave } from "@/modules/editor/hooks/use-auto-save";
 import { TiptapEditor } from "@/modules/editor/components/tiptap-editor";
 import { ChapterTabs } from "@/modules/editor/components/chapter-tabs";
@@ -10,7 +10,7 @@ import { ThesisListPanel } from "@/modules/editor/components/thesis-list-panel";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useMemo } from "react";
 
 export function EditorPage() {
   const { activeThesisId, activeChapterId, setActiveChapterId, setCurrentView } =
@@ -18,6 +18,8 @@ export function EditorPage() {
 
   const { data: thesis, isLoading } = useThesis(activeThesisId);
   const updateChapter = useUpdateChapter();
+  const createChapter = useCreateChapter();
+  const deleteChapter = useDeleteChapter();
 
   // Keep latest plainText and wordCount from the editor so auto-save can use them
   const plainTextRef = useRef("");
@@ -84,6 +86,55 @@ export function EditorPage() {
     [activeChapterId, updateChapter]
   );
 
+  const handleAddChapter = useCallback(() => {
+    if (!activeThesisId) return;
+    const nextNum = (thesis?.chapters.length ?? 0) + 1;
+    const romanNumerals = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX"];
+    createChapter.mutate({
+      thesisId: activeThesisId,
+      title: `Chapitre ${nextNum}`,
+      romanNumeral: romanNumerals[nextNum - 1] || String(nextNum),
+    });
+  }, [activeThesisId, thesis?.chapters.length, createChapter]);
+
+  const handleDeleteChapter = useCallback(() => {
+    if (!activeChapterId) return;
+    deleteChapter.mutate(activeChapterId);
+    setActiveChapterId(null);
+  }, [activeChapterId, deleteChapter, setActiveChapterId]);
+
+  // Chapter reorder (BUG-09)
+  const sortedChapters = useMemo(
+    () => [...(thesis?.chapters ?? [])].sort((a, b) => a.sortOrder - b.sortOrder),
+    [thesis?.chapters]
+  );
+
+  // selectedChapterId is used for reorder logic — prefer activeChapterId, fall back to first chapter
+  const reorderChapterId = activeChapterId || thesis?.chapters[0]?.id || null;
+
+  const selectedChapterIndex = useMemo(
+    () => sortedChapters.findIndex((ch) => ch.id === reorderChapterId),
+    [sortedChapters, reorderChapterId]
+  );
+
+  const handleMoveChapter = useCallback(
+    (direction: "up" | "down") => {
+      if (!reorderChapterId || !thesis) return;
+      const currentIdx = selectedChapterIndex;
+      if (currentIdx < 0) return;
+      const swapIdx = direction === "up" ? currentIdx - 1 : currentIdx + 1;
+      if (swapIdx < 0 || swapIdx >= sortedChapters.length) return;
+
+      const current = sortedChapters[currentIdx];
+      const swap = sortedChapters[swapIdx];
+
+      // Swap sortOrder values
+      updateChapter.mutate({ id: current.id, sortOrder: swap.sortOrder });
+      updateChapter.mutate({ id: swap.id, sortOrder: current.sortOrder });
+    },
+    [reorderChapterId, thesis, selectedChapterIndex, sortedChapters, updateChapter]
+  );
+
   // Loading state
   if (isLoading) {
     return (
@@ -124,6 +175,7 @@ export function EditorPage() {
         chapters={thesis.chapters}
         activeChapterId={activeChapterId || thesis.chapters[0]?.id || null}
         onSelectChapter={setActiveChapterId}
+        onAddChapter={handleAddChapter}
       />
 
       {/* Chapter header */}
@@ -131,6 +183,11 @@ export function EditorPage() {
         chapter={selectedChapter}
         onTitleChange={handleTitleChange}
         onStatusChange={handleStatusChange}
+        onDelete={handleDeleteChapter}
+        onMoveUp={() => handleMoveChapter("up")}
+        onMoveDown={() => handleMoveChapter("down")}
+        canMoveUp={selectedChapterIndex > 0}
+        canMoveDown={selectedChapterIndex >= 0 && selectedChapterIndex < sortedChapters.length - 1}
         isUpdating={updateChapter.isPending}
       />
 

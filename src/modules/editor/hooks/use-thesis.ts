@@ -105,7 +105,9 @@ export function useCreateThesis() {
       title: string;
       author: string;
       subtitle?: string;
+      email?: string;
       institution?: string;
+      laboratory?: string;
       discipline?: string;
       directorName?: string;
     }) => {

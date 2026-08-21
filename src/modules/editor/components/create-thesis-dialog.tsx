@@ -25,6 +25,8 @@ export function CreateThesisDialog() {
   const [institution, setInstitution] = useState("");
   const [discipline, setDiscipline] = useState("");
   const [directorName, setDirectorName] = useState("");
+  const [email, setEmail] = useState("");
+  const [laboratory, setLaboratory] = useState("");
 
   const handleSubmit = async () => {
     if (!title.trim() || !author.trim()) return;
@@ -33,7 +35,9 @@ export function CreateThesisDialog() {
       title: title.trim(),
       author: author.trim(),
       subtitle: subtitle.trim() || undefined,
+      email: email.trim() || undefined,
       institution: institution.trim() || undefined,
+      laboratory: laboratory.trim() || undefined,
       discipline: discipline.trim() || undefined,
       directorName: directorName.trim() || undefined,
     });
@@ -42,7 +46,9 @@ export function CreateThesisDialog() {
     setTitle("");
     setAuthor("");
     setSubtitle("");
+    setEmail("");
     setInstitution("");
+    setLaboratory("");
     setDiscipline("");
     setDirectorName("");
     setOpen(false);
@@ -116,6 +122,28 @@ export function CreateThesisDialog() {
                 placeholder="Architecture, Droit..."
                 value={discipline}
                 onChange={(e) => setDiscipline(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="doctorant@universite.fr"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="laboratory">Laboratoire</Label>
+              <Input
+                id="laboratory"
+                placeholder="Nom du laboratoire"
+                value={laboratory}
+                onChange={(e) => setLaboratory(e.target.value)}
               />
             </div>
           </div>

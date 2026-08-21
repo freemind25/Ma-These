@@ -44,6 +44,7 @@ interface GrammarResult {
   statistics: GrammarStatistics;
   errors: GrammarError[];
   correctedText: string;
+  parseError?: string;
 }
 
 // ═══ Type Badge Colors ═══
@@ -140,17 +141,18 @@ export function GrammairePage() {
         const jsonStr = jsonMatch[1] ? jsonMatch[1].trim() : rawContent.trim();
         return JSON.parse(jsonStr) as GrammarResult;
       } catch {
-        // If parsing fails, create a basic result
+        // If parsing fails, return raw content as a note instead of a false negative (BUG-20)
         return {
           statistics: {
             wordCount: inputText.split(/\s+/).filter(Boolean).length,
             sentenceCount: inputText.split(/[.!?]+/).filter((s) => s.trim().length > 0).length,
-            totalErrors: 0,
-            readabilityScore: 70,
+            totalErrors: -1,
+            readabilityScore: 0,
           },
           errors: [],
           correctedText: rawContent,
-        } as GrammarResult;
+          parseError: "L'IA n'a pas retourné un résultat analysable. Voici la réponse brute ci-dessous.",
+        } as GrammarResult & { parseError?: string };
       }
     },
     onSuccess: (data) => {
@@ -315,8 +317,8 @@ export function GrammairePage() {
             <StatMiniCard
               icon={AlertTriangle}
               label="Erreurs"
-              value={result.statistics.totalErrors}
-              accent={result.statistics.totalErrors > 0 ? "chart-4" : "chart-2"}
+              value={result.statistics.totalErrors >= 0 ? result.statistics.totalErrors : "—"}
+              accent={result.parseError ? "chart-4" : result.statistics.totalErrors > 0 ? "chart-4" : "chart-2"}
             />
             <StatMiniCard
               icon={SpellCheck}
@@ -390,7 +392,19 @@ export function GrammairePage() {
 
             {/* Tab: Errors */}
             <TabsContent value="errors" className="mt-4">
-              {result.errors.length === 0 ? (
+              {result.parseError ? (
+                <Card className="border-amber-200 dark:border-amber-800/50 bg-amber-50/50 dark:bg-amber-900/10">
+                  <CardContent className="flex flex-col items-center justify-center py-10 text-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
+                      <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <h3 className="text-sm font-medium">Analyse incomplète</h3>
+                    <p className="text-xs text-muted-foreground max-w-sm">
+                      {result.parseError}
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : result.errors.length === 0 ? (
                 <Card>
                   <CardContent className="flex flex-col items-center justify-center py-12 text-center">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 mb-3">
