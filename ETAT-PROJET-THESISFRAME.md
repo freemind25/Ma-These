@@ -1,8 +1,8 @@
 # ETAT-PROJET-THESISFRAME.md
 
 > **Document unique de vérité — mis à jour après chaque lot.**
-> Dernière mise à jour : Lot 7 (Phase A — migration parentId→partId FK Prisma)
-> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md
+> Dernière mise à jour : Lot 7bis (complément de gouvernance)
+> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md
 
 ---
 
@@ -149,6 +149,7 @@
 | Lot 6 | Août 2025 | 4 chantiers : (1) build, (2) Harper, (3) CRUD Part + structureMode, (4) tests | ✅ OK (49 routes) | 1 280 tests, 53 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-6-CORRECTIONS.md |
 | Lot 6bis | Août 2025 | Clarifications : §1 parentId/partId, §2 routes, §3 tests, §4 research-tabs/[id] | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | — (non exécuté) | RAPPORT-LOT-6BIS-CLARIFICATIONS.md |
 | Lot 7 | Août 2025 | Phase A : migration `parentId` → `partId` FK Prisma (onDelete: SetNull) | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-7-CORRECTIONS.md |
+| Lot 7bis | Août 2025 | Complément gouvernance : 4 points de conformité (aucune correction technique) | — (pas de build) | — (pas de tests) | 154 warnings (inchangé) | RAPPORT-LOT-7BIS-GOUVERNANCE.md |
 
 ---
 
@@ -158,7 +159,7 @@
 |---|---|---|
 | Build | ✅ Compiled successfully | Lot 6bis |
 | Tests | 1 290 passants, 0 échec, 54 fichiers | Lot 6bis |
-| Lint | 0 erreur, ~154 warnings (pré-existants) | Lot 6 |
+| Lint | 0 erreur, 154 warnings (inchangé depuis Lot 6) | Lot 7bis |
 | Routes API | 47 dynamiques + 2 pages statiques = 49 totales | Lot 6bis |
 | Modèles Prisma | 20 | Audit forensique |
 | Fonctionnalités | 24 ✅ / 5 ⚠️ / 1 🔴 / 31 total | Lot 6bis |

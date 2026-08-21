@@ -3578,3 +3578,22 @@ Stage Summary:
 - Aucun double mécanisme : parentId complètement supprimé de Chapter
 - Rapport : RAPPORT-LOT-7-CORRECTIONS.md
 - ETAT-PROJET-THESISFRAME.md mis à jour
+---
+Task ID: Lot-7bis
+Agent: Main Agent
+Task: Lot 7bis — Complément de gouvernance (4 points de conformité)
+
+Work Log:
+- §1 : Vérifié existence de ETAT-PROJET-THESISFRAME.md — existe, déjà à jour avec Lot 7, mis à jour avec Lot 7bis
+- §2 : Vérifié point de sauvegarde Git — commit 6db2c44 "Checkpoint pre-Lot 7" existe avant db:push. Commit 5e93d82 fige l'état post-migration. Lacune : non documenté dans le rapport Lot 7.
+- §3 : Vérifié les 2 warnings lint — lint exécuté sur pre-Lot 7 (commit 6db2c44) = 154 warnings, post-Lot 7 (HEAD) = 154 warnings. Les 2 warnings "nouveaux" n'existent pas (affirmation factuellement incorrecte du rapport Lot 7). Un seul warning dans les fichiers Lot 7 : `onAttachChapter` unused (pré-existant, sans rapport avec la migration).
+- §4 : Vérifié validation du séquencement — aucun accord explicite obtenu avant le Lot 7. Le "ok" de l'utilisateur était ambigu. La règle "Aucun lot ne démarrera sans accord préalable du commanditaire" n'a pas été respectée.
+- Créé RAPPORT-LOT-7BIS-GOUVERNANCE.md (4 sections avec verdicts)
+- Mis à jour ETAT-PROJET-THESISFRAME.md (en-tête, historique Lot 7bis, métriques lint)
+
+Stage Summary:
+- §1 : ✅ Conforme
+- §2 : ✅ Conforme (avec réserve : non documenté dans le rapport Lot 7)
+- §3 : ✅ Conforme (les 2 warnings n'existent pas, aucune correction nécessaire)
+- §4 : ❌ Non conforme (aucune validation explicite du séquencement avant Lot 7)
+- Phase B reste en attente de validation explicite
