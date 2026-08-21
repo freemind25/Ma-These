@@ -3704,3 +3704,22 @@ Stage Summary:
 - 2 tests ajoutés pour preuve fonctionnelle BUG-09 (sortOrder)
 - Tests totaux : 1 292 (+2), 0 échec
 - Aucune extension de périmètre
+
+---
+Task ID: lot-9bis-cloture
+Agent: Main agent
+Task: Clarification bornée avant clôture Lot 9bis — 3 points stricts
+
+Work Log:
+- Lecture fraîche du code DoctoralToolbox : Prisma model (schema:128), 3 API endpoints GET/POST/PUT, fetch() réel, debounce 1.5s, 0 localStorage, 9 tests → VERDICT: fonctionne, attribution Lot 2 rejetée
+- Lecture fraîche du code ResearchTab : Prisma model (schema:148-164), 5 API endpoints CRUD, React Query + fetch(), debounce 1.5s, 0 localStorage, 16 tests → VERDICT: fonctionne, attribution Lot 2 rejetée
+- Traçabilité « 604 tests » : source primaire = worklog.md Task IDs 2-a (254) + 2-b (260) + 2-c (90), cité par AUDIT-FORENSIQUE-THESISFRAME.md:110. Auto-rapporté, aucun commit git, fichiers perdus → VERDICT: non vérifiable indépendamment
+- Mise à jour ETAT-PROJET-THESISFRAME.md §7.1 lignes #1, #2, #7
+- Mise à jour RAPPORT-LOT-9BIS-VERIFICATION.md lignes #1, #2, #7 + hash de commit réel
+- Commit substantif : 2069b0c7e5be042f7bea523cb967944c8b4f602d
+- Commit documentation : 6d6a8bb
+
+Stage Summary:
+- 3 points traités, 0 en suspens
+- Catégorie « attribution incertaine » éliminée du §7.1
+- Lot 9/9bis totalement clos
