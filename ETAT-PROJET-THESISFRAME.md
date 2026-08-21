@@ -1,8 +1,8 @@
 # ETAT-PROJET-THESISFRAME.md
 
 > **Document unique de vérité — mis à jour après chaque lot.**
-> Dernière mise à jour : Lot 10 (clôture BUG-22, diagnostic audit obsolète)
-> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md, RAPPORT-LOT-9-VERIFICATION.md, RAPPORT-LOT-9BIS-VERIFICATION.md, RAPPORT-LOT-10-VERIFICATION.md
+> Dernière mise à jour : Lot 11 (décisions E2 + E-Cat)
+> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md, RAPPORT-LOT-9-VERIFICATION.md, RAPPORT-LOT-9BIS-VERIFICATION.md, RAPPORT-LOT-10-VERIFICATION.md, RAPPORT-LOT-11-DECISIONS.md
 
 ---
 
@@ -90,11 +90,7 @@
 | # | Élément | Statut | Fichier(s) | Priorité | Phase |
 |---|---|---|---|---|---|
 | DT-05 | DocumentChunk sans route API dédiée | Ouvert | `rag-service.ts` | 🟡 Faible | D |
-| DT-06 | Dualité AI config (DB + localStorage) | Ouvert | `ai-config/*`, `use-ai-config.ts` | 🟡 Faible | E (décision) |
 | DT-07 | Export PDF via `window.print()` | Ouvert | `export-pdf-page.tsx` | 🟡 Faible | D |
-| DT-08 | RoutesMe simule le multi-modèle | Ouvert | `routesme-page.tsx` | 🟡 Faible | D |
-| DT-09 | CustomBookSkill jamais utilisé | Ouvert | `prisma/schema.prisma`, `livres-competences-page.tsx` | 🟡 Faible | D |
-| DT-10 | Fiches corpus jamais consultables | Ouvert | `corpus-publication.ts` | 🟡 Faible | D |
 
 ### DT résolus depuis l'audit forensique
 
@@ -104,17 +100,21 @@
 | DT-02 | Répertoires malformés `[_id[/` | Déjà absent (Lot 6 §0) | `ls` → n'existent pas |
 | DT-03 | Mode « harper » absent | Lot 6 | `rg '"harper"' src/data/ai-writing-modes.ts` → 1 résultat |
 | DT-04 | Routes sans tests | Lot 6 + Lot 6bis | 54 fichiers test, 1290 tests, 0 échec |
+| DT-06 | Dualité AI config (DB + localStorage) | Lot 11 (décision E2) | Routes `/api/ai-config/*` + modèle Prisma `AiToolConfig` supprimés. `git diff pre-e2-ecat --stat` : 4 fichiers route + 1 modèle supprimés. Build ✅, 1263 tests |
+| DT-08 | RoutesMe simule le multi-modèle | Lot 11 (décision E-Cat) | Renoncement assumé. Spécifications Horizon 2/3 archivées dans ROADMAP.md. Fonctionnalité conservée en l'état |
+| DT-09 | CustomBookSkill jamais utilisé | Lot 11 (décision E-Cat) | Renoncement assumé. Modèle Prisma conservé (données existantes) mais aucun chantier prévu |
+| DT-10 | Fiches corpus jamais consultables | Lot 11 (décision E-Cat) | Renoncement assumé. Fonctionnalité conservée en l'état, aucun chantier prévu |
 | DT-11 | Sous-répertoires API non testés | Lot 6 + Lot 6bis | doctoral-toolbox (9 tests) + research-tabs/[id] (10 tests) |
 | DT-12 | BUG-13 cause jamais identifiée | Lot 6 | Cause = mode invalide, corrigé par ajout dans WRITING_MODES |
 
 ---
 
-## 4. Décisions en attente de validation du commanditaire
+## 4. Décisions tranchées
 
-| # | Décision | Contexte | Options | Enjeu |
+| # | Décision | Date | Choix retenu | Justification |
 |---|---|---|---|---|
-| E2 | Sort des routes `/api/ai-config/*` orphelines | DT-06 : dualité DB + localStorage. Frontend utilise uniquement localStorage. Routes DB existent mais aucun consommateur frontend. | (a) Supprimer les routes + modèle Prisma AiToolConfig. (b) Migrer le frontend vers les routes DB et supprimer localStorage. (c) Laisser en l'état. | Consistance de l'architecture. La recommandation H2-08 proposait (a) mais le §4bis du Lot 5bis a interdit la suppression sans validation. |
-| E-Cat | Catalogue Horizon 2/3 | ROADMAP.md contient des spécifications pour E4, E6, E7, E8, E9, F2, F3, F4, F5 (authentification, collaboration temps réel, export professionnel, plugins, etc.). | Nécessite un arbitrage stratégique sur la feuille de route produit. | Déterminer si ces fonctionnalités restent dans la roadmap ou sont retirées. |
+| E2 | Sort des routes `/api/ai-config/*` orphelines | Août 2025 (Lot 11) | **(a) Supprimer** | Zéro consommateur frontend. Modèle Prisma mort. Coût de reconstruction futur négligeable. Résout aussi DT-06 |
+| E-Cat | Catalogue Horizon 2/3 | Août 2025 (Lot 11) | **Archiver (renoncement)** | Projet mono-utilisateur local. Auth, collaboration, plugins = périmètre SaaS. Résout DT-08, DT-09, DT-10 par renoncement assumé |
 
 ---
 
@@ -137,6 +137,7 @@
 | Lot 9 | Août 2025 | Phase C : vérification + correction de BUG-08/09/10/18/20 (5/5 annoncés à tort par Lot 2) | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-9-VERIFICATION.md |
 | Lot 9bis | Août 2025 | Complément : §7.1 fiabilité Lot 2 (0/7), 2 tests ciblés sortOrder (BUG-09), mise à jour ETAT-PROJET | ✅ OK (49 routes) | 1 292 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-9BIS-VERIFICATION.md |
 | Lot 10 | Août 2025 | Phase D partie 1 : vérification préalable BUG-22 → diagnostic audit obsolète, BUG-22 clos sans correction | — (aucune modif. code) | 1 292 tests, 54 fichiers | — (inchangé) | RAPPORT-LOT-10-VERIFICATION.md |
+| Lot 11 | Août 2025 | Décisions E2 + E-Cat : suppression ai-config orphelines + archivage Horizon 2/3, fermeture DT-06/08/09/10 | ✅ OK (47 routes) | 1 263 tests, 52 fichiers | 0 erreurs, 122 warnings | RAPPORT-LOT-11-DECISIONS.md |
 
 ---
 
@@ -144,16 +145,16 @@
 
 | Métrique | Valeur | Dernière vérification |
 |---|---|---|
-| Build | ✅ Compiled successfully | Lot 9 |
-| Tests | 1 292 passants, 0 échec, 54 fichiers | Lot 9bis |
-| Lint | 0 erreur, 154 warnings (inchangé depuis Lot 6) | Lot 7bis |
-| Routes API | 47 dynamiques + 2 pages statiques = 49 totales | Lot 6bis |
-| Modèles Prisma | 20 | Audit forensique |
+| Build | ✅ Compiled successfully | Lot 11 |
+| Tests | 1 263 passants, 0 échec, 52 fichiers | Lot 11 |
+| Lint | 0 erreur, 122 warnings | Lot 11 |
+| Routes API | 45 dynamiques + 2 pages statiques = 47 totales | Lot 11 |
+| Modèles Prisma | 19 | Lot 11 |
 | Fonctionnalités | 26 ✅ / 4 ⚠️ / 1 🔴 / 31 total | Lot 10 |
 | Bugs ouverts | 9 BUG + 0 mode orphelin | Lot 10 |
 | Dette intégrité | ✅ Résolue (Lot 7) | Lot 7 |
-| DT ouverte | 6 | Lot 6bis |
-| Décisions en attente | 2 (E2, E-Cat) | Lot 6bis |
+| DT ouverte | 2 (DT-05, DT-07) | Lot 11 |
+| Décisions en attente | 0 | Lot 11 |
 
 ---
 

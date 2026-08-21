@@ -231,20 +231,6 @@ model NotebookEntry {
 }
 
 // ═══════════════════════════════════════
-// CONFIGURATION IA
-// ═══════════════════════════════════════
-
-model AiToolConfig {
-  id        String   @id @default(cuid())
-  provider  String   @unique // openai | anthropic | mistral | zai | custom
-  apiKey    String?
-  model     String?
-  isActive  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// ═══════════════════════════════════════
 // GESTION AGILE
 // ═══════════════════════════════════════
 

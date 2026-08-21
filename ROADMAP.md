@@ -5,6 +5,12 @@
 > **Date** : Août 2025  
 > **Rédacteur** : Architecte Logiciel Principal  
 
+> **⛔ ARCHIVAGE — Décision E-Cat (août 2025)**
+>
+> Les spécifications suivantes de cette roadmap sont **archivées comme non planifiées** : Epic 1.2 (Authentification & Licences), Epic 6.2 (Visualisation SVG 6 types), Epic 6.3 tâches 6.3.2 (Export Office), 6.3.3 (Excalidraw), Epic 7.2 (Sécurité — auth, rate limiting, CSRF), Epic 7.3 tâches 7.3.5 (PostgreSQL), 7.3.6 (CI/CD), 7.3.7 (Monitoring). Ces items dépassent le périmètre actuel du projet (outil mono-utilisateur local, pas de SaaS multi-utilisateur). Les DT-08 (RoutesMe simulé), DT-09 (CustomBookSkill orphelin) et DT-10 (fiches corpus non affichées) sont fermés par renoncement. Le reste de la roadmap (Phases 0-5 partielles) reste actif.
+>
+> Pour lever cet archivage, une nouvelle décision de roadmap produit est requise.
+
 ---
 
 ## Table des matières
