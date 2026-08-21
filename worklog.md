@@ -3681,3 +3681,26 @@ Stage Summary:
 - Fonctionnalités : 27 ✅ / 4 ⚠️ / 1 🔴 (vs 25/4/1 avant)
 - Bugs ouverts : 9 (vs 14 avant)
 - Aucune extension de périmètre
+---
+Task ID: 1
+Agent: Main
+Task: Lot 9bis — Complément gouvernance + preuve fonctionnelle
+
+Work Log:
+- Tag pre-lot-9bis créé
+- Inventaire exhaustif des 7 affirmations vérifiables du Lot 2 (0/7 confirmé correct)
+- Ajout section §7.1 dans ETAT-PROJET avec tableau détaillé (7 items, vérifié par, résultat, détail)
+- Mise à jour §7.2 ligne Lot 2 avec renvoi à §7.1
+- 2 tests ciblés ajoutés dans chapters/[id]/route.test.ts (sortOrder update + sortOrder: 0)
+- Cartographie handler→API→test existante pour les 4 corrections Lot 9
+- npx next build → compiled successfully
+- npx vitest run → 54 fichiers, 1 292 tests, 0 échec
+- bun run lint → 0 erreur, 154 warnings
+- Rapport RAPPORT-LOT-9BIS-VERIFICATION.md rédigé
+- ETAT-PROJET-THESISFRAME.md mis à jour (§7.1, §7.2, historique, métriques)
+
+Stage Summary:
+- Lot 2 fiabilité documentée : 0/7 items confirmés corrects
+- 2 tests ajoutés pour preuve fonctionnelle BUG-09 (sortOrder)
+- Tests totaux : 1 292 (+2), 0 échec
+- Aucune extension de périmètre
