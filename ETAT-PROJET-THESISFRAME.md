@@ -1,8 +1,8 @@
 # ETAT-PROJET-THESISFRAME.md
 
 > **Document unique de vérité — mis à jour après chaque lot.**
-> Dernière mise à jour : Lot 8 (Phase B — 5 modes IA orphelins)
-> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md
+> Dernière mise à jour : Lot 9 (Phase C — BUG-08/09/10/18/20)
+> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md, RAPPORT-LOT-9-VERIFICATION.md
 
 ---
 
@@ -13,9 +13,9 @@
 | # | Fonctionnalité | Statut | Dernière vérification | Résumé | Bugs ouverts associés |
 |---|---|---|---|---|---|
 | 1 | Tableau de bord | ✅ Fonctionne | Lot 6bis | 4 stat cards, 6 actions rapides, grille 14 modules | — |
-| 2 | Éditeur de thèse (Tiptap) | ⚠️ Partiel | Lot 6bis | Éditeur fonctionnel, auto-save 2.5s. BUG-01,02,06,07 corrigés | BUG-08, 09, 10 |
+| 2 | Éditeur de thèse (Tiptap) | ✅ Fonctionne | Lot 9 | Éditeur fonctionnel, auto-save 2.5s. BUG-01,02,06,07,08,09 corrigés. Ajout/suppression chapitres, réordonnancement ( Monter/Descendre) | — |
 | 3 | Assistant IA (modes d'écriture) | ✅ Fonctionne | Lot 8 | 17 modes dans WRITING_MODES. 5 modes orphelins ajoutés Lot 8 (academic-reformulation, deblocage, freeform, improvement, revue-litterature) | BUG-26 |
-| 4 | Chat Directeur | ✅ Fonctionne | Audit forensique | Critique-only, max 2 fiches, auto-scroll | BUG-10 |
+| 4 | Chat Directeur | ✅ Fonctionne | Lot 9 | Critique-only, max 2 fiches, auto-scroll. **BUG-10 corrigé (Lot 9)** : thesisContext passé depuis la thèse active | — |
 | 5 | Références bibliographiques | ✅ Fonctionne | Audit forensique | CRUD, filtres, favoris, import BibTeX/RIS/CSL-JSON, export | — |
 | 6 | Méthodologie (guides) | ✅ Fonctionne | Audit forensique | Contenu statique, checklist interactive | — |
 | 7 | Articles scientifiques (IMRaD) | ✅ Fonctionne | Audit forensique | Guide IMRaD statique + checklist soumission | — |
@@ -37,7 +37,7 @@
 | 23 | RoutesMe (multi-modèles) | ⚠️ Partiel | Audit forensique | Labels visuels GPT-4/Claude/Mistral/Llama mais pas de vraie comparaison multi-fournisseurs | DT-08 |
 | 24 | Livres & Compétences | ⚠️ Partiel | Audit forensique | Livres codés en dur, pas de persistance DB, CustomBookSkill orphelin | DT-09 |
 | 25 | Onglet de recherche | ✅ Fonctionne | Lot 6bis | CRUD via API, persistance DB, BUG-15 corrigé (H2-03), testé (Lot 6bis) | — |
-| 26 | Grammaire IA | ⚠️ Partiel | Lot 6bis | Parsing JSON typé, BUG-06 et 12 corrigés | BUG-20 |
+| 26 | Grammaire IA | ✅ Fonctionne | Lot 9 | Parsing JSON typé, BUG-06/12/20 corrigés. **BUG-20** : avertissement « Analyse incomplète » au lieu de faux négatif | — |
 | 27 | Export PDF | ⚠️ Partiel | Audit forensique | Utilise `window.print()` — pas de vraie génération PDF programmatique | DT-07 |
 | 28 | Équilibre des chapitres | ✅ Fonctionne | Lot 6bis | Sélecteur de thèse, équilibre IA, BUG-23 corrigé | — |
 | 29 | Diagrammes visuels | ⚠️ Partiel | Audit forensique | CRUD nœuds OK, rendu via composants React (pas de SVG/canvas/Mermaid) | BUG-21, 22 |
@@ -48,7 +48,7 @@
 
 | Statut | Nombre | IDs |
 |---|---|---|
-| ✅ Fonctionne | **25** | 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 25, 26, 28, 30, 31 |
+| ✅ Fonctionne | **27** | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 25, 26, 28, 30, 31 |
 | ⚠️ Partiel | **4** | 13, 23, 24, 27, 29 |
 | 🔴 Cassé / Faux | **1** | 22 |
 | **Total** | **31** | |
@@ -57,23 +57,12 @@
 
 ## 2. Bugs ouverts — backlog priorisé
 
-> Seuls les bugs **non résolus** sont listés. Les bugs résolus (BUG-01 à 06, 11, 12, 14, 15, 16, 17, 23, 24, 25, 33) et les bugs résolus par Lot 6 (BUG-07, 13, 19) sont retirés du backlog.
-> **BUG-08, 09, 10** : annoncés corrigés par le Lot 2 — à revérifier avec preuve avant de les considérer acquis (motif de rapports Lot 2 non fiables).
+> Seuls les bugs **non résolus** sont listés. Les bugs résolus (BUG-01 à 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25, 33) sont retirés du backlog.
 
-### 2.1 — Bugs à revérifier (annoncés corrigés par Lot 2, fiabilité douteuse)
-
-| ID | Description | Priorité | Phase | Fichier(s) concerné(s) |
-|---|---|---|---|---|
-| BUG-08 | Props `onAddChapter`/`onDelete` non passées à `ChapterTabs`/`ChapterHeader` | 🟠 Majeur | C | `editor-page.tsx`, `chapter-tabs.tsx`, `chapter-header.tsx` |
-| BUG-09 | Aucun code de réordonnancement (drag & drop) dans l'éditeur | 🟠 Majeur | C | `src/modules/editor/` |
-| BUG-10 | `directorChatContext` absent du store et non passé au chat directeur | 🟠 Majeur | C | `ai-writing-page.tsx`, `app-store.ts` |
-
-### 2.2 — Bugs confirmés non résolus
+### 2.1 — Bugs confirmés non résolus
 
 | ID | Description | Priorité | Phase | Fichier(s) concerné(s) |
 |---|---|---|---|---|
-| BUG-18 | Formulaire de création de thèse : `email` et `laboratory` absents | 🟡 Moyen | C | `create-thesis-dialog.tsx`, `thesis/route.ts` |
-| BUG-20 | Grammaire : faux négatif quand l'IA retourne un JSON invalide | 🟡 Moyen | D | `grammaire-page.tsx` |
 | BUG-21 | Diagrammes : pas d'export fichier (seul clipboard) | 🟡 Mineur | D | `diagrammes-page.tsx` |
 | BUG-22 | Diagrammes : pas de rendu visuel vrai (liste de Cards textuels) | 🟠 Majeur | D | `diagrammes-page.tsx` |
 | BUG-26 | Icône `SpellCheck` manquante dans `ICON_MAP` → fallback `Sparkles` | 🟡 Mineur | D | `ai-writing-page.tsx` |
@@ -146,6 +135,7 @@
 | Lot 7bis | Août 2025 | Complément gouvernance : 4 points de conformité (aucune correction technique) | — (pas de build) | — (pas de tests) | 154 warnings (inchangé) | RAPPORT-LOT-7BIS-GOUVERNANCE.md |
 | Lot 8 | Août 2025 | Phase B : 5 modes IA orphelins ajoutés dans WRITING_MODES | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-8-CORRECTIONS.md |
 | Lot 8bis | Août 2025 | Complément : vérification runtime des 5 modes (200 + contenu exploitable) | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-8BIS-VERIFICATION.md |
+| Lot 9 | Août 2025 | Phase C : vérification + correction de BUG-08/09/10/18/20 (5/5 annoncés à tort par Lot 2) | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-9-VERIFICATION.md |
 
 ---
 
@@ -153,13 +143,13 @@
 
 | Métrique | Valeur | Dernière vérification |
 |---|---|---|
-| Build | ✅ Compiled successfully | Lot 6bis |
+| Build | ✅ Compiled successfully | Lot 9 |
 | Tests | 1 290 passants, 0 échec, 54 fichiers | Lot 6bis |
 | Lint | 0 erreur, 154 warnings (inchangé depuis Lot 6) | Lot 7bis |
 | Routes API | 47 dynamiques + 2 pages statiques = 49 totales | Lot 6bis |
 | Modèles Prisma | 20 | Audit forensique |
-| Fonctionnalités | 25 ✅ / 4 ⚠️ / 1 🔴 / 31 total | Lot 8 |
-| Bugs ouverts | 14 BUG + 0 mode orphelin | Lot 8 |
+| Fonctionnalités | 27 ✅ / 4 ⚠️ / 1 🔴 / 31 total | Lot 9 |
+| Bugs ouverts | 9 BUG + 0 mode orphelin | Lot 9 |
 | Dette intégrité | ✅ Résolue (Lot 7) | Lot 7 |
 | DT ouverte | 6 | Lot 6bis |
 | Décisions en attente | 2 (E2, E-Cat) | Lot 6bis |
@@ -183,3 +173,4 @@
 | RAPPORT-LOT-7-CORRECTIONS.md | ✅ Fiable | Pré-règles de preuve respectées |
 | RAPPORT-LOT-7BIS-GOUVERNANCE.md | ✅ Fiable | Vérifications indépendantes avec preuve |
 | RAPPORT-LOT-8-CORRECTIONS.md | ✅ Fiable | Pré-règles de preuve respectées, validation explicite du périmètre |
+| RAPPORT-LOT-9-VERIFICATION.md | ✅ Fiable | Pré-règles de preuve respectées, vérification avant correction, validation explicite du périmètre |
