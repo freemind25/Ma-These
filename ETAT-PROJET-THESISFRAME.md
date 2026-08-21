@@ -1,8 +1,8 @@
 # ETAT-PROJET-THESISFRAME.md
 
 > **Document unique de vérité — mis à jour après chaque lot.**
-> Dernière mise à jour : Lot 9bis (complément gouvernance + preuve fonctionnelle)
-> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md, RAPPORT-LOT-9-VERIFICATION.md, RAPPORT-LOT-9BIS-VERIFICATION.md
+> Dernière mise à jour : Lot 10 (clôture BUG-22, diagnostic audit obsolète)
+> Sources de référence : AUDIT-FORENSIQUE-THESISFRAME.md, RAPPORT-LOT-6-CORRECTIONS.md, RAPPORT-LOT-6BIS-CLARIFICATIONS.md, RAPPORT-LOT-7-CORRECTIONS.md, RAPPORT-LOT-7BIS-GOUVERNANCE.md, RAPPORT-LOT-8-CORRECTIONS.md, RAPPORT-LOT-9-VERIFICATION.md, RAPPORT-LOT-9BIS-VERIFICATION.md, RAPPORT-LOT-10-VERIFICATION.md
 
 ---
 
@@ -40,7 +40,7 @@
 | 26 | Grammaire IA | ✅ Fonctionne | Lot 9 | Parsing JSON typé, BUG-06/12/20 corrigés. **BUG-20** : avertissement « Analyse incomplète » au lieu de faux négatif | — |
 | 27 | Export PDF | ⚠️ Partiel | Audit forensique | Utilise `window.print()` — pas de vraie génération PDF programmatique | DT-07 |
 | 28 | Équilibre des chapitres | ✅ Fonctionne | Lot 6bis | Sélecteur de thèse, équilibre IA, BUG-23 corrigé | — |
-| 29 | Diagrammes visuels | ⚠️ Partiel | Audit forensique | CRUD nœuds OK, rendu via composants React (pas de SVG/canvas/Mermaid) | BUG-21, 22 |
+| 29 | Diagrammes visuels | ✅ Fonctionne | Lot 10 (vérif. préalable) | 5 renderers CSS/HTML dédiés (OrganigrammeRenderer, ChronologieRenderer, ComparatifRenderer, ConceptMapRenderer, ProcessusRenderer). CRUD nœuds OK. **BUG-22 clos** : diagnostic initial audit (« liste de Cards textuels ») obsolète — le code a évolué. Point résiduel : connecteur horizontal OrganigrammeRenderer (conflit Tailwind/inline style, amélioration mineure reclassée) | BUG-21 |
 | 30 | Harper (résumé/paraphrase) | ✅ Fonctionne | Lot 6bis | Mode « harper » ajouté dans WRITING_MODES (Lot 6), 12ème mode | — |
 | 31 | Mon IA de thèse (RAG) | ✅ Fonctionne | Audit forensique | Chat contextuel, 4 sources indexées, keyword-only SQLite | — |
 
@@ -48,8 +48,8 @@
 
 | Statut | Nombre | IDs |
 |---|---|---|
-| ✅ Fonctionne | **27** | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 25, 26, 28, 30, 31 |
-| ⚠️ Partiel | **4** | 13, 23, 24, 27, 29 |
+| ✅ Fonctionne | **26** | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 25, 26, 28, 29, 30, 31 |
+| ⚠️ Partiel | **4** | 13, 23, 24, 27 |
 | 🔴 Cassé / Faux | **1** | 22 |
 | **Total** | **31** | |
 
@@ -57,14 +57,13 @@
 
 ## 2. Bugs ouverts — backlog priorisé
 
-> Seuls les bugs **non résolus** sont listés. Les bugs résolus (BUG-01 à 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25, 33) sont retirés du backlog.
+> Seuls les bugs **non résolus** sont listés. Les bugs résolus (BUG-01 à 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 33) sont retirés du backlog. **BUG-22** clos par Lot 10 (vérification préalable : diagnostic audit obsolète, 5 renderers existent).
 
 ### 2.1 — Bugs confirmés non résolus
 
 | ID | Description | Priorité | Phase | Fichier(s) concerné(s) |
 |---|---|---|---|---|
 | BUG-21 | Diagrammes : pas d'export fichier (seul clipboard) | 🟡 Mineur | D | `diagrammes-page.tsx` |
-| BUG-22 | Diagrammes : pas de rendu visuel vrai (liste de Cards textuels) | 🟠 Majeur | D | `diagrammes-page.tsx` |
 | BUG-26 | Icône `SpellCheck` manquante dans `ICON_MAP` → fallback `Sparkles` | 🟡 Mineur | D | `ai-writing-page.tsx` |
 | BUG-27 | Auto-édition : `mode: "peer-review"` au lieu du mode 8C dédié | 🟡 Moyen | D | `auto-edition-page.tsx` |
 | BUG-28 | Recherche entrées : `tags` exclu de la recherche plein texte | 🟡 Mineur | D | `entries/route.ts` |
@@ -137,6 +136,7 @@
 | Lot 8bis | Août 2025 | Complément : vérification runtime des 5 modes (200 + contenu exploitable) | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-8BIS-VERIFICATION.md |
 | Lot 9 | Août 2025 | Phase C : vérification + correction de BUG-08/09/10/18/20 (5/5 annoncés à tort par Lot 2) | ✅ OK (49 routes) | 1 290 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-9-VERIFICATION.md |
 | Lot 9bis | Août 2025 | Complément : §7.1 fiabilité Lot 2 (0/7), 2 tests ciblés sortOrder (BUG-09), mise à jour ETAT-PROJET | ✅ OK (49 routes) | 1 292 tests, 54 fichiers | 0 erreurs, 154 warnings | RAPPORT-LOT-9BIS-VERIFICATION.md |
+| Lot 10 | Août 2025 | Phase D partie 1 : vérification préalable BUG-22 → diagnostic audit obsolète, BUG-22 clos sans correction | — (aucune modif. code) | 1 292 tests, 54 fichiers | — (inchangé) | RAPPORT-LOT-10-VERIFICATION.md |
 
 ---
 
@@ -149,8 +149,8 @@
 | Lint | 0 erreur, 154 warnings (inchangé depuis Lot 6) | Lot 7bis |
 | Routes API | 47 dynamiques + 2 pages statiques = 49 totales | Lot 6bis |
 | Modèles Prisma | 20 | Audit forensique |
-| Fonctionnalités | 27 ✅ / 4 ⚠️ / 1 🔴 / 31 total | Lot 9 |
-| Bugs ouverts | 9 BUG + 0 mode orphelin | Lot 9 |
+| Fonctionnalités | 26 ✅ / 4 ⚠️ / 1 🔴 / 31 total | Lot 10 |
+| Bugs ouverts | 9 BUG + 0 mode orphelin | Lot 10 |
 | Dette intégrité | ✅ Résolue (Lot 7) | Lot 7 |
 | DT ouverte | 6 | Lot 6bis |
 | Décisions en attente | 2 (E2, E-Cat) | Lot 6bis |
@@ -186,7 +186,7 @@
 | Lot 3 (worklog seul) | ❌ Non vérifiable | Aucun rapport. Les tests créés ont été perdus |
 | Lot 4-5 (worklog seul) | ⚠️ Partiellement fiable | Reconstruction de tests documentée mais non vérifiable comme fonctionnellement équivalente à l'original |
 | RAPPORT-LOT-5BIS-CLOTURE.md | ⚠️ Partiellement fiable | BUG-12 et BUG-23 déclarés ouverts alors qu'ils sont résolus (écarts D-01 et D-03 de l'audit) |
-| AUDIT-FORENSIQUE-THESISFRAME.md | ✅ Fiable | Vérification directe du code, pré-règles de preuve |
+| AUDIT-FORENSIQUE-THESISFRAME.md | ⚠️ Partiellement fiable | Vérification directe du code, pré-règles de preuve. **Obsolescence confirmée sur BUG-22** (Lot 10) : le diagnostic « pas de rendu visuel vrai (liste de Cards textuels) » ne correspondait plus à l'état du code — 5 renderers CSS/HTML dédiés existent. Ce cas illustre que le catalogue de bugs de l'audit peut être obsolète sur des points où le code a évolué post-audit sans mise à jour du catalogue. |
 | RAPPORT-LOT-6-CORRECTIONS.md | ✅ Fiable | Pré-règles de preuve respectées. Incohérence mineure sur le comptage de routes (§2 du Lot 6bis) |
 | RAPPORT-LOT-6BIS-CLARIFICATIONS.md | ✅ Fiable | Pré-règles de preuve respectées |
 | RAPPORT-LOT-7-CORRECTIONS.md | ✅ Fiable | Pré-règles de preuve respectées |
