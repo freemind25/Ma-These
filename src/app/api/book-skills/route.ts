@@ -12,43 +12,40 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search");
     const tags = searchParams.get("tags");
 
-    const where: Record<string, unknown> = {};
-    if (search) {
-      where.OR = [
-        { title: { contains: search } },
-        { author: { contains: search } },
-        { content: { contains: search } },
-      ];
-    }
-    if (tags) {
-      where.tags = { contains: tags };
-    }
+    // Sanitize params for raw SQL
+    const s = (v: string) => v.replace(/'/g, "''");
 
-    const skills = await db.customBookSkill.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        author: true,
-        tags: true,
-        content: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    // Raw query avoids loading large content fields into memory
+    const rows = await db.$queryRawUnsafe<
+      Array<{
+        id: string;
+        title: string;
+        author: string | null;
+        tags: string | null;
+        contentPreview: string;
+        contentLength: number | bigint;
+        createdAt: string;
+        updatedAt: string;
+      }>
+    >(
+      `SELECT id, title, author, tags,
+              SUBSTR(content, 1, 300) AS "contentPreview",
+              LENGTH(content) AS "contentLength",
+              "createdAt", "updatedAt"
+       FROM CustomBookSkill
+       ${search ? `WHERE title LIKE '%${s(search)}%' OR author LIKE '%${s(search)}%' OR tags LIKE '%${s(search)}%'` : ""}
+       ${tags ? (search ? "AND" : "WHERE") + ` tags LIKE '%${s(tags)}%'` : ""}
+       ORDER BY "createdAt" DESC`
+    );
 
-    // Return content preview (first 300 chars) for list view
-    const data = skills.map((s) => ({
-      ...s,
-      contentPreview: s.content.slice(0, 300),
-      contentLength: s.content.length,
-      content: undefined, // Don't send full content in list
+    const data = rows.map((r) => ({
+      ...r,
+      contentLength: Number(r.contentLength),
     }));
 
     return NextResponse.json({
       data,
-      meta: { count: skills.length },
+      meta: { count: rows.length },
     });
   } catch (error) {
     console.error("[GET /api/book-skills] Error:", error);

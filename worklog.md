@@ -3902,3 +3902,23 @@ Stage Summary:
 - New /api/osm-infra API route (GET categories, POST search with NLP → geocode → Overpass pipeline)
 - New Explorer tab in Vérification Carto with search, category filters, results list, OSM map embed
 - Lint: 0 errors, 126 warnings (all pre-existing)
+
+---
+Task ID: 3
+Agent: Main
+Task: Ajouter "The Complete Book of Grant Writing" aux skills (CustomBookSkill)
+
+Work Log:
+- Vérifié le fichier PDF dans upload/ (44 Mo)
+- Extrait le texte via pdftotext → 453 252 chars, 10 595 lignes
+- Découvert que la BDD ne contenait que 1 livre (DB recréée entre sessions)
+- Réinjecté les 5 livres précédents + le nouveau via script Prisma direct
+- Fix bug OOM sur GET /api/book-skills : remplacé findMany(content:true) par $queryRawUnsafe avec SUBSTR(content,1,300) + LENGTH(content)
+- Fix BigInt serialization : Prisma retourne BigInt pour LENGTH() → converti avec Number()
+- Installé jspdf + html2canvas-pro (manquants)
+- Vérifié API : 200, 6 livres, JSON de 3.8 KB (au lieu de 3.2 Mo)
+
+Stage Summary:
+- 6 livres en BDD : Salkind, Rae-Wong, Ollhoff, White, Kothari, Smith-Works (Grant Writing)
+- API GET /api/book-skills optimisée : raw SQL, pas de chargement du contenu complet
+- Lint : 0 erreurs, 126 warnings (pré-existants)
