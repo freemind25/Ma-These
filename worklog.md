@@ -3922,3 +3922,21 @@ Stage Summary:
 - 6 livres en BDD : Salkind, Rae-Wong, Ollhoff, White, Kothari, Smith-Works (Grant Writing)
 - API GET /api/book-skills optimisée : raw SQL, pas de chargement du contenu complet
 - Lint : 0 erreurs, 126 warnings (pré-existants)
+
+---
+Task ID: 4
+Agent: Main
+Task: Investiguer https://www.reviewcommons.org/ pour ThesisFrame
+
+Work Log:
+- Fetch homepage, about, blog, refereed preprints via agent-browser
+- Extract Guidelines for Authors and Reviewers via browser eval (pages are WordPress SPA, page_reader gets only CSS)
+- Web search for complementary info (ASAPbio evaluation article, PMC article)
+- Analyzed: platform concept, review structure, journal transfer workflow, templates
+- Compared with existing ThesisFrame features (peer-review mode, auto-edition, verification methodo)
+
+Stage Summary:
+- Review Commons = pre-journal peer review platform for life sciences (ASAPbio + EMBO)
+- 3 actionable inspirations: (1) structured review grid for peer-review mode, (2) revision plan template, (3) add guidelines as Library resource
+- No code/component to integrate — purely inspiration + prompt improvements
+- No code changes made in this task
