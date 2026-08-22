@@ -3940,3 +3940,21 @@ Stage Summary:
 - 3 actionable inspirations: (1) structured review grid for peer-review mode, (2) revision plan template, (3) add guidelines as Library resource
 - No code/component to integrate — purely inspiration + prompt improvements
 - No code changes made in this task
+
+---
+Task ID: 5
+Agent: Main
+Task: Intégrer les 3 recommandations Review Commons
+
+Work Log:
+- Mode peer-review : remplacé la liste plate de 10 critères par la grille structurée Review Commons adaptée en français (Section 1: Preuve/Reproductibilité/Clarté avec Résumé/Majeurs/Mineurs + Section 2: Portée avec Bilan/Avancée/Public + Recommandation finale à 4 niveaux)
+- Nouveau mode 'revision-plan' (Plan de révision) : prompt structuré en 4 parties (Synthèse commentaires, Plan détaillé P1/P2/P3 avec temps estimé, Points de désaccord, Calendrier)
+- Ajout de la ressource 'Review Commons — Guidelines for Authors & Reviewers' (7 795 chars) dans CustomBookSkill
+- Icone ListChecks vérifiée dans lucide-react
+- Lint : 0 erreurs, 126 warnings (pré-existants)
+
+Stage Summary:
+- 20 modes d'écriture IA (était 19)
+- 7 ressources dans la Bibliothèque (était 6)
+- peer-review enrichi : grille RC en 2 sections + recommandation 4 niveaux
+- Nouveau : mode 'Plan de révision' pour transformer les commentaires de relecteurs en plan d'action
