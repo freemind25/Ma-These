@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   MapPin,
   Plus,
@@ -30,6 +31,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -52,6 +54,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useAiConfig } from "@/hooks/use-ai-config";
+import { cn } from "@/lib/utils";
 
 /* ═══════════════════════════════════════════════════════════════
    Types
@@ -733,6 +736,10 @@ export function VerificationCartoPage() {
             {mcpHealth?.status === "ok" && (
               <span className="size-2 rounded-full bg-emerald-500" />
             )}
+          </TabsTrigger>
+          <TabsTrigger value="explorer" className="gap-2">
+            <Globe className="size-4" />
+            Explorateur
           </TabsTrigger>
         </TabsList>
 
@@ -1526,7 +1533,304 @@ export function VerificationCartoPage() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* ═══════════════════════════════════
+           Tab 6: Explorateur OSM
+           ═══════════════════════════════════ */}
+        <TabsContent value="explorer" className="space-y-4 mt-4">
+          <InfraExplorer />
+        </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   InfraExplorer — OSM Infrastructure Explorer (Sightline-inspired)
+   ═══════════════════════════════════════════════════════════════ */
+
+interface InfraCategory {
+  id: string;
+  label: string;
+  icon: string;
+  types: string[];
+}
+
+interface InfraResult {
+  id: number;
+  name: string;
+  type: string;
+  operator: string;
+  lat: number;
+  lon: number;
+  tags: Record<string, string>;
+}
+
+interface InfraSearchResponse {
+  data: InfraResult[];
+  meta: {
+    count: number;
+    query: string;
+    bounds: {
+      west: number;
+      south: number;
+      east: number;
+      north: number;
+    };
+    geocode?: {
+      lat: number;
+      lon: number;
+      location: string;
+    };
+    type?: string;
+  };
+}
+
+function InfraExplorer() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedResult, setSelectedResult] = useState<InfraResult | null>(null);
+  const [categories, setCategories] = useState<InfraCategory[]>([]);
+
+  // Fetch categories on mount
+  useEffect(() => {
+    fetch("/api/osm-infra")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.categories) setCategories(data.categories);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Search query with TanStack Query
+  const { data: searchResult, isLoading, error, isError } = useQuery<InfraSearchResponse>({
+    queryKey: ["osm-infra", searchQuery],
+    queryFn: async () => {
+      const res = await fetch("/api/osm-infra", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: searchQuery }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Erreur de recherche");
+      }
+      return res.json();
+    },
+    enabled: searchQuery.trim().length > 3,
+    staleTime: 60_000,
+  });
+
+  // Derive map center and bounds from search results (no setState in effect)
+  const mapCenter = useMemo(() => {
+    if (selectedResult) return { lat: selectedResult.lat, lon: selectedResult.lon };
+    if (searchResult?.meta?.geocode) {
+      return { lat: searchResult.meta.geocode.lat, lon: searchResult.meta.geocode.lon };
+    }
+    return null;
+  }, [searchResult, selectedResult]);
+
+  const mapBounds = searchResult?.meta?.bounds ?? null;
+
+  const handleCategoryClick = (category: InfraCategory) => {
+    const firstType = category.types[0];
+    if (firstType && categories.length > 0) {
+      // Get the label from the type map by fetching types
+      fetch("/api/osm-infra")
+        .then((r) => r.json())
+        .then((data) => {
+          const typeDef = data.types?.find((t: { key: string }) => t.key === firstType);
+          if (typeDef) {
+            setSearchQuery(`${typeDef.label} à Paris`);
+          }
+        })
+        .catch(() => {});
+    }
+  };
+
+  const handleSeeOnMap = (result: InfraResult) => {
+    setSelectedResult(result);
+  };
+
+  const mapUrl = mapBounds
+    ? `https://www.openstreetmap.org/export/embed.html?bbox=${mapBounds.west},${mapBounds.south},${mapBounds.east},${mapBounds.north}&layer=mapnik${mapCenter ? `&marker=${mapCenter.lat},${mapCenter.lon}` : ""}`
+    : "https://www.openstreetmap.org/export/embed.html?bbox=2.2241,48.8155,2.4699,48.9021&layer=mapnik";
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Left panel: Search + Categories + Results */}
+      <div className="space-y-4">
+        {/* Search bar */}
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Ex: hôpitaux à Paris, écoles près de Lyon..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchQuery.trim().length > 3) {
+                    // trigger the query — useQuery will handle it
+                  }
+                }}
+                className="flex-1"
+              />
+              <Button
+                onClick={() => {
+                  if (searchQuery.trim().length > 3) {
+                    // useQuery auto-runs when searchQuery changes
+                  }
+                }}
+                disabled={searchQuery.trim().length <= 3 || isLoading}
+                size="default"
+              >
+                <Search className="size-4 mr-2" />
+                Rechercher
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick category buttons */}
+        <Card>
+          <CardHeader className="pb-3 pt-4 px-4">
+            <CardTitle className="text-sm font-medium">
+              Catégories d'infrastructure
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-4 pb-4">
+            <div className="flex flex-wrap gap-2">
+              {categories.map((cat) => (
+                <Badge
+                  key={cat.id}
+                  variant="outline"
+                  className="cursor-pointer hover:bg-accent transition-colors text-xs"
+                  onClick={() => handleCategoryClick(cat)}
+                >
+                  {cat.label}
+                </Badge>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Results panel */}
+        <Card>
+          <CardHeader className="pb-3 pt-4 px-4">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium">Résultats</CardTitle>
+              {searchResult && (
+                <Badge variant="secondary" className="text-xs">
+                  {searchResult.meta.count} résultat{searchResult.meta.count > 1 ? "s" : ""}
+                </Badge>
+              )}
+            </div>
+            {searchResult?.meta.type && (
+              <CardDescription className="text-xs">
+                {searchResult.meta.type} — {searchResult.meta.query}
+              </CardDescription>
+            )}
+          </CardHeader>
+          <CardContent className="px-4 pb-4">
+            {isLoading && (
+              <div className="flex items-center justify-center py-8 text-muted-foreground">
+                <Loader2 className="size-5 mr-2 animate-spin" />
+                Recherche en cours...
+              </div>
+            )}
+
+            {isError && error && (
+              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                {error.message}
+              </div>
+            )}
+
+            {searchResult && !isLoading && searchResult.data.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground text-sm">
+                Aucun résultat trouvé pour cette recherche.
+              </div>
+            )}
+
+            {searchResult && searchResult.data.length > 0 && (
+              <ScrollArea className="max-h-96">
+                <div className="space-y-2 pr-3">
+                  {searchResult.data.map((result) => (
+                    <Card
+                      key={`${result.type}-${result.id}`}
+                      className={cn(
+                        "p-3 text-sm transition-colors",
+                        selectedResult?.id === result.id &&
+                          selectedResult?.type === result.type
+                          ? "ring-2 ring-primary"
+                          : "hover:bg-accent/50 cursor-pointer"
+                      )}
+                      onClick={() => handleSeeOnMap(result)}
+                    >
+                      <div className="font-medium truncate">
+                        {result.name}
+                      </div>
+                      <div className="flex items-center justify-between mt-1 text-xs text-muted-foreground">
+                        <span className="truncate">
+                          {result.type === "way" ? "Way" : result.type === "relation" ? "Relation" : "Node"}
+                          {result.operator ? ` · ${result.operator}` : ""}
+                        </span>
+                        <span>
+                          {result.lat.toFixed(4)}, {result.lon.toFixed(4)}
+                        </span>
+                      </div>
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="mt-1 h-auto p-0 text-xs"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSeeOnMap(result);
+                        }}
+                      >
+                        <MapPin className="size-3 mr-1" />
+                        Voir sur la carte
+                      </Button>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
+
+            {!searchResult && !isLoading && !isError && (
+              <div className="text-center py-8 text-muted-foreground text-sm">
+                <Globe className="size-8 mx-auto mb-2 opacity-30" />
+                Saisissez une requête pour explorer l'infrastructure OSM.
+                <br />
+                <span className="text-xs">
+                  Ex : « hôpitaux à Paris », « écoles près de Lyon »
+                </span>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Right panel: Map */}
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-2 pt-4 px-4">
+          <CardTitle className="text-sm font-medium">Carte</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="relative w-full" style={{ paddingBottom: "75%" }}>
+            <iframe
+              src={mapUrl}
+              className="absolute inset-0 w-full h-full border-0"
+              title="Carte OpenStreetMap"
+              loading="lazy"
+            />
+          </div>
+          {selectedResult && (
+            <div className="px-4 py-2 text-xs text-muted-foreground border-t">
+              <span className="font-medium">{selectedResult.name}</span>{" "}
+              ({selectedResult.lat.toFixed(5)}, {selectedResult.lon.toFixed(5)})
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
