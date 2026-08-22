@@ -3958,3 +3958,27 @@ Stage Summary:
 - 7 ressources dans la Bibliothèque (était 6)
 - peer-review enrichi : grille RC en 2 sections + recommandation 4 niveaux
 - Nouveau : mode 'Plan de révision' pour transformer les commentaires de relecteurs en plan d'action
+
+---
+Task ID: 3
+Agent: Main
+Task: Extract docs.rar and seed resources into CustomBookSkill database
+
+Work Log:
+- Extracted docs.rar (22 JPG scanned pages) to upload/docs-extracted/docs/
+- Used VLM (z-ai vision CLI) to OCR all 22 pages
+- Identified 6 distinct resources (page 3 = duplicate of page 1):
+  1. "8 Essential Types of Research Gaps" — Askpstudyinaustralia (pages 1,3)
+  2. "Mastering the Literature Review Chapter" — Askpstudyinaustralia (page 2)
+  3. "A Smart Guide to Building Research & Conceptual Frameworks" — Askpstudyinaustralia (page 4)
+  4. "20 NotebookLM Presentation Slide Prompts" — @sifuyik (pages 5-16)
+  5. "10 Open Access Websites for Free Research Papers" — Anam Javed (page 17)
+  6. "Writing a Systematic Review and Meta-analysis: A Step-by-Step Guide" — Dagher & Khan, Sports Health (pages 18-22)
+- Created and ran Prisma seed script to insert all 6 resources
+- Verified DB now contains 13 total resources (7 pre-existing + 6 new)
+- Cleaned up temporary files
+
+Stage Summary:
+- 6 new resources added to CustomBookSkill database
+- Total library: 13 resources covering research gaps, literature review, frameworks, presentations, open access, and systematic reviews
+- OCR extraction pipeline: RAR → VLM CLI → text → Prisma seed
