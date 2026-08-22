@@ -22,6 +22,12 @@ import {
   CalendarDays,
   RefreshCcw,
   Loader2,
+  Search,
+  FileText,
+  Trash2,
+  Eye,
+  BookMarked,
+  Hash,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -43,6 +49,16 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAiConfig } from "@/hooks/use-ai-config";
+import { useQuery } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // Types
 
@@ -686,6 +702,10 @@ En te basant sur ces résultats, propose-moi un plan d\'apprentissage personnali
             <Sparkles className="h-4 w-4 mr-1.5 hidden sm:inline" />
             IA
           </TabsTrigger>
+          <TabsTrigger value="bibliotheque" className="text-xs sm:text-sm">
+            <BookMarked className="h-4 w-4 mr-1.5 hidden sm:inline" />
+            Bibliothèque
+          </TabsTrigger>
         </TabsList>
 
         {/* TAB: Auto-evaluation */}
@@ -1169,7 +1189,212 @@ En te basant sur ces résultats, propose-moi un plan d\'apprentissage personnali
             )}
           </div>
         </TabsContent>
+
+        {/* ═══ TAB: Bibliothèque (Book Skills from DB) ═══ */}
+        <TabsContent value="bibliotheque" className="mt-4">
+          <BookSkillsLibrary />
+        </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Book Skills Library — database-backed book knowledge base
+// ═══════════════════════════════════════════════════════════════
+
+interface BookSkillItem {
+  id: string;
+  title: string;
+  author: string | null;
+  tags: string | null;
+  contentPreview: string;
+  contentLength: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function BookSkillsLibrary() {
+  const [search, setSearch] = useState("");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [fullContent, setFullContent] = useState("");
+  const [loadingContent, setLoadingContent] = useState(false);
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["book-skills", search],
+    queryFn: async () => {
+      const url = search
+        ? `/api/book-skills?search=${encodeURIComponent(search)}`
+        : "/api/book-skills";
+      const res = await fetch(url);
+      const json = await res.json();
+      return json.data as BookSkillItem[];
+    },
+  });
+
+  const handleViewContent = useCallback(async (id: string) => {
+    setSelectedId(id);
+    setLoadingContent(true);
+    setFullContent("");
+    try {
+      const res = await fetch(`/api/book-skills/${id}`);
+      const json = await res.json();
+      setFullContent(json.data?.content || "");
+    } catch {
+      setFullContent("Erreur lors du chargement du contenu.");
+    } finally {
+      setLoadingContent(false);
+    }
+  }, []);
+
+  const handleDelete = useCallback(
+    async (id: string) => {
+      if (!confirm("Supprimer cette ressource ?")) return;
+      await fetch(`/api/book-skills/${id}`, { method: "DELETE" });
+      if (selectedId === id) setSelectedId(null);
+      refetch();
+    },
+    [refetch, selectedId]
+  );
+
+  const formatChars = (n: number) => {
+    if (n > 1_000_000) return `${(n / 1_000_000).toFixed(1)} M`;
+    if (n > 1_000) return `${(n / 1_000).toFixed(0)} k`;
+    return `${n}`;
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Search bar */}
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Rechercher dans les ressources..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-9"
+        />
+      </div>
+
+      {/* Book list */}
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+          Chargement des ressources...
+        </div>
+      ) : !data || data.length === 0 ? (
+        <div className="text-center py-12 text-muted-foreground">
+          <BookMarked className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <p className="text-sm">
+            {search
+              ? "Aucune ressource ne correspond à votre recherche"
+              : "Aucune ressource dans la bibliothèque"}
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-3">
+          {data.map((book) => (
+            <Card key={book.id} className="overflow-hidden">
+              <CardHeader className="pb-2">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-sm font-semibold leading-snug">
+                      {book.title}
+                    </CardTitle>
+                    {book.author && (
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {book.author}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex gap-1 shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 w-7 p-0"
+                      onClick={() => handleViewContent(book.id)}
+                    >
+                      <Eye className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                      onClick={() => handleDelete(book.id)}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0 pb-3">
+                {/* Tags */}
+                {book.tags && (
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {book.tags.split(",").map((tag) => (
+                      <Badge
+                        key={tag.trim()}
+                        variant="secondary"
+                        className="text-[10px] px-1.5 py-0"
+                      >
+                        {tag.trim()}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                {/* Preview + stats */}
+                <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                  {book.contentPreview}...
+                </p>
+                <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <FileText className="h-3 w-3" />
+                    {formatChars(book.contentLength)} caractères
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Hash className="h-3 w-3" />
+                    {~Math.round(book.contentLength / 5)} mots
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Full content dialog */}
+      <Dialog
+        open={!!selectedId}
+        onOpenChange={(open) => !open && setSelectedId(null)}
+      >
+        <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+          <DialogDescription className="sr-only">
+            Contenu intégral de la ressource sélectionnée
+          </DialogDescription>
+          <DialogHeader>
+            <DialogTitle className="text-base">
+              {data?.find((b) => b.id === selectedId)?.title}
+            </DialogTitle>
+            {data?.find((b) => b.id === selectedId)?.author && (
+              <p className="text-sm text-muted-foreground">
+                {data.find((b) => b.id === selectedId)?.author}
+              </p>
+            )}
+          </DialogHeader>
+          {loadingContent ? (
+            <div className="flex-1 flex items-center justify-center py-12">
+              <Loader2 className="h-5 w-5 animate-spin mr-2" />
+              Chargement...
+            </div>
+          ) : (
+            <ScrollArea className="flex-1 max-h-[60vh]">
+              <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans p-1">
+                {fullContent}
+              </pre>
+            </ScrollArea>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
