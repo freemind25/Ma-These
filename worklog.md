@@ -3982,3 +3982,24 @@ Stage Summary:
 - 6 new resources added to CustomBookSkill database
 - Total library: 13 resources covering research gaps, literature review, frameworks, presentations, open access, and systematic reviews
 - OCR extraction pipeline: RAR → VLM CLI → text → Prisma seed
+
+---
+Task ID: 4
+Agent: Main
+Task: Extract and seed Books-a/b/c/d.rar into CustomBookSkill (no redundancy)
+
+Work Log:
+- Extracted 4 RAR files: 2 EPUBs (Books-a), 3 PDFs (Books-b), 2 PDFs (Books-c), 1 EPUB (Books-d)
+- Total 8 books identified across 4 archives
+- Extracted PDF text via pdftotext (5 files), EPUB text via ebooklib Python (3 files)
+- Redundancy check: 0 duplicates against existing 14 resources
+- 1 book rejected: 'The Data Revolution' (PDF scanné, images seules, 1167 chars)
+- 1 book flagged: 'Urban Data Sources' (10% sample only, 292K chars — included with [10% Sample] label)
+- Seeded 7 new resources via Prisma
+- Cleaned up all temp files and extracted archives
+
+Stage Summary:
+- Library grew from 14 to 21 resources (7 new urban data/smart cities books)
+- Total content: ~3.6M chars added
+- Skipped 1 scanned PDF (unusable), kept 1 partial sample with clear label
+- No redundancy detected
