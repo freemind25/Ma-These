@@ -3878,3 +3878,27 @@ Stage Summary:
 - Lint : 0 erreur, 122 warnings (inchangés)
 - Tests : 1 277 passants, 0 échec, 53 fichiers
 - Routes API : 48 totales (46 dynamiques + 2 statiques)
+
+---
+Task ID: 2
+Agent: main
+Task: Integrate OSM Infrastructure Explorer (Sightline-inspired)
+
+Work Log:
+- Created src/lib/osm-infra.ts with 150+ asset types across 14 categories (Énergie, Télécommunications, Transport, Santé, Éducation, Gouvernement, Industrie, Tourisme, Services publics, Agriculture, Historique, Religieux, Commerce, Loisirs)
+- Implemented buildOverpassQuery() with real OSM tags, bbox support, optional operator filter
+- Implemented executeOverpassQuery() with 2-endpoint failover (overpass-api.de, maps.mail.ru) and 25s AbortController timeout
+- Implemented parseInfraQuery() NLP parser with 90+ regex patterns for French & English asset type detection, location extraction, radius parsing
+- Implemented geocodeLocation() using Nominatim with 15s timeout and bbox fallback
+- Created /api/osm-infra/route.ts: GET returns categories/types, POST executes full search pipeline (parse → geocode → bbox → Overpass → results)
+- Added 6th tab 'Explorateur' to Vérification Carto module with Globe icon
+- Built InfraExplorer component: search bar, 14 category quick-select badges, scrollable results list with cards (name, type, operator, coords), OSM iframe map embed
+- Used TanStack Query useQuery for search, useMemo for map center derivation (avoids setState in effect lint error)
+- Fixed multiline regex literal parsing error in osm-infra.ts
+- Added cn utility import and ScrollArea import to verification-carto-page
+
+Stage Summary:
+- New osm-infra.ts library with ASSET_TYPE_MAP (150+ types), INFRA_CATEGORIES (14 cats), buildOverpassQuery, executeOverpassQuery, parseInfraQuery, geocodeLocation
+- New /api/osm-infra API route (GET categories, POST search with NLP → geocode → Overpass pipeline)
+- New Explorer tab in Vérification Carto with search, category filters, results list, OSM map embed
+- Lint: 0 errors, 126 warnings (all pre-existing)
