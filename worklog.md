@@ -4068,3 +4068,30 @@ Stage Summary:
 - Nouvelle ressource : Ox Alpha — Modèle IA frontier (1M contexte, gratuit)
 - Contenu structuré : spécifications techniques, cas d’usage, doc API, notes de production, pertinence recherche
 - Tags : IA, LLM, raisonnement, coding, agentic, API, OpenRouter, modèle-gratuit, contexte-long, production
+
+---
+Task ID: 8
+Agent: Main
+Task: Intégrer l'API CORE.ac.uk (open access research papers) dans ThesisFrame
+
+Work Log:
+- Testé l'API CORE v3 : clé valide, 360K+ résultats pour 'urban data', rate limit 150/époque
+- Découvert que l'endpoint /search/works/ requiert un slash final (redirect Cloudflare sinon)
+- Ajouté CORE_API_KEY dans .env
+- Créé src/lib/core-api.ts : client TypeScript complet (searchWorks, getWorkById, getWorksByIds, getWorkFullText, formatCoreWorkCitation, coreWorkToSummary)
+- Créé src/app/api/core/search/route.ts : proxy GET+POST vers CORE (évite d'exposer la clé au client)
+- Intégré CORE dans le pipeline deep-research (src/app/api/deep-research/route.ts) :
+  - Nouveau step 3b : searchCorePapers() en parallèle de executeWebSearches()
+  - 3 sous-requêtes × 5 résultats, déduplication, tri par citations, top 8
+  - Les abstracts CORE sont injectés dans le contexte de compression avec numérotation [n]
+  - Le rapport final cite les articles CORE avec auteurs, année, titre, URL, DOI
+- Ajouté la ressource CORE API dans la bibliothèque CustomBookSkill (24 ressources total)
+- Lint : 0 erreurs (126 warnings pré-existants)
+- Dev server : opérationnel
+
+Stage Summary:
+- CORE API intégrée : client + proxy + deep-research + ressource bibliothèque
+- Pipeline deep-research enrichi : web search + CORE academic papers en parallèle
+- Route proxy : GET/POST /api/core/search?q=...&limit=...
+- Bibliothèque : 23 → 24 ressources
+- Fichiers créés : src/lib/core-api.ts, src/app/api/core/search/route.ts

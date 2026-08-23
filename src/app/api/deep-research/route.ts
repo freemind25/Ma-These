@@ -12,6 +12,10 @@ import {
   type AiMessage,
 } from "@/lib/ai/zai-client";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import {
+  searchWorks,
+  type CoreWork,
+} from "@/lib/core-api";
 
 // ── ZAI SDK singleton (web search + page reader) ──────────────────
 let zaiInstance: Promise<AiSDK> | null = null;
@@ -159,6 +163,44 @@ async function executeWebSearches(
   return allResults;
 }
 
+/** Step 3b: Search CORE (open access academic papers) */
+async function searchCorePapers(
+  subQueries: SubQuery[],
+): Promise<CoreWork[]> {
+  const allWorks: CoreWork[] = [];
+  const seen = new Set<number>();
+
+  // Use up to 3 sub-queries for CORE (each translated to English for better results)
+  const queriesToUse = subQueries.slice(0, 3);
+
+  const corePromises = queriesToUse.map(async (sq) => {
+    try {
+      // Use the query as-is (academic queries work well in English)
+      const results = await searchWorks(sq.query, 5, 0);
+      return results.results;
+    } catch (err) {
+      console.error(`[deep-research] CORE search failed for: ${sq.query}`, err);
+      return [] as CoreWork[];
+    }
+  });
+
+  const coreResults = await Promise.all(corePromises);
+
+  for (const works of coreResults) {
+    for (const w of works) {
+      if (!seen.has(w.id)) {
+        seen.add(w.id);
+        allWorks.push(w);
+      }
+    }
+  }
+
+  // Sort by citation count (most cited first) and take top 8
+  return allWorks
+    .sort((a, b) => (b.citationCount || 0) - (a.citationCount || 0))
+    .slice(0, 8);
+}
+
 /** Step 4: Read top pages and extract content */
 async function readTopPages(
   searchResults: SearchResult[],
@@ -201,26 +243,53 @@ async function compressFindings(
   researchBrief: string,
   pages: { title: string; url: string; content: string }[],
   searchSnippets: SearchResult[],
+  corePapers: CoreWork[],
   providerConfig?: AiProviderConfig,
 ): Promise<string> {
-  const sources = pages
-    .map((p, i) => `[${i + 1}] ${p.title}: ${p.url}`)
+  let sourceIndex = 0;
+
+  // Web pages as sources
+  const webSources = pages
+    .map((p) => { sourceIndex++; return `[${sourceIndex}] ${p.title}: ${p.url}`; })
     .join("\n");
 
   const allContent = pages
-    .map((p, i) => `--- SOURCE ${i + 1}: ${p.title} ---\n${p.content}`)
+    .map((p) => { const idx = sourceIndex - pages.length + pages.indexOf(p) + 1; return `--- SOURCE ${idx}: ${p.title} ---\n${p.content}`; })
     .join("\n\n");
 
-  // Add remaining snippets that weren't fully read
+  // CORE papers as sources
+  const coreSources = corePapers
+    .map((w) => {
+      sourceIndex++;
+      const authors = w.authors.map((a) => a.name).join(", ");
+      return `[${sourceIndex}] ${authors} (${w.yearPublished || "s.d."}). ${w.title}
+   URL: https://core.ac.uk/works/${w.id}${w.doi ? ` | DOI: ${w.doi}` : ""}
+   Abstract: ${(w.abstract || "").substring(0, 1500)}`;
+    })
+    .join("\n\n");
+
+  const coreSourceList = corePapers
+    .map((w) => {
+      sourceIndex++;
+      const authors = w.authors.map((a) => a.name).join(", ");
+      return `[${sourceIndex - corePapers.length}] ${authors} (${w.yearPublished || "s.d."}). ${w.title}: https://core.ac.uk/works/${w.id}`;
+    })
+    .join("\n");
+
+  // Add remaining web snippets that weren't fully read
   const readUrls = new Set(pages.map((p) => p.url));
   const extraSnippets = searchSnippets
     .filter((s) => !readUrls.has(s.url))
     .slice(0, 5)
     .map(
-      (s, i) =>
-        `[${pages.length + i + 1}] ${s.name}: ${s.url}\nRésumé : ${s.snippet}`
+      (s) => {
+        sourceIndex++;
+        return `[${sourceIndex}] ${s.name}: ${s.url}\nRésumé : ${s.snippet}`;
+      }
     )
     .join("\n\n");
+
+  const allSources = [webSources, coreSourceList].filter(Boolean).join("\n");
 
   const systemPrompt = `Tu es un assistant de recherche qui compresse les résultats de recherche. Ton travail est de nettoyer les résultats en préservant TOUTES les informations pertinentes.
 
@@ -249,7 +318,7 @@ async function compressFindings(
       { role: "system", content: systemPrompt },
       {
         role: "user",
-        content: `BRIEF DE RECHERCHE :\n${researchBrief}\n\nCONTENU DES PAGES LUES :\n${allContent}${extraSnippets ? `\n\nEXTRAITS SUPPLÉMENTAIRES :\n${extraSnippets}` : ""}\n\nSOURCES :\n${sources}`,
+        content: `BRIEF DE RECHERCHE :\n${researchBrief}\n\nCONTENU DES PAGES LUES (WEB) :\n${allContent}${coreSources ? `\n\n--- ARTICLES ACADÉMIQUES (CORE Open Access) ---\n${coreSources}` : ""}${extraSnippets ? `\n\nEXTRAITS SUPPLÉMENTAIRES (WEB) :\n${extraSnippets}` : ""}\n\nSOURCES :\n${allSources}`,
       },
     ],
     temperature: 0.3,
@@ -338,9 +407,12 @@ export async function POST(request: NextRequest) {
     const subQueries = await planSubQueries(researchBrief, providerConfig);
 
     // ── Step 3: Execute Web Searches ──
-    const searchResults = await executeWebSearches(subQueries);
+    const [searchResults, corePapers] = await Promise.all([
+      executeWebSearches(subQueries),
+      searchCorePapers(subQueries),
+    ]);
 
-    if (searchResults.length === 0) {
+    if (searchResults.length === 0 && corePapers.length === 0) {
       return NextResponse.json({
         data: {
           content:
@@ -359,6 +431,7 @@ export async function POST(request: NextRequest) {
       researchBrief,
       pages,
       searchResults,
+      corePapers,
       providerConfig,
     );
 
@@ -377,6 +450,7 @@ export async function POST(request: NextRequest) {
           brief: researchBrief,
           queriesCount: subQueries.length,
           searchResultsCount: searchResults.length,
+          corePapersCount: corePapers.length,
           pagesRead: pages.length,
         },
       },
