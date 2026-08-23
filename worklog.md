@@ -4095,3 +4095,27 @@ Stage Summary:
 - Route proxy : GET/POST /api/core/search?q=...&limit=...
 - Bibliothèque : 23 → 24 ressources
 - Fichiers créés : src/lib/core-api.ts, src/app/api/core/search/route.ts
+
+---
+Task ID: 9
+Agent: Main
+Task: Extraire et intégrer les ressources de Books-a-1.rar dans la bibliothèque
+
+Work Log:
+- Extraction RAR via Python rarfile (unrar-free échoue sur UTF-16BE)
+- 6 fichiers dans l'archive, 5 extraits avec succès (1 PDF corrompu : AI-Powered Scholar)
+- Extraction texte : pdftotext pour 4 PDFs, ebooklib pour 1 EPUB
+- Vérification doublon : 0 doublon contre les 24 ressources existantes
+- Seeded les 5 ressources via Python/SQLite direct :
+  1. Completing Your Thesis or Dissertation (Pyrczak) — 249 562 chars
+  2. How to Write a Master's Dissertation (Andrews) — 37 073 chars
+  3. PhDone (Roda, Saunders, Anderson) — 352 013 chars
+  4. Utilizing AI Tools in Academic Research Writing (Srivastava et al.) — 1 058 490 chars
+  5. Writing a Thesis (Watson) — 297 106 chars
+- Nettoyé fichiers temporaires et archive
+
+Stage Summary:
+- Bibliothèque : 24 → 29 ressources (+5)
+- Total contenu ajouté : ~1,99M chars
+- 1 livre rejeté (AI-Powered Scholar, PDF corrompu dans l'archive)
+- Ressources particulièrement pertinentes : Utilizing AI Tools in Academic Research Writing (IA + recherche académique)
