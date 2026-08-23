@@ -4049,3 +4049,22 @@ Stage Summary:
 - Bibliothèque : 21 → 22 ressources
 - Nouvelle ressource structurée : catégories + URLs + quotas gratuits + recommandations thèse urbaine
 - Tags : cartographie, géocodage, visualisation, open-data, maps, urban-data, outils-gratuits, API, geospatial
+
+---
+Task ID: 7
+Agent: Main
+Task: Ajouter la ressource oxalpha.io (Ox Alpha) dans la bibliothèque
+
+Work Log:
+- Tentative page_reader : échec (JS-rendered, contenu vide)
+- Extraction complète via agent-browser : oxalpha.io est une landing page produit, pas un répertoire
+- Contenu identifié : modèle IA « Ox Alpha » (stealth/ox-alpha), 1M contexte, 128K sortie, multimodal, gratuit via OpenRouter
+- Structuré en sections : specs, 3 cas d’usage (coding, agentic, production), doc API complète, accès, mises en garde
+- Seeded dans CustomBookSkill avec id cmt5gu8tu0000nlcmjpuu8zlo (5 049 chars)
+- Nettoyé le script de seed temporaire
+
+Stage Summary:
+- Bibliothèque : 22 → 23 ressources
+- Nouvelle ressource : Ox Alpha — Modèle IA frontier (1M contexte, gratuit)
+- Contenu structuré : spécifications techniques, cas d’usage, doc API, notes de production, pertinence recherche
+- Tags : IA, LLM, raisonnement, coding, agentic, API, OpenRouter, modèle-gratuit, contexte-long, production
