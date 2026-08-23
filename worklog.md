@@ -4119,3 +4119,21 @@ Stage Summary:
 - Total contenu ajouté : ~1,99M chars
 - 1 livre rejeté (AI-Powered Scholar, PDF corrompu dans l'archive)
 - Ressources particulièrement pertinentes : Utilizing AI Tools in Academic Research Writing (IA + recherche académique)
+
+---
+Task ID: 10
+Agent: Main
+Task: Extraire et intégrer PhD-resources (rushow/PhD-resources) dans la bibliothèque
+
+Work Log:
+- Scraping complet via agent-browser (page_reader échoue sur GitHub)
+- 103 ressources en 25 sections extraites intégralement
+- Réorganisé en 20 catégories thématiques (fusion des sections mineures)
+- Ajout d'une section « Notes pour ThesisFrame » identifiant 8 outils prioritaires à intégrer
+- Traduction partielle des descriptions en français
+- Seeded via Python/SQLite (9 161 chars)
+
+Stage Summary:
+- Bibliothèque : 29 → 30… 31 ressources (+1, erreur de compteur corrigée)
+- 103 outils PhD couvrant : littérature, publication, visualisation, rédaction, métanalyse, reproductibilité, carrière, réseaux
+- 8 outils identifiés comme prioritaires pour intégration future dans ThesisFrame
