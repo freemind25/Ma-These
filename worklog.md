@@ -4188,3 +4188,19 @@ Stage Summary:
 - Ressource ajoutee : "Guide to Academic and Scientific Publication" par Linda Olson (eacademia, 2014)
 - Contenu : 3 parties (choix de journal, preparation/redaction, soumission/revision) + annexe avec modeles de reponse aux editeurs
 - Methodologie : VLM OCR sur PDF scanné car pdftotext incapable d'extraire du texte
+
+---
+Task ID: 14
+Agent: Main
+Task: Restaurer README.md et favicon sur le dépôt GitHub Ma-These
+
+Work Log:
+- Vérifié l'état du dépôt : pas de README.md racine jamais commité, logo.svg présent localement et sur origin/main
+- Créé README.md professionnel avec badges, présentation, 28 modules, stack technique, structure du projet, instructions d'installation
+- Créé src/app/icon.svg (favicon depuis le logo, sans animation)
+- Commit et push sur origin/main : 280c1fb
+
+Stage Summary:
+- README.md ajouté avec logo centré, badges de stack, description des fonctionnalités, structure du projet
+- Favicon SVG ajouté dans src/app/icon.svg (Next.js App Router convention)
+- Dépôt GitHub mis à jour et accessible
