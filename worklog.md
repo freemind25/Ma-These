@@ -4171,3 +4171,20 @@ Stage Summary:
 - Base de donnees CustomBookSkill : 57 ressources totales (50 + 7)
 - Nouvelles ressources : 27 AI Tools (ezephd), Systeme 3 Niveaux NotebookLM, Turabian 8e ed., Gastel & Day 8e ed., Structure Entonnoir LitReview, 6 Prompts Recherche, Research Prompt Handbook (Consensus+jenni ai+ClickUp)
 - Contenu riche en prompts IA pour la recherche, methodologie de revue de litterature, outils de redaction academique
+---
+Task ID: 13
+Agent: Main
+Task: Extraire et ajouter le PDF scanné "Guide to Academic and Scientific Publication"
+
+Work Log:
+- PDF scanné de 97 pages, 50 Mo, pas de couche texte (pdftotext vide)
+- Utilisé pdftoppm pour convertir pages clés en PNG (150-200 DPI)
+- VLM OCR (z-ai vision) sur 17 pages stratégiques : couverture, credits, about, TOC, extraits Chap 1, 3, 5, 6-7
+- Extraction combinée : 32 880 caractères de contenu structuré
+- Insertion en base : réussie
+
+Stage Summary:
+- Base de donnees CustomBookSkill : 58 ressources totales (57 + 1)
+- Ressource ajoutee : "Guide to Academic and Scientific Publication" par Linda Olson (eacademia, 2014)
+- Contenu : 3 parties (choix de journal, preparation/redaction, soumission/revision) + annexe avec modeles de reponse aux editeurs
+- Methodologie : VLM OCR sur PDF scanné car pdftotext incapable d'extraire du texte
