@@ -3,6 +3,8 @@
 // Modes spécialisés avec system prompts en français
 // ═══════════════════════════════════════
 
+export type WritingCategory = "writing" | "analysis" | "review" | "generation" | "research";
+
 export interface WritingMode {
   id: string;
   label: string;
@@ -11,7 +13,9 @@ export interface WritingMode {
   systemPrompt: string;
   placeholder: string;
   temperature: number;
-  category: "writing" | "analysis" | "review" | "generation";
+  category: WritingCategory;
+  /** If set, this mode uses a dedicated API endpoint instead of /api/ai-writing */
+  customEndpoint?: string;
 }
 
 export const WRITING_MODES: WritingMode[] = [
@@ -542,5 +546,16 @@ Règles de notation :
 
 IMPORTANT : Tu DOIS répondre UNIQUEMENT au format JSON valide suivant, sans aucun texte avant ou après :
 {"score": <nombre entier de 0 à 100>, "recommendation": "<courte recommandation en 1 phrase, en français>", "detail": "<analyse détaillée en 3-5 phrases, en français, avec exemples concrets tirés du texte>"}`,
+  },
+  {
+    id: "deep-research",
+    label: "Recherche approfondie",
+    description: "Recherche web multi-sources avec rapport structuré et citations (inspiré de Open Deep Research)",
+    icon: "Globe",
+    category: "research",
+    temperature: 0.5,
+    placeholder: "Formulez votre question de recherche (ex. : impact de l'IA sur l'enseignement supérieur en France)…",
+    systemPrompt: "",
+    customEndpoint: "/api/deep-research",
   },
 ];

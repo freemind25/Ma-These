@@ -105,7 +105,9 @@ function AiWritingPanel() {
 
   const generate = useMutation({
     mutationFn: async ({ mode, prompt }: { mode: string; prompt: string }) => {
-      const res = await fetch("/api/ai-writing", {
+      const activeMode = (modes || WRITING_MODES).find((m) => m.id === mode);
+      const endpoint = activeMode?.customEndpoint || "/api/ai-writing";
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(withAiConfig({ mode, prompt })),

@@ -4003,3 +4003,31 @@ Stage Summary:
 - Total content: ~3.6M chars added
 - Skipped 1 scanned PDF (unusable), kept 1 partial sample with clear label
 - No redundancy detected
+
+---
+Task ID: 5
+Agent: Main
+Task: Implémenter le mode deep-research inspiré de langchain-ai/open_deep_research
+
+Work Log:
+- Analysé le dépôt open_deep_research : architecture, prompts, state, utils
+- Identifié les patterns réutilisables : pipeline 6 étapes, think_tool, compression, citations, hard limits
+- Ajouté le type WritingCategory ('research') et le champ customEndpoint à WritingMode
+- Ajouté le mode 'deep-research' dans ai-writing-modes.ts (catégorie 'research', icône Globe)
+- Créé /api/deep-research/route.ts (396 lignes) avec pipeline en 6 étapes :
+  1. generateResearchBrief : transforme la question en brief structuré
+  2. planSubQueries : décompose en 3-5 sous-requêtes parallèles
+  3. executeWebSearches : recherche web via z-ai-web-dev-sdk (web_search)
+  4. readTopPages : lit les 6 meilleures pages (page_reader)
+  5. compressFindings : compresse les résultats avec citations
+  6. generateFinalReport : rapport structuré avec section Sources
+- Adapté l'UI (ai-writing-page.tsx) pour router vers l'endpoint customEndpoint
+- Exposé customEndpoint dans le GET /api/ai-writing
+- Lint : 0 erreurs (126 warnings pré-existants)
+- Dev server : compile et sert correctement (crash OOM sandbox après 2 requêtes — contrainte connue)
+
+Stage Summary:
+- Nouveau mode 'Recherche approfondie' (deep-research) dans l'onglet Modes d'écriture
+- Pipeline full-stack : web search + page reading + AI compression + rapport final
+- Architecture extensible : customEndpoint permet d'ajouter d'autres modes avec API dédiées
+- Patterns ODR intégrés : sub-query planning, parallel search, citation system, compression

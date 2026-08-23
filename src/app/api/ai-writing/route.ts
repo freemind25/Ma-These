@@ -87,6 +87,7 @@ export async function GET() {
       icon: m.icon,
       category: m.category,
       placeholder: m.placeholder,
+      ...(m.customEndpoint ? { customEndpoint: m.customEndpoint } : {}),
     })),
   });
 }
