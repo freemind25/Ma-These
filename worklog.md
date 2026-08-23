@@ -4031,3 +4031,21 @@ Stage Summary:
 - Pipeline full-stack : web search + page reading + AI compression + rapport final
 - Architecture extensible : customEndpoint permet d'ajouter d'autres modes avec API dédiées
 - Patterns ODR intégrés : sub-query planning, parallel search, citation system, compression
+
+---
+Task ID: 6
+Agent: Main
+Task: Ajouter la ressource free-for-dev "Data Visualization on Maps" dans la bibliothèque
+
+Work Log:
+- Récupéré la section "Data Visualization on Maps" du dépôt ripienaar/free-for-dev via agent-browser (page_reader échoue sur GitHub)
+- Extraction complète : 21 outils/services gratuits classés en 5 catégories (Géocodage, Tuiles, Lieux, Géoloc IP, Routage)
+- Enrichi le contenu avec des recommandations pour thèse en sciences urbaines et notes méthodologiques
+- Seeded dans CustomBookSkill avec id cmt5g1ilv0000nlwikq3kcu2n (5 511 chars)
+- Vérifié pas de doublon avant insertion
+- Nettoyé le script de seed temporaire
+
+Stage Summary:
+- Bibliothèque : 21 → 22 ressources
+- Nouvelle ressource structurée : catégories + URLs + quotas gratuits + recommandations thèse urbaine
+- Tags : cartographie, géocodage, visualisation, open-data, maps, urban-data, outils-gratuits, API, geospatial
