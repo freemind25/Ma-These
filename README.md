@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/logo.svg" alt="ThesisFrame Logo" width="80" height="80" />
+  <img src="public/logo.svg" alt="Ma Thèse Logo" width="80" height="80" />
 </p>
 
-<h1 align="center">ThesisFrame</h1>
+<h1 align="center">Ma Thèse</h1>
 
 <p align="center">
   <strong>Plateforme IA de rédaction de thèse et mémoires universitaires</strong><br/>
@@ -21,7 +21,7 @@
 
 ## 🎯 Présentation
 
-**ThesisFrame** est une application web complète conçue pour accompagner les doctorants et étudiants de master dans la rédaction de leur thèse, mémoire ou dissertation. L'outil intègre des capacités d'IA avancées pour assister à chaque étape du processus de rédaction académique.
+**Ma Thèse** est une application web complète conçue pour accompagner les doctorants et étudiants de master dans la rédaction de leur thèse, mémoire ou dissertation. L'outil intègre des capacités d'IA avancées pour assister à chaque étape du processus de rédaction académique.
 
 ## ✨ Fonctionnalités principales
 
@@ -76,7 +76,7 @@
 ## 📁 Structure du projet
 
 ```
-thesisframe/
+ma-these/
 ├── src/
 │   ├── app/                    # Routes Next.js (App Router)
 │   │   ├── api/                # API routes (ai-writing, core, deep-research...)
