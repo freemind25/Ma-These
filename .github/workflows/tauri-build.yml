@@ -9,8 +9,8 @@ on:
         default: 'v1.3.0'
 
 env:
-  APP_NAME: ThesisFrame
-  APP_VERSION: '1.3.0'
+  APP_NAME: Ma Thèse
+  APP_VERSION: '1.4.0'
 
 permissions:
   contents: write
@@ -82,7 +82,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          echo "=== Preparing ThesisFrame server bundle ==="
+          echo "=== Preparing Ma Thèse server bundle ==="
 
           mkdir -p src-tauri/standalone
           cp -r .next/standalone/* src-tauri/standalone/
