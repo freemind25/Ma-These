@@ -4156,3 +4156,18 @@ Stage Summary:
 - Base de données CustomBookSkill : 50 ressources totales (31 + 19)
 - Nouvelles ressources couvrent : portail thèses.fr, outils IA rédaction (OpenDraft, PapersFlow), awesome-listes PhD, templates LaTeX, organisation doctorat Git/GitHub, gouvernance données recherche, statistiques thèses Québec, topics GitHub curatés
 - Dépôt rushow/PhD-resources déjà présent (ajouté en Task 10)
+---
+Task ID: 12
+Agent: Main
+Task: Extraire et ajouter les ressources de skills-2.rar
+
+Work Log:
+- Extraction de skills-2.rar : 7 fichiers uniques (3 PDF + 4 DOCX, doublons (1)/(2) ignores)
+- pdftotext pour 3 PDFs : "27 AI tools" (5Ko), "How to Write and Publish a Scientific Paper" (668Ko, Gastel & Day 8e ed.), "A Manual for Writers" (955Ko, Turabian 8e ed.)
+- python-docx pour 4 DOCX : "Analysis to Synthesis" (9.6Ko), "Mastering Literature Review Funnel" (9.9Ko), "Prompts for Research" (8Ko), "The Research Prompt Handbook" (30Ko)
+- Insertion avec deduplication : 7/7 inseres, 0 saute
+
+Stage Summary:
+- Base de donnees CustomBookSkill : 57 ressources totales (50 + 7)
+- Nouvelles ressources : 27 AI Tools (ezephd), Systeme 3 Niveaux NotebookLM, Turabian 8e ed., Gastel & Day 8e ed., Structure Entonnoir LitReview, 6 Prompts Recherche, Research Prompt Handbook (Consensus+jenni ai+ClickUp)
+- Contenu riche en prompts IA pour la recherche, methodologie de revue de litterature, outils de redaction academique
