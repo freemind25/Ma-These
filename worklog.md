@@ -4137,3 +4137,22 @@ Stage Summary:
 - Bibliothèque : 29 → 30… 31 ressources (+1, erreur de compteur corrigée)
 - 103 outils PhD couvrant : littérature, publication, visualisation, rédaction, métanalyse, reproductibilité, carrière, réseaux
 - 8 outils identifiés comme prioritaires pour intégration future dans ThesisFrame
+---
+Task ID: 11
+Agent: Main
+Task: Scraper et ajouter les dépôts GitHub listés dans ressources-github.txt
+
+Work Log:
+- Lu le fichier /home/z/my-project/upload/ressources -github.txt contenant 24 URLs
+- Filtre : 13 dépôts uniques + 6 pages (topics/org/non-GitHub), 2 doublons, 2 déjà présents (PhD-resources)
+- Batch 1 (agent-browser) : abes-esr/theses-front, federicodeponte/opendraft, Qeole/PhD, mrazomej/phd
+- Batch 2 (agent-browser) : macoj/phd, shipofthesis/shipofthesis, helenahartmann/awesome-PhD, researchops/research_repositories
+- Batch 3 (agent-browser) : jhroy/theses, ibab/phd-example, UtrechtUniversity/best-practices, ibab/babushk.in, JeanCollomb/Template_rapport_these
+- Batch 4 (agent-browser) : topics/academic-papers, topics/academic-project, topics/research-paper, topics/masters-thesis, @academic org, PapersFlow
+- Insertion en base SQLite avec déduplication (title overlap + content hash)
+- 19 ressources insérées avec succès, 0 doublon détecté
+
+Stage Summary:
+- Base de données CustomBookSkill : 50 ressources totales (31 + 19)
+- Nouvelles ressources couvrent : portail thèses.fr, outils IA rédaction (OpenDraft, PapersFlow), awesome-listes PhD, templates LaTeX, organisation doctorat Git/GitHub, gouvernance données recherche, statistiques thèses Québec, topics GitHub curatés
+- Dépôt rushow/PhD-resources déjà présent (ajouté en Task 10)
