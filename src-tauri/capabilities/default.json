@@ -1,6 +1,6 @@
 {
   "identifier": "default",
-  "description": "Default capability for ThesisFrame",
+  "description": "Default capability for Ma Thèse",
   "windows": ["main"],
   "permissions": [
     "core:default",

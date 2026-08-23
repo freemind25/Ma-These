@@ -48,7 +48,7 @@ pub fn run() {
                         .stdout(std::process::Stdio::null())
                         .stderr(std::process::Stdio::null())
                         .spawn()
-                        .expect("failed to start ThesisFrame server");
+                        .expect("failed to start Ma Thèse server");
 
                     // Wait for the server to start
                     std::thread::sleep(std::time::Duration::from_secs(4));
@@ -68,5 +68,5 @@ pub fn run() {
             Ok(())
         })
         .run(tauri::generate_context!())
-        .expect("error while running ThesisFrame");
+        .expect("error while running Ma Thèse");
 }
