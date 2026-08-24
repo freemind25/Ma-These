@@ -4367,3 +4367,66 @@ Stage Summary:
 - References section with APA-style hanging indent
 - docx@9.7.1 package added
 - Lint: 0 errors, 139 warnings (all pre-existing)
+---
+Task ID: 2-a
+Agent: subagent-api
+Task: Create /api/alignement-preuves API route
+
+Work Log:
+- Read worklog.md for project context (Ma Thèse — thesis writing app, Next.js 16, Prisma/SQLite)
+- Read prisma/schema.prisma to confirm Reference (global, no thesisId), Chapter, and Thesis models
+- Read existing API route (export-docx/route.ts) to follow same patterns (NextRequest/NextResponse, import db from @/lib/db)
+- Created src/app/api/alignement-preuves/route.ts (631 lines)
+- Implemented 6 citation regex patterns: parenthetical (single/multiple with ;), narrative (Author Year), brackets [N]
+- Built author key normalization: surname lowercased + optional initial suffix (e.g. "smith_a")
+- Built reference index from all global References (multi-author per reference, semicolon-split)
+- Implemented reference matching: author key lookup with year preference
+- Implemented global scoring: base 50, +10 if no unreferenced, +10 if no unused, +10/chapter (max 30) for density>=3, -10/chapter (min -30) for density<1, -5/chapter for zero citations, clamped 0-100
+- Implemented per-chapter scoring: tiered thresholds (>=5→100, >=3→85, >=1.5→65, >=0.5→40, >0→20, 0→0)
+- Implemented evidence density: author-year citations per 1000 words (bracket citations excluded)
+- Edge cases: 400 for no chapters, 404 for missing thesis, 0 citations/words for empty chapters, max 100 citations/chapter
+- French error messages throughout
+- Fixed syntax typos (stray 'n' in return type, indentation issues)
+- Fixed TS strict mode: Array.from() for Map/Set iteration, explicit parameter types
+- Lint: 0 errors, 139 warnings (all pre-existing), no warnings from new file
+- Dev server compiles cleanly
+
+Stage Summary:
+- POST /api/alignement-preuves accepts { thesisId: string }
+- Returns comprehensive alignment analysis: global score, per-chapter scores, evidence density, citations found, unreferenced citations, unused references, routing table
+- Citation extraction supports: (Author, Year), (Author et al., Year), (Author & Author, Year), (Author, Year; Author, Year), A. Smith (Year), [N]
+- Reference matching against global DB with author key normalization and year preference
+- French error messages, proper error codes (400/404/500)
+- Lint clean, 0 new errors or warnings
+---
+Task ID: 5
+Agent: main
+Task: Integrate Truthmark-inspired 'Alignement Preuves' module
+
+Work Log:
+- Analyzed truthmark (merlinhu1/truthmark) — Git-native truth docs for AI codebases
+- Identified key transposable concepts: Truth Check (audit), Truth Routing (source→chapter mapping), Evidence Density
+- Created /api/alignement-preuves/route.ts (631 lines):
+  - 6 regex citation patterns: parenthetical, narrative, multiple, with initials, French ampersand, brackets
+  - Author key normalization for fuzzy matching
+  - Reference index built from global Reference table
+  - Per-chapter evidence density (citations/1000 words)
+  - Scoring: global 0-100, per-chapter tiered (good/warning/critical)
+  - Routing table: which chapters cite which references
+  - Unreferenced citations + unused references detection
+- Created src/modules/alignement-preuves/alignement-preuves-page.tsx:
+  - Global score ring (SVG circular progress)
+  - 4 tabs: Chapitres, Citations orphelines, Références inutilisées, Routing
+  - Per-chapter cards with score, density, issues, expandable citation list
+  - Color-coded severity (emerald/amber/red)
+- Added 'alignement-preuves' to ViewId, NAVIGATION_ITEMS (badge IA), page.tsx router
+- Lint: 0 errors, 141 warnings (2 new, all pre-existing for rest)
+- Dev server: GET / 200 clean compilation
+
+Stage Summary:
+- New module 'Alignement Preuves' accessible from sidebar with IA badge
+- Truthmark-inspired audit: code/docs alignment → thesis citations/references alignment
+- Extracts citations from Tiptap HTML content via 6 regex patterns
+- Scores each chapter on evidence density (0-100) with severity classification
+- Routing tab shows source→chapter mapping (Truthmark routing concept)
+- Detects unreferenced citations (in text, not in biblio) and unused references (in biblio, not cited)

@@ -36,6 +36,7 @@ import { ThesisRagPage } from "@/modules/thesis-rag/thesis-rag-page";
 import { VerificationCartoPage } from "@/modules/verification-carto/verification-carto-page";
 import { Paper2CodePage } from "@/modules/paper2code/paper2code-page";
 import { ExportDocxPage } from "@/modules/export-docx/export-docx-page";
+import { AlignementPreuvesPage } from "@/modules/alignement-preuves/alignement-preuves-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -109,6 +110,8 @@ function CurrentView() {
       return <Paper2CodePage />;
     case "export-docx":
       return <ExportDocxPage />;
+    case "alignement-preuves":
+      return <AlignementPreuvesPage />;
     default:
       return <DashboardPage />;
   }

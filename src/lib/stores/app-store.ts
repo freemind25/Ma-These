@@ -37,7 +37,8 @@ export type ViewId =
   | "thesis-rag"
   | "verification-carto"
   | "paper2code"
-  | "export-docx";
+  | "export-docx"
+  | "alignement-preuves";
 
 export interface NavigationItem {
   id: ViewId;
@@ -252,6 +253,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Export DOCX",
     icon: "FileDown",
     description: "Document Word formaté avec styles APA et table des matières",
+  },
+  {
+    id: "alignement-preuves",
+    label: "Alignement Preuves",
+    icon: "GitCompareArrows",
+    description: "Vérifiez la cohérence citations/références par chapitre",
+    badge: "IA",
   },
 ];
 
