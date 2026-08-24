@@ -50,6 +50,7 @@ import {
   ArrowRight,
   Lightbulb,
   GraduationCap,
+  KeyRound,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 

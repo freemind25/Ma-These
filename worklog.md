@@ -4282,3 +4282,20 @@ Stage Summary:
 - Streaming UI shows progress per file per stage
 - Mermaid diagrams copiable for use in the Diagrammes module
 - Download button exports all generated files
+---
+Task ID: 3
+Agent: main
+Task: Verify Paper2Code module and fix KeyRound import error
+
+Work Log:
+- Discovered module already built in previous session (paper2code-page.tsx, API route, sidebar entry)
+- Fixed ReferenceError: KeyRound not imported in usage-guide-dialog.tsx
+- Verified dev server compiles and serves page (HTTP 200, no compile errors)
+- Confirmed lint: 0 errors, 137 warnings (all pre-existing)
+- Verified all wiring: ViewId, NAVIGATION_ITEMS, page.tsx router, API route
+
+Stage Summary:
+- Module "Article → Code" fully functional and accessible from sidebar
+- Fixed missing KeyRound import that crashed the entire app
+- 3-stage pipeline (Planning → Analyzing → Coding) with streaming NDJSON
+- 5 hardcoded providers (Groq, Gemini, OpenRouter, GitHub, OpenAI) ready to use
