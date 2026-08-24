@@ -4430,3 +4430,25 @@ Stage Summary:
 - Scores each chapter on evidence density (0-100) with severity classification
 - Routing tab shows source→chapter mapping (Truthmark routing concept)
 - Detects unreferenced citations (in text, not in biblio) and unused references (in biblio, not cited)
+---
+Task ID: phrasebook-1
+Agent: Main
+Task: Intégrer le concept de l'Academic Phrasebank (PhDStudentResources) — Phrasier Académique
+
+Work Log:
+- Analysé le dépôt PhDStudentResources (Lynsay/PhDStudentResources) — liste de ressources pour doctorants en informatique
+- Identifié 3 concepts transposables : Academic Phrasebank, Score de lisibilité (Hemingway), Template d'analyse critique
+- Choisi le Phrasier Académique comme le plus pertinent et immédiatement utile
+- Créé `src/lib/data/phrasebank-data.ts` : base de 60+ phrases académiques françaises organisées par 7 sections de thèse (Introduction, Revue de littérature, Problématique, Méthodologie, Résultats, Discussion, Conclusion) et 10 fonctions rhétoriques (Ouvrir, Argumenter, Citer, Nuancer, Transitionner, Conclure, Comparer, Définir, Exemplifier, Structurer)
+- Créé `src/modules/phrasebook/phrasebook-page.tsx` : UI complète avec recherche textuelle, filtres par section et par fonction, copie en un clic, placeholders surlignés, registre (formel/classique/neutre), exemples d'utilisation
+- Ajouté `phrasebook` au ViewId et à la navigation dans app-store.ts
+- Ajouté l'import et le case dans page.tsx router
+- Corrigé une erreur de parsing (guillemets dans le placeholder)
+- Lint : 0 erreurs, 141 warnings (tous pré-existants)
+- Dev log : compilation réussie, GET / 200, zéro erreur runtime
+
+Stage Summary:
+- Module Phrasier Académique entièrement fonctionnel
+- 60+ phrases françaises couvrant l'ensemble des sections d'une thèse
+- Inspiré du Manchester Academic Phrasebank, adapté au contexte francophone
+- Accessible depuis la sidebar sous « Phrasier Académique » (icône BookOpenText)

@@ -38,7 +38,8 @@ export type ViewId =
   | "verification-carto"
   | "paper2code"
   | "export-docx"
-  | "alignement-preuves";
+  | "alignement-preuves"
+  | "phrasebook";
 
 export interface NavigationItem {
   id: ViewId;
@@ -260,6 +261,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "GitCompareArrows",
     description: "Vérifiez la cohérence citations/références par chapitre",
     badge: "IA",
+  },
+  {
+    id: "phrasebook",
+    label: "Phrasier Académique",
+    icon: "BookOpenText",
+    description: "Phrases prêtes à l'emploi pour chaque section de votre thèse",
   },
 ];
 
