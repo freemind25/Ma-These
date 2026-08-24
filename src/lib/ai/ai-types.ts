@@ -81,7 +81,7 @@ export const PROVIDER_BASE_URLS: Record<AiProviderId, string> = {
   cohere: "https://api.cohere.com/v2",
   siliconflow: "https://api.siliconflow.com/v1",
   // Agrégateurs gratuits
-  pollinations: "https://text.pollinations.ai/openai",
+  pollinations: "https://text.pollinations.ai/openai",  // Nouveau: enter.pollinations.ai
   kilo: "https://api.kilo.ai/api/gateway/v1",
   routeway: "https://api.routeway.ai/v1",
   ainative: "https://api.ainative.studio/api/v1",
@@ -136,7 +136,10 @@ export const DYNAMIC_MODEL_PROVIDERS: AiProviderId[] = [
 /**
  * Providers that don't require an API key (keyless / anonymous access)
  */
-export const KEYLESS_PROVIDERS: AiProviderId[] = ["pollinations", "kilo"];
+// NOTE: Plus aucun fournisseur n'est véritablement keyless en 2025.
+// Pollinations et Kilo nécessitent maintenant un compte gratuit.
+// Mais leur clé s'obtient gratuitement sans carte bancaire.
+export const KEYLESS_PROVIDERS: AiProviderId[] = [];
 
 /**
  * Provider categories for the UI

@@ -3,13 +3,16 @@ import {
   type AiProviderConfig,
   detectBackend,
   getBaseUrl,
+  isKeylessProvider,
+  getProviderExtraHeaders,
+  isAnthropicFormat,
 } from "@/lib/ai/ai-provider";
 import AiSDK from "z-ai-web-dev-sdk";
 
-// ═══════════════════════════════════════
+// ═════════════════════════════════════════
 // POST /api/ai-test — Test AI provider connection
-// Server-side only (safe for z-ai-web-dev-sdk / fs)
-// ═══════════════════════════════════════
+// Server-side only — supports keyless providers (Pollinations, Kilo)
+// ═════════════════════════════════════════
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +21,6 @@ export async function POST(request: NextRequest) {
     const backend = detectBackend(provider);
 
     if (backend === "zai") {
-      // Test z.ai SDK
       const client = await AiSDK.create();
       const response = await client.chat.completions.create({
         messages: [{ role: "user", content: "ping" }],
@@ -29,44 +31,41 @@ export async function POST(request: NextRequest) {
         typeof response === "string"
           ? response
           : String((response as Record<string, unknown>).content ?? response);
-
       return NextResponse.json({ ok: true, response: content.slice(0, 50) });
     }
 
     // Test OpenAI-compatible API
     const baseUrl = getBaseUrl(provider, body.baseUrl);
     const apiKey = body.apiKey;
-    const model =
-      body.model ||
-      (provider === "anthropic"
-        ? "claude-3-haiku-20240307"
-        : "gpt-4o-mini");
+    const model = body.model || getDefaultModel(provider);
 
-    if (!apiKey) {
-      return NextResponse.json({ ok: false, error: "Clé API requise" }, { status: 400 });
+    // Keyless providers: no API key required
+    if (!isKeylessProvider(provider) && !apiKey) {
+      return NextResponse.json(
+        { ok: false, error: `Clé API requise pour ${provider}` },
+        { status: 400 }
+      );
     }
 
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
 
-    if (provider === "anthropic") {
+    if (isAnthropicFormat(provider) && apiKey) {
       headers["x-api-key"] = apiKey;
       headers["anthropic-version"] = "2023-06-01";
-      headers["anthropic-dangerous-direct-browser-access"] = "true";
-    } else {
+    } else if (apiKey && !isKeylessProvider(provider)) {
       headers["Authorization"] = `Bearer ${apiKey}`;
     }
 
-    const url =
-      provider === "anthropic"
-        ? `${baseUrl}/messages`
-        : `${baseUrl}/chat/completions`;
+    // Provider-specific extra headers
+    const extra = getProviderExtraHeaders(provider);
+    Object.assign(headers, extra);
 
-    const requestBody =
-      provider === "anthropic"
-        ? { model, max_tokens: 10, messages: [{ role: "user", content: "ping" }] }
-        : { model, max_tokens: 10, messages: [{ role: "user", content: "ping" }] };
+    const url = `${baseUrl}/chat/completions`;
+    const requestBody = {
+      model,
+      max_tokens: 10,
+      messages: [{ role: "user", content: "Réponds juste 'OK' en français." }],
+    };
 
     const res = await fetch(url, {
       method: "POST",
@@ -76,51 +75,48 @@ export async function POST(request: NextRequest) {
 
     if (!res.ok) {
       let errorText = await res.text().catch(() => "Unknown error");
-
-      // Parse known error types for friendlier messages
-      // Handles both OpenAI format (error.type/message) and Mistral format (top-level message/code)
       try {
-        const errJson = JSON.parse(errorText) as {
-          error?: { type?: string; message?: string };
-          message?: string;
-          code?: string;
-          detail?: string;
-          type?: string;
-          model?: string;
-        };
-        // OpenAI nested format: { error: { type, message } }
-        const errType = errJson.error?.type || errJson.type || errJson.code || "";
-        const errMsg = errJson.error?.message || errJson.message || errJson.detail || "";
-
-        if (errType === "all_keys_failed" || res.status === 503) {
-          errorText = `Service temporairement indisponible (${res.status}). Le modèle "${errJson.model || model}" est peut-être surchargé. Réessayez dans quelques instants ou choisissez un autre modèle.`;
-        } else if (errType === "rate_limit_exceeded" || res.status === 429) {
-          errorText = `Limite de requêtes atteinte (${res.status}). ${errMsg || "Attendez quelques secondes avant de réessayer."}`;
-        } else if (
-          errType === "invalid_api_key" ||
-          errType === "invalid_request_error" ||
-          errJson.code === "invalid_api_key" ||
-          res.status === 401
-        ) {
-          errorText = `Clé API invalide (${res.status}). ${errMsg || "Vérifiez votre clé et réessayez."}`;
-        } else if (res.status === 404) {
-          errorText = `Modèle "${model}" introuvable (${res.status}). Vérifiez le nom du modèle.`;
-        } else if (errMsg) {
-          errorText = `${errMsg} (modèle: ${errJson.model || model})`;
-        }
-      } catch {
-        // keep raw errorText
-      }
-
+        const errJson = JSON.parse(errorText) as Record<string, unknown>;
+        const errObj = errJson.error as Record<string, string> | undefined;
+        errorText = errObj?.message || (errJson.message as string) || errorText;
+      } catch {}
       return NextResponse.json(
-        { ok: false, error: errorText.slice(0, 300) },
+        { ok: false, error: `(${res.status}) ${errorText.slice(0, 200)}` },
         { status: 502 }
       );
     }
 
-    return NextResponse.json({ ok: true, provider, model });
+    const data = (await res.json()) as Record<string, unknown>;
+    const choices = data.choices as Array<Record<string, unknown>> | undefined;
+    const msg = choices?.[0]?.message as Record<string, unknown> | undefined;
+    const content = String(msg?.content || "");
+
+    return NextResponse.json({
+      ok: true,
+      provider,
+      model,
+      response: content.slice(0, 100),
+      usage: data.usage,
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
+}
+
+function getDefaultModel(provider: string): string {
+  const defaults: Record<string, string> = {
+    anthropic: "claude-3-haiku-20240307",
+    google: "gemini-2.0-flash",
+    groq: "llama-3.3-70b-versatile",
+    cerebras: "llama-3.3-70b",
+    openrouter: "meta-llama/llama-4-maverick:free",
+    github: "openai/gpt-4.1-mini",
+    nvidia: "meta/llama-3.3-70b-instruct",
+    cohere: "command-r",
+    pollinations: "openai",
+    kilo: "auto",
+    routeway: "auto:free",
+  };
+  return defaults[provider] || "gpt-4o-mini";
 }
