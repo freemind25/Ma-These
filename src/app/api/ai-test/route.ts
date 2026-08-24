@@ -7,6 +7,7 @@ import {
   getProviderExtraHeaders,
   isAnthropicFormat,
 } from "@/lib/ai/ai-provider";
+import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
 import AiSDK from "z-ai-web-dev-sdk";
 
 // ═════════════════════════════════════════
@@ -39,8 +40,9 @@ export async function POST(request: NextRequest) {
     const apiKey = body.apiKey;
     const model = body.model || getDefaultModel(provider);
 
-    // Keyless providers: no API key required
-    if (!isKeylessProvider(provider) && !apiKey) {
+    // Try to get API key: from request body → hardcoded → fail
+    const effectiveKey = apiKey || getHardcodedKey(provider);
+    if (!isKeylessProvider(provider) && !effectiveKey) {
       return NextResponse.json(
         { ok: false, error: `Clé API requise pour ${provider}` },
         { status: 400 }
@@ -49,11 +51,11 @@ export async function POST(request: NextRequest) {
 
     const headers: Record<string, string> = { "Content-Type": "application/json" };
 
-    if (isAnthropicFormat(provider) && apiKey) {
-      headers["x-api-key"] = apiKey;
+    if (isAnthropicFormat(provider) && effectiveKey) {
+      headers["x-api-key"] = effectiveKey;
       headers["anthropic-version"] = "2023-06-01";
-    } else if (apiKey && !isKeylessProvider(provider)) {
-      headers["Authorization"] = `Bearer ${apiKey}`;
+    } else if (effectiveKey && !isKeylessProvider(provider)) {
+      headers["Authorization"] = `Bearer ${effectiveKey}`;
     }
 
     // Provider-specific extra headers

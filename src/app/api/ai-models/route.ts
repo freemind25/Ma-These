@@ -4,6 +4,8 @@
 // ═══════════════════════════════════════
 
 import { NextRequest, NextResponse } from "next/server";
+import { type AiProviderId, PROVIDER_BASE_URLS } from "@/lib/ai/ai-types";
+import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
 
 // In-memory cache (5 min TTL)
 const modelCache = new Map<string, { models: string[]; fetchedAt: number }>();
@@ -13,26 +15,32 @@ export async function GET(request: NextRequest) {
   try {
     const baseUrl = request.nextUrl.searchParams.get("baseUrl");
     const apiKey = request.nextUrl.searchParams.get("apiKey");
+    const providerId = request.nextUrl.searchParams.get("provider") as AiProviderId | null;
 
-    if (!baseUrl) {
+    // Resolve base URL from provider ID if not given
+    const effectiveBaseUrl = baseUrl || (providerId ? PROVIDER_BASE_URLS[providerId] : "");
+    if (!effectiveBaseUrl) {
       return NextResponse.json(
-        { error: "Paramètre baseUrl requis" },
+        { error: "Paramètre baseUrl ou provider requis" },
         { status: 400 }
       );
     }
 
+    // Resolve API key: query param → hardcoded for provider
+    const effectiveApiKey = apiKey || (providerId ? getHardcodedKey(providerId) : "");
+
     // Check cache
-    const cacheKey = `${baseUrl}:${apiKey ? "auth" : "public"}`;
+    const cacheKey = `${effectiveBaseUrl}:${effectiveApiKey ? "auth" : "public"}`;
     const cached = modelCache.get(cacheKey);
     if (cached && Date.now() - cached.fetchedAt < CACHE_TTL) {
       return NextResponse.json({ models: cached.models, cached: true });
     }
 
     // Fetch models from the provider's /models endpoint
-    const url = baseUrl.replace(/\/+$/, "") + "/models";
+    const url = effectiveBaseUrl.replace(/\/+$/, "") + "/models";
     const headers: Record<string, string> = {};
-    if (apiKey) {
-      headers["Authorization"] = `Bearer ${apiKey}`;
+    if (effectiveApiKey) {
+      headers["Authorization"] = `Bearer ${effectiveApiKey}`;
     }
 
     const res = await fetch(url, {

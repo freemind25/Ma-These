@@ -4223,3 +4223,28 @@ Stage Summary:
 - Fournisseurs majeurs: Google Gemini, Groq, Cerebras, OpenRouter, GitHub Models, NVIDIA, Cohere, HuggingFace
 - Agrégateurs gratuits: Pollinations, Kilo, Routeway, AINative, Aion, Requesty, SEA-LION
 - Failover: chaîne de fournisseurs, retry, classification erreurs retryable/auth
+
+---
+Task ID: 1
+Agent: main
+Task: Hardcode API keys for testing free AI providers
+
+Work Log:
+- Created `src/lib/ai/hardcoded-keys.ts` — server-side only file with 5 hardcoded API keys (Google Gemini, GitHub, OpenAI, OpenRouter, Groq)
+- Updated `src/lib/ai/zai-client.ts` — added `enrichWithHardcodedKey()` in `generateCompletion()` and fallback in `getDefaultConfig()` to inject hardcoded keys
+- Updated `src/app/api/ai-test/route.ts` — now uses hardcoded keys when no user-provided key
+- Updated `src/app/api/ai-models/route.ts` — accepts `provider` param and resolves hardcoded key automatically
+- Created `src/app/api/ai-keys/route.ts` — returns masked key info for UI display
+- Rewrote `src/components/layout/app-header.tsx` — AiConfigDialog now shows all 24 providers organized by category (SDK Natif, Premium, Gratuit, Agrégateurs, Personnalisé), with green "clé OK" badges for hardcoded providers
+- Changed breadcrumb from "ThesisFrame" to "Ma Thèse"
+- Changed About dialog text to "À propos de Ma Thèse"
+
+Stage Summary:
+- 5 API keys hardcoded: Google Gemini, GitHub Models, OpenAI, OpenRouter, Groq
+- OpenRouter backup key stored separately in OPENROUTER_BACKUP_KEY
+- Keys never exposed to client (server-side only)
+- `/api/ai-keys` returns masked keys for UI badges
+- All providers with hardcoded keys show "Clé pré-configurée" banner and auto-hide API key input
+- Test button works without entering a key for hardcoded providers
+- Lint: 0 errors, 134 pre-existing warnings
+- Dev server compiles and serves correctly

@@ -21,13 +21,17 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAppStore, NAVIGATION_ITEMS } from "@/lib/stores/app-store";
 import {
   Settings,
@@ -43,16 +47,20 @@ import {
   BookOpen,
   Keyboard,
   Info,
+  KeyRound,
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import {
   type AiProviderId,
   type AiProviderConfig,
+  type ProviderCategory,
   getProviderLabel,
   getProviderFields,
+  providerNeedsKey,
   PROVIDER_MODELS,
   PROVIDER_BASE_URLS,
+  PROVIDER_CATEGORIES,
   DYNAMIC_MODEL_PROVIDERS,
 } from "@/lib/ai/ai-types";
 import { UsageGuideDialog } from "./usage-guide-dialog";
@@ -81,17 +89,19 @@ function saveConfig(config: AiProviderConfig): void {
 }
 
 // ═══════════════════════════════════════
-// AI Config Dialog
+// Type for /api/ai-keys response
 // ═══════════════════════════════════════
 
-const ALL_PROVIDERS: AiProviderId[] = [
-  "zai",
-  "openai",
-  "anthropic",
-  "mistral",
-  "routesme",
-  "custom",
-];
+interface HardcodedKeyInfo {
+  provider: string;
+  label: string;
+  maskedKey: string;
+  hasKey: boolean;
+}
+
+// ═══════════════════════════════════════
+// AI Config Dialog
+// ═══════════════════════════════════════
 
 function AiConfigDialog({
   onOpenChange,
@@ -106,11 +116,27 @@ function AiConfigDialog({
   const [testResult, setTestResult] = useState<"success" | "fail" | null>(null);
   const [dynamicModels, setDynamicModels] = useState<string[]>([]);
   const [loadingModels, setLoadingModels] = useState(false);
+  const [hardcodedKeys, setHardcodedKeys] = useState<HardcodedKeyInfo[]>([]);
+
+  // Set of providers that have a hardcoded key
+  const hardcodedSet = new Set(hardcodedKeys.map((k) => k.provider));
 
   // Sync from store on mount
   useEffect(() => {
     const saved = loadSavedConfig();
     setConfig(saved);
+  }, []);
+
+  // Fetch hardcoded key info on mount
+  useEffect(() => {
+    fetch("/api/ai-keys")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data.providers)) {
+          setHardcodedKeys(data.providers);
+        }
+      })
+      .catch(() => { /* ignore */ });
   }, []);
 
   // Fetch dynamic models when provider is dynamic and apiKey is set
@@ -123,7 +149,8 @@ function AiConfigDialog({
 
     const baseUrl =
       config.baseUrl || PROVIDER_BASE_URLS[config.provider] || "";
-    if (!baseUrl || !config.apiKey) {
+    // Allow fetching models even without a user-provided key if provider has hardcoded key
+    if (!baseUrl || (!config.apiKey && !hardcodedSet.has(config.provider))) {
       setDynamicModels([]);
       return;
     }
@@ -132,6 +159,7 @@ function AiConfigDialog({
     try {
       const params = new URLSearchParams({ baseUrl });
       if (config.apiKey) params.set("apiKey", config.apiKey);
+      params.set("provider", config.provider);
       const res = await fetch(`/api/ai-models?${params}`);
       const data = (await res.json()) as { models?: string[]; error?: string; cached?: boolean };
       if (data.error) {
@@ -157,36 +185,36 @@ function AiConfigDialog({
     }
   }, [config.provider, config.baseUrl, config.apiKey, config.model]);
 
-  // Auto-fetch when provider changes to dynamic model providers or when apiKey is entered
+  // Auto-fetch when provider is dynamic and apiKey is available (user-provided or hardcoded)
   useEffect(() => {
-    if (DYNAMIC_MODEL_PROVIDERS.includes(config.provider) && config.apiKey) {
+    const hasKey = !!config.apiKey || hardcodedSet.has(config.provider);
+    if (DYNAMIC_MODEL_PROVIDERS.includes(config.provider) && hasKey) {
       const timer = setTimeout(fetchDynamicModels, 300);
       return () => clearTimeout(timer);
     }
-    if (!config.apiKey) {
+    if (!config.apiKey && !hardcodedSet.has(config.provider)) {
       setDynamicModels([]);
     }
-  }, [config.provider, config.apiKey, fetchDynamicModels]);
+  }, [config.provider, config.apiKey, fetchDynamicModels, hardcodedSet]);
 
   const handleProviderChange = useCallback((value: string) => {
     const newProvider = value as AiProviderId;
+    // Auto-fill the default model for this provider
+    const defaultModel = PROVIDER_MODELS[newProvider]?.[0];
+    // Auto-fill base URL for known providers
+    const defaultBaseUrl = PROVIDER_BASE_URLS[newProvider];
+
     setConfig((prev) => ({
       provider: newProvider,
-      apiKey: newProvider === "zai" ? undefined : prev.apiKey,
-      model: newProvider === "zai" ? undefined : prev.model,
-      baseUrl:
-        newProvider === "routesme"
-          ? PROVIDER_BASE_URLS.routesme
-          : newProvider === "mistral"
-            ? PROVIDER_BASE_URLS.mistral
-            : newProvider === "openai"
-              ? PROVIDER_BASE_URLS.openai
-              : newProvider === "anthropic"
-                ? PROVIDER_BASE_URLS.anthropic
-                : prev.baseUrl,
+      // If the provider has a hardcoded key, leave apiKey empty (server will inject it)
+      // Otherwise keep previous key if user already typed one
+      apiKey: hardcodedSet.has(newProvider) ? undefined : (newProvider === "zai" ? undefined : prev.apiKey),
+      model: defaultModel || prev.model,
+      baseUrl: newProvider === "custom" ? prev.baseUrl : (defaultBaseUrl || undefined),
     }));
     setTestResult(null);
-  }, []);
+    setDynamicModels([]);
+  }, [hardcodedSet]);
 
   const handleSave = useCallback(() => {
     saveConfig(config);
@@ -227,283 +255,315 @@ function AiConfigDialog({
 
   const fields = getProviderFields(config.provider);
   const staticModels = PROVIDER_MODELS[config.provider] || [];
-  const models =
-    dynamicModels.length > 0 ? dynamicModels : staticModels;
+  const models = dynamicModels.length > 0 ? dynamicModels : staticModels;
+
+  // Current provider's hardcoded key info
+  const currentHardcoded = hardcodedKeys.find(
+    (k) => k.provider === config.provider
+  );
 
   return (
-    <DialogContent className="sm:max-w-md">
+    <DialogContent className="sm:max-w-lg max-h-[90vh]">
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2">
           <Bot className="h-5 w-5" />
-          Configuration du fournisseur IA
+          Fournisseur IA
         </DialogTitle>
         <DialogDescription>
-          Choisissez le fournisseur d&apos;intelligence artificielle pour les fonctions IA de ThesisFrame.
+          Choisissez le fournisseur d&apos;intelligence artificielle pour les fonctions IA de Ma Thèse.
         </DialogDescription>
       </DialogHeader>
 
-      <div className="flex flex-col gap-4 py-2">
-        {/* Provider select */}
-        <div className="flex flex-col gap-1.5">
-          <Label>Fournisseur</Label>
-          <Select value={config.provider} onValueChange={handleProviderChange}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choisir un fournisseur" />
-            </SelectTrigger>
-            <SelectContent>
-              {ALL_PROVIDERS.map((p) => (
-                <SelectItem key={p} value={p}>
-                  <span className="flex items-center gap-2">
-                    {p === "routesme" && (
-                      <Zap className="h-3.5 w-3.5 text-amber-500" />
-                    )}
-                    {getProviderLabel(p)}
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {config.provider === "routesme" && (
-            <p className="text-[11px] text-amber-600 dark:text-amber-400">
-              ⚡ RoutesMe — 1 clé API, 20+ modèles (GLM, GPT, Claude, DeepSeek, Gemini…)
-            </p>
-          )}
-          {config.provider === "mistral" && (
-            <p className="text-[11px] text-sky-600 dark:text-sky-400">
-              ↯ Mistral AI — API compatible OpenAI, modèles français de pointe
-            </p>
-          )}
-          {config.provider !== "zai" && config.provider !== "routesme" && config.provider !== "mistral" && (
-            <p className="text-[11px] text-muted-foreground">
-              ↔ Utilisera l&apos;API compatible OpenAI
-            </p>
-          )}
-        </div>
-
-        {/* API Key */}
-        {fields.showApiKey && (
+      <ScrollArea className="max-h-[65vh] pr-3">
+        <div className="flex flex-col gap-4 py-2">
+          {/* Provider select with categories */}
           <div className="flex flex-col gap-1.5">
-            <Label>Clé API</Label>
-            <div className="relative">
-              <Input
-                type={showKey ? "text" : "password"}
-                placeholder={
-                  config.provider === "routesme"
-                    ? "rm-xxxxxxxxxxxxxxxx"
-                    : config.provider === "mistral"
-                      ? "xxxxxxxxxxxxxxxxxxxxxxxx"
-                      : "sk-..."
-                }
-                value={config.apiKey || ""}
-                onChange={(e) =>
-                  setConfig((prev) => ({ ...prev, apiKey: e.target.value }))
-                }
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
-                onClick={() => setShowKey(!showKey)}
-              >
-                {showKey ? (
-                  <EyeOff className="h-3.5 w-3.5" />
-                ) : (
-                  <Eye className="h-3.5 w-3.5" />
+            <Label>Fournisseur</Label>
+            <Select value={config.provider} onValueChange={handleProviderChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choisir un fournisseur" />
+              </SelectTrigger>
+              <SelectContent className="max-h-80">
+                {(Object.entries(PROVIDER_CATEGORIES) as [ProviderCategory, typeof PROVIDER_CATEGORIES[ProviderCategory]][]).map(
+                  ([catId, cat], idx) => (
+                    <SelectGroup key={catId}>
+                      {idx > 0 && <SelectSeparator />}
+                      <SelectLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        {cat.label}
+                        {cat.description && (
+                          <span className="font-normal normal-case ml-1.5 text-muted-foreground/70">
+                            — {cat.description}
+                          </span>
+                        )}
+                      </SelectLabel>
+                      {cat.providers.map((p) => {
+                        const hasHardcoded = hardcodedSet.has(p);
+                        const needsKey = providerNeedsKey(p);
+                        return (
+                          <SelectItem key={p} value={p}>
+                            <span className="flex items-center gap-2">
+                              {p === "routesme" && <Zap className="h-3.5 w-3.5 text-amber-500" />}
+                              {getProviderLabel(p)}
+                              {hasHardcoded && (
+                                <Badge
+                                  variant="secondary"
+                                  className="text-[9px] px-1.5 py-0 h-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-0"
+                                >
+                                  <KeyRound className="h-2.5 w-2.5 mr-0.5" />
+                                  clé OK
+                                </Badge>
+                              )}
+                              {!hasHardcoded && !needsKey && p === "zai" && (
+                                <Badge variant="secondary" className="text-[9px] px-1.5 py-0 h-4">
+                                  natif
+                                </Badge>
+                              )}
+                            </span>
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectGroup>
+                  )
                 )}
-              </Button>
-            </div>
-            {config.provider === "routesme" && (
-              <p className="text-[11px] text-muted-foreground">
-                Obtenez votre clé sur{" "}
-                <a
-                  href="https://routesme.online"
-                  target="_blank"
-                  rel="noopener"
-                  className="underline text-amber-600 dark:text-amber-400 hover:text-amber-700"
-                >
-                  routesme.online
-                </a>
-              </p>
-            )}
-            {config.provider === "mistral" && (
-              <p className="text-[11px] text-muted-foreground">
-                Obtenez votre clé sur{" "}
-                <a
-                  href="https://console.mistral.ai"
-                  target="_blank"
-                  rel="noopener"
-                  className="underline text-sky-600 dark:text-sky-400 hover:text-sky-700"
-                >
-                  console.mistral.ai
-                </a>
-              </p>
-            )}
+              </SelectContent>
+            </Select>
           </div>
-        )}
 
-        {/* Model select — static or dynamic */}
-        {fields.showModel && models.length > 0 && (
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <Label>Modèle</Label>
-              {fields.dynamicModels && (
+          {/* Hardcoded key indicator */}
+          {currentHardcoded && (
+            <div className="rounded-lg border border-emerald-200 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-950/20 p-3 text-[11px] text-emerald-800 dark:text-emerald-300 space-y-1">
+              <p className="font-semibold flex items-center gap-1.5">
+                <KeyRound className="h-3.5 w-3.5" />
+                Clé API pré-configurée
+              </p>
+              <p className="font-mono text-[10px] opacity-70">
+                {currentHardcoded.maskedKey}
+              </p>
+              <p className="opacity-80">
+                Aucune clé à saisir. Le serveur utilisera automatiquement la clé intégrée.
+              </p>
+            </div>
+          )}
+
+          {/* API Key (only if provider needs key AND has no hardcoded key) */}
+          {fields.showApiKey && !currentHardcoded && (
+            <div className="flex flex-col gap-1.5">
+              <Label>Clé API</Label>
+              <div className="relative">
+                <Input
+                  type={showKey ? "text" : "password"}
+                  placeholder={
+                    config.provider === "routesme"
+                      ? "rm-xxxxxxxxxxxxxxxx"
+                      : config.provider === "mistral"
+                        ? "xxxxxxxxxxxxxxxxxxxxxxxx"
+                        : "sk-..."
+                  }
+                  value={config.apiKey || ""}
+                  onChange={(e) =>
+                    setConfig((prev) => ({ ...prev, apiKey: e.target.value }))
+                  }
+                />
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-6 w-6"
-                  onClick={fetchDynamicModels}
-                  disabled={loadingModels}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+                  onClick={() => setShowKey(!showKey)}
                 >
-                  <RefreshCw
-                    className={`h-3 w-3 ${loadingModels ? "animate-spin" : ""}`}
-                  />
+                  {showKey ? (
+                    <EyeOff className="h-3.5 w-3.5" />
+                  ) : (
+                    <Eye className="h-3.5 w-3.5" />
+                  )}
                 </Button>
-              )}
-            </div>
-            <Select
-              value={config.model || ""}
-              onValueChange={(v) =>
-                setConfig((prev) => ({ ...prev, model: v }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={
-                  loadingModels ? "Chargement des modèles…" : "Choisir un modèle"
-                } />
-              </SelectTrigger>
-              <SelectContent className="max-h-60 overflow-y-auto">
-                {models.map((m) => (
-                  <SelectItem key={m} value={m}>
-                    <span className="flex items-center gap-1.5">
-                      {m}
-                      {m.toLowerCase().includes("free") && (
-                        <Badge
-                          variant="secondary"
-                          className="text-[9px] px-1 py-0 h-3.5"
-                        >
-                          FREE
-                        </Badge>
-                      )}
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {loadingModels && (
-              <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-                <Loader2 className="h-3 w-3 animate-spin" />
-                Récupération des modèles disponibles…
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Model input for dynamic providers when no models loaded */}
-        {fields.showModel &&
-          fields.dynamicModels &&
-          models.length === 0 &&
-          !loadingModels && (
-            <div className="flex flex-col gap-1.5">
-              <Label>Modèle</Label>
-              <Input
-                type="text"
-                placeholder="Nom du modèle (ex: GLM5.2-free)"
-                value={config.model || ""}
-                onChange={(e) =>
-                  setConfig((prev) => ({ ...prev, model: e.target.value }))
-                }
-              />
-              {(config.provider === "routesme" || config.provider === "mistral") && (
+              </div>
+              {config.provider === "routesme" && (
                 <p className="text-[11px] text-muted-foreground">
-                  Entrez votre clé API ci-dessus pour charger la liste des modèles disponibles.
+                  Obtenez votre clé sur{" "}
+                  <a
+                    href="https://routesme.online"
+                    target="_blank"
+                    rel="noopener"
+                    className="underline text-amber-600 dark:text-amber-400 hover:text-amber-700"
+                  >
+                    routesme.online
+                  </a>
+                </p>
+              )}
+              {config.provider === "mistral" && (
+                <p className="text-[11px] text-muted-foreground">
+                  Obtenez votre clé sur{" "}
+                  <a
+                    href="https://console.mistral.ai"
+                    target="_blank"
+                    rel="noopener"
+                    className="underline text-sky-600 dark:text-sky-400 hover:text-sky-700"
+                  >
+                    console.mistral.ai
+                  </a>
                 </p>
               )}
             </div>
           )}
 
-        {/* Base URL (custom provider only) */}
-        {fields.showBaseUrl && (
-          <div className="flex flex-col gap-1.5">
-            <Label>URL de base</Label>
-            <Input
-              type="url"
-              placeholder="https://api.example.com/v1"
-              value={config.baseUrl || ""}
-              onChange={(e) =>
-                setConfig((prev) => ({ ...prev, baseUrl: e.target.value }))
+          {/* Model select — static or dynamic */}
+          {fields.showModel && models.length > 0 && (
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <Label>Modèle</Label>
+                {fields.dynamicModels && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={fetchDynamicModels}
+                    disabled={loadingModels}
+                  >
+                    <RefreshCw
+                      className={`h-3 w-3 ${loadingModels ? "animate-spin" : ""}`}
+                    />
+                  </Button>
+                )}
+              </div>
+              <Select
+                value={config.model || ""}
+                onValueChange={(v) =>
+                  setConfig((prev) => ({ ...prev, model: v }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={
+                    loadingModels ? "Chargement des modèles…" : "Choisir un modèle"
+                  } />
+                </SelectTrigger>
+                <SelectContent className="max-h-60 overflow-y-auto">
+                  {models.map((m) => (
+                    <SelectItem key={m} value={m}>
+                      <span className="flex items-center gap-1.5">
+                        {m}
+                        {m.toLowerCase().includes("free") && (
+                          <Badge
+                            variant="secondary"
+                            className="text-[9px] px-1 py-0 h-3.5"
+                          >
+                            FREE
+                          </Badge>
+                        )}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {loadingModels && (
+                <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Récupération des modèles disponibles…
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Model input for dynamic providers when no models loaded */}
+          {fields.showModel &&
+            fields.dynamicModels &&
+            models.length === 0 &&
+            !loadingModels && (
+              <div className="flex flex-col gap-1.5">
+                <Label>Modèle</Label>
+                <Input
+                  type="text"
+                  placeholder="Nom du modèle (ex: GLM5.2-free)"
+                  value={config.model || ""}
+                  onChange={(e) =>
+                    setConfig((prev) => ({ ...prev, model: e.target.value }))
+                  }
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  Entrez votre clé API ci-dessus pour charger la liste des modèles disponibles.
+                </p>
+              </div>
+            )}
+
+          {/* Base URL (custom provider only) */}
+          {fields.showBaseUrl && (
+            <div className="flex flex-col gap-1.5">
+              <Label>URL de base</Label>
+              <Input
+                type="url"
+                placeholder="https://api.example.com/v1"
+                value={config.baseUrl || ""}
+                onChange={(e) =>
+                  setConfig((prev) => ({ ...prev, baseUrl: e.target.value }))
+                }
+              />
+            </div>
+          )}
+
+          {/* Provider-specific info banners */}
+          {config.provider === "routesme" && (
+            <div className="rounded-lg border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/20 p-3 text-[11px] text-amber-800 dark:text-amber-300 space-y-1">
+              <p className="font-semibold">RoutesMe — One API for every AI model</p>
+              <p>
+                Accédez à 20+ modèles (GLM 5.2, GPT-5.6, Claude Fable 5, DeepSeek V4, Kimi K3, Gemini…)
+                avec une seule clé API compatible OpenAI.
+              </p>
+              <p>
+                • <span className="font-medium">Gratuit</span> : GLM 5.2-Free, 2 000 tokens/jour
+              </p>
+              <p>
+                • <span className="font-medium">VIP ($20/mois)</span> : Tous les modèles, 20M tokens/jour
+              </p>
+            </div>
+          )}
+
+          {config.provider === "mistral" && (
+            <div className="rounded-lg border border-sky-200 dark:border-sky-800/50 bg-sky-50 dark:bg-sky-950/20 p-3 text-[11px] text-sky-800 dark:text-sky-300 space-y-1">
+              <p className="font-semibold">Mistral AI — Modèles IA français</p>
+              <p>
+                Mistral Large, Medium, Small et Codestral. API 100% compatible OpenAI.
+              </p>
+              <p>
+                • <span className="font-medium">Gratuit</span> : Créez un compte sur{" "}
+                <a href="https://console.mistral.ai" target="_blank" rel="noopener" className="underline hover:text-sky-600">
+                  console.mistral.ai
+                </a>{" "}
+                pour obtenir des crédits gratuits.
+              </p>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex items-center gap-2 pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1"
+              onClick={handleTest}
+              disabled={
+                testing ||
+                (config.provider !== "zai" && !config.apiKey && !currentHardcoded)
               }
-            />
+            >
+              {testing ? (
+                <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+              ) : testResult === "success" ? (
+                <Check className="h-4 w-4 mr-1.5 text-emerald-500" />
+              ) : null}
+              {testing
+                ? "Test…"
+                : testResult === "success"
+                  ? "Connecté !"
+                  : "Tester"}
+            </Button>
+            <Button size="sm" className="flex-1" onClick={handleSave}>
+              <Check className="h-4 w-4 mr-1.5" />
+              Sauvegarder
+            </Button>
           </div>
-        )}
-
-        {/* RoutesMe info banner */}
-        {config.provider === "routesme" && (
-          <div className="rounded-lg border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/20 p-3 text-[11px] text-amber-800 dark:text-amber-300 space-y-1">
-            <p className="font-semibold">RoutesMe — One API for every AI model</p>
-            <p>
-              Accédez à 20+ modèles (GLM 5.2, GPT-5.6, Claude Fable 5, DeepSeek V4, Kimi K3, Gemini…)
-              avec une seule clé API compatible OpenAI.
-            </p>
-            <p>
-              • <span className="font-medium">Gratuit</span> : GLM 5.2-Free, 2 000 tokens/jour
-            </p>
-            <p>
-              • <span className="font-medium">VIP ($20/mois)</span> : Tous les modèles, 20M tokens/jour
-            </p>
-          </div>
-        )}
-
-        {/* Mistral info banner */}
-        {config.provider === "mistral" && (
-          <div className="rounded-lg border border-sky-200 dark:border-sky-800/50 bg-sky-50 dark:bg-sky-950/20 p-3 text-[11px] text-sky-800 dark:text-sky-300 space-y-1">
-            <p className="font-semibold">Mistral AI — Modèles IA français</p>
-            <p>
-              Mistral Large, Medium, Small et Codestral. API 100% compatible OpenAI.
-            </p>
-            <p>
-              • <span className="font-medium">Gratuit</span> : Créez un compte sur{" "}
-              <a href="https://console.mistral.ai" target="_blank" rel="noopener" className="underline hover:text-sky-600">
-                console.mistral.ai
-              </a>{" "}
-              pour obtenir des crédits gratuits.
-            </p>
-            <p>
-              • <span className="font-medium">Format clé</span> : Chaîne alphanumérique (pas de préfixe sk-)
-            </p>
-          </div>
-        )}
-
-        {/* Actions */}
-        <div className="flex items-center gap-2 pt-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1"
-            onClick={handleTest}
-            disabled={
-              testing ||
-              (config.provider !== "zai" && !config.apiKey)
-            }
-          >
-            {testing ? (
-              <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
-            ) : testResult === "success" ? (
-              <Check className="h-4 w-4 mr-1.5 text-emerald-500" />
-            ) : null}
-            {testing
-              ? "Test…"
-              : testResult === "success"
-                ? "Connecté !"
-                : "Tester"}
-          </Button>
-          <Button size="sm" className="flex-1" onClick={handleSave}>
-            <Check className="h-4 w-4 mr-1.5" />
-            Sauvegarder
-          </Button>
         </div>
-      </div>
+      </ScrollArea>
     </DialogContent>
   );
 }
@@ -528,7 +588,7 @@ export function AppHeader() {
 
       {/* Breadcrumb-style navigation */}
       <nav className="flex items-center gap-1.5 text-sm">
-        <span className="text-muted-foreground">ThesisFrame</span>
+        <span className="text-muted-foreground">Ma Thèse</span>
         <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
         <span className="font-medium text-foreground">
           {currentNav?.label ?? "Tableau de bord"}
@@ -572,7 +632,7 @@ export function AppHeader() {
               }}
             >
               <Info className="h-4 w-4 mr-2" />
-              À propos de ThesisFrame
+              À propos de Ma Thèse
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

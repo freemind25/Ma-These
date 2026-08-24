@@ -17,6 +17,7 @@ import {
   getProviderExtraHeaders,
   isAnthropicFormat,
 } from "./ai-provider";
+import { getHardcodedKey } from "./hardcoded-keys";
 
 let aiClientPromise: Promise<AiSDK> | null = null;
 
@@ -330,15 +331,26 @@ export async function generateCompletion(
   const config = options.providerConfig || getDefaultConfig();
   const fallbackConfig = options.fallbackConfig;
 
+  // Inject hardcoded key if config has no apiKey
+  function enrichWithHardcodedKey(c: AiProviderConfig): AiProviderConfig {
+    if (!c.apiKey && c.provider !== "zai") {
+      const hardcoded = getHardcodedKey(c.provider);
+      if (hardcoded) {
+        return { ...c, apiKey: hardcoded };
+      }
+    }
+    return c;
+  }
+
   // Build the chain: primary + fallbacks
-  const chain: AiProviderConfig[] = [config];
+  const chain: AiProviderConfig[] = [enrichWithHardcodedKey(config)];
   if (fallbackConfig?.enabled && fallbackConfig.providers.length > 0) {
     for (const fb of fallbackConfig.providers) {
-      chain.push({
+      chain.push(enrichWithHardcodedKey({
         provider: fb.provider,
         model: fb.model || config.model,
         baseUrl: fb.baseUrl,
-      });
+      }));
     }
   }
 
@@ -461,6 +473,15 @@ function getDefaultConfig(): AiProviderConfig {
     default: // zai
       apiKey = "";
       model = "default";
+  }
+
+  // Fallback: if no env var, try hardcoded key
+  if (!apiKey && provider !== "zai") {
+    const hardcoded = getHardcodedKey(provider);
+    if (hardcoded) {
+      apiKey = hardcoded;
+      console.log(`[AI] Using hardcoded key for ${provider}`);
+    }
   }
 
   return {
