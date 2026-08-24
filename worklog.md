@@ -4204,3 +4204,22 @@ Stage Summary:
 - README.md ajouté avec logo centré, badges de stack, description des fonctionnalités, structure du projet
 - Favicon SVG ajouté dans src/app/icon.svg (Next.js App Router convention)
 - Dépôt GitHub mis à jour et accessible
+
+---
+Task ID: 15
+Agent: main
+Task: Explorer freellmapi et intégrer les fournisseurs gratuits
+
+Work Log:
+- Lu le README et le code source de freellmapi (34 providers, 7.4B tokens/mois)
+- Ajouté 18 nouveaux fournisseurs gratuits à ai-types.ts
+- Catégories: natif/premium/gratuit/agrégateur/custom
+- Providers keyless: Pollinations, Kilo (aucune clé requise)
+- Failover automatique dans zai-client.ts avec backoff exponentiel
+- Lint: 0 erreurs, 127 warnings (tous pré-existants)
+
+Stage Summary:
+- Ma Thèse: 6 → 24 fournisseurs IA
+- Fournisseurs majeurs: Google Gemini, Groq, Cerebras, OpenRouter, GitHub Models, NVIDIA, Cohere, HuggingFace
+- Agrégateurs gratuits: Pollinations, Kilo, Routeway, AINative, Aion, Requesty, SEA-LION
+- Failover: chaîne de fournisseurs, retry, classification erreurs retryable/auth
