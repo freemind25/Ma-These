@@ -35,7 +35,8 @@ export type ViewId =
   | "diagrammes"
   | "harper"
   | "thesis-rag"
-  | "verification-carto";
+  | "verification-carto"
+  | "paper2code";
 
 export interface NavigationItem {
   id: ViewId;
@@ -236,6 +237,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Vérification cartographique",
     icon: "MapPin",
     description: "Complétude cartographique et questionneur socratique IA",
+    badge: "IA",
+  },
+  {
+    id: "paper2code",
+    label: "Article → Code",
+    icon: "FileCode2",
+    description: "Transformez un article scientifique en code Python reproductible",
     badge: "IA",
   },
 ];

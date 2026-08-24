@@ -4248,3 +4248,37 @@ Stage Summary:
 - Test button works without entering a key for hardcoded providers
 - Lint: 0 errors, 134 pre-existing warnings
 - Dev server compiles and serves correctly
+
+---
+Task ID: 2
+Agent: main
+Task: Integrate Paper2Code (ICLR 2026) as new "Article > Code" module
+
+Work Log:
+- Explored https://github.com/going-doer/paper2code via web-reader (README, 1_planning.py, 2_analyzing.py, 3_coding.py, utils.py, eval.py, prompts, scripts)
+- Created `src/app/api/paper2code/generate/route.ts` — streaming NDJSON API with 3-stage pipeline (Planning > Analyzing > Coding)
+  - Adapted Paper2Code prompts for free LLM providers
+  - Single-call planning (overview + Mermaid classDiagram + task list + config_yaml + packages)
+  - Per-file analyzing with paper + plan context
+  - Per-file coding with incremental context (previous files included)
+  - JSON extraction with [CONTENT] tag fallbacks
+  - Uses hardcoded API keys from hardcoded-keys.ts
+- Created `src/modules/paper2code/paper2code-page.tsx` — full UI page
+  - Paper text input with character counter
+  - Provider/model selectors (Groq, Gemini, OpenRouter, GitHub, OpenAI)
+  - Real-time progress bar with stage indicators
+  - 3 tabs: Planification (overview, Mermaid, config), Analyse (per-file), Code (dark theme)
+  - Copy-to-clipboard for each file
+  - Download all as text file
+  - Expand/collapse file panels
+- Added `paper2code` ViewId to app-store.ts navigation
+- Wired Paper2CodePage into page.tsx router
+- Lint: 0 errors, 137 warnings (all pre-existing)
+
+Stage Summary:
+- New module "Article > Code" accessible from sidebar
+- Pipeline: paste paper > click Generate > watch real-time 3-stage generation
+- 5 providers with hardcoded keys ready to use immediately
+- Streaming UI shows progress per file per stage
+- Mermaid diagrams copiable for use in the Diagrammes module
+- Download button exports all generated files
