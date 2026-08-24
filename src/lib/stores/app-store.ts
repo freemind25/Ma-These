@@ -36,7 +36,8 @@ export type ViewId =
   | "harper"
   | "thesis-rag"
   | "verification-carto"
-  | "paper2code";
+  | "paper2code"
+  | "export-docx";
 
 export interface NavigationItem {
   id: ViewId;
@@ -245,6 +246,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "FileCode2",
     description: "Transformez un article scientifique en code Python reproductible",
     badge: "IA",
+  },
+  {
+    id: "export-docx",
+    label: "Export DOCX",
+    icon: "FileDown",
+    description: "Document Word formaté avec styles APA et table des matières",
   },
 ];
 

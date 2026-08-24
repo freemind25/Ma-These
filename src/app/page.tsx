@@ -35,6 +35,7 @@ import { HarperPage } from "@/modules/harper/harper-page";
 import { ThesisRagPage } from "@/modules/thesis-rag/thesis-rag-page";
 import { VerificationCartoPage } from "@/modules/verification-carto/verification-carto-page";
 import { Paper2CodePage } from "@/modules/paper2code/paper2code-page";
+import { ExportDocxPage } from "@/modules/export-docx/export-docx-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -106,6 +107,8 @@ function CurrentView() {
       return <VerificationCartoPage />;
     case "paper2code":
       return <Paper2CodePage />;
+    case "export-docx":
+      return <ExportDocxPage />;
     default:
       return <DashboardPage />;
   }

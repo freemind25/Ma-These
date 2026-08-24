@@ -4299,3 +4299,71 @@ Stage Summary:
 - Fixed missing KeyRound import that crashed the entire app
 - 3-stage pipeline (Planning → Analyzing → Coding) with streaming NDJSON
 - 5 hardcoded providers (Groq, Gemini, OpenRouter, GitHub, OpenAI) ready to use
+---
+Task ID: 2-a
+Agent: subagent-api
+Task: Create /api/export-docx API route for APA-formatted DOCX generation
+
+Work Log:
+- Read worklog (last 50 lines) and Prisma schema for context
+- Verified docx v9.7.1 is installed and available
+- Checked db.ts import path (PrismaClient singleton)
+- Created /src/app/api/export-docx/route.ts with full implementation
+- Initial version had type errors: TableOfContents is FileChild not Paragraph, PageBreak is ParagraphChild, sectionType→type property
+- Fixed all docx v9.7.1 API compatibility issues:
+  - PageBreak: use `new PageBreak()` as Paragraph child instead of TextRun children
+  - Section type: use `type: SectionType.CONTINUOUS` in properties (not sectionType)
+  - Children arrays: type as FileChild[] to accommodate both Paragraph and TableOfContents
+- Removed 7 unused imports (NumberFormat, Tab, TabStopType, TabStopPosition, convertInchesToTwip, LevelFormat, ExternalHyperlink)
+- Defined local SectionConfig interface matching ISectionOptions to avoid complex type imports
+- Lint passes: 0 errors, 139 warnings (all pre-existing)
+
+Stage Summary:
+- Created POST /api/export-docx route handler (NextRequest/NextResponse, no 'use server')
+- Cover page: centered institution, title (18pt bold), subtitle (italic), author, director, year
+- TOC section: "Table des matières" heading + TableOfContents element + hint paragraph + PageBreak
+- Body section: chapters parsed from Tiptap HTML with h1/h2/h3, p (justified + first-line indent), ul/ol (bullets), blockquote (indented italic)
+- References section: APA-like formatting sorted by author/year
+- Custom HTML parser: regex-based block splitting + inline tag parsing (strong/b/em/i) without external libs
+- Configurable: line spacing (1.15/1.5/2.0), font size (11/12/13pt), margins (normal/narrow/wide), header text, page numbers
+- APA-inspired styles: Times New Roman, proper heading hierarchy, justified body text
+- Error handling: 404 for missing thesis, 400 for no chapters, 500 for generation errors
+- French error messages throughout
+---
+Task ID: 4
+Agent: main
+Task: Integrate StylifyWord-inspired features — Export DOCX module
+
+Work Log:
+- Analyzed stylifyword.com via web-reader: Word add-in that writes, edits, AND formats with real Word styles
+- Key Stylify concepts identified: Track Changes redlines, real Word styles, local AI, BYOK
+- Installed docx@9.7.1 package for DOCX generation
+- Created /api/export-docx/route.ts (1145 lines) — full APA-formatted Word document generation:
+  - Cover page with institution, title, author, director, year
+  - Table of contents with Roman numerals + refresh hint
+  - Body chapters with Tiptap HTML→DOCX conversion (headings, paragraphs, bold/italic, lists, blockquotes)
+  - References section with APA-style formatting and hanging indent
+  - Configurable: line spacing (1.15/1.5/2.0), font size (11/12/13pt), margins (narrow/normal/wide)
+  - Header/footer with page numbers, section-based page numbering
+  - Multi-section architecture (cover→TOC→body→references)
+- Created src/modules/export-docx/export-docx-page.tsx — full settings UI:
+  - Thesis selector with stats (chapters, words, progress)
+  - Structure options (cover, TOC, references checkboxes)
+  - Typography settings (font size, line spacing, margins selects)
+  - Header/footer configuration (custom header text, page numbers toggle)
+  - Feature info card listing what the DOCX includes
+  - Binary download via Blob URL
+- Added 'export-docx' ViewId to app-store.ts navigation
+- Wired ExportDocxPage into page.tsx router
+- Fixed KeyRound import error in usage-guide-dialog.tsx
+- Dev server: GET / 200, clean compilation, 0 lint errors
+
+Stage Summary:
+- New module "Export DOCX" accessible from sidebar
+- Generates professional Word documents with real Word styles (Heading 1/2/3, Normal)
+- APA-inspired formatting: Times New Roman, justified, first-line indent
+- Multi-section document: cover (no page#) → TOC (Roman) → body (Arabic from 1)
+- Tiptap HTML content properly parsed into DOCX paragraphs with formatting
+- References section with APA-style hanging indent
+- docx@9.7.1 package added
+- Lint: 0 errors, 139 warnings (all pre-existing)
