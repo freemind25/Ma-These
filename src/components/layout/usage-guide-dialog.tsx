@@ -81,7 +81,7 @@ const GUIDE_CATEGORIES: GuideCategory[] = [
     sections: [
       {
         id: "intro",
-        title: "Bienvenue dans ThesisFrame",
+        title: "Bienvenue dans Ma Thèse",
         icon: GraduationCap,
         keywords: [
           "theframe",
@@ -95,10 +95,10 @@ const GUIDE_CATEGORIES: GuideCategory[] = [
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              <strong>ThesisFrame</strong> est votre environnement de travail doctoral
+              <strong>Ma Thèse</strong> est votre environnement de travail doctoral
               tout-en-un. Il regroupe tous les outils nécessaires pour mener votre
               thèse de A à Z : rédaction, recherche bibliographique, méthodologie,
-              IA, et export.
+              IA, export, et 24 fournisseurs IA gratuits.
             </p>
             <div className="rounded-lg border bg-muted/50 p-3 space-y-2">
               <p className="text-sm font-medium flex items-center gap-2">
@@ -139,61 +139,33 @@ const GUIDE_CATEGORIES: GuideCategory[] = [
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              ThesisFrame fonctionne avec plusieurs fournisseurs d&apos;IA. Pour
-              activer les fonctionnalités IA (rédaction, RAG, correction…), vous
-              devez configurer un fournisseur.
+              Ma Thèse fonctionne avec <strong>24 fournisseurs IA</strong> organisés en 5 catégories.
+              Pour activer les fonctions IA (rédaction, RAG, Article → Code…),
+              vous devez sélectionner un fournisseur dans ⚙️ → Fournisseur IA.
             </p>
             <div className="space-y-2">
-              <p className="text-sm font-medium">Étapes :</p>
+              <p className="text-sm font-medium">Étapes rapides :</p>
               <ol className="text-sm text-muted-foreground space-y-1.5 list-decimal list-inside">
                 <li>
-                  Cliquez sur l&apos;icône <strong>⚙️ Paramètres</strong> dans
-                  l&apos;en-tête
+                  Cliquez sur <strong>⚙️ Paramètres</strong> (icône engren)
+                  → <strong>Fournisseur IA</strong>
                 </li>
-                <li>Sélectionnez « Fournisseur IA »</li>
-                <li>Choisissez votre fournisseur dans la liste</li>
-                <li>Entrez votre clé API</li>
-                <li>Cliquez sur <strong>Tester</strong> pour vérifier la connexion</li>
-                <li>Cliquez sur <strong>Sauvegarder</strong></li>
+                <li>Choisissez un fournisseur dans la liste (organisé par catégorie)</li>
+                <li>Si le fournisseur a un badge <span className="inline-flex items-center gap-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 px-1.5 py-0.5 h-4 text-emerald-700 dark:text-emerald-400 border-0 text-[9px]"><KeyRound className="h-2.5 w-2.5 mr-0.5" />clé OK</span>,
+                  la clé est pré-configurée — sinon saisissez votre clé
+                </li>
+                <li>Cliquez <strong>Sauvegarder</strong></li>
               </ol>
             </div>
             <Separator />
             <div className="space-y-2">
-              <p className="text-sm font-medium">Fournisseurs disponibles :</p>
-              <div className="grid gap-2">
-                <div className="rounded-md border p-2.5">
-                  <p className="text-sm font-medium">Z.ai (intégré)</p>
-                  <p className="text-xs text-muted-foreground">
-                    Fonctionne immédiatement, aucune configuration requise. Accès limité.
-                  </p>
-                </div>
-                <div className="rounded-md border p-2.5">
-                  <p className="text-sm font-medium">Mistral AI ↯</p>
-                  <p className="text-xs text-muted-foreground">
-                    Modèles français (Large, Medium, Small). Obtenez votre clé sur{" "}
-                    <span className="text-sky-600 dark:text-sky-400">console.mistral.ai</span>.
-                    Crédits gratuits disponibles.
-                  </p>
-                </div>
-                <div className="rounded-md border p-2.5">
-                  <p className="text-sm font-medium">RoutesMe ⚡</p>
-                  <p className="text-xs text-muted-foreground">
-                    1 clé = 20+ modèles (GLM, GPT, Claude, DeepSeek…). Obtenez sur{" "}
-                    <span className="text-amber-600 dark:text-amber-400">routesme.online</span>.
-                  </p>
-                </div>
-                <div className="rounded-md border p-2.5">
-                  <p className="text-sm font-medium">OpenAI / Anthropic</p>
-                  <p className="text-xs text-muted-foreground">
-                    GPT et Claude. Nécessite une clé API OpenAI ou Anthropic.
-                  </p>
-                </div>
-                <div className="rounded-md border p-2.5">
-                  <p className="text-sm font-medium">Personnalisé</p>
-                  <p className="text-xs text-muted-foreground">
-                    Toute API compatible OpenAI (base URL + clé + modèle).
-                  </p>
-                </div>
+              <p className="text-sm font-medium">5 catégories de fournisseurs :</p>
+              <div className="space-y-2 text-xs text-muted-foreground">
+                <p><span className="font-medium">SDK Natif</span> — Z.ai intégré, aucune clé.</p>
+                <p><span className="font-medium">Premium</span> — OpenAI, Anthropic, Mistral, RoutesMe.</p>
+                <p><span className="font-medium">Gratuit</span> — Google Gemini, Groq, Cerebras, GitHub Models, HuggingFace, NVIDIA, Cohere, SiliconFlow, Cloudflare.</p>
+                <p><span className="font-medium">Agrégateurs gratuits</span> — OpenRouter, Pollinations, Kilo, Routeway, AINative, Aion, Requesty, SEA-LION.</p>
+                <p><span className="font-medium">Personnalisé</span> — Toute API compatible OpenAI.</p>
               </div>
             </div>
           </div>
@@ -1141,7 +1113,7 @@ export function UsageGuideDialog({
         <DialogHeader className="px-6 pt-6 pb-0">
           <DialogTitle className="flex items-center gap-2 text-lg">
             <GraduationCap className="h-5 w-5 text-primary" />
-            Guide d&apos;utilisation ThesisFrame
+            Guide d&apos;utilisation Ma Thèse
           </DialogTitle>
           <DialogDescription className="mt-1">
             Découvrez tous les modules et fonctionnalités disponibles pour votre thèse.
@@ -1221,7 +1193,7 @@ export function UsageGuideDialog({
 
         {/* Footer */}
         <div className="border-t px-6 py-3 flex items-center justify-between text-xs text-muted-foreground bg-muted/30 shrink-0">
-          <span>ThesisFrame v1.2.0 — {GUIDE_CATEGORIES.reduce((acc, c) => acc + c.sections.length, 0)} modules documentés</span>
+          <span>Ma Thèse v1.4.0 — {GUIDE_CATEGORIES.reduce((acc, c) => acc + c.sections.length, 0)} modules documentés</span>
           <a
             href="https://github.com/freemind25/Ma-These"
             target="_blank"
