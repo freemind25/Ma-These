@@ -102,31 +102,114 @@ function AiWritingPanel() {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamError, setStreamError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
 
-  const generate = useMutation({
-    mutationFn: async ({ mode, prompt }: { mode: string; prompt: string }) => {
-      const activeMode = (modes || WRITING_MODES).find((m) => m.id === mode);
-      const endpoint = activeMode?.customEndpoint || "/api/ai-writing";
-      const res = await fetch(endpoint, {
+  // Auto-scroll result area during streaming
+  useEffect(() => {
+    if (isStreaming && resultRef.current) {
+      resultRef.current.scrollTop = resultRef.current.scrollHeight;
+    }
+  }, [result, isStreaming]);
+
+  const handleGenerate = async () => {
+    if (!selectedMode || !prompt.trim()) return;
+
+    const activeMode = (modes || WRITING_MODES).find((m) => m.id === selectedMode);
+
+    // For custom endpoints (e.g. deep-research), use non-streaming path
+    if (activeMode?.customEndpoint) {
+      setIsStreaming(true);
+      setStreamError(null);
+      setResult("");
+      try {
+        const res = await fetch(activeMode.customEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(withAiConfig({ mode: selectedMode, prompt: prompt.trim() })),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "Erreur de génération");
+        }
+        const json = await res.json();
+        setResult(json.data.content as string);
+      } catch (error) {
+        setStreamError(error instanceof Error ? error.message : "Erreur de génération");
+      } finally {
+        setIsStreaming(false);
+      }
+      return;
+    }
+
+    // Streaming path for standard modes
+    setIsStreaming(true);
+    setStreamError(null);
+    setResult("");
+    const abort = new AbortController();
+    abortRef.current = abort;
+
+    try {
+      const res = await fetch("/api/ai-writing/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(withAiConfig({ mode, prompt })),
+        body: JSON.stringify(withAiConfig({ mode: selectedMode, prompt: prompt.trim() })),
+        signal: abort.signal,
       });
+
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || "Erreur de génération");
       }
-      const json = await res.json();
-      return json.data.content as string;
-    },
-    onSuccess: (content) => {
-      setResult(content);
-    },
-  });
 
-  const handleGenerate = () => {
-    if (!selectedMode || !prompt.trim()) return;
-    generate.mutate({ mode: selectedMode, prompt: prompt.trim() });
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error("Réponse vide du serveur.");
+
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith("data: ")) continue;
+          const data = trimmed.slice(6);
+          let parsed: { type?: string; content?: string; error?: string } | null = null;
+          try {
+            parsed = JSON.parse(data);
+            if (parsed.type === "chunk" && parsed.content) {
+              setResult((prev) => prev + parsed!.content);
+            } else if (parsed.type === "error") {
+              throw new Error(parsed.error);
+            }
+          } catch (parseErr) {
+            if (parsed?.type === "error" && parseErr instanceof Error) {
+              throw parseErr;
+            }
+            // Skip malformed chunks or JSON parse errors
+          }
+        }
+      }
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") {
+        setStreamError(error instanceof Error ? error.message : "Erreur de génération");
+      }
+    } finally {
+      setIsStreaming(false);
+      abortRef.current = null;
+    }
+  };
+
+  const handleStop = () => {
+    abortRef.current?.abort();
   };
 
   const handleCopy = () => {
@@ -142,7 +225,7 @@ function AiWritingPanel() {
       {/* Mode selector */}
       <div className="flex flex-col gap-3">
         <h3 className="text-sm font-semibold">Modes disponibles</h3>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 max-h-[70vh] overflow-y-auto pr-1">
           {(modes || WRITING_MODES).map((mode) => {
             const Icon = ICON_MAP[mode.icon] || Sparkles;
             return (
@@ -198,64 +281,91 @@ function AiWritingPanel() {
               onChange={(e) => setPrompt(e.target.value)}
               rows={6}
               className="resize-none text-sm"
-              disabled={!selectedMode || generate.isPending}
+              disabled={!selectedMode || isStreaming}
             />
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground">
                 {prompt.length} caractères
               </span>
-              <Button
-                onClick={handleGenerate}
-                disabled={!selectedMode || !prompt.trim() || generate.isPending}
-                className="gap-2"
-              >
-                {generate.isPending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Génération...
-                  </>
-                ) : (
-                  <>
-                    <Send className="h-4 w-4" />
-                    Générer
-                  </>
+              <div className="flex items-center gap-2">
+                {isStreaming && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 text-xs"
+                    onClick={handleStop}
+                  >
+                    <span className="h-2 w-2 rounded-full bg-destructive" />
+                    Arrêter
+                  </Button>
                 )}
-              </Button>
+                <Button
+                  onClick={handleGenerate}
+                  disabled={!selectedMode || !prompt.trim() || isStreaming}
+                  className="gap-2"
+                >
+                  {isStreaming ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Génération...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      Générer
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Result */}
-        {generate.isError && (
+        {/* Error */}
+        {streamError && (
           <Card className="border-destructive/50 bg-destructive/5">
             <CardContent className="p-4 text-sm text-destructive">
-              {generate.error.message}
+              {streamError}
             </CardContent>
           </Card>
         )}
 
-        {result && (
+        {/* Result (shows during streaming too) */}
+        {(result || isStreaming) && (
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm">Résultat</CardTitle>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 gap-1.5 text-xs"
-                  onClick={handleCopy}
-                >
-                  {copied ? (
-                    <Check className="h-3.5 w-3.5" />
-                  ) : (
-                    <Copy className="h-3.5 w-3.5" />
+                <CardTitle className="text-sm">
+                  Résultat
+                  {isStreaming && (
+                    <span className="ml-2 inline-flex items-center gap-1.5 text-xs font-normal text-muted-foreground">
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+                      Streaming...
+                    </span>
                   )}
-                  {copied ? "Copié" : "Copier"}
-                </Button>
+                </CardTitle>
+                {result && !isStreaming && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 gap-1.5 text-xs"
+                    onClick={handleCopy}
+                  >
+                    {copied ? (
+                      <Check className="h-3.5 w-3.5" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                    {copied ? "Copié" : "Copier"}
+                  </Button>
+                )}
               </div>
             </CardHeader>
             <CardContent>
-              <div className="prose prose-sm dark:prose-invert max-w-none">
+              <div
+                ref={resultRef}
+                className="prose prose-sm dark:prose-invert max-w-none max-h-[50vh] overflow-y-auto"
+              >
                 {result.split("\n").map((line, i) => {
                   if (line.trim() === "") return <br key={i} />;
                   if (line.match(/^[0-9]+[.)]/))
@@ -266,6 +376,9 @@ function AiWritingPanel() {
                     );
                   return <p key={i}>{line}</p>;
                 })}
+                {isStreaming && (
+                  <span className="inline-block w-2 h-4 bg-primary/60 animate-pulse ml-0.5" />
+                )}
               </div>
             </CardContent>
           </Card>

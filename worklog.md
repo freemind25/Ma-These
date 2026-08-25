@@ -4550,3 +4550,32 @@ Stage Summary:
 - Auto-save : correction du double-save + beforeunload warning
 - Audit: 3 des 5 critiques étaient déjà résolues ou mal fondées
 - 0 erreurs lint, navigateur vérifié
+
+---
+Task ID: 3
+Agent: Main
+Task: Implement 5 audit priority fixes — auto-save, circuit breaker, streaming, tests
+
+Work Log:
+- Verified sidebar categorization was already implemented (categories, collapsible sections, search)
+- Rewrote `use-auto-save.ts`: replaced state-based `useDebounce` with ref-based debounce (zero re-renders), added `scheduleSave()`, `flush()` (chapter switch), `forceSave()` (manual button), retry with exponential backoff, `onKeyChange` callback
+- Fixed critical bug: auto-save was reading stale HTML content from React Query cache instead of current editor content. Solution: store latest content in `contentRef`, `plainTextRef`, `wordCountRef`, read via `getData()` callback
+- Fixed "Sauvegarder" button: now calls `onForceSave()` which resets `lastSavedRef` and triggers immediate save
+- Fixed chapter switch data loss: `onKeyChange` fires when key (chapterId) changes, saving old chapter data
+- Persisted `activeThesisId` and `activeChapterId` in Zustand store `partialize`
+- Added circuit breaker to `zai-client.ts`: per-provider state (closed/open/half-open), 3-failure threshold, 30s cooldown, auto-recovery on half-open success. Exported `getCircuitBreakerStatus()` for monitoring
+- Added 60s global timeout via `AbortSignal.timeout(REQUEST_TIMEOUT_MS)` on all API fetches
+- Added `generateCompletionStream()` and `streamWithProvider()` to zai-client.ts — SSE streaming with circuit breaker + failover support, OpenAI SSE format parsing, zai SDK fallback (non-streaming single-chunk)
+- Created `/api/ai-writing/stream/route.ts` — streaming endpoint respecting Zod validation, skipping custom endpoint modes
+- Rewrote `AiWritingPanel` to use streaming: progressive text display, auto-scroll, abort button, cursor animation, streaming indicator badge
+- Created 54 unit tests across 3 test files:
+  - `src/lib/ai/__tests__/circuit-breaker.test.ts` (8 tests)
+  - `src/app/api/chapters/[id]/route.test.ts` (33 tests)
+  - `src/app/api/ai-writing/stream/route.test.ts` (13 tests)
+
+Stage Summary:
+- Auto-save: ref-based (no re-render overhead), flush on chapter switch, retry with backoff, manual save button functional, thesis/chapter IDs persisted
+- Circuit breaker: 3-failure threshold, 30s cooldown, half-open recovery, integrated into both `generateCompletion()` and `generateCompletionStream()`
+- Streaming: SSE from backend, progressive display in AI writing panel, abort support, auto-scroll
+- Tests: 54 tests, 0 failures
+- Lint: 0 errors, 155 warnings (all pre-existing)

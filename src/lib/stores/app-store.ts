@@ -397,6 +397,8 @@ export const useAppStore = create<AppState>()(
         theme: state.theme,
         aiProvider: state.aiProvider,
         sidebarOpen: state.sidebarOpen,
+        activeThesisId: state.activeThesisId,
+        activeChapterId: state.activeChapterId,
       }),
     }
   )

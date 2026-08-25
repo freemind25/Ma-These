@@ -23,6 +23,7 @@ interface TiptapEditorProps {
   placeholder?: string;
   onUpdate?: (html: string, plainText: string, wordCount: number) => void;
   saveStatus?: SaveStatus;
+  onForceSave?: () => Promise<void>;
 }
 
 const THESIS_EXTENSIONS = [
@@ -57,6 +58,7 @@ export function TiptapEditor({
   placeholder: _placeholder,
   onUpdate,
   saveStatus,
+  onForceSave,
 }: TiptapEditorProps) {
   const editor = useEditor({
     immediatelyRender: false,
@@ -90,14 +92,17 @@ export function TiptapEditor({
     }
   }, [content, editor]);
 
-  const handleSave = useCallback(() => {
-    if (editor) {
+  const handleSave = useCallback(async () => {
+    if (editor && onForceSave) {
+      // First push latest content to the parent refs
       const html = editor.getHTML();
       const plainText = editor.getText();
       const wordCount = plainText.trim().split(/\s+/).filter((w: string) => w.length > 0).length;
       onUpdate?.(html, plainText, wordCount);
+      // Then trigger an immediate save
+      await onForceSave();
     }
-  }, [editor, onUpdate]);
+  }, [editor, onUpdate, onForceSave]);
 
   if (!editor) {
     return (

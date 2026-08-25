@@ -3,53 +3,60 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // ═══════════════════════════════════════
-// useDebounce — Hook de debounce utilitaire
-// ═══════════════════════════════════════
-export function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
-
-// ═══════════════════════════════════════
-// useAutoSave — Auto-save avec debounce, statut et beforeunload
+// useAutoSave — Ref-based debounce auto-save with flush & retry
 // ═══════════════════════════════════════
 export type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 interface UseAutoSaveOptions<T> {
-  data: T;
+  /** Latest data snapshot (read via ref for zero re-render overhead) */
+  getData: () => T;
+  /** Unique key to detect changes (e.g. chapterId) */
+  key: string;
   delay?: number;
+  maxRetries?: number;
   onSave: (data: T) => Promise<void>;
   enabled?: boolean;
+  /** Called when key changes — flush any pending save for the old key */
+  onKeyChange?: (data: T) => void;
 }
 
 export function useAutoSave<T>({
-  data,
+  getData,
+  key,
   delay = 2000,
+  maxRetries = 2,
   onSave,
   enabled = true,
+  onKeyChange,
 }: UseAutoSaveOptions<T>) {
   const [status, setStatus] = useState<SaveStatus>("idle");
   const isSavingRef = useRef(false);
   const lastSavedRef = useRef("");
   const dirtyRef = useRef(false);
-  const debouncedData = useDebounce(data, delay);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const retryCountRef = useRef(0);
+  const onDataRef = useRef(getData);
+  const onSaveRef = useRef(onSave);
+  const onKeyChangeRef = useRef(onKeyChange);
+
+  // Keep refs current without triggering the effect
+  onDataRef.current = getData;
+  onSaveRef.current = onSave;
+  onKeyChangeRef.current = onKeyChange;
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current !== null) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
 
   const save = useCallback(
-    async (saveData: T) => {
+    async (saveData?: T) => {
       if (isSavingRef.current) return;
 
-      const dataStr = JSON.stringify(saveData);
+      const data = saveData ?? onDataRef.current();
+      const dataStr = JSON.stringify(data);
       if (dataStr === lastSavedRef.current) {
         dirtyRef.current = false;
         return;
@@ -59,28 +66,78 @@ export function useAutoSave<T>({
       setStatus("saving");
 
       try {
-        await onSave(saveData);
+        await onSaveRef.current(data);
         lastSavedRef.current = dataStr;
         dirtyRef.current = false;
+        retryCountRef.current = 0;
         setStatus("saved");
         setTimeout(() => setStatus("idle"), 2000);
       } catch {
-        dirtyRef.current = true;
-        setStatus("error");
-        setTimeout(() => setStatus("idle"), 3000);
+        retryCountRef.current += 1;
+        if (retryCountRef.current <= maxRetries) {
+          // Retry after a short backoff
+          const backoff = 1000 * retryCountRef.current;
+          timerRef.current = setTimeout(() => {
+            isSavingRef.current = false;
+            save(data);
+          }, backoff);
+        } else {
+          dirtyRef.current = true;
+          retryCountRef.current = 0;
+          setStatus("error");
+          setTimeout(() => setStatus("idle"), 3000);
+        }
       } finally {
         isSavingRef.current = false;
       }
     },
-    [onSave]
+    [maxRetries]
   );
 
-  useEffect(() => {
-    if (enabled) {
-      dirtyRef.current = true;
-      save(debouncedData);
+  // Schedule a debounced save when the caller signals a change
+  // We use "key" as the trigger — the caller increments a version counter
+  // or uses the chapterId to signal that content has changed.
+  const scheduleSave = useCallback(() => {
+    if (!enabled) return;
+    dirtyRef.current = true;
+    clearTimer();
+    timerRef.current = setTimeout(() => {
+      save();
+    }, delay);
+  }, [enabled, delay, save, clearTimer]);
+
+  // Flush: immediately save pending changes (for chapter switch, manual save button, etc.)
+  const flush = useCallback(async () => {
+    clearTimer();
+    if (dirtyRef.current) {
+      await save();
     }
-  }, [debouncedData, enabled, save]);
+  }, [save, clearTimer]);
+
+  // Force save: save current data regardless of dirty state (for manual save button)
+  const forceSave = useCallback(async () => {
+    clearTimer();
+    const data = onDataRef.current();
+    // Reset lastSavedRef so JSON comparison doesn't skip the save
+    lastSavedRef.current = "";
+    await save(data);
+  }, [save, clearTimer]);
+
+  // When key changes (e.g. chapter switch), flush old data, then reset
+  const prevKeyRef = useRef(key);
+  useEffect(() => {
+    if (prevKeyRef.current !== key) {
+      const oldData = onDataRef.current();
+      clearTimer();
+      prevKeyRef.current = key;
+      dirtyRef.current = false;
+      lastSavedRef.current = "";
+      retryCountRef.current = 0;
+      setStatus("idle");
+      // Notify parent to do a synchronous save of the old chapter
+      onKeyChangeRef.current?.(oldData);
+    }
+  }, [key, clearTimer]);
 
   // Warn user before closing tab/refreshing if there are unsaved changes
   useEffect(() => {
@@ -94,5 +151,5 @@ export function useAutoSave<T>({
     return () => window.removeEventListener("beforeunload", handler);
   }, []);
 
-  return { status, save };
+  return { status, scheduleSave, flush, forceSave };
 }

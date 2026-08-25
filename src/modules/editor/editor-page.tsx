@@ -10,7 +10,14 @@ import { ThesisListPanel } from "@/modules/editor/components/thesis-list-panel";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
-import { useCallback, useRef, useMemo } from "react";
+import { useCallback, useEffect, useRef, useMemo, useState } from "react";
+
+type AutoSaveData = {
+  chapterId: string;
+  content: string;
+  plainText: string;
+  wordCount: number;
+};
 
 export function EditorPage() {
   const { activeThesisId, activeChapterId, setActiveChapterId, setCurrentView } =
@@ -21,50 +28,90 @@ export function EditorPage() {
   const createChapter = useCreateChapter();
   const deleteChapter = useDeleteChapter();
 
-  // Keep latest plainText and wordCount from the editor so auto-save can use them
+  // ── Content refs: always hold the LATEST editor state ──
+  const contentRef = useRef("");
   const plainTextRef = useRef("");
   const wordCountRef = useRef(0);
+  // Track which chapter the refs belong to
+  const refChapterIdRef = useRef<string | null>(null);
 
   const activeChapter = thesis?.chapters.find(
     (ch) => ch.id === activeChapterId
   );
 
-  // Auto-save with debounce
-  const { status: saveStatus } = useAutoSave<{
-    chapterId: string | null;
-    content: string;
-  }>({
-    data: {
-      chapterId: activeChapterId,
-      content: activeChapter?.content ?? "",
-    },
+  // ── Auto-save with ref-based debounce ──
+  const onSaveRef = useRef(updateChapter);
+  useEffect(() => {
+    onSaveRef.current = updateChapter;
+  }, [updateChapter]);
+
+  const handleAutoSave = useCallback(async (data: AutoSaveData) => {
+    if (!data.chapterId) return;
+    await onSaveRef.current.mutateAsync({
+      id: data.chapterId,
+      content: data.content,
+      plainText: data.plainText,
+      wordCount: data.wordCount,
+    });
+  }, []);
+
+  // When chapter changes mid-save, immediately flush old chapter
+  const handleKeyChange = useCallback(async (data: AutoSaveData) => {
+    if (data.chapterId && refChapterIdRef.current && data.chapterId !== refChapterIdRef.current) return;
+    if (!data.chapterId || !data.content) return;
+    try {
+      await onSaveRef.current.mutateAsync({
+        id: data.chapterId,
+        content: data.content,
+        plainText: data.plainText,
+        wordCount: data.wordCount,
+      });
+    } catch {
+      // Best-effort flush on chapter switch
+    }
+  }, []);
+
+  const { status: saveStatus, scheduleSave, forceSave } = useAutoSave<AutoSaveData>({
+    getData: () => ({
+      chapterId: refChapterIdRef.current ?? "",
+      content: contentRef.current,
+      plainText: plainTextRef.current,
+      wordCount: wordCountRef.current,
+    }),
+    key: activeChapterId ?? "",
     delay: 2500,
+    maxRetries: 2,
+    onSave: handleAutoSave,
     enabled: !!activeChapterId && !!activeThesisId,
-    onSave: useCallback(
-      async (data) => {
-        if (!data.chapterId) return;
-        await updateChapter.mutateAsync({
-          id: data.chapterId,
-          content: data.content,
-          plainText: plainTextRef.current,
-          wordCount: wordCountRef.current,
-        });
-      },
-      [updateChapter]
-    ),
+    onKeyChange: handleKeyChange,
   });
 
   const handleEditorUpdate = useCallback(
     (html: string, plainText: string, wordCount: number) => {
       if (!activeChapterId) return;
-      // Store latest values for auto-save to pick up (debounced at 2.5s)
+      // Always store latest values in refs
+      contentRef.current = html;
       plainTextRef.current = plainText;
       wordCountRef.current = wordCount;
-      // Do NOT call updateChapter.mutate() here — let the debounced auto-save handle it.
-      // This prevents a double-save bug (keystroke mutation + debounced mutation).
+      refChapterIdRef.current = activeChapterId;
+      // Schedule a debounced save
+      scheduleSave();
     },
-    [activeChapterId]
+    [activeChapterId, scheduleSave]
   );
+
+  // Handle chapter tab switch — flush pending save first
+  const handleSelectChapter = useCallback(
+    async (chapterId: string | null) => {
+      // The useAutoSave key-change effect will fire handleKeyChange
+      // which saves the old chapter's data. We just switch.
+      setActiveChapterId(chapterId);
+    },
+    [setActiveChapterId]
+  );
+
+  // Expose forceSave for the manual save button
+  const [forceSaveFn] = useState(() => forceSave);
 
   const handleStatusChange = useCallback(
     (status: string) => {
@@ -99,13 +146,12 @@ export function EditorPage() {
     setActiveChapterId(null);
   }, [activeChapterId, deleteChapter, setActiveChapterId]);
 
-  // Chapter reorder (BUG-09)
+  // Chapter reorder
   const sortedChapters = useMemo(
     () => [...(thesis?.chapters ?? [])].sort((a, b) => a.sortOrder - b.sortOrder),
     [thesis?.chapters]
   );
 
-  // selectedChapterId is used for reorder logic — prefer activeChapterId, fall back to first chapter
   const reorderChapterId = activeChapterId || thesis?.chapters[0]?.id || null;
 
   const selectedChapterIndex = useMemo(
@@ -124,7 +170,6 @@ export function EditorPage() {
       const current = sortedChapters[currentIdx];
       const swap = sortedChapters[swapIdx];
 
-      // Swap sortOrder values
       updateChapter.mutate({ id: current.id, sortOrder: swap.sortOrder });
       updateChapter.mutate({ id: swap.id, sortOrder: current.sortOrder });
     },
@@ -156,8 +201,7 @@ export function EditorPage() {
             Retour
           </Button>
         </div>
-        <ThesisListPanel />
-      </div>
+        <ThesisListPanel />\n      </div>
     );
   }
 
@@ -170,7 +214,7 @@ export function EditorPage() {
       <ChapterTabs
         chapters={thesis.chapters}
         activeChapterId={activeChapterId || thesis.chapters[0]?.id || null}
-        onSelectChapter={setActiveChapterId}
+        onSelectChapter={handleSelectChapter}
         onAddChapter={handleAddChapter}
       />
 
@@ -194,6 +238,7 @@ export function EditorPage() {
             content={selectedChapter.content}
             onUpdate={handleEditorUpdate}
             saveStatus={saveStatus}
+            onForceSave={forceSaveFn}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground">
