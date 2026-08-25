@@ -22,13 +22,13 @@ export function useDebounce<T>(value: T, delay: number): T {
 }
 
 // ═══════════════════════════════════════
-// useAutoSave — Auto-save avec debounce et statut
+// useAutoSave — Auto-save avec debounce, statut et beforeunload
 // ═══════════════════════════════════════
 export type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 interface UseAutoSaveOptions<T> {
   data: T;
-  delay?: number; // ms before auto-save triggers
+  delay?: number;
   onSave: (data: T) => Promise<void>;
   enabled?: boolean;
 }
@@ -41,7 +41,8 @@ export function useAutoSave<T>({
 }: UseAutoSaveOptions<T>) {
   const [status, setStatus] = useState<SaveStatus>("idle");
   const isSavingRef = useRef(false);
-  const lastSavedRef = useRef<string>("");
+  const lastSavedRef = useRef("");
+  const dirtyRef = useRef(false);
   const debouncedData = useDebounce(data, delay);
 
   const save = useCallback(
@@ -49,7 +50,10 @@ export function useAutoSave<T>({
       if (isSavingRef.current) return;
 
       const dataStr = JSON.stringify(saveData);
-      if (dataStr === lastSavedRef.current) return;
+      if (dataStr === lastSavedRef.current) {
+        dirtyRef.current = false;
+        return;
+      }
 
       isSavingRef.current = true;
       setStatus("saving");
@@ -57,9 +61,11 @@ export function useAutoSave<T>({
       try {
         await onSave(saveData);
         lastSavedRef.current = dataStr;
+        dirtyRef.current = false;
         setStatus("saved");
         setTimeout(() => setStatus("idle"), 2000);
       } catch {
+        dirtyRef.current = true;
         setStatus("error");
         setTimeout(() => setStatus("idle"), 3000);
       } finally {
@@ -71,9 +77,22 @@ export function useAutoSave<T>({
 
   useEffect(() => {
     if (enabled) {
+      dirtyRef.current = true;
       save(debouncedData);
     }
   }, [debouncedData, enabled, save]);
+
+  // Warn user before closing tab/refreshing if there are unsaved changes
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (dirtyRef.current) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, []);
 
   return { status, save };
 }

@@ -57,17 +57,13 @@ export function EditorPage() {
   const handleEditorUpdate = useCallback(
     (html: string, plainText: string, wordCount: number) => {
       if (!activeChapterId) return;
-      // Store latest values for auto-save to read
+      // Store latest values for auto-save to pick up (debounced at 2.5s)
       plainTextRef.current = plainText;
       wordCountRef.current = wordCount;
-      updateChapter.mutate({
-        id: activeChapterId,
-        content: html,
-        plainText,
-        wordCount,
-      });
+      // Do NOT call updateChapter.mutate() here — let the debounced auto-save handle it.
+      // This prevents a double-save bug (keystroke mutation + debounced mutation).
     },
-    [activeChapterId, updateChapter]
+    [activeChapterId]
   );
 
   const handleStatusChange = useCallback(

@@ -4531,3 +4531,22 @@ Stage Summary:
 - Full theses.fr API integration with search, detail, stats, person search
 - 0 lint errors, all runtime clean
 - Module accessible from sidebar as "Explorateur Thèses" with API badge
+---
+Task ID: audit-fixes
+Agent: main
+Task: Corriger et améliorer suite à l'audit externe
+
+Work Log:
+- Analysé le rapport d'audit (71/100 global, 72 fonctionnel, 65 UX)
+- Identifié les erreurs factuelles de l'audit (DOCX existe, retry IA existe, zai gratuit par défaut)
+- Refontré la sidebar : 31 modules catégorisés en 6 groupes (Rédaction, Structure, Recherche, Méthodologie, IA & Outils, Export) + recherche + collapsible
+- Corrigé le bug double-save dans l'éditeur (handleEditorUpdate appelait .mutate() + auto-save .mutateAsync())
+- Ajouté beforeunload warning dans useAutoSave (empêche la perte de données)
+- Vérifié que retry + fallback IA existent déjà dans zai-client.ts (chaîne de fallback, exponential backoff, auth error terminal)
+- Ajouté 6 icônes manquantes (Binoculars, Brain, BookOpenText, MapPin, FileCode2, Stamp, PenTool)
+
+Stage Summary:
+- Sidebar : de liste plate (31 items) à 6 catégories collapsibles + barre de recherche
+- Auto-save : correction du double-save + beforeunload warning
+- Audit: 3 des 5 critiques étaient déjà résolues ou mal fondées
+- 0 erreurs lint, navigateur vérifié
