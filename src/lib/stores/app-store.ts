@@ -40,7 +40,8 @@ export type ViewId =
   | "export-docx"
   | "alignement-preuves"
   | "phrasebook"
-  | "theses-en-ligne";
+  | "theses-en-ligne"
+  | "verification-coherence";
 
 export interface NavigationItem {
   id: ViewId;
@@ -274,6 +275,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Thèses en ligne",
     icon: "GraduationCap",
     description: "Explorez les thèses de doctorat via HAL et d'autres sources",
+  },
+  {
+    id: "verification-coherence",
+    label: "Vérification Cohérence",
+    icon: "Stamp",
+    description: "Vérifiez la cohérence interne de votre thèse comme un sceau de vérité",
+    badge: "IA",
   },
 ];
 

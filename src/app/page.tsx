@@ -39,6 +39,7 @@ import { ExportDocxPage } from "@/modules/export-docx/export-docx-page";
 import { AlignementPreuvesPage } from "@/modules/alignement-preuves/alignement-preuves-page";
 import { PhrasebookPage } from "@/modules/phrasebook/phrasebook-page";
 import { ThesesEnLignePage } from "@/modules/theses-en-ligne/theses-en-ligne-page";
+import { VerificationCoherencePage } from "@/modules/verification-coherence/verification-coherence-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -118,6 +119,8 @@ function CurrentView() {
       return <PhrasebookPage />;
     case "theses-en-ligne":
       return <ThesesEnLignePage />;
+    case "verification-coherence":
+      return <VerificationCoherencePage />;
     default:
       return <DashboardPage />;
   }
