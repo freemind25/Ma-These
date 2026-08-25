@@ -39,7 +39,8 @@ export type ViewId =
   | "paper2code"
   | "export-docx"
   | "alignement-preuves"
-  | "phrasebook";
+  | "phrasebook"
+  | "theses-en-ligne";
 
 export interface NavigationItem {
   id: ViewId;
