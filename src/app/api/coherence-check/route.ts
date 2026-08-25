@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
-import { COHERENCE_CHECKS, COHERENCE_CATEGORIES } from "@/lib/data/coherence-data";
+import { COHERENCE_CHECKS } from "@/lib/data/coherence-data";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════════════════════════════
@@ -23,7 +23,6 @@ export async function POST(request: NextRequest) {
     const providerConfig = validated._aiConfig as AiProviderConfig | undefined;
     const { mode, sections, focusedChecks } = validated;
 
-    // Build the prompt based on analysis mode
     const systemPrompt = buildSystemPrompt(mode, focusedChecks);
     const userPrompt = buildUserPrompt(mode, sections);
 
@@ -39,7 +38,6 @@ export async function POST(request: NextRequest) {
       providerConfig,
     });
 
-    // Parse the JSON response
     let parsed;
     try {
       const raw = result.content.trim();
@@ -47,14 +45,12 @@ export async function POST(request: NextRequest) {
       parsed = JSON.parse(jsonMatch[1] || raw);
     } catch {
       return NextResponse.json({
-        error: "La r\u00e9ponse de l’IA n’a pas pu \u00eatre interpr\u00e9t\u00e9e. R\u00e9essayez.",
+        error: "La r\u00e9ponse de l\u2019IA n\u2019a pas pu \u00eatre interpr\u00e9t\u00e9e. R\u00e9essayez.",
         raw: result.content,
       });
     }
 
-    // Validate and enrich results
     const enriched = enrichResults(parsed, focusedChecks);
-
     return NextResponse.json({ data: enriched });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -75,65 +71,69 @@ export async function POST(request: NextRequest) {
 // ═══════════════════════════════════════════════════════════════
 
 function buildSystemPrompt(mode: string, focusedChecks?: string[]): string {
-  // Determine which checks to include based on mode
   let checksToInclude = COHERENCE_CHECKS;
-  
+
   if (focusedChecks && focusedChecks.length > 0) {
     checksToInclude = COHERENCE_CHECKS.filter((c) => focusedChecks.includes(c.id));
   }
 
   if (mode === "intro-discussion") {
     checksToInclude = checksToInclude.filter(
-      (c) => c.category === "intro-discussion" || c.category === "argumentative" || c.category === "referentielle"
+      (c) =>
+        c.category === "intro-discussion" ||
+        c.category === "argumentative" ||
+        c.category === "referentielle"
     );
   } else if (mode === "methodo-resultats") {
     checksToInclude = checksToInclude.filter(
-      (c) => c.category === "numerique" || c.category === "argumentative" || c.category === "structurelle"
+      (c) =>
+        c.category === "numerique" ||
+        c.category === "argumentative" ||
+        c.category === "structurelle"
     );
-  } else if (mode === "trio-complet") {
-    // All checks for trio
   }
 
   const checksList = checksToInclude
-    .map(
-      (c) => `  - [${c.id}] ${c.label} (${c.severity}) : ${c.description}`
-    )
+    .map((c) => `  - [${c.id}] ${c.label} (${c.severity}) : ${c.description}`)
     .join("\n");
 
-  return `Tu es un expert en r\u00e9daction acad\u00e9mique sp\u00e9cialis\u00e9 dans la v\u00e9rification de coh\u00e9rence des th\u00e8ses de doctorat. Tu agis comme un \u00ab sceau de v\u00e9rit\u00e9 \u00bb (truthmark) qui certifie la coh\u00e9rence interne d’un manuscrit.
+  const jsonFormat =
+    '{\n' +
+    '  "checks": [\n' +
+    '    {\n' +
+    '      "id": "identifiant-du-controle",\n' +
+    '      "pass": false,\n' +
+    '      "severity": "critical",\n' +
+    '      "message": "Explication courte du probl\u00e8me d\u00e9tect\u00e9 (ou Aucun probl\u00e8me si pass=true)",\n' +
+    '      "excerpt": "Extrait exact du texte probl\u00e9matique (max 200 car.)",\n' +
+    '      "suggestion": "Conseil concret pour corriger (max 200 car.)"\n' +
+    '    }\n' +
+    '  ],\n' +
+    '  "global_score": 78,\n' +
+    '  "summary": "R\u00e9sum\u00e9 global en 2-3 phrases",\n' +
+    '  "truthmark": true,\n' +
+    '  "truthmark_message": "Message : le sceau est accord\u00e9 ou refus\u00e9",\n' +
+    '  "strengths": ["force 1", "force 2"],\n' +
+    '  "recommendations": ["recommandation 1", "recommandation 2"]\n' +
+    '}';
 
-Analyse le texte soumis en v\u00e9rifiant sp\u00e9cifiquement les points de contr\u00f4le suivants :
-
-${checksList}
-
-Pour chaque contr\u00f4le, \u00e9value si un probl\u00e8me est d\u00e9tect\u00e9 ou non. Si un probl\u00e8me est d\u00e9tect\u00e9, fournis un extrait du texte probl\u00e9matique et une suggestion de correction.
-
-R\u00e9ponds UNIQUEMENT en JSON valide, sans markdown, sans backticks, sans commentaires. Format exact :
-{
-  "checks": [
-    {
-      "id": "identifiant-du-controle",
-      "pass": false,
-      "severity": "critical",
-      "message": "Explication courte du probl\u00e8me d\u00e9tect\u00e9 (ou \"Aucun probl\u00e8me d\u00e9tect\u00e9\" si pass=true)",
-      "excerpt": "Extrait exact du texte probl\u00e9matique (entre guillemets, max 200 car.)",
-      "suggestion": "Conseil concret pour corriger (max 200 car.)"
-    }
-  ],
-  "global_score": 78,
-  "summary": "R\u00e9sum\u00e9 global en 2-3 phrases",\n  "truthmark": true,
-  "truthmark_message": "Message personnalis\u00e9 : le sceau est accord\u00e9 ou refus\u00e9, avec explication",
-  "strengths": ["force 1", "force 2"],
-  "recommendations": ["recommandation prioritaire 1", "recommandation prioritaire 2"]
-}
-
-R\u00e8gles d\u00e9evaluation :
-- "pass": true si le contr\u00f4le est r\u00e9ussi (pas de probl\u00e8me), false si un probl\u00e8me est d\u00e9tect\u00e9
-- "severity": "ok" si pass=true, sinon "critical"/"major"/"minor" selon la gravit\u00e9
-- "global_score": note globale de coh\u00e9rence de 0 \u00e0 100
-- "truthmark": true si global_score >= 70, false sinon
-- Ne PAS inventer des probl\u00e8mes : si le texte est coh\u00e9rent, indique pass=true
-- Analysez TOUS les contr\u00f4les list\u00e9s ci-dessus`;
+  return (
+    "Tu es un expert en r\u00e9daction acad\u00e9mique sp\u00e9cialis\u00e9 dans la v\u00e9rification de coh\u00e9rence des th\u00e8ses de doctorat. " +
+    "Tu agis comme un \u00ab sceau de v\u00e9rit\u00e9 \u00bb (truthmark) qui certifie la coh\u00e9rence interne d\u2019un manuscrit.\n\n" +
+    "Analyse le texte soumis en v\u00e9rifiant sp\u00e9cifiquement les points de contr\u00f4le suivants :\n\n" +
+    checksList +
+    "\n\nPour chaque contr\u00f4le, \u00e9value si un probl\u00e8me est d\u00e9tect\u00e9 ou non. " +
+    "Si un probl\u00e8me est d\u00e9tect\u00e9, fournis un extrait du texte probl\u00e9matique et une suggestion de correction.\n\n" +
+    "R\u00e9ponds UNIQUEMENT en JSON valide, sans markdown, sans backticks, sans commentaires. Format exact :\n" +
+    jsonFormat +
+    "\n\nR\u00e8gles d\u2019\u00e9valuation :\n" +
+    "- \"pass\": true si le contr\u00f4le est r\u00e9ussi (pas de probl\u00e8me), false si un probl\u00e8me est d\u00e9tect\u00e9\n" +
+    "- \"severity\": \"ok\" si pass=true, sinon \"critical\"/\"major\"/\"minor\" selon la gravit\u00e9\n" +
+    "- \"global_score\": note globale de coh\u00e9rence de 0 \u00e0 100\n" +
+    "- \"truthmark\": true si global_score >= 70, false sinon\n" +
+    "- Ne PAS inventer des probl\u00e8mes : si le texte est coh\u00e9rent, indique pass=true\n" +
+    "- Analysez TOUS les contr\u00f4les list\u00e9s ci-dessus"
+  );
 }
 
 function buildUserPrompt(mode: string, sections: Record<string, string>): string {
@@ -145,48 +145,40 @@ function buildUserPrompt(mode: string, sections: Record<string, string>): string
     resultats: "R\u00c9SULTATS",
   };
 
-  if (mode === "global") {
-    // Concatenate all sections
-    const fullText = Object.entries(sections)
-      .map(
-        ([key, value]) =>
-          `[${sectionLabels[key] || key.toUpperCase()}]\n${value}`
-      )
-      .join("\n\n---\n\n");
-
-    return `Voici le texte \u00e0 analyser (plusieurs sections d’une th\u00e8se) :
-
----
-${fullText}
----
-
-Analyse la coh\u00e9rence interne de ce texte selon les contr\u00f4les demand\u00e9s. R\u00e9ponds en JSON valide.`;
-  }
-
-  // For pair/trio modes, present sections distinctly
-  const modeDescriptions: Record<string, string> = {
-    "intro-discussion": "V\u00e9rification crois\u00e9e entre l’INTRODUCTION et la DISCUSSION.
-V\u00e9rifie que chaque question/hypoth\u00e8se de l’intro re\u00e7oit une r\u00e9ponse explicite dans la discussion. Identifie les questions orphelines, les r\u00e9sultats orphelins, et la structure en entonnoir.",
-    "methodo-resultats": "V\u00e9rification crois\u00e9e entre la M\u00c9THODOLOGIE et les R\u00c9SULTATS.
-V\u00e9rifie que les m\u00e9thodes annonc\u00e9es correspondent aux analyses pr\u00e9sent\u00e9es, que les chiffres sont coh\u00e9rents, et que les donn\u00e9es rapport\u00e9es sont compatibles avec l’\u00e9chantillon d\u00e9crit.",
-    "trio-complet": "V\u00e9rification compl\u00e8te crois\u00e9e entre l’INTRODUCTION, les R\u00c9SULTATS et la DISCUSSION.
-V\u00e9rifie l’alignement int\u00e9gral : questions \u2192 m\u00e9thodes \u2192 r\u00e9sultats \u2192 discussion \u2192 conclusion.",
-  };
-
   const sectionsText = Object.entries(sections)
-    .map(
-      ([key, value]) =>
-        `[${sectionLabels[key] || key.toUpperCase()}]\n${value}`
-    )
+    .map(([key, value]) => `[${sectionLabels[key] || key.toUpperCase()}]\n${value}`)
     .join("\n\n---\n\n");
 
-  return `${modeDescriptions[mode] || "Analyse de coh\u00e9rence."}
+  if (mode === "global") {
+    return (
+      "Voici le texte \u00e0 analyser (plusieurs sections d\u2019une th\u00e8se) :\n\n---\n" +
+      sectionsText +
+      "\n---\n\nAnalyse la coh\u00e9rence interne de ce texte selon les contr\u00f4les demand\u00e9s. R\u00e9ponds en JSON valide."
+    );
+  }
 
----
-${sectionsText}
----
+  const modeDescriptions: Record<string, string> = {
+    "intro-discussion":
+      "V\u00e9rification crois\u00e9e entre l\u2019INTRODUCTION et la DISCUSSION. " +
+      "V\u00e9rifie que chaque question/hypoth\u00e8se de l\u2019intro re\u00e7oit une r\u00e9ponse explicite dans la discussion. " +
+      "Identifie les questions orphelines, les r\u00e9sultats orphelins, et la structure en entonnoir.",
+    "methodo-resultats":
+      "V\u00e9rification crois\u00e9e entre la M\u00c9THODOLOGIE et les R\u00c9SULTATS. " +
+      "V\u00e9rifie que les m\u00e9thodes annonc\u00e9es correspondent aux analyses pr\u00e9sent\u00e9es, " +
+      "que les chiffres sont coh\u00e9rents, et que les donn\u00e9es rapport\u00e9es sont compatibles avec l\u2019\u00e9chantillon d\u00e9crit.",
+    "trio-complet":
+      "V\u00e9rification compl\u00e8te crois\u00e9e entre l\u2019INTRODUCTION, les R\u00c9SULTATS et la DISCUSSION. " +
+      "V\u00e9rifie l\u2019alignement int\u00e9gral : questions \u2192 m\u00e9thodes \u2192 r\u00e9sultats \u2192 discussion \u2192 conclusion.",
+  };
 
-Analyse la coh\u00e9rence selon les contr\u00f4les demand\u00e9s. R\u00e9ponds en JSON valide.`;
+  const desc = modeDescriptions[mode] || "Analyse de coh\u00e9rence.";
+
+  return (
+    desc +
+    "\n\n---\n" +
+    sectionsText +
+    "\n---\n\nAnalyse la coh\u00e9rence selon les contr\u00f4les demand\u00e9s. R\u00e9ponds en JSON valide."
+  );
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -240,9 +232,7 @@ function enrichResults(
     };
   });
 
-  // Compute category scores
-  const categoryScores: Record<string, { passed: number; total: number; score: number }> =
-    {};
+  const categoryScores: Record<string, { passed: number; total: number; score: number }> = {};
   for (const check of checks) {
     const cat = check.category || "other";
     if (!categoryScores[cat]) {
@@ -253,14 +243,10 @@ function enrichResults(
   }
   for (const cat of Object.keys(categoryScores)) {
     const { passed, total } = categoryScores[cat];
-    categoryScores[cat].score =
-      total > 0 ? Math.round((passed / total) * 100) : 0;
+    categoryScores[cat].score = total > 0 ? Math.round((passed / total) * 100) : 0;
   }
 
-  const globalScore = Math.min(
-    100,
-    Math.max(0, Math.round(Number(parsed.global_score) || 0))
-  );
+  const globalScore = Math.min(100, Math.max(0, Math.round(Number(parsed.global_score) || 0)));
 
   return {
     checks,

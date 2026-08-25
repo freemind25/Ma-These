@@ -4471,3 +4471,28 @@ Stage Summary:
 - Filtres : 10 disciplines, année min/max, 3 modes de tri
 - 8 sources externes : theses.fr, ETHOS, OATD, BASE, NDLTD, MIT, Harvard, Shodhganga
 - Résultats avec titre FR+EN, auteurs, résumé extensible, domaines, mots-clés
+
+---
+Task ID: 1
+Agent: Main
+Task: Build Truthmark "Vérification de Cohérence" module + wire theses-en-ligne + analyze awesome-research repo
+
+Work Log:
+- Verified theses-en-ligne module was already fully wired (app-store.ts + page.tsx)
+- Confirmed no literal backslash-n artifact in theses-en-ligne-page.tsx
+- Ran lint: 0 errors, 142 pre-existing warnings
+- Analyzed awesome-research repo (409 links, 63 sub-categories) — concluded all transposable concepts already exist in Ma Thèse
+- Built Vérification de Cohérence module:
+  - Created src/lib/data/coherence-data.ts (23 coherence checks across 6 categories, 5 thesis sections, 4 analysis modes)
+  - Created src/app/api/coherence-check/route.ts (AI-powered coherence analysis with mode-specific prompts, JSON response enrichment)
+  - Created src/modules/verification-coherence/verification-coherence-page.tsx (964-line UI with 3 tabs, mode selector, section inputs, category filters, Truthmark banner)
+  - Wired into app-store.ts (ViewId + nav item with IA badge) and page.tsx (import + switch case)
+  - Fixed parsing error in route.ts (multi-line strings in JS)
+  - Final lint: 0 errors, 142 warnings (all pre-existing)
+  - Browser verification: all 3 tabs render correctly, no console errors, no dev log errors
+
+Stage Summary:
+- Module "Vérification Cohérence" fully functional with 23 checks in 6 categories
+- 4 analysis modes: global, intro/discussion, méthodo/résultats, trio complet
+- Truthmark seal concept: green seal if score >= 70, red if below
+- awesome-research repo analysis: nothing to build (all concepts already in Ma Thèse)
