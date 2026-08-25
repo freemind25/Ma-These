@@ -4496,3 +4496,38 @@ Stage Summary:
 - 4 analysis modes: global, intro/discussion, méthodo/résultats, trio complet
 - Truthmark seal concept: green seal if score >= 70, red if below
 - awesome-research repo analysis: nothing to build (all concepts already in Ma Thèse)
+
+---
+Task ID: 6
+Agent: frontend-builder
+Task: Build ExplorateurThesesPage frontend component
+
+Work Log:
+- Created /home/z/my-project/src/modules/explorateur-theses/explorateur-theses-page.tsx
+- 3 tabs: Recherche, Statistiques, Chercheurs
+- Search with filters (discipline, langue, statut, annee, tri)
+- Pagination, result cards with expandable details
+- Stats tab with total theses count and trending disciplines
+- Person search tab
+
+Stage Summary:
+- Complete frontend module for theses.fr API exploration
+---
+Task ID: 6
+Agent: main
+Task: Build Explorateur de Thèses module (theses.fr API integration)
+
+Work Log:
+- Analyzed abes-esr/theses-api-diffusion and theses-api-recherche GitHub repos
+- Tested theses.fr OpenAPI spec endpoints directly with curl
+- Created /home/z/my-project/src/lib/theses-fr/types.ts (types + constants + helpers)
+- Created 4 API proxy routes: /api/theses/search, /detail, /stats, /persons
+- Created /home/z/my-project/src/modules/explorateur-theses/explorateur-theses-page.tsx (3 tabs)
+- Wired module: ViewId + nav item in app-store.ts, import + switch in page.tsx
+- Fixed infinite loop bug in app-header.tsx (hardcodedSet useMemo + fetchDynamicModels ref)
+- Browser-verified: search returns 8385 results for "intelligence artificielle", stats tab loads, person search works
+
+Stage Summary:
+- Full theses.fr API integration with search, detail, stats, person search
+- 0 lint errors, all runtime clean
+- Module accessible from sidebar as "Explorateur Thèses" with API badge

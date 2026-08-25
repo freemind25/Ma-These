@@ -41,7 +41,8 @@ export type ViewId =
   | "alignement-preuves"
   | "phrasebook"
   | "theses-en-ligne"
-  | "verification-coherence";
+  | "verification-coherence"
+  | "explorateur-theses";
 
 export interface NavigationItem {
   id: ViewId;
@@ -282,6 +283,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "Stamp",
     description: "Vérifiez la cohérence interne de votre thèse comme un sceau de vérité",
     badge: "IA",
+  },
+  {
+    id: "explorateur-theses",
+    label: "Explorateur Thèses",
+    icon: "Binoculars",
+    description: "Recherchez dans les thèses françaises via l'API officielle theses.fr",
+    badge: "API",
   },
 ];
 
