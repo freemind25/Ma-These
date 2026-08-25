@@ -4452,3 +4452,22 @@ Stage Summary:
 - 60+ phrases françaises couvrant l'ensemble des sections d'une thèse
 - Inspiré du Manchester Academic Phrasebank, adapté au contexte francophone
 - Accessible depuis la sidebar sous « Phrasier Académique » (icône BookOpenText)
+---
+Task ID: theses-en-ligne-1
+Agent: Main
+Task: Module Thèses en ligne — recherche de thèses via HAL + sources externes
+
+Work Log:
+- Testé 5 APIs : HAL (✅), BASE (❌ bloqué IP), OATD (❌ Cloudflare), ETHOS (❌ Cloudflare), theses.fr (❌ pas d'API publique)
+- Construit l'API proxy HAL : /api/theses-en-ligne/search avec filtres (discipline, années, tri, pagination)
+- Créé la page UI avec recherche, filtres, 8 sources externes cliquables, cartes de résultats, pagination
+- Intégré dans app-store.ts (ViewId + nav item) et page.tsx (import + router case)
+- Lint : 0 erreurs, 142 warnings (tous pré-existants)
+- Dev log : GET / 200, compilation réussie, zéro erreur
+
+Stage Summary:
+- Module Thèses en ligne entièrement fonctionnel
+- Recherche en temps réel dans les thèses HAL (archives-ouvertes.fr)
+- Filtres : 10 disciplines, année min/max, 3 modes de tri
+- 8 sources externes : theses.fr, ETHOS, OATD, BASE, NDLTD, MIT, Harvard, Shodhganga
+- Résultats avec titre FR+EN, auteurs, résumé extensible, domaines, mots-clés

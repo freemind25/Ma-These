@@ -38,6 +38,7 @@ import { Paper2CodePage } from "@/modules/paper2code/paper2code-page";
 import { ExportDocxPage } from "@/modules/export-docx/export-docx-page";
 import { AlignementPreuvesPage } from "@/modules/alignement-preuves/alignement-preuves-page";
 import { PhrasebookPage } from "@/modules/phrasebook/phrasebook-page";
+import { ThesesEnLignePage } from "@/modules/theses-en-ligne/theses-en-ligne-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -115,6 +116,8 @@ function CurrentView() {
       return <AlignementPreuvesPage />;
     case "phrasebook":
       return <PhrasebookPage />;
+    case "theses-en-ligne":
+      return <ThesesEnLignePage />;
     default:
       return <DashboardPage />;
   }

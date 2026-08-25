@@ -269,6 +269,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "BookOpenText",
     description: "Phrases prêtes à l'emploi pour chaque section de votre thèse",
   },
+  {
+    id: "theses-en-ligne",
+    label: "Thèses en ligne",
+    icon: "GraduationCap",
+    description: "Explorez les thèses de doctorat via HAL et d'autres sources",
+  },
 ];
 
 interface AppState {
