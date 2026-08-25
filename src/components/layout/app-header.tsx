@@ -49,7 +49,7 @@ import {
   Info,
   KeyRound,
 } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import {
   type AiProviderId,
@@ -119,7 +119,10 @@ function AiConfigDialog({
   const [hardcodedKeys, setHardcodedKeys] = useState<HardcodedKeyInfo[]>([]);
 
   // Set of providers that have a hardcoded key
-  const hardcodedSet = new Set(hardcodedKeys.map((k) => k.provider));
+  const hardcodedSet = useMemo(
+    () => new Set(hardcodedKeys.map((k) => k.provider)),
+    [hardcodedKeys]
+  );
 
   // Sync from store on mount
   useEffect(() => {
@@ -185,17 +188,22 @@ function AiConfigDialog({
     }
   }, [config.provider, config.baseUrl, config.apiKey, config.model]);
 
+  // Keep a stable ref to fetchDynamicModels so the effect doesn't re-fire
+  // when config.model changes (which fetchDynamicModels itself may set)
+  const fetchDynamicModelsRef = useRef(fetchDynamicModels);
+  fetchDynamicModelsRef.current = fetchDynamicModels;
+
   // Auto-fetch when provider is dynamic and apiKey is available (user-provided or hardcoded)
   useEffect(() => {
     const hasKey = !!config.apiKey || hardcodedSet.has(config.provider);
     if (DYNAMIC_MODEL_PROVIDERS.includes(config.provider) && hasKey) {
-      const timer = setTimeout(fetchDynamicModels, 300);
+      const timer = setTimeout(() => fetchDynamicModelsRef.current(), 300);
       return () => clearTimeout(timer);
     }
     if (!config.apiKey && !hardcodedSet.has(config.provider)) {
       setDynamicModels([]);
     }
-  }, [config.provider, config.apiKey, fetchDynamicModels, hardcodedSet]);
+  }, [config.provider, config.apiKey, hardcodedSet]);
 
   const handleProviderChange = useCallback((value: string) => {
     const newProvider = value as AiProviderId;
