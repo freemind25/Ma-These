@@ -130,16 +130,17 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r-0">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <GraduationCap className="h-5 w-5" />
+          {/* Logo image — visible only when sidebar is expanded */}
+          <div className="h-9 w-auto max-w-[120px] min-w-0 overflow-hidden group-data-[collapsible=icon]:hidden">
+            <img
+              src="/logo.png"
+              alt="Ma Thèse"
+              className="h-full w-auto object-contain"
+            />
           </div>
-          <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-bold tracking-tight text-sidebar-foreground">
-              ThesisFrame
-            </span>
-            <span className="text-[10px] text-sidebar-foreground/60">
-              Assistant de thèse
-            </span>
+          {/* Fallback icon — visible only when sidebar is collapsed to icon mode */}
+          <div className="hidden group-data-[collapsible=icon]:flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <GraduationCap className="h-5 w-5" />
           </div>
         </div>
       </SidebarHeader>

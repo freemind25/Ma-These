@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ThesisFrame — Assistant de thèse",
-    template: "%s | ThesisFrame",
+    default: "Ma Thèse — Assistant de thèse",
+    template: "%s | Ma Thèse",
   },
   description:
-    "ThesisFrame est un assistant intelligent pour la rédaction de thèses de doctorat. Éditeur riche, IA d'écriture, méthodologie, bibliographie et plus.",
+    "Ma Thèse est un assistant intelligent pour la rédaction de thèses de doctorat. Éditeur riche, IA d'écriture, méthodologie, bibliographie et plus.",
   keywords: [
     "thèse",
     "doctorat",
@@ -30,11 +30,11 @@ export const metadata: Metadata = {
     "IA",
     "méthodologie",
     "bibliographie",
-    "ThesisFrame",
+    "Ma Thèse",
   ],
-  authors: [{ name: "ThesisFrame" }],
+  authors: [{ name: "Ma Thèse" }],
   icons: {
-    icon: "/logo.svg",
+    icon: "/logo.png",
   },
 };
 

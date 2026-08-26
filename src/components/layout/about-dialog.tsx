@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { GraduationCap, Github, Heart, ExternalLink } from "lucide-react";
+import { Github, Heart, ExternalLink } from "lucide-react";
+import Image from "next/image";
 
 export function AboutDialog({
   open,
@@ -23,8 +24,8 @@ export function AboutDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <GraduationCap className="h-5 w-5 text-primary" />
-            À propos de ThesisFrame
+            <Image src="/logo.png" alt="Ma Thèse" width={20} height={20} className="object-contain" />
+            À propos de Ma Thèse
           </DialogTitle>
           <DialogDescription>
             Votre environnement doctoral tout-en-un
@@ -34,11 +35,11 @@ export function AboutDialog({
         <div className="flex flex-col gap-4 py-2">
           {/* Logo & version */}
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-              <GraduationCap className="h-7 w-7 text-primary" />
+            <div className="flex h-12 w-24 items-center justify-center rounded-lg bg-primary/5 p-1">
+              <Image src="/logo.png" alt="Ma Thèse" width={88} height={44} className="object-contain" />
             </div>
             <div>
-              <p className="font-semibold text-lg">ThesisFrame</p>
+              <p className="font-semibold text-lg">Ma Thèse</p>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="text-[10px]">
                   v1.2.0
@@ -55,7 +56,7 @@ export function AboutDialog({
           {/* Description */}
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              ThesisFrame est une plateforme intégrée conçue pour accompagner les
+              Ma Thèse est une plateforme intégrée conçue pour accompagner les
               doctorants tout au long de leur parcours de thèse. Elle regroupe
               rédaction, recherche bibliographique, méthodologie, outils IA et
               export dans un seul environnement.

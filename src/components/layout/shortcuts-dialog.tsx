@@ -102,7 +102,7 @@ export function ShortcutsDialog({
             Raccourcis clavier
           </DialogTitle>
           <DialogDescription>
-            Raccourcis disponibles pour naviguer et utiliser ThesisFrame plus
+            Raccourcis disponibles pour naviguer et utiliser Ma Thèse plus
             rapidement.
           </DialogDescription>
         </DialogHeader>

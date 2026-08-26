@@ -38,7 +38,7 @@ export function ModulePlaceholder() {
         </CardHeader>
         <CardContent className="text-xs text-muted-foreground">
           <p>
-            Le développement de ce module suit la roadmap de ThesisFrame.
+            Le développement de ce module suit la roadmap de Ma Thèse.
             Il sera construit avec les mêmes standards de qualité :
             composants shadcn/ui, tests unitaires, types TypeScript stricts.
           </p>

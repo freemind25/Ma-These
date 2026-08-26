@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAppStore } from "@/lib/stores/app-store";
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import {
   FileText,
   BookOpen,
@@ -97,15 +98,25 @@ export function DashboardPage() {
   return (
     <div className="flex flex-col gap-6 p-6 max-w-6xl mx-auto w-full">
       {/* Welcome Section */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold tracking-tight">
-          Bienvenue sur ThesisFrame
-        </h1>
-        <p className="text-muted-foreground text-sm max-w-2xl">
-          Votre assistant intelligent pour la rédaction de thèses de doctorat.
-          Structurez votre travail, rédigez avec l'IA et gérez vos références bibliographiques.
-          Compatible <strong>Mendeley</strong>, <strong>Zotero</strong>, <strong>EndNote</strong>.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <Image
+          src="/logo.png"
+          alt="Ma Thèse"
+          width={180}
+          height={90}
+          className="object-contain w-auto max-w-[180px] h-auto"
+          priority
+        />
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold tracking-tight">
+            Bienvenue sur Ma Thèse
+          </h1>
+          <p className="text-muted-foreground text-sm max-w-2xl">
+            Votre assistant intelligent pour la rédaction de thèses de doctorat.
+            Structurez votre travail, rédigez avec l'IA et gérez vos références bibliographiques.
+            Compatible <strong>Mendeley</strong>, <strong>Zotero</strong>, <strong>EndNote</strong>.
+          </p>
+        </div>
       </div>
 
       {/* Quick Stats */}
@@ -258,7 +269,7 @@ export function DashboardPage() {
             Modules disponibles
           </CardTitle>
           <CardDescription>
-            Explorez les fonctionnalités de ThesisFrame
+            Explorez les fonctionnalités de Ma Thèse
           </CardDescription>
         </CardHeader>
         <CardContent>
