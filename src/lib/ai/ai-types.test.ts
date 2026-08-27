@@ -117,8 +117,8 @@ describe("DYNAMIC_MODEL_PROVIDERS", () => {
     expect(DYNAMIC_MODEL_PROVIDERS).not.toContain("anthropic");
   });
 
-  it("has exactly 3 providers", () => {
-    expect(DYNAMIC_MODEL_PROVIDERS).toHaveLength(3);
+  it("has exactly 18 providers", () => {
+    expect(DYNAMIC_MODEL_PROVIDERS).toHaveLength(18);
   });
 });
 

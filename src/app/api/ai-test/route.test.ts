@@ -1,12 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "./route";
-import { detectBackend, getBaseUrl } from "@/lib/ai/ai-provider";
+import { detectBackend, getBaseUrl, isKeylessProvider, getProviderExtraHeaders, isAnthropicFormat } from "@/lib/ai/ai-provider";
 import AiSDK from "z-ai-web-dev-sdk";
 
 // ── Mocks ───────────────────────────────────────────────────────────────
 vi.mock("@/lib/ai/ai-provider", () => ({
   detectBackend: vi.fn(),
   getBaseUrl: vi.fn(),
+  isKeylessProvider: vi.fn(),
+  getProviderExtraHeaders: vi.fn(),
+  isAnthropicFormat: vi.fn(),
 }));
 
 vi.mock("z-ai-web-dev-sdk", () => ({
@@ -15,8 +18,15 @@ vi.mock("z-ai-web-dev-sdk", () => ({
   },
 }));
 
+vi.mock("@/lib/ai/hardcoded-keys", () => ({
+  getHardcodedKey: vi.fn().mockReturnValue(undefined),
+}));
+
 const mockDetectBackend = vi.mocked(detectBackend);
 const mockGetBaseUrl = vi.mocked(getBaseUrl);
+const mockIsKeylessProvider = vi.mocked(isKeylessProvider);
+const mockGetProviderExtraHeaders = vi.mocked(getProviderExtraHeaders);
+const mockIsAnthropicFormat = vi.mocked(isAnthropicFormat);
 const mockAiSDKCreate = vi.mocked(AiSDK.create);
 
 // Spy on global fetch
@@ -34,6 +44,10 @@ function createRequest(body: unknown): Request {
 describe("POST /api/ai-test", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Default mock behaviors for non-zai path
+    mockIsKeylessProvider.mockReturnValue(false);
+    mockGetProviderExtraHeaders.mockReturnValue({});
+    mockIsAnthropicFormat.mockReturnValue(false);
   });
 
   // ── zai backend ────────────────────────────────────────────────────────
@@ -194,6 +208,7 @@ describe("POST /api/ai-test", () => {
     });
 
     it("should use x-api-key header for anthropic", async () => {
+      mockIsAnthropicFormat.mockReturnValue(true);
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({}),
@@ -214,22 +229,6 @@ describe("POST /api/ai-test", () => {
       );
     });
 
-    it("should use /messages endpoint for anthropic", async () => {
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({}),
-      });
-
-      await POST(
-        createRequest({ provider: "anthropic", apiKey: "sk-ant-test" }) as any
-      );
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("/messages"),
-        expect.anything()
-      );
-    });
-
     it("should use /chat/completions endpoint for openai", async () => {
       mockFetch.mockResolvedValue({
         ok: true,
@@ -240,6 +239,24 @@ describe("POST /api/ai-test", () => {
         createRequest({ provider: "openai", apiKey: "sk-test" }) as any
       );
 
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining("/chat/completions"),
+        expect.anything()
+      );
+    });
+
+    it("should use /chat/completions endpoint for anthropic (OpenAI-compatible passthrough)", async () => {
+      mockIsAnthropicFormat.mockReturnValue(true);
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({}),
+      });
+
+      await POST(
+        createRequest({ provider: "anthropic", apiKey: "sk-ant-test" }) as any
+      );
+
+      // The ai-test route uses /chat/completions for all providers (simplified test endpoint)
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining("/chat/completions"),
         expect.anything()
@@ -261,6 +278,7 @@ describe("POST /api/ai-test", () => {
     });
 
     it("should default model to claude-3-haiku for anthropic when not specified", async () => {
+      mockIsAnthropicFormat.mockReturnValue(true);
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({}),

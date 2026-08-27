@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// PUT /api/chapters/[id] — Auto-save & Validation Tests (Bun:test)
+// PUT /api/chapters/[id] — Auto-save & Validation Tests (Vitest)
 // ═══════════════════════════════════════════════════════════════
 //
 // Tests the validation guard (Zod → 400) that fires BEFORE any
@@ -9,7 +9,7 @@
 // Integration tests (200/500 paths) require db mocking and are
 // covered by the vitest suite (bun run test:run).
 
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 import { PUT } from "./route";
 import { NextRequest } from "next/server";
 import { updateChapterSchema } from "@/lib/api-schemas";
@@ -168,8 +168,6 @@ describe("updateChapterSchema > auto-save data shapes", () => {
   it("auto-save data is not corrupted by empty content/wordCount pair", () => {
     // This test guards against the BUG-02 data corruption issue
     // where auto-save was overwriting plainText and wordCount with empty values.
-    // The schema should accept these values (validation),
-    // but the auto-save hook itself is responsible for not sending them.
     const result = updateChapterSchema.safeParse({
       content: "<p>Rich text content</p>",
       plainText: "Plain text version with actual words",

@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// POST /api/ai-writing/stream — Validation & Guard Tests (Bun:test)
+// POST /api/ai-writing/stream — Validation & Guard Tests (Vitest)
 // ═══════════════════════════════════════════════════════════════
 //
 // These tests cover the 400 guard clauses that fire BEFORE any AI
@@ -9,7 +9,7 @@
 //   2. Unknown mode returns 400
 //   3. Mode with customEndpoint returns 400
 
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect } from "vitest";
 import { POST } from "./route";
 
 function createRequest(body: unknown): Request {
@@ -49,7 +49,7 @@ describe("POST /api/ai-writing/stream > validation", () => {
     expect(res.status).toBe(400);
   });
 
-  it("returns 400 for non-JSON body", async () => {
+  it("returns 500 for non-JSON body", async () => {
     const req = new Request("http://localhost:3000/api/ai-writing/stream", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

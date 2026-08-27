@@ -77,13 +77,16 @@ export async function POST(request: NextRequest) {
 
     if (!res.ok) {
       let errorText = await res.text().catch(() => "Unknown error");
+      let errorType: string | undefined;
       try {
         const errJson = JSON.parse(errorText) as Record<string, unknown>;
         const errObj = errJson.error as Record<string, string> | undefined;
+        errorType = typeof errObj?.type === "string" ? errObj.type : undefined;
         errorText = errObj?.message || (errJson.message as string) || errorText;
       } catch {}
+      const friendlyMsg = getFriendlyError(res.status, errorType, errorText);
       return NextResponse.json(
-        { ok: false, error: `(${res.status}) ${errorText.slice(0, 200)}` },
+        { ok: false, error: friendlyMsg },
         { status: 502 }
       );
     }
@@ -104,6 +107,32 @@ export async function POST(request: NextRequest) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
+}
+
+/**
+ * Map upstream HTTP errors to user-friendly French messages.
+ */
+function getFriendlyError(status: number, errorType: string | undefined, rawMessage: string): string {
+  const truncated = rawMessage.slice(0, 200);
+
+  // Rate limit
+  if (status === 429) {
+    return `(429) Limite de requêtes atteinte. ${truncated}`;
+  }
+  // Auth errors
+  if (status === 401 || status === 403) {
+    return `(${status}) Clé API invalide ou non autorisée. ${truncated}`;
+  }
+  // Not found (model)
+  if (status === 404) {
+    return `(404) Modèle ou ressource introuvable. ${truncated}`;
+  }
+  // Service unavailable / overloaded
+  if (status === 503) {
+    return `(503) Service indisponible temporairement. ${truncated}`;
+  }
+  // Generic upstream error
+  return `(${status}) ${truncated}`;
 }
 
 function getDefaultModel(provider: string): string {

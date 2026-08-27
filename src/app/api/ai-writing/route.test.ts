@@ -286,7 +286,7 @@ describe("GET /api/ai-writing", () => {
     const data = await res.json();
 
     const categories = data.data.map((m: any) => m.category);
-    const validCategories = ["writing", "analysis", "review", "generation"];
+    const validCategories = ["writing", "analysis", "review", "generation", "research"];
     for (const cat of categories) {
       expect(validCategories).toContain(cat);
     }
