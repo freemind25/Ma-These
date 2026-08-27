@@ -1,39 +1,39 @@
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // Ma Thèse — Hardcoded API Keys (SERVER-SIDE ONLY)
 // ⚠️ Ce fichier est uniquement importé côté serveur.
 // ⚠️ Les clés ne sont jamais exposées au client.
-// ⚠️ App non destinée à la distribution.
-// ═══════════════════════════════════════════════════════════════
+// ⚠️ Remplacez les placeholders par vos propres clés.
+// ═══════════════════════════════════════════════════
 
 import type { AiProviderId } from "./ai-types";
 
 /**
  * Hardcoded API keys for testing.
  * Used as fallback when no env var or user-provided key is available.
+ * ⚠️ Replace placeholders with your own keys before deploying.
  */
 export const HARDCODED_KEYS: Partial<Record<AiProviderId, string>> = {
-  // Google Gemini
-  google: "REDACTED_GOOGLE_KEY",
+  // Google Gemini — replace with your GCP API key
+  google: process.env.GOOGLE_API_KEY || undefined,
 
-  // GitHub Models (uses PAT token)
-  github: "REDACTED_GITHUB_TOKEN",
+  // GitHub Models — replace with your GitHub PAT
+  github: process.env.GITHUB_TOKEN || undefined,
 
-  // OpenAI
-  openai:
-    "REDACTED_OPENAI_KEY",
+  // OpenAI — replace with your OpenAI API key
+  openai: process.env.OPENAI_API_KEY || undefined,
 
-  // OpenRouter (clé 1 — principale)
-  openrouter: "REDACTED_OPENROUTER_KEY",
+  // OpenRouter — replace with your OpenRouter key
+  openrouter: process.env.OPENROUTER_API_KEY || undefined,
 
-  // Groq
-  groq: "REDACTED_GROQ_KEY",
+  // Groq — replace with your Groq API key
+  groq: process.env.GROQ_API_KEY || undefined,
 };
 
 /**
  * Backup OpenRouter key (failover if primary is rate-limited)
  */
 export const OPENROUTER_BACKUP_KEY =
-  "REDACTED_OPENROUTER_BACKUP_KEY";
+  process.env.OPENROUTER_BACKUP_KEY || undefined;
 
 /**
  * Get a hardcoded key for a provider (if available).
@@ -64,7 +64,7 @@ export function getHardcodedProviderIds(): AiProviderId[] {
  * e.g. "sk-XXXXX...XXXX"
  */
 export function maskKey(key: string): string {
-  if (key.length <= 14) return "••••••••";
+  if (!key || key.length <= 14) return "••••••••";
   const start = key.slice(0, 8);
   const end = key.slice(-4);
   return `${start}...${end}`;
