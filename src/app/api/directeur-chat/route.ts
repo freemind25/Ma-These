@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
-import { DIRECTEUR_SYSTEM_PROMPT } from "@/data/directeur-prompt";
+import { DIRECTEUR_PROMPT } from "@/lib/ai/specializations/directeur";
 import { detectRelevantFiches, getFichesContentForPrompt } from "@/data/corpus-publication";
 import { z } from "zod/v4";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
@@ -8,6 +8,7 @@ import { type AiProviderConfig } from "@/lib/ai/ai-provider";
 // ═══════════════════════════════════════
 // POST /api/directeur-chat — Chat with AI thesis director
 // Corpus-aware: injects relevant fiches from the publication corpus
+// System prompt centralized in src/lib/ai/specializations/directeur.ts
 // ═══════════════════════════════════════
 
 const directeurChatSchema = z.object({
@@ -36,8 +37,8 @@ export async function POST(request: NextRequest) {
       ? detectRelevantFiches(latestUserMessage.content)
       : [];
 
-    // Build the system prompt, appending fiche content if any were detected
-    let systemPrompt = DIRECTEUR_SYSTEM_PROMPT;
+    // Build the system prompt (from centralized specialization), appending fiche content if any
+    let systemPrompt = DIRECTEUR_PROMPT;
     if (relevantFicheIds.length > 0) {
       const ficheContent = getFichesContentForPrompt(relevantFicheIds);
       systemPrompt += ficheContent;

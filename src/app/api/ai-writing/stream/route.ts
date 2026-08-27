@@ -1,11 +1,13 @@
 import { NextRequest } from "next/server";
 import { generateCompletionStream, type AiMessage } from "@/lib/ai/zai-client";
 import { WRITING_MODES } from "@/data/ai-writing-modes";
+import { SPECIALIZATION_PROMPTS } from "@/lib/ai/specializations";
 import { z } from "zod/v4";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
 
 // ═══════════════════════════════════════
 // POST /api/ai-writing/stream — Streaming AI writing
+// System prompts centralized in src/lib/ai/specializations/
 // ═══════════════════════════════════════
 const streamSchema = z.object({
   mode: z.string(),
@@ -35,8 +37,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Resolve system prompt from centralized specializations
+    const systemPrompt = SPECIALIZATION_PROMPTS[validated.mode];
+    if (!systemPrompt) {
+      return new Response(
+        JSON.stringify({ error: `Aucun prompt de spécialisation trouvé pour le mode « ${validated.mode} ».` }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
     const messages: AiMessage[] = [
-      { role: "system", content: mode.systemPrompt },
+      { role: "system", content: systemPrompt },
     ];
 
     if (validated.context) {

@@ -1,7 +1,7 @@
 # AGENTS.md — Ma Thèse (ThesisFrame) v1.5.1
 
 > **Contexte pour agents IA de développement (Cursor, Windsurf, Copilot, etc.)**
-> Dernière mise à jour : 27 août 2026
+> Dernière mise à jour : 28 août 2026
 
 ---
 
@@ -133,6 +133,32 @@ app/api/
 - z-ai-web-dev-sdk : utiliser UNIQUEMENT côté serveur (backend API routes)
 - Clés API : via variables d'environnement ou configuration UI (jamais en dur)
 
+### ⚠️ Architecture des prompts IA (OBLIGATOIRE)
+
+Le savoir métier est centralisé dans un **socle unique de vérité** :
+```
+src/lib/ai/
+├── knowledge-core.ts      ← SOCLE : savoir métier digéré (unique source de vérité)
+├── prompt-builder.ts      ← assembleur : SOCLE + spécialisation
+└── specializations/       ← 19 fichiers (1 par mode + directeur)
+    ├── index.ts           ← registry (mode id → prompt)
+    ├── directeur.ts
+    ├── scientific-writing.ts
+    ├── peer-review.ts
+    └── ...
+```
+
+**Règles anti-duplication (à respecter ABSOLUMENT) :**
+1. TOUT savoir métier (règles, grilles, critères) va dans `src/lib/ai/knowledge-core.ts` — **JAMAIS** dans un prompt de spécialisation
+2. Un prompt de spécialisation contient **UNIQUEMENT** : rôle, tâche, format de sortie
+3. Avant de créer une règle dans un prompt, vérifier si elle existe déjà dans `knowledge-core.ts`
+4. Toute modification de savoir métier se fait dans `knowledge-core.ts` **uniquement**
+5. `src/data/ai-writing-modes.ts` ne contient plus de `systemPrompt` — les métadonnées (label, icon, temperature) restent
+6. `src/data/directeur-prompt.ts` est déprécié — utiliser `src/lib/ai/specializations/directeur.ts`
+7. Les routes API (`/api/ai-writing`, `/api/ai-writing/stream`, `/api/directeur-chat`) utilisent `SPECIALIZATION_PROMPTS[mode.id]`
+
+**Modules de connaissance disponibles :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`
+
 ### Tests
 - **OBLIGATOIRE** : `bun run test:run` (Vitest en mode single-run)
 - **INTERDIT** : `bun test` (runner natif Bun incompatible avec `vi.mock`/`vi.hoisted`)
@@ -223,7 +249,9 @@ app/api/
 
 Catégories : `writing`, `analysis`, `review`, `generation`, `research`
 
-Modes principaux : scientific-writing, literature-review, paraphrasing, summarizing, academic-translation, style-calibration, writing-quality, citation-verification, abstract-generation, introduction-writing, conclusion-writing, methodology-writing, auto-editing, debate-counterargument, thesis-statement, research-question, conceptual-framework, gap-analysis, argument-structure, literature-synthesis, deep-research.
+Modes : scientific-writing, literature-review, peer-review, paraphrase, abstract, hypothesis, methodology, theory, supervision, grammaire, defense, harper, academic-reformulation, deblocage, revision-plan, freeform, improvement, revue-litterature, auto-edition-8c, deep-research.
+
+Les system prompts sont centralisés dans `src/lib/ai/specializations/index.ts` (via `SPECIALIZATION_PROMPTS`).
 
 ---
 
@@ -257,6 +285,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
+| **v1.6.0** | Architecture connaissance : knowledge-core + prompt-builder + 19 spécialisations |
 | **v1.5.1** | Sécurité (clés retirées), tests P1 (1318/1318), erreurs FR, README fix |
 | **v1.5.0** | 36 modules, 22 providers, 21 modes IA, ARS, 16 fournisseurs gratuits |
 | **v1.3.0** | RAG, explorateur thèses, Harper, export DOCX |

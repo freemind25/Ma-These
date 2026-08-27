@@ -1,16 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "./route";
 import { generateCompletion } from "@/lib/ai/zai-client";
-import { DIRECTEUR_SYSTEM_PROMPT } from "@/data/directeur-prompt";
 import { detectRelevantFiches, getFichesContentForPrompt } from "@/data/corpus-publication";
 
 // ── Mocks ───────────────────────────────────────────────────────────────
 vi.mock("@/lib/ai/zai-client", () => ({
   generateCompletion: vi.fn(),
-}));
-
-vi.mock("@/data/directeur-prompt", () => ({
-  DIRECTEUR_SYSTEM_PROMPT: "You are Professor Jean-Marc Renaud.",
 }));
 
 vi.mock("@/data/corpus-publication", () => ({

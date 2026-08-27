@@ -4618,3 +4618,35 @@ Stage Summary:
 - Release v1.5.1 published: https://github.com/freemind25/Ma-These/releases/tag/v1.5.1
 - Git history cleaned of hardcoded token
 - README installation instructions corrected
+
+---
+Task ID: knowledge-architecture-refactor
+Agent: Main
+Task: Refactoriser l'architecture des prompts IA — knowledge-core + prompt-builder + 19 spécialisations
+
+Work Log:
+- Lu et analysé les 21 prompts de ai-writing-modes.ts (561 lignes de prompts en dur)
+- Lu le directeur-prompt.ts (64 lignes avec savoir dupliqué)
+- Lu rag-service.ts, coherence-check/route.ts, verification-publication/route.ts
+- Identifié les redondances : éthique en 2 fichiers, DORA en 2, cohérence intro/discussion en 3, style en 4+
+- Créé src/lib/ai/knowledge-core.ts avec 6 modules modulaires (style, ethics, coherence, auto-edition, peer-review, methodology)
+- Créé src/lib/ai/prompt-builder.ts (buildPrompt + buildStandalonePrompt)
+- Créé 19 fichiers de spécialisation dans src/lib/ai/specializations/
+- Créé src/lib/ai/specializations/index.ts avec SPECIALIZATION_PROMPTS registry
+- Mis à jour ai-writing-modes.ts : supprimé 500+ lignes de systemPrompts en dur, remplacé par chaînes vides
+- Mis à jour /api/ai-writing/route.ts pour utiliser SPECIALIZATION_PROMPTS[mode.id]
+- Mis à jour /api/ai-writing/stream/route.ts pour utiliser SPECIALIZATION_PROMPTS[mode.id]
+- Mis à jour /api/directeur-chat/route.ts pour importer DIRECTEUR_PROMPT depuis specializations/directeur
+- Mis à jour directeur-prompt.ts en wrapper de rétro-compatibilité
+- Mis à jour directeur-chat/route.test.ts (retiré mock obsolète)
+- Mis à jour AGENTS.md avec section "Architecture des prompts IA (OBLIGATOIRE)" et 7 règles anti-duplication
+- Tous les 1318 tests passent
+- Lint : 0 erreurs, 175 warnings (pré-existants)
+
+Stage Summary:
+- Architecture Knowledge Core + Prompt Builder + 19 Spécialisations mise en place
+- Prompt final = KNOWLEDGE_CORE (modules sélectionnés) + SPÉCIALISATION (rôle + tâche + format)
+- Réduction de la duplication : éthique 2→1, DORA 2→1, redondance texte/table 3→1, cohérence intro/discussion 3→1, style 4+→1, 8C 2→1
+- Avant : ~1400 lignes de prompts dupliqués dans 4 fichiers
+- Après : ~400 lignes dans knowledge-core.ts + ~600 lignes de spécialisations = 1000 lignes non dupliquées
+- backward compatibility maintained via re-exports
