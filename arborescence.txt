@@ -1,0 +1,2180 @@
+Dossier PATH de C:\Ma-These
+
+C:\Ma-These
+├───.editorconfig
+├───.env
+├───.github
+│   └───workflows
+│   │   └───tauri-build.yml
+├───.gitignore
+├───.vercelignore
+├───.zscripts
+│   ├───build.sh
+│   ├───database-runtime-build.sh
+│   ├───dev.log
+│   ├───dev.pid
+│   ├───dev.sh
+│   ├───mini-service-geo-mcp-service.log
+│   ├───mini-services-build.sh
+│   ├───mini-services-install.sh
+│   ├───mini-services-start.sh
+│   ├───python-runtime-build.sh
+│   └───start.sh
+├───AUDIT-FORENSIQUE-THESISFRAME.md
+├───Caddyfile
+├───ETAT-PROJET-THESISFRAME.md
+├───FICHE_SYNTHESE.md
+├───PROPOSITION-SEQUENCEMENT-LOTS.md
+├───RAPPORT-AUDIT-THESISFRAME.md
+├───RAPPORT-LOT-10-VERIFICATION.md
+├───RAPPORT-LOT-11-DECISIONS.md
+├───RAPPORT-LOT-5BIS-CLOTURE.md
+├───RAPPORT-LOT-6-CORRECTIONS.md
+├───RAPPORT-LOT-6BIS-CLARIFICATIONS.md
+├───RAPPORT-LOT-7-CORRECTIONS.md
+├───RAPPORT-LOT-7BIS-GOUVERNANCE.md
+├───RAPPORT-LOT-8-CORRECTIONS.md
+├───RAPPORT-LOT-8BIS-VERIFICATION.md
+├───RAPPORT-LOT-9-VERIFICATION.md
+├───RAPPORT-LOT-9BIS-VERIFICATION.md
+├───RAPPORT-LOT1-CORRECTIONS.md
+├───README.md
+├───ROADMAP.md
+├───TAURI_BUILD.md
+├───agent-ctx
+│   ├───p1d-full-stack-developer.md
+│   ├───p3b-full-stack-developer.md
+│   ├───p4c-full-stack-developer.md
+│   └───p4d-full-stack-developer.md
+├───arcorama-mcp.json
+├───components.json
+├───db
+│   └───custom.db
+├───dist-tauri
+│   └───index.html
+├───download
+│   ├───README.md
+│   ├───raw-layout.json
+│   ├───raw-methodology.json
+│   ├───raw-package.json
+│   ├───raw-page-tsx.json
+│   ├───raw-readme.md
+│   ├───raw-schema.prisma
+│   ├───repo-api.json
+│   ├───repo-app.json
+│   ├───repo-components.json
+│   ├───repo-data.json
+│   ├───repo-main.json
+│   ├───repo-package.json
+│   ├───repo-page-tsx.json
+│   ├───repo-schema.json
+│   ├───repo-src.json
+│   ├───repo-thesis-components.json
+│   └───repo-workspace.json
+├───eslint.config.mjs
+├───examples
+│   └───websocket
+│   │   ├───frontend.tsx
+│   │   └───server.ts
+├───freemind-search.json
+├───mini-services
+│   ├───.gitkeep
+│   └───geo-mcp-service
+│   │   ├───index.js
+│   │   ├───package.json
+│   │   └───start.sh
+├───next-env.d.ts
+├───next.config.ts
+├───package.json
+├───postcss.config.mjs
+├───prisma
+│   └───schema.prisma
+├───public
+│   ├───logo.svg
+│   └───robots.txt
+├───scripts
+│   └───seed-book-skills.ts
+├───skills
+│   ├───ASR
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───scripts
+│   │   │   └───asr.ts
+│   ├───LLM
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───scripts
+│   │   │   └───chat.ts
+│   ├───TTS
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───tts.ts
+│   ├───VLM
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───scripts
+│   │   │   └───vlm.ts
+│   ├───academic-reviewer-response
+│   │   └───SKILL.md
+│   ├───academic-transitions
+│   │   └───SKILL.md
+│   ├───agent-browser
+│   │   └───SKILL.md
+│   ├───ai-news-collectors
+│   │   ├───SKILL.md
+│   │   ├───_meta.json
+│   │   └───references
+│   │   │   └───sources.md
+│   ├───aminer-academic-search
+│   │   ├───SKILL.md
+│   │   ├───evals
+│   │   │   └───evals.json
+│   │   ├───references
+│   │   │   └───api-catalog.md
+│   │   └───scripts
+│   │   │   └───aminer_client.py
+│   ├───aminer-daily-paper
+│   │   ├───README.md
+│   │   ├───SKILL.md
+│   │   ├───commands
+│   │   │   └───aminer-dp.md
+│   │   ├───prompts
+│   │   │   └───enrich.md
+│   │   ├───requirements.txt
+│   │   └───scripts
+│   │   │   ├───__init__.py
+│   │   │   ├───common.py
+│   │   │   ├───constants.py
+│   │   │   ├───handle_trigger.py
+│   │   │   ├───rec5_api.py
+│   │   │   └───run_pipeline.py
+│   ├───aminer-deep-search
+│   │   ├───.gitignore
+│   │   ├───SKILL.md
+│   │   ├───SKILL.zh.md
+│   │   ├───commands
+│   │   │   └───aminer-deep-search.md
+│   │   ├───scripts
+│   │   │   ├───aminer_api.py
+│   │   │   └───paper_set.py
+│   │   └───tests
+│   │   │   ├───test_aminer_api.py
+│   │   │   └───test_paper_set.py
+│   ├───aminer-free-academic
+│   │   ├───SKILL.md
+│   │   ├───evals
+│   │   │   └───evals.json
+│   │   └───references
+│   │   │   └───api-catalog.md
+│   ├───analyse-documentaire-scientifique
+│   │   ├───SKILL.md
+│   │   └───reference
+│   │   │   ├───grilles-qualite-appraisal.md
+│   │   │   └───integrations-gestionnaires-references.md
+│   ├───anti-pua
+│   │   └───SKILL.md
+│   ├───architecture-research-methods
+│   │   └───SKILL.md
+│   ├───auto-target-tracker
+│   │   └───SKILL.md
+│   ├───blog-writer
+│   │   ├───2024-02-17-radical-transparency-sales.md
+│   │   ├───2024-02-17-raycast-spotlight-superpowers.md
+│   │   ├───2024-02-17-short-form-content-marketing.md
+│   │   ├───2024-02-17-typing-speed-benefits.md
+│   │   ├───2024-03-14-effective-ai-prompts.md
+│   │   ├───2024-11-08-ai-revolutionizing-entry-level-sales.md
+│   │   ├───2025-11-12-why-ai-art-is-useless.md
+│   │   ├───README.md
+│   │   ├───SKILL.md
+│   │   ├───_meta.json
+│   │   ├───manage_examples.py
+│   │   └───style-guide.md
+│   ├───charts
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   ├───references
+│   │   │   ├───_rules.md
+│   │   │   ├───d3.md
+│   │   │   ├───echarts.md
+│   │   │   ├───matplotlib.md
+│   │   │   ├───mermaid.md
+│   │   │   ├───mindmap-css.md
+│   │   │   ├───playwright-css.md
+│   │   │   ├───radial-grid.md
+│   │   │   └───seaborn.md
+│   │   └───setup.sh
+│   ├───cheat-sheet
+│   │   └───SKILL.md
+│   ├───coding-agent
+│   │   ├───SKILL.md
+│   │   ├───_meta.json
+│   │   ├───criteria.md
+│   │   ├───execution.md
+│   │   ├───memory-template.md
+│   │   ├───planning.md
+│   │   ├───state.md
+│   │   └───verification.md
+│   ├───content-strategy
+│   │   ├───SKILL.md
+│   │   └───_meta.json
+│   ├───contentanalysis
+│   │   ├───ExtractWisdom
+│   │   │   ├───SKILL.md
+│   │   │   └───Workflows
+│   │   │   │   └───Extract.md
+│   │   └───SKILL.md
+│   ├───design
+│   │   ├───INDEX.md
+│   │   ├───SKILL.md
+│   │   ├───canvas-and-device.md
+│   │   ├───content-page.md
+│   │   ├───deck.md
+│   │   ├───design-system-generation.md
+│   │   ├───design-system-reference.md
+│   │   ├───design-systems
+│   │   │   ├───INDEX.md
+│   │   │   ├───TAG-VOCABULARY.md
+│   │   │   ├───brand-inspiration
+│   │   │   │   ├───airbnb
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───airtable
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───apple
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───arc
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───binance
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───bmw
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───bmw-m
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───bugatti
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───cal
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───canva
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───cisco
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───claude
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───clay
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───clickhouse
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───cohere
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───coinbase
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───composio
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───cursor
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───discord
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───duolingo
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───elevenlabs
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───expo
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───ferrari
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───figma
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───framer
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───github
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───hashicorp
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───huggingface
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───ibm
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───intercom
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───kami
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───kraken
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───lamborghini
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───linear-app
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───loom
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───lovable
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───mastercard
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───meta
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───minimax
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───mintlify
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───miro
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───mistral-ai
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───mistral.ai
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───mongodb
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───nike
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───notion
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───nvidia
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───ollama
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───openai
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───opencode-ai
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───opencode.ai
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───perplexity
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───pinterest
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───playstation
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───posthog
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───raycast
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───renault
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───replicate
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───resend
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───revolut
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───runwayml
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───sanity
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───sentry
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───shopify
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───slack
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───spacex
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───spotify
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───starbucks
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───stripe
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───supabase
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───superhuman
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───tesla
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───theverge
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───together-ai
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───together.ai
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───uber
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───vercel
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───vodafone
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───voltagent
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───warp
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───webex
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───webflow
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───wechat
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───wired
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───wise
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───x-ai
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   ├───x.ai
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   │   ├───xiaohongshu
+│   │   │   │   │   └───DESIGN.md
+│   │   │   │   └───zapier
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───README.md
+│   │   │   ├───index.json
+│   │   │   └───style-skills
+│   │   │   │   ├───agentic
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───ant
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───application
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───artistic
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───atelier-zero
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───bento
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───bold
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───brutalism
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───cafe
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───claude
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───claymorphism
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───clean
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───codex
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───colorful
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───contemporary
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───corporate
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───cosmic
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───creative
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───dashboard
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───default
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   ├───SKILL.md
+│   │   │   │   │   ├───components.html
+│   │   │   │   │   └───tokens.css
+│   │   │   │   ├───dithered
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───doodle
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───dramatic
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───editorial
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───elegant
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───energetic
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───enterprise
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───expressive
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───fantasy
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───fiction
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───flat
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───friendly
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───futuristic
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───glassmorphism
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───gradient
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───hud
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───immersive
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───impeccable
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───index.json
+│   │   │   │   ├───levels
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───lingo
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───luxury
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───material
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───matrix
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───minimal
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───mission-control
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───modern
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───mono
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───neobrutalism
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───neon
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───neumorphism
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───pacman
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───paper
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───parchment
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───perspective
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───premium
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───professional
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───publication
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───refined
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───retro
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───riso
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───sega
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───shadcn
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───simple
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───sketch
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───skeumorphism
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───sleek
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───spacious
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───storytelling
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───terracotta
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───tetris
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───totality-festival
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───trading-terminal
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───urdu
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───vibrant
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   ├───vintage
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   │   │   └───warm-editorial
+│   │   │   │   │   ├───DESIGN.md
+│   │   │   │   │   └───SKILL.md
+│   │   ├───design-templates
+│   │   │   ├───INDEX.md
+│   │   │   ├───ascii-cosmos
+│   │   │   │   ├───SKILL.md
+│   │   │   │   ├───reference.html
+│   │   │   │   ├───styles.md
+│   │   │   │   └───template.html
+│   │   │   ├───audio-jingle
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───music-player.html
+│   │   │   ├───blog-post
+│   │   │   │   ├───SKILL.md
+│   │   │   │   ├───qiye-wildstay.html
+│   │   │   │   └───肌肤专题｜关于屏障的一次重读.html
+│   │   │   ├───dashboard
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───stack-dashboard-zh.html
+│   │   │   ├───digital-eguide
+│   │   │   │   ├───SKILL.md
+│   │   │   │   ├───case（无限画布：作品集）
+│   │   │   │   │   └───case
+│   │   │   │   │   │   ├───images
+│   │   │   │   │   │   │   ├───p-01-color-macro.jpg
+│   │   │   │   │   │   │   ├───p-02-typography.jpg
+│   │   │   │   │   │   │   ├───p-03-packaging.jpg
+│   │   │   │   │   │   │   ├───p-04-paint-stroke.jpg
+│   │   │   │   │   │   │   ├───p-05-brand-flatlay.jpg
+│   │   │   │   │   │   │   ├───p-06-studio-portrait.jpg
+│   │   │   │   │   │   │   ├───p-07-gradient.jpg
+│   │   │   │   │   │   │   ├───p-08-editorial.jpg
+│   │   │   │   │   │   │   ├───p-09-ceramic.jpg
+│   │   │   │   │   │   │   ├───p-10-urban.jpg
+│   │   │   │   │   │   │   ├───p-11-ink-paper.jpg
+│   │   │   │   │   │   │   ├───p-12-botanical.jpg
+│   │   │   │   │   │   │   ├───p-13-risograph.jpg
+│   │   │   │   │   │   │   ├───p-14-gallery-wall.jpg
+│   │   │   │   │   │   │   ├───p-15-light-motion.jpg
+│   │   │   │   │   │   │   ├───p-16-interior.jpg
+│   │   │   │   │   │   │   ├───p-17-color-block.jpg
+│   │   │   │   │   │   │   └───p-18-magazine.jpg
+│   │   │   │   │   │   └───index.html
+│   │   │   │   └───social-carousel.html
+│   │   │   ├───dot-matrix-xhs
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───点阵.html
+│   │   │   ├───html-ppt-xhs-post
+│   │   │   │   ├───SKILL.md
+│   │   │   │   ├───xhs-cover-spring.html
+│   │   │   │   └───xhs-cover-typography.html
+│   │   │   ├───industrial-archive
+│   │   │   │   ├───SKILL.md
+│   │   │   │   ├───reference.html
+│   │   │   │   ├───styles.md
+│   │   │   │   └───template.html
+│   │   │   ├───portfolio-detail
+│   │   │   │   ├───SKILL.md
+│   │   │   │   ├───reference.html
+│   │   │   │   └───template.html
+│   │   │   ├───ppt
+│   │   │   │   ├───AGENTS.md
+│   │   │   │   ├───INDEX.md
+│   │   │   │   ├───guizang-ppt
+│   │   │   │   │   ├───LICENSE
+│   │   │   │   │   ├───README.en.md
+│   │   │   │   │   ├───README.md
+│   │   │   │   │   ├───README.pt-BR.md
+│   │   │   │   │   ├───SKILL.md
+│   │   │   │   │   ├───assets
+│   │   │   │   │   │   ├───pattern-slides.html
+│   │   │   │   │   │   └───template.html
+│   │   │   │   │   └───references
+│   │   │   │   │   │   ├───checklist.md
+│   │   │   │   │   │   ├───components.md
+│   │   │   │   │   │   ├───layouts.md
+│   │   │   │   │   │   ├───styles.md
+│   │   │   │   │   │   └───themes.md
+│   │   │   │   ├───html-ppt-zhangzara-8-bit-orbit
+│   │   │   │   │   ├───LICENSE
+│   │   │   │   │   ├───SKILL.md
+│   │   │   │   │   ├───pattern.html
+│   │   │   │   │   └───template.json
+│   │   │   │   ├───html-ppt-zhangzara-biennale-yellow
+│   │   │   │   │   ├───LICENSE
+│   │   │   │   │   ├───SKILL.md
+│   │   │   │   │   ├───pattern.html
+│   │   │   │   │   └───template.json
+│   │   │   │   ├───html-ppt-zhangzara-grove
+│   │   │   │   │   ├───LICENSE
+│   │   │   │   │   ├───SKILL.md
+│   │   │   │   │   ├───pattern.html
+│   │   │   │   │   └───template.json
+│   │   │   │   ├───html-ppt-zhangzara-pin-and-paper
+│   │   │   │   │   ├───LICENSE
+│   │   │   │   │   ├───SKILL.md
+│   │   │   │   │   ├───assets
+│   │   │   │   │   │   ├───deck-stage.js
+│   │   │   │   │   │   └───styles.css
+│   │   │   │   │   ├───pattern.html
+│   │   │   │   │   └───template.json
+│   │   │   │   ├───html-ppt-zhangzara-retro-windows
+│   │   │   │   │   ├───LICENSE
+│   │   │   │   │   ├───SKILL.md
+│   │   │   │   │   ├───pattern.html
+│   │   │   │   │   └───template.json
+│   │   │   │   ├───html-ppt-zhangzara-retro-zine
+│   │   │   │   │   ├───LICENSE
+│   │   │   │   │   ├───SKILL.md
+│   │   │   │   │   ├───pattern.html
+│   │   │   │   │   └───template.json
+│   │   │   │   └───ib-pitch-book
+│   │   │   │   │   ├───SKILL.md
+│   │   │   │   │   ├───assets
+│   │   │   │   │   │   └───template.html
+│   │   │   │   │   ├───pattern.html
+│   │   │   │   │   └───references
+│   │   │   │   │   │   ├───attribution.md
+│   │   │   │   │   │   ├───checklist.md
+│   │   │   │   │   │   ├───compliance.md
+│   │   │   │   │   │   └───conventions.md
+│   │   │   ├───pricing-page
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───pricing-cn.html
+│   │   │   ├───project-brief
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───清言周报-VOL18-notebook.html
+│   │   │   ├───riso-product
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───reference.html
+│   │   │   ├───saas-landing
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───reference.html
+│   │   │   ├───social-card-data-kpi
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───pattern.html
+│   │   │   ├───social-card-editorial
+│   │   │   │   ├───SKILL.md
+│   │   │   │   ├───assets
+│   │   │   │   │   ├───magazine-bg-webgl.js
+│   │   │   │   │   └───screenshot-backgrounds
+│   │   │   │   │   │   └───style-a
+│   │   │   │   │   │   │   ├───dune.webp
+│   │   │   │   │   │   │   ├───forest-ink.webp
+│   │   │   │   │   │   │   ├───indigo-porcelain.webp
+│   │   │   │   │   │   │   ├───kraft-paper.webp
+│   │   │   │   │   │   │   └───monocle-classic.webp
+│   │   │   │   ├───pattern.html
+│   │   │   │   └───references
+│   │   │   │   │   ├───image-overlay.md
+│   │   │   │   │   ├───layout-recipes.md
+│   │   │   │   │   ├───map-component.md
+│   │   │   │   │   ├───platform-specs.md
+│   │   │   │   │   ├───portrait-fill.md
+│   │   │   │   │   ├───screenshot-treatment.md
+│   │   │   │   │   ├───style-system.md
+│   │   │   │   │   ├───theme-presets.md
+│   │   │   │   │   └───title-shortener.md
+│   │   │   ├───social-card-image-led
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───pattern.html
+│   │   │   ├───social-card-map
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───pattern.html
+│   │   │   ├───social-card-quote
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───pattern.html
+│   │   │   ├───social-card-screenshot-explainer
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───pattern.html
+│   │   │   ├───social-card-swiss
+│   │   │   │   ├───SKILL.md
+│   │   │   │   ├───assets
+│   │   │   │   │   ├───magazine-bg-webgl.js
+│   │   │   │   │   └───screenshot-backgrounds
+│   │   │   │   │   │   └───style-b
+│   │   │   │   │   │   │   ├───ikb-dot-gradient.webp
+│   │   │   │   │   │   │   ├───lemon-green-dot-shadow.webp
+│   │   │   │   │   │   │   ├───lemon-grid.webp
+│   │   │   │   │   │   │   └───safety-orange-halftone.webp
+│   │   │   │   ├───pattern.html
+│   │   │   │   └───references
+│   │   │   │   │   ├───image-overlay.md
+│   │   │   │   │   ├───layout-recipes.md
+│   │   │   │   │   ├───map-component.md
+│   │   │   │   │   ├───platform-specs.md
+│   │   │   │   │   ├───portrait-fill.md
+│   │   │   │   │   ├───screenshot-treatment.md
+│   │   │   │   │   ├───style-system.md
+│   │   │   │   │   ├───theme-presets.md
+│   │   │   │   │   └───title-shortener.md
+│   │   │   ├───social-carousel
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───scroll-gallery.html
+│   │   │   ├───team-okrs
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───activity-stream.html
+│   │   │   ├───video-shortform
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───video-shortform.html
+│   │   │   ├───vr-canvas
+│   │   │   │   ├───SKILL.md
+│   │   │   │   ├───images
+│   │   │   │   │   ├───p-01-color-macro.jpg
+│   │   │   │   │   ├───p-02-typography.jpg
+│   │   │   │   │   ├───p-03-packaging.jpg
+│   │   │   │   │   ├───p-04-paint-stroke.jpg
+│   │   │   │   │   ├───p-05-brand-flatlay.jpg
+│   │   │   │   │   ├───p-06-studio-portrait.jpg
+│   │   │   │   │   ├───p-07-gradient.jpg
+│   │   │   │   │   ├───p-08-editorial.jpg
+│   │   │   │   │   ├───p-09-ceramic.jpg
+│   │   │   │   │   ├───p-10-urban.jpg
+│   │   │   │   │   ├───p-11-ink-paper.jpg
+│   │   │   │   │   ├───p-12-botanical.jpg
+│   │   │   │   │   ├───p-13-risograph.jpg
+│   │   │   │   │   ├───p-14-gallery-wall.jpg
+│   │   │   │   │   ├───p-15-light-motion.jpg
+│   │   │   │   │   ├───p-16-interior.jpg
+│   │   │   │   │   ├───p-17-color-block.jpg
+│   │   │   │   │   └───p-18-magazine.jpg
+│   │   │   │   ├───reference.html
+│   │   │   │   └───template.html
+│   │   │   ├───waitlist-page
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───层云-waitlist.html
+│   │   │   ├───wechat-cover-pair
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───pattern.html
+│   │   │   ├───wireframe-sketch
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───foolscap-wireframe.html
+│   │   │   └───xianying-tool
+│   │   │   │   ├───SKILL.md
+│   │   │   │   └───index.standalone.html
+│   │   ├───export.md
+│   │   ├───horizontal-craft
+│   │   │   ├───README.md
+│   │   │   ├───accessibility.md
+│   │   │   ├───animation-discipline.md
+│   │   │   ├───anti-ai-slop.md
+│   │   │   ├───chinese-typography.md
+│   │   │   ├───color.md
+│   │   │   ├───data-integrity.md
+│   │   │   ├───form-validation.md
+│   │   │   ├───icon-system.md
+│   │   │   ├───laws-of-ux.md
+│   │   │   ├───link-and-proof.md
+│   │   │   ├───reference
+│   │   │   │   ├───directions.md
+│   │   │   │   ├───fonts.md
+│   │   │   │   ├───grid-system.md
+│   │   │   │   ├───punctuation.md
+│   │   │   │   ├───text-detail.md
+│   │   │   │   └───title-and-breaking.md
+│   │   │   ├───state-coverage.md
+│   │   │   ├───technique-library.md
+│   │   │   └───visual-explanation.md
+│   │   ├───info-interactive.md
+│   │   ├───landing-page.md
+│   │   ├───portfolio.md
+│   │   ├───prototype.md
+│   │   ├───quality-gate.md
+│   │   ├───social-card.md
+│   │   └───web-tool.md
+│   ├───docx
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   ├───references
+│   │   │   ├───chart-templates.md
+│   │   │   ├───common-rules.md
+│   │   │   ├───decorations.md
+│   │   │   ├───design-system.md
+│   │   │   ├───docx-js-advanced.md
+│   │   │   ├───docx-js-core.md
+│   │   │   ├───faq.md
+│   │   │   ├───math-formulas.md
+│   │   │   ├───ooxml.md
+│   │   │   └───toc.md
+│   │   ├───routes
+│   │   │   ├───comment.md
+│   │   │   ├───create.md
+│   │   │   ├───edit.md
+│   │   │   ├───format.md
+│   │   │   └───read.md
+│   │   ├───scenes
+│   │   │   ├───academic.md
+│   │   │   ├───contract.md
+│   │   │   ├───copywriting.md
+│   │   │   ├───exam.md
+│   │   │   ├───official-doc.md
+│   │   │   ├───report.md
+│   │   │   └───resume.md
+│   │   ├───scripts
+│   │   │   ├───__init__.py
+│   │   │   ├───add_toc_placeholders.py
+│   │   │   ├───document.py
+│   │   │   ├───postcheck.py
+│   │   │   ├───templates
+│   │   │   │   ├───comments.xml
+│   │   │   │   ├───commentsExtended.xml
+│   │   │   │   ├───commentsExtensible.xml
+│   │   │   │   ├───commentsIds.xml
+│   │   │   │   └───people.xml
+│   │   │   └───utilities.py
+│   │   └───setup.sh
+│   ├───dream-interpreter
+│   │   ├───SKILL.md
+│   │   ├───assets
+│   │   │   └───example_asset.txt
+│   │   ├───references
+│   │   │   ├───api_reference.md
+│   │   │   ├───interpretation-guide.md
+│   │   │   ├───output-schema.md
+│   │   │   ├───questioning-strategy.md
+│   │   │   └───visual-mapping.md
+│   │   ├───scripts
+│   │   │   └───example.py
+│   │   └───skill.json
+│   ├───experiment-suite
+│   │   ├───SKILL.md
+│   │   ├───figure_examples
+│   │   │   ├───FIGURE_CONTRACT_TEMPLATE.md
+│   │   │   ├───README.md
+│   │   │   ├───make_fig_02_horizon_sweep.py
+│   │   │   ├───make_fig_03_heatmap.py
+│   │   │   ├───make_fig_04_ablation.py
+│   │   │   ├───requirements.txt
+│   │   │   └───style_kit.py
+│   │   └───references
+│   │   │   ├───00-incremental-execution.md
+│   │   │   ├───01-design-depth.md
+│   │   │   ├───01a-data-contract.md
+│   │   │   ├───02-code-quality.md
+│   │   │   ├───03-results-protocol.md
+│   │   │   ├───04-publication-figures.md
+│   │   │   ├───04a-figure-contract.md
+│   │   │   ├───04b-figure-qa.md
+│   │   │   ├───05-report-structure.md
+│   │   │   └───06-quality-gate.md
+│   ├───finance
+│   │   ├───Finance_API_Doc.md
+│   │   └───SKILL.md
+│   ├───fullstack-dev
+│   │   └───SKILL.md
+│   ├───gaokao-collect-student-info
+│   │   ├───SKILL.md
+│   │   ├───examples
+│   │   │   ├───student_shandong.json
+│   │   │   └───student_template.json
+│   │   └───reference.md
+│   ├───gaokao-fetch-volunteers
+│   │   ├───SKILL.md
+│   │   ├───examples
+│   │   │   ├───api_request_shandong.json
+│   │   │   └───api_request_template.json
+│   │   ├───preference_mapping.md
+│   │   ├───reference.md
+│   │   ├───requirements.txt
+│   │   └───scripts
+│   │   │   ├───__pycache__
+│   │   │   │   ├───build_api_request.cpython-314.pyc
+│   │   │   │   ├───fetch_volunteers.cpython-314.pyc
+│   │   │   │   └───province_config.cpython-314.pyc
+│   │   │   ├───build_api_request.py
+│   │   │   ├───fetch_volunteers.py
+│   │   │   ├───province_config.py
+│   │   │   └───test_batch_api.py
+│   ├───gaokao-generate-report
+│   │   ├───SKILL.md
+│   │   ├───examples
+│   │   │   └───analysis_merged_example.json
+│   │   ├───requirements.txt
+│   │   ├───scripts
+│   │   │   ├───generate_html.py
+│   │   │   └───merge_analysis.py
+│   │   └───templates
+│   │   │   └───volunteer_report.html
+│   ├───gaokao-recommend-majors
+│   │   ├───SKILL.md
+│   │   ├───career_reference.md
+│   │   └───examples
+│   │   │   └───major_recommendation_template.json
+│   ├───gaokao-recommend-schools
+│   │   ├───SKILL.md
+│   │   ├───career_reference.md
+│   │   └───examples
+│   │   │   └───school_recommendation_template.json
+│   ├───get-fortune-analysis
+│   │   ├───SKILL.md
+│   │   └───lunar_python.py
+│   ├───gift-evaluator
+│   │   ├───SKILL.md
+│   │   └───html_tools.py
+│   ├───image-edit
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───scripts
+│   │   │   └───image-edit.ts
+│   ├───image-generation
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───scripts
+│   │   │   └───image-generation.ts
+│   ├───image-search
+│   │   └───SKILL.md
+│   ├───image-understand
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───scripts
+│   │   │   └───image-understand.ts
+│   ├───interview-designer
+│   │   ├───README.md
+│   │   ├───SKILL.md
+│   │   ├───_meta.json
+│   │   ├───references
+│   │   │   └───design_rationale.md
+│   │   └───templates
+│   │   │   └───interview_guide_template.md
+│   ├───interview-prep
+│   │   ├───SKILL.md
+│   │   ├───references
+│   │   │   ├───answer_frameworks.md
+│   │   │   ├───behavioral.md
+│   │   │   ├───case.md
+│   │   │   ├───hr_round.md
+│   │   │   ├───role_finance.md
+│   │   │   ├───role_internet.md
+│   │   │   ├───role_tech.md
+│   │   │   ├───salary_negotiation.md
+│   │   │   └───technical.md
+│   │   └───scripts
+│   │   │   └───star_story_builder.py
+│   ├───jd-resume-tailor
+│   │   ├───SKILL.md
+│   │   ├───references
+│   │   │   ├───jd_parsing_signals.md
+│   │   │   └───rewrite_principles.md
+│   │   └───scripts
+│   │   │   ├───jd_gap.py
+│   │   │   └───parse_jd.py
+│   ├───job-intent-tracker
+│   │   ├───SKILL.md
+│   │   ├───references
+│   │   │   ├───keywords_finance.md
+│   │   │   ├───keywords_general.md
+│   │   │   ├───keywords_internet.md
+│   │   │   ├───keywords_tech.md
+│   │   │   └───target_profile_template.md
+│   │   └───scripts
+│   │   │   ├───init_tracker.py
+│   │   │   └───profile_match.py
+│   ├───literature-survey
+│   │   ├───SKILL.md
+│   │   ├───references
+│   │   │   ├───00-incremental-execution.md
+│   │   │   ├───01-bibliography-expansion.md
+│   │   │   ├───02-survey-figures.md
+│   │   │   ├───03-survey-section-playbook.md
+│   │   │   ├───04-layout-discipline.md
+│   │   │   └───05-quality-gate.md
+│   │   └───templates
+│   │   │   └───survey
+│   │   │   │   ├───compile.sh
+│   │   │   │   ├───figures
+│   │   │   │   │   └───.gitkeep
+│   │   │   │   ├───main.tex
+│   │   │   │   └───sections
+│   │   │   │   │   └───.gitkeep
+│   ├───market-research-reports
+│   │   ├───SKILL.md
+│   │   ├───assets
+│   │   │   ├───FORMATTING_GUIDE.md
+│   │   │   ├───market_report_template.tex
+│   │   │   └───market_research.sty
+│   │   ├───references
+│   │   │   ├───data_analysis_patterns.md
+│   │   │   ├───report_structure_guide.md
+│   │   │   └───visual_generation_guide.md
+│   │   └───scripts
+│   │   │   └───generate_market_visuals.py
+│   ├───marketing-mode
+│   │   ├───README.md
+│   │   ├───SKILL.md
+│   │   ├───_meta.json
+│   │   ├───mode-prompt.md
+│   │   └───skill.json
+│   ├───mindfulness-meditation
+│   │   ├───SKILL.md
+│   │   └───_meta.json
+│   ├───multi-search-engine
+│   │   ├───CHANGELOG.md
+│   │   ├───CHANNELLOG.md
+│   │   ├───SKILL.md
+│   │   ├───_meta.json
+│   │   ├───config.json
+│   │   ├───metadata.json
+│   │   └───references
+│   │   │   └───international-search.md
+│   ├───pdf
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   ├───briefs
+│   │   │   ├───academic.md
+│   │   │   ├───creative-fixed-canvas.md
+│   │   │   ├───creative-flow.md
+│   │   │   ├───creative.md
+│   │   │   ├───poster.md
+│   │   │   ├───process.md
+│   │   │   ├───report.md
+│   │   │   └───resume.md
+│   │   ├───configs
+│   │   │   ├───components.md
+│   │   │   ├───fonts.md
+│   │   │   └───visual_framework.md
+│   │   ├───env_setup
+│   │   │   ├───env_check.sh
+│   │   │   ├───font_list.txt
+│   │   │   ├───setup.md
+│   │   │   ├───setup_mac_linux.sh
+│   │   │   └───setup_windows.ps1
+│   │   ├───references
+│   │   │   ├───resume-academic.tex
+│   │   │   └───resume-altacv.tex
+│   │   ├───scripts
+│   │   │   ├───cover_validate.js
+│   │   │   ├───design_engine.py
+│   │   │   ├───html2pdf-next.js
+│   │   │   ├───html2poster.js
+│   │   │   ├───pdf.py
+│   │   │   ├───pdf_qa.py
+│   │   │   ├───poster_validate.py
+│   │   │   ├───setup.sh
+│   │   │   └───toc_validate.py
+│   │   └───typesetting
+│   │   │   ├───charts.md
+│   │   │   ├───cover-backgrounds.md
+│   │   │   ├───cover.md
+│   │   │   ├───fill-engine.md
+│   │   │   ├───geometry.md
+│   │   │   ├───overflow.md
+│   │   │   ├───pagination.md
+│   │   │   ├───palette.md
+│   │   │   └───typography.md
+│   ├───podcast-generate
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   ├───generate.ts
+│   │   ├───package.json
+│   │   ├───readme.md
+│   │   ├───test_data
+│   │   │   └───segments.jsonl
+│   │   └───tsconfig.json
+│   ├───pptx
+│   │   ├───SKILL.md
+│   │   ├───batch_html2pptx.js
+│   │   ├───html2pptx1.js
+│   │   ├───ooxml
+│   │   │   └───scripts
+│   │   │   │   ├───pack.py
+│   │   │   │   ├───unpack.py
+│   │   │   │   ├───validate.py
+│   │   │   │   └───validation
+│   │   │   │   │   ├───__init__.py
+│   │   │   │   │   ├───base.py
+│   │   │   │   │   ├───docx.py
+│   │   │   │   │   ├───pptx.py
+│   │   │   │   │   └───redlining.py
+│   │   └───scripts
+│   │   │   ├───check_slides.py
+│   │   │   ├───extract_html_style.py
+│   │   │   └───extract_pptx_style.py
+│   ├───qingyan-research
+│   │   ├───SKILL.md
+│   │   └───generate_html.py
+│   ├───quiz-html
+│   │   ├───README.md
+│   │   ├───SKILL.md
+│   │   ├───examples
+│   │   │   └───demo.html
+│   │   ├───scripts
+│   │   │   └───build_quiz_html.py
+│   │   ├───skill.yaml
+│   │   └───templates
+│   │   │   └───quiz_template.html
+│   ├───quiz-mastery
+│   │   ├───.claude
+│   │   │   └───settings.json
+│   │   ├───README.md
+│   │   ├───SKILL.md
+│   │   ├───data
+│   │   ├───scripts
+│   │   │   ├───generate_from_material.py
+│   │   │   ├───import_quiz.py
+│   │   │   ├───run_quiz.py
+│   │   │   └───submit_answers.py
+│   │   ├───skill.yaml
+│   │   └───src
+│   │   │   └───quiz_mastery
+│   │   │   │   ├───__init__.py
+│   │   │   │   ├───__pycache__
+│   │   │   │   │   ├───__init__.cpython-313.pyc
+│   │   │   │   │   ├───evaluator.cpython-313.pyc
+│   │   │   │   │   ├───file_parser.cpython-313.pyc
+│   │   │   │   │   ├───mastery_engine.cpython-313.pyc
+│   │   │   │   │   ├───models.cpython-313.pyc
+│   │   │   │   │   ├───planner.cpython-313.pyc
+│   │   │   │   │   ├───quiz_extractor.cpython-313.pyc
+│   │   │   │   │   ├───quiz_generator.cpython-313.pyc
+│   │   │   │   │   ├───repository.cpython-313.pyc
+│   │   │   │   │   └───service.cpython-313.pyc
+│   │   │   │   ├───evaluator.py
+│   │   │   │   ├───file_parser.py
+│   │   │   │   ├───mastery_engine.py
+│   │   │   │   ├───models.py
+│   │   │   │   ├───planner.py
+│   │   │   │   ├───quiz_extractor.py
+│   │   │   │   ├───quiz_generator.py
+│   │   │   │   ├───repository.py
+│   │   │   │   ├───service.py
+│   │   │   │   └───utils.py
+│   ├───research-explorer
+│   │   └───SKILL.md
+│   ├───research-gap-identifier
+│   │   └───SKILL.md
+│   ├───resume-builder
+│   │   ├───SKILL.md
+│   │   ├───references
+│   │   │   ├───export_guide.md
+│   │   │   ├───intake_questions.md
+│   │   │   ├───keywords
+│   │   │   │   ├───finance.txt
+│   │   │   │   ├───general.txt
+│   │   │   │   ├───internet.txt
+│   │   │   │   └───tech.txt
+│   │   │   ├───star_rewrite_guide.md
+│   │   │   └───templates
+│   │   │   │   ├───finance.md
+│   │   │   │   ├───general.md
+│   │   │   │   ├───internet.md
+│   │   │   │   └───tech.md
+│   │   └───scripts
+│   │   │   └───ats_check.py
+│   ├───seo-content-writer
+│   │   ├───SKILL.md
+│   │   ├───_meta.json
+│   │   └───references
+│   │   │   ├───content-structure-templates.md
+│   │   │   └───title-formulas.md
+│   ├───skill-creator
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   ├───agents
+│   │   │   ├───analyzer.md
+│   │   │   ├───comparator.md
+│   │   │   └───grader.md
+│   │   ├───assets
+│   │   │   └───eval_review.html
+│   │   ├───eval-viewer
+│   │   │   ├───generate_review.py
+│   │   │   └───viewer.html
+│   │   ├───references
+│   │   │   └───schemas.md
+│   │   └───scripts
+│   │   │   ├───__init__.py
+│   │   │   ├───aggregate_benchmark.py
+│   │   │   ├───generate_report.py
+│   │   │   ├───improve_description.py
+│   │   │   ├───package_skill.py
+│   │   │   ├───quick_validate.py
+│   │   │   ├───run_eval.py
+│   │   │   ├───run_loop.py
+│   │   │   └───utils.py
+│   ├───skill-finder-cn
+│   │   ├───SKILL.md
+│   │   ├───_meta.json
+│   │   ├───package.json
+│   │   └───scripts
+│   │   │   └───search.sh
+│   ├───stock-analysis-skill
+│   │   ├───SKILL.md
+│   │   ├───package.json
+│   │   ├───src
+│   │   │   ├───analyzer.ts
+│   │   │   ├───dataFetcher.ts
+│   │   │   ├───dividend.ts
+│   │   │   ├───index.ts
+│   │   │   ├───rumorScanner.ts
+│   │   │   ├───types.ts
+│   │   │   └───watchlist.ts
+│   │   └───tsconfig.json
+│   ├───storyboard-manager
+│   │   ├───SKILL.md
+│   │   ├───index.js
+│   │   ├───package.json
+│   │   ├───references
+│   │   │   ├───character_development.md
+│   │   │   └───story_structures.md
+│   │   └───scripts
+│   │   │   ├───consistency_checker.py
+│   │   │   └───timeline_tracker.py
+│   ├───study-buddy
+│   │   └───SKILL.md
+│   ├───task-review
+│   │   └───SKILL.md
+│   ├───ui-ux-pro-max
+│   │   ├───SKILL.md
+│   │   ├───_meta.json
+│   │   ├───assets
+│   │   │   └───data
+│   │   │   │   ├───charts.csv
+│   │   │   │   ├───colors.csv
+│   │   │   │   ├───icons.csv
+│   │   │   │   ├───landing.csv
+│   │   │   │   ├───products.csv
+│   │   │   │   ├───react-performance.csv
+│   │   │   │   ├───stacks
+│   │   │   │   │   ├───astro.csv
+│   │   │   │   │   ├───flutter.csv
+│   │   │   │   │   ├───html-tailwind.csv
+│   │   │   │   │   ├───jetpack-compose.csv
+│   │   │   │   │   ├───nextjs.csv
+│   │   │   │   │   ├───nuxt-ui.csv
+│   │   │   │   │   ├───nuxtjs.csv
+│   │   │   │   │   ├───react-native.csv
+│   │   │   │   │   ├───react.csv
+│   │   │   │   │   ├───shadcn.csv
+│   │   │   │   │   ├───svelte.csv
+│   │   │   │   │   ├───swiftui.csv
+│   │   │   │   │   └───vue.csv
+│   │   │   │   ├───styles.csv
+│   │   │   │   ├───typography.csv
+│   │   │   │   ├───ui-reasoning.csv
+│   │   │   │   ├───ux-guidelines.csv
+│   │   │   │   └───web-interface.csv
+│   │   ├───data
+│   │   │   ├───charts.csv
+│   │   │   ├───colors.csv
+│   │   │   ├───icons.csv
+│   │   │   ├───landing.csv
+│   │   │   ├───products.csv
+│   │   │   ├───react-performance.csv
+│   │   │   ├───stacks
+│   │   │   │   ├───astro.csv
+│   │   │   │   ├───flutter.csv
+│   │   │   │   ├───html-tailwind.csv
+│   │   │   │   ├───jetpack-compose.csv
+│   │   │   │   ├───nextjs.csv
+│   │   │   │   ├───nuxt-ui.csv
+│   │   │   │   ├───nuxtjs.csv
+│   │   │   │   ├───react-native.csv
+│   │   │   │   ├───react.csv
+│   │   │   │   ├───shadcn.csv
+│   │   │   │   ├───svelte.csv
+│   │   │   │   ├───swiftui.csv
+│   │   │   │   └───vue.csv
+│   │   │   ├───styles.csv
+│   │   │   ├───typography.csv
+│   │   │   ├───ui-reasoning.csv
+│   │   │   ├───ux-guidelines.csv
+│   │   │   └───web-interface.csv
+│   │   ├───references
+│   │   │   ├───upstream-README.md
+│   │   │   └───upstream-skill-content.md
+│   │   └───scripts
+│   │   │   ├───__init__.py
+│   │   │   ├───core.py
+│   │   │   ├───design_system.py
+│   │   │   └───search.py
+│   ├───version-management
+│   │   └───SKILL.md
+│   ├───video-generation
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───scripts
+│   │   │   └───video.ts
+│   ├───video-understand
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───scripts
+│   │   │   └───video-understand.ts
+│   ├───visual-design-foundations
+│   │   ├───SKILL.md
+│   │   └───references
+│   │   │   ├───color-systems.md
+│   │   │   ├───spacing-iconography.md
+│   │   │   └───typography-systems.md
+│   ├───web-reader
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───scripts
+│   │   │   └───web-reader.ts
+│   ├───web-search
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   └───scripts
+│   │   │   └───web_search.ts
+│   ├───web-shader-extractor
+│   │   ├───SKILL.md
+│   │   ├───references
+│   │   │   ├───config-extraction.md
+│   │   │   ├───encoded-definitions.md
+│   │   │   ├───extraction-workflow.md
+│   │   │   ├───porting-strategy.md
+│   │   │   ├───shader-injection.md
+│   │   │   ├───shaders-com.md
+│   │   │   ├───tech-signatures.md
+│   │   │   ├───tsl-extraction.md
+│   │   │   └───unicorn-studio.md
+│   │   └───scripts
+│   │   │   ├───fetch-rendered-dom.mjs
+│   │   │   └───scan-bundle.sh
+│   ├───writing-plans
+│   │   ├───SKILL.md
+│   │   └───_meta.json
+│   └───xlsx
+│   │   ├───LICENSE.txt
+│   │   ├───SKILL.md
+│   │   ├───engines
+│   │   │   ├───chart-templates.md
+│   │   │   ├───chart.md
+│   │   │   ├───design.md
+│   │   │   └───vba-templates.md
+│   │   ├───quality
+│   │   │   └───pipeline.md
+│   │   ├───scenes
+│   │   │   ├───advanced.md
+│   │   │   ├───analyze-recipes.md
+│   │   │   ├───analyze.md
+│   │   │   ├───convert.md
+│   │   │   ├───create.md
+│   │   │   ├───edit-patterns.md
+│   │   │   ├───edit.md
+│   │   │   ├───finance.md
+│   │   │   ├───finance_lite.md
+│   │   │   └───vba.md
+│   │   ├───setup.sh
+│   │   ├───templates
+│   │   │   ├───base.py
+│   │   │   └───palettes.py
+│   │   └───xlsx.py
+├───src
+│   ├───app
+│   │   ├───api
+│   │   │   ├───ai-keys
+│   │   │   │   └───route.ts
+│   │   │   ├───ai-models
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───ai-probe
+│   │   │   │   └───route.ts
+│   │   │   ├───ai-test
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───ai-writing
+│   │   │   │   ├───route.test.ts
+│   │   │   │   ├───route.ts
+│   │   │   │   └───stream
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   ├───alignement-preuves
+│   │   │   │   └───route.ts
+│   │   │   ├───book-skills
+│   │   │   │   ├───[id]
+│   │   │   │   │   └───route.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───cadrages
+│   │   │   │   ├───[id]
+│   │   │   │   │   ├───fields
+│   │   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   │   └───route.ts
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   ├───route.ts
+│   │   │   │   │   └───versions
+│   │   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   │   └───route.ts
+│   │   │   │   └───fields
+│   │   │   │   │   └───[fieldId]
+│   │   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   │   └───route.ts
+│   │   │   ├───chapters
+│   │   │   │   └───[id]
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   ├───coherence-check
+│   │   │   │   └───route.ts
+│   │   │   ├───core
+│   │   │   │   └───search
+│   │   │   │   │   └───route.ts
+│   │   │   ├───corpus-publication
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───deep-research
+│   │   │   │   └───route.ts
+│   │   │   ├───directeur-chat
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───document-chunks
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───elements-analyse
+│   │   │   │   ├───[id]
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───entries
+│   │   │   │   ├───[id]
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───export-docx
+│   │   │   │   └───route.ts
+│   │   │   ├───geo-mcp
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───journaux-oa
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───osm-infra
+│   │   │   │   └───route.ts
+│   │   │   ├───paper2code
+│   │   │   │   └───generate
+│   │   │   │   │   └───route.ts
+│   │   │   ├───parts
+│   │   │   │   └───[id]
+│   │   │   │   │   └───route.ts
+│   │   │   ├───references
+│   │   │   │   ├───[id]
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   │   ├───bibtex
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   │   ├───import
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───research-tabs
+│   │   │   │   └───[id]
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   ├───route.test.ts
+│   │   │   ├───route.ts
+│   │   │   ├───search
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───sources
+│   │   │   │   ├───[id]
+│   │   │   │   │   ├───entries
+│   │   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   │   └───route.ts
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───sprints
+│   │   │   │   ├───[id]
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   ├───route.ts
+│   │   │   │   │   └───stories
+│   │   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   │   └───route.ts
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───stats
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───stories
+│   │   │   │   └───[id]
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   ├───text-prediction
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───theses
+│   │   │   │   ├───detail
+│   │   │   │   │   └───route.ts
+│   │   │   │   ├───persons
+│   │   │   │   │   └───route.ts
+│   │   │   │   ├───search
+│   │   │   │   │   └───route.ts
+│   │   │   │   └───stats
+│   │   │   │   │   └───route.ts
+│   │   │   ├───theses-en-ligne
+│   │   │   │   └───search
+│   │   │   │   │   └───route.ts
+│   │   │   ├───thesis
+│   │   │   │   ├───[id]
+│   │   │   │   │   ├───cadrages
+│   │   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   │   └───route.ts
+│   │   │   │   │   ├───chapters
+│   │   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   │   └───route.ts
+│   │   │   │   │   ├───doctoral-toolbox
+│   │   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   │   └───route.ts
+│   │   │   │   │   ├───parts
+│   │   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   │   └───route.ts
+│   │   │   │   │   ├───research-tabs
+│   │   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   │   └───route.ts
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───thesis-rag
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   ├───types-analyse
+│   │   │   │   ├───route.test.ts
+│   │   │   │   ├───route.ts
+│   │   │   │   └───seed
+│   │   │   │   │   ├───route.test.ts
+│   │   │   │   │   └───route.ts
+│   │   │   ├───verification-carto
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   │   └───verification-publication
+│   │   │   │   ├───route.test.ts
+│   │   │   │   └───route.ts
+│   │   ├───globals.css
+│   │   ├───layout.tsx
+│   │   └───page.tsx
+│   ├───components
+│   │   ├───dashboard
+│   │   │   └───dashboard-page.tsx
+│   │   ├───layout
+│   │   │   ├───about-dialog.tsx
+│   │   │   ├───app-footer.tsx
+│   │   │   ├───app-header.tsx
+│   │   │   ├───app-sidebar.tsx
+│   │   │   ├───module-placeholder.tsx
+│   │   │   ├───shortcuts-dialog.tsx
+│   │   │   └───usage-guide-dialog.tsx
+│   │   ├───providers
+│   │   │   └───query-provider.tsx
+│   │   ├───theme-provider.tsx
+│   │   └───ui
+│   │   │   ├───accordion.tsx
+│   │   │   ├───alert-dialog.tsx
+│   │   │   ├───alert.tsx
+│   │   │   ├───aspect-ratio.tsx
+│   │   │   ├───avatar.tsx
+│   │   │   ├───badge.tsx
+│   │   │   ├───breadcrumb.tsx
+│   │   │   ├───button.tsx
+│   │   │   ├───calendar.tsx
+│   │   │   ├───card.tsx
+│   │   │   ├───carousel.tsx
+│   │   │   ├───chart.tsx
+│   │   │   ├───checkbox.tsx
+│   │   │   ├───collapsible.tsx
+│   │   │   ├───command.tsx
+│   │   │   ├───context-menu.tsx
+│   │   │   ├───dialog.tsx
+│   │   │   ├───drawer.tsx
+│   │   │   ├───dropdown-menu.tsx
+│   │   │   ├───form.tsx
+│   │   │   ├───hover-card.tsx
+│   │   │   ├───input-otp.tsx
+│   │   │   ├───input.tsx
+│   │   │   ├───label.tsx
+│   │   │   ├───menubar.tsx
+│   │   │   ├───navigation-menu.tsx
+│   │   │   ├───pagination.tsx
+│   │   │   ├───popover.tsx
+│   │   │   ├───progress.tsx
+│   │   │   ├───radio-group.tsx
+│   │   │   ├───resizable.tsx
+│   │   │   ├───scroll-area.tsx
+│   │   │   ├───select.tsx
+│   │   │   ├───separator.tsx
+│   │   │   ├───sheet.tsx
+│   │   │   ├───sidebar.tsx
+│   │   │   ├───skeleton.tsx
+│   │   │   ├───slider.tsx
+│   │   │   ├───sonner.tsx
+│   │   │   ├───switch.tsx
+│   │   │   ├───table.tsx
+│   │   │   ├───tabs.tsx
+│   │   │   ├───textarea.tsx
+│   │   │   ├───toast.tsx
+│   │   │   ├───toaster.tsx
+│   │   │   ├───toggle-group.tsx
+│   │   │   ├───toggle.tsx
+│   │   │   └───tooltip.tsx
+│   ├───data
+│   │   ├───ai-writing-modes.ts
+│   │   ├───corpus-publication.ts
+│   │   └───directeur-prompt.ts
+│   ├───hooks
+│   │   ├───use-ai-config.ts
+│   │   ├───use-mobile.ts
+│   │   └───use-toast.ts
+│   ├───lib
+│   │   ├───ai
+│   │   │   ├───__tests__
+│   │   │   │   └───circuit-breaker.test.ts
+│   │   │   ├───ai-provider.ts
+│   │   │   ├───ai-types.test.ts
+│   │   │   ├───ai-types.ts
+│   │   │   ├───hardcoded-keys.ts
+│   │   │   └───zai-client.ts
+│   │   ├───api-schemas.test.ts
+│   │   ├───api-schemas.ts
+│   │   ├───core-api.ts
+│   │   ├───data
+│   │   │   ├───coherence-data.ts
+│   │   │   └───phrasebank-data.ts
+│   │   ├───db.ts
+│   │   ├───geo-mcp-client.ts
+│   │   ├───geo-mcp-tools.ts
+│   │   ├───osm-infra.ts
+│   │   ├───parsers
+│   │   │   ├───bibtex-parser.test.ts
+│   │   │   ├───bibtex-parser.ts
+│   │   │   ├───csl-json-parser.test.ts
+│   │   │   ├───csl-json-parser.ts
+│   │   │   ├───index.test.ts
+│   │   │   ├───index.ts
+│   │   │   ├───ris-parser.test.ts
+│   │   │   └───ris-parser.ts
+│   │   ├───rag
+│   │   │   └───rag-service.ts
+│   │   ├───stores
+│   │   │   ├───app-store.test.ts
+│   │   │   └───app-store.ts
+│   │   ├───theses-fr
+│   │   │   └───types.ts
+│   │   ├───utils.test.ts
+│   │   └───utils.ts
+│   └───modules
+│   │   ├───academic-db
+│   │   │   └───academic-db-page.tsx
+│   │   ├───ai-tools
+│   │   │   └───ai-tools-page.tsx
+│   │   ├───ai-writing
+│   │   │   └───ai-writing-page.tsx
+│   │   ├───alignement-preuves
+│   │   │   └───alignement-preuves-page.tsx
+│   │   ├───analyse-champ-recherche
+│   │   │   └───analyse-champ-recherche-page.tsx
+│   │   ├───apa-composer
+│   │   │   └───apa-composer-page.tsx
+│   │   ├───articles
+│   │   │   └───articles-page.tsx
+│   │   ├───auto-edition
+│   │   │   └───auto-edition-page.tsx
+│   │   ├───boite-doctorale
+│   │   │   └───boite-doctorale-page.tsx
+│   │   ├───cadrage
+│   │   │   └───cadrage-page.tsx
+│   │   ├───deblocage-ecriture
+│   │   │   └───deblocage-ecriture-page.tsx
+│   │   ├───diagrammes
+│   │   │   └───diagrammes-page.tsx
+│   │   ├───editor
+│   │   │   ├───components
+│   │   │   │   ├───chapter-header.tsx
+│   │   │   │   ├───chapter-tabs.tsx
+│   │   │   │   ├───create-thesis-dialog.tsx
+│   │   │   │   ├───editor-toolbar.tsx
+│   │   │   │   ├───prediction-popup.tsx
+│   │   │   │   ├───thesis-list-panel.tsx
+│   │   │   │   └───tiptap-editor.tsx
+│   │   │   ├───editor-page.tsx
+│   │   │   ├───extensions
+│   │   │   │   └───ai-prediction.ts
+│   │   │   └───hooks
+│   │   │   │   ├───use-auto-save.ts
+│   │   │   │   └───use-thesis.ts
+│   │   ├───equilibre-chapitres
+│   │   │   └───equilibre-chapitres-page.tsx
+│   │   ├───explorateur-theses
+│   │   │   └───explorateur-theses-page.tsx
+│   │   ├───export-docx
+│   │   │   └───export-docx-page.tsx
+│   │   ├───export-pdf
+│   │   │   └───export-pdf-page.tsx
+│   │   ├───feuille-route-agile
+│   │   │   └───feuille-route-agile-page.tsx
+│   │   ├───grammaire
+│   │   │   └───grammaire-page.tsx
+│   │   ├───harper
+│   │   │   └───harper-page.tsx
+│   │   ├───journaux-oa
+│   │   │   └───journaux-oa-page.tsx
+│   │   ├───livres-competences
+│   │   │   └───livres-competences-page.tsx
+│   │   ├───methodology
+│   │   │   └───methodology-page.tsx
+│   │   ├───onglet-recherche
+│   │   │   └───onglet-recherche-page.tsx
+│   │   ├───outils-slr
+│   │   │   └───outils-slr-page.tsx
+│   │   ├───paper2code
+│   │   │   └───paper2code-page.tsx
+│   │   ├───phrasebook
+│   │   │   └───phrasebook-page.tsx
+│   │   ├───recherche-plein-texte
+│   │   │   └───recherche-plein-texte-page.tsx
+│   │   ├───references
+│   │   │   └───references-page.tsx
+│   │   ├───routesme
+│   │   │   └───routesme-page.tsx
+│   │   ├───theses-en-ligne
+│   │   │   └───theses-en-ligne-page.tsx
+│   │   ├───thesis-plan
+│   │   │   └───thesis-plan-page.tsx
+│   │   ├───thesis-rag
+│   │   │   └───thesis-rag-page.tsx
+│   │   ├───verification-carto
+│   │   │   └───verification-carto-page.tsx
+│   │   ├───verification-coherence
+│   │   │   └───verification-coherence-page.tsx
+│   │   └───verification-methodo
+│   │   │   └───verification-methodo-page.tsx
+├───src-tauri
+│   ├───Cargo.toml
+│   ├───build.rs
+│   ├───capabilities
+│   │   └───default.json
+│   ├───icons
+│   ├───src
+│   │   ├───lib.rs
+│   │   └───main.rs
+│   └───tauri.conf.json
+├───tailwind.config.ts
+├───test-snapshots
+├───tests
+│   ├───database-runtime-build.sh
+│   ├───python-runtime-build.sh
+│   └───python-runtime-container.sh
+├───thesisframe-github.json
+├───thesisframe-search.json
+├───thesisframe-src.json
+├───thesisframe-tree.json
+├───tsconfig.json
+├───upload
+│   ├───.1-extract
+│   │   └───.1
+│   │   │   └───Como-escribir-articulo-cientifico.md
+│   ├───.1.rar
+│   ├───.2-extract
+│   ├───.2.rar
+│   ├───.3-extract
+│   ├───.3.rar
+│   ├───.4-extract
+│   ├───.4.rar
+│   ├───.5-extract
+│   ├───.5.rar
+│   ├───.6-extract
+│   ├───.6.rar
+│   ├───Book-7-extract
+│   │   └───Book-7
+│   │   │   ├───A Handbook for Doctoral Supervisors (Thrd Edition) (Stan Taylor, Margaret Kiley) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   ├───A Manual for Writers of Term Papers, Theses, and Dissertations (Kate L. Turabian) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   ├───Constructing Research Questions Doing Interesting Research (Mats Alvesson, Jorgen Sandberg) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   └───How to Get a PhD - 4th edition (Study Skills) (Estelle Phillips, Derek.S. Pugh) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   ├───Book-7.rar
+│   ├───Books-6-extract
+│   │   └───Books-6
+│   │   │   └───The Good Supervisor Supervising Postgraduate and Undergraduate Research for Doctoral Theses and Dissertations (Wisker, Gina) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   ├───Books-6.rar
+│   ├───Books-a.rar
+│   ├───Books-b.rar
+│   ├───Books-c.rar
+│   ├───Books-d.rar
+│   ├───Chef d’Orchestre Multi-Agents.txt
+│   ├───Doc-Aout.rar
+│   ├───FICHE_SYNTHESE.md
+│   ├───GUIDE_TO_ACADEMIC_AND_SCIENTIFIC_PUBLICATION._How_To_Get_Your_Writing_Published_in_Scholarly_Journals._(Linda_Olson)_(z-library.sk,_1lib.sk,_z-lib.sk) - Copie.pdf
+│   ├───GUIDE_TO_ACADEMIC_AND_SCIENTIFIC_PUBLICATION._How_To_Get_Your_Writing_Published_in_Scholarly_Journals._(Linda_Olson)_(z-library.sk,_1lib.sk,_z-lib.sk).pdf
+│   ├───GUIDE_~1_1GUIDE_~1.pdf
+│   ├───PROMPT-AUDIT-FORENSIQUE-THESISFRAME.md
+│   ├───PROMPT-CLOTURE-LOT5-THESISFRAME(1).md
+│   ├───PROMPT-CLOTURE-LOT5-THESISFRAME.md
+│   ├───PROMPT-CORRECTION-THESISFRAME.md
+│   ├───PROMPT-LOT5BIS-REPRISE-THESISFRAME.md
+│   ├───PROMPT-LOT6-CORRECTIONS-CRITIQUES.md
+│   ├───PROMPT-LOT6BIS-CLARIFICATIONS.md
+│   ├───PROMPT-LOT7BIS-GOUVERNANCE(2).md
+│   ├───PROMPT-LOT7BIS-GOUVERNANCE.md
+│   ├───PROMPT-STRATEGIE-GOUVERNANCE-THESISFRAME.md
+│   ├───RB-extract
+│   │   └───RB
+│   │   │   ├───RB-1.jpg
+│   │   │   ├───RB-10.jpg
+│   │   │   ├───RB-11.jpg
+│   │   │   ├───RB-12.jpg
+│   │   │   ├───RB-13.jpg
+│   │   │   ├───RB-14.jpg
+│   │   │   ├───RB-15.jpg
+│   │   │   ├───RB-2.jpg
+│   │   │   ├───RB-3.jpg
+│   │   │   ├───RB-4.jpg
+│   │   │   ├───RB-5.jpg
+│   │   │   ├───RB-6.jpg
+│   │   │   ├───RB-7.jpg
+│   │   │   ├───RB-8.jpg
+│   │   │   └───RB-9.jpg
+│   ├───RB.rar
+│   ├───The Complete Book of Grant Writing (Works, E. Gabriel Smith, Nancy) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   ├───Urban Informatics Using Big Data to Understand and Serve Communities (Daniel T. OBrien) -1.pdf
+│   ├───Urban Informatics Using Big Data to Understand and Serve Communities (Daniel T. OBrien) -2.pdf
+│   ├───ai-research-extract
+│   │   ├───bagheri-ai-powered-academic.epub
+│   │   ├───bagheri.txt
+│   │   ├───belleville-extraire-these.epub
+│   │   ├───belleville.txt
+│   │   ├───johannesson-thesis-chatgpt.pdf
+│   │   ├───johannesson.txt
+│   │   ├───zhou-institutional-guide-ai-research.pdf
+│   │   └───zhou.txt
+│   ├───audit-retroactif-documentation-livres.md
+│   ├───bf792425-9671-4ca9-8b86-1bdf11c35a1d.pdf
+│   ├───cadrage-prealable-spec.md
+│   ├───combined-extract
+│   │   └───.1
+│   │   │   └───Como-escribir-articulo-cientifico.md
+│   ├───corpus-extract
+│   │   ├───book-constructing-research-questions.txt
+│   │   ├───book-good-supervisor-wisker.txt
+│   │   ├───book-handbook-doctoral-supervisors.txt
+│   │   ├───book-how-to-get-phd.txt
+│   │   └───book-manual-writers-turabian.txt
+│   ├───directive-structure-reference-autorisation.md
+│   ├───docs-extracted
+│   │   └───docs
+│   │   │   ├───-1.jpg
+│   │   │   ├───-10.jpg
+│   │   │   ├───-11.jpg
+│   │   │   ├───-12.jpg
+│   │   │   ├───-13.jpg
+│   │   │   ├───-14.jpg
+│   │   │   ├───-15.jpg
+│   │   │   ├───-16.jpg
+│   │   │   ├───-17.jpg
+│   │   │   ├───-18.jpg
+│   │   │   ├───-19.jpg
+│   │   │   ├───-2.jpg
+│   │   │   ├───-20.jpg
+│   │   │   ├───-21.jpg
+│   │   │   ├───-22.jpg
+│   │   │   ├───-3.jpg
+│   │   │   ├───-4.jpg
+│   │   │   ├───-5.jpg
+│   │   │   ├───-6.jpg
+│   │   │   ├───-7.jpg
+│   │   │   ├───-8.jpg
+│   │   │   └───-9.jpg
+│   ├───docs.rar
+│   ├───drive-main-analysis.json
+│   ├───extract.py
+│   ├───extracted-text
+│   │   ├───kumar-research-methodology.txt
+│   │   ├───ollhoff-literature-review.txt
+│   │   ├───rae-wong-applied-data.txt
+│   │   ├───salkind-100-questions.txt
+│   │   ├───the-complete-book-of-grant-writing.txt
+│   │   └───white-mapping-thesis.txt
+│   ├───files-extract
+│   │   ├───SKILL.md
+│   │   ├───grilles-qualite-appraisal.md
+│   │   └───integrations-gestionnaires-references.md
+│   ├───files-extracted
+│   │   ├───01-ethique-publication-scientifique.md
+│   │   ├───02-choisir-revue-eviter-predateurs.md
+│   │   ├───03-ecrire-resultats-discussion.md
+│   │   ├───04-tableaux-figures-quand-et-comment.md
+│   │   ├───05-auto-edition-8C.md
+│   │   ├───06-ecrire-en-langue-seconde-international.md
+│   │   └───INDEX-routage.md
+│   ├───files.zip
+│   ├───freellmapi-readme.json
+│   ├───freellmapi-readme.md
+│   ├───full-extract
+│   ├───gdrive-analysis
+│   │   ├───IMAGE-AUDIT-REPORT.md
+│   │   ├───semantic.jpg
+│   │   └───variables.jpg
+│   ├───gdrive-listing.json
+│   ├───livres-1-extract
+│   │   └───livres.1
+│   │   │   ├───100 Questions (and Answers) About Research Methods (Neil J. Salkind) (z-library.sk, 1lib.sk, z-lib.sk)(1).pdf
+│   │   │   ├───100 Questions (and Answers) About Research Methods (Neil J. Salkind) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   ├───Applied Data Analysis for Urban Planning and Management (Alasdair Rae, Cecilia Wong) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   ├───How to Write a Literature Review A Workbook in Six Steps (Jim Ollhoff [Ollhoff, Jim]) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   ├───Mapping Your Thesis The Comprehensive Manual of Theory and Techniques for Masters and Doctoral Research (Barry White) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   └───Research Methodology. (Kumar, Ranjit) (z-library.sk, 1lib.sk, z-lib.sk).epub
+│   ├───livres-2-extract
+│   │   └───livres.1
+│   │   │   ├───100 Questions (and Answers) About Research Methods (Neil J. Salkind) (z-library.sk, 1lib.sk, z-lib.sk)(1).pdf
+│   │   │   ├───100 Questions (and Answers) About Research Methods (Neil J. Salkind) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   ├───Applied Data Analysis for Urban Planning and Management (Alasdair Rae, Cecilia Wong) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   ├───How to Write a Literature Review A Workbook in Six Steps (Jim Ollhoff [Ollhoff, Jim]) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   ├───Mapping Your Thesis The Comprehensive Manual of Theory and Techniques for Masters and Doctoral Research (Barry White) (z-library.sk, 1lib.sk, z-lib.sk).pdf
+│   │   │   └───Research Methodology. (Kumar, Ranjit) (z-library.sk, 1lib.sk, z-lib.sk).epub
+│   ├───livres.1.rar
+│   ├───livres.2.rar
+│   ├───orchestrate.txt
+│   ├───prompt-developpeur-audit-application.md
+│   ├───rb-analysis
+│   │   ├───RB-2.txt
+│   │   ├───RB-3.txt
+│   │   ├───RB-4.txt
+│   │   └───RB-5.txt
+│   ├───ressources -github.txt
+│   ├───skills-2-extract
+│   │   └───skills-2
+│   │   │   ├───27 AI tools for your research.pdf
+│   │   │   ├───A_Manual_for_Writers_of_Research_Papers,_Theses,_and_Dissertations_(Kate_L (1)._Turabian)_(z-library.sk,_1lib.sk,_z-lib.sk).pdf
+│   │   │   ├───Analysis to Synthesis using google notebook LM.docx
+│   │   │   ├───Mastering Literature Review Funnel Structure(1).docx
+│   │   │   ├───Mastering Literature Review Funnel Structure.docx
+│   │   │   ├───Prompts for research(1).docx
+│   │   │   ├───Prompts for research(2).docx
+│   │   │   ├───Prompts for research.docx
+│   │   │   ├───The Research Prompt Handbook (1).docx
+│   │   │   ├───The Research Prompt Handbook .docx
+│   │   │   └───how_to_write_and_publish_a_scientific_paper.pdf
+│   ├───skills-2.rar
+│   └───spec-module-cartographie-verification.md
+├───vercel-search.json
+├───vercel.json
+├───vitest.config.ts
+└───worklog.md
