@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.5.0-22c55e" alt="v1.5.0" />
+  <img src="https://img.shields.io/badge/Version-1.5.1-22c55e" alt="v1.5.1" />
   <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js 16" />
   <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss" alt="Tailwind CSS 4" />
@@ -168,8 +168,8 @@ Pour utiliser des providers IA externes (OpenAI, Anthropic, Mistral, etc.), vous
 | `bun run build` | Build de production |
 | `bun run start` | Lancer la build de production |
 | `bun run lint` | Linting ESLint |
-| `bun test` | Lancer la suite de tests (Vitest) |
-| `bun run test:run` | Tests en mode single-run |
+| `bun run test` | Lancer les tests en mode watch (Vitest) |
+| `bun run test:run` | Tests en mode single-run (recommandé) |
 | `bun run test:coverage` | Tests avec couverture |
 | `bun run db:push` | Pousser le schéma Prisma vers SQLite |
 | `bun run db:migrate` | Migrations Prisma |
@@ -185,11 +185,13 @@ Le projet utilise **Vitest** avec **1318 tests** couvrant :
 - Circuit breaker IA
 
 ```bash
-# Lancer tous les tests
+# Lancer tous les tests (mode single-run, recommandé)
 bun run test:run
 
 # Tests en mode watch
-bun test
+bun run test
+
+# ⚠️ Ne PAS utiliser `bun test` directement (runner natif Bun incompatible avec vi.mock)
 
 # Couverture
 bun run test:coverage
@@ -201,6 +203,7 @@ Les versions suivent le format **semver** (`MAJEUR.MINEUR.PATCH`) :
 
 | Version | Description |
 |---------|-------------|
+| **v1.5.1** | Sécurité : retrait des clés API codées en dur, tests P1 corrigés (1318/1318), messages d'erreur français, correction installation |
 | **v1.5.0** | 36 modules, 22 providers IA, 21 modes d'écriture, 1318 tests, 16 fournisseurs gratuits, ARS integration |
 | **v1.3.0** | RAG, explorateur thèses, Harper, export DOCX |
 | **v1.2.0** | Première version publique |
