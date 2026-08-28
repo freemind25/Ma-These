@@ -5052,3 +5052,97 @@ Stage Summary:
 - Lint : 0 errors
 - T3 : SKIPPED (provider z.ai ne supporte pas embeddings) — à tester avec provider OpenAI/Mistral quand disponible
 - Leçon retenue : un cas limite non couvert par le noyau sera résolu par chaque mode par extrapolation — potentiellement contradictoire. Tout retour utilisateur révélant une divergence inter-modes = signal d'un trou dans le knowledge-core, pas d'un bug de prompt.
+
+---
+Task ID: 5
+Agent: Main
+Task: PROMPT 1 — T3 RAG sémantique (infrastructure) + durcissement RAG (1-Ba, 1-Bb, 1-Bc)
+
+Work Log:
+- Exploration complète de l'implémentation RAG (embedding-service.ts, rag-service.ts, Prisma schema, tests existants)
+- Vérifié les clés API disponibles : AUCUNE clé pour provider compatible embeddings (Mistral, OpenAI, Google, etc.)
+- T3 ne peut pas être exécuté en l'absence de clé → crée le script prêt + documenté SKIPPED
+
+**RAG Durcissement (1-Ba, 1-Bb, 1-Bc) :**
+
+1-Ba) Pagination et filtrage dans retrieveChunks :
+- Ajouté colonne `thesisId` (nullable) au modèle DocumentChunk + index Prisma
+- `retrieveChunks` accepte maintenant `options: { thesisId, includeGlobal }`
+- Filtre Prisma au niveau DB : `WHERE thesisId = X OR thesisId IS NULL` (si includeGlobal)
+- Mode hybride : `AND [thesisWhere, { embedding: { not: null } }]` — ne charge que les chunks embeddés
+- Fallback : si aucun chunk embeddé trouvé → bascule en keyword-only avec filtre élargi
+- `generateRagResponse` passe maintenant thesisId à retrieveChunks
+- `buildThesisWhere()` helper pour construire la clause Prisma correctement
+- `indexThesisContent` set thesisId sur les chunks chapter/cadrage (pas sur reference/notebook qui sont globaux)
+
+1-Bb) Poids hybride configurable :
+- `HYBRID_WEIGHTS` exporté depuis rag-service.ts : { keyword: 0.35, semantic: 0.65 }
+- Surchargeable via env vars : RAG_KEYWORD_WEIGHT, RAG_SEMANTIC_WEIGHT
+- Anciennes constantes KEYWORD_WEIGHT/SEMANTIC_WEIGHT marquées @deprecated
+
+1-Bc) Note de limite dans AGENTS.md :
+- Section « RAG — Limites et configuration » ajoutée
+- Mention explicite : « NE PAS construire de feature dépendant du volume sans migrer vers sqlite-vec »
+- Documentation des providers supportés/non-supportés pour embeddings
+- Référence au script T3
+
+**T3 Test script :**
+- Créé `scripts/test-rag-semantic.ts` — script autonome
+- Crée 3 chapitres réalistes (intro, résultats, discussion) sur la transition énergétique rurale
+- Indexe avec embeddings, puis interroge avec « Est-ce que ma partie empirique tient ses promesses ? »
+- Vérifie scoreType = semantic/hybrid (pas keyword), vérifie absence de contamination mot-clé
+- Nettoie les données de test après exécution
+- Usage : `MISTRAL_API_KEY=xxx bun run scripts/test-rag-semantic.ts mistral`
+
+**Schema :** `bun run db:push` OK — colonne thesisId + index ajoutés
+**Tests :** 1333/1333 pass (56 fichiers)
+**Lint :** 0 errors, 181 warnings (baseline)
+
+Stage Summary:
+- T3 : SKIPPED (attente clé API) mais infrastructure complète (script prêt à exécuter)
+- 1-Ba : retrieveChunks filtre par thesisId + embedding IS NOT NULL au niveau Prisma
+- 1-Bb : HYBRID_WEIGHTS exportés, surchargeables via env vars
+- 1-Bc : Note de limite sqlite-vec dans AGENTS.md
+- Version : v1.8.2
+
+---
+Task ID: 6
+Agent: Main
+Task: PROMPT 2 — Audit des prompts restants hors knowledge-core
+
+Work Log:
+- Audit exhaustif de toutes les routes API contenant des prompts système inline
+- Recherche par patterns : role: "system", "Tu es", systemPrompt inline
+- Croisement avec la liste SPECIALIZATION_PROMPTS pour identifier les routes non-migrées
+
+## Tableau d'audit
+
+| Route | Fichier | Savoir métier ? | Overlap knowledge-core | Recommandation |
+|-------|---------|-----------------|------------------------|----------------|
+| deep-research (4 prompts) | api/deep-research/route.ts | ❌ NON | Aucun | LAISSER — rôle + tâche + format pur |
+| paper2code (3 prompts) | api/paper2code/generate/route.ts | ❌ NON | Aucun (hors domaine thèse) | LAISSER — ML code gen, hors périmètre |
+| text-prediction | api/text-prediction/route.ts | ❌ NON (minimal) | Aucun | LAISSER — token completion utilitaire |
+| thesis-rag | lib/rag/rag-service.ts | ❌ NON | Aucun | LAISSER — RAG assistant générique |
+| **coherence-check** | **api/coherence-check/route.ts** | **✅ OUI** | **MAJEUR → coherence + methodology** | **FACTORISER** — COHERENCE_CHECKS grille complète bypass knowledge-core |
+| **verification-carto** | **api/verification-carto/route.ts** | **✅ OUI** | **MOYEN → methodology** | **FACTORISER + dédupliquer** — PROMPT_GENERIQUE dupliqué dans types-analyse/seed |
+| verification-publication | api/verification-publication/route.ts | ✅ (déjà migré) | publication + coherence | ✅ DÉJÀ FAIT (Option B, v1.8.0) |
+| ai-writing + stream | api/ai-writing/route.ts | ✅ (déjà migré) | Via SPECIALIZATION_PROMPTS | ✅ DÉJÀ FAIT (v1.6.0) |
+| directeur-chat | api/directeur-chat/route.ts | ✅ (déjà migré) | Via DIRECTEUR_PROMPT | ✅ DÉJÀ FAIT (v1.6.0) |
+
+## Détail des actions identifiées
+
+### 🔴 HIGH — coherence-check
+- La fonction `buildSystemPrompt()` construit le prompt dynamiquement depuis `COHERENCE_CHECKS` (coherence-data.ts)
+- Contient : 6 catégories de vérification (terminologique, argumentative, numérique, intro-discussion, référentielle, structurelle), règles de scoring (global_score 0-100, truthmark ≥ 70), sévérités (ok/critical/major/minor)
+- Ceci est du savoir métier qui DEVRAIT être servi via `getKnowledgeCore(['coherence'])` au lieu d'importer `COHERENCE_CHECKS` directement
+- Recommandation : FACTORISER vers knowledge-core (module coherence déjà existe mais ne contient pas la grille de vérification détaillée)
+
+### 🟡 MEDIUM — verification-carto + types-analyse/seed
+- `PROMPT_GENERIQUE` : règles épistémologiques strictes (pas de déclarations sur l'objet, questions ouvertes uniquement, max 3 questions, neutralité)
+- Dupliqué à l'identique dans `types-analyse/seed/route.ts` + variante `PROMPT_ANALYSE_URBAINE`
+- Recommandation : FACTORISER (dédupliquer) et évaluer si les règles Socratiques méritent un module knowledge-core ou restent dans un shared constant
+
+Stage Summary:
+- 4/6 routes auditées sont CLEAN (pas de savoir métier, ou déjà migrées)
+- 2 routes nécessitent une action future : coherence-check (HIGH), verification-carto (MEDIUM)
+- Aucune correction effectuée (audit uniquement, conformément au brief)

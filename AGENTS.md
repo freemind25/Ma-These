@@ -224,7 +224,14 @@ src/lib/ai/
 | `ElementAnalyse` | Élément d'analyse (méthodologie/vérif.) |
 | `TypeAnalyseMethodologique` | Référentiel de vérification par discipline |
 | `SessionVerification` | Session de vérification méthodologique |
-| `DocumentChunk` | Chunk RAG pour index sémantique |
+| `DocumentChunk` | Chunk RAG pour index sémantique (avec `thesisId`, `embedding`, `embeddingModel`) |
+
+### RAG — Limites et configuration
+- **Stockage** : embeddings en JSON string par chunk (Prisma SQLite) — parsing à chaque requête, pas d'index vectoriel. OK pour 1 thèse (~400 chunks). **NE PAS construire de feature dépendant du volume sans migrer vers sqlite-vec.**
+- **Poids hybride** : `HYBRID_WEIGHTS` (exporté depuis `rag-service.ts`) — défaut 65% sémantique / 35% mot-clé. Ajustable via `RAG_KEYWORD_WEIGHT` / `RAG_SEMANTIC_WEIGHT` (env vars). À ajuster après tests utilisateurs réels.
+- **Filtrage DB** : `retrieveChunks` filtre par `thesisId` + `embedding IS NOT NULL` (mode hybride). Plus de chargement intégral de la table.
+- **Providers embeddings** : OpenAI, Mistral, Google, Groq, OpenRouter supportés. z.ai, Anthropic, Cohere, etc. non supportés.
+- **Test T3** : script `scripts/test-rag-semantic.ts` prêt à exécuter avec `MISTRAL_API_KEY=xxx bun run scripts/test-rag-semantic.ts mistral`.
 
 ---
 
@@ -311,6 +318,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
+| **v1.8.2** | RAG durcissement : thesisId filtering, embedding NOT NULL, HYBRID_WEIGHTS configurables, T3 test script. 1333 tests. |
 | **v1.8.1** | Phase 5 digestion validée (5/5 sur tests exécutables). Corrections knowledge-core : cas limite citation littérale (T4), critère unité d'analyse étude de cas (T1). Full core ~3806 tokens. |
 | **v1.8.0** | Knowledge-core v2.1 : module publication (Gastel & Day), 11 modules, routes vérification déléguées au noyau |
 | **v1.7.0** | Knowledge-core v2 : 6 ouvrages distillés, 10 modules, mapping optimisé |

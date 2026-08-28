@@ -355,6 +355,7 @@ model SessionVerification {
 
 model DocumentChunk {
   id            String   @id @default(cuid())
+  thesisId      String?  // Optional: set for chapter/cadrage chunks (references/notebooks are global)
   sourceType    String   // chapter | reference | notebook | cadrage
   sourceId      String   // FK to the original record
   sourceTitle   String   // Title of the source (chapter title, reference title, etc.)
@@ -368,4 +369,5 @@ model DocumentChunk {
 
   @@index([sourceType])
   @@index([sourceId])
+  @@index([thesisId])
 }

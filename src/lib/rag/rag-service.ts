@@ -67,9 +67,21 @@ const OVERLAP_TOKENS = 100;
 /** Approximate chars per token (French text tends to be slightly lower than English) */
 const CHARS_PER_TOKEN = 4;
 
-/** Weights for hybrid scoring */
-const KEYWORD_WEIGHT = 0.35;
-const SEMANTIC_WEIGHT = 0.65;
+/**
+ * Weights for hybrid scoring.
+ * Exported so they can be overridden via env vars or tests.
+ * Default: 65% semantic (embeddings) / 35% keyword (term matching).
+ * Adjust after real-user testing — see AGENTS.md RAG section.
+ */
+export const HYBRID_WEIGHTS = {
+  keyword: Number(process.env.RAG_KEYWORD_WEIGHT) || 0.35,
+  semantic: Number(process.env.RAG_SEMANTIC_WEIGHT) || 0.65,
+} as const;
+
+/** @deprecated Use HYBRID_WEIGHTS.keyword */
+const KEYWORD_WEIGHT = HYBRID_WEIGHTS.keyword;
+/** @deprecated Use HYBRID_WEIGHTS.semantic */
+const SEMANTIC_WEIGHT = HYBRID_WEIGHTS.semantic;
 
 // ───────────────────────────────────────
 // System prompt for RAG
@@ -269,6 +281,7 @@ export async function indexThesisContent(
 
   // 3. Chunk all sources
   interface ChunkData {
+    thesisId: string | null;
     sourceType: string;
     sourceId: string;
     sourceTitle: string;
@@ -295,6 +308,8 @@ export async function indexThesisContent(
       }
 
       allChunkData.push({
+        thesisId: source.sourceType === "chapter" || source.sourceType === "cadrage"
+          ? thesisId : null,
         sourceType: source.sourceType,
         sourceId: source.sourceId,
         sourceTitle: source.sourceTitle,
@@ -342,27 +357,58 @@ export async function indexThesisContent(
 
 // ───────────────────────────────────────
 // retrieveChunks — hybrid (keyword + semantic)
+// Paginated with Prisma filters: thesisId + embedding IS NOT NULL
 // ───────────────────────────────────────
 
+/**
+ * Retrieve the most relevant chunks for a query.
+ *
+ * Filters applied at the DB level (not in-memory):
+ * - thesisId: only chunks belonging to this thesis (chapter/cadrage)
+ *   + global chunks (references/notebooks) if includeGlobal=true
+ * - embedding IS NOT NULL: when doing hybrid/semantic search,
+ *   skip chunks without embeddings to avoid unnecessary parsing
+ *
+ * Pagination: loads all filtered chunks (SQLite has no native vector index,
+ *   so cosine similarity must be computed in-app). For 1 thesis (~400 chunks)
+ *   this is fine. See AGENTS.md for scaling limits.
+ */
 export async function retrieveChunks(
   query: string,
   topK: number = 5,
-  providerConfig?: AiProviderConfig
+  providerConfig?: AiProviderConfig,
+  options?: { thesisId?: string; includeGlobal?: boolean }
 ): Promise<RetrievalResult[]> {
-  // Fetch all chunks
-  const allChunks = await db.documentChunk.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const { thesisId, includeGlobal = true } = options ?? {};
 
-  if (allChunks.length === 0) return [];
+  // Build Prisma WHERE clause for thesis filtering
+  const thesisWhere = buildThesisWhere(thesisId, includeGlobal);
 
-  // ── Keyword scoring ──
-  const keywordScores = scoreByKeywords(allChunks, query);
+  // Check if we can do semantic scoring (need provider that supports embeddings)
+  const canDoSemantic = providerConfig &&
+    getEmbeddingInfo(providerConfig).supported;
 
-  // ── Semantic scoring (if embeddings exist) ──
-  const hasEmbeddings = allChunks.some((c) => c.embedding);
+  if (canDoSemantic) {
+    // For hybrid/semantic, only load chunks that HAVE embeddings
+    // Combine thesis filter + embedding filter with AND
+    const where = thesisWhere
+      ? { AND: [thesisWhere, { embedding: { not: null as const } }] }
+      : { embedding: { not: null as const } };
 
-  if (hasEmbeddings && providerConfig) {
+    const allChunks = await db.documentChunk.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (allChunks.length === 0) {
+      // No embedded chunks — fallback to keyword-only (broader filter)
+      return retrieveChunksKeywordOnly(query, topK, thesisWhere);
+    }
+
+    // Keyword scoring (on the embedded subset)
+    const keywordScores = scoreByKeywords(allChunks, query);
+
+    // Semantic scoring
     const { generateEmbedding } = await import("./embedding-service");
     const queryEmbedding = await generateEmbedding(query, providerConfig);
 
@@ -373,9 +419,47 @@ export async function retrieveChunks(
         return hybridRank(allChunks, keywordScores, semanticScores, topK);
       }
     }
+
+    // Embedding generation failed — keyword-only on embedded chunks
+    return keywordOnlyRank(allChunks, keywordScores, topK);
   }
 
-  // Fallback: keyword-only
+  // Keyword-only path (no provider or provider doesn't support embeddings)
+  return retrieveChunksKeywordOnly(query, topK, thesisWhere);
+}
+
+/**
+ * Build a Prisma-compatible WHERE clause for thesis filtering.
+ * Returns undefined if no filtering is needed.
+ */
+function buildThesisWhere(
+  thesisId: string | undefined,
+  includeGlobal: boolean
+): Record<string, unknown> | undefined {
+  if (!thesisId) return undefined;
+  if (includeGlobal) {
+    // Thesis-specific chunks OR global chunks (references/notebooks)
+    return { OR: [{ thesisId }, { thesisId: null }] };
+  }
+  return { thesisId };
+}
+
+/**
+ * Keyword-only retrieval with Prisma filtering.
+ */
+async function retrieveChunksKeywordOnly(
+  query: string,
+  topK: number,
+  thesisWhere: Record<string, unknown> | undefined
+): Promise<RetrievalResult[]> {
+  const allChunks = await db.documentChunk.findMany({
+    where: thesisWhere,
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (allChunks.length === 0) return [];
+
+  const keywordScores = scoreByKeywords(allChunks, query);
   return keywordOnlyRank(allChunks, keywordScores, topK);
 }
 
@@ -514,8 +598,11 @@ export async function generateRagResponse(
   thesisId?: string,
   providerConfig?: AiProviderConfig
 ): Promise<RagResponse> {
-  // Step 1: Retrieve relevant chunks
-  const retrieved = await retrieveChunks(query, 5, providerConfig);
+  // Step 1: Retrieve relevant chunks (filtered by thesisId when available)
+  const retrieved = await retrieveChunks(query, 5, providerConfig, {
+    thesisId,
+    includeGlobal: true,
+  });
 
   if (retrieved.length === 0) {
     return {
