@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import { getKnowledgeCore } from "@/lib/ai/knowledge-core";
 
 // ═══════════════════════════════════════════════════════════════════
 // POST /api/verification-publication
@@ -70,11 +71,15 @@ async function handleIntroDiscussionCoherence(
     );
   }
 
-  const systemPrompt = `Tu es un expert en rédaction scientifique académique. Tu analyses la cohérence entre l'introduction et la discussion d'un article de recherche.
+  const criteria = getKnowledgeCore(['coherence', 'publication']);
+
+  const systemPrompt = `${criteria}
+
+Tu es un expert en rédaction scientifique académique. Tu analyses la cohérence entre l'introduction et la discussion d'un article de recherche.
 
 Ta tâche :
 1. Extraire TOUTES les questions de recherche et/ou hypothèses formulées dans l'introduction.
-2. Pour chaque question/hypothèse, vérifier si la discussion y répond EXPLICITEMENT.
+2. Pour chaque question/hypothèse, vérifier si la discussion y répond EXPLICITEMENT (cf. critères de cohérence intro/discussion ci-dessus).
 3. Identifier les résultats « orphelins » dans la discussion : des résultats mentionnés qui ne sont reliés à AUCUNE question de l'introduction.
 4. Évaluer la structure en entonnoir inversé de la discussion (résultats spécifiques → implications plus larges).
 
@@ -393,7 +398,13 @@ async function handleTableQuality(
   // Only call LLM if table has meaningful content and at least one signal or table is large
   if (totalCells > 6) {
     try {
-      const systemPrompt = `Tu es un expert en rédaction scientifique. Tu évalues si un tableau de données est justifié ou s'il pourrait être remplacé par une phrase sans perte d'information.
+      const criteria = getKnowledgeCore(['publication']);
+
+      const systemPrompt = `${criteria}
+
+Tu es un expert en rédaction scientifique. Tu évalues si un tableau de données est justifié ou s'il pourrait être remplacé par une phrase sans perte d'information.
+
+Applique les critères de qualité des tableaux et de redondance texte/tableau du socle ci-dessus.
 
 Réponds UNIQUEMENT en JSON valide, sans markdown, sans backticks :
 {
@@ -492,11 +503,15 @@ async function handleParagraphStructure(
     .map((p, i) => `[PARAGRAPHE ${i + 1}]\n${p}`)
     .join("\n\n");
 
-  const systemPrompt = `Tu es un expert en rédaction académique de niveau L2 (deuxième langue). Tu identifies les paragraphes qui ont un problème de structure.
+  const criteria = getKnowledgeCore(['style', 'publication']);
+
+  const systemPrompt = `${criteria}
+
+Tu es un expert en rédaction académique de niveau L2 (deuxième langue). Tu identifies les paragraphes qui ont un problème de structure.
 
 Pour chaque paragraphe, évalue :
-1. Le paragraphe commence-t-il DIRECTEMENT par l'idée principale (phrase-topic) ? Ou l'ouverture est-elle indirecte, enfouie après des circonstancielles, des rappels, ou des transitions inutiles ?
-2. Le paragraphe tourne-t-il autour du point sans l'atteindre ? ( circonlocutions, répétitions, manque de progression logique)
+1. Le paragraphe commence-t-il DIRECTEMENT par l'idée principale (phrase-topic, cf. critères de style ci-dessus) ? Ou l'ouverture est-elle indirecte, enfouie après des circonstancielles, des rappels, ou des transitions inutiles ?
+2. Le paragraphe tourne-t-il autour du point sans l'atteindre ? (circonlocutions, répétitions, manque de progression logique)
 
 Réponds UNIQUEMENT en JSON valide, sans markdown, sans backticks :
 {
@@ -593,13 +608,13 @@ async function handleTextTableRedundancy(
     );
   }
 
-  const systemPrompt = `Tu es un expert en rédaction scientifique. Tu vérifies si un texte reformule de manière redondante ce qu'un tableau ou une figure montre déjà.
+  const criteria = getKnowledgeCore(['coherence', 'publication']);
 
-Règles :
-- Un renvoi au tableau (« comme le montre le Tableau 1 ») n'est PAS redondant.
-- Par contre, citer dans le texte CHACUNE des valeurs numériques déjà présentes dans le tableau EST redondant.
-- Reformuler les tendances générales du tableau dans le texte est acceptable si cela apporte une interprétation.
-- Seulement la répétition pure de données est considérée redondante.
+  const systemPrompt = `${criteria}
+
+Tu es un expert en rédaction scientifique. Tu vérifies si un texte reformule de manière redondante ce qu'un tableau ou une figure montre déjà.
+
+Applique les critères de redondance texte/tableau du socle ci-dessus.
 
 Réponds UNIQUEMENT en JSON valide, sans markdown, sans backticks :
 {

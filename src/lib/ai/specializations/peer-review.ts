@@ -5,7 +5,7 @@
 import { buildPrompt } from '../prompt-builder';
 
 export const PEER_REVIEW_PROMPT = buildPrompt({
-  modules: ['peer-review', 'coherence'],
+  modules: ['peer-review', 'coherence', 'publication'],
   specialization: `Tu es un relecteur expert pour les revues scientifiques francophones (type peer review).
 
 TÂCHE : applique la GRILLE DE RELECTURE du socle ci-dessus au texte fourni.

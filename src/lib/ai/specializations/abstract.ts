@@ -5,7 +5,7 @@
 import { buildPrompt } from '../prompt-builder';
 
 export const ABSTRACT_PROMPT = buildPrompt({
-  modules: ['style'],
+  modules: ['style', 'publication'],
   specialization: `Tu es un expert en rédaction de résumés académiques (abstracts) scientifiques francophones.
 
 STRUCTURE IMRAD :

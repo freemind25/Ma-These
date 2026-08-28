@@ -15,6 +15,7 @@
 //   Ollhoff — How to Write a Literature Review (literature-review)
 //   Rae & Wong — Applied Data Analysis (data-analysis)
 //   Smith & Works — Complete Book of Grant Writing (grant-writing)
+//   Gastel & Day — How to Write and Publish a Scientific Paper (publication)
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -32,7 +33,8 @@ export type KnowledgeModule =
   | "writing-process"
   | "literature-review"
   | "data-analysis"
-  | "grant-writing";
+  | "grant-writing"
+  | "publication";
 
 // ───────────────────────────────────────
 // Module: STYLE — règles rédactionnelles (White + existant)
@@ -393,6 +395,52 @@ const GRANT_WRITING_MODULE = `
 `;
 
 // ───────────────────────────────────────
+// Module: PUBLICATION — cycle, revue, éthique pub., vérification (Gastel & Day)
+// ───────────────────────────────────────
+
+const PUBLICATION_MODULE = `
+## PUBLICATION SCIENTIFIQUE
+
+### Cycle de publication
+- SI année 1-2 → prioriser rédaction thèse, pas soumission hâtive
+- SI chapitre = résultat original autonome et solide → candidat article
+- SI thèse par articles → chaque chapitre = article soumis/accepté + chapitre synthèse
+- SI thèse traditionnelle → extraire 1-2 articles post-soutenance
+- SI plusieurs chapitres = même jeu de données → un seul article (anti-salami)
+- SI article soumis avant soutenance → chapitre correspondant doit être compatible
+
+### Choix de revue
+- SI revue choisie AVANT rédaction → manuscrit calibré, moins de révisions
+- SI travaux de référence du sous-champ publiés dans cette revue → bon indicateur de scope
+- SI indexée Scopus/WoS/DOAJ → signal de légitimité
+- SI APC > budget → demander waiver AVANT soumission
+- SI revue < 2 ans sans société savante → vérifier légitimité
+- DORA : évaluer sur contenu, pas sur facteur d'impact comme critère principal
+- Signaux prédateurs : garantie rapide | site mal écrit | métrique propriétaire | pas d'articles vérifiables | sollicitations agressives
+
+### Éthique de publication
+- Paraphrase : SI structure identique + mots remplacés → insuffisante. SI rédigé sans consulter puis vérifié → valide.
+- Salami : SI articles partagent méthode + données + ne diffèrent que par sous-ensemble résultats → salami probable
+- Soumission simultanée 2+ revues → non éthique. Dry-labbing → faute sans degré.
+- Authorship ICMJE : contribution substantielle + rédaction/révision + approbation finale + responsabilité → 4 critères obligatoires. Auteur sans contribution = fantôme (non éthique).
+- Déclarations : SI sujets humains/animaux → approbation éthique dans méthode. SI conflit d'intérêts → déclarer.
+
+### Vérification avant soumission
+IMRAD — erreurs fréquentes :
+- SI intro sans vide comblé → sans orientation
+- SI méthode non répliquable → incomplète
+- SI résultats présentés mais non discutés → orphelins
+- SI discussion camoufe limites (formulations vagues) → manquer de transparence
+- SI résumé ≠ corps du texte → incohérence
+
+Tableaux : SI colonne > 70 % valeurs identiques → phrase suffit. SI > 70 % symboles binaires (+/−) → peu d'information. SI uniquement non significatifs → crédibilise mal. SI tableau = phrase sans perte → supprimer.
+
+Résultats : SI précision trompeuse (ex. 28,8136 % pour 17/59) → adapter. SI non-effets omis → biais de reporting.
+
+Cohérence intro/discussion et texte/tableau : voir module Cohérence (principes) — ce module fournit la procédure de détection en contexte publication.
+`;
+
+// ───────────────────────────────────────
 // Module registry
 // ───────────────────────────────────────
 
@@ -407,6 +455,7 @@ const MODULES: Record<KnowledgeModule, string> = {
   'literature-review': LITERATURE_REVIEW_MODULE,
   'data-analysis': DATA_ANALYSIS_MODULE,
   'grant-writing': GRANT_WRITING_MODULE,
+  publication: PUBLICATION_MODULE,
 };
 
 // ───────────────────────────────────────
