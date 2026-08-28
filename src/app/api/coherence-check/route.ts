@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import { getKnowledgeCore } from "@/lib/ai/knowledge-core";
 import { COHERENCE_CHECKS } from "@/lib/data/coherence-data";
 import { z } from "zod/v4";
 
@@ -117,13 +118,20 @@ function buildSystemPrompt(mode: string, focusedChecks?: string[]): string {
     '  "recommendations": ["recommandation 1", "recommandation 2"]\n' +
     '}';
 
+  // Option B : le savoir vient du knowledge-core, le format de sortie reste dans la route
+  const knowledgeBase = getKnowledgeCore(["coherence"]);
+
   return (
     "Tu es un expert en r\u00e9daction acad\u00e9mique sp\u00e9cialis\u00e9 dans la v\u00e9rification de coh\u00e9rence des th\u00e8ses de doctorat. " +
     "Tu agis comme un \u00ab sceau de v\u00e9rit\u00e9 \u00bb (truthmark) qui certifie la coh\u00e9rence interne d\u2019un manuscrit.\n\n" +
-    "Analyse le texte soumis en v\u00e9rifiant sp\u00e9cifiquement les points de contr\u00f4le suivants :\n\n" +
+    "Savoir de r\u00e9f\u00e9rence (knowledge-core) :\n" +
+    "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n" +
+    knowledgeBase +
+    "\n\nGrille de contr\u00f4le structur\u00e9e (les cat\u00e9gories ci-dessous d\u00e9rivent des principes du noyau) :\n\n" +
     checksList +
     "\n\nPour chaque contr\u00f4le, \u00e9value si un probl\u00e8me est d\u00e9tect\u00e9 ou non. " +
-    "Si un probl\u00e8me est d\u00e9tect\u00e9, fournis un extrait du texte probl\u00e9matique et une suggestion de correction.\n\n" +
+    "Si un probl\u00e8me est d\u00e9tect\u00e9, fournis un extrait du texte probl\u00e9matique et une suggestion de correction. " +
+    "Appuie ton analyse sur les crit\u00e8res du savoir de r\u00e9f\u00e9rence ci-dessus.\n\n" +
     "R\u00e9ponds UNIQUEMENT en JSON valide, sans markdown, sans backticks, sans commentaires. Format exact :\n" +
     jsonFormat +
     "\n\nR\u00e8gles d\u2019\u00e9valuation :\n" +

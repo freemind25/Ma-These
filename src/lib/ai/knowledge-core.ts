@@ -129,11 +129,18 @@ const COHERENCE_MODULE = `
 ### Cohérence terminologique
 - Un même concept = un même terme dans toute la thèse
 - Synonymies explicitées ; abréviations définies à première occurrence
+- Un terme ne doit pas glisser subtilement de sens sans justification
 
 ### Cohérence référentielle
 - Un même auteur pas cité avec interprétations opposées sans justification
-- Chaque citation dans le texte → dans la bibliographie
+- Chaque citation dans le texte → dans la bibliographie (sinon = citation fantôme)
 - Référence utilisée dans un contexte correspondant à son contenu réel
+
+### Cohérence argumentative
+- Deux passages affirment des choses opposées sans concilier la nuance = contradiction interne
+- Toute assertion importante sans référence ni preuve = affirmation non étayée
+- Corrélation observée présentée comme relation causale = confusion à corriger
+- Conclusion étendue au-delà de ce que les données permettent = sur-généralisation
 `;
 
 // ───────────────────────────────────────

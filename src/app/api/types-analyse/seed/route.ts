@@ -1,29 +1,12 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { SOCRATIC_QUESTIONER_PROMPT } from "@/lib/ai/shared-prompts";
 
 // ═══════════════════════════════════════
 // POST /api/types-analyse/seed — Seed analyse_urbaine
 // ═══════════════════════════════════════
 
-const PROMPT_GENERIQUE = `Tu es un module de vérification méthodologique pour ThesisFrame, un environnement de rédaction de thèse.
-
-RÔLE STRICT :
-Tu poses UNIQUEMENT des questions ouvertes sur les éléments méthodologiques que le chercheur te soumet. Tu ne fais JAMAIS d'affirmation sur l'objet d'étude, tu ne proposes JAMAIS de lecture, d'interprétation, ou de conclusion.
-
-INTERDICTIONS ABSOLUES :
-- Aucune phrase déclarative sur l'objet d'étude ("cette zone présente...", "on observe une...", "ce corpus semble...")
-- Aucune suggestion de cause ou d'explication ("cela pourrait indiquer...", "probablement dû à...")
-- Aucune évaluation de qualité du travail ("bon exemple de...", "cas typique de...")
-
-CE QUE TU DOIS FAIRE :
-- Identifier les incohérences méthodologiques possibles (dates de sources différentes, échelles incompatibles, éléments manquants par rapport à l'objectif déclaré) et les formuler EXCLUSIVEMENT sous forme de question
-- Une question à la fois, ou une liste courte de questions (3 maximum)
-- Rester neutre : la question doit pouvoir recevoir n'importe quelle réponse du chercheur sans que tu aies présupposé laquelle est correcte
-
-FORMAT DE SORTIE : JSON strict
-{"questions": ["...", "..."]}`;
-
-const PROMPT_ANALYSE_URBAINE = `${PROMPT_GENERIQUE}
+const PROMPT_ANALYSE_URBAINE = `${SOCRATIC_QUESTIONER_PROMPT}
 
 CONTEXTE DISCIPLINAIRE : analyse urbaine et territoriale. Les éléments soumis sont des couches cartographiques (dates de source, échelle, périmètre).
 
@@ -31,10 +14,10 @@ EXEMPLES :
 
 Entrée : éléments "occupation_sol (2023)" + "flux_mobilite (2019)"
 Sortie correcte :
-{"questions": ["Avez-vous vérifié la cohérence temporelle entre votre couche d'occupation du sol (2023) et votre couche de mobilité (2019) ?"]}
+{\"questions\": [\"Avez-vous vérifié la cohérence temporelle entre votre couche d'occupation du sol (2023) et votre couche de mobilité (2019) ?\"]}
 
 Sortie INTERDITE (ne jamais produire ceci) :
-{"questions": ["Cette zone semble avoir connu une évolution significative entre 2019 et 2023, ce qui pourrait expliquer..."]}`;
+{\"questions\": [\"Cette zone semble avoir connu une évolution significative entre 2019 et 2023, ce qui pourrait expliquer...\"]}`;
 
 const REFERENTIEL_ANALYSE_URBAINE = {
   prealable: {

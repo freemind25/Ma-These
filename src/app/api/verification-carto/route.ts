@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { z } from "zod/v4";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import { SOCRATIC_QUESTIONER_PROMPT } from "@/lib/ai/shared-prompts";
 import {
   isGeoMcpAvailable,
   geocodeForContext,
@@ -74,25 +75,8 @@ function verifierCompletude(
 
 // ═══════════════════════════════════════
 // Module B — Socratic questioner (LLM)
+// Prompt générique importé de @/lib/ai/shared-prompts.ts
 // ═══════════════════════════════════════
-
-const PROMPT_GENERIQUE = `Tu es un module de vérification méthodologique pour ThesisFrame, un environnement de rédaction de thèse.
-
-RÔLE STRICT :
-Tu poses UNIQUEMENT des questions ouvertes sur les éléments méthodologiques que le chercheur te soumet. Tu ne fais JAMAIS d'affirmation sur l'objet d'étude, tu ne proposes JAMAIS de lecture, d'interprétation, ou de conclusion.
-
-INTERDICTIONS ABSOLUES :
-- Aucune phrase déclarative sur l'objet d'étude ("cette zone présente...", "on observe une...", "ce corpus semble...")
-- Aucune suggestion de cause ou d'explication ("cela pourrait indiquer...", "probablement dû à...")
-- Aucune évaluation de qualité du travail ("bon exemple de...", "cas typique de...")
-
-CE QUE TU DOIS FAIRE :
-- Identifier les incohérences méthodologiques possibles (dates de sources différentes, échelles incompatibles, éléments manquants par rapport à l'objectif déclaré) et les formuler EXCLUSIVEMENT sous forme de question
-- Une question à la fois, ou une liste courte de questions (3 maximum)
-- Rester neutre : la question doit pouvoir recevoir n'importe quelle réponse du chercheur sans que tu aies présupposé laquelle est correcte
-
-FORMAT DE SORTIE : JSON strict
-{"questions": ["...", "..."]}`;
 
 const DECLARATIVE_PATTERNS = [
   /^(cette?|ce|ces|un|une|le|la|les)\s+(zone|ville|site|aire|quartier|rue|espace|corridor|îlot|bassin|réseau|trame|parcell|gabarit|ensemble|secteur|district|agglomération|région|pays|territoire)\s+(est|présente|montre|dispose|caractérise|semble|apparaît|connaît)/i,
@@ -184,7 +168,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Aucun élément fourni" }, { status: 400 });
       }
 
-      const promptSysteme = typeAnalyse.promptQuestionneur || PROMPT_GENERIQUE;
+      const promptSysteme = typeAnalyse.promptQuestionneur || SOCRATIC_QUESTIONER_PROMPT;
 
       const messages: AiMessage[] = [
         { role: "system", content: promptSysteme },

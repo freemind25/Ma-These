@@ -1,4 +1,4 @@
-# AGENTS.md — Ma Thèse (ThesisFrame) v1.5.1
+# AGENTS.md — Ma Thèse (ThesisFrame) v1.8.3
 
 > **Contexte pour agents IA de développement (Cursor, Windsurf, Copilot, etc.)**
 > Dernière mise à jour : 28 août 2026
@@ -139,6 +139,7 @@ Le savoir métier est centralisé dans un **socle unique de vérité** :
 ```
 src/lib/ai/
 ├── knowledge-core.ts      ← SOCLE : savoir métier digéré (unique source de vérité)
+├── shared-prompts.ts      ← Prompts de RÔLE/FORMAT réutilisables (pas du savoir métier)
 ├── prompt-builder.ts      ← assembleur : SOCLE + spécialisation
 └── specializations/       ← 19 fichiers (1 par mode + directeur)
     ├── index.ts           ← registry (mode id → prompt)
@@ -162,7 +163,7 @@ src/lib/ai/
 
 **Sources distillées :** Kumar (Research Methodology), Salkind (100 Questions), White (Mapping Your Thesis), Ollhoff (Literature Review), Rae & Wong (Applied Data Analysis), Smith & Works (Grant Writing), Gastel & Day (How to Write and Publish a Scientific Paper)
 
-**Token budget :** full core ~3 806 tokens (≤ 4 500 max), directeur mode ~2 521 tokens (≤ 3 000 max)
+**Token budget :** full core ~3 900 tokens (≤ 4 500 max), directeur mode ~2 600 tokens (≤ 3 000 max)
 
 | Mode | Modules injectés | Tokens ≈ |
 |------|-------------------|----------|
@@ -318,7 +319,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
-| **v1.8.2** | RAG durcissement : thesisId filtering, embedding NOT NULL, HYBRID_WEIGHTS configurables, T3 test script. 1333 tests. |
+| **v1.8.3** | Clôture audit prompts : coherence-check factorisé (Option B, knowledge-core injecté), verification-carto dédupliqué (shared-prompts.ts), cohérence argumentative ajoutée au noyau. 1333 tests. |
 | **v1.8.1** | Phase 5 digestion validée (5/5 sur tests exécutables). Corrections knowledge-core : cas limite citation littérale (T4), critère unité d'analyse étude de cas (T1). Full core ~3806 tokens. |
 | **v1.8.0** | Knowledge-core v2.1 : module publication (Gastel & Day), 11 modules, routes vérification déléguées au noyau |
 | **v1.7.0** | Knowledge-core v2 : 6 ouvrages distillés, 10 modules, mapping optimisé |

@@ -5146,3 +5146,77 @@ Stage Summary:
 - 4/6 routes auditées sont CLEAN (pas de savoir métier, ou déjà migrées)
 - 2 routes nécessitent une action future : coherence-check (HIGH), verification-carto (MEDIUM)
 - Aucune correction effectuée (audit uniquement, conformément au brief)
+
+---
+Task ID: 7
+Agent: Main
+Task: Clôture audit — CORRECTION coherence-check + verification-carto
+
+Work Log:
+
+## CORRECTION 1 — coherence-check (HIGH → FACTORISÉ)
+
+**Analyse comparative COHERENCE_CHECKS (19 checks, 6 catégories) vs COHERENCE_MODULE :**
+
+| Catégorie COHERENCE_CHECKS | Couvert par knowledge-core ? | Décision |
+|---|---|---|
+| terminologique (4 checks) | ✅ OUI | Scoring garde les descriptions, le savoir vient du noyau |
+| numérique (4 checks) | ✅ OUI | Idem |
+| intro-discussion (4 checks) | ✅ OUI | Idem |
+| référentielle (3 checks) | ✅ OUI | Idem |
+| **argumentative (4 checks)** | ❌ NON | **MIGRÉ** vers knowledge-core (cohérence argumentative) |
+| structurelle (4 checks) | Partiel | Transitions = writing-process, conclusion = intro-discussion. 2 checks uniques (annonces non tenues, redondance inter-chapitres) = scoring mécanique, laissés dans la route |
+
+**Règle de décision appliquée :** un critère migre vers le noyau si un AUTRE mode (directeur, peer-review, defense) pourrait en avoir besoin.
+- argumentative → OUI (directeur, peer-review, defense en bénéficient)
+- structurelle unique → NON (purement mécanique, spécifique au scoring)
+
+**Actions :**
+1. COHERENCE_MODULE : ajout section « Cohérence argumentative » (4 règles : contradiction interne, affirmation non étayée, confusion corrélation/causalité, sur-généralisation)
+2. COHERENCE_MODULE : renforcement terminologique (+1 ligne glissement sémantique), référentielle (+précision citation fantôme)
+3. Route coherence-check : `import { getKnowledgeCore }` + injection `getKnowledgeCore(["coherence"])` dans buildSystemPrompt
+4. Pattern Option B : le savoir vient du noyau, la grille de scoring structurée (COHERENCE_CHECKS) reste dans la route
+5. COHERENCE_CHECKS data structure préservée intacte (c'est le format de sortie, pas du savoir dupliqué)
+
+## CORRECTION 2 — verification-carto (MEDIUM → FACTORISÉ)
+
+**Problème :** PROMPT_GENERIQUE dupliqué à l'identique dans :
+- `src/app/api/verification-carto/route.ts` (fallback questionneur)
+- `src/app/api/types-analyse/seed/route.ts` (base de PROMPT_ANALYSE_URBAINE)
+
+**Nature :** RÔLE/FORMAT générique (pas du savoir métier) → ne va PAS dans knowledge-core.
+
+**Actions :**
+1. Créé `src/lib/ai/shared-prompts.ts` — constante `SOCRATIC_QUESTIONER_PROMPT`
+2. `verification-carto/route.ts` : import + remplacement `PROMPT_GENERIQUE` → `SOCRATIC_QUESTIONER_PROMPT`
+3. `types-analyse/seed/route.ts` : import + `PROMPT_ANALYSE_URBAINE` utilise `${SOCRATIC_QUESTIONER_PROMPT}` au lieu de `${PROMPT_GENERIQUE}`
+4. Suppression des deux copies inline (0 référence restante à `PROMPT_GENERIQUE`)
+
+## Validation
+
+- Lint : 0 errors, 181 warnings (baseline inchangé)
+- Tests : 1333/1333 pass (56 fichiers, 0 failure)
+- Token budget : full core ~3900 tokens (< 4500 max) ✅, directeur mode ~2600 tokens (< 3000 max) ✅
+- AGENTS.md : v1.8.3, arborescence mise à jour (shared-prompts.ts), token budget mis à jour
+
+## Tableau d'audit final
+
+| Route | Fichier | Avant | Après | Pattern |
+|-------|---------|-------|-------|----------|
+| deep-research | api/deep-research/route.ts | CLEAN | CLEAN (inchangé) | — |
+| paper2code | api/paper2code/generate/route.ts | CLEAN | CLEAN (inchangé) | — |
+| text-prediction | api/text-prediction/route.ts | CLEAN | CLEAN (inchangé) | — |
+| thesis-rag | lib/rag/rag-service.ts | CLEAN | CLEAN (inchangé) | — |
+| **coherence-check** | **api/coherence-check/route.ts** | **FACTORISER** | **✅ FACTORISÉ** | **Option B** (knowledge-core injecté, scoring dans la route) |
+| **verification-carto** | **api/verification-carto/route.ts + types-analyse/seed/route.ts** | **DÉDUPLIQUER** | **✅ FACTORISÉ** | **shared-prompts.ts** (rôle/format, pas savoir) |
+| verification-publication | api/verification-publication/route.ts | ✅ DÉJÀ FAIT | ✅ (inchangé) | Option B |
+| ai-writing + stream | api/ai-writing/route.ts | ✅ DÉJÀ FAIT | ✅ (inchangé) | SPECIALIZATION_PROMPTS |
+| directeur-chat | api/directeur-chat/route.ts | ✅ DÉJÀ FAIT | ✅ (inchangé) | DIRECTEUR_PROMPT |
+
+Stage Summary:
+- coherence-check : FACTORISÉ (Option B). Knowledge-core coherence module injecté, grille de scoring préservée dans la route
+- verification-carto : FACTORISÉ. PROMPT_GENERIQUE → SOCRATIC_QUESTIONER_PROMPT dans shared-prompts.ts
+- Nouveau fichier : src/lib/ai/shared-prompts.ts (prompts de rôle/format réutilisables)
+- Knowledge-core enrichi : section « Cohérence argumentative » (4 règles) dans module coherence
+- Tous les 6/6 fichiers modifiés : knowledge-core.ts, coherence-check/route.ts, verification-carto/route.ts, types-analyse/seed/route.ts, shared-prompts.ts (nouveau), AGENTS.md
+- Version : v1.8.3
