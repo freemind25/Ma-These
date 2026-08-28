@@ -5292,3 +5292,32 @@ Stage Summary:
 - feedback.md créé — processus formel pour remonter les divergences dans le knowledge-core
 - AGENTS.md v1.8.4 — règle #9 + point d'attention #7 + historique versions
 - Prompt 4 terminé — la boucle feedback→noyau est maintenant documentée et opérationnelle
+---
+Task ID: 12
+Agent: Main
+Task: Prompt 3 — Injection par niveau doctorant (DEBUTANT/INTERMEDIAIRE/AVANCE)
+
+Work Log:
+- Analyse de l'architecture : spécialisations pré-construites à l'import (constantes module-level)
+- Décision de design : calibration en POST-TRAITEMENT (après le system prompt), pas dans le noyau
+  - Le savoir (knowledge-core) ne change pas par niveau — la vérité est la vérité
+  - Les spécialisations ne changent pas — le rôle est le même
+  - Seul le COMMENT appliquer le savoir change (ton, granularité, pédagogie)
+- Ajouté dans prompt-builder.ts :
+  - Type `DoctoralLevel` = 'debutant' | 'intermediaire' | 'avance'
+  - `LEVEL_CALIBRATIONS` : 3 calibrations (~110 tokens chacune)
+  - `getLevelCalibration(level?)` : retourne la calibration ou chaîne vide
+- Mis à jour 3 routes :
+  - ai-writing/route.ts : +doctoralLevel dans schema Zod, post-injection
+  - ai-writing/stream/route.ts : même pattern
+  - directeur-chat/route.ts : même pattern (après fiches corpus)
+- Le champ est optionnel (z.enum().optional()) — pas de breaking change
+- Lint : 0 errors, 184 warnings (+3 vs baseline, imports type inutilisés au runtime)
+- Tests : 1333/1333 pass
+- Version : v1.9.0
+
+Stage Summary:
+- Pattern de post-injection validé : le knowledge-core reste la source de vérité, le niveau calibre le comportement
+- 3 routes mises à jour, 0 spécialisation modifiée, 0 module noyau modifié
+- Impact token : +~110 tokens quand le niveau est fourni (optionnel)
+- Version v1.9.0

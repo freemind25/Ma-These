@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { DIRECTEUR_PROMPT } from "@/lib/ai/specializations/directeur";
+import { getLevelCalibration, type DoctoralLevel } from "@/lib/ai/prompt-builder";
 import { detectRelevantFiches, getFichesContentForPrompt } from "@/data/corpus-publication";
 import { z } from "zod/v4";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
@@ -11,6 +12,8 @@ import { type AiProviderConfig } from "@/lib/ai/ai-provider";
 // System prompt centralized in src/lib/ai/specializations/directeur.ts
 // ═══════════════════════════════════════
 
+const DOCTORAL_LEVELS = ["debutant", "intermediaire", "avance"] as const;
+
 const directeurChatSchema = z.object({
   messages: z.array(
     z.object({
@@ -19,6 +22,7 @@ const directeurChatSchema = z.object({
     })
   ).min(1),
   thesisContext: z.string().optional(),
+  doctoralLevel: z.enum(DOCTORAL_LEVELS).optional(),
   _aiConfig: z.unknown().optional(),
 });
 
@@ -37,12 +41,13 @@ export async function POST(request: NextRequest) {
       ? detectRelevantFiches(latestUserMessage.content)
       : [];
 
-    // Build the system prompt (from centralized specialization), appending fiche content if any
+    // Build the system prompt (from centralized specialization), appending fiche content + level calibration
     let systemPrompt = DIRECTEUR_PROMPT;
     if (relevantFicheIds.length > 0) {
       const ficheContent = getFichesContentForPrompt(relevantFicheIds);
       systemPrompt += ficheContent;
     }
+    systemPrompt += getLevelCalibration(validated.doctoralLevel);
 
     // Build messages array for AI
     const aiMessages: AiMessage[] = [

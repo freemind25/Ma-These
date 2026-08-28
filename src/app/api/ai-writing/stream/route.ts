@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { generateCompletionStream, type AiMessage } from "@/lib/ai/zai-client";
 import { WRITING_MODES } from "@/data/ai-writing-modes";
 import { SPECIALIZATION_PROMPTS } from "@/lib/ai/specializations";
+import { getLevelCalibration, type DoctoralLevel } from "@/lib/ai/prompt-builder";
 import { z } from "zod/v4";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
 
@@ -9,10 +10,13 @@ import { type AiProviderConfig } from "@/lib/ai/ai-provider";
 // POST /api/ai-writing/stream — Streaming AI writing
 // System prompts centralized in src/lib/ai/specializations/
 // ═══════════════════════════════════════
+const DOCTORAL_LEVELS = ["debutant", "intermediaire", "avance"] as const;
+
 const streamSchema = z.object({
   mode: z.string(),
   prompt: z.string().min(10, "Le prompt doit contenir au moins 10 caractères"),
   context: z.string().optional(),
+  doctoralLevel: z.enum(DOCTORAL_LEVELS).optional(),
   _aiConfig: z.unknown().optional(),
 });
 
@@ -37,14 +41,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Resolve system prompt from centralized specializations
-    const systemPrompt = SPECIALIZATION_PROMPTS[validated.mode];
-    if (!systemPrompt) {
+    // Resolve system prompt from centralized specializations + level calibration
+    const basePrompt = SPECIALIZATION_PROMPTS[validated.mode];
+    if (!basePrompt) {
       return new Response(
         JSON.stringify({ error: `Aucun prompt de spécialisation trouvé pour le mode « ${validated.mode} ».` }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
+    const levelCalibration = getLevelCalibration(validated.doctoralLevel);
+    const systemPrompt = basePrompt + levelCalibration;
 
     const messages: AiMessage[] = [
       { role: "system", content: systemPrompt },

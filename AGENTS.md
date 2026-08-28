@@ -1,4 +1,4 @@
-# AGENTS.md — Ma Thèse (ThesisFrame) v1.8.4
+# AGENTS.md — Ma Thèse (ThesisFrame) v1.9.0
 
 > **Contexte pour agents IA de développement (Cursor, Windsurf, Copilot, etc.)**
 > Dernière mise à jour : 28 août 2026
@@ -321,6 +321,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
+| **v1.9.0** | Injection par niveau doctorant (DEBUTANT/INTERMEDIAIRE/AVANCE). `getLevelCalibration()` dans prompt-builder.ts, post-injection dans 3 routes (ai-writing, stream, directeur-chat). Token budget : +~110 tokens par niveau. Knowledge-core inchangé. |
 | **v1.8.4** | Processus de feedback (feedback.md + règle #9 AGENTS.md). Capture → Triage → Correction → Validation → Documentation. |
 | **v1.8.3** | Clôture audit prompts + T3 RAG validé (Mistral/mistral-embed, hybrid+semantic). coherence-check factorisé (Option B), verification-carto dédupliqué (shared-prompts.ts), cohérence argumentative ajoutée au noyau. Bilan 6/6. 1333 tests. |
 | **v1.8.1** | Phase 5 digestion validée (5/5 sur tests exécutables). Corrections knowledge-core : cas limite citation littérale (T4), critère unité d'analyse étude de cas (T1). Full core ~3806 tokens. |
