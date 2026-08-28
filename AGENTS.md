@@ -159,6 +159,7 @@ src/lib/ai/
 7. Les routes API (`/api/ai-writing`, `/api/ai-writing/stream`, `/api/directeur-chat`) utilisent `SPECIALIZATION_PROMPTS[mode.id]`
 8. **Leçon digestion (Phase 5) :** Un cas limite non couvert par le noyau sera résolu par chaque mode par extrapolation — potentiellement contradictoire. Toute divergence inter-modes révélée par un test ou retour utilisateur = signal d'un **trou dans le knowledge-core**, pas d'un bug de prompt. Corriger dans le module, pas dans la spécialisation.
 9. **Processus de feedback (cf. `feedback.md`) :** Tout signal de divergence (retour utilisateur, test, audit) suit le processus : Capture → Triage (trou du noyau ? duplication ? faux positif ?) → Correction dans le bon fichier → Validation (lint + tests + convergence inter-modes) → Documentation dans le worklog. **Jamais** corriger dans une spécialisation ce qui appartient au noyau.
+10. **Banques de phrases (phrasebank) :** `src/lib/data/phrasebank-data.ts` est du contenu d'affichage (phrases académiques pour l'utilisateur), **jamais** injecté dans les prompts. Ne pas le confondre avec du savoir métier.
 
 **Modules de connaissance disponibles (11) :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`, `writing-process`, `literature-review`, `data-analysis`, `grant-writing`, `publication`
 
@@ -321,7 +322,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
-| **v1.9.0** | Injection par niveau doctorant (DEBUTANT/INTERMEDIAIRE/AVANCE). `getLevelCalibration()` dans prompt-builder.ts, post-injection dans 3 routes (ai-writing, stream, directeur-chat). Token budget : +~110 tokens par niveau. Knowledge-core inchangé. |
+| **v1.9.1** | Clôture ressources — inventaire Task 14 traité. 5 candidats résolus : corpus-publication (source annotée), coherence-data (5 checks manquants migrés dans le noyau + sous-catégorie structurelle), CHECKLIST_8C (LAISSER — tâche UI), phrasebank (règle #10), CASP/SLR (LAISSER — UI interactive). Coherence module : 7 sous-catégories. |
 | **v1.8.4** | Processus de feedback (feedback.md + règle #9 AGENTS.md). Capture → Triage → Correction → Validation → Documentation. |
 | **v1.8.3** | Clôture audit prompts + T3 RAG validé (Mistral/mistral-embed, hybrid+semantic). coherence-check factorisé (Option B), verification-carto dédupliqué (shared-prompts.ts), cohérence argumentative ajoutée au noyau. Bilan 6/6. 1333 tests. |
 | **v1.8.1** | Phase 5 digestion validée (5/5 sur tests exécutables). Corrections knowledge-core : cas limite citation littérale (T4), critère unité d'analyse étude de cas (T1). Full core ~3806 tokens. |

@@ -1,7 +1,17 @@
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-// ThesisFrame \u2014 Corpus \u00ab R\u00e9daction et publication d'articles scientifiques \u00bb
-// Synth\u00e9tis\u00e9 \u00e0 partir de Gastel, B. & Day, R.A., How to Write and Publish a Scientific Paper (9e \u00e9d., 2022)
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════════════════════════════════════
+// ThesisFrame — Corpus « Rédaction et publication d'articles scientifiques »
+// Synthétisé à partir de Gastel, B. & Day, R.A., How to Write and Publish a Scientific Paper (9e éd., 2022)
+//
+// ⚠️ STATUT : SOURCE ORIGINELLE du module « publication » dans knowledge-core.ts
+//   Le savoir canonique distillé vit dans le noyau (règles SI/ALORS, ~380 tokens).
+//   Ce fichier conserve les fiches détaillées (signaux, questions diagnostiques,
+//   points d'intégration) pour :
+//   - L'UI : affichage dans le module directeur (GET /api/corpus-publication)
+//   - L'IA : injection conditionnelle dans directeur-chat (detectRelevantFiches)
+//   NE PAS injecter ces fiches en double avec le noyau. Le noyau est injecté
+//   en premier ; ces fiches sont un complément contextuel injecté uniquement
+//   quand des signaux pertinents sont détectés dans le message utilisateur.
+// ═══════════════════════════════════════════════════════════════════════════
 
 export interface CorpusFiche {
   id: string;

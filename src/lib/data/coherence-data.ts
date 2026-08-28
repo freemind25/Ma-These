@@ -1,6 +1,14 @@
 // ═══════════════════════════════════════════════════════════════
 // Ma Thèse — Coherence Check Data
 // Truthmark-inspired coherence verification categories
+//
+// ⚠️ STATUT : DONNÉES STRUCTURÉES (UI + format IA)
+//   Le savoir métier (règles de cohérence) vit dans knowledge-core.ts,
+//   module « coherence » (7 sous-catégories dont structurelle).
+//   Ce fichier contient les données structurées pour :
+//   - L'UI : catégories, icônes, couleurs, sélections de modes
+//   - L'IA : format de sortie (id, severity, JSON) via coherence-check (Option B)
+//   Les descriptions des checks dérivent du noyau — ne pas les désynchroniser.
 // ═══════════════════════════════════════════════════════════════
 
 export interface CoherenceCheck {

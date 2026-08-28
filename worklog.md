@@ -5412,3 +5412,66 @@ Stage Summary:
 - 5 candidats distillation identifiés (B3 priorité haute, B4+C1 moyenne, B5+C2 faible)
 - upload/ est vide
 - Aucun fichier de ressource non répertorié
+---
+Task ID: 15
+Agent: Main
+Task: Clôture exhaustive — traiter les 5 candidats de l'audit Task 14
+
+Work Log:
+
+### 1. corpus-publication.ts — VERDICT : DIGÉRÉ (source)
+- Importé par directeur-chat (injection conditionnelle) ET /api/corpus-publication (UI)
+- 6 fiches détaillées Gastel & Day, PLUS volumineuses que le module distillé (~380 tokens)
+- Pattern : noyau injecté en premier, fiches = complément contextuel on-demand
+- Action : ajouté en-tête ⚠️ STATUT : SOURCE ORIGINELLE
+
+### 2. coherence-data.ts — 5 checks manquants migrés
+- Comparaison systématique des 20 checks vs 6 sous-catégories du noyau
+- 15/20 checks → déjà couverts par le noyau ✓
+- 5/20 ABSENTS → migrés :
+  - `term-definition` (définitions contradictoires) → ajouté dans cohérence terminologique
+  - `struct-transition` (transitions absentes) → NOUVELLE sous-catégorie « Cohérence structurelle »
+  - `struct-annonce` (annonces non tenues) → idem
+  - `struct-repetition` (redondance inter-chapitres) → idem
+  - `struct-conclusion-boucle` (conclusion non bouclée) → idem
+- Module coherence : désormais 7 sous-catégories (terminologique, numérique, intro-discussion, référentielle, argumentative, structurelle, texte/tableau)
+- Action : ajouté en-tête ⚠️ STATUT : DONNÉES STRUCTURÉES
+
+### 3. CHECKLIST_8C (auto-edition-page.tsx) — VERDICT : LAISSER
+- CRITERIA (8 critères) → utilisés dans buildCriterionPrompt() comme INSTRUCTION DE TÂCHE
+- Le SAVOIR (comment juger) vient du knowledge-core module auto-edition
+- CHECKLIST_8C (22 sous-items) + SCIENTIFIC_CHECKLIST (7 items) → purement interactifs, jamais envoyés à l'IA
+- Aucune migration nécessaire
+
+### 4. phrasebank-data.ts — VERDICT : LAISSER
+- ~400+ phrases académiques FR (Manchester Phrasebank adapté)
+- Contenu d'affichage, jamais injecté dans les prompts
+- Action : ajouté règle #10 dans AGENTS.md
+
+### 5. CASP/extraction SLR (outils-slr-page.tsx) — VERDICT : LAISSER
+- CASP_CHECKLIST (10 items), INITIAL_CRITERIA (7 items), EXTRACTION_FIELDS (14 champs)
+- Page utilise l'IA via mode revue-litterature (knowledge-core literature-review)
+- Les données CASP sont envoyées comme CONTEXTE UTILISATEUR, pas comme savoir systémique
+- Aucune migration nécessaire
+
+### Validation
+- Lint : 0 errors, 184 warnings (baseline +3 inchangée)
+- Tests : 1333/1333 pass
+- Version : v1.9.1
+
+## Tableau final des statuts (mise à jour Task 14)
+
+| # | Ressource | Statut initial | Statut final | Action |
+|---|-----------|---------------|-------------|--------|
+| B3 | corpus-publication.ts | 🟡 CANDIDAT | ✅ DIGÉRÉ (source) | En-tête SOURCE ajouté |
+| B4 | coherence-data.ts | 🟡 CANDIDAT | ✅ ALIGNÉ | 5 checks migrés noyau + en-tête |
+| B5 | phrasebank-data.ts | 🟡 CANDIDAT | 🟢 LAISSER | Règle #10 AGENTS.md |
+| C1 | CHECKLIST_8C | 🟡 CANDIDAT | 🟢 LAISSER | Tâche UI, pas savoir |
+| C2 | CASP/SLR | 🟡 CANDIDAT | 🟢 LAISSER | UI interactive |
+
+Stage Summary:
+- 5/5 candidats traités : 1 source annotée, 1 aligné (5 règles migrées), 3 laissés avec justification
+- Knowledge-core coherence : 6 → 7 sous-catégories (+ structurelle)
+- AGENTS.md : v1.9.1, règle #10 (phrasebank)
+- Lint 0 errors, 1333/1333 tests
+- Clôture exhaustive : aucun candidat en suspens

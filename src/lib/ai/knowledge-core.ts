@@ -130,6 +130,7 @@ const COHERENCE_MODULE = `
 - Un même concept = un même terme dans toute la thèse
 - Synonymies explicitées ; abréviations définies à première occurrence
 - Un terme ne doit pas glisser subtilement de sens sans justification
+- Un même terme ne doit pas être défini différemment selon les chapitres
 
 ### Cohérence référentielle
 - Un même auteur pas cité avec interprétations opposées sans justification
@@ -141,6 +142,12 @@ const COHERENCE_MODULE = `
 - Toute assertion importante sans référence ni preuve = affirmation non étayée
 - Corrélation observée présentée comme relation causale = confusion à corriger
 - Conclusion étendue au-delà de ce que les données permettent = sur-généralisation
+
+### Cohérence structurelle
+- Un chapitre commence sans lien avec le précédent = transition absente
+- Le plan annoncé dans l'intro ne correspond pas au plan réel = annonces non tenues
+- Un même contenu repris quasi à l'identique dans deux chapitres = redondance inter-chapitres
+- La conclusion ne reprend pas les questions de recherche et n'y répond pas = conclusion non bouclée
 `;
 
 // ───────────────────────────────────────
