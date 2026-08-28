@@ -5321,3 +5321,18 @@ Stage Summary:
 - 3 routes mises à jour, 0 spécialisation modifiée, 0 module noyau modifié
 - Impact token : +~110 tokens quand le niveau est fourni (optionnel)
 - Version v1.9.0
+---
+Task ID: 13
+Agent: Main
+Task: Synchronisation documentation → v1.9.0
+
+Work Log:
+- Audit de cohérence : CONTEXT-PROJET.md et ARCHITECTURE-CONNAISSANCE.md figés en v1.8.3 alors que AGENTS.md était déjà à v1.9.0
+- CONTEXT-PROJET.md mis à jour : version v1.9.0, §2.4 calibration par niveau, §5 historique v1.8.4+v1.9.0, §6 règle #9, §7 feedback.md, §8 prochaines étapes actualisées
+- docs/ARCHITECTURE-CONNAISSANCE.md mis à jour : version v1.9.0, §3 couche 3 enrichie (post-injection), §7 processus digestion→feedback, §11 checklist + feedback.md, §12 calibration par niveau (nouveau)
+- Git commit ba7071d
+
+Stage Summary:
+- Les 3 fichiers de documentation (AGENTS.md, CONTEXT-PROJET.md, ARCHITECTURE-CONNAISSANCE.md) sont désormais cohérents à v1.9.0
+- feedback.md est référencé dans les 3 documents
+- La calibration par niveau est documentée dans CONTEXT-PROJET.md et ARCHITECTURE-CONNAISSANCE.md
