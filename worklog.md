@@ -5521,3 +5521,25 @@ Stage Summary:
 - Logging structuré en place pour mesure préalable (étape 3)
 - Source des patterns : architecture de prompts.chat (licence CC0), intégrés comme patterns pas comme contenu
 - Version projet : v1.9.2
+---
+Task ID: 17
+Agent: Main
+Task: Validation v1.9.2 — entrée en phase d'observation
+
+Work Log:
+- Livraison 4/4 validée par l'utilisateur — 3 décisions architecturales remarquées :
+  1. Auto-sélection texte vs question courte (Étape 1) — déduite du principe, pas explicitement demandée
+  2. Checks AMBIGU exclus du scoring (Étape 2) — score conservateur + audit transparent
+  3. COHERENCE_AUDIT_PROMPT standalone (Étape 4) — pas de knowledge-core pour l'auditeur (il juge des verdicts, pas du savoir)
+- Point de surveillance noté : exclusion AMBIGU modifie les scores affichés vs anciennes sessions
+  - Recommandation : versionner le score (scoreVersion: 2) ou noter la discontinuité si historique affiché
+- Phase d'observation activée (2-3 semaines) :
+  - [coherence-audit] logs à surveiller : rate <10% → clore ; >30% → pipeline 4 appels
+  - Signal diagnostique : rétrogradations systématiques sur une même catégorie = biais évaluateur passe 1
+  - Re-test digestion T1 à prévoir (vérifier section Analyse cite « unité d'analyse »)
+
+Stage Summary:
+- v1.9.2 validée — système de connaissance auto-correctif avec observabilité
+- 1333 tests verts, 0 régression
+- En phase d'observation : la donnée [coherence-audit] rate=...% décidera de clore ou d'aller au pipeline 4 appels
+- Score discontinuity notée pour futures versions de l'UI

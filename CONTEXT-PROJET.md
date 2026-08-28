@@ -48,7 +48,7 @@ feedback.md                ← Processus de feedback (divergence → correction 
 |--------|-----------------|---------|
 | `style` | White | Rédaction académique FR, paragraphes, pièges |
 | `ethics` | Kumar + Salkind | Plagiat, consentement, conflits d'intérêts |
-| `coherence` | White + existant | Terminologique, numérique, intro-discussion, référentielle, **argumentative** |
+| `coherence` | White + existant | Terminologique, numérique, intro-discussion, référentielle, **argumentative**, **structurelle** (v1.9.2) |
 | `auto-edition` | Existant | 8 critères de correction auto |
 | `peer-review` | Existant | Grille relecture par les pairs |
 | `methodology` | Kumar + Salkind | Design, échantillonnage, biais, validité |
@@ -79,7 +79,20 @@ Routes impactées : `ai-writing`, `ai-writing/stream`, `directeur-chat`.
 - **Calibration niveau** : +~110 tokens (optionnel)
 - Chaque spécialisation déclare ses modules nécessaires → injection sélective
 
-### 2.6 Trois patterns de factorisation
+### 2.6 Patterns architecturaux (v1.9.2)
+
+Deux patterns inspirés de prompts.chat (licence CC0, intégrés comme **architecture**, pas comme contenu) :
+
+| Pattern | Localisation | Principe |
+|---------|-------------|----------|
+| **Reasoning-then-Output** | `specializations/directeur.ts` | Avant le feedback final, l'IA rend visible son raisonnement (forces, axes, critères mobilisés). Sortie : `## Analyse` (3-5 lignes, hors quota 400 mots) → `## Retour` (méthode 5 étapes). Conditionnel : uniquement pour révision de texte, pas les questions courtes. |
+| **Counter-Audit 2 passes** | `specializations/coherence.ts` + `coherence-check/route.ts` | Passe 1 = analyse standard. Passe 2 = auditeur adversarial reçoit UNIQUEMENT les verdicts EN DÉFAUT + extraits. Ne peut que CONFIRMER ou RÉTROGRADER vers AMBIGU (jamais rétablir). Checks AMBIGU exclus du scoring mais visibles dans `audit[]`. |
+
+**Phase d'observation (en cours)** : logs `[coherence-audit] rate=...%` → <10% = clore ; >30% = pipeline 4 appels ; entre les deux = version C définitive. Signal diagnostique : rétrogradations systématiques sur une catégorie = biais évaluateur passe 1.
+
+**Discontinuité de score** : l'exclusion des AMBIGU du scoring (v1.9.2) modifie les scores affichés vs anciennes sessions. Si l'UI affiche un historique de scores, prévoir `scoreVersion: 2` pour noter la discontinuité.
+
+### 2.7 Trois patterns de factorisation
 
 | Pattern | Quand l'utiliser | Exemples |
 |---------|-----------------|---------|
@@ -87,7 +100,7 @@ Routes impactées : `ai-writing`, `ai-writing/stream`, `directeur-chat`.
 | **Option B** — Noyau + scoring | Le savoir vient du noyau, le format de sortie (grille, scores) reste dans la route | `verification-publication`, `coherence-check` |
 | **Shared prompt** — Rôle/Format | Prompt de rôle réutilisable, mais pas du savoir métier → `shared-prompts.ts` | `verification-carto`, `types-analyse/seed` |
 
-### 2.7 Règle de décision migration
+### 2.8 Règle de décision migration
 
 > Un critère migre vers le noyau si un **AUTRE** mode (directeur, peer-review, defense) pourrait en avoir besoin.
 
@@ -173,7 +186,23 @@ Exemple : la cohérence argumentative (contradiction interne, sur-généralisati
 
 ---
 
-## 8. Prochaines étapes
+## 8. Phase d'observation — v1.9.2
 
+Le contre-audit (Pattern 2 version C) est en production avec logging structuré. La décision de l'étendre ou de le clore dépend de la donnée empirique :
+
+| Seuil | Action |
+|-------|--------|
+| `rate < 10%` | Clore le chantier patterns — version C est la bonne taille |
+| `10% ≤ rate ≤ 30%` | Version C définitive — documenter le taux dans le worklog |
+| `rate > 30%` | Justifier le pipeline 4 appels pour les modes lourds |
+
+Signal diagnostique secondaire : rétrogradations systématiques sur une même catégorie → biais de l'évaluateur passe 1 → candidat à une précision du module coherence (protocole #11).
+
+Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le critère « unité d'analyse » (validation du Pattern 1 comme sonde anti-régression).
+
+## 9. Prochaines étapes
+
+- **Données [coherence-audit]** : collecter les premiers taux de rétrogradation pour décider du seuil
 - **sqlite-vec** : migration quand le volume de chunks dépasse les capacités de parsing JSON
 - **Calibration front-end** : exposer le sélecteur de niveau doctorant dans l'UI (actuellement API-only)
+- **Score versioning** : ajouter `scoreVersion: 2` si l'UI expose un historique de scores coherence
