@@ -157,19 +157,19 @@ src/lib/ai/
 6. `src/data/directeur-prompt.ts` est déprécié — utiliser `src/lib/ai/specializations/directeur.ts`
 7. Les routes API (`/api/ai-writing`, `/api/ai-writing/stream`, `/api/directeur-chat`) utilisent `SPECIALIZATION_PROMPTS[mode.id]`
 
-**Modules de connaissance disponibles (10) :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`, `writing-process`, `literature-review`, `data-analysis`, `grant-writing`
+**Modules de connaissance disponibles (11) :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`, `writing-process`, `literature-review`, `data-analysis`, `grant-writing`, `publication`
 
-**Sources distillées :** Kumar (Research Methodology), Salkind (100 Questions), White (Mapping Your Thesis), Ollhoff (Literature Review), Rae & Wong (Applied Data Analysis), Smith & Works (Grant Writing)
+**Sources distillées :** Kumar (Research Methodology), Salkind (100 Questions), White (Mapping Your Thesis), Ollhoff (Literature Review), Rae & Wong (Applied Data Analysis), Smith & Works (Grant Writing), Gastel & Day (How to Write and Publish a Scientific Paper)
 
 **Mapping module ↔ mode (injection sélective) :**
 
 | Mode | Modules injectés | Tokens ≈ |
 |------|-------------------|----------|
-| directeur | style, ethics, coherence, methodology, writing-process | 2 386 |
+| directeur | style, ethics, coherence, methodology, writing-process, publication | 2 186 |
 | scientific-writing | style, coherence, writing-process | 1 190 |
 | literature-review | literature-review, style | 1 030 |
 | revue-litterature | literature-review, methodology, style | 1 537 |
-| peer-review | peer-review, coherence | 1 180 |
+| peer-review | peer-review, coherence, publication | 1 202 |
 | revision-plan | peer-review, coherence, writing-process, style | 1 436 |
 | paraphrase | style, ethics | 794 |
 | academic-reformulation | style, ethics | 794 |
@@ -177,7 +177,7 @@ src/lib/ai/
 | methodology | methodology, style | 1 370 |
 | theory | style, writing-process | 970 |
 | auto-edition-8c | auto-edition, style | 580 |
-| abstract | style | 360 |
+| abstract | style, publication | 885 |
 | grammaire | style | 360 |
 | supervision | style | 360 |
 | harper | style | 360 |
@@ -189,7 +189,7 @@ src/lib/ai/
 - **INTERDIT** : `bun test` (runner natif Bun incompatible avec `vi.mock`/`vi.hoisted`)
 - Fichiers de test : colocated `route.test.ts` à côté de `route.ts`
 - Imports test : `import { describe, it, expect, vi } from 'vitest'`
-- 1318 tests existants (55 fichiers)
+- 1333 tests existants (56 fichiers)
 
 ### Lint
 - `bun run lint` — 0 erreurs acceptées
@@ -310,6 +310,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
+| **v1.8.0** | Knowledge-core v2.1 : module publication (Gastel & Day), 11 modules, routes vérification déléguées au noyau |
 | **v1.7.0** | Knowledge-core v2 : 6 ouvrages distillés, 10 modules, mapping optimisé |
 | **v1.6.0** | Architecture connaissance : knowledge-core + prompt-builder + 19 spécialisations |
 | **v1.5.1** | Sécurité (clés retirées), tests P1 (1318/1318), erreurs FR, README fix |

@@ -4802,3 +4802,32 @@ Stage Summary:
 - Module injection is selective: each mode gets 0-5 modules (360-2386 tokens)
 - AGENTS.md updated with complete mapping table and v1.7.0 entry
 - All 1318 tests pass, 0 lint errors
+
+---
+Task ID: 3
+Agent: Main
+Task: Distiller le 7e module publication + fusion dans le knowledge-core
+
+Work Log:
+- Lu les 2 sources : corpus-publication.ts (6 fiches Gastel & Day) et verification-publication/route.ts (4 checks LLM)
+- Créé src/lib/ai/knowledge-core/modules/publication.md (~1200 mots, 4 sections : cycle, revue, éthique, vérification)
+- Ajouté PUBLICATION_MODULE dans knowledge-core.ts : type KnowledgeModule étendu, module enregistré
+- Mis à jour 3 spécialisations : directeur (+publication), peer-review (+publication), abstract (+publication)
+- Évalué methodology-help : ne concerne pas la valorisation/publication → pas de changement
+- Migré les 4 routes de verification-publication vers Option B (critères du knowledge-core, format/scoring gardés dans les routes)
+  - intro-discussion-coherence : injecte coherence + publication
+  - table-quality : injecte publication
+  - paragraph-structure : injecte style + publication
+  - text-table-redundancy : injecte coherence + publication
+- Budget tokens vérifié : ~4310 tokens (conservateur), bien sous 4500
+  - Mode directeur : ~2186 tokens (6 modules), bien sous 3000
+- Tests : 1333/1333 passent (56 fichiers), 0 régression
+- Lint : 0 erreurs, 181 warnings (pré-existants)
+- AGENTS.md mis à jour : 11 modules, mapping table, v1.8.0
+
+Stage Summary:
+- Knowledge-core v2.1 : 11 modules, 7 sources (6 livres + Gastel & Day)
+- Module publication couvre : cycle de publication, choix de revue, éthique de publication (ICMJE, paraphrase, salami), vérification avant soumission (IMRAD, tableaux, résultats)
+- Anti-doublon respecté : cohérence intro/disc renvoie vers module Cohérence, style renvoie vers module Style
+- Routes verification-publication délèguent leur savoir au knowledge-core (Option B)
+- 7 piliers du parcours doctoral couverts : méthodologie, rédaction, relecture, revue de littérature, données, financement, publication
