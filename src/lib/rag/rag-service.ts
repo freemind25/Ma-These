@@ -1,7 +1,7 @@
-// ═══════════════════════════════════════
-// ThesisFrame — RAG Service ("Mon IA de thèse")
-// Server-side only — keyword-based retrieval with chunking
-// ═══════════════════════════════════════
+// ═════════════════════════════════════
+// ThesisFrame — RAG Service v2 (Hybrid: Keyword + Semantic)
+// Server-side only — with optional vector embeddings
+// ═════════════════════════════════════
 
 import { db } from "@/lib/db";
 import {
@@ -9,6 +9,13 @@ import {
   type AiCompletionOptions,
 } from "@/lib/ai/zai-client";
 import type { AiProviderConfig } from "@/lib/ai/ai-types";
+import {
+  generateEmbeddings,
+  getEmbeddingInfo,
+  parseEmbedding,
+  cosineSimilarity,
+  type EmbeddingResult,
+} from "./embedding-service";
 
 // ───────────────────────────────────────
 // Types
@@ -26,6 +33,8 @@ export interface IndexResult {
   notebooks: number;
   cadrages: number;
   totalTokens: number;
+  embeddedChunks: number;
+  embeddingModel: string | null;
 }
 
 export interface RetrievalResult {
@@ -40,6 +49,7 @@ export interface RetrievalResult {
     tokenCount: number;
   };
   score: number;
+  scoreType: "keyword" | "semantic" | "hybrid";
 }
 
 export interface RagResponse {
@@ -56,6 +66,10 @@ const DEFAULT_MAX_TOKENS = 500;
 const OVERLAP_TOKENS = 100;
 /** Approximate chars per token (French text tends to be slightly lower than English) */
 const CHARS_PER_TOKEN = 4;
+
+/** Weights for hybrid scoring */
+const KEYWORD_WEIGHT = 0.35;
+const SEMANTIC_WEIGHT = 0.65;
 
 // ───────────────────────────────────────
 // System prompt for RAG
@@ -78,7 +92,6 @@ export function chunkText(text: string, maxTokens: number = DEFAULT_MAX_TOKENS):
   const overlapChars = OVERLAP_TOKENS * CHARS_PER_TOKEN;
 
   // Split on sentence boundaries / paragraph breaks
-  // Priority: double newline > single newline > period+space
   const segments = trimmed
     .split(/\n\n/)
     .flatMap((para) => para.split(/\n/))
@@ -93,13 +106,10 @@ export function chunkText(text: string, maxTokens: number = DEFAULT_MAX_TOKENS):
   let chunkIndex = 0;
 
   for (const segment of segments) {
-    // If adding this segment exceeds max, flush the buffer
     if (buffer.length > 0 && buffer.length + segment.length + 1 > maxChars) {
       chunks.push({ content: buffer.trim(), index: chunkIndex++ });
 
-      // Start new buffer with overlap from end of previous chunk
       if (buffer.length > overlapChars) {
-        // Find a sentence boundary within the overlap region
         const overlapStart = buffer.length - overlapChars;
         const overlapText = buffer.slice(overlapStart);
         const sentenceBoundary = overlapText.search(/\.[\s!]?/);
@@ -116,7 +126,6 @@ export function chunkText(text: string, maxTokens: number = DEFAULT_MAX_TOKENS):
     }
   }
 
-  // Flush remaining buffer
   if (buffer.trim()) {
     chunks.push({ content: buffer.trim(), index: chunkIndex });
   }
@@ -133,10 +142,13 @@ function estimateTokens(text: string): number {
 }
 
 // ───────────────────────────────────────
-// indexThesisContent — fetch, chunk, store
+// indexThesisContent — fetch, chunk, embed, store
 // ───────────────────────────────────────
 
-export async function indexThesisContent(thesisId: string): Promise<IndexResult> {
+export async function indexThesisContent(
+  thesisId: string,
+  providerConfig?: AiProviderConfig
+): Promise<IndexResult> {
   const stats: IndexResult = {
     totalChunks: 0,
     chapters: 0,
@@ -144,7 +156,13 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
     notebooks: 0,
     cadrages: 0,
     totalTokens: 0,
+    embeddedChunks: 0,
+    embeddingModel: null,
   };
+
+  // Check if provider supports embeddings
+  const embInfo = providerConfig ? getEmbeddingInfo(providerConfig) : null;
+  const canEmbed = embInfo?.supported === true;
 
   // 1. Collect all content to index
   interface SourceData {
@@ -160,12 +178,7 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
   // ── Chapters (filtered by thesisId) ──
   const chapters = await db.chapter.findMany({
     where: { thesisId },
-    select: {
-      id: true,
-      title: true,
-      plainText: true,
-      number: true,
-    },
+    select: { id: true, title: true, plainText: true, number: true },
     orderBy: { number: "asc" },
   });
 
@@ -181,17 +194,9 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
     }
   }
 
-  // ── References (global — index all) ──
+  // ── References (global) ──
   const references = await db.reference.findMany({
-    select: {
-      id: true,
-      title: true,
-      abstract: true,
-      keywords: true,
-      notes: true,
-      authors: true,
-      year: true,
-    },
+    select: { id: true, title: true, abstract: true, keywords: true, notes: true, authors: true, year: true },
   });
 
   for (const ref of references) {
@@ -205,34 +210,22 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
         sourceId: ref.id,
         sourceTitle: ref.title,
         content: combined,
-        metadata: {
-          authors: ref.authors,
-          year: ref.year,
-          keywords: ref.keywords,
-          title: ref.title,
-        },
+        metadata: { authors: ref.authors, year: ref.year, keywords: ref.keywords, title: ref.title },
       });
     }
   }
 
-  // ── NotebookEntries (global — index all) ──
+  // ── NotebookEntries (global) ──
   const notebookEntries = await db.notebookEntry.findMany({
-    select: {
-      id: true,
-      question: true,
-      answer: true,
-      tags: true,
-      sourceId: true,
-    },
+    select: { id: true, question: true, answer: true, tags: true, sourceId: true },
   });
 
   for (const entry of notebookEntries) {
-    const content = `Question : ${entry.question}\n\nRéponse : ${entry.answer}`;
     sources.push({
       sourceType: "notebook",
       sourceId: entry.id,
       sourceTitle: entry.question.slice(0, 80),
-      content,
+      content: `Question : ${entry.question}\n\nRéponse : ${entry.answer}`,
       metadata: { tags: entry.tags, sourceId: entry.sourceId },
     });
   }
@@ -240,18 +233,7 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
   // ── ThesisCadrageFields (filtered by thesisId) ──
   const cadrages = await db.thesisCadrage.findMany({
     where: { thesisId },
-    select: {
-      id: true,
-      label: true,
-      fields: {
-        select: {
-          id: true,
-          fieldKey: true,
-          label: true,
-          value: true,
-        },
-      },
-    },
+    select: { id: true, label: true, fields: { select: { id: true, fieldKey: true, label: true, value: true } } },
   });
 
   for (const cadrage of cadrages) {
@@ -268,11 +250,7 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
     }
   }
 
-  // 2. Clear existing chunks for this thesis
-  //    - Chapters: only this thesis's chapters
-  //    - References: all (global)
-  //    - Notebooks: all (global)
-  //    - Cadrage: only this thesis's cadrage fields
+  // 2. Clear existing chunks
   const chapterIds = chapters.map((c) => c.id);
   const referenceIds = references.map((r) => r.id);
   const notebookIds = notebookEntries.map((e) => e.id);
@@ -289,8 +267,8 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
     },
   });
 
-  // 3. Chunk and insert
-  const insertData: {
+  // 3. Chunk all sources
+  interface ChunkData {
     sourceType: string;
     sourceId: string;
     sourceTitle: string;
@@ -298,7 +276,9 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
     chunkIndex: number;
     metadata: string;
     tokenCount: number;
-  }[] = [];
+  }
+
+  const allChunkData: ChunkData[] = [];
 
   for (const source of sources) {
     const chunks = chunkText(source.content);
@@ -308,21 +288,13 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
       stats.totalChunks++;
 
       switch (source.sourceType) {
-        case "chapter":
-          stats.chapters++;
-          break;
-        case "reference":
-          stats.references++;
-          break;
-        case "notebook":
-          stats.notebooks++;
-          break;
-        case "cadrage":
-          stats.cadrages++;
-          break;
+        case "chapter": stats.chapters++; break;
+        case "reference": stats.references++; break;
+        case "notebook": stats.notebooks++; break;
+        case "cadrage": stats.cadrages++; break;
       }
 
-      insertData.push({
+      allChunkData.push({
         sourceType: source.sourceType,
         sourceId: source.sourceId,
         sourceTitle: source.sourceTitle,
@@ -334,13 +306,34 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
     }
   }
 
-  // Batch insert (SQLite handles reasonable batch sizes)
-  if (insertData.length > 0) {
-    // Insert in batches of 100 to avoid issues
+  // 4. Generate embeddings (if provider supports it)
+  let embeddings: (EmbeddingResult | null)[] = [];
+  if (canEmbed && providerConfig && allChunkData.length > 0) {
+    const texts = allChunkData.map((c) => c.content);
+    console.log(`[RAG] Generating embeddings for ${texts.length} chunks via ${embInfo!.provider}/${embInfo!.model}...`);
+    embeddings = await generateEmbeddings(texts, providerConfig);
+    const embeddedCount = embeddings.filter((e) => e !== null).length;
+    stats.embeddedChunks = embeddedCount;
+    if (embeddedCount > 0) {
+      stats.embeddingModel = embInfo!.model;
+      console.log(`[RAG] ${embeddedCount}/${texts.length} chunks embedded successfully`);
+    } else {
+      console.log(`[RAG] Embedding generation failed — falling back to keyword search`);
+    }
+  }
+
+  // 5. Insert into DB
+  if (allChunkData.length > 0) {
     const BATCH_SIZE = 100;
-    for (let i = 0; i < insertData.length; i += BATCH_SIZE) {
-      const batch = insertData.slice(i, i + BATCH_SIZE);
-      await db.documentChunk.createMany({ data: batch });
+    for (let i = 0; i < allChunkData.length; i += BATCH_SIZE) {
+      const batch = allChunkData.slice(i, i + BATCH_SIZE);
+      await db.documentChunk.createMany({
+        data: batch.map((c, idx) => ({
+          ...c,
+          embedding: embeddings[i + idx]?.embedding ?? null,
+          embeddingModel: embeddings[i + idx]?.model ?? null,
+        })),
+      });
     }
   }
 
@@ -348,21 +341,52 @@ export async function indexThesisContent(thesisId: string): Promise<IndexResult>
 }
 
 // ───────────────────────────────────────
-// retrieveChunks — keyword-based retrieval
+// retrieveChunks — hybrid (keyword + semantic)
 // ───────────────────────────────────────
 
 export async function retrieveChunks(
   query: string,
-  topK: number = 5
+  topK: number = 5,
+  providerConfig?: AiProviderConfig
 ): Promise<RetrievalResult[]> {
-  // Fetch ALL chunks from DB
+  // Fetch all chunks
   const allChunks = await db.documentChunk.findMany({
     orderBy: { createdAt: "desc" },
   });
 
   if (allChunks.length === 0) return [];
 
-  // Normalize and tokenize the query
+  // ── Keyword scoring ──
+  const keywordScores = scoreByKeywords(allChunks, query);
+
+  // ── Semantic scoring (if embeddings exist) ──
+  const hasEmbeddings = allChunks.some((c) => c.embedding);
+
+  if (hasEmbeddings && providerConfig) {
+    const { generateEmbedding } = await import("./embedding-service");
+    const queryEmbedding = await generateEmbedding(query, providerConfig);
+
+    if (queryEmbedding) {
+      const queryVector = parseEmbedding(queryEmbedding.embedding);
+      if (queryVector.length > 0) {
+        const semanticScores = scoreByEmbeddings(allChunks, queryVector);
+        return hybridRank(allChunks, keywordScores, semanticScores, topK);
+      }
+    }
+  }
+
+  // Fallback: keyword-only
+  return keywordOnlyRank(allChunks, keywordScores, topK);
+}
+
+// ───────────────────────────────────────
+// Scoring helpers
+// ───────────────────────────────────────
+
+function scoreByKeywords(
+  chunks: { id: string; content: string; sourceTitle: string }[],
+  query: string
+): Map<string, number> {
   const queryLower = query.toLowerCase();
   const stopWords = new Set([
     "le", "la", "les", "de", "du", "des", "un", "une", "et", "ou", "est",
@@ -380,44 +404,105 @@ export async function retrieveChunks(
     .split(/\s+/)
     .filter((t) => t.length > 1 && !stopWords.has(t));
 
-  if (queryTerms.length === 0) return [];
+  const scores = new Map<string, number>();
 
-  // Score each chunk
-  const scored: RetrievalResult[] = allChunks.map((chunk) => {
+  if (queryTerms.length === 0) return scores;
+
+  for (const chunk of chunks) {
     const contentLower = chunk.content.toLowerCase();
     const titleLower = chunk.sourceTitle.toLowerCase();
-
     let score = 0;
     for (const term of queryTerms) {
-      // Count term occurrences in content
-      const contentMatches = contentLower.split(term).length - 1;
-      score += contentMatches;
-
-      // Boost for title matches (2x weight)
-      const titleMatches = titleLower.split(term).length - 1;
-      score += titleMatches * 2;
+      score += (contentLower.split(term).length - 1);
+      score += (titleLower.split(term).length - 1) * 2;
     }
+    if (score > 0) scores.set(chunk.id, score);
+  }
 
-    return {
-      chunk: {
-        id: chunk.id,
-        sourceType: chunk.sourceType,
-        sourceId: chunk.sourceId,
-        sourceTitle: chunk.sourceTitle,
-        content: chunk.content,
-        chunkIndex: chunk.chunkIndex,
-        metadata: chunk.metadata,
-        tokenCount: chunk.tokenCount,
-      },
-      score,
-    };
-  });
+  return scores;
+}
 
-  // Filter out zero-score results and sort by score descending
-  return scored
-    .filter((r) => r.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, topK);
+function scoreByEmbeddings(
+  chunks: { id: string; embedding: string | null }[],
+  queryVector: number[]
+): Map<string, number> {
+  const scores = new Map<string, number>();
+
+  for (const chunk of chunks) {
+    if (!chunk.embedding) continue;
+    const chunkVector = parseEmbedding(chunk.embedding);
+    if (chunkVector.length === 0) continue;
+    const sim = cosineSimilarity(queryVector, chunkVector);
+    if (sim > 0) scores.set(chunk.id, sim);
+  }
+
+  return scores;
+}
+
+/** Normalize scores to 0-1 range */
+function normalizeScores(scores: Map<string, number>): Map<string, number> {
+  const result = new Map<string, number>();
+  let max = 0;
+  for (const v of scores.values()) {
+    if (v > max) max = v;
+  }
+  if (max === 0) return result;
+  for (const [k, v] of scores) {
+    result.set(k, v / max);
+  }
+  return result;
+}
+
+function hybridRank(
+  chunks: { id: string; sourceType: string; sourceId: string; sourceTitle: string; content: string; chunkIndex: number; metadata: string; tokenCount: number }[],
+  keywordScores: Map<string, number>,
+  semanticScores: Map<string, number>,
+  topK: number
+): RetrievalResult[] {
+  const normKw = normalizeScores(keywordScores);
+  const normSem = normalizeScores(semanticScores);
+
+  const scored: RetrievalResult[] = [];
+
+  for (const chunk of chunks) {
+    const kw = normKw.get(chunk.id) ?? 0;
+    const sem = normSem.get(chunk.id) ?? 0;
+    const combined = kw * KEYWORD_WEIGHT + sem * SEMANTIC_WEIGHT;
+
+    // Only include chunks that have at least one signal
+    if (combined > 0) {
+      const scoreType: RetrievalResult["scoreType"] =
+        kw > 0 && sem > 0 ? "hybrid" : kw > 0 ? "keyword" : "semantic";
+      scored.push({
+        chunk: { id: chunk.id, sourceType: chunk.sourceType, sourceId: chunk.sourceId, sourceTitle: chunk.sourceTitle, content: chunk.content, chunkIndex: chunk.chunkIndex, metadata: chunk.metadata, tokenCount: chunk.tokenCount },
+        score: combined,
+        scoreType,
+      });
+    }
+  }
+
+  return scored.sort((a, b) => b.score - a.score).slice(0, topK);
+}
+
+function keywordOnlyRank(
+  chunks: { id: string; sourceType: string; sourceId: string; sourceTitle: string; content: string; chunkIndex: number; metadata: string; tokenCount: number }[],
+  keywordScores: Map<string, number>,
+  topK: number
+): RetrievalResult[] {
+  const scored: RetrievalResult[] = [];
+
+  for (const chunk of chunks) {
+    const score = keywordScores.get(chunk.id);
+    if (score !== undefined && score > 0) {
+      scored.push({
+        chunk: { id: chunk.id, sourceType: chunk.sourceType, sourceId: chunk.sourceId, sourceTitle: chunk.sourceTitle, content: chunk.content, chunkIndex: chunk.chunkIndex, metadata: chunk.metadata, tokenCount: chunk.tokenCount },
+        score,
+        scoreType: "keyword",
+      });
+    }
+  }
+
+  return scored.sort((a, b) => b.score - a.score).slice(0, topK);
 }
 
 // ───────────────────────────────────────
@@ -430,7 +515,7 @@ export async function generateRagResponse(
   providerConfig?: AiProviderConfig
 ): Promise<RagResponse> {
   // Step 1: Retrieve relevant chunks
-  const retrieved = await retrieveChunks(query, 5);
+  const retrieved = await retrieveChunks(query, 5, providerConfig);
 
   if (retrieved.length === 0) {
     return {
@@ -445,11 +530,8 @@ export async function generateRagResponse(
   // Step 2: Build context string
   const contextParts = retrieved.map((r, i) => {
     const meta = (() => {
-      try {
-        return JSON.parse(r.chunk.metadata) as Record<string, unknown>;
-      } catch {
-        return {};
-      }
+      try { return JSON.parse(r.chunk.metadata) as Record<string, unknown>; }
+      catch { return {}; }
     })();
 
     let sourceLabel = "";

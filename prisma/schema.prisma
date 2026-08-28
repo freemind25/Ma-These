@@ -362,6 +362,8 @@ model DocumentChunk {
   chunkIndex    Int      // Index of chunk within the source
   metadata      String   @default("{}") // JSON: { chapterNumber, authors, year, tags, etc. }
   tokenCount    Int      @default(0)
+  embedding     String?  // JSON array of floats — vector embedding for semantic search
+  embeddingModel String? // Model used to generate the embedding (for dimension tracking)
   createdAt     DateTime @default(now())
 
   @@index([sourceType])

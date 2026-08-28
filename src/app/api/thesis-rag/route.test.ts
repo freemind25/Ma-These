@@ -106,7 +106,7 @@ describe("POST /api/thesis-rag", () => {
       expect(res.status).toBe(200);
       expect(data.success).toBe(true);
       expect(data.stats).toEqual(mockStats);
-      expect(mockIndexThesisContent).toHaveBeenCalledWith("thesis-123");
+      expect(mockIndexThesisContent).toHaveBeenCalledWith("thesis-123", undefined);
     });
 
     it("should return 500 when indexThesisContent throws", async () => {
@@ -142,6 +142,7 @@ describe("POST /api/thesis-rag", () => {
             tokenCount: 100,
           },
           score: 0.9,
+          scoreType: "keyword",
         },
       ],
     };

@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════
-// ThesisFrame — RAG API Route
+// ThesisFrame — RAG API Route v2
 // POST /api/thesis-rag
 // ═══════════════════════════════════════
 
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     // ── Action: index ──
     if (action === "index") {
-      const stats = await indexThesisContent(thesisId);
+      const stats = await indexThesisContent(thesisId, _aiConfig);
       return NextResponse.json({ success: true, stats });
     }
 
