@@ -5269,3 +5269,26 @@ Stage Summary:
 - docs/ARCHITECTURE-CONNAISSANCE.md créé — guide contributeur complet
 - Worklog conservé : séquence Tasks 5→6→7→8 documente le cas d'étude diagnostic→correction→convergence
 - Git commit en attente
+---
+Task ID: 11
+Agent: Main
+Task: Prompt 4 — Processus de feedback (feedback.md + règle #9 AGENTS.md)
+
+Work Log:
+- Créé feedback.md : processus Capture → Triage → Correction → Validation → Documentation
+  - 5 sources de signaux (utilisateur, test, audit, revue, auto-observation)
+  - Tableau de triage (trou du noyau / duplication / format local / faux positif / besoin info)
+  - 5 étapes de correction obligatoires (module cible, règle migration, rédaction, retrait duplications, impact token)
+  - Checklist de validation (lint, tests, grep, token budget, convergence)
+  - 3 cas d'usage typiques documentés (T4 divergence, T6 duplication, retour utilisateur)
+  - Section « ce que ce processus n'est PAS » (pas ticket system, pas automatisé, pas registre de bugs)
+- Ajouté règle #9 dans AGENTS.md (section Architecture des prompts IA)
+- Ajouté point d'attention #7 (référence feedback.md)
+- Version AGENTS.md : v1.8.3 → v1.8.4
+- Lint : 0 errors, 181 warnings (baseline inchangée)
+- Tests : 1333/1333 pass
+
+Stage Summary:
+- feedback.md créé — processus formel pour remonter les divergences dans le knowledge-core
+- AGENTS.md v1.8.4 — règle #9 + point d'attention #7 + historique versions
+- Prompt 4 terminé — la boucle feedback→noyau est maintenant documentée et opérationnelle

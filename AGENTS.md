@@ -1,4 +1,4 @@
-# AGENTS.md — Ma Thèse (ThesisFrame) v1.8.3
+# AGENTS.md — Ma Thèse (ThesisFrame) v1.8.4
 
 > **Contexte pour agents IA de développement (Cursor, Windsurf, Copilot, etc.)**
 > Dernière mise à jour : 28 août 2026
@@ -158,6 +158,7 @@ src/lib/ai/
 6. `src/data/directeur-prompt.ts` est déprécié — utiliser `src/lib/ai/specializations/directeur.ts`
 7. Les routes API (`/api/ai-writing`, `/api/ai-writing/stream`, `/api/directeur-chat`) utilisent `SPECIALIZATION_PROMPTS[mode.id]`
 8. **Leçon digestion (Phase 5) :** Un cas limite non couvert par le noyau sera résolu par chaque mode par extrapolation — potentiellement contradictoire. Toute divergence inter-modes révélée par un test ou retour utilisateur = signal d'un **trou dans le knowledge-core**, pas d'un bug de prompt. Corriger dans le module, pas dans la spécialisation.
+9. **Processus de feedback (cf. `feedback.md`) :** Tout signal de divergence (retour utilisateur, test, audit) suit le processus : Capture → Triage (trou du noyau ? duplication ? faux positif ?) → Correction dans le bon fichier → Validation (lint + tests + convergence inter-modes) → Documentation dans le worklog. **Jamais** corriger dans une spécialisation ce qui appartient au noyau.
 
 **Modules de connaissance disponibles (11) :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`, `writing-process`, `literature-review`, `data-analysis`, `grant-writing`, `publication`
 
@@ -312,6 +313,7 @@ bun run db:seed            # Seeding
 4. **Gateway Caddy** : pour les requêtes vers d'autres ports, utiliser `?XTransformPort=XXXX` dans l'URL
 5. **Protocole d'autorisation** (cf. FICHE_SYNTHESE.md) : aucune modification fonctionnelle sans aval du propriétaire
 6. **Variables d'environnement** : clés API configurables via l'UI (Outils IA > Configuration), plus rien en dur
+7. **Processus de feedback** (cf. `feedback.md`) : toute divergence inter-modes ou retour utilisateur suit le processus Capture → Triage → Correction → Validation → Documentation
 
 ---
 
@@ -319,6 +321,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
+| **v1.8.4** | Processus de feedback (feedback.md + règle #9 AGENTS.md). Capture → Triage → Correction → Validation → Documentation. |
 | **v1.8.3** | Clôture audit prompts + T3 RAG validé (Mistral/mistral-embed, hybrid+semantic). coherence-check factorisé (Option B), verification-carto dédupliqué (shared-prompts.ts), cohérence argumentative ajoutée au noyau. Bilan 6/6. 1333 tests. |
 | **v1.8.1** | Phase 5 digestion validée (5/5 sur tests exécutables). Corrections knowledge-core : cas limite citation littérale (T4), critère unité d'analyse étude de cas (T1). Full core ~3806 tokens. |
 | **v1.8.0** | Knowledge-core v2.1 : module publication (Gastel & Day), 11 modules, routes vérification déléguées au noyau |
