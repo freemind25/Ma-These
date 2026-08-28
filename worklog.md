@@ -4831,3 +4831,128 @@ Stage Summary:
 - Anti-doublon respecté : cohérence intro/disc renvoie vers module Cohérence, style renvoie vers module Style
 - Routes verification-publication délèguent leur savoir au knowledge-core (Option B)
 - 7 piliers du parcours doctoral couverts : méthodologie, rédaction, relecture, revue de littérature, données, financement, publication
+
+---
+Task ID: T1-T4
+Agent: Main
+Task: Phase 5 — Tests de digestion fonctionnels (4 tests via API)
+
+Work Log:
+- Démarré le serveur Next.js et exécuté les 4 tests via Node.js http (curl non fonctionnel dans le sandbox)
+- Test 1 (directeur) : POST /api/directeur-chat — question vague + étude de cas
+- Test 2 (literature-review) : POST /api/ai-writing mode=literature-review — 80 articles
+- Test 3 (RAG) : Vérifié provider → z.ai est dans UNSUPPORTED_PROVIDERS pour embeddings → SKIPPED
+- Test 4 (cohérence inter-modes) : Même question posée à directeur, paraphrase, peer-review
+
+---
+
+## TEST 1 — MODE DIRECTEUR
+---
+**Question :** "Mon directeur de thèse trouve ma question de recherche trop vague, mais je n'arrive pas à la préciser sans perdre mon environnement d'étude de cas. Que faire ?"
+
+**Réponse complète :**
+Cher doctorant, je comprends parfaitement votre difficulté. L'équilibre entre la portée d'une question de recherche et la spécificité d'une étude de cas est un défi courant. Votre directeur a raison de souligner la nécessité de précision.
+
+Pour affiner votre question sans sacrifier votre contexte d'étude de cas, je vous suggère d'appliquer la technique du "zoom" : identifiez d'abord le phénomène central que vous examinez, puis précisez quel aspect spécifique de ce phénomène vous investiguerez au sein de votre cas.
+
+Par exemple, au lieu de "Comment l'innovation technologique transforme-t-elle les organisations ?", vous pourriez formuler : "Quels mécanismes de résistance organisationnelle limitent l'adoption des systèmes d'intelligence artificielle dans le secteur bancaire français : une étude de cas chez BNP Paribas".
+
+Une piste concrète : structurez votre question en trois éléments clés : (1) le phénomène spécifique étudié, (2) le contexte de l'étude de cas, et (3) la dimension analytique qui guidera votre investigation.
+
+Pourriez-vous me présenter votre question actuelle ? Ensemble, nous pourrions l'analyser et la reformuler pour qu'elle réponde à la fois à vos préoccupations de recherche et aux exigences académiques.
+
+**VERDICT : DIGESTION (faible)**
+La réponse n'est pas générique ("formulez plus précisément") : elle propose une technique concrète ("zoom"), un exemple reformulé, et une structure en 3 éléments. Cependant, elle ne mobilise PAS explicitement les critères des modules methodology (arbre de décision Kumar : "SI compréhension profonde d'un cas → étude de cas qualitative") ou writing-process (Toulmin, structure de thèse). Le savoir est appliqué implicitement mais pas cité ou raisonné avec les critères du noyau. Le seuil de 2 éléments croisés n'est pas atteint de manière explicite.
+
+---
+
+## TEST 2 — MODE LITERATURE-REVIEW
+---
+**Question :** "J'ai 80 articles pour ma revue de littérature, je suis noyée. Par quoi commencer ?"
+
+**Réponse complète (extrait) :**
+## Comment aborder une revue de littérature avec 80 articles
+
+### Étape 1: Tri initial et catégorisation (1-2 jours)
+1. Première lecture rapide (30 min par article max) — résumé, conclusions, titres des sections
+2. Matrice de tri : Pertinence / Qualité / Thème secondaire
+3. Regroupement thématique initial : 5-8 grands thèmes maximum
+
+### Étape 2: Approche en entonnoir (1 semaine)
+1. Articles fondateurs (les plus cités)
+2. Articles récents (3-5 ans)
+3. Articles méthodologiques
+
+### Étape 3: Construction de votre matrice d'analyse
+Tableau : Article | Auteurs | Année | Question | Méthodologie | Résultats | Limites | Thème
+
+### Étape 4: Détection de la saturation progressive
+Arrêtez lorsque vous identifiez les mêmes idées, résultats et approches.
+
+Stratégie des 3 niveaux : 20 en profondeur, 30 en lecture moyenne, 30 en lecture superficielle.
+
+**VERDICT : DIGESTION**
+- "drapeaux rouges" → référence au module literature-review (Ollhoff étape 2)
+- "saturation progressive" → référence au module (Ollhoff étape 3, critère d'arrêt)
+- "Regroupement thématique" → module dit "Structure thématique (pas chronologique)"
+- Matrice d'analyse adaptée (colonnes différentes du module mais même concept)
+- Pipeline structuré en 4 étapes (pas les 6 étapes exactes d'Ollhoff, mais restructuration — signe de digestion)
+- Pas de récitation : le LLM a reconstruit un pipeline à partir des concepts
+
+---
+
+## TEST 3 — RAG SÉMANTIQUE
+---
+**VERDICT : SKIPPED (provider)**
+Le provider par défaut est "zai", qui est dans la liste UNSUPPORTED_PROVIDERS de l'embedding-service.ts (ne supporte pas /v1/embeddings). Sans un provider supportant les embeddings (OpenAI, Mistral, Google), le test de retrieval sémantique ne peut pas être exécuté. Le scoreType observé serait "keyword" (fallback) sans valeur diagnostique.
+
+---
+
+## TEST 4 — COHÉRENCE INTER-MODES
+---
+**Question :** "Puis-je reprendre exactement la même formulation qu'un article publié par mon directeur dans ma thèse, en citant la source ?"
+
+**MODE DIRECTEUR (modules : style, ethics, coherence, methodology, writing-process, publication) :**
+« Même en citant votre directeur, reprendre une formulation identique sans paraphrase suffisante constitue un plagiat. La règle de base est que la paraphrase doit réorganiser significativement la structure de phrase et utiliser vos propres mots. Si vous souhaitez conserver une formulation particulièrement pertinente, vous devriez : 1. La mettre entre guillemets 2. L'intégrer de manière significative 3. Justifier pourquoi cette formulation est essentielle. Je vous suggère de privilégier une reformulation personnelle. »
+→ **Position : NON (problématique), sauf guillemets.**
+→ Mobilise : paraphrase suffisante (module publication/éthique), guillemets.
+
+**MODE PARAPHRASE (modules : style, ethics) :**
+« La reprise exacte [...] s'apparente à une forme de plagiat par appropriation d'expressions [...]. La paraphrase suffisante requiert une reformulation substantielle des idées, non un simple remplacement de mots. Les comités d'éthique et les jurys de thèse attendent une contribution intellectuelle personnelle. »
+→ **Position : NON (plagiat).**
+→ Mobilise : paraphrase suffisante (module éthique), comités d'éthique.
+→ ⚠️ Note : citations hallucinées (Kumar, 2020 ; Salkind, 2019) — le module cite Kumar/Salkind comme sources du savoir, mais ces références ne devraient pas apparaître dans la réponse.
+
+**MODE PEER-REVIEW (modules : peer-review, coherence, publication) :**
+« Oui, vous pouvez reprendre exactement la même formulation qu'un article publié par votre directeur de thèse dans votre thèse, à condition de : citer systématiquement la source originale, indiquer clairement que c'est une reprise directe (guillemets), ne pas présenter ces passages comme étant de votre propre rédaction. Cette pratique est acceptable dans le cadre académique. »
+→ **Position : OUI (acceptable avec conditions).**
+→ ⚠️ CONTRADICTION : le "Oui" initial contredit les positions des modes directeur et paraphrase.
+
+**VERDICT : ❌ ÉCHEC PARTIEL (cohérence inter-modes)**
+Les 3 modes ne s'appuient pas sur les MÊMES critères du module publication/éthique :
+- Directeur + paraphrase : paraphrase suffisante interdit la reprise identique
+- Peer-review : dit "Oui" en citant les guillemets comme condition suffisante
+
+Le peer-review mode ouvre une porte que les deux autres ferment. La nuance (citation littérale avec guillemets EST permise en academia) est valide, mais le "Oui" sans qualification est trompeur et crée une incohérence.
+
+**Diagnostic à investiguer :** Le module publication dit « SI structure identique + mots remplacés → insuffisante. SI rédigé sans consulter puis vérifié → valide. » et « SI doute sur la nécessité de guillemets → en mettre ». Il ne dit PAS explicitement que la citation littérale avec guillemets est acceptable. Le peer-review a extrapolé au-delà du module, tandis que directeur/paraphrase ont suivi le module plus strictement.
+
+---
+
+## BILAN GLOBAL
+---
+| Test | Verdict | Notes |
+|------|---------|-------|
+| T1 directeur | DIGESTION (faible) | Savoir appliqué implicitement, pas de croisement explicite de 2+ modules |
+| T2 literature-review | DIGESTION | Pipeline restructuré à partir des concepts Ollhoff, saturation + drapeaux rouges mobilisés |
+| T3 RAG | SKIPPED (provider) | z.ai ne supporte pas les embeddings |
+| T4 cohérence | ❌ ÉCHEC PARTIEL | Peer-review contredit directeur/paraphrase sur la paraphrase suffisante |
+| T5 publication (Phase précédente) | DIGESTION | Validé dans la session précédente (salami + ICMJE + articulation) |
+
+**Score : 3/5 DIGESTION + 1 ÉCHEC + 1 SKIPPED**
+Critère global (4/5 réussis min) : **NON ATTEINT** (3 réussis, 1 échoué, 1 skipped)
+→ Boucle de correction requise dans le knowledge-core, puis re-test.
+
+**Actions requises (NE PAS corriger sans diagnostic) :**
+1. T1 : Échec de la critique — la réponse est utile mais ne démontre pas que les modules sont injectés. Investiguer si le prompt directeur permet au LLM de RÉSONNER avec les critères plutôt que de les ignorer.
+2. T4 : Le module publication doit clarifier explicitement que la citation littérale avec guillemets est permise (c'est la norme académique). Sans cette clarification, le peer-review extrapolant et les autres modes étant stricts créent une incohérence.
