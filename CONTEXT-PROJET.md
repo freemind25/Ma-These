@@ -1,7 +1,7 @@
 # CONTEXT-PROJET.md — Ma Thèse (ThesisFrame)
 
 > **Mémoire de projet** — contexte, décisions, état d'avancement
-> Version : **v1.8.3** (28 août 2026)
+> Version : **v1.9.0** (28 août 2026)
 
 ---
 
@@ -17,7 +17,7 @@
 
 ---
 
-## 2. Architecture connaissance — L'état de l'art (v1.8.3)
+## 2. Architecture connaissance — L'état de l'art (v1.9.0)
 
 ### 2.1 Le problème résolu
 
@@ -29,16 +29,18 @@ ThesisFrame possède **~50 API routes** et **21 modes d'écriture IA**. En v1.5,
 src/lib/ai/
 ├── knowledge-core.ts      ← SOCLE : savoir métier digéré de 7 ouvrages
 ├── shared-prompts.ts      ← RÔLE/FORMAT réutilisables (pas du savoir)
-├── prompt-builder.ts      ← Assembleur : SOCLE + spécialisation
+├── prompt-builder.ts      ← Assembleur : SOCLE + spécialisation + calibration niveau
 └── specializations/       ← 19 fichiers (rôle + tâche + format uniquement)
     ├── index.ts           ← Registry (mode id → prompt)
     ├── directeur.ts
     ├── scientific-writing.ts
     ├── peer-review.ts
     └── ...
+
+feedback.md                ← Processus de feedback (divergence → correction noyau)
 ```
 
-**Principe fondamental :** Le savoir métier vit dans `knowledge-core.ts`. Les spécialisations ne contiennent que : rôle, tâche, format de sortie.
+**Principe fondamental :** Le savoir métier vit dans `knowledge-core.ts`. Les spécialisations ne contiennent que : rôle, tâche, format de sortie. Le comportement est calibré par niveau doctorant via post-injection dans `prompt-builder.ts`.
 
 ### 2.3 Modules de connaissance (11)
 
@@ -56,13 +58,28 @@ src/lib/ai/
 | `grant-writing` | Smith & Works | Demande de financement |
 | `publication` | Gastel & Day | Soumission, salami, ICMJE |
 
-### 2.4 Token budget
+### 2.4 Calibration par niveau doctorant (v1.9.0)
+
+Trois niveaux adaptent le **comportement** de l'IA sans modifier le savoir :
+
+| Niveau | Ton | Granularité | Pédagogie |
+|--------|-----|-------------|-----------|
+| `DEBUTANT` | Encouragé, bienveillant | Détaillée, pas à pas | Explique les choix méthodologiques |
+| `INTERMEDIAIRE` | Professionnel, direct | Équilibrée | Signale les points d'attention |
+| `AVANCE` | Expert, concis | Macro-niveau | Hypothèse implicite que les bases sont maîtrisées |
+
+**Design decision :** La calibration est en **post-injection** (après le system prompt). Le savoir (knowledge-core) et les spécialisations ne changent pas — seul le COMMENT appliquer le savoir change. Impact : +~110 tokens quand le niveau est fourni (optionnel, zéro breaking change).
+
+Routes impactées : `ai-writing`, `ai-writing/stream`, `directeur-chat`.
+
+### 2.5 Token budget
 
 - **Full core** : ~3 900 tokens (≤ 4 500 max)
 - **Directeur mode** : ~2 600 tokens (≤ 3 000 max)
+- **Calibration niveau** : +~110 tokens (optionnel)
 - Chaque spécialisation déclare ses modules nécessaires → injection sélective
 
-### 2.5 Trois patterns de factorisation
+### 2.6 Trois patterns de factorisation
 
 | Pattern | Quand l'utiliser | Exemples |
 |---------|-----------------|---------|
@@ -70,7 +87,7 @@ src/lib/ai/
 | **Option B** — Noyau + scoring | Le savoir vient du noyau, le format de sortie (grille, scores) reste dans la route | `verification-publication`, `coherence-check` |
 | **Shared prompt** — Rôle/Format | Prompt de rôle réutilisable, mais pas du savoir métier → `shared-prompts.ts` | `verification-carto`, `types-analyse/seed` |
 
-### 2.6 Règle de décision migration
+### 2.7 Règle de décision migration
 
 > Un critère migre vers le noyau si un **AUTRE** mode (directeur, peer-review, defense) pourrait en avoir besoin.
 
@@ -114,6 +131,8 @@ Exemple : la cohérence argumentative (contradiction interne, sur-généralisati
 
 | Version | Étape | Description |
 |---------|-------|-------------|
+| **v1.9.0** | Niveaux doctorant | `getLevelCalibration()` dans prompt-builder.ts. Post-injection dans 3 routes (ai-writing, stream, directeur-chat). Token budget : +~110 tokens par niveau. Knowledge-core inchangé. |
+| **v1.8.4** | Processus feedback | `feedback.md` + règle #9 AGENTS.md. Processus Capture → Triage → Correction → Validation → Documentation. |
 | **v1.8.3** | Clôture | T3 RAG validé. coherence-check factorisé (Option B). verification-carto dédupliqué (shared-prompts.ts). Cohérence argumentative ajoutée au noyau. **Bilan 6/6**. 1333 tests pass. |
 | **v1.8.1** | Phase 5 digestion | T1 unité d'analyse + T4 citation littérale corrigés. Full core ~3806 tokens. |
 | **v1.8.0** | Knowledge-core v2.1 | Module publication (Gastel & Day). 11 modules. Routes vérification déléguées. |
@@ -122,7 +141,9 @@ Exemple : la cohérence argumentative (contradiction interne, sur-généralisati
 
 ---
 
-## 6. Convention anti-duplication (règle #8 de AGENTS.md)
+## 6. Convention anti-duplication (règles #8 et #9 de AGENTS.md)
+
+**Règle #8 — Anti-duplication :**
 
 1. TOUT savoir métier → `knowledge-core.ts` — **JAMAIS** dans un prompt de spécialisation
 2. Un prompt de spécialisation = **UNIQUEMENT** rôle, tâche, format de sortie
@@ -132,6 +153,10 @@ Exemple : la cohérence argumentative (contradiction interne, sur-généralisati
 6. `directeur-prompt.ts` : déprécié → `specializations/directeur.ts`
 7. Les routes utilisent `SPECIALIZATION_PROMPTS[mode.id]`
 8. **Leçon digestion** : divergence inter-modes = trou dans le knowledge-core, pas bug de prompt
+
+**Règle #9 — Processus de feedback :**
+
+9. Toute divergence suit le processus `feedback.md` : Capture → Triage (trou du noyau ? duplication ? faux positif ?) → Correction → Validation → Documentation
 
 ---
 
@@ -143,11 +168,11 @@ Exemple : la cohérence argumentative (contradiction interne, sur-généralisati
 - **Messages** : tous en français
 - **Base de données** : Prisma + SQLite, schéma dans `prisma/schema.prisma`
 - **Worklog** : `worklog.md` — historique détaillé de chaque tâche (précieux pour comprendre les décisions)
+- **Feedback** : `feedback.md` — processus formel pour remonter les divergences dans le knowledge-core
 
 ---
 
-## 8. Prochaines étapes (reportées)
+## 8. Prochaines étapes
 
-- **Prompt 3** (évolution produit) : injection par niveau doctorant (DEBUTANT / INTERMEDIAIRE / AVANCE)
-- **Prompt 4** (infrastructure) : `feedback.md` + règle #9 dans AGENTS.md
 - **sqlite-vec** : migration quand le volume de chunks dépasse les capacités de parsing JSON
+- **Calibration front-end** : exposer le sélecteur de niveau doctorant dans l'UI (actuellement API-only)

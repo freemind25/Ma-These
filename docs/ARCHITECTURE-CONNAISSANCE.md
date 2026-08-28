@@ -1,6 +1,6 @@
 # Architecture de la Gestion des Connaissances
 
-> ThesisFrame v1.8.3 — Guide pour contributeurs (humains ou IA)
+> ThesisFrame v1.9.0 — Guide pour contributeurs (humains ou IA)
 > Dernière mise à jour : 28 août 2026
 
 ---
@@ -19,7 +19,7 @@ Le problème que cette architecture résout : en l'absence de centralisation, ch
 src/lib/ai/
 ├── knowledge-core.ts         ← ★ SOCLE UNIQUE DE VÉRITÉ (savoir métier)
 ├── shared-prompts.ts         ← Prompts RÔLE/FORMAT réutilisables
-├── prompt-builder.ts         ← Assembleur : injection sélective du noyau
+├── prompt-builder.ts         ← Assembleur : injection sélective du noyau + calibration niveau
 ├── ai-provider.ts            ← Détection provider, URL, headers
 ├── ai-types.ts               ← Types + 18 providers dynamiques
 ├── zai-client.ts             ← Client IA (completion + stream + fallback)
@@ -82,12 +82,16 @@ Les spécialisations définissent :
 
 `shared-prompts.ts` contient les prompts de rôle réutilisables par plusieurs routes (pas du savoir métier).
 
-### Couche 3 — Assemblage (`prompt-builder.ts`)
+### Couche 3 — Assemblage et calibration (`prompt-builder.ts`)
 
-Le prompt-builder assemble le system prompt final :
+Le prompt-builder assemble le system prompt final en deux temps :
+
 ```
-[Savoir du noyau (modules sélectionnés)] + [Prompt de spécialisation (rôle + tâche + format)]
+1. [Savoir du noyau (modules sélectionnés)] + [Prompt de spécialisation (rôle + tâche + format)]
+2. [Calibration par niveau doctorant]  ← post-injection (optionnel)
 ```
+
+La calibration adapte le **comportement** (ton, granularité, pédagogie) sans modifier le savoir ni les spécialisations. Voir §12 pour le détail.
 
 ---
 
@@ -174,14 +178,18 @@ import { SOCRATIC_QUESTIONER_PROMPT } from "@/lib/ai/shared-prompts"
 
 ---
 
-## 7. Processus de digestion (quand ajouter du savoir)
+## 7. Processus de digestion et feedback
 
-1. **Identifier** un cas limite ou une divergence entre modes
-2. **Vérifier** si le noyau couvre déjà ce cas (sinon → trou)
-3. **Ajouter** la règle dans le module approprié de `knowledge-core.ts`
-4. **Retirer** toute duplication éventuelle dans les spécialisations/routes
-5. **Tester** : `bun run test:run` + `bun run lint`
-6. **Mettre à jour** le token budget dans AGENTS.md
+Quand un cas limite ou une divergence est identifié, il suit le processus formel documenté dans `feedback.md` :
+
+1. **Capture** — documenter le signal (source, modes concernés, description)
+2. **Triage** — est-ce un trou du noyau ? une duplication ? un faux positif ?
+3. **Correction** — ajouter dans `knowledge-core.ts` si le critère est réutilisable
+4. **Retirer** toute duplication dans les spécialisations/routes
+5. **Validation** — `bun run test:run` + `bun run lint` + vérification convergence inter-modes
+6. **Documentation** — enregistrer dans le worklog
+
+Voir `feedback.md` pour le détail complet (tableau de triage, checklist validation, cas d'usage).
 
 ---
 
@@ -237,6 +245,7 @@ Cette séquence (worklog Tasks 5→6→7→8) est un exemple rare et documenté 
 
 - [ ] J'ai lu `AGENTS.md` (règles de développement)
 - [ ] J'ai lu `CONTEXT-PROJET.md` (mémoire du projet)
+- [ ] J'ai lu `feedback.md` (processus de remontée des divergences)
 - [ ] Je comprends la différence SAVOIR vs RÔLE/FORMAT
 - [ ] Mon savoir métier va dans `knowledge-core.ts` (si réutilisable)
 - [ ] Mon rôle/format va dans `specializations/` ou `shared-prompts.ts`
@@ -244,3 +253,44 @@ Cette séquence (worklog Tasks 5→6→7→8) est un exemple rare et documenté 
 - [ ] `bun run lint` → 0 erreurs
 - [ ] `bun run test:run` → tous les tests passent
 - [ ] J'ai mis à jour le worklog
+
+---
+
+## 12. Calibration par niveau doctorant (v1.9.0)
+
+### Principe
+
+Trois niveaux adaptent le comportement de l'IA **sans modifier le savoir** :
+
+| Niveau | Type `DoctoralLevel` | Effet |
+|--------|---------------------|-------|
+| Débutant | `'debutant'` | Ton encouragé, explications pas à pas, choix méthodologiques justifiés |
+| Intermédiaire | `'intermediaire'` | Ton professionnel, équilibré, signale les points d'attention |
+| Avancé | `'avance'` | Ton expert, concis, macro-niveau, hypothèse de maîtrise des bases |
+
+### Design decision
+
+La calibration est en **post-injection** dans `prompt-builder.ts` via `getLevelCalibration(level?)` :
+
+```typescript
+// prompt-builder.ts
+export type DoctoralLevel = 'debutant' | 'intermediaire' | 'avance'
+
+export function getLevelCalibration(level?: DoctoralLevel): string {
+  // Retourne ~110 tokens de calibration, ou '' si pas de niveau
+}
+```
+
+**Pourquoi la post-injection ?** Le savoir (knowledge-core) ne change pas par niveau — la vérité méthodologique est la même pour un débutant et un expert. Seul le COMMENT l'IA communique et applique ce savoir change.
+
+### Routes impactées
+
+- `/api/ai-writing` — champ `doctoralLevel` optionnel dans le schema Zod
+- `/api/ai-writing/stream` — même pattern
+- `/api/directeur-chat` — même pattern (après fiches corpus)
+
+### Impact token
+
+- +~110 tokens quand le niveau est fourni
+- 0 token quand non fourni (champ optionnel, zéro breaking change)
+- Le token budget du noyau n'est pas impacté
