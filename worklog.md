@@ -5252,3 +5252,20 @@ Stage Summary:
 - T3 PASS avec Mistral/mistral-embed : hybrid+semantic retrieval confirmé, zéro keyword-only
 - Le script test-rag-semantic.ts est fonctionnel et prêt pour tout futur provider
 - **Bilan 6/6 atteint — le chantier knowledge-core + RAG est clos.**
+---
+Task ID: 10
+Agent: Main
+Task: Finalisation documentation v1.8.3 — CONTEXT-PROJET.md + ARCHITECTURE-CONNAISSANCE.md
+
+Work Log:
+- Vérifié l'état réel sur disque : CONTEXT-PROJET.md et docs/ n'existaient pas (session précédente coupée avant persistance)
+- Confirmé dans le worklog (Task 8) que T3 RAG semantic test a PASSÉ (Mistral/mistral-embed, 7/7 chunks, hybrid+semantic)
+- Créé CONTEXT-PROJET.md : mémoire de projet v1.8.3 (8 sections : identité, architecture connaissance, RAG, bilan 6/6, historique versions, convention anti-duplication, points attention, prochaines étapes)
+- Créé docs/ARCHITECTURE-CONNAISSANCE.md : synthèse complète pour contributeurs (11 sections : vue d'ensemble, arborescence, 3 couches de prompts, 11 modules, 3 patterns de factorisation, règle de décision, processus de digestion, RAG, audit 9/9, cas d'étude séquence convergence, checklist)
+- Worklog préservé intégralement (5254 lignes existantes)
+
+Stage Summary:
+- CONTEXT-PROJET.md créé — mémoire de projet v1.8.3 avec bilan 6/6
+- docs/ARCHITECTURE-CONNAISSANCE.md créé — guide contributeur complet
+- Worklog conservé : séquence Tasks 5→6→7→8 documente le cas d'étude diagnostic→correction→convergence
+- Git commit en attente
