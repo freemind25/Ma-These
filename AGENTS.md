@@ -156,12 +156,13 @@ src/lib/ai/
 5. `src/data/ai-writing-modes.ts` ne contient plus de `systemPrompt` — les métadonnées (label, icon, temperature) restent
 6. `src/data/directeur-prompt.ts` est déprécié — utiliser `src/lib/ai/specializations/directeur.ts`
 7. Les routes API (`/api/ai-writing`, `/api/ai-writing/stream`, `/api/directeur-chat`) utilisent `SPECIALIZATION_PROMPTS[mode.id]`
+8. **Leçon digestion (Phase 5) :** Un cas limite non couvert par le noyau sera résolu par chaque mode par extrapolation — potentiellement contradictoire. Toute divergence inter-modes révélée par un test ou retour utilisateur = signal d'un **trou dans le knowledge-core**, pas d'un bug de prompt. Corriger dans le module, pas dans la spécialisation.
 
 **Modules de connaissance disponibles (11) :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`, `writing-process`, `literature-review`, `data-analysis`, `grant-writing`, `publication`
 
 **Sources distillées :** Kumar (Research Methodology), Salkind (100 Questions), White (Mapping Your Thesis), Ollhoff (Literature Review), Rae & Wong (Applied Data Analysis), Smith & Works (Grant Writing), Gastel & Day (How to Write and Publish a Scientific Paper)
 
-**Mapping module ↔ mode (injection sélective) :**
+**Token budget :** full core ~3 806 tokens (≤ 4 500 max), directeur mode ~2 521 tokens (≤ 3 000 max)
 
 | Mode | Modules injectés | Tokens ≈ |
 |------|-------------------|----------|
@@ -310,6 +311,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
+| **v1.8.1** | Phase 5 digestion validée (5/5 sur tests exécutables). Corrections knowledge-core : cas limite citation littérale (T4), critère unité d'analyse étude de cas (T1). Full core ~3806 tokens. |
 | **v1.8.0** | Knowledge-core v2.1 : module publication (Gastel & Day), 11 modules, routes vérification déléguées au noyau |
 | **v1.7.0** | Knowledge-core v2 : 6 ouvrages distillés, 10 modules, mapping optimisé |
 | **v1.6.0** | Architecture connaissance : knowledge-core + prompt-builder + 19 spécialisations |

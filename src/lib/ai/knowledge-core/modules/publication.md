@@ -61,6 +61,13 @@
 - SI doute sur la nécessité de guillemets pour une reprise littérale → en mettre (mieux vaut sur-citer que sous-citer)
 - SI un logiciel de détection de similarité est disponible → l'utiliser en amont de la soumission
 
+### Cas limite — citation littérale avec guillemets
+
+- SI citation littérale entre guillemets + source complète citée (auteur, année, page) → PERMIS, mais exceptionnel
+- Règle de dosage : la norme académique est la paraphrase ; la citation directe se réserve aux définitions, formulations canoniques, ou énoncés que la paraphrase dénaturerait
+- SI reprise de formulation sans guillemets, même avec source citée → plagiat de paraphrase insuffisante
+- En cas de doute sur la nécessité d'une citation littérale : privilégier la paraphrase + référence, ou demander au directeur — SI le texte repris est la formulation de référence du concept, la citation littérale est justifiée
+
 ### Plagiat, auto-plagiat, salami science : définitions opérationnelles
 
 - SI un même résultat est présenté comme nouveau dans deux publications distinctes → auto-plagiat

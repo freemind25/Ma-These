@@ -193,7 +193,7 @@ const METHODOLOGY_MODULE = `
 - SI causalité + comparaison → comparatif expérimental (randomisation, baseline + post)
 - SI causalité + éthique (pas de groupe contrôle) → cross-over (ABAB) ou placebo
 - SI tendance temporelle → longitudinal, cohorte ou panel
-- SI compréhension profonde d'un cas → étude de cas qualitative (méthodes multiples)
+- SI compréhension profonde d'un cas → étude de cas qualitative (méthodes multiples). Préciser l'unité d'analyse plutôt qu'élargir : le critère n'est pas la généralité de la question mais la correspondance question ↔ unité d'analyse. SI le doctorant craint de perdre la richesse de son terrain en précisant → l'étude de cas qualitative est légitime.
 - SI les deux (diversité + quantification) → mixte : quali → quanti → quali
 - SI valeurs, croyances, significations → qualitatif
 
@@ -420,6 +420,7 @@ const PUBLICATION_MODULE = `
 
 ### Éthique de publication
 - Paraphrase : SI structure identique + mots remplacés → insuffisante. SI rédigé sans consulter puis vérifié → valide.
+- Citation littérale entre guillemets + source complète (auteur, année, page) → PERMIS mais exceptionnel (réservé aux définitions, formulations canoniques). Norme = paraphrase. SI reprise sans guillemets, même avec source → plagiat de paraphrase insuffisante.
 - Salami : SI articles partagent méthode + données + ne diffèrent que par sous-ensemble résultats → salami probable
 - Soumission simultanée 2+ revues → non éthique. Dry-labbing → faute sans degré.
 - Authorship ICMJE : contribution substantielle + rédaction/révision + approbation finale + responsabilité → 4 critères obligatoires. Auteur sans contribution = fantôme (non éthique).

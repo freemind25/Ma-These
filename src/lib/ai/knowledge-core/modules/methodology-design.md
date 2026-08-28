@@ -20,7 +20,7 @@ SI étude de tendance temporelle ALORS longitudinal, étude de cohorte ou étude
 
 SI évaluation de programme déjà en cours ALORS transversal répliqué (échantillonner des clients à différents stades).
 
-SI compréhension en profondeur d'un cas, processus, dynamique interactionnelle ALORS étude de cas qualitative (méthodes multiples recommandées : entretiens + observation + documents secondaires).
+SI compréhension en profondeur d'un cas, processus, dynamique interactionnelle ALORS étude de cas qualitative (méthodes multiples recommandées : entretiens + observation + documents secondaires). Préciser l'unité d'analyse plutôt qu'élargir la question : le critère de validité n'est pas la généralité de la question mais la correspondance question ↔ unité d'analyse. SI le doctorant craint de perdre la richesse de son terrain en précisant sa question ALORS le choix de l'étude de cas qualitative est légitime.
 
 SI le but est de mesurer l'étendue de la diversité ALORS quantitatif. SI le but est de comprendre la nature de la diversité ALORS qualitatif.
 
