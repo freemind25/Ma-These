@@ -4650,3 +4650,155 @@ Stage Summary:
 - Avant : ~1400 lignes de prompts dupliqués dans 4 fichiers
 - Après : ~400 lignes dans knowledge-core.ts + ~600 lignes de spécialisations = 1000 lignes non dupliquées
 - backward compatibility maintained via re-exports
+---
+Task ID: 1-a
+Agent: Kumar Distiller
+Task: Distill Kumar Research Methodology into methodology-design.md
+
+Work Log:
+- Read full extracted text (82 lines, 976KB PDF-extracted)
+- Extracted methodological decision logic from chapters 1, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14
+- Identified Kumar's unique contributions: 8-step model, causality variance framework, qual→quant→qual recommendation, integrated literature review structure, specific bias vs subjectivity distinction
+- Wrote SI/ALORS rules in French
+
+Stage Summary:
+- Created methodology-design.md with 1446 words
+- Key modules: arbre de décision (question→design), échantillonnage (probabilité/non-probabilité/taille), collecte de données (observation/entretien/questionnaire/échelles), validité-fiabilité (3 types + Guba-Lincoln), erreurs doctorales détectables (12 items), éthique (7 règles), structure proposition (14 sections)
+
+---
+Task ID: 1-b
+Agent: Salkind Distiller
+Task: Distill Salkind 100 Questions into methodology-basics.md
+
+Work Log:
+- Read table of contents and first 500 lines for structure (9 parts, 100 Q&As)
+- Read Q29-32 (null/research hypothesis, good hypothesis criteria)
+- Read Q33-34 (gold standard, method-question matching table)
+- Read Q35-39 (variables, IV/DV, control vs experimental groups)
+- Read Q40-49 (sampling, sampling error, random sampling, sample size)
+- Read Q50-57 (descriptive statistics, central tendency, normal curve, skewness, central limit theorem)
+- Read Q63-64, Q66-71 (reliability types, validity types, reliability-validity relationship)
+- Read Q85-87 (internal/external validity, trade-off)
+- Read Q88-100 (statistical significance, p values, Type I/II errors, power, popular tests, regression, parametric vs nonparametric, effect size, statistical vs practical significance, .05 history)
+- Read Q20-25 (ethics: principles, informed consent, special populations, ethical lapses, IRB, IRB application)
+- Extracted 10 most misunderstood concepts with pedagogical explanations, analogies, and common confusions
+- Built IF/THEN statistics tables for descriptive and inferential tests
+- Compiled hypothesis formulation criteria with before/after examples
+- Identified Salkind-unique ethics angles (Watson/Crick as ethical violation, .05 historical arbitrariness, assent forms)
+- Wrote methodology-basics.md in French (1246 words)
+
+Stage Summary:
+- Created methodology-basics.md with 1246 words
+- Key modules: 10 misunderstood concepts with analogies, descriptive/inferential stats IF/THEN table, hypothesis criteria with before/after examples, Salkind-specific ethics angles
+---
+Task ID: 1-c
+Agent: White Distiller
+Task: Distill White Mapping Your Thesis into writing-process.md
+
+Work Log:
+- Read TOC and front matter (lines 1-700) to map book structure across 13 chapters
+- Searched and read key sections: systematic arguments (7387-7586), casuistry/Toulmin model (7611-7740), paragraphs (8386-8475), topic sentences (8476-8542), paragraph transitions (8516-8542), revising (8547-8635), editing (8644-8744), passive voice (7053-7209), metatext/signalling (6885-7001), hedging (7323-7372), thesis modelling (8080-8236), drafting process (8268-8385)
+- Extracted and synthesized into structured French document
+- Added French connector equivalents for White English transition examples
+- Created before/after examples for passive voice and weasel words
+
+Stage Summary:
+- Created writing-process.md with 1384 words
+- 6 sections: argumentation (Toulmin), transitions/connectors, paragraph structure, drafting revision editing pipeline, style pitfalls, thesis chapter structure
+
+---
+Task ID: 1-d
+Agent: Ollhoff Distiller
+Task: Distill Ollhoff Literature Review into literature-review.md
+
+Work Log:
+- Read full 619-line source text (ollhoff-literature-review.txt)
+- Extracted 6-step method with passage criteria for each step
+- Identified red flags evaluation system with 7-item checklist
+- Captured three-tier information model (research/professional/popular) with quantified distortion rates
+- Mapped outline structure and section-writing rules
+- Compiled 10 common mistakes
+- Identified 6 unique contributions vs. other corpus books
+- Verified output at 1445 words (under 1500 limit)
+
+Stage Summary:
+- Created literature-review.md with 1445 words
+- 6 sections: 6 steps with passage criteria, source evaluation (red flags + 3 tiers), outline building, section writing rules, 10 common mistakes, unique Ollhoff contributions
+
+---
+Task ID: 1-e
+Agent: Rae-Wong Distiller
+Task: Distill Rae & Wong Applied Data Analysis (with anti-doublon check)
+
+Work Log:
+- Read first 300 lines for book structure: 10 chapters, edited volume on urban data analytics (not a stats textbook)
+- Searched for key statistical terms: regression (7), correlation (3), ANOVA (0), chi-square (0), t-test (0), hypothesis (9), validity (3), reliability (0), sampling (9), variable (32), indicator (142)
+- Read Kumar methodology-design.md and Salkind methodology-basics.md for overlap assessment
+- Anti-doublon verdict: <10% overlap → created standalone data-analysis.md
+  - Kumar covers: research design, sampling, validity/reliability of instruments, ethics, proposal structure
+  - Salkind covers: basic stats (t-test, ANOVA, correlation, chi-square), hypothesis formulation, p-values, effect size
+  - Rae & Wong covers: spatial models (SAR, GWR), big data paradox, MAUP, multi-scalar indicators, crowdsourced geo data quality (ISO 19157:2013), data integration, planning-led vs planning-lag, multilevel modelling for urban data, city dashboard design
+  - Essentially zero overlap on actionable rules
+- Extracted 6 unique sections: spatial model choice, big data paradox, data integration, spatio-temporal indicator pitfalls, crowdsourced data quality, planning-led governance
+- Written in SI/ALORS format, French, 1143 words (under 1200 limit)
+
+Stage Summary:
+- Created data-analysis.md with 1143 words
+- Anti-doublon: confirmed <10% overlap with existing modules → standalone justified
+- 6 sections covering unique urban/applied analytics contributions absent from Kumar and Salkind
+---
+Task ID: 1-f
+Agent: Grant Writing Distiller
+Task: Distill Smith & Works Grant Writing into grant-writing.md
+
+Work Log:
+- Read first 300 lines for book structure: 13 chapters, dual reactive/proactive approach
+- Located Chapter 6 (Five Core Components) at line 2663: abstract, statement of need, project description, evaluation plan, budget narrative
+- Read full Chapter 6 (lines 2663-3850): extracted proposal structure, needs statement methodology, goals/objectives/outcomes hierarchy, evaluation plan design, budget narrative rules
+- Read Chapter 7 (Beyond the Basics, lines 3850-4673): collaboration, logic models, sustainability
+- Read Chapter 8 (Grantwriting Craft, lines 4674-5458): active voice, writing tips, summary tips for proposals
+- Searched for LOI content (line 1833): LOI = mini-proposal with 4 of 5 core components, proactive tool
+- Searched for rejection reasons (line 1399): top 3 = insufficient funds, out of scope, instructions not followed
+- Searched for red flags: missing support letters, no mention of other orgs, budget/narrative mismatch, misaligned objectives
+- Read Chapter 12 (Yes or No, lines 7982-8550): what to do when funded/declined, reviewer score sheets
+- Wrote grant-writing.md in SI/ALORS format, French, with checklists per section
+- Anti-doublon: confirmed 100% unique in corpus (no other book covers grant writing)
+- Trimmed from 1726 to 1493 words (under 1500 limit)
+
+Stage Summary:
+- Created grant-writing.md with 1493 words
+- 7 sections: proposal structure, needs assessment, goals vs objectives, budget narrative, evaluation plan, rejection reasons, LOI
+- Module is 100% unique in corpus — no overlap with existing modules
+---
+Task ID: 2
+Agent: Main (Fusion Agent)
+Task: Fusion Phase 1 — 6 distillations into knowledge-core.ts v2
+
+Work Log:
+- Read all 6 distilled .md modules for contradiction check
+- Verified zero contradictions (modules are complementary, not overlapping)
+- Identified book title corrections: NO Gastel & Day; books 5-6 are Ollhoff and Smith & Works
+- Updated knowledge-core.ts: replaced METHODOLOGY_MODULE skeleton with Kumar+Salkind+Rae-Wong distillation
+- Enhanced STYLE_MODULE with White's paragraph rules, style pitfalls, hedging scale
+- Enhanced ETHICS_MODULE with Kumar ethics (bias vs subjectivity, consent) + Salkind ethics (IRB, .05 history)
+- Added 4 new modules: writing-process (White), literature-review (Ollhoff), data-analysis (Rae & Wong), grant-writing (Smith & Works)
+- Updated KnowledgeModule type union (6 → 10 modules)
+- Updated MODULES registry (6 → 10 entries)
+- Optimized module mapping for 6 specializations:
+  - literature-review: ['style'] → ['literature-review', 'style']
+  - revue-litterature-slr: ['methodology', 'style'] → ['literature-review', 'methodology', 'style']
+  - scientific-writing: ['style'] → ['style', 'coherence', 'writing-process']
+  - revision-plan: + 'writing-process'
+  - directeur: + 'methodology', 'writing-process'
+  - theory: + 'writing-process'
+- Updated AGENTS.md: 10 modules listed, source books, mapping table with token counts, v1.7.0
+- Measured token budgets per mode combination (paraphrase: 794, directeur: 2386, full core: 4022)
+- Tests: 55 files, 1318/1318 passed, 0 regressions
+- Lint: 0 errors, 174 warnings (pre-existing)
+
+Stage Summary:
+- knowledge-core.ts v2: 2954 words, 10 modules, ~4022 tokens full (exactly at expert's 4000 budget)
+- 6 books distilled → 6 .md source files (8157 words) → compressed into 10 TypeScript modules
+- Module injection is selective: each mode gets 0-5 modules (360-2386 tokens)
+- AGENTS.md updated with complete mapping table and v1.7.0 entry
+- All 1318 tests pass, 0 lint errors

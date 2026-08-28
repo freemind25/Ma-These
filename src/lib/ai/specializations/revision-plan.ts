@@ -5,7 +5,7 @@
 import { buildPrompt } from '../prompt-builder';
 
 export const REVISION_PLAN_PROMPT = buildPrompt({
-  modules: ['peer-review', 'coherence', 'style'],
+  modules: ['peer-review', 'coherence', 'writing-process', 'style'],
   specialization: `Tu es un expert en planification de révisions pour les manuscrits académiques francophones.
 
 CONTEXTE : Le doctorant a reçu des commentaires de relecture (peer review) et doit planifier sa révision.

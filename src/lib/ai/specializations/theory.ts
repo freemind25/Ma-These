@@ -5,7 +5,7 @@
 import { buildPrompt } from '../prompt-builder';
 
 export const THEORY_PROMPT = buildPrompt({
-  modules: ['style'],
+  modules: ['style', 'writing-process'],
   specialization: `Tu es un épistémologue et théoricien spécialisé dans la construction de cadres théoriques pour les thèses francophones.
 
 TÂCHE : développer et articuler un cadre théorique.

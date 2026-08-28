@@ -157,7 +157,32 @@ src/lib/ai/
 6. `src/data/directeur-prompt.ts` est déprécié — utiliser `src/lib/ai/specializations/directeur.ts`
 7. Les routes API (`/api/ai-writing`, `/api/ai-writing/stream`, `/api/directeur-chat`) utilisent `SPECIALIZATION_PROMPTS[mode.id]`
 
-**Modules de connaissance disponibles :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`
+**Modules de connaissance disponibles (10) :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`, `writing-process`, `literature-review`, `data-analysis`, `grant-writing`
+
+**Sources distillées :** Kumar (Research Methodology), Salkind (100 Questions), White (Mapping Your Thesis), Ollhoff (Literature Review), Rae & Wong (Applied Data Analysis), Smith & Works (Grant Writing)
+
+**Mapping module ↔ mode (injection sélective) :**
+
+| Mode | Modules injectés | Tokens ≈ |
+|------|-------------------|----------|
+| directeur | style, ethics, coherence, methodology, writing-process | 2 386 |
+| scientific-writing | style, coherence, writing-process | 1 190 |
+| literature-review | literature-review, style | 1 030 |
+| revue-litterature | literature-review, methodology, style | 1 537 |
+| peer-review | peer-review, coherence | 1 180 |
+| revision-plan | peer-review, coherence, writing-process, style | 1 436 |
+| paraphrase | style, ethics | 794 |
+| academic-reformulation | style, ethics | 794 |
+| hypothesis | methodology, style | 1 370 |
+| methodology | methodology, style | 1 370 |
+| theory | style, writing-process | 970 |
+| auto-edition-8c | auto-edition, style | 580 |
+| abstract | style | 360 |
+| grammaire | style | 360 |
+| supervision | style | 360 |
+| harper | style | 360 |
+| defense | style, coherence | 680 |
+| deblocage | (aucun — standalone) | 0 |
 
 ### Tests
 - **OBLIGATOIRE** : `bun run test:run` (Vitest en mode single-run)
@@ -285,6 +310,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
+| **v1.7.0** | Knowledge-core v2 : 6 ouvrages distillés, 10 modules, mapping optimisé |
 | **v1.6.0** | Architecture connaissance : knowledge-core + prompt-builder + 19 spécialisations |
 | **v1.5.1** | Sécurité (clés retirées), tests P1 (1318/1318), erreurs FR, README fix |
 | **v1.5.0** | 36 modules, 22 providers, 21 modes IA, ARS, 16 fournisseurs gratuits |

@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// ThesisFrame — Knowledge Core
+// ThesisFrame — Knowledge Core v2 (distillé de 6 ouvrages de référence)
 // SOURCE UNIQUE DE VÉRITÉ — savoir métier digéré
 // ═══════════════════════════════════════════════════════════════
 //
@@ -7,6 +7,14 @@
 // Ce fichier est la SEULE source de savoir métier pour tous les prompts IA.
 // Les fichiers de spécialisation ne doivent JAMAIS dupliquer ces contenus.
 // Toute modification de savoir métier se fait ICI uniquement.
+//
+// Sources distillées :
+//   Kumar — Research Methodology (methodology-design, ethics)
+//   Salkind — 100 Questions About Research Methods (methodology-basics, ethics, stats)
+//   White — Mapping Your Thesis (writing-process, style, revision)
+//   Ollhoff — How to Write a Literature Review (literature-review)
+//   Rae & Wong — Applied Data Analysis (data-analysis)
+//   Smith & Works — Complete Book of Grant Writing (grant-writing)
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -20,202 +28,368 @@ export type KnowledgeModule =
   | "coherence"
   | "auto-edition"
   | "peer-review"
-  | "methodology";
+  | "methodology"
+  | "writing-process"
+  | "literature-review"
+  | "data-analysis"
+  | "grant-writing";
 
 // ───────────────────────────────────────
-// Module: STYLE — règles rédactionnelles universelles
+// Module: STYLE — règles rédactionnelles (White + existant)
 // ───────────────────────────────────────
 
 const STYLE_MODULE = `
-## STYLE RÉDACTIONNEL (valable pour tous les modes de rédaction)
+## STYLE RÉDACTIONNEL
 - Français académique soigné, vouvoiement
 - Phrases de 25-30 mots en moyenne
-- Voix passive et passé composé privilégiés pour les résultats
 - Connecteurs logiques explicites (cependant, en revanche, ainsi, par conséquent)
 - Citations entre parenthèses : (Auteur, Année)
-- Jargon non défini interdit — chaque terme technique doit être défini à sa première occurrence
+- Jargon non défini interdit — chaque terme technique défini à première occurrence
 - Affirmations non étayées interdites
-- Structure en paragraphes logiques, chaque paragraphe commençant par une phrase-topic
-- Pas de répétitions lexicales
-- Fond avant forme pour les non-anglophones : prioriser la clarté des idées sur la perfection linguistique
+- Fond avant forme : prioriser la clarté des idées sur la perfection linguistique
+
+### Paragraphe académique (White)
+- Un paragraphe = une idée directrice (controlling idea)
+- Longueur : ½ à ¾ page A4 (interligne 1.5) ; chapitre de 20 pages ≈ 30 paragraphes
+- Phrase thématique (topic sentence) le plus près possible du début — jamais de citation en ouverture
+- Variante efficace : question rhétorique ouvrante
+- Regrouper les sous-parties d'une même idée dans un même paragraphe
+
+### Pièges de style (White)
+- Voix passive abusive : masque l'agent, crée fausse objectivité. Exceptions légitimes : section Méthodes, agent évident/inconnu.
+- Mots-persuadeurs (weasel words) : « sûrement », « évidemment », « indéniablement » — perçus comme tentatives illicites de pousser le lecteur.
+- Hedging (modulation) : échelle *suggère* < *appuie* < *confirme*. Moduler sans éluder.
+- Sur-écriture et quiltage : collage de segments de texte. Chaque révision doit « serrer » le texte.
+- Évitement de la responsabilité : « Il est pensé que… » → « Les preuves indiquent que… »
+- Règle des 10 % : un texte final peut presque toujours être réduit de 10 % et s'améliorer.
 `;
 
 // ───────────────────────────────────────
-// Module: ETHICS — éthique de la publication
+// Module: ETHICS — éthique (existant + Kumar + Salkind)
 // ───────────────────────────────────────
 
 const ETHICS_MODULE = `
-## ÉTHIQUE DE LA PUBLICATION
+## ÉTHIQUE DE LA RECHERCHE ET PUBLICATION
+
+### Plagiat et intégrité
 - Paraphrase suffisante obligatoire : le simple remplacement de mots ne suffit pas
 - Détection de l'auto-plagiat entre articles d'une même thèse
-- Détection du risque de salami science (découpage artificiel d'un même travail en plusieurs articles)
-- Déclarations de conformité éthique exigées (comité d'éthique, consentement)
-- Signaux de revues prédatrices à alerter :
-  · Promesses de publication rapide (< 2 semaines)
-  · Frais de publication (APC) opaques ou démesurés
-  · Comité éditorial fantôme ou inactif
-  · Absence d'indexation dans Scopus, Web of Science ou DOAJ
-- Principes DORA (San Francisco Declaration on Research Assessment) :
-  · Évaluer la recherche sur son contenu, pas sur le facteur d'impact de la revue
-  · Encourager la vérification de l'indexation (Scopus, WoS, DOAJ pour OA)
+- Salami science : découpage artificiel d'un même travail en plusieurs articles
+- Déclarations de conformité éthique exigées
+
+### Consentement et participants (Kumar + Salkind)
+- SI participants humains ALORS consentement éclairé obligatoire (compétence, information, volontarité)
+- SI participants incompétents (enfants, personnes en crise) ALORS consentement par tiers + formulaire d'assentiment adapté (> 6 ans)
+- SI informations sensibles ALORS anonymiser, donner temps de décision
+- Incitatif APRÈS collecte = acceptable ; AVANT = non éthique (Kumar)
+- SI risque de préjudice ALORS risque doit être ≤ risque quotidien (minimum risk)
+
+### Biais vs. subjectivité (Kumar)
+- Biais = non éthique (dissimulation ou surévaluation délibérée)
+- Subjectivité ≠ biais (façon de penser, pas altération)
+- SI méthodologie inappropriée utilisée délibérément ALORS non éthique
+- SI commanditaire impose restrictions sur publication ALORS les déclarer
+
+### IRB (Salkind)
+- Pas une formalité : groupe diversifié approbant AVANT la recherche
+- Dossier minimal : lieu, financement, résumé, population, méthodes, risques, conflits d'intérêts
+- Déception → débriefing obligatoire de tous les participants
+
+### Revues et DORA
+- Signaux prédateurs : publication < 2 sem., APC opaques, comité fantôme, non-indexation Scopus/WoS/DOAJ
+- DORA : évaluer sur le contenu, pas sur le facteur d'impact
+- Seuil .05 : convention de Fisher, aucune base mathématique formelle (Salkind)
 `;
 
 // ───────────────────────────────────────
-// Module: COHERENCE — cohérence du manuscrit
+// Module: COHERENCE — cohérence du manuscrit (existant, stable)
 // ───────────────────────────────────────
 
 const COHERENCE_MODULE = `
 ## COHÉRENCE DU MANUSCRIT
 
 ### Introduction ↔ Discussion
-- Chaque question de recherche formulée dans l'introduction doit recevoir une réponse EXPLICITE dans la discussion
-- Chaque hypothèse formulée doit être testée empiriquement et discutée
-- Les résultats orphelins (discutés sans être reliés à une question de l'intro) doivent être signalés
-- La discussion suit une structure en entonnoir inversé : du spécifique vers le général
+- Chaque question de recherche de l'intro doit recevoir une réponse EXPLICITE dans la discussion
+- Chaque hypothèse doit être testée empiriquement et discutée
+- Résultats orphelins (discutés sans lien vers une question de l'intro) = à signaler
+- Discussion en entonnoir inversé : du spécifique vers le général
 
 ### Texte ↔ Tableaux / Figures
-- Un renvoi au tableau (« comme le montre le Tableau 1 ») n'est PAS redondant
-- Citer dans le texte CHAQUE valeur numérique déjà présente dans le tableau EST redondant
-- Reformuler les tendances générales du tableau est acceptable si cela apporte une interprétation
-- Seule la répétition pure de données est considérée redondante
+- Renvoi au tableau (« comme le montre le Tableau 1 ») n'est PAS redondant
+- Citer dans le texte CHAQUE valeur numérique déjà dans le tableau EST redondant
+- Reformuler les tendances générales est acceptable si cela apporte une interprétation
 
 ### Cohérence numérique
-- Les mêmes chiffres doivent apparaître de manière identique entre sections
-- Les pourcentages doivent correspondre aux nombres absolus déclarés
-- La somme des pourcentages doit faire 100% (sauf non-réponses expliquées)
-- Les dates et périodes mentionnées doivent être compatibles
+- Mêmes chiffres entre sections ; pourcentages correspondant aux nombres absolus
+- Somme des pourcentages = 100% (sauf non-réponses expliquées)
+- Dates et périodes compatibles
 
 ### Cohérence terminologique
-- Un même concept doit être désigné par le même terme dans toute la thèse
-- Les synonymies doivent être explicitées
-- Les abréviations doivent être définies à la première occurrence
-- Le sens d'un terme ne doit pas évoluer subtilement sans justification
+- Un même concept = un même terme dans toute la thèse
+- Synonymies explicitées ; abréviations définies à première occurrence
 
 ### Cohérence référentielle
-- Un même auteur/article ne doit pas être cité avec des interprétations opposées sans justification
-- Chaque citation dans le texte doit figurer dans la bibliographie
-- Une référence doit être utilisée dans un contexte correspondant à son contenu réel
+- Un même auteur pas cité avec interprétations opposées sans justification
+- Chaque citation dans le texte → dans la bibliographie
+- Référence utilisée dans un contexte correspondant à son contenu réel
 `;
 
 // ───────────────────────────────────────
-// Module: AUTO-ÉDITION — 8 critères Gastel & Day
+// Module: AUTO-ÉDITION — 8 critères (existant, stable)
 // ───────────────────────────────────────
 
 const AUTO_EDITION_MODULE = `
-## AUTO-ÉDITION — Méthode 8C de Gastel & Day
+## AUTO-ÉDITION — Méthode 8C
 
-Évaluer un texte selon les 8 critères suivants :
+Évaluer un texte selon les 8 critères :
+1. CONFORMITÉ : respect des consignes formelles (gabarit, conventions)
+2. EXHAUSTIVITÉ : tous les éléments attendus présents
+3. COMPOSITION : structure d'ensemble appropriée
+4. EXACTITUDE : information correcte (texte, tableaux, figures, références)
+5. CLARTÉ : termes ambigus définis, abréviations explicitées
+6. COHÉRENCE : chiffres identiques texte/tableaux, terminologie stable
+7. CONCISION : pas de redondances ni contenu tangentiel
+8. COURTOISIE : ton neutre envers travaux antérieurs, langage inclusif
 
-1. CONFORMITÉ : Le texte respecte-t-il les consignes formelles (gabarit, conventions terminologiques, structurelles) ?
-2. EXHAUSTIVITÉ : Tous les éléments attendus sont-ils présents ?
-3. COMPOSITION : La structure d'ensemble est-elle appropriée ?
-4. EXACTITUDE : L'information est-elle correcte dans le texte, tableaux, figures, références ?
-5. CLARTÉ : Termes ambigus définis ? Abréviations explicitées ?
-6. COHÉRENCE : Chiffres identiques texte/tableaux ? Terminologie stable ?
-7. CONCISION : Redondances ou contenu tangentiel ?
-8. COURTOISIE : Ton neutre envers travaux antérieurs ? Langage inclusif ?
-
-Barème de notation :
-- 90-100 : Maîtrise exemplaire, aucune amélioration nécessaire
-- 75-89 : Bon niveau, améliorations mineures possibles
-- 50-74 : Passable, plusieurs améliorations nécessaires
-- 25-49 : Insuffisant, problèmes significatifs
-- 0-24 : Critique, refonte nécessaire
+Barème : 90-100 exemplaire | 75-89 bon | 50-74 passable | 25-49 insuffisant | 0-24 critique
 `;
 
 // ───────────────────────────────────────
-// Module: PEER REVIEW — grille Review Commons adaptée
+// Module: PEER REVIEW — grille Review Commons (existant, stable)
 // ───────────────────────────────────────
 
 const PEER_REVIEW_MODULE = `
-## GRILLE DE RELECTURE (Review Commons adaptée au contexte doctoral)
+## GRILLE DE RELECTURE (Review Commons adaptée)
 
-══════════════════════════════════════
-SECTION 1 — PREUVE, REPRODUCTIBILITÉ, CLARTÉ
-══════════════════════════════════════
+### Section 1 — Preuve, Reproductibilité, Clarté
+1.1 RÉSUMÉ : conclusions principales + méthodologie. Portée → Section 2.
+1.2 COMMENTAIRES MAJEURS : affirmations étayées par les données ? Expériences supplémentaires nécessaires et réalistes ? Reproductibilité ? Statistique adéquate ? Suggestions « OPTIONNELLES » si nouvelles pistes.
+1.3 COMMENTAIRES MINEURS : problèmes facilement adressables (forme, présentation), références correctes, clarté figures.
 
-1.1 RÉSUMÉ
-- Résume brièvement les conclusions principales et la méthodologie.
-- Place les remarques sur la portée dans la Section 2.
+### Section 2 — Portée et Signification
+2.1 BILAN : forces et limites. Aspects les plus solides vs. à améliorer.
+2.2 AVANCÉE vs ÉTAT DE L'ART : comparaison avec résultats proches, nature de l'avancée (conceptuelle, technique, méthodologique, empirique).
+2.3 PUBLIC CONCERNÉ : qui sera influencé ? Utilisation au-delà du champ spécifique ?
 
-1.2 COMMENTAIRES MAJEURS
-- Les affirmations et conclusions sont-elles étayées par les données ?
-- Des expériences ou analyses supplémentaires sont-elles nécessaires pour les soutenir ?
-  · Si oui, sont-elles réalistes en termes de temps et de ressources ?
-  · Sinon, l'auteur devrait-il qualifier les affirmations de « préliminaires » ou les retirer ?
-- Les données et méthodes sont-elles présentées de façon reproductible ?
-- Les expériences sont-elles suffisamment répliquées et l'analyse statistique adéquate ?
-- Suggestions « OPTIONNELLES » identifiées clairement si elles ouvrent de nouvelles pistes.
-
-1.3 COMMENTAIRES MINEURS
-- Problèmes spécifiques facilement adressables (forme, présentation).
-- Les études antérieures sont-elles correctement référencées ?
-- Le texte et les figures sont-ils clairs et précis ?
-- Suggestions pour améliorer la présentation.
-
-══════════════════════════════════════
-SECTION 2 — PORTÉE ET SIGNIFICATION
-══════════════════════════════════════
-
-2.1 BILAN GÉNÉRAL
-- Résume les forces et les limites de l'étude.
-- Quels sont les aspects les plus solides et les plus importants ?
-- Quels aspects devraient être améliorés ou développés ?
-
-2.2 AVANCÉE PAR RAPPORT À L'ÉTAT DE L'ART
-- Compare avec les résultats les plus proches dans la littérature.
-- L'étude étend-elle les connaissances du domaine ? De quelle manière ?
-- Nature de l'avancée (conceptuelle, technique, méthodologique, empirique…).
-
-2.3 PUBLIC CONCERNÉ
-- Quel type de public sera intéressé ou influencé ?
-- Comment cette recherche sera-t-elle utilisée par d'autres ? Au-delà du champ spécifique ?
-
-══════════════════════════════════════
-RECOMMANDATION FINALE
-══════════════════════════════════════
-Choisir l'une des catégories suivantes et justifier en 2-3 phrases :
-- ACCEPTER TEL QUEL — le texte est publiable sans modification majeure
-- RÉVISIONS MINEURES — des corrections limitées suffisent
-- RÉVISIONS MAJEURES — des modifications substantielles sont nécessaires
-- REJETER — le texte ne répond pas aux exigences minimales
+### Recommandation finale
+Choisir : ACCEPTER TEL QUEL | RÉVISIONS MINEURES | RÉVISIONS MAJEURES | REJETER — justifier en 2-3 phrases.
 `;
 
 // ───────────────────────────────────────
-// Module: METHODOLOGY — règles de décision (à compléter par distillation des livres)
+// Module: METHODOLOGY — arbre de décision (Kumar + Salkind + Rae & Wong)
 // ───────────────────────────────────────
 
 const METHODOLOGY_MODULE = `
 ## MÉTHODOLOGIE DE RECHERCHE
 
-### Approches qualitatives
-- Entretiens semi-directifs, observation participante, analyse de contenu thématique
-- Triangulation des sources et des chercheurs pour renforcer la validité
-- Saturation thématique comme critère d'arrêt
+### Arbre de décision (Kumar)
+- SI exploratoire (peu connu) → qualitatif (entretiens, observation, focus groups)
+- SI descriptive (prévalence, profil) → quantitatif transversal
+- SI descriptive + changement → avant-après (attention : maturation, effet réactif)
+- SI corrélationnelle (association sans causalité) → transversal ou longitudinal
+- SI causale → expérimental ou quasi-expérimental
+- SI causalité + comparaison → comparatif expérimental (randomisation, baseline + post)
+- SI causalité + éthique (pas de groupe contrôle) → cross-over (ABAB) ou placebo
+- SI tendance temporelle → longitudinal, cohorte ou panel
+- SI compréhension profonde d'un cas → étude de cas qualitative (méthodes multiples)
+- SI les deux (diversité + quantification) → mixte : quali → quanti → quali
+- SI valeurs, croyances, significations → qualitatif
 
-### Approches quantitatives
-- Échantillonnage représentatif, taille d'échantillon et puissance statistique
-- Tests d'hypothèses, seuils de significativité, taille d'effet
-- Validité interne (causalité) et externe (généralisabilité)
+### Échantillonnage (Kumar)
+- Population finie identifiable → SRS ou systématique
+- Population hétérogène sur critère corrélé → stratifié
+- Population vaste, dispersée → cluster multi-étapes
+- Base inexistante + critère visible → quota ; sans critère → accidentel
+- Réseau caché → snowball (piège : biais faction initiale)
+- Causalité/hypothèse → taille par confiance, précision, écart-type
+- Qualitatif → point de saturation (pas de taille prédéterminée)
 
-### Approches mixtes
-- Design séquentiel ou concurrent
-- Triangulation des résultats qualitatifs et quantitatifs
+### Validité et fiabilité (Kumar)
+- Quantitatif : face/content, concurrent/predictive, construct
+- Fiabilité : test/retest, formes parallèles, split-half
+- Qualitatif (Guba-Lincoln) : crédibilité, transférabilité, dépendabilité, confirmabilité
 
-### Règles de décision (à compléter par distillation des livres Kumar, White, Salkind)
-- SI question exploratoire ALORS approche qualitative
-- IF question de causalité ALORS design expérimental ou quasi-expérimental
-- SI comparaison de groupes ALORS échantillonnage probabiliste
-- SI recherche-action ALORS approche mixte itérative
+### Stats : quel test ? (Salkind)
+| Question | Test | Condition |
+|---|---|---|
+| 2 groupes diffèrent ? | t-test | VD quantitative, n > 30 |
+| 3+ groupes, 1 facteur ? | ANOVA unifacteur | VD quantitative |
+| 3+ groupes, 2+ facteurs ? | ANOVA multifactorielle | VD quantitative |
+| Relation 2 variables ? | Corrélation Pearson | Quantitatives, linéaire |
+| Prédire Y depuis X ? | Régression | Une ou plusieurs VI |
+| 1 groupe vs norme ? | Test Z | Distribution normale connue |
+| Nominales/ordinales, petit n ? | Non paramétrique | Chi-carré, Mann-Whitney |
+- Toujours reporter taille de l'effet avec p (Salkind) ; corrélation ≠ causalité
 
-### Biais courants à anticiper
-- Biais de sélection, biais de réponse, biais de confirmation
-- Effet Hawthorne, effet demandeur
-- Sur-généralisation au-delà de l'échantillon
+### Données spatiales/urbaines (Rae & Wong)
+- SI dépendance spatiale entre zones → autorégression spatiale (SAR)
+- SI relations varient selon localisation → régression pondérée géographiquement (GWR)
+- SI individus imbriqués dans unités administratives → modèle à effets mixtes (multilevel)
+- SI big data passif → biais de couverture ; volume ne compense pas
+- MAUP : résultats changent selon découpage spatial — amplifié avec big data
+- Approche hybride : données traditionnelles (attributs) + big data (fréquence, couverture)
 
-### Validité et fiabilité
-- Validité de construit, de contenu, de critère
-- Fiabilité inter-juges, test-retest, cohérence interne (alpha de Cronbach)
+### Erreurs doctorales courantes (Kumar, détectables)
+- Instrument mesure autre chose que l'objectif
+- Causale sans groupe contrôle ni randomisation
+- Avant-après sans contrôle des variables extranes
+- Questionnaire non prétesté
+- Échelle de Likert sans items positifs ET négatifs
+- Transversal présenté comme mesurant le changement
+- Questions à double sens, libellé ambigu
+`;
+
+// ───────────────────────────────────────
+// Module: WRITING PROCESS — argumentation et révision (White)
+// ───────────────────────────────────────
+
+const WRITING_PROCESS_MODULE = `
+## PROCESSUS DE RÉDACTION (White, Mapping Your Thesis)
+
+### Argumentation : modèle Toulmin
+1. Claim (position) — sans preuve = assertion
+2. Evidence (preuves empiriques ou textuelles)
+3. Warrant (garant) — lien preuve → position
+4. Backing (soutien) — renforce le warrant contesté
+5. Rebuttal (réfutation) — invalide le warrant adverse
+
+3 stratégies face aux contre-arguments :
+- Concession stratégique : qualifier (« généralement », « partiellement »)
+- Réfutation : identifier faiblesse fondamentale dans le warrant adverse
+- Irrrecevabilité : arguments adverses ne répondent pas aux critères de l'enjeu
+
+Règle : « Les examinateurs ne cherchent pas à être convaincus — ils cherchent un argument qu'ils peuvent prendre au sérieux. »
+
+### Transitions (White)
+| Opération | Connecteurs FR |
+|---|---|
+| Concession | cependant, néanmoins, toutefois |
+| Opposition | au contraire, en revanche, à l'inverse |
+| Addition | en outre, de plus, par ailleurs, de même |
+| Causalité | par conséquent, c'est pourquoi, de ce fait |
+| Illustration | par exemple, en effet |
+- Piège : rappels en début de chapitre (« Dans le chapitre précédent… ») amputent l'autonomie
+
+### Processus : brouillon → révision → édition
+1. Brouillon : centré-auteur, libéré de l'éditeur interne. Thèse exégétique : rédiger chaque chapitre sans retravailler immédiatement.
+2. Révision (critère : titre + résumé définitifs) : transformer en texte centré-lecteur. Enlever l'échafaudage (titres redondants, énoncés vides). Réduire de ~10 %.
+3. Édition (critère : accent sur mot-à-mot) : élargir le lectorat au-delà du directeur. Relire à voix haute, éditer sur papier.
+4. Relecture : grammaire, syntaxe, orthographe uniquement.
+
+### Structure de thèse (White)
+Empirique : Intro → Revue littérature → Méthodes → Résultats → Discussion → Conclusion
+Exégétique/qualitative : Intro (avec revue enchâssée) → Chapitres thématiques → Conclusion
+- Énoncé de thèse (thesis statement) le plus près possible de l'ouverture
+- Chapitres de longueur approximativement égale
+`;
+
+// ───────────────────────────────────────
+// Module: LITERATURE REVIEW — méthode Ollhoff
+// ───────────────────────────────────────
+
+const LITERATURE_REVIEW_MODULE = `
+## REVUE DE LITTÉRATURE — Méthode Ollhoff (6 étapes)
+
+### Étape 1 — Question de recherche
+- Viser 3-5 articles sur un scan de 30-60 min
+- Question (pas sujet) : étroite, spécifique, non binaire
+
+### Étape 2 — Sources
+- ≥ 75 % de sources évaluées par les pairs
+- Drapeaux rouges cumulatifs (pas un seul disqualifiant) :
+  · Absence auteur/date/lieu · Auteur sans credentials · Idéologie visible
+  · Jamais cité par d'autres · Ton hyperbolique · Confirmation uniquement · Certitude rigide
+- 3 strates : recherche (50-100 %, taux déformation 0 %) → professionnelle (25 %) → populaire (50 %, exclure)
+
+### Étape 3 — Immersion
+- Critère d'arrêt : point de saturation (lectures ne produisent plus de nouveaux insights)
+- Matrice d'analyse : Titre | Auteurs | Question | Méthodologie | Résultats | Drapeaux rouges
+
+### Étape 4 — Plan
+- Structure thématique (pas chronologique)
+- ~1 page de plan pour 5-10 pages de narration
+- Plan détaillé par paragraphe attendu
+
+### Étape 5 — Rédaction
+- SI chaque paragraphe résume un seul article → erreur (bibliographie annotée)
+- Regrouper par thème, comparer, contraster, identifier tendances
+- Couvrir les écoles opposées ; chaque assertion citée ; pas d'opinion
+
+### Étape 6 — Édition
+- Checklist : stacking éliminé ? neutralité ? assertions citées ? pas de vagues (« beaucoup de ») ? conformité APA ?
+
+### Erreurs fréquentes
+- Confondre sujet et question · Question binaire · Stacking · Plaidoyer déguisé
+- Assertions non citées · Vagueness · Côté unique · Lecture perpétuelle (jamais saturer)
+`;
+
+// ───────────────────────────────────────
+// Module: DATA ANALYSIS — spécificités spatiales (Rae & Wong)
+// ───────────────────────────────────────
+
+const DATA_ANALYSIS_MODULE = `
+## ANALYSE DE DONNÉES — Spécificités urbaines et spatiales (Rae & Wong)
+
+### Choix de modèle
+- SI dépendance spatiale entre zones → SAR (autorégression spatiale). L'OLS ignore cette dépendance et produit des estimateurs biaisés.
+- SI relations varient selon localisation → GWR (régression géographiquement pondérée). Révèle hétérogénéités régionales masquées par modèle global.
+- SI données non-linéaires, nombreuses variables, big data → ML (clustering, classification). Attention : ML = patterns, pas causalité. Compléter par modèle statistique interprétable.
+- SI individus imbriqués dans unités administratives → effets mixtes (multilevel). L'OLS sous-estime les erreurs standard. Vérifier par likelihood ratio test.
+
+### Pièges du big data urbain
+- Volume ≠ couverture : données passives excluent non-connectés, orientées par le marché
+- R² acceptable : 0.60-0.77 dans pays en développement sans données fiables ; insuffisant sinon
+- Court-termisme analytique : exiger cadrage théorique explicite
+- MAUP amplifié : résultats changent selon découpage spatial
+- Flow data (mobilité) sans attributs socio-économiques → compléter par enquêtes/recensement
+
+### Qualité données participatives
+- Norme ISO 19157:2013 : complétude, exactitude thématique, cohérence, qualité temporelle
+- Plateformes internationales (OSM) : erreur positionnelle < 10 %
+- Contributeurs variés → qualité dégrade ; administrateurs doivent avoir formation géodésie/cartographie
+
+### Gouvernance analytique
+- Planning-lag : la technologie précède la capacité d'utilisation → analyses hors-sujet
+- Instruments de données = chargés de politique et idéologie
+- Approche hybride systématique : traditionnelles (attributs/profondeur) + big data (fréquence/couverture)
+`;
+
+// ───────────────────────────────────────
+// Module: GRANT WRITING — subventions (Smith & Works)
+// ───────────────────────────────────────
+
+const GRANT_WRITING_MODULE = `
+## RÉDACTION DE SUBVENTIONS (Smith & Works)
+
+### Structure : 5 composants obligatoires
+1. Résumé exécutif (rédiger EN DERNIER) : problème + approche + évaluation + coût + montant
+2. Énoncé du besoin : données sourcées (dures + qualitatives), focus COMMUNAUTÉ pas organisation
+3. Description du projet : buts + objectifs + résultats + étapes + calendrier
+4. Plan d'évaluation : indicateurs + méthode (interne/externe, somnative/formative)
+5. Budget + narration : correspondance biunivoque budget ↔ récit, calculs expliqués
+
+### Buts vs. Objectifs vs. Résultats
+- But : large, pas mesurable (pas = mission de l'organisation)
+- Objectif : mesurable, décrit COMMENT atteindre le but (combien ?)
+- Résultat : ce qui changera concrètement (« et alors ? »)
+- Étapes d'action : délai + responsable pour chaque objectif
+
+### Plan d'évaluation
+- SI aucune méthode de mesure identifiable → revoir l'objectif
+- Évaluateur externe : associer dès la CONCEPTION, pas après le début
+- Vocabulaire : base de référence, indicateur, modèle logique (intrants → activités → résultats → impacts)
+
+### Motifs de rejet
+1. Instructions non suivies (format, ordre, limites) → élimination AVANT lecture
+2. Hors périmètre du financeur
+3. Lettres de soutien manquantes → rejet immédiat (la subvention = contrat)
+4. Pas de mention d'autres organisations du secteur → red flag
+5. Budget décorrélé du récit
+
+### LOI (Letter of Inquiry)
+- 4 composants (pas de résumé) : besoin + projet + évaluation + budget
+- ¶1 = projet, ¶2 = besoin, ¶3 = plan, ¶4 = coût + demande d'invitation
+- 2-4 pages max ; signaler que d'autres financeurs seront sollicités
 `;
 
 // ───────────────────────────────────────
@@ -226,9 +400,13 @@ const MODULES: Record<KnowledgeModule, string> = {
   style: STYLE_MODULE,
   ethics: ETHICS_MODULE,
   coherence: COHERENCE_MODULE,
-  "auto-edition": AUTO_EDITION_MODULE,
-  "peer-review": PEER_REVIEW_MODULE,
+  'auto-edition': AUTO_EDITION_MODULE,
+  'peer-review': PEER_REVIEW_MODULE,
   methodology: METHODOLOGY_MODULE,
+  'writing-process': WRITING_PROCESS_MODULE,
+  'literature-review': LITERATURE_REVIEW_MODULE,
+  'data-analysis': DATA_ANALYSIS_MODULE,
+  'grant-writing': GRANT_WRITING_MODULE,
 };
 
 // ───────────────────────────────────────

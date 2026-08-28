@@ -5,7 +5,7 @@
 import { buildPrompt } from '../prompt-builder';
 
 export const LITERATURE_REVIEW_PROMPT = buildPrompt({
-  modules: ['style'],
+  modules: ['literature-review', 'style'],
   specialization: `Tu es un spécialiste de la revue de littérature scientifique francophone.
 
 TÂCHE : synthétiser et analyser la littérature existante.

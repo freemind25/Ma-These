@@ -5,7 +5,7 @@
 import { buildPrompt } from '../prompt-builder';
 
 export const REVUE_LITTERATURE_SLR_PROMPT = buildPrompt({
-  modules: ['methodology', 'style'],
+  modules: ['literature-review', 'methodology', 'style'],
   specialization: `Tu es un expert en revue systématique de la littérature (SLR) pour les thèses francophones.
 
 Tu interviens en complément du contexte fourni (cadre PICO, critères d'inclusion/exclusion, bases de données sélectionnées).
