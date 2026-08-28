@@ -5336,3 +5336,79 @@ Stage Summary:
 - Les 3 fichiers de documentation (AGENTS.md, CONTEXT-PROJET.md, ARCHITECTURE-CONNAISSANCE.md) sont désormais cohérents à v1.9.0
 - feedback.md est référencé dans les 3 documents
 - La calibration par niveau est documentée dans CONTEXT-PROJET.md et ARCHITECTURE-CONNAISSANCE.md
+---
+Task ID: 14
+Agent: Main
+Task: Inventaire exhaustif des ressources — clôture définitive
+
+Work Log:
+- Scanné src/data/ (3 fichiers), src/lib/data/ (2 fichiers), src/lib/ai/knowledge-core/modules/ (7 fichiers .md), upload/ (vide)
+- Scanné toutes les routes API et modules pages pour les prompts/grilles inline
+
+## Tableau inventaire des ressources
+
+### A. Fichiers sources du knowledge-core (DIGÉRÉS)
+
+| # | Fichier | Source ouvrage | Module knowledge-core | Statut |
+|---|---------|---------------|----------------------|--------|
+| A1 | `src/lib/ai/knowledge-core/modules/methodology-design.md` | Kumar | methodology | ✅ DIGÉRÉ |
+| A2 | `src/lib/ai/knowledge-core/modules/methodology-basics.md` | Salkind | methodology | ✅ DIGÉRÉ |
+| A3 | `src/lib/ai/knowledge-core/modules/publication.md` | Gastel & Day | publication | ✅ DIGÉRÉ |
+| A4 | `src/lib/ai/knowledge-core/modules/literature-review.md` | Ollhoff | literature-review | ✅ DIGÉRÉ |
+| A5 | `src/lib/ai/knowledge-core/modules/writing-process.md` | White | writing-process | ✅ DIGÉRÉ |
+| A6 | `src/lib/ai/knowledge-core/modules/data-analysis.md` | Rae & Wong | data-analysis | ✅ DIGÉRÉ |
+| A7 | `src/lib/ai/knowledge-core/modules/grant-writing.md` | Smith & Works | grant-writing | ✅ DIGÉRÉ |
+
+**Note :** 4 modules (style, ethics, coherence, auto-edition, peer-review) n'ont PAS de fichier .md source — ils étaient pré-existants et ont été intégrés directement dans knowledge-core.ts lors de la phase 1.
+
+### B. Fichiers de données (NON TRAITÉS — contenus UI)
+
+| # | Fichier | Contenu | Savoir métier ? | Statut |
+|---|---------|---------|-----------------|--------|
+| B1 | `src/data/ai-writing-modes.ts` | 21 métadonnées modes (label, icon, temp, placeholder). systemPrompt vide (""), renvoi vers specializations/ | ❌ Non — métadonnées UI | 🟢 LAISSER |
+| B2 | `src/data/directeur-prompt.ts` | 1 ligne de réexport déprécié vers specializations/directeur.ts | ❌ Non — shim de compat | 🟢 LAISSER |
+| B3 | `src/data/corpus-publication.ts` | 9 fiches structurées (Gastel & Day) injectées dans directeur-chat. Contient : signaux, questions diagnostiques, points d'intégration | ⚠️ OUI — savoir métier Gastel & Day | 🟡 CANDIDAT DISTILLATION |
+| B4 | `src/lib/data/coherence-data.ts` | 20 checks cohérence (6 catégories), 5 modes d'analyse. Données structurées (id, label, description, severity, example) | ⚠️ OUI — grille de vérification | 🟡 CANDIDAT DISTILLATION |
+| B5 | `src/lib/data/phrasebank-data.ts` | ~400+ phrases académiques FR (Manchester Phrasebank adapté). Par section (intro, discussion, etc.) et fonction (ouvrir, argumenter, citer, etc.) | ⚠️ OUI — savoir stylistique | 🟡 CANDIDAT DISTILLATION |
+
+### C. Grilles/checklists inline dans les modules (NON TRAITÉS)
+
+| # | Fichier | Contenu | Savoir métier ? | Statut |
+|---|---------|---------|-----------------|--------|
+| C1 | `src/modules/auto-edition/auto-edition-page.tsx` → CRITERIA, CHECKLIST_8C, SCIENTIFIC_CHECKLIST | 8 critères Gastel & Day (CCEXCCCoC) + 22 sous-items + 7 items checklist article | ⚠️ OUI — grille auto-édition | 🟡 CANDIDAT DISTILLATION |
+| C2 | `src/modules/outils-slr/outils-slr-page.tsx` → INITIAL_CRITERIA, CASP_CHECKLIST, EXTRACTION_FIELDS | 7 critères inclusion/exclusion + 10 items CASP + 14 champs extraction | ⚠️ OUI — grille SLR | 🟡 CANDIDAT DISTILLATION |
+
+### D. Routes avec prompts inline (NON TRAITÉS — patterns valides)
+
+| # | Fichier | Contenu | Savoir métier ? | Statut |
+|---|---------|---------|-----------------|--------|
+| D1 | `src/app/api/deep-research/route.ts` | Prompts pipeline recherche web (brief, plan, search, report) | ❌ Non — logique pipeline, pas méthodologie thèse | 🟢 LAISSER |
+| D2 | `src/app/api/text-prediction/route.ts` | Prompt prédiction de texte académique (3-12 mots) | ❌ Non — tâche technique, pas savoir métier | 🟢 LAISSER |
+| D3 | `src/app/api/paper2code/generate/route.ts` | 3 prompts Python ML (planning, analyzing, coding) | ❌ Non — traduction papier→code, hors scope thèse | 🟢 LAISSER |
+| D4 | `src/app/api/verification-publication/route.ts` | 4 actions avec knowledge-core injecté (Option B) + format JSON local | ❌ Non — format de sortie, pas savoir | 🟢 LAISSER (Option B correct) |
+| D5 | `src/app/api/coherence-check/route.ts` | Prompt avec knowledge-core coherence injecté + grille COHERENCE_CHECKS | ❌ Non — format de sortie + grille (C4) | 🟢 LAISSER (Option B correct) |
+
+## Synthèse des candidats distillation
+
+| # | Ressource | Volume | Priorité | Modules cibles potentiels |
+|---|-----------|--------|----------|------------------------|
+| **B3** | corpus-publication.ts | 9 fiches Gastel & Day (~30 Ko) | **HAUTE** — doublon potentiel avec module `publication` | publication (vérifier chevauchement) |
+| **B4** | coherence-data.ts | 20 checks + catégories (~12 Ko) | **MOYENNE** — données structurées, pas du texte prompt | coherence (les descriptions sont du savoir, les id/severity sont du format) |
+| **B5** | phrasebank-data.ts | ~400+ phrases (~34 Ko) | **FAIBLE** — stylistique, pas critériel. Fonctionne comme base de données d'affichage, pas comme prompt | style (trop volumineux pour le noyau ~4 500 tokens) |
+| **C1** | auto-edition-page.tsx (CHECKLIST_8C) | 22 sous-items + 7 items | **MOYENNE** — chevauchement avec module `auto-edition` | auto-edition (vérifier chevauchement) |
+| **C2** | outils-slr-page.tsx (CASP, extraction) | 10 items CASP + 14 champs | **FAIBLE** — SLR, pas dans les 7 ouvrages sources | literature-review (si PRISMA enrichi) |
+
+## Conclusion
+
+- **7 fichiers sources** → DIGÉRÉS dans 7 modules knowledge-core
+- **3 fichiers LAISSER** → métadonnées UI ou logique de pipeline (B1, B2, D1-D5)
+- **5 candidats distillation** → B3 (haute), B4+C1 (moyenne), B5+C2 (faible)
+- **upload/** → vide (aucune ressource)
+- **Aucun trou critique** : les 7 ouvrages sources sont intégralement digérés
+
+Stage Summary:
+- Inventaire exhaustif : 12 fichiers de ressources scannés, 5 routes inline, 2 modules inline
+- 7/7 fichiers .md sources → DIGÉRÉS dans knowledge-core
+- 5 candidats distillation identifiés (B3 priorité haute, B4+C1 moyenne, B5+C2 faible)
+- upload/ est vide
+- Aucun fichier de ressource non répertorié
