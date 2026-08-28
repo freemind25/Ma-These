@@ -232,7 +232,7 @@ src/lib/ai/
 - **Poids hybride** : `HYBRID_WEIGHTS` (exporté depuis `rag-service.ts`) — défaut 65% sémantique / 35% mot-clé. Ajustable via `RAG_KEYWORD_WEIGHT` / `RAG_SEMANTIC_WEIGHT` (env vars). À ajuster après tests utilisateurs réels.
 - **Filtrage DB** : `retrieveChunks` filtre par `thesisId` + `embedding IS NOT NULL` (mode hybride). Plus de chargement intégral de la table.
 - **Providers embeddings** : OpenAI, Mistral, Google, Groq, OpenRouter supportés. z.ai, Anthropic, Cohere, etc. non supportés.
-- **Test T3** : script `scripts/test-rag-semantic.ts` prêt à exécuter avec `MISTRAL_API_KEY=xxx bun run scripts/test-rag-semantic.ts mistral`.
+- **Test T3** : ✅ VALIDÉ avec Mistral/mistral-embed (hybrid+semantic, 0 keyword-only). Script `scripts/test-rag-semantic.ts`.
 
 ---
 
@@ -319,7 +319,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
-| **v1.8.3** | Clôture audit prompts : coherence-check factorisé (Option B, knowledge-core injecté), verification-carto dédupliqué (shared-prompts.ts), cohérence argumentative ajoutée au noyau. 1333 tests. |
+| **v1.8.3** | Clôture audit prompts + T3 RAG validé (Mistral/mistral-embed, hybrid+semantic). coherence-check factorisé (Option B), verification-carto dédupliqué (shared-prompts.ts), cohérence argumentative ajoutée au noyau. Bilan 6/6. 1333 tests. |
 | **v1.8.1** | Phase 5 digestion validée (5/5 sur tests exécutables). Corrections knowledge-core : cas limite citation littérale (T4), critère unité d'analyse étude de cas (T1). Full core ~3806 tokens. |
 | **v1.8.0** | Knowledge-core v2.1 : module publication (Gastel & Day), 11 modules, routes vérification déléguées au noyau |
 | **v1.7.0** | Knowledge-core v2 : 6 ouvrages distillés, 10 modules, mapping optimisé |

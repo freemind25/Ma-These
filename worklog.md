@@ -5220,3 +5220,35 @@ Stage Summary:
 - Knowledge-core enrichi : section « Cohérence argumentative » (4 règles) dans module coherence
 - Tous les 6/6 fichiers modifiés : knowledge-core.ts, coherence-check/route.ts, verification-carto/route.ts, types-analyse/seed/route.ts, shared-prompts.ts (nouveau), AGENTS.md
 - Version : v1.8.3
+
+---
+Task ID: 8
+Agent: Main
+Task: T3 — Test RAG sémantique avec clé Mistral
+
+Work Log:
+- Corrigé le script test-rag-semantic.ts (champ `author` requis sur Thesis, `plainText` supprimé du create Thesis)
+- Exécuté avec `MISTRAL_API_KEY=*** bun run scripts/test-rag-semantic.ts mistral`
+- Provider validé : Mistral / mistral-embed
+- 7/7 chunks embeddés (6 chapitres + 1 cadrage)
+- Query : « Est-ce que ma partie empirique tient ses promesses ? » (aucun mot-clé commun)
+- Score types : hybrid × 3, semantic × 2, keyword × 0
+- Top result : Discussion idx=0, score=1.0000 (hybrid) — chapitre correctement identifié
+- Aucune contamination mot-clé
+- Cleanup réussi (données de test supprimées)
+
+## BILAN FINAL 6/6
+
+| # | Test | Verdict |
+|---|---|---|
+| T1 | directeur — unité d'analyse | ✅ DIGESTION |
+| T2 | literature-review — pipeline Ollhoff | ✅ DIGESTION |
+| T3 | RAG sémantique (Mistral/mistral-embed) | ✅ PASS |
+| T4 | cohérence inter-modes — citation littérale | ✅ DIGESTION |
+| T5 | publication — salami + ICMJE | ✅ DIGESTION |
+| T6 | audit prompts — 9/9 factorisés | ✅ FACTORISÉ |
+
+Stage Summary:
+- T3 PASS avec Mistral/mistral-embed : hybrid+semantic retrieval confirmé, zéro keyword-only
+- Le script test-rag-semantic.ts est fonctionnel et prêt pour tout futur provider
+- **Bilan 6/6 atteint — le chantier knowledge-core + RAG est clos.**
