@@ -1,7 +1,7 @@
 # CONTEXT-PROJET.md — Ma Thèse (ThesisFrame)
 
 > **Mémoire de projet** — contexte, décisions, état d'avancement
-> Version : **v1.9.0** (28 août 2026)
+> Version : **v1.9.2** (3 septembre 2026)
 
 ---
 
@@ -131,6 +131,7 @@ Exemple : la cohérence argumentative (contradiction interne, sur-généralisati
 
 | Version | Étape | Description |
 |---------|-------|-------------|
+| **v1.9.2** | Patterns architecturaux | 2 patterns inspirés de prompts.chat (CC0, intégrés comme architecture pas comme contenu) : (1) Reasoning-then-Output sur directeur.ts (format Analyse/Retour pour révision de texte), (2) Counter-Audit 2 passes sur coherence-check (auditeur adversarial ne peut que rétrograder). Spécialisation coherence.ts créée (normalisation). Logging structuré pour mesure préalable. |
 | **v1.9.0** | Niveaux doctorant | `getLevelCalibration()` dans prompt-builder.ts. Post-injection dans 3 routes (ai-writing, stream, directeur-chat). Token budget : +~110 tokens par niveau. Knowledge-core inchangé. |
 | **v1.8.4** | Processus feedback | `feedback.md` + règle #9 AGENTS.md. Processus Capture → Triage → Correction → Validation → Documentation. |
 | **v1.8.3** | Clôture | T3 RAG validé. coherence-check factorisé (Option B). verification-carto dédupliqué (shared-prompts.ts). Cohérence argumentative ajoutée au noyau. **Bilan 6/6**. 1333 tests pass. |

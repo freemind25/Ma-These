@@ -5475,3 +5475,49 @@ Stage Summary:
 - AGENTS.md : v1.9.1, règle #10 (phrasebank)
 - Lint 0 errors, 1333/1333 tests
 - Clôture exhaustive : aucun candidat en suspens
+---
+Task ID: 16
+Agent: Main
+Task: Évolution pilotée par patterns — Reasoning-then-Output + Counter-Audit
+
+Work Log:
+
+### ÉTAPE 1 — Pattern 1 : Reasoning-then-Output sur director.ts
+- Ajouté section « FORMAT DE RÉPONSE — RÉVISION DE TEXTE » dans la spécialisation
+- Deux sections obligatoires : **Analyse** (3-5 lignes, hors quota) + **Retour** (méthode 5 étapes, 400 mots max)
+- Ne cite JAMAIS les noms de modules — parle en critères académiques concrets
+- Questions courtes SANS texte à réviser → réponse directe sans Analyse
+- En-tête enrichi : mention pattern prompts.chat CC0
+
+### ÉTAPE 2 — Pattern 2 version C : Counter-Audit 2 passes sur coherence-check
+- Passe 1 : analyse complète (inchangée dans son principe, mais utilise désormais la spécialisation coherence.ts)
+- Passe 2 : contre-audit adversarial — reçoit UNIQUEMENT les verdicts EN DÉFAUT + extraits
+- L'auditeur ne peut que CONFIRMER ou RÉTROGRADER vers AMBIGU (jamais rétablir en ok)
+- Justification obligatoire si AMBIGU
+- Sortie enrichie : audit[] + auditMetrics{} dans le JSON final
+- Checks AMBIGU ne comptent pas comme échecs dans les categoryScores
+- maxTokens passe 2 = 2000 (risque de troncature borné)
+
+### ÉTAPE 3 — Logging pour mesure préalable
+- Structured log : [coherence-audit] mode=... failed=... confirmed=... downgraded=... rate=...%
+- Log détaillé des rétrogradations pour diagnostic
+- Objectif : si >30% rétrogradations → justifier pipeline 4 appels ; si <10% → clore
+
+### ÉTAPE 4 — Normalisation architecturale
+- Créé src/lib/ai/specializations/coherence.ts
+  - COHERENCE_CHECK_PROMPT : rôle + format JSON (via buildPrompt avec module coherence)
+  - COHERENCE_AUDIT_PROMPT : rôle auditeur adversarial (standalone, pas de knowledge-core)
+- Refactoré coherence-check/route.ts : supprimé le prompt inline, utilise COHERENCE_CHECK_PROMPT + grille appendée
+- Mis à jour specializations/index.ts : export des deux nouveaux prompts
+
+### Validation
+- Lint : 0 errors, 186 warnings (baseline +2 console.log dans logging)
+- Tests : 1333/1333 pass
+
+Stage Summary:
+- Pattern 1 (Reasoning-then-Output) intégré dans directeur.ts — format Analyse/Retour pour révision de texte
+- Pattern 2 version C (Counter-Audit 2 passes) intégré dans coherence-check — audit adversarial ne peut que dégrader
+- Spécialisation coherence.ts créée — anomalie architecturale corrigée
+- Logging structuré en place pour mesure préalable (étape 3)
+- Source des patterns : architecture de prompts.chat (licence CC0), intégrés comme patterns pas comme contenu
+- Version projet : v1.9.2

@@ -322,6 +322,7 @@ bun run db:seed            # Seeding
 
 | Version | Description |
 |---------|-------------|
+| **v1.9.2** | Patterns architecturaux (source : architecture prompts.chat, licence CC0, intégrés comme patterns pas comme contenu). (1) Reasoning-then-Output sur director.ts — format Analyse/Retour pour révision de texte. (2) Counter-Audit 2 passes sur coherence-check — auditeur adversarial ne peut que rétrograder. Spécialisation coherence.ts créée (fin de l'anomalie inline). Logging structuré pour mesure préalable (étape 3). |
 | **v1.9.1** | Clôture ressources — inventaire Task 14 traité. 5 candidats résolus : corpus-publication (source annotée), coherence-data (5 checks manquants migrés dans le noyau + sous-catégorie structurelle), CHECKLIST_8C (LAISSER — tâche UI), phrasebank (règle #10), CASP/SLR (LAISSER — UI interactive). Coherence module : 7 sous-catégories. |
 | **v1.8.4** | Processus de feedback (feedback.md + règle #9 AGENTS.md). Capture → Triage → Correction → Validation → Documentation. |
 | **v1.8.3** | Clôture audit prompts + T3 RAG validé (Mistral/mistral-embed, hybrid+semantic). coherence-check factorisé (Option B), verification-carto dédupliqué (shared-prompts.ts), cohérence argumentative ajoutée au noyau. Bilan 6/6. 1333 tests. |

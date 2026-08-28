@@ -23,6 +23,7 @@ export { FREEFORM_PROMPT } from './freeform';
 export { IMPROVEMENT_PROMPT } from './improvement';
 export { REVUE_LITTERATURE_SLR_PROMPT } from './revue-litterature-slr';
 export { AUTO_EDITION_8C_PROMPT } from './auto-edition-8c';
+export { COHERENCE_CHECK_PROMPT, COHERENCE_AUDIT_PROMPT } from './coherence';
 
 // ───────────────────────────────────────
 // Registry: mode id → built prompt
@@ -48,6 +49,7 @@ import { FREEFORM_PROMPT } from './freeform';
 import { IMPROVEMENT_PROMPT } from './improvement';
 import { REVUE_LITTERATURE_SLR_PROMPT } from './revue-litterature-slr';
 import { AUTO_EDITION_8C_PROMPT } from './auto-edition-8c';
+import { COHERENCE_CHECK_PROMPT, COHERENCE_AUDIT_PROMPT } from './coherence';
 
 /**
  * Maps WritingMode.id → the built system prompt.
