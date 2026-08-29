@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// ThesisFrame — Knowledge Core v2 (distillé de 12 ouvrages de référence)
+// ThesisFrame — Knowledge Core v2 (distillé de 18 ouvrages de référence)
 // SOURCE UNIQUE DE VÉRITÉ — savoir métier digéré
 // ═══════════════════════════════════════════════════════════════
 //
@@ -23,6 +23,12 @@
 //     publication-process, AI-assisted writing)
 //   Eco — Comment écrire sa thèse (choix sujet, sources, citations, notes, biblio)
 //   Hammersley — What Is Qualitative Research (épistémologie quali, frontières disciplinaires)
+//   Pearce — How to Examine a Thesis (perspective examinateur, originalité, cohérence)
+//   Murray — How to Write a Thesis (révision, conclusion, Brown 8Q, couches)
+//   Brause — Writing Your Doctoral Dissertation (soutenance, interprétation, pipeline)
+//   Paltridge & Starfield — Thesis and Dissertation Writing in a Second Language (CARS, types de thèse, stance, reporting)
+//   Carter, Kelly & Brailsford — Structuring Your Research Thesis (fonctions thèse, ordres thématiques, proportion)
+//   Holtom & Fisher — Enjoy Writing Your Science Thesis (proportions sciences, révision, protocoles)
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -80,6 +86,16 @@ const STYLE_MODULE = `
 - SI terme technique employé sans être défini → le signaler. SI c'est un terme central et qu'on ne sait pas le définir → « laissez tomber la thèse, vous vous êtes trompé de sujet »
 - Figures de rhétorique : ne jamais les expliquer ni s'excuser d'elles (pas de « plaisanterie à part »). Le lecteur visé doit les saisir seul
 - Cohérence des présupposés culturels : SI un auteur célèbre (Spinoza) est présenté comme allant de soi mais un auteur moins connu (Guzzo) est nommé sans présentation → corriger. « N'expliquez pas où est Rome sans expliquer où est Tombouctou. »
+
+### Système stance/engagement (Paltridge & Starfield)
+- Stance = hedges (might, perhaps) + boosters (in fact, definitely) + attitude markers (unfortunately, surprisingly) + self-mentions (I, we)
+- Engagement = reader pronouns (we inclusif) + appeals to shared knowledge (of course, as is well known) + directives (note that, consider) + questions
+- SI aucune hedge en Discussion → sur-claiming détecté. SI aucun engagement marker → le texte est un monologue, pas un dialogue avec le lecteur
+- Écriture académique anglaise = « writer-responsible » : le lecteur n'infère pas. SI un passage suppose une connaissance du lecteur sans l'expliciter → ajouter du tissu connectif
+
+### Langage des limites en conclusion (Murray)
+- Substituer : « limitation » → « focus » ou « sélection » ; « flaw » → supprimer ; « incomplete » → « continuing » ; « inconclusive » → supprimer ; « solves »/« proves » → « contributes to a resolution of »
+- Toute étude a des limites par conception : les cadrer comme des décisions de périmètre, pas des échecs
 `;
 
 // ───────────────────────────────────────
@@ -191,6 +207,50 @@ const COHERENCE_MODULE = `
 - Le plan annoncé dans l'intro ne correspond pas au plan réel = annonces non tenues
 - Un même contenu repris quasi à l'identique dans deux chapitres = redondance inter-chapitres
 - La conclusion ne reprend pas les questions de recherche et n'y répond pas = conclusion non bouclée
+
+### Prévisibilité pour l'examinateur (Murray)
+- Trois techniques distinctes : Forecasting = menu de ce qui suit (mini-TdM par chapitre) ; Signalling = plan logique rendu explicite (connexions, shifts entre points) ; Signposting = repères rassurant le lecteur qu'il est sur le bon chemin
+- Les trois doivent être présentes dans la version finale — les examinateurs les recherchent (Johnston 1997)
+
+### Conclusion de thèse (Murray)
+- Mettre le propre travail AVANT, puis contextualiser avec la littérature — jamais structurer une conclusion comme une revue de littérature
+- Temps verbal : passé dans toute la conclusion (le travail est terminé). Détecter le « présent sur-généralisant » → ajouter « This suggests that… » ou « One interpretation of this is… »
+- Énoncer explicitement ce que l'on N'ARGUE PAS : « This is not to say that… » ; définir la frontière de sa claim = aussi important que la claim elle-même
+- Le mot « contribution » doit apparaître — dans les MÊMES TERMES — dans le résumé, les introductions ET les conclusions
+
+### Sections finales distinctes (Brause)
+- Summary = récapitulatif total (problème, design, résultats, conclusions)
+- Conclusions = assertions fondées sur les résultats, répondant à la question théorique
+- Implications = transfert des résultats vers d'autres contextes et la pratique
+- Recommendations = études suivantes ciblées (restreintes à quelques priorités)
+- Chaque section a sa propre logique et ne doit pas se mélanger avec les autres
+
+### Vérification intro ↔ conclusion (Pearce)
+- Test de l'examinateur : « Pouvez-vous résumer votre thèse en deux phrases ? » SI impossible → l'intro et/ou la conclusion sont floues. Vérifier que l'énoncé de thèse est reformulable en 1-2 phrases sans perte
+
+### Chapitre Résultats — structure 3 moves (Paltridge & Starfield)
+- Move 1 : métatexte (localiser le chapitre dans la thèse, rappeler les questions de recherche)
+- Move 2 : présenter les résultats (données — quasi toujours présent)
+- Move 3 : commenter les résultats (interpréter, hedger, comparer — parfois dans un chapitre Discussion séparé)
+- SI chapitre Résultats sans Move 3 → signaler l'absence
+
+### Chapitre Discussion = miroir inversé de l'Introduction (Paltridge & Starfield)
+- Dans l'Intro : littérature = primaire, étude du doctorant = secondaire
+- Dans la Discussion : étude du doctorant = primaire, littérature = secondaire (confirmation, comparaison, contradistinction)
+- Structure typique : (1) vue d'ensemble des résultats significatifs, (2) comparaison avec la littérature, (3) explication des résultats inattendus, (4) implications théoriques, (5) limites, (6) recommandations
+
+### Types de conclusion (Paltridge & Starfield)
+- Thesis-oriented (plus courant) : réénonce le but, résume les résultats, puis recommandations/limites
+- Field-oriented : focus sur le champ, résultats en contexte du champ entier, pattern problème/solution/évaluation
+- SI conclusion se contente de résumer sans expliciter la signification → incomplète (résumé ≠ conclusion)
+
+### Positions emphatiques (Carter, Kelly & Brailsford)
+- Aux premier et dernier positions de chaque niveau (phrase, paragraphe, chapitre, thèse) = positions les plus emphatiques. Un point important ne doit pas être enfoui au milieu
+- L'intro et la conclusion de chaque chapitre sont les « bookends » les plus soignés — premières sections lues (et parfois les seules) par l'examinateur
+
+### Structure non conventionnelle (Carter, Kelly & Brailsford)
+- SI structure de thèse non-IMRAD → justifier explicitement dans l'introduction. Les examinateurs acceptent les structures innovantes quand la logique de l'écart est ouvertement expliquée
+- Sans cette justification, une structure non conventionnelle = signal de manque de maîtrise du genre thèse
 `;
 
 // ───────────────────────────────────────
@@ -324,6 +384,21 @@ const METHODOLOGY_MODULE = `
 ### Risques épistémologiques en méthodes mixtes (Hammersley)
 - SI design mixte → vérifier que le volet qualitatif n'est pas subordonné aux présupposés hypothético-déductifs du volet quantitatif. Justification épistémologique de chaque volet obligatoire
 - SI approche « critique » (féministe, post-coloniale, etc.) → exiger un cadre théorique macrosocial explicite : (a) phénomène localisé dans un système plus large, (b) forces structurelles identifiées, (c) catégories de sens commun justifiées si utilisées
+
+### Taxonomie de l'originalité (Pearce, d'après Phillips & Pugh)
+- L'originalité ne se réduit pas à la « grande O » : 15 formes acceptables dont synthèse inédite, nouvelle interprétation de matériel connu, application d'une technique à un nouveau domaine, apport de preuves nouvelles sur une question ancienne, approche interdisciplinaire
+- SI le doctorant craint de ne pas être assez « original » → l'aider à identifier quelle(s) forme(s) d'originalité son travail accomplit
+
+### Justification méthodologique (Pearce)
+- Les examinateurs évaluent la méthode comme le lieu « où le sens se construit ». Question systématique : pourquoi cette méthode et pas une autre ?
+- SI la section Méthode ne contient aucune comparaison avec des alternatives → signal d'alerte majeur
+
+### Déclaration d'originalité (Murray)
+- La thèse doit définir et défendre EXPLICITEMENT un type d'originalité (nouvelles données, nouvelle synthèse, nouvelle interprétation, interdisciplinarité, nouvelle application, etc.)
+- Le type d'originalité revendiqué doit correspondre au travail réellement accompli. L'écrire tôt, le réviser au fil du travail
+
+### Protocoles scientifiques : traçabilité (Holtom & Fisher)
+- SI protocole avec matériel biologique ou chimique : inclure fabricant + siège social (reproductibilité internationale). Pour les kits : résumer le principe, citer la publication de référence, indiquer « selon les instructions du fabricant » pour les étapes standard, décrire en détail toute modification
 `;
 
 // ───────────────────────────────────────
@@ -373,6 +448,76 @@ Exégétique/qualitative : Intro (avec revue enchâssée) → Chapitres thémati
 - La table des matières se rédige en TOUT DÉBUT, comme hypothèse de travail (métaphore de l'itinéraire de voyage). Utiliser des subdivisions à disjonctions binaires pour garantir la complétude
 - Commencer par le chapitre le plus prêt, pas par le premier. La table hypothèse sert de point d'ancrage
 - Ne mépriser aucune source : « les meilleures idées ne viennent pas toujours des auteurs les plus importants »
+
+### Quatre fonctions de la thèse (Carter, Kelly & Brailsford, d'après Phillips & Pugh)
+- (1) Théorie de fond : cadre disciplinaire et littérature
+- (2) Théorie focale : ce que l'on cherche précisément et pourquoi
+- (3) Théorie des données : fiabilité et pertinence des sources
+- (4) Contribution : connaissance ou compréhension nouvelle
+- Vérifier que ces quatre fonctions sont remplies même dans une structure non conventionnelle
+
+### Types de thèse (Paltridge & Starfield)
+- Traditionnelle simple : Intro → LR → Méthodes → Résultats → Discussion → Conclusion
+- Traditionnelle complexe : intro + LR + méthodes générales, puis sous-thèses Study 1/2/3 (chacune avec intro/méthodes/résultats/discussion), puis discussion générale
+- Thématique : Intro → Thème 1 → Thème 2 → … → Conclusion (courant en SHS, pas de chapitre Méthodes séparé)
+- Compilation d'articles : intro + contexte, puis chapitres-articles autonomes, puis discussion générale
+
+### Structure en sablier (Paltridge & Starfield)
+- La thèse a une forme en sablier : Intro (large, champ disciplinaire) → LR → Méthodo → Résultats (étroit, étude spécifique) → Discussion → Conclusion (large, champ disciplinaire à nouveau)
+
+### CARS — Introduction de thèse (Paltridge & Starfield, d'après Swales)
+- Move 1 : établir le territoire (1a: claim centrality, 1b: background, 1c: review clé [obligatoire], 1d: définir termes)
+- Move 2 : établir la niche/gap [obligatoire]
+- Move 3 : occuper la niche (3a: objectifs [obligatoire], 3b: résultats principaux [optionnel], 3c: prévisualiser structure avec mini-synopses par chapitre [obligatoire, distinctif des articles], 3d: position théorique [optionnel])
+
+### Métadiscours de thèse (Paltridge & Starfield)
+- Le métadiscours (discours sur la structure propre du texte) est distinctif et attendu : « Le chapitre 2 examine… », « cette thèse argumente que… »
+- Plus étendu dans les thèses que dans les articles. SI absent (ni renvois avant/arrière, ni previews de chapitres) → le signaler
+
+### Comparaison sujet par sujet vs point par point (Carter, Kelly & Brailsford)
+- SI thèse compare plusieurs objets sous plusieurs thèmes : « sujet par sujet » (chaque objet = un chapitre) met les objets au premier plan ; « point par point » (chaque thème = un chapitre) met l'argument au premier plan
+- Choisir selon ce qui est le cœur de la contribution
+
+### Ordres thématiques possibles (Carter, Kelly & Brailsford)
+- Chronologique, du moins au plus important, de l'externe vers l'interne, de la théorie vers la pratique, du motif ancien vers le matériel nouveau, du général vers le spécifique, en sablier, ou de l'international vers le local
+- La forme de l'organisation doit incarner la valeur de la recherche
+
+### Emphase proportionnelle (Carter, Kelly & Brailsford)
+- L'espace accordé à chaque partie signale son importance. Si un élément « central » reçoit beaucoup moins d'espace qu'un élément « secondaire » → le lecteur ne le percevra pas comme central
+- Si un chapitre diffère significativement en taille des autres → expliquer pourquoi dans l'introduction du chapitre
+
+### Trois placements de la revue de littérature (Carter, Kelly & Brailsford, d'après Dunleavy)
+- (a) Chapitre autonome : facilite le repérage par l'examinateur mais risque de détachement du travail original
+- (b) Enchâssée dans les chapitres thématiques : montre la pertinence immédiate mais rend la revue invisible comme entité
+- (c) Modèle « ouverture » : brève revue en ouverture, travail original au centre, analyse littéraire en conclusion
+
+### Brown — 8 questions de cohérence en milieu de parcours (Murray)
+À mi-parcours, répondre en 50 mots chacun : (1) Lecteurs visés ? (2) Qu'avez-vous fait ? (3) Pourquoi ? (4) Qu'est-il arrivé ? (5) Signification théorique ? (6) Signification pratique ? (7) Bénéfice pour le lecteur ? (8) Ce qui reste non résolu ? Répéter aux stades ultérieurs
+
+### Rédaction en couches successives (Murray)
+- Construire la thèse en 6 passes progressives : (1) titres de chapitres, (2) 1-2 phrases par chapitre, (3) sous-sections, (4) notes sous chaque en-tête, (5) paragraphe introducteur par chapitre, (6) prose complète
+- Utiliser des verbes actifs (définit, évalue) pas vagues (traite de) dans les plans
+
+### Pipeline d'écriture (Brause)
+- Pendant que le comité relit les chapitres 1-3, travailler au chapitre 4. Quand ils retournent les chapitres, soumettre le suivant
+- Ne jamais laisser un brouillon inactif en attendant — toujours avoir des chapitres en mouvement à différents stades
+
+### Proportions indicatives — thèse scientifique (Holtom & Fisher)
+- Introduction 20-30 %, Matériel et Méthodes 10-20 %, Résultats 35-45 %, Discussion 20-25 %. Les Résultats = cœur de la contribution
+
+### Ordre de révision recommandé — thèse scientifique (Holtom & Fisher)
+- (1) Matériel et Méthodes, (2) Références, (3) Résultats, (4) Introduction, (5) Discussion, (6) Résumé
+- Rédiger dans cet ordre : confronter d'abord ce qui a été fait à ce qui a été trouvé, puis reconsidérer le but initial à la lumière des résultats
+
+### Méthodes parallèles aux Résultats (Holtom & Fisher)
+- Le chapitre Matériel et Méthodes doit suivre le même ordre que le chapitre Résultats. Le lecteur qui passe d'un résultat à la méthode correspondante doit retrouver la même séquence logique
+
+### Résumé (abstract) — ordre de planification (Holtom & Fisher)
+- Ordre de planification : (1) Méthodes, (2) Résultats, (3) Introduction, (4) Discussion
+- Ordre de présentation : question → système expérimental → résultats → réponse. Rédiger d'abord les bribes dans l'ordre de planification, puis réordonner
+
+### Mini-proposal dans la conclusion (Murray)
+- La conclusion doit inclure un mini-proposal pour les travaux futurs : pas une liste de souhaits mais un plan structuré : (1) priorité sélectionnée, (2) comment faire, (3) ressources nécessaires, (4) faisabilité, (5) réfutations anticipées, (6) bénéfices attendus
 `;
 
 // ───────────────────────────────────────
@@ -427,6 +572,22 @@ const LITERATURE_REVIEW_MODULE = `
 - Énoncé de lacune = [LACUNE identifiée] + [JUSTIFICATION de son importance]. Jamais seulement « X n'a pas été étudié »
 - Outils bibliométriques (VOSviewer, Gephi) : identifier les sous-champs silotés (peu de co-citations) = opportunités de revue passerelle
 - SI l'IA assiste le criblage/extraction → marquer avec niveau de confiance et signaler les décisions incertaines pour vérification humaine
+
+### Bibliographie = TOUS les textes consultés (Pearce)
+- La bibliographie finale doit inclure TOUS les textes consultés, pas uniquement ceux cités dans le corps. Omettre des textes consultés mais non cités prive le lecteur d'une preuve de l'étendue du travail bibliographique
+- Deux conceptions opposées coexistent chez les examinateurs : (a) revue longue et exhaustive = preuve de sérieux ; (b) revue longue et ramifiée = signal de question floue. Pour éviter (b) : toute revue doit évaluer (pas seulement citer) ET relier chaque travail au projet du doctorant
+
+### Styles de reporting (Paltridge & Starfield)
+- Central reporting : auteur en position sujet (« Burke (1986) a découvert que… ») = fort focus auteur
+- Non-central reporting : auteur entre parenthèses à la fin (« Il a été montré que… (Ballard 1991) ») = faible focus auteur
+- Non-reporting : pas de verbe de reporting, résultats présentés directement (« Au lieu que la motivation produise la réussite, c'est peut-être l'inverse (Spolsky 1989) ») = pas de focus auteur
+- Varier les styles ; surutilisation d'un seul = monotonie
+
+### Temps verbaux dans la revue (Paltridge & Starfield)
+- Présent simple = généralisation ou fait accepté (« Brown montre que… »)
+- Passé simple = référence à une étude spécifique et ses résultats (« Brown a montré que… »)
+- Present perfect = référence à un domaine d'investigation général (« La recherche a montré que… »)
+- SI present perfect pour une seule étude spécifique → incorrect
 `;
 
 // ───────────────────────────────────────
@@ -458,6 +619,13 @@ const DATA_ANALYSIS_MODULE = `
 - Planning-lag : la technologie précède la capacité d'utilisation → analyses hors-sujet
 - Instruments de données = chargés de politique et idéologie
 - Approche hybride systématique : traditionnelles (attributs/profondeur) + big data (fréquence/couverture)
+
+### Critères d'une interprétation convaincante (Brause)
+- (1) Exhauré : couvre toutes les dimensions majeures, inclut les données qui contredisent les inférences
+- (2) Clair : symboles expliqués, cohérence tableau-récit, références exactes aux lignes de transcription
+- (3) Logique : organisation systématique et prévisible, avec une « carte mentale » esquissée à l'avance
+- (4) Pertinent : restreint aux trois composantes : question de recherche + théorie, données collectées, analyse conduite
+- (5) Prudent : pas de sur-généralisation à partir de données limitées, mais pas de timidité excessive
 `;
 
 // ───────────────────────────────────────
@@ -591,6 +759,14 @@ const VISUALIZATION_MODULE = `
 - Storyboard des figures : séquencer comme un récit — contexte (diagramme conceptuel) → preuves (données) → synthèse (implications)
 - Adapter la complexité au public : même données, versions différentes. Article = scatterplot complet avec bandes de confiance. Blog = graphique annoté avec 3 points clés
 - SI méthodes mixtes → « joint display » : tableau mêlant résultats quantitatifs et citations qualitatives représentatives dans une même matrice
+
+### Figure auto-suffisante (Holtom & Fisher)
+- Une figure doit être compréhensible sans recourir au texte. Trois composants distincts : le titre (court, descriptif, pour la table des figures), la légende (description détaillée du contenu, provenance des données, annotations), le texte (qui ne reformule pas la légende mais discute les points saillants)
+- Titre et légende remplissent des fonctions différentes et ne doivent pas se dupliquer
+
+### Structure interne du chapitre Résultats — sciences (Holtom & Fisher)
+- Chaque section de résultats peut suivre : (a) brève « Stratégie » (but et approche globale), (b) résultats présentés, (c) résumé en puces des principales constatations
+- Cette structure aide l'examinateur à saisir immédiatement la signification de chaque bloc de résultats
 `;
 
 // ───────────────────────────────────────
@@ -616,6 +792,19 @@ const PRESENTATION_MODULE = `
 ### Réponse aux relecteurs (Sułkowski et al.)
 - SI un relecteur a mal compris → la responsabilité est à l'auteur : reformuler. « Il semble que ce point n'ait pas été communiqué avec suffisamment de clarté. Nous avons réécrit… »
 - Désaccord poli en 3 étapes : (1) reconnaître le point, (2) expliquer la contrainte, (3) proposer un accommodement
+
+### Fonctions de la soutenance (Brause)
+- La soutenance sert 4 fonctions simultanées : (1) contrôle qualité — vérification collective que la thèse atteint les standards institutionnels, (2) conversation académique entre pairs — première discussion au niveau pair, (3) dissémination — premier partage formel des résultats, (4) clôture — marquant la fin de l'apprentissage de chercheur
+- Comprendre les 4 empêche de lire l'événement comme purement adversarial
+
+### La soutenance selon la qualité de la thèse (Pearce)
+- Pour une bonne thèse = authentication + clarification. Pour une thèse limite = test de compréhension et capacité à corriger
+- Les examinateurs arrivent à une recommandation provisoire AVANT la soutenance ; la soutenance sert à confirmer ou infirmer cette impression
+- SI corrections mineures prévues → l'objectif est de vérifier que le candidat comprend les critiques et peut les corriger
+
+### Examinateurs externes (Brause)
+- Les examinateurs externes n'ont généralement pas d'historique avec le candidat — ils utilisent la thèse écrite EXCLUSIVEMENT pour préparer leurs questions
+- Stratégie : rechercher leurs publications et prédispositions avant la soutenance
 `;
 
 // ───────────────────────────────────────

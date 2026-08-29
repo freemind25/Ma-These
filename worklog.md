@@ -5860,3 +5860,26 @@ Stage Summary:
 - Knowledge-core v2 now: 12 sources, 13 modules, ~67 new rules from this batch
 - Total unique books analyzed to date: 9 distillés + 9 skip = 18
 - Files modified: src/lib/ai/knowledge-core.ts only
+---
+Task ID: 24
+Agent: Main
+Task: Analyser 4 nouveaux zips (22 fichiers) et distiller dans knowledge-core
+
+Work Log:
+- Extracted text from all 22 files (10 PDFs + 3 EPUBs + 4 prompt PDFs + Beaud unreadable + Andrews marketing)
+- Quick SKIP: Andrews (24K, marketing booklet), Beaud (58K, garbled PDF), 4 prompt PDFs (ChatGPT prompts, irrelevant), PromptChatGPT (YouTube titles)
+- Launched 4 parallel analysis agents (sonnet) against 13-module knowledge-core
+- Agent A: Turabian (SKIP — Chicago formatting, citation software), Pearce (DISTILL — 6 rules, examiner perspective), Srivastava (SKIP — generic AI tool descriptions)
+- Agent B: Murray (DISTILL — 8 rules, revision taxonomy, conclusion protocol), Brause (DISTILL — 5 rules, defense purposes, interpretation criteria), Graustein (SKIP — procedural/motivational)
+- Agent C: Paltridge & Starfield (DISTILL — 11 rules, CARS, thesis types, stance), Bailey (SKIP — undergraduate EFL), Murray & Moore (SKIP — academic productivity)
+- Agent D: Carter et al. (DISTILL — 7 rules, thesis functions, thematic ordering), Holtom & Fisher (DISTILL — 7 rules, science thesis conventions)
+- Integrated 44 rules across 8 modules: style (+2), coherence (+9), methodology (+4), writing-process (+14), literature-review (+4), data-analysis (+1), visualization (+2), presentation (+3)
+- Updated header: 12 → 18 sources, added 6 new source citations
+- File: 665 → 854 lines (+189 lines)
+- Lint: 0 errors (191 pre-existing warnings)
+
+Stage Summary:
+- Knowledge-core v2 now: 18 sources, 13 modules, ~44 new rules from this batch
+- Total unique resources processed to date: 18 distillés + 16 skip = 34
+- 6 new sources distilled: Pearce, Murray, Brause, Paltridge & Starfield, Carter et al., Holtom & Fisher
+- Files modified: src/lib/ai/knowledge-core.ts only
