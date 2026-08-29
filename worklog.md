@@ -5905,3 +5905,34 @@ Stage Summary:
 - Total unique resources processed to date: 24 distillés + 25 skip = 49
 - 3 new sources distilled: Gaudet & Robert, Wette, Zimmerman
 - Files modified: src/lib/ai/knowledge-core.ts only
+---
+Task ID: 25
+Agent: Main
+Task: Analyser 9 nouvelles ressources uploadées et distiller dans knowledge-core
+
+Work Log:
+- Croisement des 9 fichiers avec l'historique (49 ressources déjà traitées) :
+  - Maluth — Understanding Research Fundamentals (EPUB) → SKIP (déjà traité Task 20, fiction narrative sous-graduée)
+  - Neil Mars — Thesis (EPUB) → SKIP (déjà traité Task 22, self-published pseudoscientifique)
+  - Bailey — Academic Writing Handbook (PDF) → SKIP (déjà traité Task 24, undergraduate EFL)
+  - Römer et al. PDF → DOUBLON (même livre que l'EPUB)
+  - Belleville EPUB → SKIP (déjà traité Task 24b, motivationnel)
+  - Belleville PDF → DOUBLON (même livre que l'EPUB)
+  - Jane Jacobs — Death and Life analysis (PDF, 197K chars) → SKIP (guide d'analyse Macat sur livre d'urbanisme, hors-sujet)
+  - AI in Academic Writing — paradigm shift (PDF, 16K chars) → SKIP (commentaire Nature Reviews Urology, déjà couvert par règles ethics IA David+Green)
+  - Römer et al. — Corpus-based Research on Academic Writing (EPUB, 1.3M chars) → ANALYSÉ
+    - Volume de recherche en corpus linguistics (John Benjamins 2020, 14 chapitres édités)
+    - Findings descriptifs (expert vs novice bundles, modaux par discipline, phrase-frames par move)
+    - SKIP : tout actionnable déjà couvert par Paltridge & Starfield (stance), Wette (reporting verbs), CARS/moves existants, échelle hedges existante
+    - Les « implications pédagogiques » ciblent les concepteurs EAP, pas les chercheurs
+
+### Validation
+- Knowledge-core : inchangé (925 lignes, 21 sources, 13 modules)
+- Aucune modification de code nécessaire
+- Total ressources traitées : 24 distillées + 28 skip = 52
+
+Stage Summary:
+- 0 nouvelle règle, knowledge-core inchangé
+- 9 fichiers examinés : 3 nouveaux analysés (tous SKIP), 4 déjà traités, 2 doublons
+- Römer = corpus linguistics descriptif, pas de règles prescriptives nouvelles
+- Total cumulé : 52 ressources analysées (24 distillées + 28 skip)
