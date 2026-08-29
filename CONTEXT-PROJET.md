@@ -1,7 +1,7 @@
 # CONTEXT-PROJET.md — Ma Thèse (ThesisFrame)
 
 > **Mémoire de projet** — contexte, décisions, état d'avancement
-> Version : **v1.9.3** (3 septembre 2026)
+> Version : **v1.9.4** (3 septembre 2026)
 
 ---
 
@@ -156,6 +156,7 @@ Exemple : la cohérence argumentative (contradiction interne, sur-généralisati
 
 | Version | Étape | Description |
 |---------|-------|-------------|
+| **v1.9.4** | Éthique IA | 8 règles ajoutées au module ethics (knowledge-core) : droit d'auteur IA, disclosure, taxonomie hallucinations, interdiction copier-coller, ICMJE, reproductibilité. Sources : David (AI for Nonfiction Authors) + Green (Claude AI Unleashed). 7 ressources examinées (3.4M+ chars), 6 SKIP complètes (niveau sous-gradué ou hors-sujet). |
 | **v1.9.3** | Retriever académique | Wrapper OpenAlex (`lib/research/openalex.ts`) — 250M+ travaux, gratuit, sans clé. Curation pré-rapport déterministe (`lib/research/curation.ts`) — 6 critères pondérés (DOI, venue, type, citations/âge, OA, récence), 0 appel LLM. Intégration deep-research avec `sourceMode: academic|web`. 4 patterns gpt-researcher notés et différés (récursion, compression, MCP, tiers LLM). Note licence Apache 2.0 vs CC0 dans §2.6. |
 | **v1.9.2** | Patterns architecturaux | 2 patterns inspirés de prompts.chat (CC0, intégrés comme architecture pas comme contenu) : (1) Reasoning-then-Output sur directeur.ts (format Analyse/Retour pour révision de texte), (2) Counter-Audit 2 passes sur coherence-check (auditeur adversarial ne peut que rétrograder). Spécialisation coherence.ts créée (normalisation). Logging structuré pour mesure préalable. |
 | **v1.9.0** | Niveaux doctorant | `getLevelCalibration()` dans prompt-builder.ts. Post-injection dans 3 routes (ai-writing, stream, directeur-chat). Token budget : +~110 tokens par niveau. Knowledge-core inchangé. |

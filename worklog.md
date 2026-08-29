@@ -5714,3 +5714,53 @@ Stage Summary:
 - v1.9.3 CLOSED avec réserve : E2E digestion reste à valider en IP propre
 - 2 micro-suggestions ajoutées au backlog (429 UI, retry backoff)
 - Score protocole #11 finalisé pour la séquence externe : 3/4/0
+---
+Task ID: 20
+Agent: Main
+Task: Analyse et intégration de 7 nouvelles ressources (res-aout.rar + Claude AI epub + Srivastava PDF)
+
+Work Log:
+- Extraction de 7 fichiers : 4 PDFs (fitz/PyMuPDF) + 3 EPUBs (ebooklib+bs4)
+  - brew-academic-research-and-researchers.txt (695K chars, 252 p.)
+  - marshall-advance-academic-writing.txt (997K chars, 478 p.)
+  - david-ai-nonfiction-authors.txt (90K chars, 58 p.)
+  - srivastava-utilizing-ai-tools-academic.txt (993K chars, 314 p.)
+  - maluth-academic-research-methodologies.txt (266K chars)
+  - maluth-understanding-research-fundamentals.txt (282K chars)
+  - green-claude-ai-unleashed.txt (146K chars)
+
+- Analyse gap par 5 agents parallèles, comparée au knowledge-core existant (7 sources, 11 modules)
+
+### Résultat par livre
+| # | Livre | Pages | Verdict | Raison |
+|---|-------|-------|---------|--------|
+| 1 | Brew — Academic Research and Researchers | 252 | SKIP | Sociologie de la recherche, pas craft d'écriture |
+| 2 | Marshall — Advance in Academic Writing | 478 | SKIP | Manuel ESL sous-gradué (essais 200-1000 mots) |
+| 3 | Srivastava — Utilizing AI Tools in Academic Research | 314 | SKIP | Survey introductif, aucun IF/THEN actionnable |
+| 4 | David — AI for Nonfiction Authors | 58 | DISTILL (mineur) | 5 règles éthiques IA (copyright, disclosure) |
+| 5 | Green — Claude AI Unleashed | ~200 | DISTILL (mineur) | 1 ligne : taxonomie hallucinations LLM |
+| 6 | Maluth — Academic Research Methodologies | ~180 | SKIP | Fiction narrative sous-graduée (90% récit, 10% glossaire) |
+| 7 | Maluth — Understanding Research Fundamentals | ~180 | SKIP | Idem, quasi-identique au #6 |
+
+### Intégration au knowledge-core
+- 8 règles ajoutées au module ETHICS, nouvelle sous-section « Usage de l'IA dans la recherche » :
+  - Droit d'auteur (US 2025) : texte 100% IA non protégeable
+  - Disclosure : mention remerciements ou Méthodes selon niveau d'implication
+  - Interdiction copier-coller direct : réécrire dans sa voix académique
+  - Taxonomie hallucinations : 5 catégories de données les plus souvent inventées
+  - IA = assistant pas auteur (ICMJE)
+  - Vérification systématique faits/stats/références
+  - Reproductibilité : documenter modèle, version, prompts dans Méthodes
+- Header mis à jour : « 6 ouvrages » → « 9 ouvrages » (David + Green ajoutés, Brew + Marshall + Srivastava + 2×Maluth examinés mais non distillés)
+
+### Validation
+- Lint : 0 errors, 191 warnings (baseline inchangée)
+- Tests : 1372/1372 pass
+- Pas de breaking change : nouvelle sous-section append-only
+
+Stage Summary:
+- 7 ressources examinées, 3.4M+ caractères analysés
+- 6 livres SKIP complets (niveau sous-gradué ou hors-sujet)
+- 2 livres (David, Green) contribuent 8 règles au module ethics
+- Knowledge-core v2 : 9 sources distillées, 11 modules
+- Tests et lint stables

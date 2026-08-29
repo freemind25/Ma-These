@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// ThesisFrame — Knowledge Core v2 (distillé de 6 ouvrages de référence)
+// ThesisFrame — Knowledge Core v2 (distillé de 9 ouvrages de référence)
 // SOURCE UNIQUE DE VÉRITÉ — savoir métier digéré
 // ═══════════════════════════════════════════════════════════════
 //
@@ -16,6 +16,8 @@
 //   Rae & Wong — Applied Data Analysis (data-analysis)
 //   Smith & Works — Complete Book of Grant Writing (grant-writing)
 //   Gastel & Day — How to Write and Publish a Scientific Paper (publication)
+//   David — AI for Nonfiction Authors (AI ethics : copyright, disclosure, hallucination)
+//   Green — Claude AI Unleashed (AI ethics : hallucination taxonomy)
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -101,6 +103,16 @@ const ETHICS_MODULE = `
 - Signaux prédateurs : publication < 2 sem., APC opaques, comité fantôme, non-indexation Scopus/WoS/DOAJ
 - DORA : évaluer sur le contenu, pas sur le facteur d'impact
 - Seuil .05 : convention de Fisher, aucune base mathématique formelle (Salkind)
+
+### Usage de l'IA dans la recherche
+- SI texte généré intégralement par IA sans modification humaine substantielle → non protégeable par le droit d'auteur (US 2025)
+- SI IA utilisée pour structurer, réviser, formuler → mention dans les remerciements ou la méthode recommandée
+- SI IA a façonné le contenu ou les idées de manière significative → mention dans l'avant-propos ou la section Méthodes
+- Ne jamais copier-coller la sortie IA directement : réécrire dans sa propre voix académique
+- Types de données les plus souvent hallucinées par les LLM : citations précises (auteur, année, page), statistiques de sources obscures, événements post-cutoff, détails biographiques de personnes non publiques, règles juridictionnelles spécifiques → vérification systématique obligatoire
+- L'IA est un assistant de recherche, pas un auteur : authorship ICMJE exige contribution intellectuelle humaine
+- Toujours vérifier les faits, statistiques et références produits par l'IA (risque d'hallucination)
+- SI l'IA est utilisée pour l'analyse de données → documenter le modèle, la version, et les prompts dans la section Méthodes (reproductibilité)
 `;
 
 // ───────────────────────────────────────
