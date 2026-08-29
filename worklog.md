@@ -5814,3 +5814,27 @@ Work Log:
 Stage Summary:
 - 7 models usable with free tokens, kira-3.5-flash recommended as default
 - Full 57-model list preserved for when user adds VND balance
+
+---
+Task ID: 22
+Agent: Main
+Task: Analyser 2 ressources (Sułkowski 2026 + Neil Mars 2016) et distiller dans knowledge-core
+
+Work Log:
+- Extracted text from Neil Mars EPUB (34K chars) and Sułkowski PDF (826K chars)
+- Neil Mars: SKIP — self-published by "Robin Sacredfire"/22 Lions, BA level, pseudoscientific claims (fortuneteller parallel, IQ +40pts). Content already covered by Kumar+Salkind at superior level.
+- Sułkowski et al. (Routledge 2026, 3 academic co-authors): DISTILL — 41 rules extracted, ~30 genuinely new vs existing knowledge-core
+- Added to LITERATURE_REVIEW_MODULE: 12 new SLR rules (PICO, OSF/PROSPERO, TCCM, Ehsan 3-tables, SyReMa, PRISMA, reflexive notes, gap=RATIONALE)
+- Extended PUBLICATION_MODULE: 8 new rules (tiered journal list, ref-analysis targeting, cascade hygiene, revision response templates, point-by-point)
+- Extended ETHICS_MODULE: 2 new rules (learning-tool mode, audience simulation)
+- Created VISUALIZATION_MODULE (new): 9 rules (data-ink ratio, y-axis, area scaling, uncertainty, colorblind, storyboard, joint display)
+- Created PRESENTATION_MODULE (new): 7 rules (85% timing, 20/20/40/20 split, layered info, backup slides, virtual constraints)
+- Updated header: 9 → 10 sources, added Sułkowski citation
+- Updated KnowledgeModule type: added "visualization" and "presentation"
+- Lint: 0 errors (191 pre-existing warnings)
+
+Stage Summary:
+- Knowledge-core v2 now: 10 sources, 13 modules, ~30 new rules
+- 2 new modules created: visualization, presentation
+- Files modified: src/lib/ai/knowledge-core.ts only
+- No consumer breakage (all use explicit module arrays)

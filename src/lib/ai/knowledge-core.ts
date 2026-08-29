@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// ThesisFrame — Knowledge Core v2 (distillé de 9 ouvrages de référence)
+// ThesisFrame — Knowledge Core v2 (distillé de 10 ouvrages de référence)
 // SOURCE UNIQUE DE VÉRITÉ — savoir métier digéré
 // ═══════════════════════════════════════════════════════════════
 //
@@ -18,6 +18,9 @@
 //   Gastel & Day — How to Write and Publish a Scientific Paper (publication)
 //   David — AI for Nonfiction Authors (AI ethics : copyright, disclosure, hallucination)
 //   Green — Claude AI Unleashed (AI ethics : hallucination taxonomy)
+//   Sułkowski, Kurowska-Pysz & Szczepańska-Woszczyna — Academic Writing, Visualization,
+//     Presentation, and Publishing of Research (SLR, visualization, presentation,
+//     publication-process, AI-assisted writing)
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -36,7 +39,9 @@ export type KnowledgeModule =
   | "literature-review"
   | "data-analysis"
   | "grant-writing"
-  | "publication";
+  | "publication"
+  | "visualization"
+  | "presentation";
 
 // ───────────────────────────────────────
 // Module: STYLE — règles rédactionnelles (White + existant)
@@ -113,6 +118,8 @@ const ETHICS_MODULE = `
 - L'IA est un assistant de recherche, pas un auteur : authorship ICMJE exige contribution intellectuelle humaine
 - Toujours vérifier les faits, statistiques et références produits par l'IA (risque d'hallucination)
 - SI l'IA est utilisée pour l'analyse de données → documenter le modèle, la version, et les prompts dans la section Méthodes (reproductibilité)
+- L'IA est un outil d'apprentissage, pas une béquille : expliquer POURQUOI chaque suggestion est faite (ex. « cette phrase est passive, ce qui réduit la clarté »), pas corriger silencieusement (Sułkowski et al.)
+- Mode simulation d'audience : l'IA peut relire une section sous 3 perspectives — (a) non-spécialiste curieux, (b) relecteur sceptique, (c) praticien — pour anticiper les questions de chaque (Sułkowski et al.)
 `;
 
 // ───────────────────────────────────────
@@ -349,6 +356,20 @@ const LITERATURE_REVIEW_MODULE = `
 ### Erreurs fréquentes
 - Confondre sujet et question · Question binaire · Stacking · Plaidoyer déguisé
 - Assertions non citées · Vagueness · Côté unique · Lecture perpétuelle (jamais saturer)
+
+### Revue systématique de littérature (SLR) — Sułkowski et al.
+- Question SLR = population + intervention/comparateur + résultat/contexte (PICO/PCC). Trop large → scoping review à la place
+- Pré-enregistrer le protocole (OSF ou PROSPERO) AVANT la recherche pour horodater et garantir transparence
+- Criblage titre/résumé : inclure par défaut en cas de doute — exclure uniquement si manifestement hors périmètre
+- Exclusion plein texte : documenter le motif pour CHAQUE article exclu (ex. « pas de données primaires ») → alimenter le diagramme PRISMA
+- Cadre TCCM pour structurer la synthèse : Théories utilisées (T) × Contextes (C) × Caractéristiques/VI (C) × Méthodologies (M). Combinaisons absentes = lacunes identifiées
+- Modèle des 3 tableaux d'Ehsan : (1) thèmes/résultats, (2) théories/cadres, (3) méthodologies/données. Croiser les 3 = surfacer les gaps
+- En sciences sociales : inclure les designs qualitatifs et mixtes, ne pas exclure sur la qualité seule (SyReMa). Documenter les problématiques de qualité et leur impact potentiel sur les conclusions
+- Revue narrative (non-SLR) : mentionner quand même bases de données consultées, période couverte et nombre approximatif d'articles analysés
+- Note réflexive : après synthèse, vérifier la concentration géographique, la monoculture théorique et l'homogénéité méthodologique des études incluses
+- Énoncé de lacune = [LACUNE identifiée] + [JUSTIFICATION de son importance]. Jamais seulement « X n'a pas été étudié »
+- Outils bibliométriques (VOSviewer, Gephi) : identifier les sous-champs silotés (peu de co-citations) = opportunités de revue passerelle
+- SI l'IA assiste le criblage/extraction → marquer avec niveau de confiance et signaler les décisions incertaines pour vérification humaine
 `;
 
 // ───────────────────────────────────────
@@ -465,6 +486,66 @@ Tableaux : SI colonne > 70 % valeurs identiques → phrase suffit. SI > 70 % sym
 Résultats : SI précision trompeuse (ex. 28,8136 % pour 17/59) → adapter. SI non-effets omis → biais de reporting.
 
 Cohérence intro/discussion et texte/tableau : voir module Cohérence (principes) — ce module fournit la procédure de détection en contexte publication.
+
+### Processus de soumission et révision — Sułkowski et al.
+- Liste de revues cibles : 2 aspirations + 3-4 milieu de gamme. Pour chaque : IF, adéquation scope, délai type, statut OA
+- Analyser la liste de références du manuscrit : les revues les plus citées = cibles à forte probabilité d'adéquation
+- Citer (avec discernement) des articles de la revue cible = signaler l'ancrage dans ses débats. Jamais forcer des citations
+- Après rejet : TOUJOURS réviser avant de resoumettre. Soumettre inchangé → mêmes critiques. SI rejet → « Avant de choisir une nouvelle revue, traitons d'abord les concerns des relecteurs »
+- Cascade vers revue inférieure : supprimer TOUTE trace de soumission précédente (ancien format, lettre d'accompagnement, réponse aux relecteurs, en-tête/pied de page)
+- « Major revision » = opportunité, pas rejet. Répondre point par point à CHAQUE commentaire. Tableau : [Commentaire] → [Action] → [Localisation manuscrit]
+- Réponse au relecteur qui a mal compris : reformuler comme problème de clarté de l'auteur, jamais comme erreur du relecteur. « Il semble que nous n'ayons pas communiqué clairement ce point. Nous avons réécrit… »
+- Désaccord poli : (1) reconnaître le point, (2) expliquer la contrainte, (3) proposer un accommodement alternatif
+
+### Lettre de réponse type (Sułkowski et al.)
+- Si le relecteur demande une analyse hors scope : « Nous avons considéré cette approche ; cependant, elle nécessiterait un jeu de données au-delà du périmètre de cette étude. À la place, nous avons fourni une justification supplémentaire dans la section [X]. »
+- Si le relecteur a mal compris : « Il semble que ce point n'ait pas été communiqué avec suffisamment de clarté. Nous avons réécrit le paragraphe concerné pour lever toute ambiguïté. »
+`;
+
+// ───────────────────────────────────────
+// Module: VISUALIZATION — principes et bonnes pratiques (Sułkowski et al.)
+// ───────────────────────────────────────
+
+const VISUALIZATION_MODULE = `
+## VISUALISATION DE DONNÉES DE RECHERCHE (Sułkowski et al.)
+
+### Intégrité visuelle
+- Maximiser le ratio données-encre : chaque pixel doit représenter des données, pas de la décoration. Éviter fonds chargés, effets 3D, ombres
+- SI axe y tronqué (ne commence pas à 0) dans un diagramme en barres → justifier explicitement. Sinon, inclure la plage complète
+- SI bulles ou pictogrammes → dimensionner par SURFACE, pas par diamètre (biais visuel si par diamètre)
+- Montrer l'incertitude : ligne de régression en couleur atténuée + points de données bruts superposés. Jamais une seule ligne en gras sans variabilité
+- SI l'IA génère un graphique → vérifier : (a) plages d'axes honnêtes, (2) légende complète, (3) cohérence entre visuel et récit textuel
+- Palettes daltoniennes obligatoires (viridis, Okabe-Ito). SI > 2 séries de données → ajouter un encodage secondaire (motif, forme)
+
+### Narration visuelle
+- Storyboard des figures : séquencer comme un récit — contexte (diagramme conceptuel) → preuves (données) → synthèse (implications)
+- Adapter la complexité au public : même données, versions différentes. Article = scatterplot complet avec bandes de confiance. Blog = graphique annoté avec 3 points clés
+- SI méthodes mixtes → « joint display » : tableau mêlant résultats quantitatifs et citations qualitatives représentatives dans une même matrice
+`;
+
+// ───────────────────────────────────────
+// Module: PRESENTATION — conférences et soutenances (Sułkowski et al.)
+// ───────────────────────────────────────
+
+const PRESENTATION_MODULE = `
+## PRÉSENTATION DE RECHERCHE (Sułkowski et al.)
+
+### Timing et structure
+- Durée cible = 85-90 % du temps alloué (ex. 13 min pour un slot de 15 min) — marge de sécurité
+- Répartition indicative : 20 % intro, 20 % méthodes, 40 % résultats, 20 % discussion. SI méthodes > 25 % → signaler déséquilibre
+- Livrer l'information en couches : énoncé accessible d'abord, puis détail technique pour les experts. Chaque point clé = [cadre accessible] + [approfondissement optionnel]
+
+### Soutenance de thèse
+- Préparer des slides de secours pour les questions du jury : vérifications de robustesse, analyses alternatives, réponses aux défis méthodologiques prévisibles
+- Structure Q&R : anticiper les 5 questions les plus probables et préparer une diapositive de réponse pour chacune
+
+### Présentation virtuelle
+- SI format virtuel/hybride → contraintes renforcées : max 5 lignes par slide, police ≥ 24pt. Ce qui est lisible en salle devient illisible sur écran de laptop
+- Envoyer les slides au responsable de session AVANT la présentation (plan B technique)
+
+### Réponse aux relecteurs (Sułkowski et al.)
+- SI un relecteur a mal compris → la responsabilité est à l'auteur : reformuler. « Il semble que ce point n'ait pas été communiqué avec suffisamment de clarté. Nous avons réécrit… »
+- Désaccord poli en 3 étapes : (1) reconnaître le point, (2) expliquer la contrainte, (3) proposer un accommodement
 `;
 
 // ───────────────────────────────────────
@@ -483,6 +564,8 @@ const MODULES: Record<KnowledgeModule, string> = {
   'data-analysis': DATA_ANALYSIS_MODULE,
   'grant-writing': GRANT_WRITING_MODULE,
   publication: PUBLICATION_MODULE,
+  visualization: VISUALIZATION_MODULE,
+  presentation: PRESENTATION_MODULE,
 };
 
 // ───────────────────────────────────────
