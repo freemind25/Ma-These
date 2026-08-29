@@ -1,7 +1,7 @@
 # CONTEXT-PROJET.md — Ma Thèse (ThesisFrame)
 
 > **Mémoire de projet** — contexte, décisions, état d'avancement
-> Version : **v1.9.2** (3 septembre 2026)
+> Version : **v1.9.3** (3 septembre 2026)
 
 ---
 
@@ -79,18 +79,30 @@ Routes impactées : `ai-writing`, `ai-writing/stream`, `directeur-chat`.
 - **Calibration niveau** : +~110 tokens (optionnel)
 - Chaque spécialisation déclare ses modules nécessaires → injection sélective
 
-### 2.6 Patterns architecturaux (v1.9.2)
+### 2.6 Patterns architecturaux (v1.9.3)
 
-Deux patterns inspirés de prompts.chat (licence CC0, intégrés comme **architecture**, pas comme contenu) :
+Trois patterns inspirés de sources externes, intégrés comme **architecture**, pas comme contenu :
 
-| Pattern | Localisation | Principe |
-|---------|-------------|----------|
-| **Reasoning-then-Output** | `specializations/directeur.ts` | Avant le feedback final, l'IA rend visible son raisonnement (forces, axes, critères mobilisés). Sortie : `## Analyse` (3-5 lignes, hors quota 400 mots) → `## Retour` (méthode 5 étapes). Conditionnel : uniquement pour révision de texte, pas les questions courtes. |
-| **Counter-Audit 2 passes** | `specializations/coherence.ts` + `coherence-check/route.ts` | Passe 1 = analyse standard. Passe 2 = auditeur adversarial reçoit UNIQUEMENT les verdicts EN DÉFAUT + extraits. Ne peut que CONFIRMER ou RÉTROGRADER vers AMBIGU (jamais rétablir). Checks AMBIGU exclus du scoring mais visibles dans `audit[]`. |
+| # | Pattern | Source | Localisation | Principe |
+|---|---------|--------|-------------|----------|
+| 1 | **Reasoning-then-Output** | prompts.chat (CC0) | `specializations/directeur.ts` | Avant le feedback final, l'IA rend visible son raisonnement. Sortie : `## Analyse` (3-5 lignes, hors quota) → `## Retour` (méthode 5 étapes). |
+| 2 | **Counter-Audit 2 passes** | prompts.chat (CC0) | `specializations/coherence.ts` + `coherence-check/route.ts` | Passe 2 = auditeur adversarial, ne peut que CONFIRMER ou RÉTROGRADER vers AMBIGU. |
+| 3 | **Retriever OpenAlex + curation déterministe** | gpt-researcher (Apache 2.0) | `lib/research/openalex.ts` + `lib/research/curation.ts` + `deep-research/route.ts` | OpenAlex (250M+ travaux, gratuit, sans clé) comme retriever académique. Curation pré-rapport 100% déterministe (pas d'appel LLM) : DOI, venue, type, citations/âge, OA, récence. |
 
-**Phase d'observation (en cours)** : logs `[coherence-audit] rate=...%` → <10% = clore ; >30% = pipeline 4 appels ; entre les deux = version C définitive. Signal diagnostique : rétrogradations systématiques sur une catégorie = biais évaluateur passe 1.
+**Note licence** : prompts.chat = CC0 (domaine public, pas d'attribution). gpt-researcher = Apache 2.0 (attribution obligatoire si copie de code). Aucun code copié dans les 3 cas — uniquement des patterns d'architecture.
 
-**Discontinuité de score** : l'exclusion des AMBIGU du scoring (v1.9.2) modifie les scores affichés vs anciennes sessions. Si l'UI affiche un historique de scores, prévoir `scoreVersion: 2` pour noter la discontinuité.
+**Phase d'observation (en cours)** : logs `[coherence-audit] rate=...%` → <10% = clore ; >30% = pipeline 4 appels ; entre les deux = version C définitive.
+
+**Discontinuité de score** : l'exclusion des AMBIGU du scoring (v1.9.2) modifie les scores affichés vs anciennes sessions.
+
+#### Patterns de gpt-researcher NOTÉS et DIFFÉRÉS
+
+| Pattern | Raison du report | Critère de réactivation |
+|---------|-----------------|------------------------|
+| Récursion breadth×depth | Coût ×10, aucun retour utilisateur prouvant l'insuffisance du mono-passe | Si retours utilisateurs montrent deep-research insuffisant |
+| Compression contexte 25K mots | Couvert différemment par injection sélective du knowledge-core | Si le contexte dépasse la capacité d'un seul appel |
+| MCP (Model Context Protocol) | Aucun usage concret identifié dans Ma Thèse | Si un besoin d'outils externes dynamiques émerge |
+| Tiers LLM (quick/large/critical) | À réévaluer avec les premiers utilisateurs réels | Si les coûts LLM deviennent un problème mesurable |
 
 ### 2.7 Trois patterns de factorisation
 
@@ -144,6 +156,7 @@ Exemple : la cohérence argumentative (contradiction interne, sur-généralisati
 
 | Version | Étape | Description |
 |---------|-------|-------------|
+| **v1.9.3** | Retriever académique | Wrapper OpenAlex (`lib/research/openalex.ts`) — 250M+ travaux, gratuit, sans clé. Curation pré-rapport déterministe (`lib/research/curation.ts`) — 6 critères pondérés (DOI, venue, type, citations/âge, OA, récence), 0 appel LLM. Intégration deep-research avec `sourceMode: academic|web`. 4 patterns gpt-researcher notés et différés (récursion, compression, MCP, tiers LLM). Note licence Apache 2.0 vs CC0 dans §2.6. |
 | **v1.9.2** | Patterns architecturaux | 2 patterns inspirés de prompts.chat (CC0, intégrés comme architecture pas comme contenu) : (1) Reasoning-then-Output sur directeur.ts (format Analyse/Retour pour révision de texte), (2) Counter-Audit 2 passes sur coherence-check (auditeur adversarial ne peut que rétrograder). Spécialisation coherence.ts créée (normalisation). Logging structuré pour mesure préalable. |
 | **v1.9.0** | Niveaux doctorant | `getLevelCalibration()` dans prompt-builder.ts. Post-injection dans 3 routes (ai-writing, stream, directeur-chat). Token budget : +~110 tokens par niveau. Knowledge-core inchangé. |
 | **v1.8.4** | Processus feedback | `feedback.md` + règle #9 AGENTS.md. Processus Capture → Triage → Correction → Validation → Documentation. |

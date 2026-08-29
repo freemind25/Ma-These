@@ -99,6 +99,7 @@ function AiWritingPanel() {
   });
 
   const [selectedMode, setSelectedMode] = useState<string>("");
+  const [sourceMode, setSourceMode] = useState<"web" | "academic">("web");
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState<string>("");
   const [copied, setCopied] = useState(false);
@@ -128,7 +129,11 @@ function AiWritingPanel() {
         const res = await fetch(activeMode.customEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(withAiConfig({ mode: selectedMode, prompt: prompt.trim() })),
+          body: JSON.stringify(withAiConfig({
+            mode: selectedMode,
+            prompt: prompt.trim(),
+            sourceMode: selectedMode === "deep-research" ? sourceMode : undefined,
+          })),
         });
         if (!res.ok) {
           const err = await res.json();
@@ -272,6 +277,35 @@ function AiWritingPanel() {
               <CardDescription className="text-xs">
                 {activeMode.placeholder}
               </CardDescription>
+            )}
+            {activeMode?.id === "deep-research" && (
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-xs text-muted-foreground">Source :</span>
+                <button
+                  type="button"
+                  onClick={() => setSourceMode("web")}
+                  className={`px-3 py-1 text-xs rounded-md border transition-all ${
+                    sourceMode === "web"
+                      ? "border-primary bg-primary/10 text-primary font-medium"
+                      : "border-border text-muted-foreground hover:bg-muted/50"
+                  }`
+                }
+                >
+                  🌐 Web
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSourceMode("academic")}
+                  className={`px-3 py-1 text-xs rounded-md border transition-all ${
+                    sourceMode === "academic"
+                      ? "border-primary bg-primary/10 text-primary font-medium"
+                      : "border-border text-muted-foreground hover:bg-muted/50"
+                  }`
+                }
+                >
+                  🎓 Académique (OpenAlex)
+                </button>
+              </div>
             )}
           </CardHeader>
           <CardContent className="flex flex-col gap-3">

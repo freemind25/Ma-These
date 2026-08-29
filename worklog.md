@@ -5568,3 +5568,70 @@ Stage Summary:
 - 5 prompts doublons écartés (déjà couverts par les modes existants)
 - 23 modes d'écriture IA au total (20 → 23)
 - Source annotée (règle #11) dans les en-têtes de chaque fichier
+---
+Task ID: 19
+Agent: Main
+Task: Intégration OpenAlex comme retriever académique + curation pré-rapport déterministe
+
+Work Log:
+- Inspection gpt-researcher corrigée (session précédente coupée) :
+  - « gpt-5.4 » était une hallucination — ce modèle n'existe pas
+  - Licence Apache 2.0 ≠ CC0 : attribution obligatoire si copie de code
+  - 5 patterns identifiés, 1 adopté (OpenAlex), 4 différés
+
+- ÉTAPE 1 — Wrapper OpenAlex (src/lib/research/openalex.ts) :
+  - API REST publique, sans clé : https://api.openalex.org/works
+  - Types nommés (pas de génériques inline — parsing ESLint)
+  - Fonctions : searchWorks(), searchAcademicWorks(), getRelatedWorks()
+  - Filtres par défaut : journal-article|proceedings-article, is_paratext=false
+  - User-Agent poli avec mailto (recommandation OpenAlex)
+  - Reconstruction des abstracts (index inversé → texte)
+  - Formatage pour prompt et références
+
+- ÉTAPE 2 — Curation pré-rapport déterministe (src/lib/research/curation.ts) :
+  - Score de crédibilité 100% déterministe, 0 appel LLM
+  - 6 critères pondérés (CURATION_WEIGHTS) :
+    - DOI présent (0.15)
+    - Venue identifiée (0.15)
+    - Type publication (0.10)
+    - Citations normalisées par âge (0.30) — log10(1+cit)/log10(1+age*5)
+    - Open access (0.15)
+    - Récence (0.15) — déclin linéaire sur 15 ans
+  - Seuils : BON ≥ 0.55, ACCEPTABLE ≥ 0.35, FAIBLE < 0.35
+  - Amélioration sur gpt-researcher : pas d'appel LLM (leur pattern paie 1 appel LLM par source)
+  - curateWorks() : filtre rétractés, trie par score, max 15 résultats
+  - curationSummary() : stats pour logging
+
+- ÉTAPE 3 — Intégration deep-research :
+  - Nouveau paramètre sourceMode : « web » (existant Tavily+CORE) ou « academic » (OpenAlex+curation)
+  - Mode academic : 4 sous-requêtes anglaises, 15 résultats/req, curation, compress + report académique
+  - Mode web : inchangé (zéro breaking change)
+  - Frontend : sélecteur Web / Académique (OpenAlex) dans ai-writing-page.tsx
+  - Planification sous-requêtes : mode academic force les requêtes en anglais
+  - Logging curation : [deep-research] OpenAlex curation: X sources (Y bons, Z acceptables)
+
+- Documentation :
+  - CONTEXT-PROJET.md §2.6 : pattern #3 ajouté, 4 patterns différés avec critères réactivation
+  - Note licence Apache 2.0 vs CC0 dans §2.6
+  - Version projet : v1.9.3
+  - Historique versions mis à jour
+
+### Validation
+- Lint : 0 errors, 189 warnings (baseline +1 console.log curation dans route)
+- Aucun test unitaire ajouté (conformément aux consignes)
+- Compilation Next.js : réussie (pas d'erreur dans dev log)
+
+### Décisions différées (GPT Researcher)
+- Récursion breadth×depth : coût ×10, aucun retour utilisateur → si deep-research insuffisant
+- Compression contexte 25K mots : couvert par injection sélective knowledge-core
+- MCP : pas d'usage concret identifié
+- Tiers LLM : si coûts réels observés avec premiers utilisateurs
+
+Stage Summary:
+- 3 fichiers créés : openalex.ts, curation.ts, deep-research/route.ts (modifié)
+- 1 fichier frontend modifié : ai-writing-page.tsx (sélecteur sourceMode)
+- Retriever académique fonctionnel : OpenAlex (250M+ travaux, gratuit, sans clé)
+- Curation déterministe : 6 critères, 0 appel LLM, amélioration sur le pattern gpt-researcher
+- Entonnoir de curation : pré-rapport (OpenAlex déterministe) → rédaction → post-rapport (verification-sources)
+- Lint 0 errors, 189 warnings
+- Version projet : v1.9.3
