@@ -5796,3 +5796,21 @@ Stage Summary:
 - UI fields: showApiKey=true, showModel=true, showBaseUrl=false, dynamicModels=false
 - User needs to: 1) select KiraAI in Premium category, 2) paste API key, 3) select glm-5.3
 - API works but user's VND wallet has 0 balance → will need to top up on kiraai.vn
+---
+Task ID: 21b
+Agent: Main
+Task: Tester tous les modèles KiraAI et identifier les gratuits
+
+Work Log:
+- Tested all 57 models from /v1/models/ endpoint
+- Free tier (150M tokens) only covers Kira-branded models + hy3:
+  - kira-3.5-flash, kira-3.5-pro, kira-2.5-pro, kira-2.5-flash (chat)
+  - kira-2.0-image, kira-3.0-image (multimodal)
+  - hy3 (surprise)
+- All partner models (OpenAI, Claude, Gemini, DeepSeek, GLM, etc.) return vnd_balance_exhausted
+- Reorganized PROVIDER_MODELS: 7 free models first, then 50 paid models
+- Updated label to "KiraAI Vietnam (7 gratuits + 50 payants)"
+
+Stage Summary:
+- 7 models usable with free tokens, kira-3.5-flash recommended as default
+- Full 57-model list preserved for when user adds VND balance

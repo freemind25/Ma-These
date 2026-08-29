@@ -126,7 +126,15 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
   sealion: [],
   // Vietnam
   kiraai: [
-    // KiraAI Vietnam — 57 modèles (2026-08-29)
+    // ══ GRATUITS (tokens gratuits KiraAI) ══
+    "kira-3.5-flash",
+    "kira-3.5-pro",
+    "kira-2.5-pro",
+    "kira-2.5-flash",
+    "kira-2.0-image",
+    "kira-3.0-image",
+    "hy3",
+    // ══ PAYANTS (nécessitent solde VND) ══
     // Claude
     "claude-sonnet-5",
     // DeepSeek
@@ -147,14 +155,13 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
     // Grok
     "grok-4.5", "grok-4.6",
     // HY
-    "hy3", "hy4",
+    "hy4",
     // Kimi
     "kimi-k3",
-    // Kira (propriétaire)
-    "kira-2.0", "kira-2.0-flash-tts", "kira-2.0-image",
-    "kira-2.5-flash", "kira-2.5-pro",
-    "kira-3.0-flash-tts", "kira-3.0-image", "kira-3.0-video", "kira-3.0-video-flash",
-    "kira-3.5-flash", "kira-3.5-pro", "kira-mini-1.0",
+    // Kira (TTS / vidéo / hors service)
+    "kira-2.0", "kira-2.0-flash-tts",
+    "kira-3.0-flash-tts", "kira-3.0-video", "kira-3.0-video-flash",
+    "kira-mini-1.0",
     // Mimo / MiniMax
     "mimo-v2.5", "mimo-v2.5-pro", "minimax-m2.7", "minimax-m3",
     // OX
@@ -244,7 +251,7 @@ export function getProviderLabel(provider: AiProviderId): string {
     aion: "Aion Labs (gratuit)",
     requesty: "Requesty (gratuit)",
     sealion: "SEA-LION (gratuit)",
-    kiraai: "KiraAI Vietnam (57 modèles)",
+    kiraai: "KiraAI Vietnam (7 gratuits + 50 payants)",
     custom: "Personnalisé (API compatible)",
   };
   return labels[provider] || provider;
