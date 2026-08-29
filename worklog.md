@@ -5675,3 +5675,42 @@ Stage Summary:
 - Garde-fou related_works documenté
 - Digestion : validée par la logique (429 = bonne requête, IP limitée)
 - Version projet : v1.9.3 (clôture confirmée)
+---
+Task ID: 19c
+Agent: Main
+Task: Clôture v1.9.3 — validation externe avec réserve honnête
+
+Work Log:
+- Retour utilisateur : v1.9.3 validée avec bilan positif
+  - 39 tests aux bornes (0.54 vs 0.55, preprint, 0 citations, année 0) : exactement les cas qui cassent un scoring en production
+  - 1372/1372 : le compteur revient, dette nulle
+  - Garde-fou related_works (plafond 200, défaut 10) : récursion sauvage impossible
+  - 429 transformé en diagnostic : requête bien formée, IP partagée throttée
+
+- RÉSERVE HONNÊTE :
+  - ✅ Validé : logique métier (scoring, filtrage, bornes) — par les 39 tests unitaires
+  - ⏳ Pas encore validé : parcours réel de bout en bout (question doctorale → sources peer-reviewed dans l'UI)
+  - Le 429 a empêché ce test dans le sandbox
+  - Un test unitaire valide le code, pas l'expérience
+  - Analogy : « le moteur tourne sur banc » vs « la voiture roule »
+  - Le test de digestion OpenAlex reste en attente du premier run en environnement réel (IP propre)
+
+- Checklist de clôture définitive (à exécuter lors du premier usage 🎓 Académique) :
+  □ Sources majoritairement journal-article avec DOI affichés
+  □ Métadonnées cohérentes (venue, année, citations)
+  □ Aucune source sous 0.35
+  □ Comparer avec 🌐 Web sur la même question
+
+- 2 micro-suggestions non urgentes documentées (backlog CONTEXT-PROJET.md) :
+  1. Gestion 429 côté UI : message gracieux « Quota atteint, réessayez dans quelques instants »
+  2. Retry avec backoff léger (1 retry après 2-3 s) dans le wrapper OpenAlex
+
+- Bilan séquence externe :
+  - prompts.chat → 2 patterns adoptés (v1.9.2)
+  - gpt-researcher → 1 pattern adopté, 4 différés avec critères (v1.9.3)
+  - Score protocole #11 : 3 adoptés / 4 différés / 0 copié
+
+Stage Summary:
+- v1.9.3 CLOSED avec réserve : E2E digestion reste à valider en IP propre
+- 2 micro-suggestions ajoutées au backlog (429 UI, retry backoff)
+- Score protocole #11 finalisé pour la séquence externe : 3/4/0

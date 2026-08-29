@@ -215,7 +215,15 @@ Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le c
 
 ## 9. Prochaines étapes
 
+- **E2E digestion OpenAlex ⏳** : le test de bout en bout (question doctorale → sources peer-reviewed dans l'UI) n'a pu être exécuté dans le sandbox (429 IP partagée). Clôture définitive de la Task 19 au premier usage 🎓 Académique en IP propre. Checklist : □ sources journal-article avec DOI □ métadonnées cohérentes □ aucune source < 0.35 □ comparer avec mode Web.
 - **Données [coherence-audit]** : collecter les premiers taux de rétrogradation pour décider du seuil
 - **sqlite-vec** : migration quand le volume de chunks dépasse les capacités de parsing JSON
 - **Calibration front-end** : exposer le sélecteur de niveau doctorant dans l'UI (actuellement API-only)
 - **Score versioning** : ajouter `scoreVersion: 2` si l'UI expose un historique de scores coherence
+
+## 10. Backlog non-urgent (micro-suggestions)
+
+| # | Suggestion | Priorité | Contexte |
+|---|-----------|----------|----------|
+| B1 | **Gestion 429 côté UI** — message gracieux « Quota de recherche atteint, réessayez dans quelques instants » au lieu d'une erreur brute. Esprit RAG keyword fallback du projet. | basse | Le 429 dans le sandbox a révélé le cas ; en production, VPN ou réseau partagé peut le déclencher |
+| B2 | **Retry avec backoff léger** dans le wrapper OpenAlex — 1 retry après 2-3 s. Conforme aux recommandations OpenAlex, ~5 lignes. | basse | Recommandation officielle OpenAlex, faible effort |
