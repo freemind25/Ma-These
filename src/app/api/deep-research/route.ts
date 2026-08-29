@@ -257,7 +257,7 @@ async function searchOpenAlexWorks(
   });
 
   const summary = curationSummary(curated);
-  console.log(
+  console.error(
     `[deep-research] OpenAlex curation: ${summary.total} sources (${summary.bons} bons, ${summary.acceptables} acceptables, ${summary.faibles} faibles), score moyen: ${summary.avgScore}`,
   );
 

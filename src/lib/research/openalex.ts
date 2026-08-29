@@ -227,6 +227,9 @@ export async function searchWorks(
     url.searchParams.set("select", params.select.join(","));
   }
 
+  // Pool poli OpenAlex : le paramètre mailto donne un quota plus élevé
+  url.searchParams.set("mailto", POLITE_MAILTO);
+
   const res = await fetch(url.toString(), {
     headers: headers(),
     next: { revalidate: 300 }, // 5 min cache
@@ -245,6 +248,11 @@ export async function searchWorks(
 /**
  * Récupère les travaux liés à un travail donné (snowballing citationnel).
  * Endpoint : /works/{id}/related
+ *
+ * GARDE-FOU COÛT : plafonné à max(200) résultats.
+ * Ce n'est PAS une récursion — un seul appel par invocation.
+ * Pour une récursion multi-niveaux (non implémenté),
+ * il faudrait un budget d'appels et un circuit breaker.
  */
 export async function getRelatedWorks(
   openalexId: string,
