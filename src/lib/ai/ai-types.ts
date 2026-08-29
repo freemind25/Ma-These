@@ -125,7 +125,44 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
   requesty: [],
   sealion: [],
   // Vietnam
-  kiraai: ["glm-5.3"],
+  kiraai: [
+    // KiraAI Vietnam — 57 modèles (2026-08-29)
+    // Claude
+    "claude-sonnet-5",
+    // DeepSeek
+    "deepseek-v4-flash", "deepseek-v4-flash-0731", "deepseek-v4-flash-free",
+    "deepseek-v4-flash-vision-exp", "deepseek-v4-pro",
+    // Dots
+    "dots-3-note-preview",
+    // Gemini
+    "gemini-2.5-flash-image", "gemini-2.5-flash-lite", "gemini-2.5-flash-tts",
+    "gemini-3-pro-image-preview", "gemini-3.1-flash-image-preview",
+    "gemini-3.1-flash-tts-preview", "gemini-3.5-flash", "gemini-3.5-flash-lite",
+    "gemini-3.6-flash", "gemini-3.7-flash",
+    // GLM
+    "glm-5.2", "glm-5.3", "glm-5.3-flash",
+    // GPT
+    "gpt-4o-mini", "gpt-5-nano", "gpt-5.4", "gpt-5.4-mini",
+    "gpt-5.6-luna", "gpt-5.6-sol", "gpt-5.6-terra", "gpt-oss-120b",
+    // Grok
+    "grok-4.5", "grok-4.6",
+    // HY
+    "hy3", "hy4",
+    // Kimi
+    "kimi-k3",
+    // Kira (propriétaire)
+    "kira-2.0", "kira-2.0-flash-tts", "kira-2.0-image",
+    "kira-2.5-flash", "kira-2.5-pro",
+    "kira-3.0-flash-tts", "kira-3.0-image", "kira-3.0-video", "kira-3.0-video-flash",
+    "kira-3.5-flash", "kira-3.5-pro", "kira-mini-1.0",
+    // Mimo / MiniMax
+    "mimo-v2.5", "mimo-v2.5-pro", "minimax-m2.7", "minimax-m3",
+    // OX
+    "ox-alpha",
+    // Qwen
+    "qwen3.5-flash", "qwen3.5-omni-plus", "qwen3.6-flash",
+    "qwen3.7-max", "qwen3.7-plus", "qwen3.8-flash", "qwen3.8-max",
+  ],
   // Personnalisé
   custom: [],
 };
@@ -207,7 +244,7 @@ export function getProviderLabel(provider: AiProviderId): string {
     aion: "Aion Labs (gratuit)",
     requesty: "Requesty (gratuit)",
     sealion: "SEA-LION (gratuit)",
-    kiraai: "KiraAI Vietnam (GLM-5.3)",
+    kiraai: "KiraAI Vietnam (57 modèles)",
     custom: "Personnalisé (API compatible)",
   };
   return labels[provider] || provider;
