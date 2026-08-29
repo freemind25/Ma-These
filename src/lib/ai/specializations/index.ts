@@ -24,6 +24,9 @@ export { IMPROVEMENT_PROMPT } from './improvement';
 export { REVUE_LITTERATURE_SLR_PROMPT } from './revue-litterature-slr';
 export { AUTO_EDITION_8C_PROMPT } from './auto-edition-8c';
 export { COHERENCE_CHECK_PROMPT, COHERENCE_AUDIT_PROMPT } from './coherence';
+export { EXPLIQUER_CONCEPT_PROMPT } from './expliquer-concept';
+export { VERIFICATION_SOURCES_PROMPT } from './verification-sources';
+export { ARGUMENTATION_BILATERALE_PROMPT } from './argumentation-bilaterale';
 
 // ───────────────────────────────────────
 // Registry: mode id → built prompt
@@ -50,6 +53,9 @@ import { IMPROVEMENT_PROMPT } from './improvement';
 import { REVUE_LITTERATURE_SLR_PROMPT } from './revue-litterature-slr';
 import { AUTO_EDITION_8C_PROMPT } from './auto-edition-8c';
 import { COHERENCE_CHECK_PROMPT, COHERENCE_AUDIT_PROMPT } from './coherence';
+import { EXPLIQUER_CONCEPT_PROMPT } from './expliquer-concept';
+import { VERIFICATION_SOURCES_PROMPT } from './verification-sources';
+import { ARGUMENTATION_BILATERALE_PROMPT } from './argumentation-bilaterale';
 
 /**
  * Maps WritingMode.id → the built system prompt.
@@ -75,5 +81,8 @@ export const SPECIALIZATION_PROMPTS: Record<string, string> = {
   'improvement': IMPROVEMENT_PROMPT,
   'revue-litterature': REVUE_LITTERATURE_SLR_PROMPT,
   'auto-edition-8c': AUTO_EDITION_8C_PROMPT,
+  'expliquer-concept': EXPLIQUER_CONCEPT_PROMPT,
+  'verification-sources': VERIFICATION_SOURCES_PROMPT,
+  'argumentation-bilaterale': ARGUMENTATION_BILATERALE_PROMPT,
   // 'deep-research' uses a custom endpoint — no system prompt here
 };

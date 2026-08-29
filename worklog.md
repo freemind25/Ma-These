@@ -5543,3 +5543,28 @@ Stage Summary:
 - 1333 tests verts, 0 régression
 - En phase d'observation : la donnée [coherence-audit] rate=...% décidera de clore ou d'aller au pipeline 4 appels
 - Score discontinuity notée pour futures versions de l'UI
+---
+Task ID: 18
+Agent: Main
+Task: Ajouter 3 nouveaux modes IA à partir de 8 prompts externes (prompt-2.txt)
+
+Work Log:
+- Fichier reçu : upload/prompt-2.txt — 8 prompts de recherche (Sadi Messaoud)
+- Analyse croisée 8 prompts × 20 modes existants :
+  - 5 doublons : lacunes (analyse-champ-recherche), matrice (revue-litterature), 10 articles (revue-litterature), tester hypothèse (hypothesis), sprint (deep-research)
+  - 3 ajoutés : expliquer-concept, verification-sources, argumentation-bilaterale
+- 3 spécialisations créées (règle #11 : format inspiré, pas contenu copié) :
+  - expliquer-concept.ts — 5 sections (simple, analogie, exemple, technique, méprise), modules [methodology, style]
+  - verification-sources.ts — tableau 8 critères par source + verdict FORTE/MODÉRÉE/FAIBLE, modules [peer-review, methodology, publication]
+  - argumentation-bilaterale.ts — 3 étapes (contre, comparaison tableau, conclusion), modules [peer-review, methodology]
+- Enregistré dans specializations/index.ts et data/ai-writing-modes.ts
+
+### Validation
+- Lint : 0 errors, 188 warnings (baseline inchangée)
+- Tests : 1333/1333 pass
+
+Stage Summary:
+- 3 nouveaux modes IA : expliquer-concept, verification-sources, argumentation-bilaterale
+- 5 prompts doublons écartés (déjà couverts par les modes existants)
+- 23 modes d'écriture IA au total (20 → 23)
+- Source annotée (règle #11) dans les en-têtes de chaque fichier
