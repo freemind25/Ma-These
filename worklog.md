@@ -5883,3 +5883,25 @@ Stage Summary:
 - Total unique resources processed to date: 18 distillés + 16 skip = 34
 - 6 new sources distilled: Pearce, Murray, Brause, Paltridge & Starfield, Carter et al., Holtom & Fisher
 - Files modified: src/lib/ai/knowledge-core.ts only
+---
+Task ID: 24b
+Agent: Main
+Task: Analyser 3 nouveaux zips (9 fichiers) + 1 PDF standalone et distiller dans knowledge-core
+
+Work Log:
+- Extracted text: zip1 (2 PDFs: Gaudet & Robert 897K, Bégin 1.1M), zip2 (2 EPUBs: Belleville & Jackson 584K, Belleville 359K + 1 PDF: Belleville 266K), zip3 (3 PDFs: Zimmerman 1.3M, Wette 417K, Marzano 536K)
+- Quick SKIP: Turabian PDF (duplicate), Marzano (K-12 education), Bégin (supervision focus), 3x Belleville (motivational/psychology, not text quality rules)
+- Launched 2 parallel analysis agents for remaining 3 books
+- Gaudet & Robert — L'aventure de la Recherche Qualitative: DISTILL — 12 rules (qualitative analysis 3-strate palimpseste, 5 analysis errors, sampling criteria, CER ethics, field relation traps)
+- Wette — Writing Using Sources: DISTILL — 10 rules (integral/non-integral citations, 11 rhetorical functions, signaling verb taxonomy, patchwriting vs paraphrase)
+- Zimmerman (éd.) — Methodological Innovations: DISTILL — 11 rules (Q methodology, Giorgi phenomenology, historical research framework, three-article dissertation)
+- Integrated 22 rules across 7 modules: style (+1), ethics (+2), coherence (+1), methodology (+12), writing-process (+1), literature-review (+4)
+- Updated header: 18 → 21 sources, added 3 new source citations
+- File: 854 → 925 lines (+71 lines)
+- Lint: 0 errors (191 pre-existing warnings)
+
+Stage Summary:
+- Knowledge-core v2 now: 21 sources, 13 modules
+- Total unique resources processed to date: 24 distillés + 25 skip = 49
+- 3 new sources distilled: Gaudet & Robert, Wette, Zimmerman
+- Files modified: src/lib/ai/knowledge-core.ts only

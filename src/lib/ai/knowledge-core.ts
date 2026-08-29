@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// ThesisFrame — Knowledge Core v2 (distillé de 18 ouvrages de référence)
+// ThesisFrame — Knowledge Core v2 (distillé de 21 ouvrages de référence)
 // SOURCE UNIQUE DE VÉRITÉ — savoir métier digéré
 // ═══════════════════════════════════════════════════════════════
 //
@@ -29,6 +29,9 @@
 //   Paltridge & Starfield — Thesis and Dissertation Writing in a Second Language (CARS, types de thèse, stance, reporting)
 //   Carter, Kelly & Brailsford — Structuring Your Research Thesis (fonctions thèse, ordres thématiques, proportion)
 //   Holtom & Fisher — Enjoy Writing Your Science Thesis (proportions sciences, révision, protocoles)
+//   Gaudet & Robert — L'aventure de la Recherche Qualitative (analyse quali 3 strates, erreurs d'analyse, éthique terrain)
+//   Wette — Writing Using Sources for Academic Purposes (citations intégrales/non-intégrales, fonctions rhétoriques, verbes de signalisation)
+//   Zimmerman (éd.) — Methodological Innovations in Research (Q méthodologie, Giorgi, recherche historique, thèse par articles)
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -96,6 +99,10 @@ const STYLE_MODULE = `
 ### Langage des limites en conclusion (Murray)
 - Substituer : « limitation » → « focus » ou « sélection » ; « flaw » → supprimer ; « incomplete » → « continuing » ; « inconclusive » → supprimer ; « solves »/« proves » → « contributes to a resolution of »
 - Toute étude a des limites par conception : les cadrer comme des décisions de périmètre, pas des échecs
+
+### Patchwriting vs paraphrase (Wette)
+- Distinguer paraphrase légitime (transformation grammaticale + lexicale + structurelle, sens préservé) de patchwriting (copie de chaînes de 5-9 mots + substitution synonyme 1 pour 1 + réarrangement). Le patchwriting est un stade développemental fréquent chez les novices mais détectable par les logiciels
+- Protocole paraphrase en 7 étapes : (1) lire à fond, (2) notes sans copier, (3) carte mentale ou résumé oral, (4) rédiger SANS consulter l'original, (5) vérifier l'exactitude, (6) si résumé → réduire à 1/3 max, (7) vérifier l'intégration stylistique
 `;
 
 // ───────────────────────────────────────
@@ -155,6 +162,13 @@ const ETHICS_MODULE = `
 - Test de la paraphrase légitime : « Pouvez-vous reformuler le texte SANS l'avoir sous les yeux ? » SI non → citer entre guillemets. Le plagiat de thèse vient souvent des fiches de lecture où les guillemets ont été oubliés
 - Citer les classiques d'après l'édition critique (Pléiade) ou la plus reconnue. Pour les contemporains : première édition OU dernière revue par l'auteur — justifier si les deux divergent
 - SI citation de Smith à travers Sedanelli → distinguer : (a) c'est l'opinion de Sedanelli qui intéresse → citer Sedanelli « citant Smith, p. X » ; (b) c'est l'idée de Smith → citer Smith « cité par Sedanelli, p. Y ». Ne jamais masquer qu'on utilise une source de seconde main
+
+### CER et recherche qualitative itérative (Gaudet & Robert)
+- Le processus de recherche qualitative est par nature imprévisible : le terrain peut amener sur des avenues différentes du protocole déposé. Justifier les formulaires CER (conçus pour la recherche clinique) dans un cadre itératif inductif
+- SI épistémologie constructionniste/constructiviste/critique → la divulgation partielle est rarement légitime car la coconstruction chercheur-participant exige que le participant comprenne les objectifs
+
+### Pièges relationnels sur le terrain (Gaudet & Robert)
+- SI terrain qualitatif avec participants vulnérables → surveiller : (1) la relation de pouvoir n'est pas toujours unidirectionnelle (participants peuvent utiliser le chercheur) ; (2) la valeur thérapeutique perçue du lien peut créer des attentes irréalistes → fournir liste de ressources d'urgence ; (3) la relation de séduction (frontière floue entre argumentaire convaincant et séduction) → clarifier les limites
 `;
 
 // ───────────────────────────────────────
@@ -251,6 +265,9 @@ const COHERENCE_MODULE = `
 ### Structure non conventionnelle (Carter, Kelly & Brailsford)
 - SI structure de thèse non-IMRAD → justifier explicitement dans l'introduction. Les examinateurs acceptent les structures innovantes quand la logique de l'écart est ouvertement expliquée
 - Sans cette justification, une structure non conventionnelle = signal de manque de maîtrise du genre thèse
+
+### Structure phénoménologique (Zimmerman, d'après Giorgi)
+- La structure finale doit articuler des « constituants » (définis par leur relation fonctionnelle au tout) et non des « éléments » (indépendants du tout). SI les données sont trop disparates pour produire une seule structure → écrire une structure par sous-groupe ou par participant individuel
 `;
 
 // ───────────────────────────────────────
@@ -399,6 +416,43 @@ const METHODOLOGY_MODULE = `
 
 ### Protocoles scientifiques : traçabilité (Holtom & Fisher)
 - SI protocole avec matériel biologique ou chimique : inclure fabricant + siège social (reproductibilité internationale). Pour les kits : résumer le principe, citer la publication de référence, indiquer « selon les instructions du fabricant » pour les étapes standard, décrire en détail toute modification
+
+### Objectifs de la recherche qualitative (Gaudet & Robert)
+- SI recherche qualitative itérative → distinguer objectif théorique (définir/interpréter un phénomène) et objectif empirique (décrire/observer). Les deux sont nécessaires : trop théorique = césure théorie-empirie ; trop empirique = journalisme. Hiérarchiser et expliciter ses objectifs est un devoir de réflexivité
+
+### Question de recherche qualitative (Gaudet & Robert)
+- Formuler en « comment » (processus, compréhension ancrée dans le contexte) plutôt qu'en « quel/le » ou « pourquoi » causaux. Les questions « comment » favorisent un processus itératif inductif ; les questions « quel » orientent vers un hypothético-déductif incompatible avec la quali
+
+### Échantillonnage qualitatif intentionnel (Gaudet & Robert)
+- Justifier selon deux critères : (1) comparabilité (sources semblables pour saturation théorique) et (2) diversification (sources contrastées pour complexité). Quatre techniques : stratifié (catégories préétablies), cellulaire (catégories chevauchantes, Miles & Huberman), par quotas (minimum par catégorie), théorique (critères émergents, Strauss & Corbin)
+
+### Analyse qualitative en 3 strates — palimpseste (Gaudet & Robert)
+- Strate 1 — analyse verticale : condensation contextualisante puis sémantique de chaque source. Documenter le contexte de production AVANT la condensation (lieu, personnes présentes, influence de l'intervieweur). SI codage logiciel trop rapide → perte de la perspective contextuelle
+- Strate 2 — analyse horizontale : comparaison transversale des sources, identification de fils conducteurs et cas contrastants. Ne JAMAIS éliminer un document divergent — un seul cas divergent peut invalider l'interprétation. Ne PAS généraliser statistiquement (« 2/10 disent que… ») sur un échantillon non aléatoire
+- Strate 3 — analyse théorisante : généralisation analytique par va-et-vient constant avec la littérature. Le retour aux strates précédentes est nécessaire
+
+### Cinq erreurs d'analyse qualitative (Gaudet & Robert)
+- (1) Résumer au lieu d'analyser (arrêter à la réduction thématique sans interpréter) ; (2) citer au lieu d'analyser (déléguer l'analyse aux participants) ; (3) prendre parti au lieu d'analyser (évaluer plutôt qu'interpréter) ; (4) compter les fréquences de codes comme en quanti (pas de validité sur échantillon non aléatoire) ; (5) présenter des caractéristiques formelles sans interpréter (ex. noter des métaphores sans interpréter leur rôle)
+
+### Réflexivité qualitative concrète (Gaudet & Robert)
+- Trois éléments à rendre explicites : (1) transparence du processus analytique (étapes, dilemmes, choix) ; (2) utilisation et discussion des contre-exemples (les chercher activement, les transformer en outils d'interprétation plus inclusive, les mentionner même non résolus) ; (3) limites internes (influence du chercheur, thèmes écartés, relations de pouvoir)
+
+### Théorisation qualitative — classification (Gaudet & Robert)
+- Classer les rapports sociaux abstraits (pas les caractéristiques sociodémographiques). Quatre formes : typologie descriptive (unités-noyaux par ressemblance/différence), typologie abstraite (rapports théoriques entre catégories), cartographie (cas dans un espace typologique), idéal-type wébérien (construction idéale pour interpréter). Créer une catégorie « inclassables »
+
+### Q méthodologie (Zimmerman, d'après Damar & Sali)
+- SI étude de la subjectivité (opinions, attitudes, perspectives internes) → la Q méthodologie (Stephenson) : concourse → Q-set (30-70 énoncés) → tri forcé (Q-sort) → analyse factorielle par personne (et non par item) → interprétation narrative par facteur. Les participants (max ~40) sont les variables, sélectionnés pour hétérogénéité maximale
+- Ce n'est PAS un design mixte séquentiel (quali→quanti→quali) mais une approche « qualiquantologique » où quali et quanti interagissent en continu
+
+### Phénoménologie descriptive de Giorgi (Zimmerman, d'après Nguyen & Curzer)
+- Ne PAS mélanger en cours de route avec d'autres méthodologies phénoménologiques (Moustakas, van Manen). Les étapes procédurales ne sont pas transposables si la logique sous-jacente diffère
+- Minimum 3 expériencers. Analyse en 4 étapes : (1) lecture globale, (2) découpage en unités de sens, (3) transformation en langage psychologiquement sensible (variation imaginative pour généraliser), (4) écriture de la structure générale
+- Distinguer « orienter » le participant (question ouverte de suivi) de « mener » vers une réponse préétablie (question suggestive). Seule l'orientation est légitime
+
+### Recherche historique (Zimmerman, d'après Silva)
+- Cadre en 5 étapes : (1) structurer (expériences perceptuelles + littérature → questions), (2) sources (primaires : mots/images/artéfacts/souvenirs oraux + triangulation obligatoire), (3) analyse (cliométrie, comparaison spatio-temporelle, analyse contrefactuelle), (4) structure narrative (périodisation contextuelle préférée à chronologique), (5) explication théorique
+- L'analyse contrefactuelle (« et si… ? ») est l'équivalent le plus proche d'une expérimentation pour tester la causalité en histoire
+- La triangulation de sources est un prérequis de publication dans les revues de premier rang. Évaluer ce qui MANQUE dans les archives autant que ce qui y figure
 `;
 
 // ───────────────────────────────────────
@@ -518,6 +572,9 @@ Exégétique/qualitative : Intro (avec revue enchâssée) → Chapitres thémati
 
 ### Mini-proposal dans la conclusion (Murray)
 - La conclusion doit inclure un mini-proposal pour les travaux futurs : pas une liste de souhaits mais un plan structuré : (1) priorité sélectionnée, (2) comment faire, (3) ressources nécessaires, (4) faisabilité, (5) réfutations anticipées, (6) bénéfices attendus
+
+### Thèse par articles — prévention auto-plagiat (Zimmerman, d'après Matteson & DeLozier)
+- SI thèse par articles (trois articles) → risque d'auto-plagiat entre chapitres si cadres théoriques, revues de littérature ou méthodologies se recoupent. Prévention : changer le format de présentation (narratif → tableau/visuel) d'un chapitre à l'autre pour les éléments partagés
 `;
 
 // ───────────────────────────────────────
@@ -588,6 +645,20 @@ const LITERATURE_REVIEW_MODULE = `
 - Passé simple = référence à une étude spécifique et ses résultats (« Brown a montré que… »)
 - Present perfect = référence à un domaine d'investigation général (« La recherche a montré que… »)
 - SI present perfect pour une seule étude spécifique → incorrect
+
+### Citation intégrale vs non-intégrale (Wette)
+- Intégrale : auteur nommé, verbe de signalisation, partage de responsabilité. Non-intégrale : auteur entre parenthèses, voix de l'écrivain dominante. Les non-intégrales prédominent dans presque toutes les disciplines (sauf histoire/philosophie)
+- SI l'écrivain est confiant dans l'affirmation → non-intégrale. SI il partage ou cède la responsabilité → intégrale
+- Sept rôles de l'auteur en citation intégrale : (a) sujet actif (entière responsabilité à l'auteur), (b) agent (ex. « a proposé que »), (c) adjoint (égalité écrivain-auteur), (d) passif (distanciation), (e) « selon X » (neutre), (f) syntagme possessif (ex. « la théorie de X »), (g) comparaison entre auteurs. Options (a)-(c) sont les plus réussies
+
+### 11 fonctions rhétoriques des citations (Wette)
+- Les experts utilisent 11 fonctions, pas seulement l'attribution (qui représente 80-90 % des citations chez les novices vs 18 % chez les experts) : attribution, identification de l'origine, agent passif + évaluation positive, soutien à l'argument, exemplification, comparaison multiple de sources, renvoi vers une source (see…), dialogue critique, auto-citation, plans de recherche futurs, display de connaissance, preuve d'actualité
+
+### Typologie des verbes de signalisation (Wette)
+- Description : recherche (investigate, find, show), cognition (believe, assume, view), discours (discuss, state, point out)
+- Interprétation : accepter (establish, confirm, demonstrate), soutenir (argue, claim, propose), tentative (suggest, hypothesise, indicate), désaccord (neglect, fail, disregard, refute)
+- SI novice → éviter la surutilisation de claim, state, say, according to. Le verbe « mention » = item d'importance mineure
+- Temps : présent pour faits généraux et résultats supportant l'argument ; passé perfect pour un domaine d'enquête général ; passé pour une étude unique ou pour prendre de la distance
 `;
 
 // ───────────────────────────────────────
