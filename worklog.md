@@ -5764,3 +5764,35 @@ Stage Summary:
 - 2 livres (David, Green) contribuent 8 règles au module ethics
 - Knowledge-core v2 : 9 sources distillées, 11 modules
 - Tests et lint stables
+---
+Task ID: 21
+Agent: Main
+Task: Intégrer KiraAI Vietnam (kiraai.vn) comme provider AI
+
+Work Log:
+- Received API key from user: kira_4c3dfb78239d1982af5696984162d401
+- Probed kiraai.vn API endpoints:
+  - /v1/models → 301 redirect to /v1/models/ → timeout (not usable for dynamic models)
+  - /v1/chat/completions with model glm-5.3 → error vnd_balance_exhausted (model VALID, format correct)
+  - Confirmed OpenAI-compatible format (standard Bearer auth, chat/completions)
+- Added kiraai provider to ai-types.ts:
+  1. AiProviderId type union: added | "kiraai"
+  2. PROVIDER_BASE_URLS: kiraai → https://kiraai.vn/v1
+  3. PROVIDER_MODELS: kiraai → ["glm-5.3"]
+  4. DYNAMIC_MODEL_PROVIDERS: kiraai NOT added (endpoint times out)
+  5. PROVIDER_CATEGORIES.premium: added kiraai
+  6. getProviderLabel: kiraai → "KiraAI Vietnam (GLM-5.3)"
+  7. ALL_PROVIDER_IDS: added kiraai
+- No changes needed to zai-client.ts (already handles any OpenAI-compatible provider)
+- No changes needed to ai-provider.ts (re-exports, no provider-specific logic needed)
+- No changes needed to app-header.tsx (renders dynamically via getProviderFields/getProviderLabel)
+- Lint: 0 errors, 191 warnings (all pre-existing)
+- Dev server: compiles and serves 200 OK
+- Note: Agent Browser cannot reach localhost in this sandbox (separate network namespace)
+
+Stage Summary:
+- KiraAI Vietnam added as premium provider with model glm-5.3
+- Only 1 file modified: src/lib/ai/ai-types.ts (7 insertion points)
+- UI fields: showApiKey=true, showModel=true, showBaseUrl=false, dynamicModels=false
+- User needs to: 1) select KiraAI in Premium category, 2) paste API key, 3) select glm-5.3
+- API works but user's VND wallet has 0 balance → will need to top up on kiraai.vn

@@ -31,6 +31,8 @@ export type AiProviderId =
   | "aion"         // Aion Labs (gratuit)
   | "requesty"     // Requesty (router gratuit)
   | "sealion"      // SEA-LION (AI Singapore, 10 RPM)
+  // --- Vietnam ---
+  | "kiraai"      // KiraAI Vietnam (GLM-5.3, OpenAI-compatible)
   // --- Personnalisé ---
   | "custom";
 
@@ -88,6 +90,8 @@ export const PROVIDER_BASE_URLS: Record<AiProviderId, string> = {
   aion: "https://api.aionlabs.ai/v1",
   requesty: "https://router.requesty.ai/v1",
   sealion: "https://api.sea-lion.ai/v1",
+  // Vietnam
+  kiraai: "https://kiraai.vn/v1",
   // Personnalisé
   custom: "",
 };
@@ -120,6 +124,8 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
   aion: [],
   requesty: [],
   sealion: [],
+  // Vietnam
+  kiraai: ["glm-5.3"],
   // Personnalisé
   custom: [],
 };
@@ -155,7 +161,7 @@ export const PROVIDER_CATEGORIES: Record<ProviderCategory, { label: string; desc
   premium: {
     label: "Premium",
     description: "Fournisseurs payants (clé API requise)",
-    providers: ["openai", "anthropic", "mistral", "routesme"],
+    providers: ["openai", "anthropic", "mistral", "routesme", "kiraai"],
   },
   gratuit: {
     label: "Gratuit",
@@ -201,6 +207,7 @@ export function getProviderLabel(provider: AiProviderId): string {
     aion: "Aion Labs (gratuit)",
     requesty: "Requesty (gratuit)",
     sealion: "SEA-LION (gratuit)",
+    kiraai: "KiraAI Vietnam (GLM-5.3)",
     custom: "Personnalisé (API compatible)",
   };
   return labels[provider] || provider;
@@ -246,5 +253,6 @@ export const ALL_PROVIDER_IDS: AiProviderId[] = [
   "google", "groq", "cerebras", "openrouter", "github",
   "cloudflare", "huggingface", "nvidia", "cohere", "siliconflow",
   "pollinations", "kilo", "routeway", "ainative", "aion", "requesty", "sealion",
+  "kiraai",
   "custom",
 ];
