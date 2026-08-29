@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// ThesisFrame — Knowledge Core v2 (distillé de 10 ouvrages de référence)
+// ThesisFrame — Knowledge Core v2 (distillé de 12 ouvrages de référence)
 // SOURCE UNIQUE DE VÉRITÉ — savoir métier digéré
 // ═══════════════════════════════════════════════════════════════
 //
@@ -21,6 +21,8 @@
 //   Sułkowski, Kurowska-Pysz & Szczepańska-Woszczyna — Academic Writing, Visualization,
 //     Presentation, and Publishing of Research (SLR, visualization, presentation,
 //     publication-process, AI-assisted writing)
+//   Eco — Comment écrire sa thèse (choix sujet, sources, citations, notes, biblio)
+//   Hammersley — What Is Qualitative Research (épistémologie quali, frontières disciplinaires)
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -71,6 +73,13 @@ const STYLE_MODULE = `
 - Sur-écriture et quiltage : collage de segments de texte. Chaque révision doit « serrer » le texte.
 - Évitement de la responsabilité : « Il est pensé que… » → « Les preuves indiquent que… »
 - Règle des 10 % : un texte final peut presque toujours être réduit de 10 % et s'améliorer.
+
+### Métalangage et posture d'auteur (Eco)
+- La thèse s'écrit en métalangage (un langage qui PARLE d'autres langages). Un psychiatre ne s'exprime pas comme ses patients. SI le doctorant étudie un objet transgressif et veut écrire dans un style « en rupture » → rappeler que même les avant-gardes (Dante, Eliot) ont écrit en prose claire pour parler de leur poésie
+- Pas d'excuses dans le texte : « Nous n'avons pas les compétences… » → supprimer. « Sur votre sujet, même le plus pointu, vous êtes la plus grande autorité vivante. » Humilité dans le choix de sujet et la méthode ; fierté dans l'écriture
+- SI terme technique employé sans être défini → le signaler. SI c'est un terme central et qu'on ne sait pas le définir → « laissez tomber la thèse, vous vous êtes trompé de sujet »
+- Figures de rhétorique : ne jamais les expliquer ni s'excuser d'elles (pas de « plaisanterie à part »). Le lecteur visé doit les saisir seul
+- Cohérence des présupposés culturels : SI un auteur célèbre (Spinoza) est présenté comme allant de soi mais un auteur moins connu (Guzzo) est nommé sans présentation → corriger. « N'expliquez pas où est Rome sans expliquer où est Tombouctou. »
 `;
 
 // ───────────────────────────────────────
@@ -120,6 +129,16 @@ const ETHICS_MODULE = `
 - SI l'IA est utilisée pour l'analyse de données → documenter le modèle, la version, et les prompts dans la section Méthodes (reproductibilité)
 - L'IA est un outil d'apprentissage, pas une béquille : expliquer POURQUOI chaque suggestion est faite (ex. « cette phrase est passive, ce qui réduit la clarté »), pas corriger silencieusement (Sułkowski et al.)
 - Mode simulation d'audience : l'IA peut relire une section sous 3 perspectives — (a) non-spécialiste curieux, (b) relecteur sceptique, (c) praticien — pour anticiper les questions de chaque (Sułkowski et al.)
+
+### Usage du terme « positivisme » (Hammersley)
+- SI un auteur ou le doctorant qualifie un travail de « positiviste » comme critique → exiger une définition dans ce contexte précis. Le mot est devenu presque exclusivement péjoratif et contextuellement variable : chaque nouvelle approche a qualifié ses prédécesseurs de positivistes. SI aucune définition → la critique est vide
+
+### Pratiques de citation et paraphrase (Eco)
+- Toute citation sans encadrement critique (avant ET après) = le lecteur présume que le doctorant partage l'opinion citée
+- Citer une évidence sous l'autorité de quelqu'un (ex. « Les médias sont, comme le dit McLuhan, importants ») → supprimer la citation : naïveté, pas érudition
+- Test de la paraphrase légitime : « Pouvez-vous reformuler le texte SANS l'avoir sous les yeux ? » SI non → citer entre guillemets. Le plagiat de thèse vient souvent des fiches de lecture où les guillemets ont été oubliés
+- Citer les classiques d'après l'édition critique (Pléiade) ou la plus reconnue. Pour les contemporains : première édition OU dernière revue par l'auteur — justifier si les deux divergent
+- SI citation de Smith à travers Sedanelli → distinguer : (a) c'est l'opinion de Sedanelli qui intéresse → citer Sedanelli « citant Smith, p. X » ; (b) c'est l'idée de Smith → citer Smith « cité par Sedanelli, p. Y ». Ne jamais masquer qu'on utilise une source de seconde main
 `;
 
 // ───────────────────────────────────────
@@ -161,6 +180,11 @@ const COHERENCE_MODULE = `
 - Toute assertion importante sans référence ni preuve = affirmation non étayée
 - Corrélation observée présentée comme relation causale = confusion à corriger
 - Conclusion étendue au-delà de ce que les données permettent = sur-généralisation
+
+### Incohérences épistémologiques (Hammersley)
+- SI le doctorant déclare une posture non-causale MAIS utilise « influencer », « façonner », « mener à », « résulter de » → incohérence entre posture déclarée et langage analytique. La plupart des qualitatifs font de la causalité faible en pratique
+- SI le doctorant montre qu'un discours est « construit » ET en déduit qu'il est faux → sophisme. La nature construite n'implique ni vérité ni fausseté. Un compte-rendu construit peut être accurate
+- SI la thèse qualitative combine « explorer l'expérience subjective » ET « les récits sont des constructions discursives » sans justifier la tension épistémologique → incohérence interne non signalée
 
 ### Cohérence structurelle
 - Un chapitre commence sans lien avec le précédent = transition absente
@@ -272,6 +296,34 @@ const METHODOLOGY_MODULE = `
 - Échelle de Likert sans items positifs ET négatifs
 - Transversal présenté comme mesurant le changement
 - Questions à double sens, libellé ambigu
+
+### Choix du sujet (Eco)
+- SI sujet vaste (ex. « la littérature italienne 1945-1960 ») → orienter vers monographique (un auteur, une œuvre, un problème précis). Une thèse panoramique exige une maîtrise encyclopédique qu'un doctorant ne peut revendiquer
+- SI sujet purement théorique sur un grand problème abstrait → ramener à thèse historique : la théorie devient le chapitre conclusif. Une thèse historique permet à tous de contrôler ; une théorique d'un doctorant laisse soupçonner un manque de clarté
+- Test de faisabilité AVANT engagement : (1) OÙ sont les sources ? (2) Sont-elles matériellement accessibles ? (3) Sont-elles culturellement utilisables (langue, paléographie) ? SI une réponse négative → changer de sujet
+- Critères de scientificité (4 conditions) : (1) objet publiquement reconnaissable, (2) résultat nouveau ou révisé, (3) utile aux travaux ultérieurs, (4) moyens de confirmer/infirmer fournis. SI (4) absent → non scientifique
+- SI thèse de compilation/bilan → vérifier qu'aucun ouvrage comparable n'existe déjà. Sinon = perte de temps ou plagiat
+
+### Gestion des sources (Eco)
+- Traduction = prothèse (lunettes), pas source de première main. SI langue accessible → consulter l'original. SI langue inaccessible → justifier le recours à la traduction et délimiter l'objet en conséquence
+- Anthologie = ce que quelqu'un d'autre a déjà vu dans les textes. Faire une thèse = chercher ce que les autres n'ont pas vu → privilégier les sources primaires
+- Définir l'objet AVANT de repérer les sources. Confusion objet/instruments = passer le temps sur des études critiques au lieu des textes originaux
+- Règle des photocopies : dès qu'une est faite, la lire et annoter aussitôt. Ne pas en photocopier une nouvelle avant d'avoir « possédé » la précédente
+- Détecter l'exploitation par le directeur : SI il dirige plusieurs thèses sur des secteurs adjacents → vérifier que les résultats seront publiés sous le nom du doctorant
+
+### Frontière recherche vs journalisme (Hammersley)
+- SI compte-rendu narratif de terrain sans cadre théorique, sans procédures transparentes, sans interprétations alternatives → frôle la frontière journalisme/recherche. Critères minimum : (a) procédures publiques, (b) incertitudes explicitées, (c) contre-preuves présentées, (d) hypothèses rivales considérées, (e) effets de l'investigateur pris en compte
+
+### Trois fonctions des données d'entretien (Hammersley)
+- SI entretiens qualitatifs → exiger que le doctorant explicite quelle fonction est visée (ou combinaison) :
+  1. Témoignage (événements, biographies) → exiger triangulation
+  2. Auto-analyse par le participant → le discours est soumis à évaluation critique, pas adopté tel quel
+  3. Preuve indirecte d'attitudes → justifier que ce qui est détecté dépasse le contexte de l'entretien
+- Reporting des extraits d'entretien : inclure les questions de l'intervieweur, capturer les traits interactionnels pertinents, numéroter les lignes pour référence
+
+### Risques épistémologiques en méthodes mixtes (Hammersley)
+- SI design mixte → vérifier que le volet qualitatif n'est pas subordonné aux présupposés hypothético-déductifs du volet quantitatif. Justification épistémologique de chaque volet obligatoire
+- SI approche « critique » (féministe, post-coloniale, etc.) → exiger un cadre théorique macrosocial explicite : (a) phénomène localisé dans un système plus large, (b) forces structurelles identifiées, (c) catégories de sens commun justifiées si utilisées
 `;
 
 // ───────────────────────────────────────
@@ -316,6 +368,11 @@ Empirique : Intro → Revue littérature → Méthodes → Résultats → Discus
 Exégétique/qualitative : Intro (avec revue enchâssée) → Chapitres thématiques → Conclusion
 - Énoncé de thèse (thesis statement) le plus près possible de l'ouverture
 - Chapitres de longueur approximativement égale
+
+### Plan et méthode de travail (Eco)
+- La table des matières se rédige en TOUT DÉBUT, comme hypothèse de travail (métaphore de l'itinéraire de voyage). Utiliser des subdivisions à disjonctions binaires pour garantir la complétude
+- Commencer par le chapitre le plus prêt, pas par le premier. La table hypothèse sert de point d'ancrage
+- Ne mépriser aucune source : « les meilleures idées ne viennent pas toujours des auteurs les plus importants »
 `;
 
 // ───────────────────────────────────────
@@ -500,6 +557,19 @@ Cohérence intro/discussion et texte/tableau : voir module Cohérence (principes
 ### Lettre de réponse type (Sułkowski et al.)
 - Si le relecteur demande une analyse hors scope : « Nous avons considéré cette approche ; cependant, elle nécessiterait un jeu de données au-delà du périmètre de cette étude. À la place, nous avons fourni une justification supplémentaire dans la section [X]. »
 - Si le relecteur a mal compris : « Il semble que ce point n'ait pas été communiqué avec suffisamment de clarté. Nous avons réécrit le paragraphe concerné pour lever toute ambiguïté. »
+
+### Notes de bas de page (Eco)
+- Huit fonctions : (a) source des citations, (b) références supplémentaires, (c) renvois internes/externes, (d) citer une autorité sans interrompre le fil, (e) développer une affirmation secondaire, (f) nuancer/corriger son propre propos, (g) traduction bilingue, (h) « payer ses dettes » intellectuelles
+- SI une note dépasse la longueur raisonnable → transformer en appendice
+- Choisir UN système (toutes en bas de page OU toutes en fin de chapitre) et s'y tenir
+- Note = identification (abréviations acceptables). Bibliographie = documentation (complète, obligatoire). L'une ne dispense pas de l'autre
+- Méthode citation-note vs auteur-date : SI domaine spécialisé + biblio moderne (< 2 siècles) → auteur-date. SI domaine large ou biblio ancienne → citation-note
+
+### Bibliographie et table des matières finales (Eco)
+- SI thèse porte sur un auteur/corpus précis → structurer la biblio : « Œuvres de [Auteur] » / « Documents inédits » / « Ouvrages sur [Auteur] » / « Ouvrages généraux »
+- La biblio est obligatoire même si tout est référencé en notes : « Ce serait manquer de politesse envers le lecteur que de l'obliger à feuilleter toute la thèse pour trouver une référence »
+- Table des matières finale : TOUS chapitres, sous-chapitres, sections avec numéros, pages et titres EXACTS correspondant au texte. Un seul écart = erreur impérative
+- Placer la TdM juste après le frontispice, pas après la préface
 `;
 
 // ───────────────────────────────────────

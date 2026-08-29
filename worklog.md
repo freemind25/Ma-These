@@ -5838,3 +5838,25 @@ Stage Summary:
 - 2 new modules created: visualization, presentation
 - Files modified: src/lib/ai/knowledge-core.ts only
 - No consumer breakage (all use explicit module arrays)
+
+---
+Task ID: 23
+Agent: Main
+Task: Analyser 4 ressources restantes des zips (Eco, Dutta, Hammersley, Xu Xiwen)
+
+Work Log:
+- Extracted text: Eco (470K epub), Dutta (314K pdf), Hammersley (286K pdf), Xu Xiwen (206K pdf)
+- Launched 4 parallel analysis agents (sonnet) against knowledge-core
+- Dutta: SKIP — undergraduate EFL manual, all content at lower level than existing core
+- Xu Xiwen: SKIP — EFL manual for Chinese students, all covered
+- Eco: DISTILL — 28 new rules (topic selection, sources, writing, citations, footnotes, bibliography)
+- Hammersley: DISTILL — 9 new rules (epistemology, research vs journalism, interview functions, mixed methods)
+- Integrated 37 rules across 7 modules: style (+5), ethics (+7), coherence (+3), methodology (+14), writing-process (+3), publication (+9)
+- Updated header: 10 → 12 sources, added Eco + Hammersley
+- Knowledge-core: 513 → 665 lines
+- Lint: 0 errors (191 pre-existing warnings)
+
+Stage Summary:
+- Knowledge-core v2 now: 12 sources, 13 modules, ~67 new rules from this batch
+- Total unique books analyzed to date: 9 distillés + 9 skip = 18
+- Files modified: src/lib/ai/knowledge-core.ts only
