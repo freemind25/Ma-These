@@ -5936,3 +5936,41 @@ Stage Summary:
 - 9 fichiers examinés : 3 nouveaux analysés (tous SKIP), 4 déjà traités, 2 doublons
 - Römer = corpus linguistics descriptif, pas de règles prescriptives nouvelles
 - Total cumulé : 52 ressources analysées (24 distillées + 28 skip)
+---
+Task ID: 26
+Agent: Main
+Task: Analyser 8 ressources de Book 4.rar et distiller dans knowledge-core
+
+Work Log:
+- Extraction : 4 EPUBs (ebooklib) + 3 PDFs (pdftotext) = 7 fichiers nouveaux (Turabian déjà traité)
+- Tailles : Yin 506K, Creswell 1.25M, Hart 522K, Ruane 586K, White 1.16M, Cooper 626K, Belcher 840K
+- Croisement : White déjà dans le knowledge-core (confirmé par grep), Turabian déjà traité Task 24
+
+- Analyse par 3 agents parallèles (sonnet) :
+  - Agent A : Yin (DISTILL, 6 règles), Cooper (SKIP — méta-analyse technique, déjà couvert SLR), Ruane (SKIP — undergrad, pas d'écriture)
+  - Agent B : Hart (SKIP — descriptif/philosophique, couvert par White+Ollhoff+Sułkowski+Wette), Belcher (SKIP — programme 12 semaines, règles couvertes par Sułkowski+Gastel & Day)
+  - Agent C : Creswell (DISTILL, 4 règles), White (SKIP — déjà distillé, confirmé)
+
+### Intégration — 10 nouvelles règles
+**Yin (méthodologie + writing-process + coherence) :**
+- Méthodologie : composition rapport chronologique (draft backward), structure non séquencée (checklist thématique), multi-cas (format transversal > chapitres séparés), explications rivales (défendre aussi vigoureusement les alternatives), protocole inclut format rapport
+- Writing-process : documentation anticipée (4 sections avant fin d'analyse)
+- Coherence : complétude structures non séquencées
+
+**Creswell & Plano Clark (méthodologie) :**
+- Voix cohérente dans méthodes mixtes (pas d'alternance 1re/3e personne)
+- Purpose statement 5 éléments obligatoires dans l'ordre
+- Section Résultats : structure mirror du diagramme procédural
+- Introduction : annoncer le design dans le gap framing
+
+### Validation
+- Fichier : 925 → 956 lignes (+31 lignes)
+- Header : 21 → 23 sources
+- Lint : 0 errors (191 pre-existing warnings)
+
+Stage Summary:
+- Knowledge-core v2 : 23 sources, 13 modules, 956 lignes
+- 2 nouvelles sources distillées : Yin, Creswell & Plano Clark
+- 10 nouvelles règles (Yin 6 + Creswell 4)
+- Total ressources traitées : 26 distillées + 33 skip = 59
+- Fichiers modifiés : src/lib/ai/knowledge-core.ts uniquement

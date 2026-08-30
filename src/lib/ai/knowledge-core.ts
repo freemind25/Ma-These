@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// ThesisFrame — Knowledge Core v2 (distillé de 21 ouvrages de référence)
+// ThesisFrame — Knowledge Core v2 (distillé de 23 ouvrages de référence)
 // SOURCE UNIQUE DE VÉRITÉ — savoir métier digéré
 // ═══════════════════════════════════════════════════════════════
 //
@@ -32,6 +32,8 @@
 //   Gaudet & Robert — L'aventure de la Recherche Qualitative (analyse quali 3 strates, erreurs d'analyse, éthique terrain)
 //   Wette — Writing Using Sources for Academic Purposes (citations intégrales/non-intégrales, fonctions rhétoriques, verbes de signalisation)
 //   Zimmerman (éd.) — Methodological Innovations in Research (Q méthodologie, Giorgi, recherche historique, thèse par articles)
+//   Yin — Case Study Research (étude de cas : composition, explications rivales, multi-cas)
+//   Creswell & Plano Clark — Designing and Conducting Mixed Methods Research (écriture méthodes mixtes)
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -268,6 +270,9 @@ const COHERENCE_MODULE = `
 
 ### Structure phénoménologique (Zimmerman, d'après Giorgi)
 - La structure finale doit articuler des « constituants » (définis par leur relation fonctionnelle au tout) et non des « éléments » (indépendants du tout). SI les données sont trop disparates pour produire une seule structure → écrire une structure par sous-groupe ou par participant individuel
+
+### Complétude des structures non séquencées (Yin)
+- SI un rapport (thèse ou article) utilise une structure non séquencée (chapitres thématiques réordonnables) → vérifier la complétude par une checklist de couverture thématique, non par la logique de séquence. Un thème manquant produit une version biaisée même si chaque chapitre existant est correct individuellement
 `;
 
 // ───────────────────────────────────────
@@ -453,6 +458,29 @@ const METHODOLOGY_MODULE = `
 - Cadre en 5 étapes : (1) structurer (expériences perceptuelles + littérature → questions), (2) sources (primaires : mots/images/artéfacts/souvenirs oraux + triangulation obligatoire), (3) analyse (cliométrie, comparaison spatio-temporelle, analyse contrefactuelle), (4) structure narrative (périodisation contextuelle préférée à chronologique), (5) explication théorique
 - L'analyse contrefactuelle (« et si… ? ») est l'équivalent le plus proche d'une expérimentation pour tester la causalité en histoire
 - La triangulation de sources est un prérequis de publication dans les revues de premier rang. Évaluer ce qui MANQUE dans les archives autant que ce qui y figure
+
+### Étude de cas : composition du rapport (Yin)
+- SI étude de cas à structure chronologique → rédiger d'abord les sections sur l'état actuel, ENFIN l'historique. Les investigateurs sur-investissent systématiquement l'historique et sous-investissent l'état actuel — qui contient le matériel le plus intéressant pour le lecteur
+- SI rapport à structure non séquencée (chapitres réordonnables sans perte) → vérifier la complétude via une checklist thématique, non par logique séquentielle. Un thème manquant produit une « version biaisée » même si chaque chapitre existant est correct
+- SI étude de cas multi-cas → les cas individuels ne doivent PAS nécessairement apparaître comme chapitres séparés. Une analyse transversale organisée par enjeux thématiques (les cas cités comme preuves tout au long) est un format légitime et souvent supérieur. N'utiliser des vignettes par cas que si elles ajoutent une valeur au-delà de la preuve transversale
+
+### Explications rivales en étude de cas (Yin)
+- SI les questions de recherche de l'étude de cas visent l'explication → le rapport doit identifier et défendre les explications rivales AUSSI vigoureusement que l'explication privilégiée, puis démontrer empiriquement pourquoi elles sont rejetées. Une étude de cas qui n'anticipe pas les interprétations alternatives « évidentes » sera perçue comme unilatérale
+
+### Protocole d'étude de cas — inclure le format du rapport (Yin)
+- SI conception de protocole d'étude de cas → spécifier le format et la structure de composition du rapport FINAL dans le protocole lui-même — pas seulement les procédures de recherche. Le choix précoce de la structure facilite le design et la collecte, même si le format peut être modifié si des conditions imprévues surviennent
+
+### Écriture méthodes mixtes — voix (Creswell & Plano Clark)
+- SI rédaction d'une étude à méthodes mixtes → utiliser une seule voix (point de vue) cohérente du début à la fin. NE PAS alterner entre subjectif (1re personne dans les sections quali) et objectif (3e personne dans les sections quanti). Choisir la voix selon le design, le volet prioritaire ou le public cible
+
+### Énoncé de purpose méthodes mixtes — 5 éléments (Creswell & Plano Clark)
+- SI rédaction de l'énoncé de purpose (purpose statement) d'une étude à méthodes mixtes → inclure les 5 éléments dans l'ordre : (a) objectif de contenu, (b) nom complet du design + définition brève, (c) volet quantitatif (type de données, intention, participants, site), (d) volet qualitatif (type de données, intention, participants, site), (e) justification de l'intégration (quelle insight supplémentaire résulte de la combinaison). En design séquentiel, le second volet est formulé de manière provisoire
+
+### Section Résultats — structure selon design (Creswell & Plano Clark)
+- SI rédaction des Résultats d'une étude à méthodes mixtes → structurer selon le type de design : convergent = analyses quantitatif et qualitatif séparées puis fusion ; séquentiel = résultats phase 1 → procédures de connexion → résultats phase 2 → interprétation intégrée. La structure écrite doit MIRRORER le diagramme procédural du design
+
+### Introduction — annoncer le design mixte (Creswell & Plano Clark)
+- SI rédaction de l'introduction d'une étude à méthodes mixtes → annoncer le type de design dans le passage sur les lacunes de la littérature en framing le gap comme un besoin que le design choisi adresse (ex. « les résultats quantitatifs seuls sont inadéquats pour expliquer pleinement X » → annonce un design séquentiel explicatif). Le titre doit inclure « méthodes mixtes »
 `;
 
 // ───────────────────────────────────────
@@ -575,6 +603,9 @@ Exégétique/qualitative : Intro (avec revue enchâssée) → Chapitres thémati
 
 ### Thèse par articles — prévention auto-plagiat (Zimmerman, d'après Matteson & DeLozier)
 - SI thèse par articles (trois articles) → risque d'auto-plagiat entre chapitres si cadres théoriques, revues de littérature ou méthodologies se recoupent. Prévention : changer le format de présentation (narratif → tableau/visuel) d'un chapitre à l'autre pour les éléments partagés
+
+### Documentation anticipée — étude de cas (Yin)
+- SI étude de cas → rédiger quatre sections AVANT la fin de l'analyse : (1) bibliographie, (2) section méthodes, (3) revue de littérature préliminaire connectée aux questions de recherche, (4) données descriptives sur le(s) cas. Cela front-loade la documentation quand la mémoire procédurale est la plus fraîche et évite les goulots d'étranglement documentaires en fin de projet
 `;
 
 // ───────────────────────────────────────
