@@ -5974,3 +5974,31 @@ Stage Summary:
 - 10 nouvelles règles (Yin 6 + Creswell 4)
 - Total ressources traitées : 26 distillées + 33 skip = 59
 - Fichiers modifiés : src/lib/ai/knowledge-core.ts uniquement
+---
+Task ID: 27
+Agent: Main
+Task: Analyser 5 nouvelles ressources uploadées et distiller dans knowledge-core
+
+Work Log:
+- Croisement des 5 fichiers avec l'historique (59 ressources déjà traitées) :
+  - Zhou & Al-Samarraie — Institutional Guide AI for Research (2.7M PDF, 715K chars) → ANALYSÉ
+  - Shuttleworth & Blakstad — How to Write a Research Paper (3.9M PDF, 149K chars) → SKIP rapide (auto-édition 2010, APA/MLA basique)
+  - Ekpe Inyang — Doing Academic Research (557K PDF, 255K chars) → ANALYSÉ
+  - Boden, Kenway & Epstein — Getting Started on Research (1.4M PDF, 250K chars) → ANALYSÉ
+  - Zimmerman — Methodological Innovations (6.1M PDF) → SKIP (déjà traité Task 24b, DISTILL 11 règles)
+
+- Zhou : SKIP — guide institutionnel pour administrateurs HEI, pas manuel d'écriture. Règles IA éthique déjà couvertes par David+Green+Sułkowski (8 règles existantes)
+- Inyang : SKIP — niveau undergrad (Univ. Buea, Cameroun), tri manuel sur fiches cartonnées pour LR = pré-numérique
+- Boden et al. : SKIP — développement de carrière académique précoce (réseau, mentorat, supervision), aucune règle IF/THEN rédactionnelle
+- Shuttleworth : SKIP rapide — formatage APA/MLA de base
+
+### Validation
+- Knowledge-core : inchangé (956 lignes, 23 sources, 13 modules)
+- Aucune modification de code nécessaire
+- Total ressources traitées : 26 distillées + 37 skip = 63
+
+Stage Summary:
+- 0 nouvelle règle, knowledge-core inchangé
+- 5 fichiers examinés : 1 déjà traité (Zimmerman), 4 nouveaux (tous SKIP)
+- Zhou (extrait anciennement, jamais analysé) = politique institutionnelle IA, pas règles d'écriture
+- Total cumulé : 63 ressources analysées (26 distillées + 37 skip)
