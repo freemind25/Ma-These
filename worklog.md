@@ -7429,3 +7429,26 @@ Stage Summary:
 - D4 réinscrit au backlog (priorité HAUTE, échéance avant lancement)
 - « Ce qui reste n'est plus du développement : ce sont des validations par l'usage réel »
 - La première session avec un vrai doctorant apportera plus que les cinq derniers audits réunis.
+
+---
+Task ID: Clôture-séquence-audit
+Agent: Main
+Task: Verrouiller la documentation — enregistrement formel de la fin de la séquence post-audit
+
+Work Log:
+- Expert a confirmé que la documentation est complète et verrouillée
+- Le Dev a dépassé la demande (§8 enrichi, 1372→1414 corrigé, pendings → V1-V4 codés)
+- Dernier conseil reçu : organiser la première session comme observation structurée
+  - Avant : bannière D4 visible (premier contact de confiance)
+  - Pendant : noter les hésitations UX (or qu'aucun audit ne capte)
+  - Fait : exécuter V1-V3 en direct avec données réelles
+  - Après : question clé — « qu'est-ce que cet outil t'a fait faire que tu n'aurais pas fait seule ? »
+
+Stage Summary:
+- **Séquence post-audit CLOSE.**
+- Arc complet : « l'IA stocke au lieu de digérer » → outil doctoral gouverné, mesuré, sécurisé, instrumenté
+- 3 influences adoptées (Pattern 1, Pattern 2, OpenAlex) · 5 différées · 1 refusée · 0 copiée
+- Le projet a une mémoire : CONTEXT-PROJET.md, worklog (7400+ lignes), audit-report, backlog échéancé
+- Prochaine entrée worklog attendue : `rate=...%` du premier coherence réel, ou ressenti du premier doctorant
+- « La première surprise sera la matière de la v1.10. »
+- **Ouvrez les portes.** 🎓🚀
