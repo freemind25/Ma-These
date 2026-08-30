@@ -7763,3 +7763,27 @@ Stage Summary:
 - Tag v1.9.7 prêt localement (commit + tag annoté)
 - Versions synchronisées dans les 3 fichiers de version
 - Utilisateur doit exécuter push + build depuis sa machine locale (cf. commandes ci-dessous)
+---
+Task ID: release-v1.9.7-pipeline
+Agent: Main
+Task: Pipeline GitHub Actions + build desktop Windows + release
+
+Work Log:
+- Vérification architecture Tauri : sidecar Node.js existant (port 14325), standalone output
+- Découvert beforeBuildCommand vide → corrigé vers scripts/build-tauri-prep.sh
+- Découvert resources manquantes (standalone + node.exe) → ajoutées dans tauri.conf.json
+- Corrigé lib.rs : readiness check TCP (remplace sleep 4s), OPENALEX_API_KEY passé au child, DB template copy, page erreur si timeout 30s
+- Créé scripts/build-tauri-prep.sh (prisma generate → next build → copie standalone/static/public → copie node.exe)
+- Créé .github/workflows/build-desktop.yml (tauri-action, déclenchement tag v*, cache Rust+Bun)
+- Build #1 ÉCHEC : thesisframe_lib vs mathese_lib crate name mismatch dans main.rs → corrigé
+- Build #2 ÉCHEC : WiX light.exe fail avec ~157Mo de node_modules → supprimé cible MSI, NSIS seul
+- Build #3 SUCCESS : 11/11 steps ✅, NSIS compilé
+- Release v1.9.7 publiée avec Ma.These_1.9.7_x64-setup.exe (45.0 Mo)
+- PAT nettoyé du remote URL après chaque push
+
+Stage Summary:
+- Pipeline CI fonctionnelle : push tag v* → build Windows → draft Release → artefact NSIS
+- Installateur : https://github.com/freemind25/Ma-These/releases/tag/v1.9.7
+- Taille : 45.0 Mo (standalone 157Mo + node.exe 70Mo + Tauri runtime, compressé NSIS)
+- Versions synchronisées : package.json, tauri.conf.json, Cargo.toml → 1.9.7
+- Note : v1.3.0 draft (112.3 Mo) peut être supprimé manuellement
