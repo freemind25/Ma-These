@@ -66,6 +66,8 @@ agent-ctx/
 # Tauri build artifacts
 src-tauri/target/
 src-tauri/gen/
-scripts/
+# Contenu de scripts/ ignoré sauf le build script CI
+scripts/*
+!scripts/build-tauri-prep.sh
 *.exe
 *.msi
