@@ -187,18 +187,14 @@ function AiWritingPanel() {
           const trimmed = line.trim();
           if (!trimmed || !trimmed.startsWith("data: ")) continue;
           const data = trimmed.slice(6);
-          let parsed: { type?: string; content?: string; error?: string } | null = null;
           try {
-            parsed = JSON.parse(data);
-            if (parsed.type === "chunk" && parsed.content) {
-              setResult((prev) => prev + parsed!.content);
-            } else if (parsed.type === "error") {
+            const parsed = JSON.parse(data) as { type?: string; content?: string; error?: string } | null;
+            if (parsed?.type === "chunk" && parsed.content) {
+              setResult((prev) => prev + parsed.content);
+            } else if (parsed?.type === "error") {
               throw new Error(parsed.error);
             }
-          } catch (parseErr) {
-            if (parsed?.type === "error" && parseErr instanceof Error) {
-              throw parseErr;
-            }
+          } catch {
             // Skip malformed chunks or JSON parse errors
           }
         }

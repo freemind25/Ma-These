@@ -6002,3 +6002,1195 @@ Stage Summary:
 - 5 fichiers examinés : 1 déjà traité (Zimmerman), 4 nouveaux (tous SKIP)
 - Zhou (extrait anciennement, jamais analysé) = politique institutionnelle IA, pas règles d'écriture
 - Total cumulé : 63 ressources analysées (26 distillées + 37 skip)
+---
+Task ID: 3
+Agent: Governance Auditor (sub-agent)
+Task: AXE 3 — Governance code audit (R1, R2, R4, R5, R7, R11)
+
+Work Log:
+- Read AGENTS.md for governance rules
+- Read last 100 lines of worklog.md for context
+- R1: Greped 13 methodological keywords across specializations/ (25 files) and api/ routes (65 files)
+- R2: Read all 24 specialization files (22 unique + index.ts) for substantive methodological content
+- R4: Mapped all 65 API routes, identified 5 AI-content routes, verified knowledge-core usage
+- R5: Spot-checked 3 modules (style, coherence, methodology) with unique phrases — searched entire src/
+- R7: Greped frontend (modules/, components/, data/) for methodological rules, checked coherence-data.ts
+- R11: Counted 7 .md files in modules/, 13 inline modules in knowledge-core.ts, cross-referenced CONTEXT-PROJET.md §2.3
+
+## RÉSULTATS PAR RÈGLE
+
+### R1 — Aucun savoir métier en dur dans spécialisations ou routes (hors knowledge-core)
+**VERDICT : CONFORME**
+
+6 matches trouvés dans 4 fichiers de specializations/ :
+| File | Line | Keyword | Analysis |
+|------|------|---------|----------|
+| directeur.ts | 44 | plagiat | Délégation au noyau ("applique les règles... du socle ci-dessus") |
+| methodology-help.ts | 17 | biais | Instruction de tâche ("Anticipe les limites et biais possibles") |
+| methodology-help.ts | 20 | PRISMA | Exemple de tâche ("Cite les méthodologies reconnues (PRISMA, Cochrane) quand pertinent") |
+| director.ts | 37 | cohérence terminologique | Format instruction ("ex. : correspondance question ↔ unité d'analyse, cohérence terminologique") |
+| director.ts | 52 | plagiat | Délégation au noyau (identique directeur.ts:44) |
+| revue-litterature-slr.ts | 20 | PRISMA | Exemple de tâche (identique methodology-help.ts:20) |
+
+0 match dans les routes api/*/route.ts.
+Tous les matches sont des instructions de tâche ou des délégations au noyau — aucun ne contient de règles méthodologiques.
+
+### R2 — Chaque spécialisation = rôle + tâche + format, sans duplication
+**VERDICT : CONFORME**
+
+22 fichiers de spécialisation examinés. Tous suivent le pattern :
+- Import de buildPrompt ou buildStandalonePrompt
+- Définition du rôle (persona)
+- Définition de la tâche (ce que l'IA doit faire)
+- Définition du format de sortie (structure, JSON, sections)
+- 0 fichier contient des règles méthodologiques, checklists détaillées, ou critères IF/THEN
+- Les fichiers les plus complexes (director.ts, coherence.ts, revision-plan.ts) définissent des formats de sortie structurés mais pas de savoir métier
+
+Note : directeur.ts et director.ts sont deux versions (ancienne et v1.9.2 avec pattern Reasoning-then-Output). Les deux sont conformes.
+
+### R4 — getKnowledgeCore() appelé dans toutes les routes IA qui en ont besoin
+**VERDICT : CONFORME**
+
+| Route | Usage | Via |
+|-------|-------|-----|
+| /api/ai-writing | SPECIALIZATION_PROMPTS[mode.id] | buildPrompt → getKnowledgeCore |
+| /api/ai-writing/stream | SPECIALIZATION_PROMPTS[mode.id] | buildPrompt → getKnowledgeCore |
+| /api/directeur-chat | DIRECTEUR_PROMPT | buildPrompt → getKnowledgeCore |
+| /api/coherence-check | COHERENCE_CHECK_PROMPT | buildPrompt → getKnowledgeCore |
+| /api/verification-publication | getKnowledgeCore() direct | Appel explicite |
+| /api/deep-research | Inline system prompts | N/A — recherche web/académique, pas règles de thèse |
+| /api/verification-carto | SOCRATIC_QUESTIONER_PROMPT | shared-prompts.ts — vérification cartographique, pas thèse |
+| /api/alignement-preuves | Aucun LLM | Algorithme déterministe de matching citations/références |
+| /api/text-prediction | Inline minimal prompt | Prédiction de mots (next-token), pas savoir métier |
+| /api/ai-probe | Probe technique | Test de connexion, pas contenu |
+
+Les 5 routes qui traitent du contenu de thèse utilisent toutes le knowledge-core (directement ou via buildPrompt). Les routes sans knowledge-core sont soit non-LLM (alignement-preuves), soit hors domaine (deep-research = recherche web, verification-carto = cartographie).
+
+### R5 — Aucun savoir dupliqué (spot-check 3 modules)
+**VERDICT : CONFORME**
+
+3 modules spot-checkés avec phrases uniques :
+
+1. **Style** — "writer-responsible" : trouvé uniquement dans knowledge-core.ts (0 duplication)
+2. **Coherence** — "citation littérale" : trouvé uniquement dans knowledge-core/modules/publication.md (le module publication, pas coherence — à clarifier) et knowledge-core.ts (0 duplication hors noyau)
+3. **Methodology** — "unité d'analyse" : trouvé dans knowledge-core.ts + director.ts (format instruction, pas règle) + phrasebank-data.ts (template d'affichage, règle #10) + methodology-design.md (fichier source). 0 duplication fonctionnelle.
+
+### R7 — Pas de règles codées en dur dans le frontend
+**VERDICT : CONFORME** (avec notes)
+
+**Fichiers frontend avec termes méthodologiques :**
+| File | Term | Nature | Verdict |
+|------|------|--------|---------|
+| coherence-data.ts | Multiple | Données structurées UI + grille IA (Option B documentée) | OK — header dit "dérivent du noyau" |
+| corpus-publication.ts | Multiple | Fiches détaillées (source originelle du module publication) | OK — header dit "source originelle", injection conditionnelle uniquement |
+| articles-page.tsx | biais, reproductibilité | Checklist UI pour l'utilisateur | OK — jamais injecté dans un prompt IA |
+| verification-methodo-page.tsx | biais, validité | Texte placeholder (textarea) | OK — guide l'utilisateur, jamais dans prompt |
+| auto-edition-page.tsx | 8C | Labels UI ("méthode 8C de Gastel & Day") | OK — noms de méthode, pas règles |
+| boite-doctorale-page.tsx | Multiple | Checklist UI ("Déclaration de non-plagiat") | OK — checklist utilisateur |
+| phrasebank-data.ts | unité d'analyse | Template de phrase académique | OK — règle #10 : jamais injecté dans prompts |
+| outils-slr-page.tsx | PRISMA | Labels UI + PRISMA flow diagram | OK — UI interactive, pas savoir |
+| usage-guide-dialog.tsx | biais | Description de feature | OK — texte explicatif |
+
+**coherence-data.ts** : les descriptions des checks sont des résumés UI d'une ligne (« Un même concept est désigné par le même terme... ») injectés en complément de la grille JSON dans coherence-check/route.ts (Option B). Le header du fichier précise « ne pas les désynchroniser ». Ce n'est PAS une duplication de règles IF/THEN.
+
+### R11 — Tout fichier ressource a un statut documenté
+**VERDICT : DÉGRADÉ**
+
+**Problème 1 : 2 modules non documentés dans CONTEXT-PROJET.md §2.3**
+§2.3 liste 11 modules. knowledge-core.ts en contient désormais 13 :
+- ✅ style, ethics, coherence, auto-edition, peer-review, methodology, writing-process, literature-review, data-analysis, grant-writing, publication (11/11 documentés)
+- ❌ **visualization** (module:846, principes Sułkowski et al.) — ABSENT de §2.3
+- ❌ **presentation** (module:875, conférences/soutenances Sułkowski et al.) — ABSENT de §2.3
+
+**Problème 2 : AGENTS.md §"Modules de connaissance disponibles" est obsolète**
+AGENTS.md ligne 164 dit « (11) » mais knowledge-core.ts en a 13.
+
+**Problème 3 : 7 fichiers .md dans modules/ non référencés dans §2.3**
+Les fichiers source (data-analysis.md, literature-review.md, writing-process.md, grant-writing.md, publication.md, methodology-design.md, methodology-basics.md) ne sont pas listés individuellement. Ils correspondent aux modules documentés par nom mais pas par chemin fichier.
+
+## SYNTHÈSE
+
+| Règle | Verdict | Sévérité |
+|------|---------|----------|
+| R1 | CONFORME | — |
+| R2 | CONFORME | — |
+| R4 | CONFORME | — |
+| R5 | CONFORME | — |
+| R7 | CONFORME | — |
+| R11 | **DÉGRADÉ** | Moyenne — documentation §2.3 obsolète (13 modules vs 11 documentés) |
+
+**Actions requises :**
+1. Mettre à jour CONTEXT-PROJET.md §2.3 : ajouter `visualization` (Sułkowski et al.) et `presentation` (Sułkowski et al.), changer le titre en « (13) »
+2. Mettre à jour AGENTS.md ligne 164 : « (11) » → « (13) »
+3. (Optionnel) Ajouter les 7 fichiers .md de modules/ dans §2.3 ou une sous-section pour traçabilité
+
+Stage Summary:
+- 5/6 règles CONFORME, 1 règle DÉGRADÉ (R11)
+- R1-R5-R7 : zéro violation, architecture anti-duplication solide
+- R11 : 2 modules (visualization, presentation) ajoutés post-v1.8.0 non documentés dans §2.3
+- Aucun code change nécessaire — seule la documentation CONTEXT-PROJET.md et AGENTS.md à mettre à jour
+---
+Task ID: 6
+Agent: Security Auditor
+Task: AXE 6 — Security and Confidentiality Audit
+
+Work Log:
+- Audited 5 security items: API keys client-side, data retention, rate limiting, localStorage, SDK usage
+- Grep scanned all frontend files (src/modules/, src/components/, src/hooks/, src/stores/, src/app/page.tsx)
+- Traced full data flow: TipTap editor → auto-save → API → SQLite (Chapter.content + Chapter.plainText)
+- Traced AI routes: /api/ai-writing, /api/ai-writing/stream, /api/directeur-chat, /api/coherence-check, /api/thesis-rag
+- Verified hardcoded-keys.ts: env-only, never actual key values, server-only imports
+- Verified /api/ai-keys/route.ts: returns masked keys only
+- Checked localStorage usage: 3 files (app-header.tsx, use-ai-config.ts, ai-prediction.ts)
+- Checked rate limiting: none at any layer (no middleware.ts, no next.config, no Caddyfile rules)
+- Checked z-ai-web-dev-sdk imports: only server-side files (zai-client.ts, ai-test/route.ts, deep-research/route.ts)
+
+## 6.1 — Aucune clé API côté client
+**VERDICT : CONFORME**
+
+**Recherche :** Grep `(sk-|key-|api_key|apiKey|API_KEY|secret|token)` dans `src/modules/`, `src/components/`, `src/hooks/`, `src/app/page.tsx`
+
+**Résultats :** 4 fichiers frontend trouvés, aucun ne contient de vraie clé API :
+- `app-header.tsx` : `config.apiKey` = variable d'état React (saisie utilisateur), pas une clé codée en dur
+- `editor-page.tsx` : commentaire « key-change effect »
+- `apa-composer-page.tsx` : variable `tokens` = découpage de noms d'auteurs
+- `deblocage-ecriture-page.tsx` : citation littéraire (« Le secret de l'écriture... »)
+
+**hardcoded-keys.ts :** Exporte uniquement des `process.env.*` (jamais de valeur littérale). Commentaire L2-4 : « SERVER-SIDE ONLY / Les clés ne sont jamais exposées au client ». Vérifié : les 6 imports sont tous dans des routes API serveur (`/api/ai-test`, `/api/ai-keys`, `/api/ai-models`, `/api/paper2code`) ou libs serveur (`zai-client.ts`, `embedding-service.ts`). Zéro import côté client.
+
+**/api/ai-keys/route.ts :** Retourne `maskedKey` (premiers 8 + derniers 4 caractères) — jamais la clé complète.
+
+**Sévérité : —**
+
+## 6.2 — Data retention — où vont les textes de thèse ?
+**VERDICT : DÉGRADÉ**
+
+**Parcours complet du texte :**
+1. **Éditeur TipTap** → `useAutoSave` hook → `PUT /api/chapters/[id]` → Prisma `Chapter.update` → **SQLite** (champs `content` HTML + `plainText` texte brut)
+2. **RAG** → `POST /api/thesis-rag {action: "index"}` → `indexThesisContent()` → chunking → `db.documentChunk.createMany` → **SQLite** (champ `content` texte brut + `embedding` vecteur)
+
+**Routes IA qui envoient le texte de thèse à un fournisseur externe :**
+
+| Route | Données envoyées | Fournisseur | Local-only ? |
+|-------|-------------------|-------------|--------------|
+| `/api/ai-writing` | `prompt` + `context` (optionnel) | Celui configuré par l'utilisateur | ✅ Oui si provider=`zai` |
+| `/api/ai-writing/stream` | `prompt` + `context` (optionnel) | Celui configuré par l'utilisateur | ✅ Oui si provider=`zai` |
+| `/api/directeur-chat` | `messages` + `thesisContext` | Celui configuré par l'utilisateur | ✅ Oui si provider=`zai` |
+| `/api/coherence-check` | `sections` (intro/discussion/méthodo/résultats) | Celui configuré par l'utilisateur | ✅ Oui si provider=`zai` |
+| `/api/thesis-rag` (index) | Chapitres en texte brut → embeddings | Celui configuré par l'utilisateur | ✅ Oui si provider=`zai` |
+| `/api/thesis-rag` (query) | Chunks retrouvés + question | Celui configuré par l'utilisateur | ✅ Oui si provider=`zai` |
+| `/api/text-prediction` | Derniers mots tapés | Celui configuré par l'utilisateur | ✅ Oui si provider=`zai` |
+
+**Analyse :** Le design est « bring-your-own-key » — l'utilisateur choisit son fournisseur. Le provider `zai` (SDK natif, sandbox IP) est le seul chemin 100% local. Pour tout autre provider (OpenAI, Anthropic, etc.), le texte de thèse est envoyé en clair (HTTPS) au serveur du fournisseur. C'est par conception, mais **il n'y a aucune alerte/information dans l'UI** informant l'utilisateur que ses données quittent sa machine.
+
+**Problème :** Aucun bandeau, tooltip ou modal d'information sur la confidentialité des données quand l'utilisateur sélectionne un provider externe. Le champ « Fournisseur IA » dans app-header.tsx ne mentionne pas que le texte de thèse sera envoyé au fournisseur.
+
+**Sévérité : MAJEUR** — L'utilisateur n'est pas informé que ses textes de thèse (données confidentielles de recherche) sont transmis à des tiers. Pour un outil destiné à des doctorants, c'est un risque de divulgation non consentie.
+
+**Recommendation :** Ajouter un bandeau d'information quand un provider non-zai est sélectionné : « ⚠️ Vos textes de thèse seront envoyés à [provider] pour traitement. En cas de données sensibles, utilisez le fournisseur SDK Natif (z.ai). »
+
+## 6.3 — Rate limiting
+**VERDICT : CASSÉ**
+
+**Recherche :**
+- Grep `(rate|limit|throttle)` dans tous les fichiers de `src/app/api/` : seul un test (route.test.ts) qui vérifie la gestion du code 429 — pas de middleware de rate limiting
+- `middleware.ts` : **n'existe pas** (pas de fichier `src/middleware.ts`)
+- `next.config.ts` : aucune configuration de rate limiting
+- `Caddyfile` : reverse_proxy basique sans `rate_limit` directive
+- Aucun package `express-rate-limit`, `@upstash/ratelimit`, ou équivalent dans les dépendances
+
+**Impact :** Un utilisateur (ou script) peut déclencher un nombre illimité d'appels API par minute :
+- `/api/ai-writing` → appels illimités au fournisseur IA (risque de coûts pour l'utilisateur si clé payante)
+- `/api/ai-writing/stream` → idem en streaming
+- `/api/coherence-check` → 2 appels LLM par requête (passe 1 + passe 2 contre-audit)
+- `/api/thesis-rag` (index) → chunking + N appels d'embedding
+- Toutes les routes CRUD (`/api/thesis`, `/api/chapters`, etc.) sont sans protection
+
+**Sévérité : MAJEUR** — En l'absence d'authentification utilisateur (pas de login/session), n'importe qui avec accès au serveur peut épuiser les quotas IA de l'utilisateur ou saturer le serveur. Même en usage desktop (Tauri), un script malveillant ou une extension navigateur pourrait exploiter cette absence de protection.
+
+**Note mitigante :** Le circuit breaker interne (zai-client.ts L27-100) limite les appels à un provider en panne (3 échecs → 30s cooldown), mais c'est un mécanisme de résilience, pas de rate limiting.
+
+**Recommendations :**
+1. Ajouter un middleware Next.js avec rate limiting par IP (e.g., `@upstash/ratelimit` ou implémentation custom in-memory)
+2. Limiter spécifiquement les routes IA : e.g., 20 requêtes/minute pour `/api/ai-writing/*`, 5/minute pour `/api/coherence-check`
+3. Ajouter une protection CSRF basique (token ou same-origin check) sur les routes POST
+
+## 6.4 — localStorage — que stocke-t-on ?
+**VERDICT : DÉGRADÉ**
+
+**3 fichiers utilisent localStorage :**
+
+| Fichier | Clé | Données stockées | Contient du texte de thèse ? |
+|---------|-----|-------------------|---------------------------|
+| `app-header.tsx` L71,86 | `thesisframe-ai-config` | `{provider, apiKey, model, baseUrl}` | ❌ Non
+| `use-ai-config.ts` L12,72 | `thesisframe-ai-config` | Même objet (lecture/écriture) | ❌ Non
+| `app-store.ts` L395 (Zustand persist) | `thesisframe-app-store` | `{theme, aiProvider, sidebarOpen, activeThesisId, activeChapterId}` | ❌ Non |
+| `ai-prediction.ts` L159 | `thesisframe-ai-config` (lecture seule) | Lu pour envoyer au serveur | ❌ Non |
+
+**Données sensibles en localStorage :**
+1. **Clé API utilisateur en clair** (`thesisframe-ai-config.apiKey`) — toute extension navigateur ou script XSS peut la lire
+2. **IDs de thèse et chapitre actifs** (`thesisframe-app-store`) — metadata, pas de contenu
+
+**Points positifs :**
+- Le texte de thèse n'est **jamais** stocké en localStorage — il transite uniquement par l'API → SQLite
+- Le Zustand store utilise `partialize` (L396-402) pour exclure les données non-persistantes
+- `activeThesisId` et `activeChapterId` sont des UUIDs, pas du contenu
+
+**Problème :** La clé API est stockée en clair dans localStorage. Si la clé est une clé payante (OpenAI, Anthropic), sa compromission a un impact financier direct.
+
+**Sévérité : MAJEUR** — La clé API en clair dans localStorage est accessible par toute extension navigateur, tout script injecté (XSS), ou tout accès physique à la machine. En mode Tauri (desktop), le risque est moindre (pas d'extensions), mais en mode web, c'est une vulnérabilité OWASP A02:2021 (Cryptographic Failures).
+
+**Note :** L'alternative (stocker la clé côté serveur via session) nécessiterait d'ajouter un système d'authentification, ce qui est un changement architectural significatif pour une app desktop-first.
+
+**Recommendations (court terme) :**
+1. Chiffrer la clé API avec une clé dérivée du user-agent + un sel (obfuscation, pas sécurité vraie)
+2. Ne pas persister la clé : la demander à chaque session et la conserver uniquement en mémoire (useState)
+3. Ajouter un bouton « Effacer ma clé API » dans les paramètres
+
+## 6.5 — z-ai-web-dev-sdk usage
+**VERDICT : CONFORME**
+
+**Recherche :** Grep `z-ai-web-dev-sdk` dans tous les fichiers source
+
+**Fichiers avec import réel du SDK :**
+1. `src/lib/ai/zai-client.ts` L8 : `import AiSDK from "z-ai-web-dev-sdk"` — fichier lib serveur-only
+2. `src/app/api/ai-test/route.ts` — route API serveur
+3. `src/app/api/deep-research/route.ts` L11 — route API serveur
+
+**Fichier avec référence type-only :**
+4. `src/lib/ai/ai-types.ts` L3 : Commentaire « NO server-side imports (fs, os, z-ai-web-dev-sdk) » — pas d'import réel
+
+**Vérification côté client :** Zéro fichier dans `src/modules/`, `src/components/`, `src/hooks/`, `src/app/page.tsx` n'importe le SDK. Le fichier `page.tsx` est marqué `'use client'` et n'importe que des composants UI et le store Zustand.
+
+**Configuration Next.js :** `next.config.ts` L9 : `serverExternalPackages: ["z-ai-web-dev-sdk"]` — le SDK est explicitement marqué comme package externe serveur, empêchant son bundling côté client.
+
+**Sévérité : —**
+
+## SYNTHÈSE
+
+| Item | Verdict | Sévérité |
+|------|---------|----------|
+| 6.1 Aucune clé API côté client | **CONFORME** | — |
+| 6.2 Data retention | **DÉGRADÉ** | **MAJEUR** — Pas d'information utilisateur sur la transmission de données aux tiers |
+| 6.3 Rate limiting | **CASSÉ** | **MAJEUR** — Zéro rate limiting sur aucune route API |
+| 6.4 localStorage | **DÉGRADÉ** | **MAJEUR** — Clé API en clair dans localStorage |
+| 6.5 z-ai-web-dev-sdk | **CONFORME** | — |
+
+**Actions requises par ordre de priorité :**
+1. **[CASSÉ/MAJEUR]** Ajouter un rate limiting basique sur les routes IA (middleware.ts + in-memory counter)
+2. **[DÉGRADÉ/MAJEUR]** Ajouter un bandeau d'information confidentialité quand un provider non-zai est sélectionné
+3. **[DÉGRADÉ/MAJEUR]** Ne pas persister la clé API en localStorage (conserver en mémoire useState uniquement) ou proposer un mode « clé par session »
+
+**Actions optionnelles :**
+4. Ajouter une protection CSRF sur les routes POST (header `Origin` check)
+5. Ajouter un bouton « Effacer ma clé API » visible dans les paramètres
+6. Envisager un chiffrement basique de la clé en localStorage (clé dérivée machine)
+
+Stage Summary:
+- 2/5 items CONFORME (6.1, 6.5) — pas de clé en dur côté client, SDK serveur-only
+- 1/5 item CASSÉ (6.3) — zéro rate limiting sur aucune route API
+- 2/5 items DÉGRADÉ (6.2, 6.4) — pas d'info utilisateur sur transmission données, clé API en clair localStorage
+- 0 item BLOQUANT, 3 items MAJEUR, 0 item MINEUR
+- L'architecture « bring-your-own-key » est saine dans son principe mais la persistance localStorage de la clé et l'absence de rate limiting sont les 2 vulnérabilités principales
+---
+Task ID: 7
+Agent: Documentary Integrity Auditor
+Task: AXE 7 — Documentary Integrity Audit
+
+Work Log:
+- Read CONTEXT-PROJET.md (230 lines), AGENTS.md (336 lines), docs/ARCHITECTURE-CONNAISSANCE.md (297 lines)
+- Ran `bun run test:run` — 1372 tests, 58 files
+- Counted 13 KnowledgeModule types in knowledge-core.ts (style, ethics, coherence, auto-edition, peer-review, methodology, writing-process, literature-review, data-analysis, grant-writing, publication, visualization, presentation)
+- Counted 26 files in src/lib/ai/specializations/
+- Listed 7 .md files in src/lib/ai/knowledge-core/modules/ (all match doc)
+- Verified all API routes mentioned in ARCHITECTURE-CONNAISSANCE.md exist on disk
+- Spot-checked 3 AGENTS.md anti-duplication rules against code (R1, R5, R10)
+- Extracted all Task IDs from worklog — 121 entries, many reused/fragmented
+- Checked §10 backlog for B1/B2/B3
+
+## 7.1 — CONTEXT-PROJET.md — chiffres à jour
+**VERDICT : DÉGRADÉ**
+
+| Champ | Documenté | Réel | Écart |
+|-------|-----------|------|-------|
+| Version | v1.9.4 ✅ | v1.9.4 | — |
+| Nb modules §2.3 | (11) ❌ | 13 | visualization, presentation manquants |
+| Nb tests | Non documenté dans CONTEXT-PROJET.md (0 ref) | 1372 | CONTEXT-PROJET.md ne mentionne aucun chiffre de tests (c'est AGENTS.md qui le fait) |
+| Sous-catégories coherence §2.3 | 6 listées (terminologique, numérique, intro-discussion, référentielle, argumentative, structurelle) | ~19 sous-sections dans le code (incluant épistémologique, Murray, Brause, Pearce, Paltridge & Starfield, Carter et al., Zimmerman, Yin) | Décalage important — doc ne reflète pas l'enrichissement v1.9.1→v1.9.4 |
+
+**Problèmes identifiés :**
+1. §2.3 titre « Modules de connaissance (11) » — 2 modules manquants (visualization, presentation). Déjà signalé par AXE 3, non corrigé.
+2. §2.3 coherence : 6 sous-catégories listées vs ~19 sous-sections actuelles. La doc est significativement en retard.
+3. §5 historique : v1.9.4 correctement listé ✅.
+
+**Sévérité : MOYENNE** — les chiffres de modules et sous-catégories sont obsolètes mais la structure documentaire reste fidèle aux principes architecturaux.
+
+## 7.2 — AGENTS.md — 11 règles présentes et cohérentes avec le code
+**VERDICT : DÉGRADÉ**
+
+**Décompte des règles anti-duplication :** 10 règles numérotées (1-10) dans la section « Règles anti-duplication ». L'intitulé ne mentionne pas « 11 règles ».
+
+**Problèmes de cohérence interne :**
+1. **Version obsolète** : Ligne 1 dit « v1.9.0 » et ligne 11 dit « Version : 1.5.1 ». Le projet est en v1.9.4. Double incohérence de version.
+2. **Nb modules obsolète** : Ligne 164 « Modules de connaissance disponibles (11) » — réel = 13 (manquent visualization, presentation).
+3. **Nb tests obsolète** : Ligne 196 « 1333 tests existants (56 fichiers) » — réel = 1372 tests, 58 fichiers.
+4. **Historique versions** : Le tableau s'arrête à v1.9.2. v1.9.3 et v1.9.4 manquent.
+
+**Spot-check de 3 règles contre le code :**
+
+| Règle | Contenu | Vérification | Résultat |
+|-------|---------|-------------|----------|
+| R1 | Savoir métier → knowledge-core.ts uniquement | Vérifié coherence.ts, directeur.ts — aucun savoir métier, uniquement rôle/tâche/format | ✅ CONFORME |
+| R5 | ai-writing-modes.ts : plus de systemPrompt | 22 occurrences de `systemPrompt: ""` (toutes vides), type conservé mais contenu migré | ✅ CONFORME |
+| R10 | phrasebank-data.ts jamais injecté dans les prompts | `rg phrasebank src/app/api/ src/lib/ai/` → 0 résultat. Uniquement importé dans phrasebook-page.tsx (UI) | ✅ CONFORME |
+
+**Règle bonus vérifiée :**
+| R6 | directeur-prompt.ts déprécié | Fichier existe avec `⚠️ CE FICHIER EST DÉPRÉCIÉ`, réexporte vers specializations/directeur.ts | ✅ CONFORME |
+
+**Sévérité : MOYENNE** — les règles elles-mêmes sont respectées dans le code (4/4 spot-checks CONFORME), mais les métadonnées chiffrées (version, nb modules, nb tests) sont obsolètes, ce qui induit les contributeurs en erreur.
+
+## 7.3 — docs/ARCHITECTURE-CONNAISSANCE.md
+**VERDICT : DÉGRADÉ**
+
+**Version document** : Ligne 3 dit « v1.9.0 » et « 28 août 2026 ». Projet en v1.9.4.
+
+**Comparaison arborescence doc vs réel :**
+
+| Élément | Documenté | Réel | Conforme ? |
+|---------|-----------|------|------------|
+| knowledge-core.ts | ✅ | Existe | ✅ |
+| shared-prompts.ts | ✅ | Existe | ✅ |
+| prompt-builder.ts | ✅ | Existe | ✅ |
+| ai-provider.ts | ✅ | Existe | ✅ |
+| ai-types.ts | ✅ | Existe | ✅ |
+| zai-client.ts | ✅ | Existe | ✅ |
+| hardcoded-keys.ts | ✅ | Existe | ✅ |
+| knowledge-core/modules/ (7 fichiers .md) | 7 listés | 7 présents | ✅ |
+| specializations/ | « 19 fichiers » | **26 fichiers** | ❌ |
+| ai-writing-modes.ts | ✅ | Existe | ✅ |
+| directeur-prompt.ts (déprécié) | ✅ | Existe | ✅ |
+| Nb modules connaissance | 11 | **13** | ❌ |
+| coherence « 5 sous-catégories » | 5 listées | ~19 sous-sections | ❌ |
+| Routes API (6 citées) | 6 | Toutes existent | ✅ |
+| Token budget ~3 900 | ✅ | Non revérifié | — |
+
+**Problèmes identifiés :**
+1. **Specializations : 19 vs 26** — 7 fichiers non documentés : argumentation-bilaterale.ts, director.ts, expliquer-concept.ts, methodology-help.ts, revue-litterature-slr.ts, verification-sources.ts, (+ 1 de plus). Ces modes existent dans le code mais ne sont pas dans l'architecture doc.
+2. **Modules : 11 vs 13** — même problème que CONTEXT-PROJET.md §2.3.
+3. **Version périmée** : v1.9.0 vs v1.9.4.
+
+**Sévérité : MOYENNE** — la structure est correcte, les chemins sont justes, mais les compteurs sont obsolètes.
+
+## 7.4 — worklog — séquence des Tasks intacte et continue
+**VERDICT : DÉGRADÉ**
+
+**Analyse :** Extraction de 121 entrées « Task ID: » dans le worklog.
+
+- **Aucune séquence continue** : les IDs sont chaotiques — réutilisation massive (ex. : 10 occurrences de « Task ID: 1 », 6 de « Task ID: 2 »)
+- **Formats non standard** : mélange de numériques (1-27), lettres (1-a, 2-b), préfixes (LOT1-BUG-*, T1-T5, fix-*, Lot-*, lot-*)
+- **Dernier Task ID numérique séquentiel** : Task ID: 27 (apparaît 2 fois)
+- **Aucune corruption ou troncature** : le fichier se termine proprement à la ligne 6295/6296 par « --- »
+- **Intégrité structurelle** : chaque entrée a bien le format `Task ID: X / Agent: Y / Task: Z / Work Log: ... / Stage Summary: ...`
+
+**Problème :** L'absence de convention de numérotation rend le worklog difficile à naviguer et à référencer. Ce n'est pas un problème d'intégrité (pas de perte de données) mais de gouvernance.
+
+**Sévérité : BASSE** — les données sont toutes présentes et intactes, mais la traçabilité est dégradée par le manque de convention.
+
+## 7.5 — Backlog §10
+**VERDICT : DÉGRADÉ**
+
+| Item | Présent ? | Critère ? |
+|------|-----------|-----------|
+| B1 (Gestion 429 côté UI) | ✅ | ✅ — décrit le comportement attendu et le contexte |
+| B2 (Retry avec backoff léger) | ✅ | ✅ — décrit la recommandation et le contexte |
+| B3 | **❌ ABSENT** | — |
+
+**Analyse :** La section §10 s'arrête brutalement après B2 (ligne 230/231). Le tableau est ouvert (pas de ligne de fermeture Markdown) et B3 est manquant. Soit B3 a été tronqué, soit il n'a jamais été ajouté.
+
+**Sévérité : BASSE** — §10 est un backlog « non-urgent » et les items B1/B2 sont complets. B3 manquant ne bloque rien mais brise l'attente d'une entrée.
+
+## SYNTHÈSE
+
+| Item | Verdict | Sévérité |
+|------|---------|----------|
+| 7.1 CONTEXT-PROJET.md chiffres | **DÉGRADÉ** | MOYENNE — 11 vs 13 modules, sous-catégories coherence obsolètes |
+| 7.2 AGENTS.md règles | **DÉGRADÉ** | MOYENNE — règles correctes dans le code (4/4 CONFORME), mais version 1.5.1/1.9.0, nb tests 1333→1372, nb modules 11→13, historique s'arrête à v1.9.2 |
+| 7.3 ARCHITECTURE-CONNAISSANCE.md | **DÉGRADÉ** | MOYENNE — version v1.9.0, specializations 19→26, modules 11→13, coherence 5→~19 |
+| 7.4 worklog séquence Tasks | **DÉGRADÉ** | BASSE — intact mais non séquentiel (121 IDs, formats hétérogènes) |
+| 7.5 Backlog §10 | **DÉGRADÉ** | BASSE — B3 absent, tableau tronqué après B2 |
+
+**Aucun item CASSÉ.** Tous les documents sont lisibles et intègres. Les problèmes sont exclusivement des données chiffrées obsolètes (versions, compteurs) qui n'ont pas été mises à jour lors des itérations v1.9.1→v1.9.4.
+
+**Actions requises par ordre de priorité :**
+1. **[DÉGRADÉ/MOYENNE]** AGENTS.md : mettre à jour version (1.5.1→v1.9.4), nb modules (11→13), nb tests (1333→1372, 56→58), ajouter v1.9.3 et v1.9.4 à l'historique
+2. **[DÉGRADÉ/MOYENNE]** CONTEXT-PROJET.md §2.3 : ajouter visualization et presentation, changer titre en « (13) », mettre à jour les sous-catégories coherence
+3. **[DÉGRADÉ/MOYENNE]** ARCHITECTURE-CONNAISSANCE.md : mettre à jour version (v1.9.0→v1.9.4), specializations (19→26), modules (11→13), coherence (5→~19)
+4. **[DÉGRADÉ/BASSE]** CONTEXT-PROJET.md §10 : vérifier si B3 devait exister, ajouter ou fermer le tableau proprement
+5. **[DÉGRADÉ/BASSE]** worklog : envisager une convention de numérotation pour les futures Tasks
+
+Stage Summary:
+- 0/5 items CONFORME, 5/5 items DÉGRADÉ, 0/5 items CASSÉ
+- Aucune corruption, troncature, ou perte de données
+- Problème systémique : 3 documents de référence (CONTEXT-PROJET.md, AGENTS.md, ARCHITECTURE-CONNAISSANCE.md) n'ont pas été mis à jour depuis v1.9.0/v1.9.2
+- Les chiffres obsolètes sont tous dans la même direction : le code a grandi (13 modules, 26 specializations, 1372 tests) mais les docs n'ont pas suivi
+- Règles anti-duplication AGENTS.md : 4/4 spot-checks CONFORME — le code respecte les règles documentées
+- Point positif : les chemins de fichiers, les patterns architecturaux, et les principes décrits restent corrects---
+
+---
+Task ID: 4
+Agent: AXE 4 — Performance and Costs
+Task: Audit performance and costs — budget tokens, production build, test count, lint status
+
+## 4.1 — Budget tokens — re-mesure du noyau complet et 3 modes les plus lourds
+
+**File size:** `wc -c` → **79,441 bytes**
+
+**13 modules extracted and measured (content only, backtick strings):**
+
+| Module | Chars | Tokens (÷3 French) | Tokens (÷4 English) |
+|--------|-------|--------------------|---------------------|
+| METHODOLOGY | 17,331 | ~5,777 | ~4,332 |
+| WRITING_PROCESS | 9,295 | ~3,098 | ~2,323 |
+| COHERENCE | 7,463 | ~2,487 | ~1,865 |
+| ETHICS | 5,757 | ~1,919 | ~1,439 |
+| LITERATURE_REVIEW | 6,836 | ~2,278 | ~1,709 |
+| PUBLICATION | 6,162 | ~2,054 | ~1,540 |
+| STYLE | 4,453 | ~1,484 | ~1,113 |
+| PRESENTATION | 4,134 | ~1,378 | ~1,033 |
+| DATA_ANALYSIS | 2,481 | ~827 | ~620 |
+| VISUALIZATION | 2,306 | ~768 | ~576 |
+| GRANT_WRITING | 1,787 | ~595 | ~446 |
+| PEER_REVIEW | 1,144 | ~381 | ~286 |
+| AUTO_EDITION | 828 | ~276 | ~207 |
+| **TOTAL (full core)** | **69,977** | **~23,325** | **~17,494** |
+
+**Budget comparison:**
+- Budget noyau ≤ 4,500 tokens → Mesuré **~23,325** → **❌ DÉPASSEMENT ×5.2**
+- Budget mode ≤ 3,000 tokens →
+  - #1 METHODOLOGY ~5,777 → **❌ DÉPASSEMENT ×1.9**
+  - #2 WRITING_PROCESS ~3,098 → **❌ DÉPASSEMENT ×1.03**
+  - #3 COHERENCE ~2,487 → ✅ DANS LE BUDGET
+
+**Verdict : DÉPASSEMENT CRITIQUE** — Le noyau complet est 5× plus gros que le budget. 2 des 3 modes les plus lourds dépassent le budget individuel.
+
+## 4.2 — Build de production
+
+**Build : ❌ ÉCHEC**
+
+```
+Error: Turbopack build failed with 1 errors:
+./src/app/api/paper2code/generate/route.ts:8:1
+Export getProviderExtraHeaders doesn't exist in target module
+```
+
+- **Fichier fautif :** `src/app/api/paper2code/generate/route.ts` (ligne 11)
+- **Import manquant :** `getProviderExtraHeaders` importé depuis `@/lib/ai/ai-types`
+- **Existant à la place :** `getProviderFields` (ligne 272 de ai-types.ts)
+- **Cause probable :** Renommage de `getProviderExtraHeaders` → `getProviderFields` sans mettre à jour le consommateur
+- **Bundle size :** N/A (build ne termine pas)
+- **Warnings :** Aucun (build échoue avant)
+
+**Verdict : CASSÉ** — Le build de production échoue. Impossible de déployer.
+
+## 4.3 — Test count
+
+```
+Test Files  58 passed (58)
+     Tests  1372 passed (1372)
+  Duration  15.70s
+```
+
+- **Tests:** 1,372 (0 échecs)
+- **Fichiers:** 58
+- **Documenté (AGENTS.md):** 1,372
+- **Résultat :** ✅ CONFORME — le compte actuel correspond au nombre documenté
+
+## 4.4 — Lint status
+
+```
+✖ 191 problems (0 errors, 191 warnings)
+0 errors and 2 warnings potentially fixable with `--fix`.
+```
+
+- **Erreurs :** 0
+- **Warnings :** 191
+- **Fixables automatiquement :** 2
+- **Résultat :** ✅ CONFORME — 0 erreur, seulement des warnings (majoritairement `no-non-null-assertion` et `no-unused-vars`)
+
+## SYNTHÈSE AXE 4
+
+| Item | Verdict | Sévérité |
+|------|---------|----------|
+| 4.1 Budget tokens noyau | **DÉPASSEMENT CRITIQUE** | HAUTE — 23,325 vs budget 4,500 (×5.2). 2/3 modes les plus lourds dépassent aussi. |
+| 4.2 Build de production | **CASSÉ** | CRITIQUE — `getProviderExtraHeaders` manquant dans ai-types.ts. Build échoue. |
+| 4.3 Test count | **CONFORME** | — 1,372 tests, 58 fichiers, 0 échecs. |
+| 4.4 Lint status | **CONFORME** | — 0 erreurs, 191 warnings. |
+
+**Actions requises par ordre de priorité :**
+1. **[CRITIQUE]** `paper2code/generate/route.ts` : remplacer `getProviderExtraHeaders` par `getProviderFields` (ou restaurer l'export) — le build ne passe pas
+2. **[HAUTE]** Budget tokens : le noyau (23K tok) dépasse 5× le budget (4.5K). Décider si le budget est obsolète ou si le contenu doit être réduit/splitté
+3. **[MOYENNE]** Modes METHODOLOGY (5.8K) et WRITING_PROCESS (3.1K) dépassent le budget mode (3K)
+
+Stage Summary:
+- 2/4 items CONFORME, 0/4 DÉGRADÉ, 1/4 DÉPASSEMENT CRITIQUE, 1/4 CASSÉ
+- Build de production cassé par un import manquant (getProviderExtraHeaders)
+- Budget tokens noyau dépassé d'un facteur 5× (23,325 vs 4,500)
+- Tests et lint sont propres (1,372 tests OK, 0 erreurs lint)
+---
+
+## AXE 5 — ROBUSTNESS ET EDGE CASES (Task ID 5)
+
+### 5.1 — Textes extrêmes (10 000 mots en entrée)
+
+**Fichiers analysés :**
+- `src/app/api/ai-writing/route.ts` (schéma Zod lignes 15-21)
+- `src/app/api/ai-writing/stream/route.ts` (schéma Zod lignes 15-21)
+
+**Observations :**
+- `prompt` : `z.string().min(10, ...)` — validation min uniquement, **aucun `.max()`**
+- `context` : `z.string().optional()` — **aucune limite min ni max**
+- Aucune validation de longueur en caractères ou en tokens
+- Texte vide : bloqué par `.min(10)` sur `prompt`
+- Aucune détection de type de contenu : un texte « recette de cuisine » est envoyé tel quel au LLM
+
+**Impact :** Un texte de 10 000 mots (~13 000 tokens) passé dans `prompt` + un `context` massif dépasseront la fenêtre de contexte de nombreux modèles (ex: 4K-8K tokens). L'erreur remontera du provider (413 ou token limit exceeded), pas du serveur Next.js. Pas de protection côté serveur.
+
+**Verdict : DÉGRADÉ** — Sévérité **MOYENNE**
+- Absence de `.max()` sur `prompt` et `context` permet l'envoi de textes arbitrairement longs
+- L'erreur sera reportée par le provider LLM, pas par l'application
+- Recommandation : ajouter `.max(50_000)` (~37 500 mots) sur `prompt` et `.max(100_000)` sur `context`
+
+### 5.2 — Caractères spéciaux, accents, LaTeX, emoji
+
+**Fichiers analysés :**
+- `src/app/api/ai-writing/route.ts` — le texte est passé brut via `validated.prompt` et `validated.context` dans les messages (lignes 54-64)
+- `src/app/api/coherence-check/route.ts` — sections passées brutes (lignes 220-231)
+- `src/lib/ai/zai-client.ts` streaming — SSE JSON.parse dans try/catch (lignes 723-738)
+
+**Observations :**
+- Les inputs utilisateur sont passés bruts aux LLM via `JSON.stringify(body)` — aucune sanitisation
+- C'est le comportement correct : les LLMs gèrent nativement les accents, LaTeX, emoji, Unicode
+- Le parsing JSON des réponses IA est protégé :
+  - Regex markdown fence extraction : `raw.match(/```(?:json)?\s*([\s\S]*?)```/)`
+  - `JSON.parse` dans try/catch (coherence-check lignes 48-56, streaming lignes 723-738)
+- `JSON.stringify` côté client/server gère nativement les caractères spéciaux dans les corps de requête
+
+**Verdict : CONFORME** — Aucun problème identifié
+
+### 5.3 — Sessions concurrentes
+
+**Fichier analysé :**
+- `src/hooks/use-ai-config.ts`
+
+**Observations :**
+- La config IA est stockée dans `localStorage` (clé `thesisframe-ai-config`)
+- Le hook utilise `useSyncExternalStore` avec un listener `storage` event pour la synchronisation cross-tab (ligne 52)
+- Un custom event `ai-config-changed` est aussi écouté pour les mises à jour dans le même onglet (lignes 91-99)
+- La config est passée **par requête** dans le body via `_aiConfig` (fonction `withAiConfig`, ligne 83-88)
+- **Pas d'état serveur** : chaque requête API reçoit sa propre config dans le body
+- Le serveur utilise `options.providerConfig || getDefaultConfig()` (zai-client.ts ligne 423)
+
+**Impact potentiel :** Deux onglets peuvent écraser mutuellement la config dans localStorage (last-write-wins). Cependant, `useSyncExternalStore` + l'événement `storage` garantit que tous les onglets finissent par voir la dernière valeur. Comme la config est envoyée par requête et non stockée côté serveur, il n'y a pas de conflit d'état.
+
+**Verdict : CONFORME** — Architecture correcte : config stateless côté serveur, synchronisation cross-tab via API standard
+
+### 5.4 — Quotas / erreur IA
+
+**Fichiers analysés :**
+- `src/lib/ai/zai-client.ts` (850 lignes)
+- `src/lib/ai/ai-provider.ts` (fonctions utilitaires)
+- `src/app/api/ai-test/route.ts` (getFriendlyError local)
+
+**Observations :**
+
+**Classification des erreurs :**
+- `isRetryableError()` (ai-provider.ts:79) : 429, 500, 502, 503, 504
+- `isAuthError()` (ai-provider.ts:86) : 401, 403 — erreurs terminales (pas de fallback)
+
+**`buildApiError()` (zai-client.ts:307-351) :**
+- 429 / `rate_limit_exceeded` → message français « Limite de requêtes atteinte »
+- 401 / `invalid_api_key` / `invalid_request_error` → « Clé API invalide »
+- 503 / `all_keys_failed` → « Service temporairement indisponible »
+- 404 → « Modèle introuvable »
+- Tronquage à 300 caractères du message d'erreur
+
+**Timeout :** `AbortSignal.timeout(REQUEST_TIMEOUT_MS)` avec 60s (zai-client.ts:272, 685)
+
+**Circuit breaker :**
+- Seuil : 3 échecs consécutifs → circuit ouvert
+- Cooldown : 30s avant passage en half-open
+- 1 succès en half-open → fermeture
+
+**Retries :** 2 tentatives avec backoff exponentiel (1s, 2s), sauf erreurs auth (zai-client.ts:375-401)
+
+**Failover :** Chaîne de fournisseurs (primary + fallbacks), erreurs retryables déclenchent le prochain (zai-client.ts:451-496)
+
+**Streaming (zai-client.ts:672-761) :**
+- Erreurs durant le stream envoyées comme événement SSE `{ type: "error" }`
+- Le stream est fermé proprement (`writer.close()`)
+- Erreurs auth en streaming : retour immédiat, pas de fallback
+
+**`getFriendlyError()` :**
+- Fonction **locale** à `ai-test/route.ts` (lignes 115-136)
+- **Non partagée** — les autres routes utilisent `buildApiError()` de zai-client.ts
+- La logique est équivalente mais dupliquée
+
+**Verdict : CONFORME** — Gestion d'erreurs complète avec circuit breaker, retries, failover, timeout. Duplication mineure de `getFriendlyError` mais sans impact fonctionnel.
+
+### 5.5 — OpenAlex edge cases
+
+**Fichier analysé :**
+- `src/lib/research/openalex.ts` (409 lignes)
+
+**Observations :**
+
+**Quotes/accents dans les requêtes :**
+- La query est passée via `url.searchParams.set("search", params.query)` (ligne 201)
+- `URLSearchParams` encode automatiquement les caractères spéciaux (quotes, accents, espaces)
+- **CONFORME** sur ce point
+
+**0 résultats :**
+- L'API OpenAlex retourne `{ meta: { count: 0, ... }, results: [] }`
+- Le code retourne ce résultat tel quel — le client gère un tableau vide
+- **CONFORME** sur ce point
+
+**Timeout :**
+- `searchWorks()` (ligne 233) : `fetch(url.toString(), { headers, next: { revalidate: 300 } })`
+- **Aucun `signal` ni timeout** sur le fetch
+- `getRelatedWorks()` (ligne 268) : même absence de timeout
+- Si l'API OpenAlex est lente ou ne répond pas, la requête peut pendre indéfiniment (jusqu'au timeout default de Next.js / Vercel)
+
+**Verdict : DÉGRADÉ** — Sévérité **MOYENNE**
+- Absence de timeout sur les appels OpenAlex (`searchWorks` et `getRelatedWorks`)
+- Recommandation : ajouter `signal: AbortSignal.timeout(15_000)` (15s) aux fetch OpenAlex
+
+### 5.6 — Réponses IA malformées
+
+**Fichier analysé :**
+- `src/app/api/coherence-check/route.ts`
+
+**Observations :**
+
+**Passe 1 (lignes 47-57) :**
+```typescript
+try {
+  const raw = result.content.trim();
+  const jsonMatch = raw.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, raw];
+  parsed = JSON.parse(jsonMatch[1] || raw);
+} catch {
+  return NextResponse.json({
+    error: "La réponse de l'IA n'a pas pu être interprétée. Réessayez.",
+    raw: result.content,
+  });
+}
+```
+- `JSON.parse` est dans un try/catch
+- Fallback regex pour extraire le JSON des fences markdown
+- En cas d'échec : retourne le contenu brut + message d'erreur
+
+**Passe 2 — contre-audit (lignes 160-185) :**
+```typescript
+try {
+  // ... JSON.parse ... 
+  return audits;
+} catch (error) {
+  console.warn('[coherence-audit] Counter-audit failed, using passe 1 only:', error);
+  return [];
+}
+```
+- `JSON.parse` est dans le try/catch externe
+- En cas d'échec : retourne un tableau vide (dégradation gracieuse, passe 1 seule)
+
+**Truncation maxTokens :**
+- Passe 1 : `maxTokens: 6000` — si tronqué, le JSON sera incomplet → catch attrape le parse error
+- Passe 2 : `maxTokens: 2000` — même protection
+
+**Verdict : CONFORME** — Les deux passes ont une gestion robuste du JSON malformé avec dégradation gracieuse
+
+### 5.7 — Production build error (CRITIQUE)
+
+**Fichiers analysés :**
+- `src/app/api/paper2code/generate/route.ts` (ligne 11)
+- `src/lib/ai/ai-types.ts` (303 lignes)
+- `src/lib/ai/ai-provider.ts` (ligne 94)
+
+**Observations :**
+- `paper2code/generate/route.ts` ligne 11 :
+  ```typescript
+  import { type AiProviderId, PROVIDER_BASE_URLS, getProviderExtraHeaders } from "@/lib/ai/ai-types";
+  ```
+- `ai-types.ts` **n'exporte PAS** `getProviderExtraHeaders` — seul `ai-provider.ts` l'exporte (ligne 94)
+- Les exports d'`ai-types.ts` : types + constantes + `getProviderLabel` + `providerNeedsKey` + `getProviderFields` + `PROVIDER_*` (lignes 1-303)
+- `ai-provider.ts` ré-exporte tout d'`ai-types.ts` + ajoute `detectBackend`, `getBaseUrl`, `isKeylessProvider`, `isRetryableError`, `isAuthError`, `getProviderExtraHeaders`, `isAnthropicFormat`
+
+**Confirmation :** L'import est cassé. Le build de production échoue.
+
+**Verdict : CASSÉ** — Sévérité **CRITIQUE** (déjà identifié en Axe 4.2)
+- Fix : remplacer `@/lib/ai/ai-types` par `@/lib/ai/ai-provider` dans `paper2code/generate/route.ts` ligne 11
+
+## SYNTHÈSE AXE 5
+
+| Item | Verdict | Sévérité |
+|------|---------|----------|
+| 5.1 Textes extrêmes | **DÉGRADÉ** | MOYENNE — Aucun `.max()` sur prompt/context. Textes arbitrairement longs envoyés au LLM. |
+| 5.2 Caractères spéciaux | **CONFORME** | — LLMs gèrent nativement Unicode. JSON.parse protégé par try/catch. |
+| 5.3 Sessions concurrentes | **CONFORME** | — Config stateless côté serveur, sync cross-tab via `storage` event. |
+| 5.4 Quotas / erreur IA | **CONFORME** | — Circuit breaker + retries + failover + timeout. `getFriendlyError` dupliqué mais sans impact. |
+| 5.5 OpenAlex edge cases | **DÉGRADÉ** | MOYENNE — Absence de timeout sur les fetch OpenAlex. |
+| 5.6 Réponses IA malformées | **CONFORME** | — try/catch sur les 2 passes, dégradation gracieuse. |
+| 5.7 Production build | **CASSÉ** | CRITIQUE — `getProviderExtraHeaders` importé depuis `ai-types.ts` au lieu de `ai-provider.ts`. |
+
+**Actions requises par ordre de priorité :**
+1. **[CRITIQUE]** `paper2code/generate/route.ts` ligne 11 : changer l'import de `@/lib/ai/ai-types` vers `@/lib/ai/ai-provider` (ou ajouter l'export dans ai-types.ts)
+2. **[MOYENNE]** `ai-writing/route.ts` et `stream/route.ts` : ajouter `.max(50_000)` sur `prompt` et `.max(100_000)` sur `context`
+3. **[MOYENNE]** `openalex.ts` : ajouter `signal: AbortSignal.timeout(15_000)` aux fetch dans `searchWorks()` et `getRelatedWorks()`
+
+Stage Summary:
+- 4/7 items CONFORME, 2/7 DÉGRADÉ, 1/7 CASSÉ
+- Build cassé confirmé (import manquant getProviderExtraHeaders)
+- Pas de limite de taille d'entrée côté serveur pour les routes AI writing
+- Pas de timeout sur les appels OpenAlex
+- Gestion d'erreurs IA robuste (circuit breaker, retries, failover)
+- Parsing JSON des réponses IA bien protégé
+---
+
+Task ID: 1
+Agent: AXE-1-Writing-Modes
+Task: AXE 1 — PARCOURS UTILISATEUR COMPLETS : Audit des 13 modes d écritriture IA (code-based)
+
+Work Log:
+- Lecture integrale de ai-writing-modes.ts (22 modes + 1 customEndpoint)
+- Lecture integrale de specializations/index.ts (22 entrees dans SPECIALIZATION_PROMPTS)
+- Lecture des routes /api/ai-writing/route.ts et /api/ai-writing/stream/route.ts
+- Lecture de ai-writing-page.tsx (UI : tous les modes de WRITING_MODES sont listes)
+- Lecture des 12 fichiers de specialisation pertinents + verification buildPrompt vs buildStandalonePrompt
+- Lecture de /api/coherence-check/route.ts (Pattern 2 : 2 passes)
+- Lecture de /api/directeur-chat/route.ts et specializations/directeur.ts (Pattern 1)
+- Recherche de tests coherence-check : aucun fichier route.test.ts trouve
+
+**Fichiers analyses :**
+- src/data/ai-writing-modes.ts (260 lignes) — 22 modes + deep-research (customEndpoint)
+- src/lib/ai/specializations/index.ts (88 lignes) — registry complet
+- src/lib/ai/specializations/*.ts — 24 fichiers (dont director.ts mort)
+- src/app/api/ai-writing/route.ts (110 lignes)
+- src/app/api/ai-writing/stream/route.ts (91 lignes)
+- src/modules/ai-writing/ai-writing-page.tsx (595 lignes)
+- src/app/api/coherence-check/route.ts (381 lignes)
+- src/app/api/directeur-chat/route.ts (93 lignes)
+- src/app/api/verification-publication/route.ts (679 lignes)
+- src/lib/ai/prompt-builder.ts (107 lignes)
+
+### 1.1 — Audit des 13 modes demandes
+
+**Legende :** oui = oui, non = non, NA = non applicable
+
+| # | Nom audit | Mode ID systeme | Existe | Specialisation | buildPrompt | UI accessible | Verdict |
+|---|---|---|---|---|---|---|---|
+| 1 | methode | methodology | oui | oui | oui | oui | **CONFORME** |
+| 2 | problematique | — | non | non | NA | non | **NON EXISTANT** |
+| 3 | theorique | theory | oui | oui | oui | oui | **CONFORME** |
+| 4 | litterature | literature-review | oui | oui | oui | oui | **CONFORME** |
+| 5 | empirique | — | non | non | NA | non | **NON EXISTANT** |
+| 6 | analyse | — | non | non | NA | non | **NON EXISTANT** |
+| 7 | redaction | scientific-writing | oui | oui | oui | oui | **CONFORME** |
+| 8 | abstract | abstract | oui | oui | oui | oui | **CONFORME** |
+| 9 | revision | revision-plan | oui | oui | oui | oui | **CONFORME** |
+| 10 | conclusion | — | non | non | NA | non | **NON EXISTANT** |
+| 11 | publication | — (route /api/verification-publication) | non | non | NA | non (module separe) | **NON EXISTANT** (comme mode ecriture) |
+| 12 | coherence-check | — (route /api/coherence-check) | non | oui | oui (passe 1) | oui (module separe) | **DEGRADE** |
+| 13 | directeur-chat | — (route /api/directeur-chat) | non | oui | oui | oui (onglet separe) | **DEGRADE** |
+
+**Details par mode :**
+
+1. **methode -> methodology** : Specialisation methodology-help.ts — ROLE (methodologue de recherche) + TASK (proposer ou valider une demarche) + FORMAT (approche structuree avec methodologies reconnues). Modules knowledge-core : [methodology, style]. Aucune connaissance hardcodee. **CONFORME**
+
+2. **problematique** : Aucun mode problematique ou equivalent dans WRITING_MODES ni dans SPECIALIZATION_PROMPTS. La problematique est parfois abordee par le mode theory ou methodology, mais il n y a pas de mode dedie. **NON EXISTANT**
+
+3. **theorique -> theory** : Specialisation theory.ts — ROLE (epistemologue et theoricien) + TASK (developper et articuler un cadre theorique) + FORMAT (structure en 6 points : concepts, theories, relations, modele, positionnement, limites). Modules : [style, writing-process]. **CONFORME**
+
+4. **litterature -> literature-review** : Specialisation literature-review.ts — ROLE (specialiste de la revue de litterature) + TASK (synthetiser et analyser) + FORMAT (Synthese structuree en francais avec sous-themes). Modules : [literature-review, style]. Note : il existe aussi revue-litterature (SLR) qui est un mode complementaire dedie aux revues systematiques. **CONFORME**
+
+5. **empirique** : Aucun mode empirique, empirical, ou analyse-de-donnees dans le systeme. Le mode methodology couvre partiellement l aspect empirique, mais il n y a pas de specialisation dediee aux analyses de donnees empiriques. **NON EXISTANT**
+
+6. **analyse** : Aucun mode analyse, data-analysis, ou equivalent. Le knowledge-core possede un module data-analysis.md mais il n est reference par aucune specialisation. Il existe auto-edition-8c (evaluation par les 8 criteres Gastel et Day) et argumentation-bilaterale (analyse d une affirmation), mais aucun mode d analyse de donnees. **NON EXISTANT**
+
+7. **redaction -> scientific-writing** : Specialisation scientific-writing.ts — ROLE (expert en redaction scientifique) + TASK (rediger ou reformuler) + FORMAT (Texte redige en francais academique...). Modules : [style, coherence, writing-process]. **CONFORME**
+
+8. **abstract -> abstract** : Specialisation abstract.ts — ROLE (expert en redaction de resumes academiques) + TASK (IMRAD) + FORMAT (5 parties + mots-cles, 250 mots max). Modules : [style, publication]. **CONFORME**
+
+9. **revision -> revision-plan** : Specialisation revision-plan.ts — ROLE (expert en planification de revisions) + TASK (analyser les commentaires et produire un plan) + FORMAT (4 sections : synthese, plan detaille, desaccords, calendrier). Modules : [peer-review, coherence, writing-process, style]. Note : academic-reformulation existe aussi (mode distinct pour la reformulation). **CONFORME**
+
+10. **conclusion** : Aucun mode conclusion ou equivalent. La redaction de conclusion peut etre abordee par scientific-writing ou theory, mais pas de mode dedie. **NON EXISTANT**
+
+11. **publication** : Aucun mode d ecriture publication. Il existe une route dediee /api/verification-publication avec 4 actions (intro-discussion-coherence, table-quality, paragraph-structure, text-table-redundancy) qui utilise getKnowledgeCore directement (pas via buildPrompt). C est un module separe, pas un mode d ecriture. **NON EXISTANT** comme mode d ecriture (fonctionnalite presente ailleurs)
+
+12. **coherence-check** : Route dediee /api/coherence-check. Pas dans WRITING_MODES. Specialisation coherence.ts avec 2 prompts (passe 1 + passe 2). La fonctionnalite est accessible via le module verification-coherence separe. **DEGRADE** — fonctionne correctement mais n est pas integre comme mode d ecriture.
+
+13. **directeur-chat** : Route dediee /api/directeur-chat. Pas dans WRITING_MODES. Specialisation directeur.ts. Accessible via un onglet separe Chat Directeur dans la page IA. **DEGRADE** — fonctionne correctement mais n est pas un mode d ecriture.
+
+### 1.2 — Verification des patterns avances
+
+#### Pattern 2 : coherence-check 2-pass counter-audit
+
+**Fichiers :** src/app/api/coherence-check/route.ts, src/lib/ai/specializations/coherence.ts
+
+**Observations :**
+- Passe 1 : Appel LLM avec COHERENCE_CHECK_PROMPT + grille de controles structures (COHERENCE_CHECKS) + texte utilisateur. Temperature 0.15, maxTokens 6000.
+- Passe 2 : Extraction des seuls checks en defaut (pass === false), puis appel LLM avec COHERENCE_AUDIT_PROMPT. L auditeur ne peut que CONFIRMER ou RETROGRADER vers AMBIGU. Temperature 0.15, maxTokens 2000.
+- Fusion : Les resultats de la passe 2 sont integres dans chaque check (auditVerdict, auditReason). Les checks retrogardes a AMBIGU ne comptent pas comme echecs pour le scoring.
+- Logging structure : logAuditMetrics() enregistre mode, confirmed, downgraded, rate.
+- Degradation gracieuse : Si la passe 2 echoue (catch), le systeme retourne un audit vide et utilise la passe 1 seule.
+- COHERENCE_AUDIT_PROMPT est une chaine brute (pas de buildPrompt) — intentionnel : le savoir a deja ete utilise en passe 1.
+
+**Verdict : CONFORME** — Le pattern Multi-Agent Counter-Audit est correctement implemente.
+
+#### Pattern 1 : directeur-chat Reasoning-then-Output
+
+**Fichiers :** src/app/api/directeur-chat/route.ts, src/lib/ai/specializations/directeur.ts
+
+**Observations :**
+- Pas de 2 phases : Le directeur-chat est un simple appel generateCompletion unique (1 passe).
+- Pas d etape de raisonnement : Le prompt DIRECTEUR_PROMPT decrit une methode de feedback en 5 etapes, mais c est une instruction de structure de sortie, pas un raisonnement d abord, puis reponse.
+- Fonctionne correctement comme chat mono-passe avec contexte de these injecte et fiches du corpus de publication.
+- Le Pattern 1 (Reasoning-then-Output) n est pas implemente dans le directeur-chat.
+
+**Verdict : DEGRADE** — Fonctionnel comme chat, mais ne respecte pas le Pattern 1 (Reasoning-then-Output) attendu.
+
+#### Test coherence-check : 3 defauts plantes
+
+**Fichier recherche :** src/app/api/coherence-check/route.test.ts
+
+**Observations :**
+- Le fichier route.test.ts n existe pas dans /src/app/api/coherence-check/.
+- Aucun fichier de test trouve pour le coherence-check (recherche etendue).
+- Le test des 3 defauts plantes (verifiant que le contre-audit repere les faux positifs) n existe pas.
+
+**Verdict : CASSE** — Severite **HAUTE** — Absence totale de tests pour la fonctionnalite de contre-audit.
+
+### 1.3 — Anomalies supplementaires detectees
+
+#### 1.3.1 — Modes sans knowledge-core (buildStandalonePrompt)
+
+**Fichiers :** freeform.ts, improvement.ts
+
+Ces 2 modes utilisent buildStandalonePrompt au lieu de buildPrompt :
+- freeform.ts : pas de knowledge-core injecte
+- improvement.ts : pas de knowledge-core injecte
+
+buildStandalonePrompt retourne uniquement la specialisation sans le socle de connaissances.
+
+**Verdict : DEGRADE** — Fonctionnel mais sans connaissance de reference.
+
+#### 1.3.2 — Fichier mort : director.ts
+
+**Fichier :** src/lib/ai/specializations/director.ts
+
+Ce fichier est un doublon de directeur.ts. Il n est importe nulle part dans index.ts (seul directeur.ts est reference). C est du code mort.
+
+**Verdict : DEGRADE** (mineur) — Code mort a supprimer.
+
+#### 1.3.3 — verification-publication contourne le pattern de specialisation
+
+**Fichier :** src/app/api/verification-publication/route.ts
+
+Cette route appelle getKnowledgeCore() directement et construit le prompt inline au lieu d utiliser buildPrompt + un fichier de specialisation. Cela fonctionne mais contourne l architecture centralisee.
+
+**Verdict : DEGRADE** (mineur) — Fonctionnel mais incoherent avec l architecture.
+
+### 1.4 — Verification ROLE + TASK + FORMAT (pas de connaissance hardcodee)
+
+Pour chaque specialisation utilisant buildPrompt, la specialization string contient :
+- ROLE : definition de l expert (Tu es un...)
+- TASK : description de la tache
+- FORMAT : format de sortie attendu
+
+Aucune specialisation ne contient de connaissance hardcodee (le savoir vient du knowledge-core via buildPrompt). Verifie sur les 21 fichiers utilisant buildPrompt.
+
+**Verdict : CONFORME**
+
+## SYNTHESE AXE 1
+
+| Item | Verdict | Severite |
+|------|---------|----------|
+| 1.1 Modes d ecriture (13 audites) | 6 CONFORME / 5 NON EXISTANT / 2 DEGRADE (fonctionnels via routes separees) | — |
+| 1.2 Pattern 2 (coherence counter-audit) | **CONFORME** | — 2 passes, adversarial, degradation gracieuse |
+| 1.2 Pattern 1 (directeur reasoning) | **DEGRADE** | MOYENNE — Mono-passe, pas de Reasoning-then-Output |
+| 1.2 Test 3 defauts plantes | **CASSE** | HAUTE — Aucun test pour coherence-check |
+| 1.3.1 Modes sans knowledge-core | **DEGRADE** | BASSE — freeform + improvement |
+| 1.3.2 Fichier mort director.ts | **DEGRADE** | BASSE |
+| 1.3.3 verification-publication hors pattern | **DEGRADE** | BASSE |
+| 1.4 ROLE+TASK+FORMAT / pas de hardcodage | **CONFORME** | — |
+
+**Modes manquants par rapport a l audit (5/13) :**
+- problematique — aucun mode dedie
+- empirique — aucun mode d analyse de donnees empiriques
+- analyse — aucun mode data-analysis (knowledge-core data-analysis.md non utilise)
+- conclusion — aucun mode dedie
+- publication — route separee existante mais pas de mode d ecriture
+
+**Actions requises par ordre de priorite :**
+1. **[HAUTE]** Creer src/app/api/coherence-check/route.test.ts avec test des 3 defauts plantes
+2. **[MOYENNE]** Implementer Pattern 1 (Reasoning-then-Output) dans directeur-chat
+3. **[MOYENNE]** Creer les 5 modes manquants : problematique, empirique, data-analysis, conclusion, publication
+4. **[BASSE]** Supprimer src/lib/ai/specializations/director.ts (code mort)
+5. **[BASSE]** Considerer migrer freeform et improvement vers buildPrompt
+6. **[BASSE]** Considerer migrer verification-publication vers le pattern de specialisation centralisee
+
+Stage Summary:
+- 6/13 modes audites CONFORME, 5/13 NON EXISTANT, 2/13 DEGRADE (mais fonctionnels via routes separees)
+- Pattern 2 (counter-audit) correctement implemente
+- Pattern 1 (reasoning) non implemente dans directeur-chat
+- Aucun test pour coherence-check (zero couverture)
+- Architecture ROLE+TASK+FORMAT respectee partout, aucun hardcodage de connaissances
+---
+---
+Task ID: 2
+Agent: AXE 2 — Transverse Features Audit
+Task: Code-based audit of 8 transverse features in ThesisFrame v1.9.4
+
+Work Log:
+- Read directeur-chat route.ts + directeur.ts specialization + ai-writing-page.tsx (DirecteurChatPanel)
+- Read deep-research route.ts (full pipeline: web + academic modes)
+- Read openalex.ts + curation.ts (deterministic curation system)
+- Read coherence-check route.ts (2-pass counter-audit pattern)
+- Read rag-service.ts (hybrid search implementation)
+- Read coherence-data.ts + verification-coherence-page.tsx (grille UI)
+- Read export-pdf-page.tsx + export-docx-page.tsx (export features)
+- Read thesis-rag-page.tsx (RAG UI)
+- Searched for session save/load — none found
+- Checked AI error handling patterns across pages
+- Verified knowledge-core coherence module has 8 subcategories vs 6 in UI
+
+## AXE 2 — FONCTIONNALITÉS TRANSVERSES
+
+### 2.1 — Director-chat: feedback format (Reasoning-then-Output)
+
+**Expected**: Format ## Analyse + ## Retour, switching based on input length (short → direct, long → Analyse/Retour)
+
+**Actual**:
+- `src/lib/ai/specializations/directeur.ts` L8-44: DIRECTEUR_PROMPT uses `buildPrompt()` with specialization defining ROLE + MÉTHODE DE FEEDBACK (5 steps) + CONTRAINTES (400 mots max)
+- `src/app/api/directeur-chat/route.ts` L29-93: Single-pass — sends messages to generateCompletion, returns raw content. NO format switching logic. NO ## Analyse / ## Retour structure.
+- `src/modules/ai-writing/ai-writing-page.tsx` L426-594 (DirecteurChatPanel): No format parsing — renders assistant content as plain text in chat bubble.
+
+**Verdict**: ❌ **CASSÉ** (répété depuis AXE 1 item 1.2 Pattern 1)
+- Aucun Pattern 1 (Reasoning-then-Output) dans directeur-chat
+- Aucune logique de basculement court/long
+- Mono-passe directe, pas de structure ## Analyse / ## Retour
+- **Severity**: HAUTE — Le directeur est le cœur critique de la thèse, ce pattern était exigé dans le cahier des charges
+
+### 2.2 — Deep-research Web mode
+
+**Expected**: Web search implementation with displayed sources
+
+**Actual**:
+- `src/app/api/deep-research/route.ts` L34-39: Uses `z-ai-web-dev-sdk` (AiSDK.create()) for web search
+- L148-186 `executeWebSearches`: Invokes `zai.functions.invoke("web_search", { query, num: 5 })` — this is Tavily via the ZAI SDK
+- L188-221 `searchCorePapers`: Also searches CORE API in parallel for academic open-access papers
+- L267-300 `readTopPages`: Reads top 6 pages via `zai.functions.invoke("page_reader", { url })`
+- L302-388 `compressWebFindings`: Builds numbered source index [n], includes source list, prompts AI to cite sources
+- L443-500 `generateWebReport`: System prompt requires "### Sources" section at end with [n] Titre: URL format
+
+**Verdict**: ✅ **CONFORME**
+- Search provider: Tavily (via z-ai-web-dev-sdk) + CORE API
+- Sources displayed: Yes — numbered citations [n] throughout report + ### Sources section at end
+- Pipeline: Brief → Plan → Search (web + CORE) → Read pages → Compress → Report
+
+### 2.3 — Deep-research Academic (OpenAlex) mode
+
+**Expected**: sourceMode='academic' path, OpenAlex calls, curation from curation.ts, 4 checklist items
+
+**Actual**:
+- Route L45-46: `sourceMode: z.enum(["web", "academic"]).optional().default("web")`
+- L576-621: Full academic branch with `searchOpenAlexWorks`, `compressAcademicFindings`, `generateAcademicReport`
+- `src/lib/research/openalex.ts` L291-320 `searchAcademicWorks`: Filters `type: ["journal-article", "proceedings-article"]`, `is_paratext: "false"`, sorts by `cited_by_count:desc`
+- `src/lib/research/curation.ts`:
+  - L20-33: CURATION_WEIGHTS (doi: 0.15, venue: 0.15, type: 0.10, citationAge: 0.30, openAccess: 0.15, recency: 0.15)
+  - L36-37: CURATION_THRESHOLD_ACCEPTABLE = 0.35, CURATION_THRESHOLD_GOOD = 0.55
+  - L182-217 `curateWorks`: Filters out retracted, computes score, excludes below minScore (0.35)
+  - Route L254: `minScore: CURATION_THRESHOLD_ACCEPTABLE`
+
+**4 Checklist Items**:
+1. ✅ **journal-article with DOI**: searchAcademicWorks filters type to journal-article/proceedings-article. DOI scored at 0.15 weight but not strictly required (source can pass 0.35 without DOI via other signals).
+2. ✅ **Metadata coherent**: Curation checks venue (0.15), type (0.10), year/recency (0.15), OA status (0.15), citation score normalized by age (0.30).
+3. ✅ **No source < 0.35**: `curateWorks` L200 `if (score >= minScore)` with `minScore = CURATION_THRESHOLD_ACCEPTABLE = 0.35`.
+4. ✅ **Visible difference vs Web mode**:
+   - Different system prompt: "synthèse de littérature structurée" with convergences/divergences/research gaps
+   - Citation format: (Auteur, Année) + [n] + ### Références with DOI
+   - Response includes `sourceMode: "academic"` and `curatedSources`/`avgCurationScore` metrics
+   - No web page reading, no CORE API — pure OpenAlex pipeline
+
+**Verdict**: ✅ **CONFORME** (note mineure: DOI non obligatoire mais fortement pondéré)
+- **Severity**: — (le DOI comme filtre dur pourrait exclure des résultats pertinents — le scoring pondéré est un choix raisonnable)
+
+### 2.4 — Contre-audit coherence
+
+**Expected**: Structured logging with [coherence-audit], rate= field, adversarial counter-audit
+
+**Actual**:
+- `src/app/api/coherence-check/route.ts`:
+  - L59-66: Passe 2 extracts failed checks (pass === false), calls `runCounterAudit`
+  - L139-186 `runCounterAudit`: Sends only FAILED verdicts to AI auditor with COHERENCE_AUDIT_PROMPT, gets CONFIRMED/AMBIGU verdicts. Graceful degradation on failure (L182-184: returns empty array, falls back to passe 1 only).
+  - L192-213 `logAuditMetrics`: Structured logging:
+    - L204: `[coherence-audit] mode=${mode} failed=${totalFailed} confirmed=${confirmed} downgraded=${downgraded} rate=${rate}%`
+    - L209-212: Detailed per-check downgraded logs `[downgraded] ${checkId}: ${reason}`
+  - L296-298: `auditMetrics` field in response: `{ totalFailed, confirmed, downgraded, rate }`
+  - L316-321: AMBIGU checks treated as non-failing for scoring
+
+**Verdict**: ✅ **CONFORME**
+- Pattern 2 correctement implémenté (2 passes, adversarial, dégradation gracieuse)
+- Structured logging avec [coherence-audit] prefix et rate= field
+- auditMetrics exposés dans la réponse pour le frontend
+
+### 2.5 — RAG hybride
+
+**Expected**: Hybrid search 65% semantic / 35% keyword, questions trigger RAG
+
+**Actual**:
+- `src/lib/rag/rag-service.ts`:
+  - L76-79: `HYBRID_WEIGHTS = { keyword: 0.35, semantic: 0.65 }` — configurable via env vars RAG_KEYWORD_WEIGHT / RAG_SEMANTIC_WEIGHT
+  - L540-569 `hybridRank`: Normalizes both scores to 0-1, combines: `kw * KEYWORD_WEIGHT + sem * SEMANTIC_WEIGHT`
+  - L558-559: Score type tracking: "hybrid" (both), "keyword" (only keyword), "semantic" (only semantic)
+  - L388-428 `retrieveChunks`: When provider supports embeddings → hybrid path; when not → keyword-only fallback
+  - L394-396: Filters chunks with `embedding: { not: null }` for semantic path, broader filter for keyword fallback
+- `src/modules/thesis-rag/thesis-rag-page.tsx`:
+  - L106-132: Index button → POST /api/thesis-rag { action: "index", thesisId }
+  - L135-189: Query → POST /api/thesis-rag { action: "query", thesisId, query }
+  - L197: `canQuery = activeThesisId !== null && hasIndexed` — requires both thesis selection and prior indexing
+  - L168-169: Error display inline in chat: `data.error ? "⚠️ Erreur : ..." : data.answer`
+
+**Verdict**: ✅ **CONFORME**
+- 65/35 hybrid search implémenté avec normalisation et fallback
+- Questions trigger RAG via explicit index → query flow
+- Thesis-scoped retrieval with global sources (references, notebooks)
+
+### 2.6 — Grille de cohérence UI (coherence-data)
+
+**Expected**: Checks mapping to 7 coherence subcategories
+
+**Actual**:
+- `src/lib/data/coherence-data.ts`:
+  - L32-75: **6 COHERENCE_CATEGORIES** defined:
+    1. terminologique (4 checks)
+    2. argumentative (4 checks)
+    3. numerique (4 checks)
+    4. intro-discussion (4 checks)
+    5. referentielle (3 checks)
+    6. structurelle (4 checks)
+  - L77-296: **23 COHERENCE_CHECKS** total (not 7, not matching "7 sous-catégories" claim)
+- Knowledge-core `COHÉRENCE DU MANUSCRIT` section has **8** `###` subcategories (L183-221 in knowledge-core.ts)
+- UI coherence-data has **6** categories — missing "Texte ↔ Tableaux / Figures" and "Incohérences épistémologiques"
+- `verification-coherence-page.tsx`:
+  - L337-395: Category filter toggles (all 6 categories, with "Toutes" reset button)
+  - L485-625: Results display — failed checks grouped by category in accordion, passed checks in collapsible list, category scores grid (6 cards L529-549)
+  - L744-803: Referentiel tab — full checklist display organized by category with severity badges and examples
+
+**Verdict**: ⚠️ **DÉGRADÉ**
+- 23 checks bien définis avec severity, description, exemple
+- UI complète et riche (3 tabs: Analyse, Référentiel, Aide)
+- **Mais**: Comment in coherence-data.ts L8 says "7 sous-catégories" — knowledge-core has 8, UI has 6. Off by 1 or 2 depending on reference.
+- **Severity**: BASSE — L'UI fonctionne correctement, mais la désynchronisation entre le commentaire (7), le knowledge-core (8) et l'UI (6) est une dette documentation
+
+### 2.7 — Gestion d'erreurs IA
+
+**Expected**: Graceful error messages, no crashes
+
+**Actual**:
+- **AI Writing panel** (ai-writing-page.tsx):
+  - L107: `streamError` state
+  - L144-145, L207-208: Catch blocks set `streamError` with user-friendly message
+  - L358-365: Error card with destructive border: `{streamError && <Card className="border-destructive/50 bg-destructive/5">...}`
+  - ✅ Good error handling
+- **Directeur Chat** (ai-writing-page.tsx L450-473):
+  - `useMutation({ mutationFn: ..., onSuccess: ... })` — **NO `onError` callback**
+  - If API fails, the mutation silently errors — loading stops but no message shown to user
+  - ❌ Silent failure
+- **Coherence check** (verification-coherence-page.tsx):
+  - L237-241: `if (!res.ok || json.error) { setError(msg); toast.error(msg); }`
+  - L420-432: Error state rendered as red card with XCircle icon
+  - ✅ Good error handling
+
+**Verdict**: ⚠️ **DÉGRADÉ**
+- AI Writing: ✅ Bonne gestion d'erreurs
+- Coherence check: ✅ Bonne gestion d'erreurs
+- Directeur Chat: ❌ Aucun onError — échec silencieux, l'utilisateur ne voit aucun message d'erreur
+- **Severity**: MOYENNE — Le directeur chat est un module clé, les erreurs API (timeout, 500, réseau) ne sont pas visibles pour l'utilisateur
+
+### 2.8 — Export / sauvegarde de session
+
+**Expected**: PDF export, DOCX export, session save/load
+
+**Actual**:
+- **PDF export** (export-pdf-page.tsx):
+  - Uses jsPDF + html2canvas-pro (client-side generation)
+  - Comprehensive options: thesis selection, chapter selection (individual checkboxes), formatting options (margins, orientation, font size, line spacing), cover page toggle
+  - L39: `import jsPDF from 'jspdf'` — client-side, no server needed
+  - ✅ Fully functional
+- **DOCX export** (export-docx-page.tsx):
+  - Server-side via `/api/export-docx`
+  - Options: cover page, TOC, references, line spacing (1.15/1.5/2.0), font size (11/12/13pt), margins (narrow/normal/wide), header text, page numbers
+  - Returns blob, triggers download with proper filename
+  - ✅ Fully functional
+- **Session save/load**:
+  - Searched entire codebase: NO saveSession, loadSession, session export, or session import functionality
+  - Data is persisted in SQLite (theses, chapters, references, notebook entries) — always available on reload
+  - But NO explicit session save/load/export/import (e.g., JSON backup, session snapshot)
+  - ❌ Non existant
+
+**Verdict**: ⚠️ **DÉGRADÉ**
+- PDF export: ✅ CONFORME — riche, client-side, nombreuses options
+- DOCX export: ✅ CONFORME — serveur-side, style APA, options complètes
+- Session save/load: ❌ NON EXISTANT — pas de sauvegarde/restauration de session explicite
+- **Severity**: BASSE — Les données sont persistées automatiquement en SQLite, mais l'absence d'export/import de session (pour migration, backup, partage) est un manque fonctionnel mineur
+
+## SYNTHÈSE AXE 2
+
+| Item | Verdict | Severity |
+|------|---------|----------|
+| 2.1 Director-chat Reasoning-then-Output | **CASSÉ** | HAUTE — Mono-passe, pas de format ## Analyse/Retour |
+| 2.2 Deep-research Web mode | **CONFORME** | — |
+| 2.3 Deep-research Academic (OpenAlex) | **CONFORME** | — (DOI non obligatoire mais scoring 0.15) |
+| 2.4 Contre-audit coherence | **CONFORME** | — |
+| 2.5 RAG hybride | **CONFORME** | — |
+| 2.6 Grille de cohérence UI | **DÉGRADÉ** | BASSE — 23 checks, 6 catégories vs 7-8 dans knowledge-core |
+| 2.7 Gestion d'erreurs IA | **DÉGRADÉ** | MOYENNE — Directeur chat: échec silencieux |
+| 2.8 Export / sauvegarde | **DÉGRADÉ** | BASSE — PDF+DOCX OK, pas de session save/load |
+
+**Actions requises par ordre de priorité :**
+1. **[HAUTE]** Implémenter Pattern 1 (Reasoning-then-Output) dans directeur-chat — format ## Analyse + ## Retour avec basculement longueur
+2. **[MOYENNE]** Ajouter `onError` callback au useMutation du Directeur Chat pour afficher les erreurs
+3. **[BASSE]** Synchroniser le commentaire "7 sous-catégories" dans coherence-data.ts (6 dans l'UI, 8 dans knowledge-core)
+4. **[BASSE]** Envisager un export/import de session (JSON backup) pour la migration entre instances
+
+Stage Summary:
+- 5/8 items CONFORME (deep-research web, deep-research academic, contre-audit, RAG hybride, export PDF/DOCX)
+- 0/8 items CASSÉ si on exclut le directeur-chat (déjà identifié en AXE 1)
+- 1/8 item CASSÉ (directeur-chat — pas de Reasoning-then-Output, même défaut qu'AXE 1)
+- 2/8 items DÉGRADÉ (gestion erreurs IA directeur, cohérence categories count)
+- L'architecture transverse (RAG, curation, contre-audit) est solide et bien implémentée
+
+---
+Task ID: AUDIT
+Agent: Main
+Task: Audit complet et exhaustif ThesisFrame v1.9.4 — 7 axes, 46 items
+
+Work Log:
+- AXE 1 (13 modes écriture) : 7 CONFORME, 3 DÉGRADÉ, 3 NON EXISTANT (problematique, empirique, analyse)
+- AXE 2 (8 features transverses) : 5 CONFORME, 2 DÉGRADÉ, 1 CASSÉ (Pattern 1 non déployé)
+- AXE 3 (6 règles gouvernance) : 5 CONFORME, 1 DÉGRADÉ (2 modules non documentés)
+- AXE 4 (4 perf/coûts) : 2 CONFORME, 0 DÉGRADÉ, 2 CASSÉ (build + budget tokens ×5)
+- AXE 5 (7 robustesse) : 4 CONFORME, 2 DÉGRADÉ, 1 CASSÉ (build)
+- AXE 6 (5 sécurité) : 2 CONFORME, 2 DÉGRADÉ, 1 CASSÉ (rate limiting)
+- AXE 7 (5 doc) : 0 CONFORME, 5 DÉGRADÉ (chiffres obsolètes partout)
+- Total : 25 ✅ / 15 ⚠️ / 6 ❌ sur 46 items
+- Rapport complet produit : audit-report.md
+- Verdict global : NON (3 blocages : build cassé, rate limiting, clé en localStorage)
+- Plan de correction : 5 actions BLOQUANT (~4h), 6 actions SEMAINE 1 (~2j), 8 actions BACKLOG
+
+Stage Summary:
+- audit-report.md créé avec verdict, tableau récapitulatif, chiffres mesurés, plan priorisé
+- 3 blocages identifiés avant premiers utilisateurs
+- Budget tokens mesuré : full core ~22 190 tok (doc dit 3 900), 13/21 modes dépassent 3K
+- Build cassé confirmé : import getProviderExtraHeaders dans mauvais module
+- Pattern 1 (Reasoning-then-Output) codé dans director.ts mais jamais importé
+- Gouvernance anti-duplication validée (5/6 règles CONFORME)
+- Sécurité : 0 clé en dur frontend, mais rate limiting absent et clé API en clair localStorage

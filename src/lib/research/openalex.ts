@@ -325,6 +325,7 @@ export async function searchAcademicWorks(
  * Convertit un OpenAlexWork en objet formaté pour le contexte IA.
  */
 export function openAlexWorkToFormatted(work: OpenAlexWork): {
+  id: string;
   title: string;
   doi: string;
   authors: string;
@@ -354,6 +355,7 @@ export function openAlexWorkToFormatted(work: OpenAlexWork): {
     .map((c) => c.display_name);
 
   return {
+    id: work.id,
     title: work.title || work.display_name || "",
     doi: work.doi || "",
     authors,

@@ -8,8 +8,8 @@ import { NextRequest } from "next/server";
 import {
   type AiProviderId,
   PROVIDER_BASE_URLS,
-  getProviderExtraHeaders,
 } from "@/lib/ai/ai-types";
+import { getProviderExtraHeaders } from "@/lib/ai/ai-provider";
 import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
 
 // ─── Types ───────────────────────────────────────────────

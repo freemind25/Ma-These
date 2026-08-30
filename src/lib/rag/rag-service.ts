@@ -391,9 +391,10 @@ export async function retrieveChunks(
   if (canDoSemantic) {
     // For hybrid/semantic, only load chunks that HAVE embeddings
     // Combine thesis filter + embedding filter with AND
+    const embeddingNotNull = { embedding: { not: null } };
     const where = thesisWhere
-      ? { AND: [thesisWhere, { embedding: { not: null as const } }] }
-      : { embedding: { not: null as const } };
+      ? { AND: [thesisWhere, embeddingNotNull] }
+      : embeddingNotNull;
 
     const allChunks = await db.documentChunk.findMany({
       where,

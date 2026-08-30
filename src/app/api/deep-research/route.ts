@@ -157,11 +157,11 @@ async function executeWebSearches(
         query: sq.query,
         num: 5,
       });
-      return (Array.isArray(results) ? results : []).map((r: Record<string, string>) => ({
-        url: r.url || "",
-        name: r.name || "",
-        snippet: r.snippet || "",
-        host_name: r.host_name || "",
+      return (Array.isArray(results) ? results : []).map((r) => ({
+        url: (r as unknown as Record<string, string>).url || "",
+        name: (r as unknown as Record<string, string>).name || "",
+        snippet: (r as unknown as Record<string, string>).snippet || "",
+        host_name: (r as unknown as Record<string, string>).host_name || "",
       }));
     } catch (err) {
       console.error(`[deep-research] Search failed for: ${sq.query}`, err);
@@ -277,7 +277,7 @@ async function readTopPages(
       const result = await zai.functions.invoke("page_reader", {
         url: page.url,
       });
-      const html = (result as Record<string, string>).html || "";
+      const html = (result as unknown as Record<string, string>).html || "";
       const text = html
         .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
         .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
