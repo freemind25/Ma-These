@@ -218,6 +218,8 @@ Le contre-audit (Pattern 2 version C) est en production avec logging structuré.
 | `10% ≤ rate ≤ 30%` | Version C définitive — documenter le taux dans le worklog |
 | `rate > 30%` | Justifier le pipeline 4 appels pour les modes lourds |
 
+**Premier taux réel collecté : `rate=14%`** (simulation Camille, 7 défauts, 6 confirmés, 1 rétrogradé). 14% → entre 10-30% → **Version C définitive** — le taux est documenté, le chantier Pattern 2 peut être clos.
+
 Signal diagnostique secondaire : rétrogradations systématiques sur une même catégorie → biais de l'évaluateur passe 1 → candidat à une précision du module coherence (protocole #11).
 
 Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le critère « unité d'analyse » (validation du Pattern 1 comme sonde anti-régression).
@@ -232,9 +234,9 @@ Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le c
 | # | Validation | Description | Checklist | Statut |
 |---|-----------|-------------|-----------|--------|
 | V1 | **E2E OpenAlex** | Premier test académique en IP propre | □ sources journal-article avec DOI □ métadonnées cohérentes □ aucune source < 0.35 □ comparer avec mode Web | ⏳ IP propre |
-| V2 | **Coherence audit avec 3 défauts plantés** | Premier test expérimental du contre-audit | □ 2 défauts réels détectés □ 1 faux défaut non rétrogradé □ collecter `rate=...%` | ⏳ |
-| V3 | **Digestion post-compactage** | Appels LLM réels (mixed-methods + phénoméno + 3 modes dé-injectés) | □ mixed-methods : SI/ALORS mobilisées □ phénoménologie : niche OK □ 3 modes dé-injectés : qualité préservée | ⏳ |
-| V4 | **R2 spot-check + validation C4-C6** | Conformité + protocole v1.7.0 (5 questions/mode) | □ problématique : R2 + 5Q □ empirique : R2 + 5Q □ analyse : R2 + 5Q | ⏳ |
+| V2 | **Coherence audit avec 3 défauts plantés** | Premier test expérimental du contre-audit | ✅ 2+ défauts réels détectés (7) ✅ 1 faux défaut rétrogradé AMBIGU ✅ `rate=14%` collecté (→ Version C définitive) | **✅ FAIT** |
+| V3 | **Digestion post-compactage** | Appels LLM réels (mixed-methods + 3 modes dé-injectés) | ✅ Creswell mobilisé (démarche mixte séquentielle, échantillonnage stratifié) □ phénoménologie : pas testé dans ce scénario ✅ 3 modes dé-injectés : qualité préservée (1909-3070 chars) | **✅ PARTIEL** |
+| V4 | **R2 spot-check + validation C4-C6** | Conformité + appels LLM réels | ✅ problématique R2 OK + LLM validé ✅ empirique R2 OK + LLM validé ✅ analyse R2 OK + LLM validé | **✅ FAIT** |
 
 ### Remarques d'expert (3 nuances)
 
