@@ -7787,3 +7787,25 @@ Stage Summary:
 - Taille : 45.0 Mo (standalone 157Mo + node.exe 70Mo + Tauri runtime, compressé NSIS)
 - Versions synchronisées : package.json, tauri.conf.json, Cargo.toml → 1.9.7
 - Note : v1.3.0 draft (112.3 Mo) peut être supprimé manuellement
+---
+Task ID: audit-v1.9.7-desktop-release
+Agent: Main
+Task: Consigner les 3 réserves de l'audit post-release desktop
+
+Work Log:
+- R1 : Tag v1.9.7 déplacé 3 fois (force-push) après publication initiale
+  → Risque : clones existants désynchronisés
+  → Règle pour l'avenir : ne JAMAIS déplacer un tag publié, créer le tag suivant
+  → Contenu final v1.9.7 = commit a4b4f6d (3 commits au-dessus du tag initial f252ca4)
+- R2 : v1.9.8 (grammaire d'intégrité) est en mission → premier .exe distribué
+  devrait être v1.9.8 pour que le docteur ait la protection anti-hallucination
+  → Re-tag après merge v1.9.8, la pipeline produit le .exe en ~5 min (cache)
+- R3 : 45 Mo installateur / ~157 Mo node_modules sidecar = dette d'optimisation
+  → Backlog B10 : élaguer le bundle (@next/bundle-analyzer, tree-shaking)
+  → Pas urgent, mais à surveiller si on ajoute des dépendances lourdes
+
+Stage Summary:
+- Le .exe COMPILE. Il n'a JAMAIS été exécuté sur un vrai Windows.
+- La checklist 6 points (install, startup, appel IA, clé, persistance, désinstall)
+  est le PENDING CRITIQUE bloquant toute distribution.
+- Séquence validée : (1) test Windows réel → (2) merge v1.9.8 → (3) re-tag → (4) distribuer.
