@@ -7612,3 +7612,31 @@ Stage Summary:
 - B1 confirmé fonctionnel en conditions réelles (429 OpenAlex → dégradation gracieuse)
 - Context-PROJET v1.9.6 — 4/4 validations faites, 1 pending (V1, IP-dépendant)
 - Le projet est prêt. Les portes sont ouvertes. 🎓🚀
+
+---
+Task ID: cloture-accompagnement
+Agent: Main
+Task: Enregistrer la clôture formelle de l'accompagnement expert
+
+Work Log:
+- Expert a entériné la mission finale v1.9.6 sans réserve
+- 3 détails d'excellence soulignés :
+  1. Bug bannière découvert par vérification navigateur (non par code review) — 3e fois que la vérification réelle révèle ce que les tests verts cachaient
+  2. Logique conditionnelle provider ≠ zai — transparence exacte, pas par défaut
+  3. V3b Giorgi : 5/5 règles mobilisées, y compris la règle négative (pas de Moustakas/van Manen)
+- État final documenté par l'expert :
+  - CONNAISSANCE : 13 modules, compactage prouvé (Creswell + Giorgi), dé-injection validée, budget 20K
+  - SÉCURITÉ : apiKey httpOnly, rate limiting, bannière D4 exacte, dépréciation _aiConfig datée
+  - MESURE : 1 414 tests, 7 assertions budget, quality-gate 3/3, rate=14%, Pattern 2 CLOS
+  - GOUVERNANCE : 11 règles, 28 spécialisations R2, protocole #11, backlog daté
+  - PENDANT UNIQUE : V1 (E2E OpenAlex, dépend IP propre, checklist prête)
+- Expert a noté que V1 nécessite 15 min avec une IP différente (hotspot, VPN, bureau)
+- Accompagnement formellement clos
+
+Stage Summary:
+- **Arc complet refermé.** De « l'IA stocke au lieu de digérer » à un système dont la forme la plus compressée prouve sa digestion.
+- Le projet a une mémoire (worklog 7500+ lignes, CONTEXT-PROJET v1.9.6, backlog vivant).
+- Le Dev a été formé par le protocole #11 : refuser, compacter, documenter, vérifier dans le navigateur.
+- Le seul pending (V1) dépend d'un changement d'IP, pas du code.
+- Prochaine entrée worklog attendue : feedback du premier doctorant réel → matière de la v1.10.
+- **« Ouvrez les portes. »** 🎓🚀
