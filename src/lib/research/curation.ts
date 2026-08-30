@@ -56,10 +56,14 @@ function scoreVenue(venue: string): number {
 }
 
 /**
- * Score type : journal-article=1, proceedings-article=0.8, book-chapter=0.7, preprint=0.4, autre=0.3
+ * Score type : article=1 (inclut journal-article, proceedings-article dans OpenAlex),
+ * book-chapter=0.7, preprint=0.4, autre=0.3
+ * Note : OpenAlex utilise "article" pour journal-article et proceedings-article
  */
 function scoreType(type: string): number {
   const typeScores: Record<string, number> = {
+    'article': 1.0,
+    // Compat : anciens types Crossref (peuvent apparaître dans certaines données)
     'journal-article': 1.0,
     'proceedings-article': 0.8,
     'book-chapter': 0.7,
@@ -160,7 +164,7 @@ export function computeCurationScore(
     score: Math.round(total * 100) / 100,
     details: {
       hasDoi: work.doi.length > 0,
-      isPeerReviewed: work.type === 'journal-article' || work.type === 'proceedings-article',
+      isPeerReviewed: ['article', 'journal-article', 'proceedings-article'].includes(work.type),
       venueIdentified: work.venue.length > 0,
       citationScore: Math.round(citScore * 100) / 100,
       recencyScore: Math.round(recencyScore * 100) / 100,

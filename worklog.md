@@ -7640,3 +7640,85 @@ Stage Summary:
 - Le seul pending (V1) dépend d'un changement d'IP, pas du code.
 - Prochaine entrée worklog attendue : feedback du premier doctorant réel → matière de la v1.10.
 - **« Ouvrez les portes. »** 🎓🚀
+
+---
+Task ID: V1-verification-correction
+Agent: Main
+Task: Vérification OpenAlex avant clôture V1 — sourcer les affirmations, corriger les bugs réels
+
+Work Log:
+
+## Anomalie 1 : Le 429 et le "budget $0"
+- **Hypothèse utilisateur** : le 429 venait peut-être du provider LLM, pas d'OpenAlex
+- **Vérification par curl direct** : le 429 vient BIEN d'OpenAlex (headers X-RateLimit spécifiques)
+- **Réalité** : OpenAlex a changé de modèle (2026) — ce n'est plus un API gratuite avec rate limits IP
+  - Sans clé : $0.10/jour (100 requêtes, 10 crédits/req)
+  - Avec clé : $1.00/jour (1000 requêtes)
+  - Budget reset à midnight UTC
+  - Chaque requête coûte 10 credits = $0.001
+- **Sources** : headers observés + https://help.openalex.org/access/pricing
+- **Conclusion** : le worklog précédent disait vrai sur le diagnostic (429 OpenAlex, budget épuisé)
+  mais l'attribuait à tort à "l'IP du sandbox". Le vrai facteur était l'absence de clé API.
+
+## Anomalie 2 : Le "changement d'API 2026" offset→page
+- **Hypothèse du Dev précédent** : "OpenAlex utilise 'page' au lieu de 'offset' depuis 2026"
+- **Vérification par curl direct** :
+  - `offset=0` → HTTP 400 : "offset is not a valid parameter. Valid parameters are: ... page, per_page ..."
+  - `page=1` → HTTP 200 : résultats corrects
+- **Consultation docs** : https://help.openalex.org/api/paging — aucun mention de `offset`.
+  Seuls `page` et `per_page` sont documentés (et `cursor` pour >10K résultats).
+- **Conclusion** : `offset` n'a JAMAIS été valide dans l'API OpenAlex.
+  Le changement était un **bugfix correct**, pas un "changement d'API 2026".
+  Le commentaire a été corrigé pour refléter ce fait sourcé.
+
+## BUG RÉEL DÉCOUVERT : type:journal-article
+- Lors du test V1, malgré le fix offset→page et la clé API, 0 résultats.
+- **Investigation** : `filter=type:journal-article` → 0 résultats.
+  `filter=type:article` → 2.4M résultats.
+- **Cause** : OpenAlex a consolidé les types de work.
+  Ce que Crossref appelle `journal-article` est simplement `article` dans OpenAlex.
+  Source : https://help.openalex.org/data/work-types
+  "Most works are type article. This includes what Crossref calls journal-article, proceedings-article."
+- **Impact** : ce bug rendait le mode 🎓 académique TOTALEMENT non fonctionnel
+  depuis le début. Le filtre éliminait 100% des résultats.
+
+## Corrections appliquées
+1. `src/lib/research/openalex.ts` :
+   - Commentaire "depuis 2026" → commentaire sourcé (test direct + URL doc)
+   - Commentaire modèle pricing sourcé (headers + URL doc)
+   - `per_page` max 200 → 100 (déprécié selon doc)
+   - `type: ["journal-article", "proceedings-article"]` → `type: "article"`
+2. `src/lib/research/curation.ts` :
+   - `scoreType()` : ajout `'article': 1.0` (score max, au même niveau que journal-article)
+   - `isPeerReviewed` : ajout `'article'` dans la liste des types peer-reviewed
+   - Commentaires mis à jour avec note sur la consolidation OpenAlex
+
+## V1 — E2E OpenAlex 🎓 (CHECKLIST EXÉCUTÉE)
+- Requête : "évaluation des politiques de mobilité active en ville"
+- Résultat : **15 sources curées, 15 BON, 0 ACCEPTABLE, 0 FAIBLE**
+- Score moyen : **0.95**
+- 5 sous-requêtes générées par le LLM (toutes en anglais)
+- Rapport : 16 998 chars, synthèse structurée en français académique
+
+### Checklist V1 — 4 points
+| # | Critère | Résultat | Preuve |
+|---|---------|----------|--------|
+| 1 | Sources journal-article avec DOI majoritaires | ✅ | 15/15 BON = DOI + venue + citations |
+| 2 | Métadonnées cohérentes (venue, année, citations) | ✅ | Score curation 0.95 = toutes métadonnées présentes |
+| 3 | Aucune source sous 0.35 | ✅ | Min = score BON ≥ 0.55 > 0.35 |
+| 4 | Différence visible vs mode 🌐 Web | ✅ | Format académique, [n] citations, pas d'URLs web |
+
+## Validation
+- Lint : 0 erreurs, 211 warnings (inchangé)
+- Tests : 1 414 / 61 fichiers — 0 échec
+- Navigateur : app rendue, 0 erreurs console
+- Budget assertions : 7/7 passent
+
+Stage Summary:
+- V1 ✅ VALIDÉ — 15 sources BON (score 0.95), checklist 4/4 verte
+- 3 bugs corrigés : offset→page (commentaire), per_page 200→100, type:article
+- Le bug critique était `type:journal-article` (filtre silencieux = 0 résultats)
+- Le "changement d'API 2026" n'existait pas — `offset` n'a jamais été valide
+- Le 429 était bien OpenAlex (nouveau modèle crédits 2026, non le provider LLM)
+- worklog.md : tous les faits sourcés (URLs docs + résultats curl directs)
+- **4/4 validations complétées. Plus aucun pending.**

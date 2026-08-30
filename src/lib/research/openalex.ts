@@ -8,7 +8,9 @@
 
 const OPENALEX_BASE = "https://api.openalex.org";
 
-// Clé API OpenAlex (requise depuis fév. 2026) — stockée dans .env
+// Clé API OpenAlex — stockée dans .env
+// Modèle actuel (vérifié 2026-08-30) : $1/jour avec clé (1000 req), $0.10/jour sans clé (100 req)
+// Source : https://help.openalex.org/access/pricing + test direct headers X-RateLimit
 const OPENALEX_API_KEY = process.env.OPENALEX_API_KEY || "";
 
 // Politesse : OpenAlex recommande un paramètre mailto dans User-Agent
@@ -121,7 +123,7 @@ export interface OpenAlexSearchParams {
   query?: string;
   filter?: Record<string, string | string[]>;
   sort?: string; // "cited_by_count:desc", "publication_date:desc"
-  limit?: number; // 1-200 (default 25)
+  limit?: number; // 1-100 (default 25, max vérifié sur docs.openalex.org/api/paging)
   offset?: number;
   sample?: number;
   select?: string[];
@@ -269,9 +271,12 @@ export async function searchWorks(
     url.searchParams.set("sort", params.sort);
   }
 
-  const perPage = Math.min(params.limit || 25, 200);
+  // per_page max = 100 (200 déprécié, source: docs.openalex.org/api/paging)
+  const perPage = Math.min(params.limit || 25, 100);
   url.searchParams.set("per_page", String(perPage));
-  // OpenAlex utilise "page" (1-based) au lieu de "offset" depuis 2026
+  // OpenAlex utilise "page" (1-based). Le paramètre "offset" n'a jamais été valide
+  // (testé 2026-08-30 : HTTP 400 "offset is not a valid parameter")
+  // Source doc : https://help.openalex.org/api/paging
   const page = Math.floor((params.offset || 0) / perPage) + 1;
   url.searchParams.set("page", String(page));
 
@@ -323,7 +328,8 @@ export async function getRelatedWorks(
   const shortId = openalexId.replace("https://openalex.org/", "");
   const url = `${OPENALEX_BASE}/works/${shortId}/related`;
   const params = new URLSearchParams({
-    per_page: String(Math.min(limit, 200)),
+    // per_page max = 100 (200 déprécié)
+    per_page: String(Math.min(limit, 100)),
   });
 
   // Clé API
@@ -364,7 +370,10 @@ export async function searchAcademicWorks(
   },
 ): Promise<OpenAlexWork[]> {
   const filter: Record<string, string | string[]> = {
-    type: ["journal-article", "proceedings-article"],
+    // OpenAlex type "article" inclut journal-article + proceedings-article
+    // (vérifié 2026-08-30 : type:journal-article → 0 résultats, type:article → OK)
+    // Source : https://help.openalex.org/data/work-types
+    type: "article",
     is_paratext: "false",
   };
 
