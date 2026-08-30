@@ -1,6 +1,6 @@
 {
   "name": "thesisframe",
-  "version": "1.5.1",
+  "version": "1.9.7",
   "private": true,
   "description": "ThesisFrame — Assistant intelligent pour la rédaction de thèses de doctorat",
   "scripts": {
