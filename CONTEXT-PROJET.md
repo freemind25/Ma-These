@@ -1,7 +1,7 @@
 # CONTEXT-PROJET.md — Ma Thèse (ThesisFrame)
 
 > **Mémoire de projet** — contexte, décisions, état d'avancement
-> Version : **v1.9.5** (post-audit Phase 3)
+> Version : **v1.9.6** (mission finale avant premier doctorant)
 
 ---
 
@@ -222,12 +222,15 @@ Le contre-audit (Pattern 2 version C) est en production avec logging structuré.
 
 Signal diagnostique secondaire : rétrogradations systématiques sur une même catégorie → biais de l'évaluateur passe 1 → candidat à une précision du module coherence (protocole #11).
 
+**Pattern 2 — CLOS.** Version C définitive. Taux documenté : `rate=14%` (1 run expérimental, n=7 défauts). Re-mesure conseillée au fil des usages réels via les logs structurés `[coherence-audit]`. Le capteur reste en place — observation continue gratuite.
+
 Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le critère « unité d'analyse » (validation du Pattern 1 comme sonde anti-régression).
 
 ## 9. Validations avant premier doctorant
 
 > Verdict entériné : **PRÊT POUR PREMIERS UTILISATEURS** (42/46 conforme, 0 ❌).
-> Ce qui reste n'est plus du développement mais des **validations par l'usage réel**.
+> 4/4 validations complétées. D4 implémenté. Pattern 2 clos.
+> Ce qui reste : V1 (E2E OpenAlex, dépend de l'IP).
 
 ### ⏳ 4 validations réelles (AVANT/AVEC le premier doctorant)
 
@@ -235,7 +238,7 @@ Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le c
 |---|-----------|-------------|-----------|--------|
 | V1 | **E2E OpenAlex** | Premier test académique en IP propre | □ sources journal-article avec DOI □ métadonnées cohérentes □ aucune source < 0.35 □ comparer avec mode Web | ⏳ IP propre |
 | V2 | **Coherence audit avec 3 défauts plantés** | Premier test expérimental du contre-audit | ✅ 2+ défauts réels détectés (7) ✅ 1 faux défaut rétrogradé AMBIGU ✅ `rate=14%` collecté (→ Version C définitive) | **✅ FAIT** |
-| V3 | **Digestion post-compactage** | Appels LLM réels (mixed-methods + 3 modes dé-injectés) | ✅ Creswell mobilisé (démarche mixte séquentielle, échantillonnage stratifié) □ phénoménologie : pas testé dans ce scénario ✅ 3 modes dé-injectés : qualité préservée (1909-3070 chars) | **✅ PARTIEL** |
+| V3 | **Digestion post-compactage** | Appels LLM réels (mixed-methods + 3 modes dé-injectés + Giorgi) | ✅ Creswell mobilisé (démarche mixte séquentielle, échantillonnage stratifié) ✅ Giorgi : 4 étapes mobilisées, pas de mélange Moustakas/van Manen ✅ 3 modes dé-injectés : qualité préservée (1909-3070 chars) | **✅ FAIT** |
 | V4 | **R2 spot-check + validation C4-C6** | Conformité + appels LLM réels | ✅ problématique R2 OK + LLM validé ✅ empirique R2 OK + LLM validé ✅ analyse R2 OK + LLM validé | **✅ FAIT** |
 
 ### Remarques d'expert (3 nuances)
@@ -254,13 +257,13 @@ Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le c
 
 | # | Suggestion | Priorité | Contexte |
 |---|-----------|----------|----------|
-| B1 | ✅ **Gestion 429 côté UI** — middleware.ts renvoie 429 gracieuse avec Retry-After | basse | **CORRIGÉ en Phase 1** |
+| B1 | ✅ **Gestion 429 côté UI** — middleware.ts renvoie 429 gracieuse avec Retry-After | basse | **CORRIGÉ en Phase 1. Observé fonctionnel en conditions réelles (simulation Camille — OpenAlex 429 → message utile).** |
 | B2 | ✅ **Retry avec backoff** dans le wrapper OpenAlex — fetchWithRetry() : 15s timeout, 2 retries, backoff exponentiel | basse | **CORRIGÉ en Phase 3** |
 | B3 | **Backlog manquant** — table §10 tronquée après B2 dans l'audit initial | basse | Complété en Phase 3 |
 | B4 | **Rate limiting persistant** si déploiement multi-instance (Upstash Redis ou table DB) | basse | Échéance : v1.11.0 |
 | B5 | **Supprimer le fallback `_aiConfig` body** dans `resolveAiConfig` | basse | Échéance : v1.10.0 |
 | B6 | **Lint : stabiliser les warnings** (211 actuels, règle « 0 warning nouveau par livraison ») | basse | 0 nouveau en Phase 3, 211 inchangés |
-| **D4** | **🔥 Avertissement données** — bannière info quand provider ≠ zai (destination des textes, rétention, clé côté serveur) | **HAUTE** | **AVANT LANCEMENT ou premier item semaine 1. Réinscrit après disparition du radar (nuance 3 du verdict d'expert).** |
+| **D4** | ✅ **Avertissement données** — bannière info quand provider ≠ zai (destination, rétention, clé cookie sécurisé) | **HAUTE** | **FAIT (mission finale). Composant DataBanner, localStorage dismiss, 0 error lint.** |
 | D7 | Coherence-check digestion test avec 3 défauts plantés | moyenne | À faire avec V2 |
 | D8 | Mode « conclusion » | basse | Backlog |
 | D9/D11 | Migrer freeform/improvement/verification-publication vers buildPrompt | basse | Backlog |

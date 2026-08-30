@@ -4,6 +4,8 @@ import { useAppStore } from "@/lib/stores/app-store";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { AppHeader } from "@/components/layout/app-header";
 import { AppFooter } from "@/components/layout/app-footer";
+import { DataBanner } from "@/components/layout/data-banner";
+import { useAiConfig } from "@/hooks/use-ai-config";
 import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { EditorPage } from "@/modules/editor/editor-page";
 import { CadragePage } from "@/modules/cadrage/cadrage-page";
@@ -130,11 +132,14 @@ function CurrentView() {
 }
 
 export default function Home() {
+  const { aiConfig } = useAiConfig();
+
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="flex flex-col min-h-screen">
         <AppHeader />
+        <DataBanner provider={aiConfig.provider} />
         <main className="flex-1 overflow-y-auto scrollbar-thin">
           <CurrentView />
         </main>
