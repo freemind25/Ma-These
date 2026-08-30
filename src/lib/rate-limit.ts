@@ -2,6 +2,19 @@
 // ThesisFrame — In-memory Sliding Window Rate Limiter
 // Protects AI routes from abuse (cost control).
 // No external dependencies — pure in-memory Map.
+//
+// ⚠️ LIMITATION: This limiter uses an in-memory Map, which means:
+// 1. In multi-instance deployments (Vercel serverless, scaled containers),
+//    each instance has its own counter — effective limit = limit × N instances.
+// 2. On server restart, all counters reset to zero.
+// 3. Rate limits are keyed by IP address. Users behind shared campus/VPN
+//    IPs (e.g., university networks) share the same bucket. See BACKLOG B4.
+//
+// For single-instance deployment (current: dev server, mono-process),
+// this is sufficient. If deploying to multi-instance, migrate to a
+// shared store (Upstash Redis, or a lightweight DB table).
+//
+// BACKLOG B4: Rate limiting persistant si déploiement multi-instance.
 // ═══════════════════════════════════════════════════════════════
 
 interface RateLimitEntry {
@@ -19,6 +32,7 @@ export interface RateLimitRule {
 }
 
 // In-memory store (per IP + route pattern)
+// NOTE: See header comment about multi-instance limitation (BACKLOG B4)
 const store = new Map<string, RateLimitEntry>();
 
 // Cleanup old entries every 5 minutes

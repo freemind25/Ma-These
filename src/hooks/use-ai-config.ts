@@ -130,8 +130,12 @@ export function useAiConfig() {
    * Save the full config (including API key) to the server's httpOnly cookie.
    * The key is sent to /api/ai-config POST and stored server-side.
    * It NEVER enters localStorage.
+   *
+   * IMPORTANT: On success, state is set from the safe server response (no apiKey).
+   * On failure, state is updated but apiKey is stripped to prevent leakage via withAiConfig.
    */
   const saveConfig = useCallback(async (newConfig: AiProviderConfig) => {
+    let saved = false;
     try {
       const res = await fetch("/api/ai-config", {
         method: "POST",
@@ -140,6 +144,7 @@ export function useAiConfig() {
       });
 
       if (res.ok) {
+        saved = true;
         const { data } = (await res.json()) as { data: SafeConfig };
         if (mountedRef.current) {
           setConfig({
@@ -157,22 +162,29 @@ export function useAiConfig() {
       console.error("[ai-config] Save failed:", e);
     }
 
-    // Always update local state immediately for responsive UI
-    if (mountedRef.current) {
-      setConfig(newConfig);
+    // On failure only: update local state for responsive UI, but STRIP the apiKey
+    // to prevent it from leaking into withAiConfig request bodies.
+    if (!saved && mountedRef.current) {
+      const { apiKey: _, ...safeConfig } = newConfig;
+      setConfig(safeConfig);
       setHasApiKey(!!newConfig.apiKey);
     }
   }, []);
 
   /**
    * Merge the saved AI config into any request body.
-   * NOTE: This NO LONGER includes the API key — the server reads it from the httpOnly cookie.
+   * NOTE: This NEVER includes the API key — the server reads it from the httpOnly cookie.
    * The `_aiConfig` field is kept for backward compatibility but contains only
-   * provider/model/baseUrl (no apiKey).
+   * provider/model/baseUrl (no apiKey). Defense-in-depth: even if state somehow
+   * contained the key, it is stripped here before sending.
+   *
+   * DEPRECATION NOTICE (v1.9.5): The _aiConfig body fallback will be removed
+   * in a future version. All routes should read config from the httpOnly cookie only.
    */
   const withAiConfig = useCallback(
-    <T extends Record<string, unknown>>(body: T): T & { _aiConfig: AiProviderConfig } => {
-      return { ...body, _aiConfig: config };
+    <T extends Record<string, unknown>>(body: T): T & { _aiConfig: Omit<AiProviderConfig, 'apiKey'> } => {
+      const { apiKey: _, ...safeConfig } = config;
+      return { ...body, _aiConfig: safeConfig };
     },
     [config]
   );

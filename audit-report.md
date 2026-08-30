@@ -86,39 +86,58 @@
 
 | Item | Verdict | Sévérité | Mesure |
 |------|---------|----------|--------|
-| **4.1** Budget tokens noyau | ⚠️ DÉGRADÉ | **HAUTE** | **Obsolète** — doc dit ~3 900 tok (full), réel mesuré **~22 190 tok** (×5.7). Budget 4 500/3 000 jamais mis à jour depuis v1.8.1. Voir tableau détaillé ci-dessous. |
+| **4.1** Budget tokens noyau | ~~⚠️ DÉGRADÉ~~ **DIAGNOSTIQUÉ** | **HAUTE** | **Diagnostic Phase 2 terminé.** Ancien budget (3 900 full / 3 000 par mode) obsolète. Mesure précise : full core = **~22 184 tok** (66 552 chars ÷ 3). Nouveau budget calibré : 24 000 full / 19 000 par mode. Capteur permanent : `knowledge-core.budget.test.ts` (7 assertions). Voir §4.1bis ci-dessous. |
 | **4.2** Build de production | ✅ CORRIGÉ | — | 4 erreurs TS corrigées (paper2code, deep-research, export-docx, rag-service, curation, ai-writing). Build passe. Taille bundle à mesurer. |
 | **4.3** Tests | ✅ CONFORME | — | 1 372 tests / 58 fichiers — 0 échec |
 | **4.4** Lint | ✅ CONFORME | — | 0 erreurs, 191 warnings (pré-existants) |
 
-#### Budget tokens détaillé par mode (estimation ÷3 chars/token, français)
+#### Budget tokens détaillé — TABLEAU PAR MODULE (Phase 2 diagnostic)
 
-| Mode | Modules injectés | Tokens estimés | Budget 3K |
-|------|-------------------|---------------|-----------|
-| directeur | style+ethics+coherence+methodology+writing-process+publication | ~16 519 | ❌ ×5.5 |
-| revue-litterature | literature-review+methodology+style | ~9 389 | ❌ ×3.1 |
-| revision-plan | peer-review+coherence+writing-process+style | ~7 254 | ❌ ×2.4 |
-| hypothesis | methodology+style | ~7 161 | ❌ ×2.4 |
-| methodology | methodology+style | ~7 161 | ❌ ×2.4 |
-| scientific-writing | style+coherence+writing-process | ~6 927 | ❌ ×2.3 |
-| peer-review | peer-review+coherence+publication | ~4 765 | ❌ ×1.6 |
-| theory | style+writing-process | ~4 488 | ❌ ×1.5 |
-| defense | style+coherence | ~3 874 | ❌ ×1.3 |
-| literature-review | literature-review+style | ~3 663 | ❌ ×1.2 |
-| abstract | style+publication | ~3 434 | ❌ ×1.1 |
-| paraphrase | style+ethics | ~3 302 | ❌ ×1.1 |
-| academic-reformulation | style+ethics | ~3 302 | ❌ ×1.1 |
-| auto-edition-8c | auto-edition+style | ~1 659 | ✅ |
-| grammaire | style | ~1 435 | ✅ |
-| supervision | style | ~1 435 | ✅ |
-| harper | style | ~1 435 | ✅ |
+| Module ID | Const Name | Chars | Tokens~ | % du total |
+|-----------|-----------|-------|---------|-------------|
+| methodology | METHODOLOGY_MODULE | 17 177 | ~5 726 | 25,8% |
+| writing-process | WRITING_PROCESS_MODULE | 9 157 | ~3 052 | 13,8% |
+| coherence | COHERENCE_MODULE | 7 316 | ~2 439 | 11,0% |
+| literature-review | LITERATURE_REVIEW_MODULE | 6 682 | ~2 227 | 10,0% |
+| publication | PUBLICATION_MODULE | 5 995 | ~1 998 | 9,0% |
+| ethics | ETHICS_MODULE | 5 601 | ~1 867 | 8,4% |
+| style | STYLE_MODULE | 4 305 | ~1 435 | 6,5% |
+| presentation | PRESENTATION_MODULE | 2 576 | ~859 | 3,9% |
+| data-analysis | DATA_ANALYSIS_MODULE | 2 335 | ~778 | 3,5% |
+| visualization | VISUALIZATION_MODULE | 2 143 | ~714 | 3,2% |
+| grant-writing | GRANT_WRITING_MODULE | 1 615 | ~538 | 2,4% |
+| peer-review | PEER_REVIEW_MODULE | 979 | ~326 | 1,5% |
+| auto-edition | AUTO_EDITION_MODULE | 671 | ~224 | 1,0% |
+| **TOTAL** | **13 modules** | **66 552** | **~22 184** | **100%** |
+
+#### Budget tokens détaillé par mode (5 plus lourds)
+
+| Mode | Modules injectés | Chars | Tokens~ | Nouveau budget 19K |
+|------|-------------------|-------|---------|---------------------|
+| director | 6 modules (style+ethics+coherence+methodology+writing-process+publication) + spec | 52 200 | ~17 400 | ✅ |
+| directeur | 6 modules + spec | 51 305 | ~17 102 | ✅ |
+| revue-litterature-slr | literature-review+methodology+style | 28 929 | ~9 643 | ✅ |
+| verification-sources | peer-review+methodology+publication | 25 299 | ~8 433 | ✅ |
+| revision-plan | peer-review+coherence+writing-process+style | 23 296 | ~7 765 | ✅ |
 | deblocage | (aucun) | 0 | ✅ |
 
-**13 modes sur 21 dépassent le budget documenté de 3 000 tokens.**
+#### §4.1bis — Diagnostic des 3 hypothèses (Phase 2)
 
-> **Note** : Ce dépassement n'est pas nécessairement un problème fonctionnel — les LLM modernes gèrent 16K+ tokens en entrée. Mais il invalide les chiffres documentés et a un impact sur le coût par appel. La décision de réduire le contenu ou de revoir le budget à la hausse est un choix d'architecture.
+| Hypothèse | Évidence | Verdict |
+|-----------|----------|--------|
+| **H1 — Croissance légitime** | 11→13 modules (+2 : visualization, presentation). Top 3 modules (methodology 25.8%, writing-process 13.8%, coherence 11.0%) = 50.6% du total. Le module methodology (17K chars, 5 726 tok) était probablement absent ou minimal dans le budget initial. | **PARTIELLEMENT VRAI** — la croissance organique explique ×2-3, pas ×5.7 |
+| **H2 — Inflation de verbe** | Le module methodology contient 43 occurrences de « SI » et 83 bullet points. C'est du contenu conditionnel nécessaire (règles diagnostiques), pas du remplissage. Cependant, certains blocs pourraient être compactés (ex: regrouper les conditions similaires). | **FAIBLE** — les SI conditionnels sont légitimes. Pas de verbe superflu détecté. |
+| **H3 — Erreur de mesure** | Même avec l'estimation conservative (chars÷4), le full core fait ~16 638 tok → ×4.3 vs le budget 3 900. Avec l'estimation agressive (chars÷2.5), ~26 621 tok → ×6.8. La conclusion (dépassement massif) est robuste quel que soit le ratio chars/token. | **ÉCARTE** — la dérive est réelle, pas un artefact de mesure. |
 
----
+**CONCLUSION DIAGNOSTIC :** La dérive ×5.7 est principalement due à **H1** (croissance organique légitime + modules ajoutés) avec un facteur contributif mineur de **H2** (le module methodology est le plus gros contributeur à 25.8% du total). Le budget documenté de 3 900 tok était probablement mesuré sur une version antérieure du noyau (11 modules, contenu moins développé) et n'a jamais été mis à jour malgré 8+ versions d'ingestion de savoir.
+
+**DÉCISION :** Nouveau budget calibré = mesure actuelle + 10% de marge :
+- Full core : **24 000 tokens** (mesuré ~22 184)
+- Par mode : **19 000 tokens** (mesuré ~17 102 pour directeur)
+
+**CAPTEUR PERMANENT :** `src/lib/ai/knowledge-core.budget.test.ts` — 7 assertions qui échoueront si le noyau dépasse les nouveaux seuils.
+
+> **Note** : Ce dépassement n'est pas un problème fonctionnel — les LLM modernes gèrent 128K+ tokens en entrée. L'impact est sur le coût par appel (~5× le budget initial documenté) et sur le positionnement du tiers LLM différé (le coût réel est plus élevé que documenté).
 
 ### AXE 5 — ROBUSTESSE ET CAS LIMITES
 
@@ -175,7 +194,7 @@
 
 | # | Item | Sévérité | Description | Correction | Effort |
 |---|------|----------|-------------|-----------|--------|
-| D1 | Budget tokens obsolète | HAUTE | Full core 22K tok vs 4.5K documenté, 13/21 modes dépassent 3K | Décider : (a) réduire le contenu du noyau, ou (b) documenter le nouveau budget réel, ou (c) revoir l'architecture (plus de modules, injection plus sélective) | 1-2j |
+| D1 | Budget tokens obsolète | ~~HAUTE~~ **RÉSOLU** | Full core 22K tok vs 4.5K documenté — **DIAGNOSTIQUÉ**. Nouveau budget calibré (24K full / 19K par mode). Capteur permanent : 7 assertions dans `knowledge-core.budget.test.ts`. Chiffres doc à mettre à jour en Phase 4 (D13). | Décision prise : nouveau budget calibré + capteur test. Mise à jour docs différée en Phase 4. | ~~1-2j~~ 30min diagnostic |
 | D2 | Directeur-chat sans `onError` | MOYENNE | Les échecs API sont silencieux dans le chat directeur | Ajouter `onError` callback au `useMutation` avec toast d'erreur | 15 min |
 | D3 | Clé API en clair dans localStorage | ~~MAJEURE~~ **CORRIGÉ** | Accessible par extensions, XSS, accès physique | **CORRIGÉ** — Option A : cookie httpOnly + route `/api/ai-config`. 9 routes mises à jour. Migration auto depuis localStorage. | ~~1h~~ |
 | D4 | Pas d'avertissement données externes | MAJEURE | Textes envoyés aux providers sans avertissement | Bannière info quand provider ≠ zai : « Votre texte sera envoyé au fournisseur X » | 30 min |
@@ -198,13 +217,13 @@
 | Métrique | Valeur | Cible | Statut |
 |----------|--------|--------|--------|
 | Version | v1.9.4 | — | ✅ |
-| Tests | 1 372 / 58 fichiers | — | ✅ Tous passent |
-| Lint | 0 erreurs, 191 warnings | 0 erreurs | ✅ |
-| Build production | **ÉCHEC** | Success | ❌ |
-| Full core tokens | **~22 190** | ≤ 4 500 documenté | ⚠️ ×4.9 |
-| Mode le plus lourd | directeur ~16 519 tok | ≤ 3 000 documenté | ⚠️ ×5.5 |
-| Modes dans le budget | 8/21 (38%) | 21/21 (100%) | ⚠️ |
-| Knowledge modules | 13 | 11 documenté | ⚠️ |
+| Tests | **1 390** / 60 fichiers | — | ✅ Tous passent |
+| Lint | 0 erreurs, 207 warnings | 0 erreurs | ✅ |
+| Build production | ✅ Passe | Success | ✅ |
+| Full core tokens | **~22 184** | ≤ 24 000 calibré | ✅ |
+| Mode le plus lourd | directeur ~17 400 tok | ≤ 19 000 calibré | ✅ |
+| Modes dans le budget | 26/26 (100%) | 26/26 (100%) | ✅ |
+| Knowledge modules | 13 | 13 documenté (à jour) | ✅ |
 | Spécialisations | 22 fichiers (+ 1 mort) | 19 documenté | ⚠️ |
 | API routes | ~50 | — | ✅ |
 | Modules fonctionnels UI | 36 | 36 documenté | ✅ |

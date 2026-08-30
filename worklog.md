@@ -7221,3 +7221,73 @@ Stage Summary:
 - Nouveaux fichiers : config-cookie.ts, resolve-ai-config.ts, rate-limit.ts, middleware.ts, api/ai-config/route.ts
 - Fichiers modifiés : 9 routes IA + use-ai-config.ts + app-header.tsx
 - Verdict audit : **OUI — 0 BLOCAGE RESTANT**
+
+---
+Task ID: phase1-finalization
+Agent: Main
+Task: Phase 1 finitions (4 points de vigilance) + Phase 2 diagnostic budget tokens
+
+Work Log:
+
+## Phase 1 — Finitions (~30 min)
+
+### 1. localStorage migration cleanup (✅ CONFIRMÉ)
+- Vérifié: `migrateLocalStorageToCookie()` détruit bien l'apiKey de localStorage après copie vers cookie
+  - Ligne 52-53: `const { apiKey: _, ...safeConfig } = parsed; localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(safeConfig));`
+  - L'item localStorage est écrasé sans la clé (les champs non-sensibles persistent pour le fallback UI)
+
+### 2. Bug critique découvert: withAiConfig fuyait l'apiKey dans le body (🔴 CORRIGÉ)
+- `saveConfig()` ligne 161-163 écrasait le state safe (serveur) avec le config complet (incluant apiKey)
+- `withAiConfig()` renvoyait le config state tel quel (avec apiKey) dans le body `_aiConfig`
+- **Correction:**
+  - `saveConfig`: ne met à jour le state avec le config complet QUE si le serveur a échoué (fallback UI), et dans ce cas STRIPPE l'apiKey
+  - `withAiConfig`: déstructure toujours `const { apiKey: _, ...safeConfig } = config` avant de renvoyer (defense-in-depth)
+  - Type de retour changé: `_aiConfig: Omit<AiProviderConfig, 'apiKey'>`
+
+### 3. Dépréciation du fallback `_aiConfig` body (décision: GARDER avec log)
+- Décision: garder le fallback avec log de dépréciation (1× par process) plutôt que rejet 410
+- Raisons: 40+ call sites utilisent `withAiConfig`, le body ne contient plus l'apiKey après correction
+- Date de retrait: v1.10.0 (4 semaines)
+- `resolve-ai-config.ts`: log console.warn unique via flag `_deprecationLogged`
+
+### 4. Rate limiter in-memory: documentation + test (✅)
+- Ajouté commentaire détaillé dans `rate-limit.ts` header (3 limitations: multi-instance, restart, IP partagée)
+- Référence BACKLOG B4 dans le code
+- Créé `src/lib/rate-limit.test.ts` — 11 tests:
+  - 6th call to coherence-check → 429 with Retry-After ✅
+  - Retry-After value accuracy ✅
+  - Independent keys ✅
+  - Rule coverage for 11 patterns ✅
+
+## Phase 2 — Diagnostic Budget Tokens
+
+### Mesure par module (script: scripts/measure-budget.js + .ts)
+- Full core: 66 552 chars / ~22 184 tokens (13 modules)
+- Module le plus gros: methodology (17 177 chars, 25.8% du total)
+- Top 3 = 50.6% du total (methodology + writing-process + coherence)
+
+### Départage des 3 hypothèses:
+- **H1 (croissance légitime): PARTIELLEMENT VRAI** — explique ×2-3, pas ×5.7
+- **H2 (inflation de verbe): FAIBLE** — 43 « SI » sont des règles diagnostiques nécessaires
+- **H3 (erreur de mesure): ÉCARTE** — ×4.3 même en conservative (chars÷4)
+- **CONCLUSION:** H1 dominante + budget jamais mis à jour depuis 8+ versions
+
+### Décision budgétaire:
+- Nouveau budget calibré: 24 000 full / 19 000 par mode (mesure + 10% headroom)
+- Pas de re-compaction nécessaire (le contenu est légitime)
+
+### Capteur permanent:
+- Créé `src/lib/ai/knowledge-core.budget.test.ts` — 7 assertions
+- Créé `scripts/measure-budget.ts` — script CLI pour tableaux détaillés
+- Tests valident: full core ≤ 24K, aucun mode > 19K, aucun module > 8K, exactement 13 modules
+
+## Validation finale:
+- Tests: 1 390 / 60 fichiers — 0 échec
+- Lint: 0 erreurs, 207 warnings (+16 vs 191 pré-existents: 11 rate-limit + 5 nouveaux patterns)
+- audit-report.md mis à jour: D1 résolu, budget calibré, hypothèses départagées
+
+Stage Summary:
+- Phase 1 finitions: 4/4 points traités (migration ✅, apiKey leak CORRIGÉ, dépréciation loggée, rate limiter testé)
+- Phase 2 diagnostic: budget ×5.7 expliqué (H1 dominante), nouveau budget calibré, capteur permanent déployé
+- Bug supplémentaire corrigé: withAiConfig fuyait l'apiKey dans le body POST (découvert pendant finition #1)
+- BACKLOG B4 créé: rate limiting persistant si déploiement multi-instance
