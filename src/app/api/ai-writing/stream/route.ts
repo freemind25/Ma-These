@@ -4,7 +4,7 @@ import { WRITING_MODES } from "@/data/ai-writing-modes";
 import { SPECIALIZATION_PROMPTS } from "@/lib/ai/specializations";
 import { getLevelCalibration, type DoctoralLevel } from "@/lib/ai/prompt-builder";
 import { z } from "zod/v4";
-import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 
 // ═══════════════════════════════════════
 // POST /api/ai-writing/stream — Streaming AI writing
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       content: validated.prompt,
     });
 
-    const providerConfig = validated._aiConfig as AiProviderConfig | undefined;
+    const providerConfig = resolveAiConfig(request, validated._aiConfig);
 
     return await generateCompletionStream({
       messages,

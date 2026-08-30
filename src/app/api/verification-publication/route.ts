@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 import { getKnowledgeCore } from "@/lib/ai/knowledge-core";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const providerConfig = body._aiConfig as AiProviderConfig | undefined;
+    const providerConfig = resolveAiConfig(request, body._aiConfig);
 
     switch (action as ActionId) {
       case "intro-discussion-coherence":

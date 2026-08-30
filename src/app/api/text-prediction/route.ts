@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateCompletion } from "@/lib/ai/zai-client";
-import type { AiProviderConfig } from "@/lib/ai/ai-types";
+import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as {
       text: string;
       context?: string;
-      _aiConfig?: AiProviderConfig;
+      _aiConfig?: unknown;
     };
 
     const { text, context, _aiConfig } = body;
+    const providerConfig = resolveAiConfig(request, _aiConfig);
 
     if (!text || text.trim().length < 5) {
       return NextResponse.json({ primary: null, alternatives: [] });
@@ -48,7 +49,7 @@ Réponse: mettre en évidence les lacunes|||synthétiser les connaissances actue
       ],
       temperature: 0.35,
       maxTokens: 120,
-      providerConfig: _aiConfig,
+      providerConfig,
     });
 
     const raw = result.content.trim();

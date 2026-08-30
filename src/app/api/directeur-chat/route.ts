@@ -4,7 +4,7 @@ import { DIRECTEUR_PROMPT } from "@/lib/ai/specializations/directeur";
 import { getLevelCalibration, type DoctoralLevel } from "@/lib/ai/prompt-builder";
 import { detectRelevantFiches, getFichesContentForPrompt } from "@/data/corpus-publication";
 import { z } from "zod/v4";
-import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 
 // ═══════════════════════════════════════
 // POST /api/directeur-chat — Chat with AI thesis director
@@ -70,8 +70,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Extract AI config if passed from client
-    const providerConfig = validated._aiConfig as AiProviderConfig | undefined;
+    // Resolve AI config from httpOnly cookie (secure) or body (backward compat)
+    const providerConfig = resolveAiConfig(request, validated._aiConfig);
 
     const result = await generateCompletion({
       messages: aiMessages,

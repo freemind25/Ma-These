@@ -7194,3 +7194,30 @@ Stage Summary:
 - Pattern 1 (Reasoning-then-Output) codé dans director.ts mais jamais importé
 - Gouvernance anti-duplication validée (5/6 règles CONFORME)
 - Sécurité : 0 clé en dur frontend, mais rate limiting absent et clé API en clair localStorage
+
+---
+Task ID: phase1-post-audit
+Agent: Main
+Task: Phase 1 — Correction des 2 blocages de l\'audit (D3 clé API + C2 rate limiting)
+
+Work Log:
+- D3 — Analyse du flux : localStorage → useAiConfig → _aiConfig body → providerConfig → zai-client
+- D3 — Créé src/lib/ai/config-cookie.ts : parse/serialize/strip/read httpOnly cookie
+- D3 — Créé src/lib/ai/resolve-ai-config.ts : helper partagé (cookie > body backward compat)
+- D3 — Créé src/app/api/ai-config/route.ts : GET (non-sensitive config), POST (set cookie), DELETE (clear)
+- D3 — Mis à jour 9 routes IA : ai-writing, ai-writing/stream, coherence-check, deep-research, directeur-chat, text-prediction, thesis-rag, verification-carto, verification-publication
+- D3 — Réécrit src/hooks/use-ai-config.ts : sauvegarde via /api/ai-config, migration auto depuis localStorage
+- D3 — Mis à jour src/components/layout/app-header.tsx : saveConfigToServer() async, loadLocalConfig()
+- C2 — Créé src/lib/rate-limit.ts : sliding window in-memory, 11 règles par route pattern
+- C2 — Créé src/middleware.ts : matcher /api/:path*, 429 gracieuse avec Retry-After
+- Validé : lint 0 erreurs (195 warnings, +4 nouveaux vs 191 pré-existents)
+- Validé : 1372/1372 tests passent
+- Validé : dev server compile sans erreur, GET /api/ai-config → 200
+- Mis à jour audit-report.md : verdict global → OUI (0 blocage), Axe 6 → CONFORME
+
+Stage Summary:
+- D3 CORRIGÉ : Clé API en cookie httpOnly (Option A). Ne touche jamais le JS client. Migration auto.
+- C2 CORRIGÉ : Rate limiting sliding window sur 11 patterns de routes IA. 429 gracieuse.
+- Nouveaux fichiers : config-cookie.ts, resolve-ai-config.ts, rate-limit.ts, middleware.ts, api/ai-config/route.ts
+- Fichiers modifiés : 9 routes IA + use-ai-config.ts + app-header.tsx
+- Verdict audit : **OUI — 0 BLOCAGE RESTANT**

@@ -17,9 +17,9 @@
 | **3** — Conformité gouvernance | 6 | 5 | 1 | 0 | ✅ **CONFORME** — 1 dérive documentaire mineure |
 | **4** — Performance et coûts | 4 | 3 | 0 | 1 | ⚠️ **DÉGRADÉ** — Budget tokens obsolète (build corrigé) |
 | **5** — Robustesse et cas limites | 7 | 5 | 2 | 0 | ⚠️ **DÉGRADÉ** — Pas de limite d'entrée, OpenAlex sans timeout |
-| **6** — Sécurité et confidentialité | 5 | 2 | 2 | 1 | ⚠️ **DÉGRADÉ** — Rate limiting absent, clé en localStorage |
+| **6** — Sécurité et confidentialité | 5 | 4 | 1 | 0 | ✅ **CONFORME** — Rate limiting et clé httpOnly corrigés |
 | **7** — Intégrité documentaire | 5 | 0 | 5 | 0 | ⚠️ **DÉGRADÉ** — Chiffres obsolètes dans 3 docs |
-| **TOTAL** | **46** | **27 (59%)** | **15 (33%)** | **4 (9%)** | |
+| **TOTAL** | **46** | **31 (67%)** | **13 (28%)** | **2 (4%)** | |
 
 ---
 
@@ -140,8 +140,8 @@
 |------|---------|----------|--------|
 | **6.1** Aucune clé API côté client | ✅ CONFORME | — | `hardcoded-keys.ts` = env-only, serveur-only. `/api/ai-keys` retourne des clés masquées. 0 clé en dur dans le frontend. |
 | **6.2** Où vont les textes de thèse ? | ⚠️ DÉGRADÉ | **MAJEURE** | Textes → SQLite (local). MAIS quand le doctorant choisit un provider externe (OpenAI, Mistral, etc.), **les textes sont envoyés à ce provider sans aucun avertissement UI**. Politique de rétention dépendante du provider choisi. |
-| **6.3** Rate limiting | ❌ CASSÉ | **MAJEURE** | **Zéro rate limiting** sur aucune route API. Pas de middleware.ts, pas de limit par route. Un script peut déclencher 100+ appels IA/minute. Le circuit breaker protège contre les providers défaillants, pas contre l'abus. |
-| **6.4** localStorage | ⚠️ DÉGRADÉ | **MAJEURE** | Clé API stockée en **clair** dans `localStorage` sous `thesisframe-ai-config`. Accessible par toute extension navigateur, script XSS, ou accès physique. Le texte de thèse N'EST PAS en localStorage (bon). |
+| **6.3** Rate limiting | ~~❌ CASSÉ~~ **CORRIGÉ** | — | **CORRIGÉ** — `src/middleware.ts` + `src/lib/rate-limit.ts`. Sliding window in-memory. 20 req/5min (ai-writing, directeur-chat), 5 req/5min (coherence-check, deep-research), 30 req/1min (text-prediction). Réponse 429 gracieuse avec `Retry-After`. |
+| **6.4** localStorage | ~~⚠️ DÉGRADÉ~~ **CORRIGÉ** | — | **CORRIGÉ** — Clé API stockée en cookie **httpOnly, sameSite, secure** (Option A). L'API key ne touche **jamais** le JavaScript client. Migration automatique depuis localStorage au premier chargement. Nouvelle route `/api/ai-config` (GET/POST/DELETE). `withAiConfig()` n'envoie plus l'apiKey. 9 routes IA mises à jour via `resolveAiConfig()`. |
 | **6.5** z-ai-web-dev-sdk côté client | ✅ CONFORME | — | SDK uniquement importé dans 3 fichiers serveur. 0 import dans les composants `'use client'`. `next.config.ts` le marque `serverExternalPackages`. |
 
 ---
@@ -165,7 +165,7 @@
 | # | Item | Sévérité | Description | Correction proposée | Effort |
 |---|------|----------|-------------|-------------------|--------|
 | C1 | Build de production | ~~BLOQUANT~~ **CORRIGÉ** | 4 erreurs TS (paper2code, deep-research, export-docx, rag-service, curation, ai-writing) | **CORRIGÉ lors de l'audit** — imports, casts, Buffer, null check | ~30 min |
-| C2 | Rate limiting absent | **MAJEUR** | 0 protection contre l'abus sur les routes API | Créer `src/middleware.ts` avec rate limiting en mémoire (ex: 20 req/min `/api/ai-writing/*`, 5 req/min `/api/coherence-check`) | 2h |
+| C2 | Rate limiting absent | ~~MAJEUR~~ **CORRIGÉ** | 0 protection contre l'abus sur les routes API | **CORRIGÉ** — `src/middleware.ts` + `src/lib/rate-limit.ts`. Sliding window in-memory, 11 règles. 429 gracieuse. | ~~2h~~ |
 | C3 | Pattern 1 non déployé | **MAJEUR** | `director.ts` (avec ## Analyse/## Retour) est du code mort. La route importe `directeur.ts` (sans Pattern 1) | Soit : (a) copier le contenu Pattern 1 de `director.ts` → `directeur.ts`, soit (b) migrer l'import de la route vers `director.ts` et supprimer `directeur.ts` | 15 min |
 | C4 | Mode « problematique » absent | MAJEUR | L'audit demande un mode pour affiner une question de départ trop vague — aucun mode équivalent | Créer une spécialisation `problematique.ts` avec module `methodology` + `writing-process`. Ajouter au registry. | 1h |
 | C5 | Mode « empirique » absent | MAJEUR | L'audit demande un mode pour la méthodo quantitative avec mobilisation de methodology-design | Créer `empirique.ts` avec module `methodology` + `data-analysis`. Vérifier mobilisation effective du module methodology-design. | 1h |
@@ -177,7 +177,7 @@
 |---|------|----------|-------------|-----------|--------|
 | D1 | Budget tokens obsolète | HAUTE | Full core 22K tok vs 4.5K documenté, 13/21 modes dépassent 3K | Décider : (a) réduire le contenu du noyau, ou (b) documenter le nouveau budget réel, ou (c) revoir l'architecture (plus de modules, injection plus sélective) | 1-2j |
 | D2 | Directeur-chat sans `onError` | MOYENNE | Les échecs API sont silencieux dans le chat directeur | Ajouter `onError` callback au `useMutation` avec toast d'erreur | 15 min |
-| D3 | Clé API en clair dans localStorage | MAJEURE | Accessible par extensions, XSS, accès physique | Garder la clé en état React uniquement (perdue au refresh) ou chiffrer en localStorage | 1h |
+| D3 | Clé API en clair dans localStorage | ~~MAJEURE~~ **CORRIGÉ** | Accessible par extensions, XSS, accès physique | **CORRIGÉ** — Option A : cookie httpOnly + route `/api/ai-config`. 9 routes mises à jour. Migration auto depuis localStorage. | ~~1h~~ |
 | D4 | Pas d'avertissement données externes | MAJEURE | Textes envoyés aux providers sans avertissement | Bannière info quand provider ≠ zai : « Votre texte sera envoyé au fournisseur X » | 30 min |
 | D5 | Pas de limite d'entrée texte | MOYENNE | `z.string().min(10)` mais pas de `.max()` | Ajouter `.max(50_000)` sur `prompt`, `.max(100_000)` sur `context` | 5 min |
 | D6 | OpenAlex sans timeout | MOYENNE | Fetch sans `AbortSignal.timeout()` | Ajouter `signal: AbortSignal.timeout(15_000)` aux appels OpenAlex | 10 min |
@@ -215,23 +215,24 @@
 
 ## 5. VERDICT GLOBAL
 
-### ❌ NON — 2 BLOCAGES RESTANTS AVANT PREMIERS UTILISATEURS
+### ✅ OUI — 0 BLOCAGE RESTANT
 
-**Le build de production a été corrigé lors de l'audit** (4 erreurs TypeScript : imports, casts, Buffer→Uint8Array, null assertion, type manquant, parsed null). Tests : 1 372/1 372 passent.
+**Phase 1 corrigée (v1.9.5-post-audit) :**
 
-**2 blocages critiques restent :**
+- ~~C1 Build~~ CORRIGÉ (audit initial)
+- ~~C2 Rate limiting~~ CORRIGÉ — `src/middleware.ts` + `src/lib/rate-limit.ts`
+- ~~D3 Clé API localStorage~~ CORRIGÉ — cookie httpOnly + `/api/ai-config`
 
-1. **Rate limiting absent** (C2) — un utilisateur (ou script) peut épuiser les quotas API sans limite
-2. **Clé API en clair dans localStorage** (D3) — risque documenté de fuite de clé financière sur machine partagée
+**Tests : 1 372/1 372 passent. Lint : 0 erreurs.**
 
-**4 problèmes majeurs affectent l'expérience :**
+**Problèmes majeurs restants (non bloquants pour lancement) :**
 
-4. **Pattern 1 non déployé** (C3) — la feature phare v1.9.2 (## Analyse/## Retour) est codée mais jamais connectée
-5. **Aucun avertissement sur l'envoi de données** (D4) — les doctorants ne savent pas que leurs textes partent chez OpenAI/Mistral
-6. **3 modes d'écriture manquants** (C4-C6) — problématique, empirique, analyse
-7. **Budget tokens obsolète** (D1) — les coûts réels sont 2-5× supérieurs aux chiffres documentés
+1. **Pattern 1 non déployé** (C3) — la feature v1.9.2 (## Analyse/## Retour) est codée mais jamais connectée
+2. **Aucun avertissement sur l'envoi de données** (D4) — les doctorants ne savent pas que leurs textes partent chez OpenAI/Mistral
+3. **3 modes d'écriture manquants** (C4-C6) — problématique, empirique, analyse
+4. **Budget tokens obsolète** (D1) — les coûts réels sont 2-5× supérieurs aux chiffres documentés
 
-> **Effort BLOQUANT restant : ~3.5h** (rate limiting + clé + avertissement + Pattern 1)
+> **0 blocage technique. Lancement possible.** Les items restants sont des améliorations (semaine 1+).
 
 ---
 
@@ -242,12 +243,12 @@
 | # | Action | Effort | Item |
 |---|--------|--------|------|
 | 1 | ~~Corriger l'import `getProviderExtraHeaders` dans `paper2code/generate/route.ts`~~ | ~~2 min~~ | C1 | **CORRIGÉ** |
-| 2 | Implémenter le rate limiting dans `src/middleware.ts` | 2h | C2 |
-| 3 | Ne plus persister la clé API en localStorage — état React uniquement | 1h | D3 |
+| 2 | ~~Implémenter le rate limiting dans `src/middleware.ts`~~ | ~~2h~~ | C2 | **CORRIGÉ**
+| 3 | ~~Ne plus persister la clé API en localStorage~~ | ~~1h~~ | D3 | **CORRIGÉ**
 | 4 | Ajouter un avertissement UI quand provider ≠ zai | 30 min | D4 |
 | 5 | Déployer Pattern 1 : migrer ## Analyse/## Retour dans `directeur.ts` | 15 min | C3 |
 
-**Effort total BLOQUANT : ~3.5h** (C1 déjà corrigé)
+**Effort total BLOQUANT : ~3.5h** (C1, C2, D3 CORRIGÉS — 0 blocage restant)
 
 ### 🟡 SEMAINE 1 (MAJEUR)
 

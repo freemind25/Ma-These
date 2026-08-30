@@ -67,13 +67,18 @@ import { UsageGuideDialog } from "./usage-guide-dialog";
 import { AboutDialog } from "./about-dialog";
 import { ShortcutsDialog } from "./shortcuts-dialog";
 
-// Saved config stored in localStorage
-const STORAGE_KEY = "thesisframe-ai-config";
+// ═══════════════════════════════════════════════════
+// Config loading/saving via /api/ai-config (httpOnly cookie)
+// API keys are NEVER stored in localStorage.
+// ═══════════════════════════════════════════════════
 
-function loadSavedConfig(): AiProviderConfig {
+const LEGACY_STORAGE_KEY = "thesisframe-ai-config";
+
+/** Load non-sensitive config fields from localStorage (provider/model only) */
+function loadLocalConfig(): AiProviderConfig {
   if (typeof window === "undefined") return { provider: "zai" };
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as AiProviderConfig;
       if (parsed.provider) return parsed;
@@ -82,10 +87,24 @@ function loadSavedConfig(): AiProviderConfig {
   return { provider: "zai" };
 }
 
-function saveConfig(config: AiProviderConfig): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-  // Dispatch custom event so useAiConfig hooks in other components re-read
-  window.dispatchEvent(new CustomEvent("ai-config-changed"));
+/** Save non-sensitive config to localStorage AND full config to server httpOnly cookie */
+async function saveConfigToServer(config: AiProviderConfig): Promise<boolean> {
+  try {
+    const res = await fetch("/api/ai-config", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(config),
+    });
+    if (res.ok) {
+      // Store non-sensitive fields in localStorage for UI persistence
+      const { apiKey: _, ...safeConfig } = config;
+      localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(safeConfig));
+      // Notify other hooks
+      window.dispatchEvent(new CustomEvent("ai-config-changed"));
+      return true;
+    }
+  } catch { /* ignore */ }
+  return false;
 }
 
 // ═══════════════════════════════════════
@@ -110,7 +129,7 @@ function AiConfigDialog({
   onOpenChange: (v: boolean) => void;
 }) {
   const { setAiProvider } = useAppStore();
-  const [config, setConfig] = useState<AiProviderConfig>(loadSavedConfig);
+  const [config, setConfig] = useState<AiProviderConfig>(loadLocalConfig);
   const [showKey, setShowKey] = useState(false);
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<"success" | "fail" | null>(null);
@@ -124,10 +143,24 @@ function AiConfigDialog({
     [hardcodedKeys]
   );
 
-  // Sync from store on mount
+  // Sync config on mount from localStorage (non-sensitive) + server (hasApiKey)
   useEffect(() => {
-    const saved = loadSavedConfig();
-    setConfig(saved);
+    const local = loadLocalConfig();
+    // Also check server for hasApiKey status
+    fetch("/api/ai-config")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.data) {
+          // Merge: server provider takes precedence if different
+          setConfig({
+            provider: (data.data.provider || local.provider) as AiProviderId,
+            model: data.data.model || local.model,
+            baseUrl: data.data.baseUrl || local.baseUrl,
+          });
+        }
+      })
+      .catch(() => { /* use local config */ });
+    setConfig(local);
   }, []);
 
   // Fetch hardcoded key info on mount
@@ -224,11 +257,15 @@ function AiConfigDialog({
     setDynamicModels([]);
   }, [hardcodedSet]);
 
-  const handleSave = useCallback(() => {
-    saveConfig(config);
-    setAiProvider(config.provider);
-    toast.success(`Fournisseur IA : ${getProviderLabel(config.provider)}`);
-    onOpenChange(false);
+  const handleSave = useCallback(async () => {
+    const ok = await saveConfigToServer(config);
+    if (ok) {
+      setAiProvider(config.provider);
+      toast.success(`Fournisseur IA : ${getProviderLabel(config.provider)}`);
+      onOpenChange(false);
+    } else {
+      toast.error("Erreur lors de la sauvegarde de la configuration");
+    }
   }, [config, setAiProvider, onOpenChange]);
 
   const handleTest = useCallback(async () => {

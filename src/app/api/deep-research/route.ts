@@ -14,7 +14,8 @@ import {
   generateCompletion,
   type AiMessage,
 } from "@/lib/ai/zai-client";
-import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
+import { type AiProviderConfig } from "@/lib/ai/ai-types";
 import {
   searchWorks,
   type CoreWork,
@@ -559,7 +560,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const validated = schema.parse(body);
-    const providerConfig = validated._aiConfig as AiProviderConfig | undefined;
+    const providerConfig = resolveAiConfig(request, validated._aiConfig);
     const sourceMode = validated.sourceMode as SourceMode;
 
     // ── Step 1: Research Brief ──

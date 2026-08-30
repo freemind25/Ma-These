@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { indexThesisContent, generateRagResponse } from "@/lib/rag/rag-service";
-import type { AiProviderConfig } from "@/lib/ai/ai-types";
+import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,10 +13,11 @@ export async function POST(request: NextRequest) {
       action?: string;
       thesisId?: string;
       query?: string;
-      _aiConfig?: AiProviderConfig;
+      _aiConfig?: unknown;
     };
 
     const { action, thesisId, query, _aiConfig } = body;
+    const providerConfig = resolveAiConfig(request, _aiConfig);
 
     if (!action || !thesisId) {
       return NextResponse.json(
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     // ── Action: index ──
     if (action === "index") {
-      const stats = await indexThesisContent(thesisId, _aiConfig);
+      const stats = await indexThesisContent(thesisId, providerConfig);
       return NextResponse.json({ success: true, stats });
     }
 
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const result = await generateRagResponse(query, thesisId, _aiConfig);
+      const result = await generateRagResponse(query, thesisId, providerConfig);
       return NextResponse.json({ success: true, ...result });
     }
 

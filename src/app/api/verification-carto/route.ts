@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { z } from "zod/v4";
-import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 import { SOCRATIC_QUESTIONER_PROMPT } from "@/lib/ai/shared-prompts";
 import {
   isGeoMcpAvailable,
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
     }
 
     const referentiel: ReferentielData = JSON.parse(typeAnalyse.elementsAttendus);
-    const providerConfig = v._aiConfig as AiProviderConfig | undefined;
+    const providerConfig = resolveAiConfig(request, v._aiConfig);
 
     // ─── ACTION: completude (Module A, rule-based, NO LLM) ───
     if (v.action === "completude") {

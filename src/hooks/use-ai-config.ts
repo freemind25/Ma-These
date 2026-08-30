@@ -1,102 +1,181 @@
-// ═══════════════════════════════════════
-// ThesisFrame — useAiConfig hook
-// Reads saved AI provider config from localStorage
-// Modules pass it to API routes so server-side code knows the backend
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// ThesisFrame — useAiConfig hook (v2 — secure)
+// API keys are stored in an httpOnly cookie (server-side only).
+// The key NEVER touches client-side JavaScript or localStorage.
+// 
+// Migration: on first load, any apiKey found in localStorage is
+// automatically migrated to the cookie and removed from localStorage.
+// ═══════════════════════════════════════════════════════════════
 
 "use client";
 
-import { useSyncExternalStore, useCallback, useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { type AiProviderConfig } from "@/lib/ai/ai-types";
 
-const STORAGE_KEY = "thesisframe-ai-config";
+// ═══════════════════════════════════════════════════════════════
+// Legacy localStorage key (used only for migration)
+// ═══════════════════════════════════════════════════════════════
+const LEGACY_STORAGE_KEY = "thesisframe-ai-config";
+const MIGRATION_DONE_KEY = "thesisframe-ai-config-migrated";
 
 const DEFAULT_CONFIG: AiProviderConfig = { provider: "zai" };
 
-// ═══════════════════════════════════════
-// Cached snapshot for useSyncExternalStore
-// useSyncExternalStore requires getSnapshot to return
-// referentially stable values when the store hasn't changed.
-// Without caching, JSON.parse creates a new object every call,
-// causing React to re-render infinitely.
-// ═══════════════════════════════════════
+/**
+ * Interface for the non-sensitive config returned by /api/ai-config GET.
+ */
+interface SafeConfig {
+  provider: string;
+  model?: string;
+  baseUrl?: string;
+  hasApiKey: boolean;
+}
 
-let cachedRawValue: string | null | undefined = undefined; // undefined = not yet cached
-let cachedConfig: AiProviderConfig = DEFAULT_CONFIG;
-
-function getSnapshot(): AiProviderConfig {
+/**
+ * One-time migration: move apiKey from localStorage to httpOnly cookie.
+ * Returns the safe config from the server after migration.
+ */
+async function migrateLocalStorageToCookie(): Promise<SafeConfig> {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    // Return cached config if the raw string hasn't changed
-    if (raw === cachedRawValue) return cachedConfig;
-    cachedRawValue = raw;
+    const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as AiProviderConfig;
-      cachedConfig = parsed.provider ? parsed : DEFAULT_CONFIG;
-    } else {
-      cachedConfig = DEFAULT_CONFIG;
+      if (parsed.provider && parsed.apiKey) {
+        // Send full config (including apiKey) to the server to set in cookie
+        const res = await fetch("/api/ai-config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(parsed),
+        });
+        if (res.ok) {
+          const { data } = (await res.json()) as { data: SafeConfig };
+          // Remove apiKey from localStorage, keep non-sensitive fields
+          const { apiKey: _, ...safeConfig } = parsed;
+          localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(safeConfig));
+          localStorage.setItem(MIGRATION_DONE_KEY, "true");
+          console.warn("[ai-config] Migrated API key from localStorage to httpOnly cookie");
+          return data;
+        }
+      }
     }
-  } catch {
-    cachedConfig = DEFAULT_CONFIG;
+  } catch (e) {
+    console.warn("[ai-config] Migration failed:", e);
   }
-  return cachedConfig;
-}
-
-// Server-side snapshot: localStorage doesn't exist on server
-function getServerSnapshot(): AiProviderConfig {
-  return DEFAULT_CONFIG;
-}
-
-// Cross-tab storage event listener
-function subscribe(callback: () => void) {
-  window.addEventListener("storage", callback);
-  return () => window.removeEventListener("storage", callback);
+  localStorage.setItem(MIGRATION_DONE_KEY, "true");
+  return { provider: "zai", hasApiKey: false };
 }
 
 export function useAiConfig() {
-  // Track a "version" counter that same-tab mutations can bump
-  // to force useSyncExternalStore to re-read the snapshot
-  const [, setVersion] = useState(0);
+  const [config, setConfig] = useState<AiProviderConfig>(DEFAULT_CONFIG);
+  const [hasApiKey, setHasApiKey] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const mountedRef = useRef(true);
 
-  const config = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  // Load config from server on mount (and migrate if needed)
+  useEffect(() => {
+    mountedRef.current = true;
 
-  // Force a re-read when version changes (for same-tab localStorage updates)
-  // This is safe: it only re-reads from cache if raw value hasn't changed
-  void config; // ensure the subscription is active
+    async function loadConfig() {
+      try {
+        // Check if migration is needed
+        const migrated = localStorage.getItem(MIGRATION_DONE_KEY);
+        let result: SafeConfig;
 
-  /**
-   * Save config to localStorage and notify all instances in this tab
-   */
-  const saveConfig = useCallback((newConfig: AiProviderConfig) => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newConfig));
-      // Invalidate cache and bump version to force re-render
-      cachedRawValue = undefined;
-      setVersion((v) => v + 1);
-    } catch { /* ignore */ }
+        if (!migrated) {
+          // First-time migration
+          result = await migrateLocalStorageToCookie();
+        } else {
+          // Normal load from server
+          const res = await fetch("/api/ai-config");
+          if (res.ok) {
+            const { data } = (await res.json()) as { data: SafeConfig };
+            result = data;
+          } else {
+            result = { provider: "zai", hasApiKey: false };
+          }
+        }
+
+        if (!mountedRef.current) return;
+
+        setConfig({
+          provider: result.provider as AiProviderConfig["provider"],
+          model: result.model,
+          baseUrl: result.baseUrl,
+        });
+        setHasApiKey(result.hasApiKey);
+      } catch {
+        // Server unavailable — fall back to localStorage for non-sensitive fields
+        try {
+          const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw) as AiProviderConfig;
+            if (parsed.provider) {
+              setConfig({
+                provider: parsed.provider,
+                model: parsed.model,
+                baseUrl: parsed.baseUrl,
+              });
+            }
+          }
+        } catch { /* ignore */ }
+      } finally {
+        if (mountedRef.current) setLoaded(true);
+      }
+    }
+
+    loadConfig();
+    return () => { mountedRef.current = false; };
   }, []);
 
   /**
-   * Merge the saved AI config into any request body sent to an API route.
-   * Usage: fetch("/api/ai-writing", { body: JSON.stringify(withAiConfig({ mode, prompt })) })
+   * Save the full config (including API key) to the server's httpOnly cookie.
+   * The key is sent to /api/ai-config POST and stored server-side.
+   * It NEVER enters localStorage.
+   */
+  const saveConfig = useCallback(async (newConfig: AiProviderConfig) => {
+    try {
+      const res = await fetch("/api/ai-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newConfig),
+      });
+
+      if (res.ok) {
+        const { data } = (await res.json()) as { data: SafeConfig };
+        if (mountedRef.current) {
+          setConfig({
+            provider: data.provider as AiProviderConfig["provider"],
+            model: data.model,
+            baseUrl: data.baseUrl,
+          });
+          setHasApiKey(data.hasApiKey);
+        }
+        // Update localStorage with non-sensitive fields only (for UI persistence across page reloads)
+        const { apiKey: _, ...safeConfig } = newConfig;
+        localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(safeConfig));
+      }
+    } catch (e) {
+      console.error("[ai-config] Save failed:", e);
+    }
+
+    // Always update local state immediately for responsive UI
+    if (mountedRef.current) {
+      setConfig(newConfig);
+      setHasApiKey(!!newConfig.apiKey);
+    }
+  }, []);
+
+  /**
+   * Merge the saved AI config into any request body.
+   * NOTE: This NO LONGER includes the API key — the server reads it from the httpOnly cookie.
+   * The `_aiConfig` field is kept for backward compatibility but contains only
+   * provider/model/baseUrl (no apiKey).
    */
   const withAiConfig = useCallback(
     <T extends Record<string, unknown>>(body: T): T & { _aiConfig: AiProviderConfig } => {
-      return { ...body, _aiConfig: getSnapshot() };
+      return { ...body, _aiConfig: config };
     },
-    []
+    [config]
   );
 
-  // Listen for same-tab config changes via custom event
-  useEffect(() => {
-    function onConfigChange() {
-      // Invalidate cache and re-read
-      cachedRawValue = undefined;
-      setVersion((v) => v + 1);
-    }
-    window.addEventListener("ai-config-changed", onConfigChange);
-    return () => window.removeEventListener("ai-config-changed", onConfigChange);
-  }, []);
-
-  return { aiConfig: config, withAiConfig, saveConfig };
+  return { aiConfig: config, withAiConfig, saveConfig, hasApiKey, loaded };
 }

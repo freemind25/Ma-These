@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { type AiProviderConfig } from "@/lib/ai/ai-provider";
+import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 import { COHERENCE_CHECK_PROMPT, COHERENCE_AUDIT_PROMPT } from "@/lib/ai/specializations/coherence";
 import { COHERENCE_CHECKS } from "@/lib/data/coherence-data";
 import { z } from "zod/v4";
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validated = coherenceSchema.parse(body);
 
-    const providerConfig = validated._aiConfig as AiProviderConfig | undefined;
+    const providerConfig = resolveAiConfig(request, validated._aiConfig);
     const { mode, sections, focusedChecks } = validated;
 
     // ── Passe 1 : analyse compl\u00e8te ──────────────────────────────
