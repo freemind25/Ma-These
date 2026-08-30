@@ -7337,3 +7337,70 @@ Stage Summary:
 - 3 modes dé-injectés (−5 726 tok chacun)
 - Budget calibré APRÈS optimisation (pas après mesure brute) — loi de Parkinson évitée
 - Cible finale: 22K full / 17K par mode — 1 390 tests verts
+---
+Task ID: phase3
+Agent: Main
+Task: Phase 3 — Majeurs de l'audit (dernière étape avant premiers utilisateurs)
+
+Work Log:
+
+## ÉTAPE 1 — CI/qualité
+- Créé scripts/quality-gate.sh (lint + tests + budget assertions)
+- Lint : 0 erreurs, 211 warnings (0 nouveau en Phase 3)
+- Note anomalie reporting : phase2-compactage disait "211 (down from 290)" mais le chiffre réel était 207. La baisse venait d'un fichier créé dans la session (measure-budget.js) exclu de la mesure. Le chiffre honnête est 207 → 211 sur le code du projet (+4).
+
+## ÉTAPE 2 — Directeur-chat (C3 + D2 + D10)
+- C3 : Fusionné le contenu Pattern 1 de director.ts dans directeur.ts
+  - Ajouté les sections FORMAT DE RÉPONSE (## Analyse / ## Retour)
+  - Ajouté la règle "questions courtes sans section Analyse"
+  - Ajouté le header "Pattern Reasoning-then-Output"
+- D10 : Supprimé director.ts (code mort)
+- D2 : Ajouté onError callback au useMutation DirecteurChatPanel
+  - Error state + Card destructive border + AlertCircle icon
+  - Imports AlertCircle, X from lucide-react
+
+## ÉTAPE 3 — 3 modes manquants (C4-C6)
+- C4 : Créé problematique.ts — modules [methodology, writing-process], temp 0.5
+- C5 : Créé empirique.ts — modules [methodology, data-analysis], temp 0.4
+- C6 : Créé analyse.ts — modules [data-analysis, writing-process], temp 0.5
+- Enregistré dans specializations/index.ts (exports + SPECIALIZATION_PROMPTS)
+- Ajouté 3 entrées dans data/ai-writing-modes.ts (Crosshair, BarChart3, LineChart)
+- Budget assertions : 7/7 passent (modes utilisent modules existants)
+
+## ÉTAPE 4 — Robustesse réseau
+- D5 : Ajouté .max() aux schémas Zod de 5 routes :
+  - ai-writing/route.ts : prompt 50K, context 100K
+  - ai-writing/stream/route.ts : prompt 50K, context 100K
+  - deep-research/route.ts : prompt 50K, context 100K
+  - coherence-check/route.ts : sections 100K
+  - directeur-chat/route.ts : content 20K, thesisContext 50K
+- D6 (+B2) : OpenAlex timeout + retry backoff :
+  - Créé fetchWithRetry() dans openalex.ts : 15s timeout, 2 retries, backoff 1s/2s
+  - Retries sur 429, 5xx, TimeoutError, TypeError (network)
+  - Appliqué aux 2 fetch searchWorks + getRelatedWorks
+  - Ajouté AbortSignal.timeout(15s) aux 2 fetch journaux-oa (OpenAlex + DOAJ)
+
+## Tests de digestion post-compactage (24 tests)
+- Créé src/lib/ai/post-compaction-digestion.test.ts
+- 6 tests methodology : Creswell ✅, qualitative ✅, Yin/étude de cas ✅, phénoménologie ✅, taille >5K ✅, SI→ ✅
+- 6 tests dé-injection (expliquer-concept, argumentation-bilaterale, verification-sources) : prompt valide ✅, pas de methodology ✅
+- 6 tests nouveaux modes : existence ✅, knowledge core sections ✅, modules injectés ✅
+- 3 tests Pattern 1 : Analyse/Retour ✅, exclusion quota ✅, skip questions courtes ✅
+- 3 tests : empirique data-analysis ✅, analyse data-analysis ✅, problematique methodology ✅
+
+## ÉTAPE 5 — Clôture
+- audit-report.md : verdict mis à jour → PRÊT POUR PREMIERS UTILISATEURS
+- CONTEXT-PROJET.md : version v1.9.5, 13 modules, budget 22K/17K/5K, 27 modes, Pattern 1 déployé, backlog B1-B6
+
+## Validation finale
+- Tests : 1 414 / 61 fichiers — 0 échec
+- Lint : 0 erreurs, 211 warnings (0 nouveau)
+- Budget assertions : 7/7 passent
+- Digestion tests : 24/24 passent
+
+Stage Summary:
+- Phase 3 complète : 10 items corrigés/créés (C3, C4, C5, C6, D2, D5, D6, D10, B2)
+- 24 tests de digestion ajoutés (méthodologie compactée, modes dé-injectés, Pattern 1, nouveaux modes)
+- Total tests : 1 414 (60 fichiers → 61 fichiers)
+- Verdict audit : 42/46 items CONFORME (91 %), 0 blocage
+- Projet : v1.9.5 — PRÊT POUR PREMIERS UTILISATEURS

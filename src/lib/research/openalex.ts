@@ -11,6 +11,11 @@ const OPENALEX_BASE = "https://api.openalex.org";
 // Politesse : OpenAlex recommande un paramètre mailto dans User-Agent
 const POLITE_MAILTO = "thesisframe@research-tool.dev";
 
+// Timeout & retry configuration
+const OPENALEX_TIMEOUT_MS = 15_000;
+const OPENALEX_MAX_RETRIES = 2;
+const OPENALEX_RETRY_BASE_MS = 1_000;
+
 // ── Types ───────────────────────────────────────────────────────
 
 export interface OpenAlexInstitution {
@@ -183,6 +188,51 @@ function reconstructAbstract(
   return wordPositions.map((wp) => wp.word).join(" ");
 }
 
+// ── Fetch with timeout & retry ─────────────────────────────────
+
+/**
+ * Fetch wrapper with AbortSignal.timeout and exponential backoff retry.
+ * Retries on network errors and 429/5xx responses.
+ * Backoff: 1s, 2s (OPENALEX_RETRY_BASE_MS * 2^attempt).
+ */
+async function fetchWithRetry(
+  url: string,
+  init: RequestInit,
+  retryCount = OPENALEX_MAX_RETRIES,
+): Promise<Response> {
+  for (let attempt = 0; attempt <= retryCount; attempt++) {
+    try {
+      const res = await fetch(url, {
+        ...init,
+        signal: AbortSignal.timeout(OPENALEX_TIMEOUT_MS),
+      });
+
+      // Retry on 429 (rate limit) or 5xx (server error)
+      if (res.status === 429 || res.status >= 500) {
+        if (attempt < retryCount) {
+          const delay = OPENALEX_RETRY_BASE_MS * Math.pow(2, attempt);
+          console.warn(`[OpenAlex] ${res.status} — retry ${attempt + 1}/${retryCount} in ${delay}ms`);
+          await new Promise((r) => setTimeout(r, delay));
+          continue;
+        }
+      }
+
+      return res;
+    } catch (err) {
+      // TimeoutError (DOMException with name "TimeoutError") or network errors
+      const isTimeout = err instanceof DOMException && err.name === "TimeoutError";
+      if (attempt < retryCount && (isTimeout || err instanceof TypeError)) {
+        const delay = OPENALEX_RETRY_BASE_MS * Math.pow(2, attempt);
+        console.warn(`[OpenAlex] ${isTimeout ? "timeout" : "network error"} — retry ${attempt + 1}/${retryCount} in ${delay}ms`);
+        await new Promise((r) => setTimeout(r, delay));
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error("[OpenAlex] Épuisement des tentatives");
+}
+
 // ── API Methods ──────────────────────────────────────────────────
 
 /**
@@ -230,7 +280,7 @@ export async function searchWorks(
   // Pool poli OpenAlex : le paramètre mailto donne un quota plus élevé
   url.searchParams.set("mailto", POLITE_MAILTO);
 
-  const res = await fetch(url.toString(), {
+  const res = await fetchWithRetry(url.toString(), {
     headers: headers(),
     next: { revalidate: 300 }, // 5 min cache
   });
@@ -265,7 +315,7 @@ export async function getRelatedWorks(
     per_page: String(Math.min(limit, 200)),
   });
 
-  const res = await fetch(`${url}?${params}`, {
+  const res = await fetchWithRetry(`${url}?${params}`, {
     headers: headers(),
     next: { revalidate: 600 }, // 10 min cache
   });

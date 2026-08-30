@@ -142,6 +142,7 @@ async function fetchOpenAlex(query: string, subject?: string): Promise<JournalRe
   const res = await fetch(url, {
     headers: { "User-Agent": "ThesisFrame/1.0 (research-tool)" },
     next: { revalidate: 300 },
+    signal: AbortSignal.timeout(15_000),
   });
   if (!res.ok) throw new Error(`OpenAlex erreur ${res.status}`);
 
@@ -175,6 +176,7 @@ async function fetchDoaj(query: string, _subject?: string): Promise<JournalResul
       Accept: "application/json",
     },
     next: { revalidate: 300 },
+    signal: AbortSignal.timeout(15_000),
   });
   if (!res.ok) throw new Error(`DOAJ erreur ${res.status}`);
 

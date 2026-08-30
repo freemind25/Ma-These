@@ -27,6 +27,9 @@ export { COHERENCE_CHECK_PROMPT, COHERENCE_AUDIT_PROMPT } from './coherence';
 export { EXPLIQUER_CONCEPT_PROMPT } from './expliquer-concept';
 export { VERIFICATION_SOURCES_PROMPT } from './verification-sources';
 export { ARGUMENTATION_BILATERALE_PROMPT } from './argumentation-bilaterale';
+export { PROBLEMATIQUE_PROMPT } from './problematique';
+export { EMPIRIQUE_PROMPT } from './empirique';
+export { ANALYSE_PROMPT } from './analyse';
 
 // ───────────────────────────────────────
 // Registry: mode id → built prompt
@@ -56,6 +59,9 @@ import { COHERENCE_CHECK_PROMPT, COHERENCE_AUDIT_PROMPT } from './coherence';
 import { EXPLIQUER_CONCEPT_PROMPT } from './expliquer-concept';
 import { VERIFICATION_SOURCES_PROMPT } from './verification-sources';
 import { ARGUMENTATION_BILATERALE_PROMPT } from './argumentation-bilaterale';
+import { PROBLEMATIQUE_PROMPT } from './problematique';
+import { EMPIRIQUE_PROMPT } from './empirique';
+import { ANALYSE_PROMPT } from './analyse';
 
 /**
  * Maps WritingMode.id → the built system prompt.
@@ -84,5 +90,8 @@ export const SPECIALIZATION_PROMPTS: Record<string, string> = {
   'expliquer-concept': EXPLIQUER_CONCEPT_PROMPT,
   'verification-sources': VERIFICATION_SOURCES_PROMPT,
   'argumentation-bilaterale': ARGUMENTATION_BILATERALE_PROMPT,
+  'problematique': PROBLEMATIQUE_PROMPT,
+  'empirique': EMPIRIQUE_PROMPT,
+  'analyse': ANALYSE_PROMPT,
   // 'deep-research' uses a custom endpoint — no system prompt here
 };

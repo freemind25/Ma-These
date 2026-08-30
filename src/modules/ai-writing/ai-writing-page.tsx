@@ -26,6 +26,8 @@ import {
   GraduationCap,
   User,
   SpellCheck,
+  AlertCircle,
+  X,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
@@ -428,6 +430,7 @@ function DirecteurChatPanel() {
   >([]);
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [chatError, setChatError] = useState<string | null>(null);
 
   // Build thesis context for the directeur chat (BUG-10)
   const thesisContext = thesis
@@ -465,6 +468,11 @@ function DirecteurChatPanel() {
         { role: "assistant", content },
       ]);
       setInput("");
+      setChatError(null);
+    },
+    onError: (error: Error) => {
+      const msg = error.message || "Erreur lors de la communication avec le directeur";
+      setChatError(msg);
     },
   });
 
@@ -555,6 +563,23 @@ function DirecteurChatPanel() {
                 </div>
               </div>
             </div>
+          )}
+
+          {chatError && (
+            <Card className="border-destructive/50 bg-destructive/5 p-3">
+              <div className="flex items-center gap-2 text-sm text-destructive">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <p>{chatError}</p>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="ml-auto h-6 w-6"
+                  onClick={() => setChatError(null)}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            </Card>
           )}
         </div>
       </ScrollArea>

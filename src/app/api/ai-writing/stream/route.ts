@@ -14,8 +14,8 @@ const DOCTORAL_LEVELS = ["debutant", "intermediaire", "avance"] as const;
 
 const streamSchema = z.object({
   mode: z.string(),
-  prompt: z.string().min(10, "Le prompt doit contenir au moins 10 caractères"),
-  context: z.string().optional(),
+  prompt: z.string().min(10, "Le prompt doit contenir au moins 10 caractères").max(50_000, "Le prompt ne doit pas dépasser 50 000 caractères"),
+  context: z.string().max(100_000, "Le contexte ne doit pas dépasser 100 000 caractères").optional(),
   doctoralLevel: z.enum(DOCTORAL_LEVELS).optional(),
   _aiConfig: z.unknown().optional(),
 });

@@ -16,7 +16,7 @@ import { z } from "zod/v4";
 
 const coherenceSchema = z.object({
   mode: z.string(),
-  sections: z.record(z.string(), z.string().min(20, "Chaque section doit contenir au moins 20 caract\u00e8res")),
+  sections: z.record(z.string(), z.string().min(20, "Chaque section doit contenir au moins 20 caractères").max(100_000, "Une section ne doit pas dépasser 100 000 caractères")),
   focusedChecks: z.array(z.string()).optional(),
   _aiConfig: z.unknown().optional(),
 });

@@ -41,8 +41,8 @@ function getZai(): Promise<AiSDK> {
 
 // ── Validation ──────────────────────────────────────────────────
 const schema = z.object({
-  prompt: z.string().min(10, "La question doit contenir au moins 10 caractères"),
-  context: z.string().optional(),
+  prompt: z.string().min(10, "La question doit contenir au moins 10 caractères").max(50_000, "Le prompt ne doit pas dépasser 50 000 caractères"),
+  context: z.string().max(100_000, "Le contexte ne doit pas dépasser 100 000 caractères").optional(),
   sourceMode: z.enum(["web", "academic"]).optional().default("web"),
   _aiConfig: z.unknown().optional(),
 });

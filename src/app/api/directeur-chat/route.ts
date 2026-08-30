@@ -18,10 +18,10 @@ const directeurChatSchema = z.object({
   messages: z.array(
     z.object({
       role: z.enum(["user", "assistant"]),
-      content: z.string().min(1),
+      content: z.string().min(1).max(20_000, "Un message ne doit pas dépasser 20 000 caractères"),
     })
   ).min(1),
-  thesisContext: z.string().optional(),
+  thesisContext: z.string().max(50_000, "Le contexte de thèse ne doit pas dépasser 50 000 caractères").optional(),
   doctoralLevel: z.enum(DOCTORAL_LEVELS).optional(),
   _aiConfig: z.unknown().optional(),
 });

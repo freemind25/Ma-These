@@ -1,7 +1,7 @@
 # CONTEXT-PROJET.md — Ma Thèse (ThesisFrame)
 
 > **Mémoire de projet** — contexte, décisions, état d'avancement
-> Version : **v1.9.4** (3 septembre 2026)
+> Version : **v1.9.5** (post-audit Phase 3)
 
 ---
 
@@ -21,7 +21,7 @@
 
 ### 2.1 Le problème résolu
 
-ThesisFrame possède **~50 API routes** et **21 modes d'écriture IA**. En v1.5, chaque route/specialisation contenait son propre savoir métier inline — contradictions, oublis et duplication entraînaient des comportements incohérents entre modes.
+ThesisFrame possède **~50 API routes** et **27 modes d'écriture IA**. En v1.5, chaque route/specialisation contenait son propre savoir métier inline — contradictions, oublis et duplication entraînaient des comportements incohérents entre modes.
 
 ### 2.2 La solution : socle unique de vérité
 
@@ -30,7 +30,7 @@ src/lib/ai/
 ├── knowledge-core.ts      ← SOCLE : savoir métier digéré de 7 ouvrages
 ├── shared-prompts.ts      ← RÔLE/FORMAT réutilisables (pas du savoir)
 ├── prompt-builder.ts      ← Assembleur : SOCLE + spécialisation + calibration niveau
-└── specializations/       ← 19 fichiers (rôle + tâche + format uniquement)
+└── specializations/       ← 28 fichiers (rôle + tâche + format uniquement)
     ├── index.ts           ← Registry (mode id → prompt)
     ├── directeur.ts
     ├── scientific-writing.ts
@@ -42,7 +42,7 @@ feedback.md                ← Processus de feedback (divergence → correction 
 
 **Principe fondamental :** Le savoir métier vit dans `knowledge-core.ts`. Les spécialisations ne contiennent que : rôle, tâche, format de sortie. Le comportement est calibré par niveau doctorant via post-injection dans `prompt-builder.ts`.
 
-### 2.3 Modules de connaissance (11)
+### 2.3 Modules de connaissance (13)
 
 | Module | Source distillée | Contenu |
 |--------|-----------------|---------|
@@ -57,6 +57,8 @@ feedback.md                ← Processus de feedback (divergence → correction 
 | `data-analysis` | Rae & Wong | Analyse de données, interprétation |
 | `grant-writing` | Smith & Works | Demande de financement |
 | `publication` | Gastel & Day | Soumission, salami, ICMJE |
+| `visualization` | Sułkowski | Visualisation de données académiques |
+| `presentation` | Sułkowski | Présentations scientifiques |
 
 ### 2.4 Calibration par niveau doctorant (v1.9.0)
 
@@ -72,12 +74,18 @@ Trois niveaux adaptent le **comportement** de l'IA sans modifier le savoir :
 
 Routes impactées : `ai-writing`, `ai-writing/stream`, `directeur-chat`.
 
-### 2.5 Token budget
+### 2.5 Token budget (post-compactage, calibré APRÈS optimisation)
 
-- **Full core** : ~3 900 tokens (≤ 4 500 max)
-- **Directeur mode** : ~2 600 tokens (≤ 3 000 max)
+- **Full core** : ~20 123 tokens (mesuré, 60 370 chars ÷ 3)
+- **Budget calibré** : 22 000 tokens (mesure + 10 %)
+- **Mode le plus lourd** (directeur) : ~15 339 tokens (mesuré)
+- **Budget par mode** : 17 000 tokens (mesure + 10 %)
+- **Max module unique** : 5 000 tokens (methodology ~3 665)
+- **Capteur permanent** : `src/lib/ai/knowledge-core.budget.test.ts` — 7 assertions
 - **Calibration niveau** : +~110 tokens (optionnel)
 - Chaque spécialisation déclare ses modules nécessaires → injection sélective
+
+> **Note** : Ancien budget (3 900 full / 3 000 par mode) était obsolète depuis 8+ versions d'ingestion de savoir. Nouveau budget calibré après compactage ciblé (methodology −36 %, 3 modes dé-injectés). Cible posée sur base optimisée (loi de Parkinson évitée).
 
 ### 2.6 Patterns architecturaux (v1.9.3)
 
@@ -85,7 +93,7 @@ Trois patterns inspirés de sources externes, intégrés comme **architecture**,
 
 | # | Pattern | Source | Localisation | Principe |
 |---|---------|--------|-------------|----------|
-| 1 | **Reasoning-then-Output** | prompts.chat (CC0) | `specializations/directeur.ts` | Avant le feedback final, l'IA rend visible son raisonnement. Sortie : `## Analyse` (3-5 lignes, hors quota) → `## Retour` (méthode 5 étapes). |
+| 1 | **Reasoning-then-Output** | prompts.chat (CC0) | `specializations/directeur.ts` | Avant le feedback final, l'IA rend visible son raisonnement. Sortie : `## Analyse` (3-5 lignes, hors quota) → `## Retour` (méthode 5 étapes). **Déployé en v1.9.5 (Phase 3).** |
 | 2 | **Counter-Audit 2 passes** | prompts.chat (CC0) | `specializations/coherence.ts` + `coherence-check/route.ts` | Passe 2 = auditeur adversarial, ne peut que CONFIRMER ou RÉTROGRADER vers AMBIGU. |
 | 3 | **Retriever OpenAlex + curation déterministe** | gpt-researcher (Apache 2.0) | `lib/research/openalex.ts` + `lib/research/curation.ts` + `deep-research/route.ts` | OpenAlex (250M+ travaux, gratuit, sans clé) comme retriever académique. Curation pré-rapport 100% déterministe (pas d'appel LLM) : DOI, venue, type, citations/âge, OA, récence. |
 
@@ -226,5 +234,9 @@ Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le c
 
 | # | Suggestion | Priorité | Contexte |
 |---|-----------|----------|----------|
-| B1 | **Gestion 429 côté UI** — message gracieux « Quota de recherche atteint, réessayez dans quelques instants » au lieu d'une erreur brute. Esprit RAG keyword fallback du projet. | basse | Le 429 dans le sandbox a révélé le cas ; en production, VPN ou réseau partagé peut le déclencher |
-| B2 | **Retry avec backoff léger** dans le wrapper OpenAlex — 1 retry après 2-3 s. Conforme aux recommandations OpenAlex, ~5 lignes. | basse | Recommandation officielle OpenAlex, faible effort |
+| B1 | ✅ **Gestion 429 côté UI** —middleware.ts renvoie 429 gracieuse avec Retry-After | basse | **CORRIGÉ en Phase 1** |
+| B2 | ✅ **Retry avec backoff** dans le wrapper OpenAlex — fetchWithRetry() : 15s timeout, 2 retries, backoff exponentiel | basse | **CORRIGÉ en Phase 3** |
+| B3 | **Backlog manquant** — table §10 tronquée après B2 dans l'audit initial | basse | Complété en Phase 3 |
+| B4 | **Rate limiting persistant** si déploiement multi-instance (Upstash Redis ou table DB) | basse | Échéance : v1.11.0 |
+| B5 | **Supprimer le fallback `_aiConfig` body** dans `resolveAiConfig` | basse | Échéance : v1.10.0 |
+| B6 | **Lint : stabiliser les warnings** (211 actuels, règle « 0 warning nouveau par livraison ») | basse | 0 nouveau en Phase 3, 211 inchangés |

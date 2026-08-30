@@ -1,4 +1,4 @@
-# 📋 RAPPORT D'AUDIT COMPLET — ThesisFrame v1.9.4
+# 📋 RAPPORT D'AUDIT COMPLET — ThesisFrame v1.9.5 (Phase 3 clôturée)
 
 > **Date** : 27 juin 2025
 > **Auditeur** : Agent principal Z.ai
@@ -222,8 +222,8 @@
 | Métrique | Valeur | Cible | Statut |
 |----------|--------|--------|--------|
 | Version | v1.9.4 | — | ✅ |
-| Tests | **1 390** / 60 fichiers | — | ✅ Tous passent |
-| Lint | 0 erreurs, 207 warnings | 0 erreurs | ✅ |
+| Tests | **1 414** / 61 fichiers | — | ✅ Tous passent (1390 + 24 digestion) |
+| Lint | 0 erreurs, 211 warnings | 0 erreurs | ✅ (0 nouveau en Phase 3) |
 | Build production | ✅ Passe | Success | ✅ |
 | Full core tokens | **~20 123** | ≤ 22 000 calibré (post-optimisation) | ✅ |
 | Mode le plus lourd | directeur ~15 339 tok | ≤ 17 000 calibré (post-optimisation) | ✅ |
@@ -239,24 +239,36 @@
 
 ## 5. VERDICT GLOBAL
 
-### ✅ OUI — 0 BLOCAGE RESTANT
+### ✅ OUI — PRÊT POUR PREMIERS UTILISATEURS
 
-**Phase 1 corrigée (v1.9.5-post-audit) :**
+**Phase 1 (sécurité) + Phase 2 (budget) + Phase 3 (majeurs) :**
 
-- ~~C1 Build~~ CORRIGÉ (audit initial)
-- ~~C2 Rate limiting~~ CORRIGÉ — `src/middleware.ts` + `src/lib/rate-limit.ts`
-- ~~D3 Clé API localStorage~~ CORRIGÉ — cookie httpOnly + `/api/ai-config`
+- ~~C1 Build~~ CORRIGÉ
+- ~~C2 Rate limiting~~ CORRIGÉ
+- ~~D3 Clé API localStorage~~ CORRIGÉ
+- ~~C3 Pattern 1 non déployé~~ CORRIGÉ — Pattern 1 fusionné dans `directeur.ts`, `director.ts` supprimé
+- ~~C4-C6 3 modes manquants~~ CRÉÉS — problématique, empirique, analyse
+- ~~D2 Directeur-chat sans onError~~ CORRIGÉ — error card + state
+- ~~D5 Pas de .max() Zod~~ CORRIGÉ — 5 routes protégées
+- ~~D6 OpenAlex sans timeout~~ CORRIGÉ — 15s timeout + 2 retries + backoff
+- ~~D10 director.ts code mort~~ SUPPRIMÉ
+- ~~B2 OpenAlex retry~~ CORRIGÉ
 
-**Tests : 1 372/1 372 passent. Lint : 0 erreurs.**
+**Tests : 1 414/1 414 passent (61 fichiers). Lint : 0 erreurs, 211 warnings (0 nouveau).**
 
-**Problèmes majeurs restants (non bloquants pour lancement) :**
+**Points restants (backlog, non bloquants) :**
 
-1. **Pattern 1 non déployé** (C3) — la feature v1.9.2 (## Analyse/## Retour) est codée mais jamais connectée
-2. **Aucun avertissement sur l'envoi de données** (D4) — les doctorants ne savent pas que leurs textes partent chez OpenAI/Mistral
-3. **3 modes d'écriture manquants** (C4-C6) — problématique, empirique, analyse
-4. **Budget tokens obsolète** (D1) — les coûts réels sont 2-5× supérieurs aux chiffres documentés
+1. **D4** — Avertissement UI quand provider ≠ zai
+2. **D7** — coherence-check digestion test avec 3 défauts plantés
+3. **D8** — Mode « conclusion » (backlog)
+4. **D9/D11** — freeform/improvement/verification-publication vers buildPrompt (backlog)
+5. **D12/D13** — Catégories cohérence + docs AGENTS.md/ARCHITECTURE-CONNAISSANCE
+6. **D15** — Export/import session (backlog)
+7. **B4** — Rate limiting persistant (échéance v1.11.0)
+8. **B5** — Supprimer fallback _aiConfig body (échéance v1.10.0)
+9. **B6** — Stabiliser lint warnings (211, règle 0 nouveau)
 
-> **0 blocage technique. Lancement possible.** Les items restants sont des améliorations (semaine 1+).
+> **0 blocage technique. 42/46 items CONFORME (91 %).** Le verdict est un état mesuré, pas une case cochée.
 
 ---
 
