@@ -1,7 +1,7 @@
 # CONTEXT-PROJET.md — Ma Thèse (ThesisFrame)
 
 > **Mémoire de projet** — contexte, décisions, état d'avancement
-> Version : **v1.9.6** (mission finale avant premier doctorant)
+> Version : **v1.9.7** (V1 validé — 4/4 validations, zéro pending)
 
 ---
 
@@ -230,13 +230,13 @@ Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le c
 
 > Verdict entériné : **PRÊT POUR PREMIERS UTILISATEURS** (42/46 conforme, 0 ❌).
 > 4/4 validations complétées. D4 implémenté. Pattern 2 clos.
-> Ce qui reste : V1 (E2E OpenAlex, dépend de l'IP).
+> 4/4 validations complétées. Zéro pending. Bug silencieux type:journal-article corrigé.
 
 ### ⏳ 4 validations réelles (AVANT/AVEC le premier doctorant)
 
 | # | Validation | Description | Checklist | Statut |
 |---|-----------|-------------|-----------|--------|
-| V1 | **E2E OpenAlex** | Premier test académique en IP propre | □ sources journal-article avec DOI □ métadonnées cohérentes □ aucune source < 0.35 □ comparer avec mode Web | ⏳ IP propre |
+| V1 | **E2E OpenAlex** | Recherche académique réelle via pipeline OpenAlex | ✅ 15 sources BON (score 0.95) ✅ DOI + venue + citations ✅ aucune < 0.35 ✅ diff vs mode 🌐 | **✅ FAIT** |
 | V2 | **Coherence audit avec 3 défauts plantés** | Premier test expérimental du contre-audit | ✅ 2+ défauts réels détectés (7) ✅ 1 faux défaut rétrogradé AMBIGU ✅ `rate=14%` collecté (→ Version C définitive) | **✅ FAIT** |
 | V3 | **Digestion post-compactage** | Appels LLM réels (mixed-methods + 3 modes dé-injectés + Giorgi) | ✅ Creswell mobilisé (démarche mixte séquentielle, échantillonnage stratifié) ✅ Giorgi : 4 étapes mobilisées, pas de mélange Moustakas/van Manen ✅ 3 modes dé-injectés : qualité préservée (1909-3070 chars) | **✅ FAIT** |
 | V4 | **R2 spot-check + validation C4-C6** | Conformité + appels LLM réels | ✅ problématique R2 OK + LLM validé ✅ empirique R2 OK + LLM validé ✅ analyse R2 OK + LLM validé | **✅ FAIT** |
@@ -270,3 +270,5 @@ Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le c
 | D12 | Catégories cohérence (commentaire + UI) | basse | Backlog |
 | D13 | Mise à jour synchrone docs (CONTEXT-PROJET, AGENTS.md, ARCHITECTURE-CONNAISSANCE) | basse | Backlog |
 | D15 | Export/import session complète | basse | Backlog |
+| B7 | **UX latence deep-research** — ~2 min perçu comme cassure. Progress indicator + optimiser nb sous-requêtes (économie crédits $1/jour) | moyenne | Échéance : v1.10.0 |
+| B8 | **Section Références manquante** dans la réponse 🎓 — prompt mode académique doit exiger ### Références avec [n] Auteur (Année). Titre. Venue. DOI | basse | Échéance : v1.10.0 |

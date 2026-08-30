@@ -306,14 +306,14 @@ D4 (*informer l'utilisateur où vont ses textes et sa clé*) était classé « a
 > Ce §6 remplace l'ancien « Plan de correction priorisé ». Tout ce qui était bloquant est corrigé.
 > Ce qui reste n'est plus du développement : ce sont des **validations par l'usage réel**.
 
-### ⏳ 4 validations réelles (AVANT/AVEC le premier doctorant)
+### ✅ 4 validations réelles — TOUTES COMPLÉTÉES (v1.9.7)
 
 | # | Validation | Description | Checklist | Statut |
 |---|-----------|-------------|-----------|--------|
-| V1 | **E2E OpenAlex** | Premier test académique en IP propre | □ sources journal-article avec DOI □ métadonnées cohérentes □ aucune source < 0.35 □ comparer avec mode Web | ⏳ En attente IP propre |
-| V2 | **Coherence audit avec 3 défauts plantés** | Premier test expérimental du contre-audit | □ 2 défauts réels détectés □ 1 faux défaut non rétrogradé □ collecter `rate=...%` | ⏳ En attente |
-| V3 | **Test de digestion post-compactage** | Appels LLM réels sur cas mixed-methods + phénoméno + 3 modes dé-injectés | □ mixed-methods : règles SI/ALORS mobilisées □ phénoménologie : niche case traitée □ expliquer-concept/argumentation-bilaterale/verification-sources : qualité préservée | ⏳ En attente |
-| V4 | **Spot-check R2 + validation 3 nouveaux modes** | Conformité + 5 questions tests par mode (protocole v1.7.0) | □ problématique : R2 OK + 5 questions □ empirique : R2 OK + 5 questions □ analyse : R2 OK + 5 questions | ⏳ En attente |
+| V1 | **E2E OpenAlex** | Recherche académique réelle via pipeline OpenAlex | ✅ 15 sources BON (score 0.95) ✅ DOI + venue + citations ✅ aucune < 0.35 ✅ diff vs mode 🌐 | **✅ FAIT** (v1.9.7) |
+| V2 | **Coherence audit avec 3 défauts plantés** | Premier test expérimental du contre-audit | ✅ 7 défauts détectés, 6 confirmés, 1 rétrogradé ✅ `rate=14%` collecté | **✅ FAIT** |
+| V3 | **Digestion post-compactage** | Appels LLM réels sur cas mixed-methods + phénoméno + 3 modes dé-injectés | ✅ Creswell + Giorgi mobilisés ✅ 3 modes dé-injectés : qualité préservée | **✅ FAIT** |
+| V4 | **Spot-check R2 + validation 3 nouveaux modes** | Conformité + appels LLM réels | ✅ problématique/empirique/analyse : R2 OK + LLM validé | **✅ FAIT** |
 
 ### Backlog actif (non bloquant)
 
@@ -322,7 +322,9 @@ D4 (*informer l'utilisateur où vont ses textes et sa clé*) était classé « a
 | B4 | Rate limiting persistant (multi-instance) | v1.11.0 | ⏳ |
 | B5 | Supprimer fallback `_aiConfig` body | v1.10.0 | ⏳ |
 | B6 | Lint warnings (211, « 0 nouveau par livraison ») | En cours | 0 nouveau en Phase 3 |
-| **D4** | **Avertissement données** (provider, rétention, clé côté serveur) | **AVANT LANCEMENT** ou premier item semaine 1 | **🔥 Réinscrit** |
+| **D4** | **Avertissement données** (provider, rétention, clé côté serveur) | — | **✅ FAIT** (v1.9.6) |
+| B7 | UX latence deep-research (~2 min) + économie crédits | v1.10.0 | ⏳ |
+| B8 | Section Références manquante dans réponse 🎓 | v1.10.0 | ⏳ |
 
 ---
 

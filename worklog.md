@@ -7722,3 +7722,26 @@ Stage Summary:
 - Le 429 était bien OpenAlex (nouveau modèle crédits 2026, non le provider LLM)
 - worklog.md : tous les faits sourcés (URLs docs + résultats curl directs)
 - **4/4 validations complétées. Plus aucun pending.**
+
+---
+Task ID: cloture-v197
+Agent: Main
+Task: Enregistrer la clôture formelle v1.9.7 — 4/4 validations, zéro pending
+
+Work Log:
+- Expert a entériné le rapport de vérification V1
+- Expert a reconnu que ses 2 hypothèses étaient infirmées par les données :
+  1. "Le modèle budget $ ne correspond pas à OpenAlex" → INFIRMÉ (OpenAlex a adopté un modèle crédits 2026)
+  2. "Le 429 venait probablement du provider IA" → INFIRMÉ (headers OpenAlex x-ratelimit-limit-usd)
+- Expert a salué la découverte du bug silencieux type:journal-article comme "la plus précieuse de l'arc"
+- Expert a identifié 2 items backlog pour v1.10 : B7 (latence deep-research) + B8 (section Références manquante)
+- CONTEXT-PROJET.md mis à jour : v1.9.7, V1 ✅, B7/B8 ajoutés au backlog
+- audit-report.md mis à jour : §6 4/4 FAIT, B7/B8 au backlog, D4 → FAIT
+
+Stage Summary:
+- **v1.9.7 — ÉTAT FINAL**
+- 4/4 validations : V1 ✅ V2 ✅ V3 ✅ V4 ✅
+- L'expert a infirmé ses propres hypothèses face aux preuves — la mémoire du projet est scientifique
+- 1414 tests · 0 erreurs lint · 7 assertions budget · quality-gate 3/3
+- Backlog v1.10 : B7 (latence), B8 (références 🎓), B5 (fallback _aiConfig)
+- **Zéro pending. Les portes sont ouvertes — sur des faits vérifiés jusqu'au header HTTP.** 🎓🚀
