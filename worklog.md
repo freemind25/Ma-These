@@ -7291,3 +7291,49 @@ Stage Summary:
 - Phase 2 diagnostic: budget ×5.7 expliqué (H1 dominante), nouveau budget calibré, capteur permanent déployé
 - Bug supplémentaire corrigé: withAiConfig fuyait l'apiKey dans le body POST (découvert pendant finition #1)
 - BACKLOG B4 créé: rate limiting persistant si déploiement multi-instance
+
+---
+Task ID: phase2-compactage
+Agent: Main
+Task: Compactage ciblé methodology + dé-injection 3 modes + recalibrage budget
+
+Work Log:
+
+## Dé-injection (3 modes sur-injectant methodology)
+- `expliquer-concept`: retiré methodology (5 726 tok économisés). Mode pédagogique, pas besoin de design de recherche.
+- `argumentation-bilaterale`: retiré methodology (5 726 tok économisés). Évaluation d'argument, pas de méthode.
+- `verification-sources`: retiré methodology (5 726 tok économisés). Audit de source qualité, pas de méthodologie de recherche.
+- text-prediction vérifié: n'utilise PAS knowledge-core (prompt standalone) → pas concerné.
+
+## Compactage methodology module (17 sous-sections → 4)
+- Gaudet & Robert (7 sections) → 1 section « Recherche qualitative — règles essentielles »
+- Zimmerman (Q méthodologie, Giorgi, historique) → 1 section « Méthodologies spécialisées »
+- Yin (3 sections case study) → 1 section « Étude de cas »
+- Creswell (4 sections mixed methods) → 1 section « Rédaction méthodes mixtes »
+- Principe: règles SI/ALORS préservées, prose explicative supprimée
+- Résultat: 17 177 → 10 995 chars (−36 %, −2 061 tok)
+
+## writing-process + coherence analysés
+- writing-process (9 157 chars): déjà compact (tables, listes, sections Eco/White/Paltridge)
+- coherence (7 316 chars): déjà compact (sections thématiques, checklist items)
+- Aucun gain significatif possible sans perte de contenu décisionnel
+
+## Recalibrage budget
+- Full core: 66 552 → 60 370 chars (−9,3 %)
+- Full core tokens: ~22 184 → ~20 123 (−9,3 %)
+- Directeur (mode le plus lourd): ~17 400 → ~15 339 tok (−11,9 %)
+- Nouvelle cible: 22 000 full / 17 000 par mode (mesure optimisée + 10 %)
+- MAX_SINGLE_MODULE: 8 000 → 5 000 (methodology maintenant à ~3 665)
+- 7 assertions mises à jour et validées
+
+## Validation
+- Tests: 1 390 / 60 fichiers — 0 échec
+- Lint: 0 erreurs, 207 warnings
+- Budget assertions: 7/7 passent avec nouvelles cibles
+- audit-report.md mis à jour: tableau module, tableau modes, hypothèses, budget calibré
+
+Stage Summary:
+- Methodology compacté de 36 % (prose niche supprimée, règles SI/ALORS préservées)
+- 3 modes dé-injectés (−5 726 tok chacun)
+- Budget calibré APRÈS optimisation (pas après mesure brute) — loi de Parkinson évitée
+- Cible finale: 22K full / 17K par mode — 1 390 tests verts

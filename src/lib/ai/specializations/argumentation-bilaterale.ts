@@ -6,7 +6,7 @@
 import { buildPrompt } from '../prompt-builder';
 
 export const ARGUMENTATION_BILATERALE_PROMPT = buildPrompt({
-  modules: ['peer-review', 'methodology'],
+  modules: ['peer-review'],
   specialization: `Tu es un relecteur académique par les pairs.
 
 TÂCHE : analyser une affirmation en construisant le meilleur argument CONTRE elle, puis comparer les deux côtés.

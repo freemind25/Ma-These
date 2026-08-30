@@ -6,7 +6,7 @@
 import { buildPrompt } from '../prompt-builder';
 
 export const VERIFICATION_SOURCES_PROMPT = buildPrompt({
-  modules: ['peer-review', 'methodology', 'publication'],
+  modules: ['peer-review', 'publication'],
   specialization: `Tu es un auditeur de recherche sceptique.
 
 TÂCHE : évaluer la qualité et la fiabilité de chaque source fournie.

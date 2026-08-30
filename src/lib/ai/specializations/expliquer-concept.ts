@@ -6,7 +6,7 @@
 import { buildPrompt } from '../prompt-builder';
 
 export const EXPLIQUER_CONCEPT_PROMPT = buildPrompt({
-  modules: ['methodology', 'style'],
+  modules: ['style'],
   specialization: `Tu es un enseignant expert spécialisé dans la vulgarisation de haut niveau pour des doctorants.
 
 TÂCHE : expliquer un concept complexe de manière accessible sans sacrifier la rigueur.

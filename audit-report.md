@@ -86,7 +86,7 @@
 
 | Item | Verdict | Sévérité | Mesure |
 |------|---------|----------|--------|
-| **4.1** Budget tokens noyau | ~~⚠️ DÉGRADÉ~~ **DIAGNOSTIQUÉ** | **HAUTE** | **Diagnostic Phase 2 terminé.** Ancien budget (3 900 full / 3 000 par mode) obsolète. Mesure précise : full core = **~22 184 tok** (66 552 chars ÷ 3). Nouveau budget calibré : 24 000 full / 19 000 par mode. Capteur permanent : `knowledge-core.budget.test.ts` (7 assertions). Voir §4.1bis ci-dessous. |
+| **4.1** Budget tokens noyau | ✅ **CALIBRÉ** | **HAUTE** | **Diagnostic + optimisation terminés.** Ancien budget (3 900 full / 3 000 par mode) obsolète. Après compactage ciblé du module methodology (−36 %) et dé-injection de 3 modes : full core = **~20 123 tok** (60 370 chars ÷ 3). Budget calibré : 22 000 full / 17 000 par mode (mesure + 10 %). Capteur permanent : `knowledge-core.budget.test.ts` (7 assertions). Cible posée APRÈS optimisation, pas après mesure brute. |
 | **4.2** Build de production | ✅ CORRIGÉ | — | 4 erreurs TS corrigées (paper2code, deep-research, export-docx, rag-service, curation, ai-writing). Build passe. Taille bundle à mesurer. |
 | **4.3** Tests | ✅ CONFORME | — | 1 372 tests / 58 fichiers — 0 échec |
 | **4.4** Lint | ✅ CONFORME | — | 0 erreurs, 191 warnings (pré-existants) |
@@ -95,31 +95,30 @@
 
 | Module ID | Const Name | Chars | Tokens~ | % du total |
 |-----------|-----------|-------|---------|-------------|
-| methodology | METHODOLOGY_MODULE | 17 177 | ~5 726 | 25,8% |
-| writing-process | WRITING_PROCESS_MODULE | 9 157 | ~3 052 | 13,8% |
-| coherence | COHERENCE_MODULE | 7 316 | ~2 439 | 11,0% |
-| literature-review | LITERATURE_REVIEW_MODULE | 6 682 | ~2 227 | 10,0% |
-| publication | PUBLICATION_MODULE | 5 995 | ~1 998 | 9,0% |
-| ethics | ETHICS_MODULE | 5 601 | ~1 867 | 8,4% |
-| style | STYLE_MODULE | 4 305 | ~1 435 | 6,5% |
-| presentation | PRESENTATION_MODULE | 2 576 | ~859 | 3,9% |
-| data-analysis | DATA_ANALYSIS_MODULE | 2 335 | ~778 | 3,5% |
-| visualization | VISUALIZATION_MODULE | 2 143 | ~714 | 3,2% |
-| grant-writing | GRANT_WRITING_MODULE | 1 615 | ~538 | 2,4% |
-| peer-review | PEER_REVIEW_MODULE | 979 | ~326 | 1,5% |
-| auto-edition | AUTO_EDITION_MODULE | 671 | ~224 | 1,0% |
-| **TOTAL** | **13 modules** | **66 552** | **~22 184** | **100%** |
+| methodology | METHODOLOGY_MODULE | 10 995 | ~3 665 | 18,2% |
+| writing-process | WRITING_PROCESS_MODULE | 9 157 | ~3 052 | 15,2% |
+| coherence | COHERENCE_MODULE | 7 316 | ~2 439 | 12,1% |
+| literature-review | LITERATURE_REVIEW_MODULE | 6 682 | ~2 227 | 11,1% |
+| publication | PUBLICATION_MODULE | 5 995 | ~1 998 | 9,9% |
+| ethics | ETHICS_MODULE | 5 601 | ~1 867 | 9,3% |
+| style | STYLE_MODULE | 4 305 | ~1 435 | 7,1% |
+| presentation | PRESENTATION_MODULE | 2 576 | ~859 | 4,3% |
+| data-analysis | DATA_ANALYSIS_MODULE | 2 335 | ~778 | 3,9% |
+| visualization | VISUALIZATION_MODULE | 2 143 | ~714 | 3,6% |
+| grant-writing | GRANT_WRITING_MODULE | 1 615 | ~538 | 2,7% |
+| peer-review | PEER_REVIEW_MODULE | 979 | ~326 | 1,6% |
+| auto-edition | AUTO_EDITION_MODULE | 671 | ~224 | 1,1% |
+| **TOTAL** | **13 modules** | **60 370** | **~20 123** | **100%** |
 
-#### Budget tokens détaillé par mode (5 plus lourds)
+#### Budget tokens détaillé par mode (5 plus lourds, post-optimisation)
 
-| Mode | Modules injectés | Chars | Tokens~ | Nouveau budget 19K |
-|------|-------------------|-------|---------|---------------------|
-| director | 6 modules (style+ethics+coherence+methodology+writing-process+publication) + spec | 52 200 | ~17 400 | ✅ |
-| directeur | 6 modules + spec | 51 305 | ~17 102 | ✅ |
-| revue-litterature-slr | literature-review+methodology+style | 28 929 | ~9 643 | ✅ |
-| verification-sources | peer-review+methodology+publication | 25 299 | ~8 433 | ✅ |
+| Mode | Modules injectés | Chars | Tokens~ | Budget 17K |
+|------|-------------------|-------|---------|-------------|
+| director | 6 modules + spec | 46 018 | ~15 339 | ✅ |
+| directeur | 6 modules + spec | 45 123 | ~15 041 | ✅ |
+| revue-litterature-slr | literature-review+methodology+style | 22 747 | ~7 582 | ✅ |
+| verification-sources | peer-review+publication | 8 405 | ~2 802 | ✅ |
 | revision-plan | peer-review+coherence+writing-process+style | 23 296 | ~7 765 | ✅ |
-| deblocage | (aucun) | 0 | ✅ |
 
 #### §4.1bis — Diagnostic des 3 hypothèses (Phase 2)
 
@@ -129,11 +128,17 @@
 | **H2 — Inflation de verbe** | Le module methodology contient 43 occurrences de « SI » et 83 bullet points. C'est du contenu conditionnel nécessaire (règles diagnostiques), pas du remplissage. Cependant, certains blocs pourraient être compactés (ex: regrouper les conditions similaires). | **FAIBLE** — les SI conditionnels sont légitimes. Pas de verbe superflu détecté. |
 | **H3 — Erreur de mesure** | Même avec l'estimation conservative (chars÷4), le full core fait ~16 638 tok → ×4.3 vs le budget 3 900. Avec l'estimation agressive (chars÷2.5), ~26 621 tok → ×6.8. La conclusion (dépassement massif) est robuste quel que soit le ratio chars/token. | **ÉCARTE** — la dérive est réelle, pas un artefact de mesure. |
 
-**CONCLUSION DIAGNOSTIC :** La dérive ×5.7 est principalement due à **H1** (croissance organique légitime + modules ajoutés) avec un facteur contributif mineur de **H2** (le module methodology est le plus gros contributeur à 25.8% du total). Le budget documenté de 3 900 tok était probablement mesuré sur une version antérieure du noyau (11 modules, contenu moins développé) et n'a jamais été mis à jour malgré 8+ versions d'ingestion de savoir.
+**CONCLUSION DIAGNOSTIC :** La dérive ×5.7 est principalement due à **H1** (croissance organique légitime + modules ajoutés) avec un facteur contributif mineur de **H2** (le module methodology était le plus gros contributeur à 25.8% du total). Le budget documenté de 3 900 tok était probablement mesuré sur une version antérieure du noyau et n'a jamais été mis à jour malgré 8+ versions d'ingestion de savoir.
 
-**DÉCISION :** Nouveau budget calibré = mesure actuelle + 10% de marge :
-- Full core : **24 000 tokens** (mesuré ~22 184)
-- Par mode : **19 000 tokens** (mesuré ~17 102 pour directeur)
+**ACTIONS POST-DIAGNOSTIC :**
+1. **Compactage ciblé methodology** : 17 177 → 10 995 chars (**−36 %**, −2 061 tok). 17 sous-sections niche (Gaudet & Robert ×7, Zimmerman ×3, Yin ×3, Creswell ×4) fusionnées en 4 sections compactes SI/ALORS. Contenu décisionnel préservé, prose explicative supprimée.
+2. **Dé-injection de 3 modes** : `expliquer-concept` (−5 726 tok), `argumentation-bilaterale` (−5 726 tok), `verification-sources` (−5 726 tok) ne reçoivent plus le module methodology qu'ils n'utilisaient pas.
+3. **Résultat** : full core 66 552 → 60 370 chars (−9,3 %), directeur ~17 400 → ~15 339 tok (−11,9 %)
+
+**DÉCISION :** Cible calibrée = mesure optimisée + 10 % de marge :
+- Full core : **22 000 tokens** (mesuré ~20 123)
+- Par mode : **17 000 tokens** (mesuré ~15 339 pour directeur)
+- Cible posée **après optimisation, pas après mesure brute** (loi de Parkinson du budget tokens évitée)
 
 **CAPTEUR PERMANENT :** `src/lib/ai/knowledge-core.budget.test.ts` — 7 assertions qui échoueront si le noyau dépasse les nouveaux seuils.
 
@@ -220,8 +225,8 @@
 | Tests | **1 390** / 60 fichiers | — | ✅ Tous passent |
 | Lint | 0 erreurs, 207 warnings | 0 erreurs | ✅ |
 | Build production | ✅ Passe | Success | ✅ |
-| Full core tokens | **~22 184** | ≤ 24 000 calibré | ✅ |
-| Mode le plus lourd | directeur ~17 400 tok | ≤ 19 000 calibré | ✅ |
+| Full core tokens | **~20 123** | ≤ 22 000 calibré (post-optimisation) | ✅ |
+| Mode le plus lourd | directeur ~15 339 tok | ≤ 17 000 calibré (post-optimisation) | ✅ |
 | Modes dans le budget | 26/26 (100%) | 26/26 (100%) | ✅ |
 | Knowledge modules | 13 | 13 documenté (à jour) | ✅ |
 | Spécialisations | 22 fichiers (+ 1 mort) | 19 documenté | ⚠️ |
@@ -294,8 +299,9 @@
 | 17 | Compléter le backlog §10 (B3) | 10 min | D14 |
 | 18 | Créer mode « conclusion » | 1h | D8 |
 | 19 | Feature : sauvegarde/restauration de session | 1-2j | D15 |
-
----
+| 20 | **Supprimer le fallback `_aiConfig` body** dans `resolveAiConfig` (v1.10.0) | 30 min | B5 |
+| 21 | **Rate limiting persistant** si déploiement multi-instance (Upstash Redis ou table DB) | 1-2j | B4 |
+| 22 | Lint : stabiliser le nombre de warnings (207 actuels, tendance haussière) | 2h | B6 |
 
 ## 7. NOTES MÉTHODOLOGIQUES
 

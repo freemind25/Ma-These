@@ -422,65 +422,31 @@ const METHODOLOGY_MODULE = `
 ### Protocoles scientifiques : traçabilité (Holtom & Fisher)
 - SI protocole avec matériel biologique ou chimique : inclure fabricant + siège social (reproductibilité internationale). Pour les kits : résumer le principe, citer la publication de référence, indiquer « selon les instructions du fabricant » pour les étapes standard, décrire en détail toute modification
 
-### Objectifs de la recherche qualitative (Gaudet & Robert)
-- SI recherche qualitative itérative → distinguer objectif théorique (définir/interpréter un phénomène) et objectif empirique (décrire/observer). Les deux sont nécessaires : trop théorique = césure théorie-empirie ; trop empirique = journalisme. Hiérarchiser et expliciter ses objectifs est un devoir de réflexivité
+### Recherche qualitative — règles essentielles (Gaudet & Robert)
+- SI quali itérative → distinguer objectif théorique (définir/interpréter) et empirique (décrire/observer) ; trop théorique = césure, trop empirique = journalisme
+- Question en « comment » (processus ancré) plutôt que « quel/pourquoi » causaux
+- Échantillonnage intentionnel : justifier par comparabilité + diversification. Techniques : stratifié, cellulaire, quotas, théorique
+- Analyse en 3 strates : verticale (condenser par source), horizontale (comparer, ne JAMAIS éliminer un cas divergent, ne PAS compter sur échantillon non aléatoire), théorisante (va-et-vient avec littérature)
+- 5 erreurs : résumer au lieu d'analyser, citer au lieu d'analyser, prendre parti, compter les fréquences, présenter sans interpréter
+- Réflexivité : expliciter processus analytique, contre-exemples (chercher activement), limites internes (influence, pouvoir)
+- Théorisation : classer les rapports sociaux abstraits (4 formes : descriptive, abstraite, cartographie, idéal-type). Catégorie « inclassables » obligatoire
 
-### Question de recherche qualitative (Gaudet & Robert)
-- Formuler en « comment » (processus, compréhension ancrée dans le contexte) plutôt qu'en « quel/le » ou « pourquoi » causaux. Les questions « comment » favorisent un processus itératif inductif ; les questions « quel » orientent vers un hypothético-déductif incompatible avec la quali
+### Méthodologies spécialisées (Zimmerman)
+- SI étude de la subjectivité → Q méthodologie (Stephenson) : Q-set 30-70 énoncés → Q-sort forcé → analyse factorielle PAR PERSONNE (max ~40 participants). Ce n'est PAS un design mixte séquentiel
+- SI phénoménologie → utiliser Giorgi descriptif (4 étapes : lecture globale → unités de sens → transformation sensible → structure). Ne PAS mélanger avec Moustakas/van Manen. Min 3 expériencers
+- SI recherche historique → 5 étapes : structurer → sources (primaires + triangulation obligatoire) → analyse (cliométrie, contrefactuelle) → narrative (périodisation contextuelle) → théorie. Manque dans archives = signal à évaluer
 
-### Échantillonnage qualitatif intentionnel (Gaudet & Robert)
-- Justifier selon deux critères : (1) comparabilité (sources semblables pour saturation théorique) et (2) diversification (sources contrastées pour complexité). Quatre techniques : stratifié (catégories préétablies), cellulaire (catégories chevauchantes, Miles & Huberman), par quotas (minimum par catégorie), théorique (critères émergents, Strauss & Corbin)
+### Étude de cas (Yin)
+- SI chronologique → rédiger l'état actuel AVANT l'historique (les investigateurs sur-investissent l'historique)
+- SI multi-cas → analyse transversale par enjeux thématiques (pas nécessairement un chapitre par cas)
+- SI explication visée → identifier et défendre les explications rivales AUSSI vigoureusement que la privilégiée
+- Le protocole doit spécifier le FORMAT du rapport final (pas seulement les procédures)
 
-### Analyse qualitative en 3 strates — palimpseste (Gaudet & Robert)
-- Strate 1 — analyse verticale : condensation contextualisante puis sémantique de chaque source. Documenter le contexte de production AVANT la condensation (lieu, personnes présentes, influence de l'intervieweur). SI codage logiciel trop rapide → perte de la perspective contextuelle
-- Strate 2 — analyse horizontale : comparaison transversale des sources, identification de fils conducteurs et cas contrastants. Ne JAMAIS éliminer un document divergent — un seul cas divergent peut invalider l'interprétation. Ne PAS généraliser statistiquement (« 2/10 disent que… ») sur un échantillon non aléatoire
-- Strate 3 — analyse théorisante : généralisation analytique par va-et-vient constant avec la littérature. Le retour aux strates précédentes est nécessaire
-
-### Cinq erreurs d'analyse qualitative (Gaudet & Robert)
-- (1) Résumer au lieu d'analyser (arrêter à la réduction thématique sans interpréter) ; (2) citer au lieu d'analyser (déléguer l'analyse aux participants) ; (3) prendre parti au lieu d'analyser (évaluer plutôt qu'interpréter) ; (4) compter les fréquences de codes comme en quanti (pas de validité sur échantillon non aléatoire) ; (5) présenter des caractéristiques formelles sans interpréter (ex. noter des métaphores sans interpréter leur rôle)
-
-### Réflexivité qualitative concrète (Gaudet & Robert)
-- Trois éléments à rendre explicites : (1) transparence du processus analytique (étapes, dilemmes, choix) ; (2) utilisation et discussion des contre-exemples (les chercher activement, les transformer en outils d'interprétation plus inclusive, les mentionner même non résolus) ; (3) limites internes (influence du chercheur, thèmes écartés, relations de pouvoir)
-
-### Théorisation qualitative — classification (Gaudet & Robert)
-- Classer les rapports sociaux abstraits (pas les caractéristiques sociodémographiques). Quatre formes : typologie descriptive (unités-noyaux par ressemblance/différence), typologie abstraite (rapports théoriques entre catégories), cartographie (cas dans un espace typologique), idéal-type wébérien (construction idéale pour interpréter). Créer une catégorie « inclassables »
-
-### Q méthodologie (Zimmerman, d'après Damar & Sali)
-- SI étude de la subjectivité (opinions, attitudes, perspectives internes) → la Q méthodologie (Stephenson) : concourse → Q-set (30-70 énoncés) → tri forcé (Q-sort) → analyse factorielle par personne (et non par item) → interprétation narrative par facteur. Les participants (max ~40) sont les variables, sélectionnés pour hétérogénéité maximale
-- Ce n'est PAS un design mixte séquentiel (quali→quanti→quali) mais une approche « qualiquantologique » où quali et quanti interagissent en continu
-
-### Phénoménologie descriptive de Giorgi (Zimmerman, d'après Nguyen & Curzer)
-- Ne PAS mélanger en cours de route avec d'autres méthodologies phénoménologiques (Moustakas, van Manen). Les étapes procédurales ne sont pas transposables si la logique sous-jacente diffère
-- Minimum 3 expériencers. Analyse en 4 étapes : (1) lecture globale, (2) découpage en unités de sens, (3) transformation en langage psychologiquement sensible (variation imaginative pour généraliser), (4) écriture de la structure générale
-- Distinguer « orienter » le participant (question ouverte de suivi) de « mener » vers une réponse préétablie (question suggestive). Seule l'orientation est légitime
-
-### Recherche historique (Zimmerman, d'après Silva)
-- Cadre en 5 étapes : (1) structurer (expériences perceptuelles + littérature → questions), (2) sources (primaires : mots/images/artéfacts/souvenirs oraux + triangulation obligatoire), (3) analyse (cliométrie, comparaison spatio-temporelle, analyse contrefactuelle), (4) structure narrative (périodisation contextuelle préférée à chronologique), (5) explication théorique
-- L'analyse contrefactuelle (« et si… ? ») est l'équivalent le plus proche d'une expérimentation pour tester la causalité en histoire
-- La triangulation de sources est un prérequis de publication dans les revues de premier rang. Évaluer ce qui MANQUE dans les archives autant que ce qui y figure
-
-### Étude de cas : composition du rapport (Yin)
-- SI étude de cas à structure chronologique → rédiger d'abord les sections sur l'état actuel, ENFIN l'historique. Les investigateurs sur-investissent systématiquement l'historique et sous-investissent l'état actuel — qui contient le matériel le plus intéressant pour le lecteur
-- SI rapport à structure non séquencée (chapitres réordonnables sans perte) → vérifier la complétude via une checklist thématique, non par logique séquentielle. Un thème manquant produit une « version biaisée » même si chaque chapitre existant est correct
-- SI étude de cas multi-cas → les cas individuels ne doivent PAS nécessairement apparaître comme chapitres séparés. Une analyse transversale organisée par enjeux thématiques (les cas cités comme preuves tout au long) est un format légitime et souvent supérieur. N'utiliser des vignettes par cas que si elles ajoutent une valeur au-delà de la preuve transversale
-
-### Explications rivales en étude de cas (Yin)
-- SI les questions de recherche de l'étude de cas visent l'explication → le rapport doit identifier et défendre les explications rivales AUSSI vigoureusement que l'explication privilégiée, puis démontrer empiriquement pourquoi elles sont rejetées. Une étude de cas qui n'anticipe pas les interprétations alternatives « évidentes » sera perçue comme unilatérale
-
-### Protocole d'étude de cas — inclure le format du rapport (Yin)
-- SI conception de protocole d'étude de cas → spécifier le format et la structure de composition du rapport FINAL dans le protocole lui-même — pas seulement les procédures de recherche. Le choix précoce de la structure facilite le design et la collecte, même si le format peut être modifié si des conditions imprévues surviennent
-
-### Écriture méthodes mixtes — voix (Creswell & Plano Clark)
-- SI rédaction d'une étude à méthodes mixtes → utiliser une seule voix (point de vue) cohérente du début à la fin. NE PAS alterner entre subjectif (1re personne dans les sections quali) et objectif (3e personne dans les sections quanti). Choisir la voix selon le design, le volet prioritaire ou le public cible
-
-### Énoncé de purpose méthodes mixtes — 5 éléments (Creswell & Plano Clark)
-- SI rédaction de l'énoncé de purpose (purpose statement) d'une étude à méthodes mixtes → inclure les 5 éléments dans l'ordre : (a) objectif de contenu, (b) nom complet du design + définition brève, (c) volet quantitatif (type de données, intention, participants, site), (d) volet qualitatif (type de données, intention, participants, site), (e) justification de l'intégration (quelle insight supplémentaire résulte de la combinaison). En design séquentiel, le second volet est formulé de manière provisoire
-
-### Section Résultats — structure selon design (Creswell & Plano Clark)
-- SI rédaction des Résultats d'une étude à méthodes mixtes → structurer selon le type de design : convergent = analyses quantitatif et qualitatif séparées puis fusion ; séquentiel = résultats phase 1 → procédures de connexion → résultats phase 2 → interprétation intégrée. La structure écrite doit MIRRORER le diagramme procédural du design
-
-### Introduction — annoncer le design mixte (Creswell & Plano Clark)
-- SI rédaction de l'introduction d'une étude à méthodes mixtes → annoncer le type de design dans le passage sur les lacunes de la littérature en framing le gap comme un besoin que le design choisi adresse (ex. « les résultats quantitatifs seuls sont inadéquats pour expliquer pleinement X » → annonce un design séquentiel explicatif). Le titre doit inclure « méthodes mixtes »
+### Rédaction méthodes mixtes (Creswell & Plano Clark)
+- Voix unique cohérente du début à la fin (ne PAS alterner 1re/3e personne)
+- Purpose statement : 5 éléments (objectif contenu, design + définition, volet quanti, volet quali, justification intégration)
+- Résultats : structure MIRROR le diagramme procédural (convergent = fusion ; séquentiel = phase 1 → connexion → phase 2 → intégrée)
+- Introduction : annoncer le design dans le gap littéraire ; titre inclut « méthodes mixtes »
 `;
 
 // ───────────────────────────────────────

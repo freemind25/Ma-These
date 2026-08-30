@@ -19,17 +19,15 @@ import { join } from 'path'
 // each ingestion cycle. This test automates that requirement.
 // ═══════════════════════════════════════════════════════════════
 
-// ─── Budget targets (updated after Phase 2 diagnostic v1.9.5) ───
-// These reflect the MEASURED reality. The old documented budget
-// (3900 full / 3000 per-mode) was obsolete since v1.8.1.
-//
-// Decision: target = current measured + 10% headroom.
+// ─── Budget targets (calibrated AFTER optimization, not raw measurement) ───
+// These were set after targeted compaction of the methodology module
+// (36% reduction) and de-injection of methodology from 3 over-injecting modes.
 // Any FUTURE growth >10% will trigger a test failure.
 
 const CHARS_PER_TOKEN = 3
-const BUDGET_FULL_CORE_TOKENS = 24_000  // ~22,184 measured + 10%
-const BUDGET_PER_MODE_TOKENS = 19_000  // ~17,102 (directeur) + 10%
-const MAX_SINGLE_MODULE_TOKENS = 8_000
+const BUDGET_FULL_CORE_TOKENS = 22_000  // ~20,123 measured (post-optimization) + 10%
+const BUDGET_PER_MODE_TOKENS = 17_000  // ~15,339 (directeur, post-optimization) + 10%
+const MAX_SINGLE_MODULE_TOKENS = 5_000  // methodology was ~5,726 pre-compaction, now ~3,665
 
 // ─── Module name mapping ───
 const MODULE_NAME_MAP: Record<string, string> = {
