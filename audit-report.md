@@ -241,6 +241,8 @@
 
 ### ✅ OUI — PRÊT POUR PREMIERS UTILISATEURS
 
+> **Verdict entériné par l'expert avec trois nuances (cf. §5bis ci-dessous).**
+
 **Phase 1 (sécurité) + Phase 2 (budget) + Phase 3 (majeurs) :**
 
 - ~~C1 Build~~ CORRIGÉ
@@ -270,11 +272,66 @@
 
 > **0 blocage technique. 42/46 items CONFORME (91 %).** Le verdict est un état mesuré, pas une case cochée.
 
+### §5bis — Trois nuances d'expert (entérinées, 27 juin 2025)
+
+Ces nuances ne remettent pas en cause le verdict mais requalifient ce qui reste à faire.
+
+#### 🟡 Nuance 1 — Les 24 « digestion tests » sont des tests de présence, pas de digestion
+
+Les tests dans `post-compaction-digestion.test.ts` vérifient que le module methodology **contient encore** les règles décisionnelles clés après compactage (assertion sur le texte du module). Ce sont des **tests de non-régression de format** — un garde-fou nécessaire mais insuffisant.
+
+Un **test de digestion réel** = un appel LLM avec un cas mixed-methods / phénoménologique → vérifier que la règle SI/ALORS est **mobilisée** dans la réponse générée. Un module peut contenir toutes ses règles et produire néanmoins des réponses moins fines si le LLM raisonne moins bien sur la forme compressée.
+
+→ **Statut : ouvert.** Premier acte du premier usage réel.
+
+#### 🟡 Nuance 2 — Les 3 nouveaux modes (C4-C6) n'ont pas eu leur validation d'apprentissage
+
+`problematique.ts`, `empirique.ts`, `analyse.ts` ont été créés en Phase 3. Deux vérifications manquent :
+
+1. **Conformité R2 spot-check** : chaque spécialisation doit être *rôle + tâche + format*, sans duplication du contenu des modules. Création accélérée (sous-agent interrompu et repris) = risque de dérive.
+2. **Validation protocole v1.7.0** : 5 questions tests par mode n'ont pas été exécutées pour ces 3 modes.
+
+→ **Statut : à faire avant premier doctorant (estimé ~30 min).**
+
+#### 🟡 Nuance 3 — D4 (avertissement données) a disparu des radars
+
+D4 (*informer l'utilisateur où vont ses textes et sa clé*) était classé « amélioration semaine 1+ » dans le plan de correction initial. Il n'apparaît ni dans la Phase 3 exécutée, ni dans le backlog §10 de CONTEXT-PROJET.md. C'est pourtant l'item le plus lié à la **confiance doctorale** : un premier utilisateur devrait lire, avant sa première requête, un mot sur la destination de ses données (provider, rétention, clé côté serveur).
+
+→ **Statut : réinscrit au backlog avec échéance « avant lancement » ou premier item semaine 1.**
+
 ---
 
-## 6. PLAN DE CORRECTION PRIORISÉ
+## 6. VALIDATIONS AVANT PREMIER DOCTORANT
 
-### 🔴 AVANT LANCEMENT (BLOQUANT)
+> Ce §6 remplace l'ancien « Plan de correction priorisé ». Tout ce qui était bloquant est corrigé.
+> Ce qui reste n'est plus du développement : ce sont des **validations par l'usage réel**.
+
+### ⏳ 4 validations réelles (AVANT/AVEC le premier doctorant)
+
+| # | Validation | Description | Checklist | Statut |
+|---|-----------|-------------|-----------|--------|
+| V1 | **E2E OpenAlex** | Premier test académique en IP propre | □ sources journal-article avec DOI □ métadonnées cohérentes □ aucune source < 0.35 □ comparer avec mode Web | ⏳ En attente IP propre |
+| V2 | **Coherence audit avec 3 défauts plantés** | Premier test expérimental du contre-audit | □ 2 défauts réels détectés □ 1 faux défaut non rétrogradé □ collecter `rate=...%` | ⏳ En attente |
+| V3 | **Test de digestion post-compactage** | Appels LLM réels sur cas mixed-methods + phénoméno + 3 modes dé-injectés | □ mixed-methods : règles SI/ALORS mobilisées □ phénoménologie : niche case traitée □ expliquer-concept/argumentation-bilaterale/verification-sources : qualité préservée | ⏳ En attente |
+| V4 | **Spot-check R2 + validation 3 nouveaux modes** | Conformité + 5 questions tests par mode (protocole v1.7.0) | □ problématique : R2 OK + 5 questions □ empirique : R2 OK + 5 questions □ analyse : R2 OK + 5 questions | ⏳ En attente |
+
+### Backlog actif (non bloquant)
+
+| # | Item | Échéance | Statut |
+|---|------|----------|--------|
+| B4 | Rate limiting persistant (multi-instance) | v1.11.0 | ⏳ |
+| B5 | Supprimer fallback `_aiConfig` body | v1.10.0 | ⏳ |
+| B6 | Lint warnings (211, « 0 nouveau par livraison ») | En cours | 0 nouveau en Phase 3 |
+| **D4** | **Avertissement données** (provider, rétention, clé côté serveur) | **AVANT LANCEMENT** ou premier item semaine 1 | **🔥 Réinscrit** |
+
+---
+
+## 7. PLAN DE CORRECTION PRIORISÉ (ARCHIVE)
+
+> Ce plan est maintenant **archivé**. Les items bloquants (C1-C3, D3) sont corrigés.
+> Les items restants sont soit dans le §6 ci-dessus, soit dans le backlog de CONTEXT-PROJET.md §10.
+
+### 🔴 AVANT LANCEMENT (BLOQUANT) — ARCHIVÉ
 
 | # | Action | Effort | Item |
 |---|--------|--------|------|
@@ -315,7 +372,7 @@
 | 21 | **Rate limiting persistant** si déploiement multi-instance (Upstash Redis ou table DB) | 1-2j | B4 |
 | 22 | Lint : stabiliser le nombre de warnings (207 actuels, tendance haussière) | 2h | B6 |
 
-## 7. NOTES MÉTHODOLOGIQUES
+## 8. NOTES MÉTHODOLOGIQUES
 
 ### Limites de cet audit
 
@@ -324,16 +381,19 @@
 3. **Pas de test coherence-audit** — le premier `rate=...%` n'a pas pu être collecté. La décision de clôture du chantier Pattern 2 reste en attente.
 4. **Pas de test OpenAlex E2E** — le 429 IP partagée empêche le test académique en profondeur (identifié dans §9 CONTEXT-PROJET).
 5. **Budget tokens** — l'estimation (÷3 chars/token pour le français) est approximative. Un comptage via tiktoken serait plus précis, mais la conclusion (dépassement ×5) est robuste même avec ±20% de marge.
+6. **24 digestion tests** — ce sont des tests de présence de contenu (vérifient que le compactage n'a pas supprimé les règles), pas des tests de digestion réelle (appel LLM pour vérifier que les règles sont mobilisées dans les réponses générées). Nuance 1 du verdict d'expert §5bis.
+7. **3 nouveaux modes (C4-C6)** — créés mais non validés par le protocole v1.7.0 (5 questions tests par mode). Spot-check R2 non fait. Nuance 2 du verdict d'expert §5bis.
 
 ### Points forts confirmés
 
 - **Gouvernance anti-duplication** : l'architecture connaissance est solide. 5/6 règles CONFORME, le savoir métier est centralisé et les spécialisations sont propres.
 - **Gestion d'erreurs IA** : circuit breaker, retries, failover chain — niveau de maturité élevé.
 - **Contre-audit coherence** : implémentation propre avec logging structuré et dégradation gracieuse.
-- **Tests** : 1 372 tests passent, 0 échec, couverture large.
+- **Tests** : 1 414 tests passent, 0 échec, couverture large (61 fichiers).
 - **Sécurité clés API** : zéro clé en dur dans le frontend, SDK côté serveur uniquement.
 
 ---
 
 *Rapport généré automatiquement dans le cadre de l'audit de référence ThesisFrame v1.9.4.*
+*Verdict entériné avec 3 nuances d'expert le 27 juin 2025. §6 = validations avant premier doctorant.*
 *Ce rapport devient la référence avant lancement : tout ✅ n'a plus besoin d'y revenir, tout ⚠️/❌ alimente le plan de correction.*

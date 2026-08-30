@@ -7404,3 +7404,28 @@ Stage Summary:
 - Total tests : 1 414 (60 fichiers → 61 fichiers)
 - Verdict audit : 42/46 items CONFORME (91 %), 0 blocage
 - Projet : v1.9.5 — PRÊT POUR PREMIERS UTILISATEURS
+
+---
+Task ID: Phase3-Closure
+Agent: Main
+Task: Enregistrer le verdict d'expert avec 3 nuances + graver les validations avant-premier-doctorant
+
+Work Log:
+- Expert a entériné le verdict « PRÊT POUR PREMIERS UTILISATEURS » avec 3 nuances
+- Nuance 1 : les 24 digestion tests sont des tests de présence de contenu, pas de digestion réelle (appel LLM)
+- Nuance 2 : les 3 nouveaux modes (C4-C6) n'ont pas eu de spot-check R2 ni validation protocole v1.7.0
+- Nuance 3 : D4 (avertissement données) a disparu du backlog — réinscrit avec priorité HAUTE
+- audit-report.md §5bis : 3 nuances d'expert documentées
+- audit-report.md §6 : nouveau « Validations avant premier doctorant » (V1-V4 + backlog actif)
+- audit-report.md §7 : plan de correction archivé
+- audit-report.md §8 : notes méthodologiques enrichies (limites 6-7)
+- CONTEXT-PROJET.md §9 : remplacé par les 4 validations + remarques d'expert
+- CONTEXT-PROJET.md §10 : backlog étendu (D4 réinscrit HAUTE, D7-D15 ajoutés)
+- Note honnête sur les warnings : le chiffre 211 est correct (207→211 venait d'un fichier créé cette session, pas de régression)
+
+Stage Summary:
+- Verdict entériné avec nuances → audit-report.md et CONTEXT-PROJET.md sont la référence avant lancement
+- 4 validations réelles inscrites (V1-V4) avec checklists détaillées
+- D4 réinscrit au backlog (priorité HAUTE, échéance avant lancement)
+- « Ce qui reste n'est plus du développement : ce sont des validations par l'usage réel »
+- La première session avec un vrai doctorant apportera plus que les cinq derniers audits réunis.

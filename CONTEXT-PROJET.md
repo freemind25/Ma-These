@@ -222,21 +222,46 @@ Signal diagnostique secondaire : rétrogradations systématiques sur une même c
 
 Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le critère « unité d'analyse » (validation du Pattern 1 comme sonde anti-régression).
 
-## 9. Prochaines étapes
+## 9. Validations avant premier doctorant
 
-- **E2E digestion OpenAlex ⏳** : le test de bout en bout (question doctorale → sources peer-reviewed dans l'UI) n'a pu être exécuté dans le sandbox (429 IP partagée). Clôture définitive de la Task 19 au premier usage 🎓 Académique en IP propre. Checklist : □ sources journal-article avec DOI □ métadonnées cohérentes □ aucune source < 0.35 □ comparer avec mode Web.
-- **Données [coherence-audit]** : collecter les premiers taux de rétrogradation pour décider du seuil
+> Verdict entériné : **PRÊT POUR PREMIERS UTILISATEURS** (42/46 conforme, 0 ❌).
+> Ce qui reste n'est plus du développement mais des **validations par l'usage réel**.
+
+### ⏳ 4 validations réelles (AVANT/AVEC le premier doctorant)
+
+| # | Validation | Description | Checklist | Statut |
+|---|-----------|-------------|-----------|--------|
+| V1 | **E2E OpenAlex** | Premier test académique en IP propre | □ sources journal-article avec DOI □ métadonnées cohérentes □ aucune source < 0.35 □ comparer avec mode Web | ⏳ IP propre |
+| V2 | **Coherence audit avec 3 défauts plantés** | Premier test expérimental du contre-audit | □ 2 défauts réels détectés □ 1 faux défaut non rétrogradé □ collecter `rate=...%` | ⏳ |
+| V3 | **Digestion post-compactage** | Appels LLM réels (mixed-methods + phénoméno + 3 modes dé-injectés) | □ mixed-methods : SI/ALORS mobilisées □ phénoménologie : niche OK □ 3 modes dé-injectés : qualité préservée | ⏳ |
+| V4 | **R2 spot-check + validation C4-C6** | Conformité + protocole v1.7.0 (5 questions/mode) | □ problématique : R2 + 5Q □ empirique : R2 + 5Q □ analyse : R2 + 5Q | ⏳ |
+
+### Remarques d'expert (3 nuances)
+
+1. **Tests de présence ≠ tests de digestion** : les 24 tests de `post-compaction-digestion.test.ts` vérifient que les règles sont *présentes* dans le module compacté, pas qu'elles sont *mobilisées* par le LLM. Seul un appel LLM réel peut valider cela.
+2. **3 nouveaux modes non validés** : `problematique.ts`, `empirique.ts`, `analyse.ts` créés en Phase 3 mais sans validation protocole v1.7.0 ni spot-check R2.
+3. **D4 (avertissement données)** : réinscrit au backlog — un premier utilisateur doit savoir où vont ses textes et sa clé AVANT sa première requête.
+
+### Items techniques secondaires
+
 - **sqlite-vec** : migration quand le volume de chunks dépasse les capacités de parsing JSON
 - **Calibration front-end** : exposer le sélecteur de niveau doctorant dans l'UI (actuellement API-only)
 - **Score versioning** : ajouter `scoreVersion: 2` si l'UI expose un historique de scores coherence
 
-## 10. Backlog non-urgent (micro-suggestions)
+## 10. Backlog actif
 
 | # | Suggestion | Priorité | Contexte |
 |---|-----------|----------|----------|
-| B1 | ✅ **Gestion 429 côté UI** —middleware.ts renvoie 429 gracieuse avec Retry-After | basse | **CORRIGÉ en Phase 1** |
+| B1 | ✅ **Gestion 429 côté UI** — middleware.ts renvoie 429 gracieuse avec Retry-After | basse | **CORRIGÉ en Phase 1** |
 | B2 | ✅ **Retry avec backoff** dans le wrapper OpenAlex — fetchWithRetry() : 15s timeout, 2 retries, backoff exponentiel | basse | **CORRIGÉ en Phase 3** |
 | B3 | **Backlog manquant** — table §10 tronquée après B2 dans l'audit initial | basse | Complété en Phase 3 |
 | B4 | **Rate limiting persistant** si déploiement multi-instance (Upstash Redis ou table DB) | basse | Échéance : v1.11.0 |
 | B5 | **Supprimer le fallback `_aiConfig` body** dans `resolveAiConfig` | basse | Échéance : v1.10.0 |
 | B6 | **Lint : stabiliser les warnings** (211 actuels, règle « 0 warning nouveau par livraison ») | basse | 0 nouveau en Phase 3, 211 inchangés |
+| **D4** | **🔥 Avertissement données** — bannière info quand provider ≠ zai (destination des textes, rétention, clé côté serveur) | **HAUTE** | **AVANT LANCEMENT ou premier item semaine 1. Réinscrit après disparition du radar (nuance 3 du verdict d'expert).** |
+| D7 | Coherence-check digestion test avec 3 défauts plantés | moyenne | À faire avec V2 |
+| D8 | Mode « conclusion » | basse | Backlog |
+| D9/D11 | Migrer freeform/improvement/verification-publication vers buildPrompt | basse | Backlog |
+| D12 | Catégories cohérence (commentaire + UI) | basse | Backlog |
+| D13 | Mise à jour synchrone docs (CONTEXT-PROJET, AGENTS.md, ARCHITECTURE-CONNAISSANCE) | basse | Backlog |
+| D15 | Export/import session complète | basse | Backlog |
