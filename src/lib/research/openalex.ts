@@ -8,6 +8,9 @@
 
 const OPENALEX_BASE = "https://api.openalex.org";
 
+// Clé API OpenAlex (requise depuis fév. 2026) — stockée dans .env
+const OPENALEX_API_KEY = process.env.OPENALEX_API_KEY || "";
+
 // Politesse : OpenAlex recommande un paramètre mailto dans User-Agent
 const POLITE_MAILTO = "thesisframe@research-tool.dev";
 
@@ -266,8 +269,11 @@ export async function searchWorks(
     url.searchParams.set("sort", params.sort);
   }
 
-  url.searchParams.set("per_page", String(Math.min(params.limit || 25, 200)));
-  url.searchParams.set("offset", String(params.offset || 0));
+  const perPage = Math.min(params.limit || 25, 200);
+  url.searchParams.set("per_page", String(perPage));
+  // OpenAlex utilise "page" (1-based) au lieu de "offset" depuis 2026
+  const page = Math.floor((params.offset || 0) / perPage) + 1;
+  url.searchParams.set("page", String(page));
 
   if (params.sample) {
     url.searchParams.set("sample", String(params.sample));
@@ -279,6 +285,11 @@ export async function searchWorks(
 
   // Pool poli OpenAlex : le paramètre mailto donne un quota plus élevé
   url.searchParams.set("mailto", POLITE_MAILTO);
+
+  // Clé API (requise depuis fév. 2026)
+  if (OPENALEX_API_KEY) {
+    url.searchParams.set("api_key", OPENALEX_API_KEY);
+  }
 
   const res = await fetchWithRetry(url.toString(), {
     headers: headers(),
@@ -314,6 +325,11 @@ export async function getRelatedWorks(
   const params = new URLSearchParams({
     per_page: String(Math.min(limit, 200)),
   });
+
+  // Clé API
+  if (OPENALEX_API_KEY) {
+    params.set("api_key", OPENALEX_API_KEY);
+  }
 
   const res = await fetchWithRetry(`${url}?${params}`, {
     headers: headers(),

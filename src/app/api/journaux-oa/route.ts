@@ -137,6 +137,9 @@ async function fetchOpenAlex(query: string, subject?: string): Promise<JournalRe
   if (subject && subject !== "all") {
     params.set("filter", `topics.subfield.display_name.search:${subject}`);
   }
+  // Clé API OpenAlex
+  const apiKey = process.env.OPENALEX_API_KEY;
+  if (apiKey) params.set("api_key", apiKey);
 
   const url = `https://api.openalex.org/journals?${params.toString()}`;
   const res = await fetch(url, {
