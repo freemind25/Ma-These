@@ -7745,3 +7745,21 @@ Stage Summary:
 - 1414 tests · 0 erreurs lint · 7 assertions budget · quality-gate 3/3
 - Backlog v1.10 : B7 (latence), B8 (références 🎓), B5 (fallback _aiConfig)
 - **Zéro pending. Les portes sont ouvertes — sur des faits vérifiés jusqu'au header HTTP.** 🎓🚀
+---
+Task ID: release-v1.9.7
+Agent: Main
+Task: Push, release v1.9.7, update executable
+
+Work Log:
+- Version bump: package.json 1.5.1→1.9.7, tauri.conf.json 1.4.0→1.9.7, Cargo.toml 1.4.0→1.9.7
+- Copyright mis à jour: 2025→2025-2026
+- Commit: f252ca4 "release: v1.9.7 — corrections OpenAlex, pagination, work types, credit model"
+- Tag annoté v1.9.7 créé localement avec notes de release
+- 53 commits non-poussés (origin/main = f952019, HEAD = f252ca4)
+- Push GitHub impossible: aucune auth (ni SSH, ni PAT, ni gh CLI) dans le sandbox
+- Build Tauri impossible: Rust/Cargo non installés dans le sandbox
+
+Stage Summary:
+- Tag v1.9.7 prêt localement (commit + tag annoté)
+- Versions synchronisées dans les 3 fichiers de version
+- Utilisateur doit exécuter push + build depuis sa machine locale (cf. commandes ci-dessous)
