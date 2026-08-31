@@ -7879,3 +7879,25 @@ Stage Summary:
 - Bug 1 (cookie): Fixed in v1.10.1, confirmed working
 - Bug 2 (SDK): Fixed in v1.10.2 — dynamic imports with graceful fallback
 - Download: https://github.com/freemind25/Ma-These/releases/tag/v1.10.2
+---
+Task ID: desktop-v1.10.3-full-fix
+Agent: Main
+Task: Fix all remaining desktop app issues with local testing
+
+Work Log:
+- Tested standalone server locally (build + start + API requests)
+- Confirmed cookie fix works: cookie set with secure:false, sent back correctly
+- Confirmed AI routes load and process requests (validation errors, not MODULE_NOT_FOUND)
+- Confirmed SDK IS in standalone output (serverExternalPackages doesn't exclude from node_modules)
+- Found Bug 3: stale standalone cache — extract_standalone() skipped re-extraction
+  on version upgrade because it only checked if files exist, not version
+  User installing v1.10.2 over v1.10.0 ran v1.10.0's buggy server code
+  Fix: write .app-version file, compare with CARGO_PKG_VERSION on launch
+- Fixed Bug 1: CREATE_NO_WINDOW (0x08000000) for powershell + node.exe child processes
+- Fixed Bug 4: strip_extended_length_prefix had wrong pattern (5 chars vs 4)
+  Changed from raw string to regular string for correct escaping
+
+Stage Summary:
+- v1.10.3 tested locally: standalone server starts, AI routes work, cookies work
+- 4 fixes total: console window, stale cache, cookie secure, path strip
+- Download: https://github.com/freemind25/Ma-These/releases/tag/v1.10.3
