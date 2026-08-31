@@ -7809,3 +7809,32 @@ Stage Summary:
 - La checklist 6 points (install, startup, appel IA, clé, persistance, désinstall)
   est le PENDING CRITIQUE bloquant toute distribution.
 - Séquence validée : (1) test Windows réel → (2) merge v1.9.8 → (3) re-tag → (4) distribuer.
+---
+Task ID: hotfix-v1.9.8-pipe-deadlock
+Agent: Main
+Task: Corriger la page vide au premier lancement desktop
+
+Work Log:
+- Utilisateur rapporte : page vide après installation du .exe v1.9.7
+- Root cause identifiée : Stdio::piped + mem::forget(child) = deadlock classique
+  Le buffer Windows stdout/stderr (4 Ko) se sature avec les logs Next.js de démarrage,
+  Node.js bloque sur console.log, le serveur ne répond plus aux requêtes HTTP.
+  Le readiness check TCP peut passer (port ouvert) mais l'HTTP handler est bloqué.
+- Fix appliqué : Stdio::from(log_file) au lieu de Stdio::piped()
+  stdout/stderr de Node.js redirigés vers server.log (à côté de l'exécutable)
+  Fallback Stdio::null() si le fichier log ne peut pas être créé
+- Diagnostic complet ajouté dans lib.rs :
+  - exe path, resource_dir, existence de node.exe/server.js
+  - Liste des fichiers dans resource_dir
+  - Résultat du spawn, PID
+  - Temps de démarrage du serveur
+- Messages d'erreur visibles via window.eval() au lieu de data:text/html
+- Readiness check : 2s de pause post-TCP pour HTTP handler
+- v1.9.7.1 rejetée par Tauri (pas semver) → v1.9.8
+- Build #5 success, release publiée
+
+Stage Summary:
+- v1.9.8 : https://github.com/freemind25/Ma-These/releases/tag/v1.9.8
+- Après installation : si page vide, consulter server.log à côté de Ma Thèse.exe
+- Si server.log contient les logs Node.js → le deadlock est résolu, autre problème
+- Si server.log est vide ou absent → le problème est ailleurs (chemin fichiers)
