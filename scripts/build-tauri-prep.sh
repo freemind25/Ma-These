@@ -44,11 +44,8 @@ echo "  Standalone: $FILE_COUNT fichiers"
 echo "[5/6] Zipping standalone ($FILE_COUNT files)..."
 if [[ "${RUNNER_OS:-}" == "Windows" ]]; then
   # PowerShell : créer standalone.zip contenant le dossier standalone/
-  powershell -NoProfile -NonInteractive -Command "
-    Compress-Archive -Path (Resolve-Path 'build/tauri-bundle/standalone').Path `
-      -DestinationPath (Join-Path (Resolve-Path 'build/tauri-bundle').Path 'standalone.zip') `
-      -Force
-  "
+  # Commande sur une seule ligne pour éviter les problèmes de parsing bash→PS
+  powershell -NoProfile -NonInteractive -Command "Compress-Archive -Path 'build/tauri-bundle/standalone' -DestinationPath 'build/tauri-bundle/standalone.zip' -Force"
 else
   (cd build/tauri-bundle/standalone && zip -r ../standalone.zip .)
 fi
