@@ -7838,3 +7838,25 @@ Stage Summary:
 - Après installation : si page vide, consulter server.log à côté de Ma Thèse.exe
 - Si server.log contient les logs Node.js → le deadlock est résolu, autre problème
 - Si server.log est vide ou absent → le problème est ailleurs (chemin fichiers)
+---
+Task ID: desktop-ai-cookie-fix
+Agent: Main
+Task: Fix AI configuration not working in Tauri desktop app
+
+Work Log:
+- Investigated full AI config system: cookie-based storage, 24 providers, httpOnly cookie with API key
+- Identified root cause: `getCookieOptions()` sets `secure: true` when `NODE_ENV === "production"`
+- In Tauri desktop app: server runs on `http://127.0.0.1:14325` (plain HTTP)
+- Chromium WebViews REJECT cookies with `Secure` flag over HTTP — cookie never stored
+- All AI requests failed because server couldn't read API key from cookie
+- Fixed `config-cookie.ts`: `getCookieOptions(request?)` now checks request protocol
+  - If request URL is HTTPS or x-forwarded-proto is HTTPS → secure: true
+  - Otherwise (HTTP, including Tauri localhost) → secure: false
+  - Fallback: also checks `TAURI` env var
+- Updated `ai-config/route.ts` to pass `request` to `getCookieOptions()`
+- Bumped versions to 1.10.1, committed, tagged v1.10.1, pushed to GitHub
+
+Stage Summary:
+- Root cause: `secure: true` cookie flag incompatible with Tauri HTTP localhost
+- Fix: protocol-aware cookie options — only secure over HTTPS
+- v1.10.1 tagged and pushed, CI pipeline will build new desktop installer
