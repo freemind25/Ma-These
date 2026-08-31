@@ -8,12 +8,11 @@ import {
   isAnthropicFormat,
 } from "@/lib/ai/ai-provider";
 import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
-import AiSDK from "z-ai-web-dev-sdk";
 
-// ═════════════════════════════════════════
+// ═══════════════════════════════════════
 // POST /api/ai-test — Test AI provider connection
 // Server-side only — supports keyless providers (Pollinations, Kilo)
-// ═════════════════════════════════════════
+// ═══════════════════════════════════════
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,7 +21,17 @@ export async function POST(request: NextRequest) {
     const backend = detectBackend(provider);
 
     if (backend === "zai") {
-      const client = await AiSDK.create();
+      // Dynamic import — SDK is serverExternalPackages, may not exist in standalone/desktop
+      let SDK: any;
+      try {
+        SDK = await import("z-ai-web-dev-sdk");
+      } catch {
+        return NextResponse.json(
+          { ok: false, error: "Le fournisseur z.ai n'est disponible que dans l'environnement web. Sélectionnez un autre fournisseur (OpenAI, Anthropic, Groq, etc.)." },
+          { status: 400 }
+        );
+      }
+      const client = await SDK.default.create();
       const response = await client.chat.completions.create({
         messages: [{ role: "user", content: "ping" }],
         model: "default",

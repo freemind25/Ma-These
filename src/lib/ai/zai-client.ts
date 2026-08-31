@@ -5,7 +5,6 @@
 // Circuit breaker: évite de répéter les appels vers un provider en panne
 // ═══════════════════════════════════════════════════════════════
 
-import AiSDK from "z-ai-web-dev-sdk";
 import {
   type AiProviderId,
   type AiProviderConfig,
@@ -19,6 +18,30 @@ import {
   isAnthropicFormat,
 } from "./ai-provider";
 import { getHardcodedKey } from "./hardcoded-keys";
+
+// ═══════════════════════════════════════════════════════════════
+// Dynamic SDK import — z-ai-web-dev-sdk is in serverExternalPackages,
+// so it's NOT included in the Next.js standalone output.
+// In the Tauri desktop app (or any non-sandbox env), the module
+// simply won't exist. We load it lazily only when the "zai"
+// provider is actually used.
+// ═══════════════════════════════════════════════════════════════
+
+let _sdkModule: any = null;
+let _sdkLoadAttempted = false;
+
+async function loadSDK(): Promise<any> {
+  if (_sdkModule) return _sdkModule;
+  if (_sdkLoadAttempted) return null;
+  _sdkLoadAttempted = true;
+  try {
+    _sdkModule = await import("z-ai-web-dev-sdk");
+    console.log("[zai-client] z-ai-web-dev-sdk loaded successfully");
+  } catch (err) {
+    console.warn("[zai-client] z-ai-web-dev-sdk not available (not in sandbox):", (err as Error).message);
+  }
+  return _sdkModule;
+}
 
 // ═══════════════════════════════════════════════════════════════
 // Circuit Breaker — per-provider state
@@ -110,11 +133,13 @@ export function getCircuitBreakerStatus(): Record<string, { state: CircuitState;
   return result;
 }
 
-let aiClientPromise: Promise<AiSDK> | null = null;
+let aiClientPromise: Promise<any> | null = null;
 
-function getClient(): Promise<AiSDK> {
+async function getClient(): Promise<any> {
   if (!aiClientPromise) {
-    aiClientPromise = AiSDK.create();
+    const SDK = await loadSDK();
+    if (!SDK) throw new Error("z.ai SDK non disponible en dehors de l'environnement sandbox");
+    aiClientPromise = SDK.default.create();
   }
   return aiClientPromise;
 }

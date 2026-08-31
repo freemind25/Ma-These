@@ -8,7 +8,6 @@
 // ═══════════════════════════════════════════════════════════════
 
 import { NextRequest, NextResponse } from "next/server";
-import AiSDK from "z-ai-web-dev-sdk";
 import { z } from "zod/v4";
 import {
   generateCompletion,
@@ -33,9 +32,20 @@ import {
 } from "@/lib/research/curation";
 
 // ── ZAI SDK singleton (web search + page reader) ──────────────────
-let zaiInstance: Promise<AiSDK> | null = null;
-function getZai(): Promise<AiSDK> {
-  if (!zaiInstance) zaiInstance = AiSDK.create();
+// Dynamic import — SDK is serverExternalPackages, may not exist in standalone/desktop
+let zaiInstance: Promise<any> | null = null;
+let _sdkLoadFailed = false;
+async function getZai(): Promise<any> {
+  if (_sdkLoadFailed) throw new Error("Le mode de recherche web nécessite l'environnement z.ai (non disponible en mode bureau). Utilisez le mode académique.");
+  if (!zaiInstance) {
+    try {
+      const SDK = await import("z-ai-web-dev-sdk");
+      zaiInstance = SDK.default.create();
+    } catch {
+      _sdkLoadFailed = true;
+      throw new Error("Le mode de recherche web nécessite l'environnement z.ai (non disponible en mode bureau). Utilisez le mode académique.");
+    }
+  }
   return zaiInstance;
 }
 

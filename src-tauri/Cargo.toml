@@ -1,6 +1,6 @@
 [package]
 name = "mathese"
-version = "1.10.1"
+version = "1.10.2"
 description = "Ma Thèse — Assistant intelligent pour la rédaction de thèses de doctorat"
 authors = ["freemind25"]
 edition = "2021"
