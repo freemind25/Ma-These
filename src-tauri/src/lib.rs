@@ -10,7 +10,6 @@ fn wait_for_server(port: u16, timeout_secs: u64) -> bool {
     let start = std::time::Instant::now();
     while start.elapsed().as_secs() < timeout_secs {
         if std::net::TcpStream::connect(&addr).is_ok() {
-            // Port ouvert — attendre que le handler HTTP soit prêt
             std::thread::sleep(std::time::Duration::from_secs(2));
             return true;
         }
@@ -19,7 +18,7 @@ fn wait_for_server(port: u16, timeout_secs: u64) -> bool {
     false
 }
 
-/// Macro de log diagnostique — écrit dans server.log ET stderr
+/// Macro de log diagnostique
 macro_rules! diag {
     ($log_file:expr, $($arg:tt)*) => {{
         let msg = format!($($arg)*);
@@ -29,6 +28,18 @@ macro_rules! diag {
             let _ = f.flush();
         }
     }};
+}
+
+/// Strip le préfixe Windows extended-length path \\?\ \\/  
+/// Tauri resource_dir() retourne ce préfixe, mais Node.js ne le gère pas
+/// dans sa résolution de modules → EISDIR sur la racine du disque.
+fn strip_extended_length_prefix(p: &std::path::Path) -> std::path::PathBuf {
+    let s = p.to_string_lossy();
+    let cleaned = s
+        .strip_prefix(r"\\?\")
+        .or_else(|| s.strip_prefix(r"//?/"))
+        .unwrap_or(&s);
+    std::path::PathBuf::from(cleaned)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -60,8 +71,8 @@ pub fn run() {
                 std::env::set_var("DATABASE_URL", &database_url);
                 diag!(log_file, "DATABASE_URL: {}", database_url);
 
-                // --- Resource dir ---
-                let resource_dir = match handle.path().resource_dir() {
+                // --- Resource dir (avec nettoyage du préfixe \\?\) ---
+                let resource_dir_raw = match handle.path().resource_dir() {
                     Ok(r) => r,
                     Err(e) => {
                         diag!(log_file, "FATAL: resource_dir() failed: {}", e);
@@ -70,14 +81,16 @@ pub fn run() {
                                 "document.body.innerHTML = '<div style=\'display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;background:#fff\'>'+
                                 '<div style=\'text-align:center\'>'+
                                 '<h2 style=\'color:#dc2626\'>Erreur interne</h2>'+
-                                '<p style=\'color:#64748b;font-size:14px\'>resource_dir() a échoué. Consultez server.log.</p>'+
+                                '<p style=\'color:#64748b;font-size:14px\'>resource_dir() a échoué.</p>'+
                                 '</div></div>';"
                             );
                         }
                         return Ok(());
                     }
                 };
-                diag!(log_file, "resource_dir: {:?}", resource_dir);
+                let resource_dir = strip_extended_length_prefix(&resource_dir_raw);
+                diag!(log_file, "resource_dir (raw): {:?}", resource_dir_raw);
+                diag!(log_file, "resource_dir (cleaned): {:?}", resource_dir);
 
                 // Copie DB template
                 let bundled_db = resource_dir.join("db").join("custom.db");
@@ -97,14 +110,6 @@ pub fn run() {
                 diag!(log_file, "node.exe: {:?} (exists={})", node_exe, node_exe.exists());
                 diag!(log_file, "server.js: {:?} (exists={})", server_js, server_js.exists());
 
-                // Lister le contenu de resource_dir pour diagnostic
-                if let Ok(entries) = std::fs::read_dir(&resource_dir) {
-                    diag!(log_file, "resource_dir contents:");
-                    for entry in entries.flatten() {
-                        diag!(log_file, "  {}", entry.path().display());
-                    }
-                }
-
                 if !node_exe.exists() || !server_js.exists() {
                     diag!(log_file, "FATAL: fichiers serveur introuvables");
                     if let Some(window) = app.get_webview_window("main") {
@@ -114,7 +119,6 @@ pub fn run() {
                             '<h2 style=\'color:#dc2626\'>Fichiers serveur introuvables</h2>'+
                             '<p><code>node.exe</code> : {}</p>'+
                             '<p><code>server.js</code> : {}</p>'+
-                            '<p style=\'color:#64748b;font-size:14px\'>Installation peut-être incomplète.</p>'+
                             '</div></div>';",
                             node_exe.display(),
                             server_js.display()
@@ -126,6 +130,8 @@ pub fn run() {
                 // --- Start Node.js server (sidecar) ---
                 let port = SERVER_PORT;
                 diag!(log_file, "Démarrage node.exe sur le port {}...", port);
+                diag!(log_file, "Commande: {} {}", node_exe.display(), server_js.display());
+                diag!(log_file, "CWD: {}", server_dir.display());
 
                 let mut cmd = std::process::Command::new(&node_exe);
                 cmd.arg(&server_js)
@@ -134,7 +140,7 @@ pub fn run() {
                     .env("NODE_ENV", "production")
                     .env("DATABASE_URL", &database_url);
 
-                // Variables d’environnement pour les API intégrées
+                // Variables d'environnement pour les API intégrées
                 for (key, default) in [
                     ("OPENALEX_API_KEY", "qsdRrHIuOptAWiFw3ErWLr"),
                     ("CORE_API_KEY", ""),
@@ -144,8 +150,7 @@ pub fn run() {
                     }
                 }
 
-                // CRITICAL : Stdio::null() ou fichier, JAMAIS piped sans lecteur.
-                // piped + mem::forget = deadlock (buffer 4Ko saturé, Node bloque).
+                // stdout/stderr vers server.log (JAMAIS piped sans lecteur)
                 if let Some(ref f) = log_file {
                     cmd.stdout(std::process::Stdio::from(f.try_clone().unwrap()))
                         .stderr(std::process::Stdio::from(f.try_clone().unwrap()));
@@ -198,7 +203,6 @@ pub fn run() {
                     }
                 }
 
-                // Le child vit aussi longtemps que l'app Tauri.
                 std::mem::forget(child);
             }
 
