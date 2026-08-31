@@ -39,7 +39,7 @@
     ],
     "resources": {
       "../db/*": "db/",
-      "../build/tauri-bundle/standalone/**/*": "standalone/",
+      "../build/tauri-bundle/standalone.zip": "standalone.zip",
       "../build/tauri-bundle/node.exe": "node.exe"
     },
     "windows": {

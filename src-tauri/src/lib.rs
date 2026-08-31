@@ -2,9 +2,8 @@ use std::io::Write;
 use tauri::Manager;
 
 const SERVER_PORT: u16 = 14325;
-const SERVER_STARTUP_TIMEOUT_SECS: u64 = 30;
+const SERVER_STARTUP_TIMEOUT_SECS: u64 = 60;
 
-/// Attend que le serveur Next.js accepte des connexions TCP puis réponde en HTTP.
 fn wait_for_server(port: u16, timeout_secs: u64) -> bool {
     let addr = format!("127.0.0.1:{}", port);
     let start = std::time::Instant::now();
@@ -18,7 +17,6 @@ fn wait_for_server(port: u16, timeout_secs: u64) -> bool {
     false
 }
 
-/// Macro de log diagnostique
 macro_rules! diag {
     ($log_file:expr, $($arg:tt)*) => {{
         let msg = format!($($arg)*);
@@ -30,9 +28,7 @@ macro_rules! diag {
     }};
 }
 
-/// Strip le préfixe Windows extended-length path \\?\ \\/  
-/// Tauri resource_dir() retourne ce préfixe, mais Node.js ne le gère pas
-/// dans sa résolution de modules → EISDIR sur la racine du disque.
+/// Strip le préfixe Windows extended-length path \\?\ \/
 fn strip_extended_length_prefix(p: &std::path::Path) -> std::path::PathBuf {
     let s = p.to_string_lossy();
     let cleaned = s
@@ -40,6 +36,49 @@ fn strip_extended_length_prefix(p: &std::path::Path) -> std::path::PathBuf {
         .or_else(|| s.strip_prefix(r"//?/"))
         .unwrap_or(&s);
     std::path::PathBuf::from(cleaned)
+}
+
+/// Extraire standalone.zip avec PowerShell.
+/// Le zip contient un dossier standalone/ au niveau racine.
+/// On l'extrait dans resource_dir/ ce qui crée resource_dir/standalone/.
+fn extract_standalone(resource_dir: &std::path::Path, log_file: &mut Option<std::fs::File>) -> Result<std::path::PathBuf, String> {
+    let zip_path = resource_dir.join("standalone.zip");
+    let standalone_dir = resource_dir.join("standalone");
+
+    if !zip_path.exists() {
+        return Err(format!("standalone.zip introuvable: {:?}", zip_path));
+    }
+
+    // Si déjà extrait, skip
+    if standalone_dir.join("server.js").exists() && standalone_dir.join("node_modules").exists() {
+        diag!(log_file, "standalone déjà extrait, skip");
+        return Ok(standalone_dir);
+    }
+
+    diag!(log_file, "Extraction de standalone.zip... (premier lancement ~30-60s)");
+
+    let zip_win = zip_path.display().to_string().replace('/', "\\");
+    let dest_win = resource_dir.display().to_string().replace('/', "\\");
+
+    let output = std::process::Command::new("powershell")
+        .args([
+            "-NoProfile",
+            "-NonInteractive",
+            &format!(
+                "Expand-Archive -LiteralPath '{}' -DestinationPath '{}' -Force",
+                zip_win, dest_win
+            ),
+        ])
+        .output()
+        .map_err(|e| format!("powershell spawn failed: {}", e))?;
+
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("Expand-Archive failed: {}", stderr));
+    }
+
+    diag!(log_file, "Extraction terminée");
+    Ok(standalone_dir)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -54,7 +93,7 @@ pub fn run() {
                 let exe = std::env::current_exe().unwrap();
                 let exe_dir = exe.parent().unwrap();
 
-                // --- Log file pour diagnostique ---
+                // --- Log file ---
                 let log_path = exe_dir.join("server.log");
                 let mut log_file: Option<std::fs::File> = std::fs::File::create(&log_path).ok();
 
@@ -62,76 +101,71 @@ pub fn run() {
                 diag!(log_file, "exe: {:?}", exe);
                 diag!(log_file, "exe_dir: {:?}", exe_dir);
 
-                // --- Database setup ---
+                // --- Database ---
                 let db_path = exe_dir.join("data").join("custom.db");
                 if let Some(data_dir) = db_path.parent() {
                     let _ = std::fs::create_dir_all(data_dir);
                 }
                 let database_url = format!("file:{}", db_path.display());
                 std::env::set_var("DATABASE_URL", &database_url);
-                diag!(log_file, "DATABASE_URL: {}", database_url);
 
-                // --- Resource dir (avec nettoyage du préfixe \\?\) ---
-                let resource_dir_raw = match handle.path().resource_dir() {
-                    Ok(r) => r,
-                    Err(e) => {
-                        diag!(log_file, "FATAL: resource_dir() failed: {}", e);
-                        if let Some(window) = app.get_webview_window("main") {
-                            let _ = window.eval(
-                                "document.body.innerHTML = '<div style=\'display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;background:#fff\'>'+
-                                '<div style=\'text-align:center\'>'+
-                                '<h2 style=\'color:#dc2626\'>Erreur interne</h2>'+
-                                '<p style=\'color:#64748b;font-size:14px\'>resource_dir() a échoué.</p>'+
-                                '</div></div>';"
-                            );
-                        }
-                        return Ok(());
-                    }
-                };
+                // --- Resource dir ---
+                let resource_dir_raw = handle.path().resource_dir().unwrap();
                 let resource_dir = strip_extended_length_prefix(&resource_dir_raw);
-                diag!(log_file, "resource_dir (raw): {:?}", resource_dir_raw);
-                diag!(log_file, "resource_dir (cleaned): {:?}", resource_dir);
+                diag!(log_file, "resource_dir: {:?}", resource_dir);
 
-                // Copie DB template
+                // DB template
                 let bundled_db = resource_dir.join("db").join("custom.db");
                 if !db_path.exists() && bundled_db.exists() {
                     if let Some(data_dir) = db_path.parent() {
                         let _ = std::fs::create_dir_all(data_dir);
                     }
                     let _ = std::fs::copy(&bundled_db, &db_path);
-                    diag!(log_file, "DB template copiée: {:?}", db_path);
                 }
 
-                // --- Locate server files ---
+                // --- Extract standalone.zip ---
+                let server_dir = match extract_standalone(&resource_dir, &mut log_file) {
+                    Ok(d) => d,
+                    Err(e) => {
+                        diag!(log_file, "FATAL: {}", e);
+                        if let Some(window) = app.get_webview_window("main") {
+                            let _ = window.eval(&format!(
+                                "document.body.innerHTML = '<div style=\'display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;background:#fff\'>'+
+                                '<div style=\'text-align:center;max-width:600px;padding:2em\'>'+
+                                '<h2 style=\'color:#dc2626\'>Erreur d\'installation</h2>'+
+                                '<p>{}.</p>'+
+                                '<p style=\'color:#64748b;font-size:14px\'>Réinstallez l\'application.</p>'+
+                                '</div></div>';",
+                                e.replace("'", "&#39;")
+                            ));
+                        }
+                        return Ok(());
+                    }
+                };
+
                 let node_exe = resource_dir.join("node.exe");
-                let server_dir = resource_dir.join("standalone");
                 let server_js = server_dir.join("server.js");
 
                 diag!(log_file, "node.exe: {:?} (exists={})", node_exe, node_exe.exists());
                 diag!(log_file, "server.js: {:?} (exists={})", server_js, server_js.exists());
+                diag!(log_file, "node_modules: {:?} (exists={})", server_dir.join("node_modules"), server_dir.join("node_modules").exists());
 
                 if !node_exe.exists() || !server_js.exists() {
                     diag!(log_file, "FATAL: fichiers serveur introuvables");
                     if let Some(window) = app.get_webview_window("main") {
-                        let _ = window.eval(&format!(
+                        let _ = window.eval(
                             "document.body.innerHTML = '<div style=\'display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;background:#fff\'>'+
-                            '<div style=\'text-align:center;max-width:600px;padding:2em\'>'+
+                            '<div style=\'text-align:center\'>'+
                             '<h2 style=\'color:#dc2626\'>Fichiers serveur introuvables</h2>'+
-                            '<p><code>node.exe</code> : {}</p>'+
-                            '<p><code>server.js</code> : {}</p>'+
-                            '</div></div>';",
-                            node_exe.display(),
-                            server_js.display()
-                        ));
+                            '</div></div>';"
+                        );
                     }
                     return Ok(());
                 }
 
-                // --- Start Node.js server (sidecar) ---
+                // --- Start Node.js ---
                 let port = SERVER_PORT;
                 diag!(log_file, "Démarrage node.exe sur le port {}...", port);
-                diag!(log_file, "Commande: {} {}", node_exe.display(), server_js.display());
-                diag!(log_file, "CWD: {}", server_dir.display());
 
                 let mut cmd = std::process::Command::new(&node_exe);
                 cmd.arg(&server_js)
@@ -140,7 +174,6 @@ pub fn run() {
                     .env("NODE_ENV", "production")
                     .env("DATABASE_URL", &database_url);
 
-                // Variables d'environnement pour les API intégrées
                 for (key, default) in [
                     ("OPENALEX_API_KEY", "qsdRrHIuOptAWiFw3ErWLr"),
                     ("CORE_API_KEY", ""),
@@ -150,7 +183,6 @@ pub fn run() {
                     }
                 }
 
-                // stdout/stderr vers server.log (JAMAIS piped sans lecteur)
                 if let Some(ref f) = log_file {
                     cmd.stdout(std::process::Stdio::from(f.try_clone().unwrap()))
                         .stderr(std::process::Stdio::from(f.try_clone().unwrap()));
@@ -165,23 +197,13 @@ pub fn run() {
                     Ok(c) => c,
                     Err(e) => {
                         diag!(log_file, "FATAL: spawn failed: {}", e);
-                        if let Some(window) = app.get_webview_window("main") {
-                            let _ = window.eval(&format!(
-                                "document.body.innerHTML = '<div style=\'display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;background:#fff\'>'+
-                                '<div style=\'text-align:center\'>'+
-                                '<h2 style=\'color:#dc2626\'>Erreur de démarrage</h2>'+
-                                '<p>{}</p>'+
-                                '</div></div>';",
-                                e
-                            ));
-                        }
                         return Ok(());
                     }
                 };
 
                 diag!(log_file, "node.exe lancé (pid={:?}), attente du serveur...", child.id());
 
-                // --- Attendre que le serveur soit prêt ---
+                // --- Timeout augmenté à 60s (extraction zip + démarrage Next.js) ---
                 let server_ready = wait_for_server(port, SERVER_STARTUP_TIMEOUT_SECS);
 
                 if server_ready {
@@ -197,7 +219,7 @@ pub fn run() {
                             "document.body.innerHTML = '<div style=\'display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;background:#fff\'>'+
                             '<div style=\'text-align:center\'>'+
                             '<h2 style=\'color:#dc2626\'>Le serveur n\'a pas démarré</h2>'+
-                            '<p style=\'color:#64748b;font-size:14px\'>Timeout après 30s. Consultez server.log.</p>'+
+                            '<p style=\'color:#64748b;font-size:14px\'>Consultez server.log.</p>'+
                             '</div></div>';"
                         );
                     }

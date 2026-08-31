@@ -10,42 +10,57 @@ echo "Bun:  $(bun --version)"
 echo "PWD:  $(pwd)"
 
 # 1. Générer le client Prisma
-# Le client compilé est requis par le serveur standalone
 if [ -f "prisma/schema.prisma" ]; then
-  echo "[1/5] Generating Prisma client..."
+  echo "[1/6] Generating Prisma client..."
   bunx prisma generate --schema=prisma/schema.prisma
 else
-  echo "[1/5] Skipping Prisma (no schema found)"
+  echo "[1/6] Skipping Prisma (no schema found)"
 fi
 
 # 2. Build Next.js en mode standalone
-# output: "standalone" dans next.config.ts → produit .next/standalone/
-echo "[2/5] Building Next.js standalone..."
+echo "[2/6] Building Next.js standalone..."
 bun run build
 
 # 3. Préparer le répertoire de bundle
-echo "[3/5] Preparing bundle directory..."
+echo "[3/6] Preparing bundle directory..."
 rm -rf build/tauri-bundle
-mkdir -p build/tauri-bundle
+mkdir -p build/tauri-bundle/standalone
 
-# 4. Copier le serveur standalone
-# .next/standalone/ contient : server.js, node_modules/, package.json
-cp -r .next/standalone build/tauri-bundle/standalone
-
-# Next.js standalone ne copie PAS les fichiers statiques — on les ajoute manuellement
+# 4. Copier le serveur standalone + static + public
+cp -r .next/standalone/* build/tauri-bundle/standalone/
+cp -r .next/standalone/.next build/tauri-bundle/standalone/
 mkdir -p build/tauri-bundle/standalone/.next/static
 cp -r .next/static/* build/tauri-bundle/standalone/.next/static/
-
-# Copier le répertoire public (logo, etc.)
 if [ -d "public" ]; then
   cp -r public build/tauri-bundle/standalone/public
 fi
 
-# 5. Copier node.exe (Windows uniquement)
-# Sur windows-latest (GitHub Actions), node est installé dans C:\Program Files\nodejs
-# Git Bash expose un chemin Unix vers node.exe
+FILE_COUNT=$(find build/tauri-bundle/standalone -type f | wc -l)
+echo "  Standalone: $FILE_COUNT fichiers"
+
+# 5. Zipper le standalone
+# Le glob Tauri resources ne gère pas les dizaines de milliers de fichiers (node_modules).
+# On zippe et on extrait au runtime avec PowerShell.
+echo "[5/6] Zipping standalone ($FILE_COUNT files)..."
+if [[ "${RUNNER_OS:-}" == "Windows" ]]; then
+  # PowerShell : créer standalone.zip contenant le dossier standalone/
+  powershell -NoProfile -NonInteractive -Command "
+    Compress-Archive -Path (Resolve-Path 'build/tauri-bundle/standalone').Path `
+      -DestinationPath (Join-Path (Resolve-Path 'build/tauri-bundle').Path 'standalone.zip') `
+      -Force
+  "
+else
+  (cd build/tauri-bundle/standalone && zip -r ../standalone.zip .)
+fi
+STANDALONE_ZIP_SIZE=$(du -sh build/tauri-bundle/standalone.zip | cut -f1)
+echo "  standalone.zip: $STANDALONE_ZIP_SIZE"
+
+# Supprimer le dossier standalone non-zippé
+rm -rf build/tauri-bundle/standalone
+
+# 6. Copier node.exe (Windows uniquement)
+echo "[6/6] Copying node.exe..."
 if [[ "${RUNNER_OS:-}" == "Windows" ]] || command -v node.exe &>/dev/null; then
-  # Trouver node.exe
   if command -v node.exe &>/dev/null; then
     NODE_BIN=$(command -v node.exe)
   elif command -v node &>/dev/null; then
@@ -53,17 +68,16 @@ if [[ "${RUNNER_OS:-}" == "Windows" ]] || command -v node.exe &>/dev/null; then
   fi
   if [ -n "${NODE_BIN:-}" ] && [ -f "$NODE_BIN" ]; then
     cp "$NODE_BIN" build/tauri-bundle/node.exe
-    echo "[5/5] Copied node.exe from $NODE_BIN ($(du -sh build/tauri-bundle/node.exe | cut -f1))"
+    echo "  node.exe: $(du -sh build/tauri-bundle/node.exe | cut -f1)"
   else
-    echo "[5/5] WARNING: node.exe not found in PATH, desktop build may fail"
+    echo "  WARNING: node.exe not found in PATH"
   fi
 else
-  echo "[5/5] Not on Windows, skipping node.exe copy"
+  echo "  Not on Windows, skipping node.exe"
 fi
 
 echo ""
 echo "=== Bundle ready ==="
-du -sh build/tauri-bundle/
-du -sh build/tauri-bundle/standalone/
-ls -la build/tauri-bundle/node.exe 2>/dev/null || echo "(no node.exe — not Windows)"
+du -sh build/tauri-bundle/standalone.zip
+du -sh build/tauri-bundle/node.exe 2>/dev/null || true
 echo "=== Done ==="
