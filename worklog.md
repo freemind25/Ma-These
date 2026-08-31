@@ -7860,3 +7860,22 @@ Stage Summary:
 - Root cause: `secure: true` cookie flag incompatible with Tauri HTTP localhost
 - Fix: protocol-aware cookie options — only secure over HTTPS
 - v1.10.1 tagged and pushed, CI pipeline will build new desktop installer
+---
+Task ID: desktop-ai-sdk-fix
+Agent: Main
+Task: Fix AI config not working in Tauri desktop — complete root cause analysis and fix
+
+Work Log:
+- Investigated FULL AI config flow (cookie storage, SDK imports, standalone build)
+- Found ROOT CAUSE #1 (v1.10.1): Cookie `secure: true` over HTTP → rejected by WebView
+- Found ROOT CAUSE #2 (v1.10.2): `z-ai-web-dev-sdk` in `serverExternalPackages` → NOT included in standalone output → ALL AI routes crash with MODULE_NOT_FOUND
+- The SDK was statically imported in 3 files: zai-client.ts, ai-test/route.ts, deep-research/route.ts
+- Any request to /api/ai-test, /api/ai-writing, /api/directeur-chat, etc. would fail
+- Fixed all 3 files: replaced static `import AiSDK from "z-ai-web-dev-sdk"` with dynamic `await import("z-ai-web-dev-sdk")` wrapped in try/catch
+- v1.10.2 built, published, release available
+
+Stage Summary:
+- Two separate bugs prevented AI from working in the desktop app
+- Bug 1 (cookie): Fixed in v1.10.1, confirmed working
+- Bug 2 (SDK): Fixed in v1.10.2 — dynamic imports with graceful fallback
+- Download: https://github.com/freemind25/Ma-These/releases/tag/v1.10.2
