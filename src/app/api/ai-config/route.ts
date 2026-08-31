@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     };
 
     const cookieValue = serializeConfigCookie(config);
-    const options = getCookieOptions();
+    const options = getCookieOptions(request);
 
     const response = NextResponse.json({
       data: stripApiKey(config),

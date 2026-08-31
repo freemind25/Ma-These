@@ -62,11 +62,19 @@ export function getAiConfigFromRequest(request: Request): AiProviderConfig | nul
 
 /**
  * Cookie options for setting the AI config cookie.
+ * In the Tauri desktop app, the server runs on http://127.0.0.1:PORT (plain HTTP).
+ * Setting `secure: true` over HTTP causes Chromium WebViews to reject the cookie entirely.
+ * Therefore we detect the request protocol and only set `secure` for actual HTTPS connections.
  */
-export function getCookieOptions() {
+export function getCookieOptions(request?: Request) {
+  const isHttps = request
+    ? request.headers.get("x-forwarded-proto") === "https" ||
+      request.url?.startsWith("https://")
+    : process.env.NODE_ENV === "production" && process.env.TAURI !== "true";
+
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isHttps,
     sameSite: "lax" as const,
     path: "/" as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days
