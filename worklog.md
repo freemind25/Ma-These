@@ -7901,3 +7901,25 @@ Stage Summary:
 - v1.10.3 tested locally: standalone server starts, AI routes work, cookies work
 - 4 fixes total: console window, stale cache, cookie secure, path strip
 - Download: https://github.com/freemind25/Ma-These/releases/tag/v1.10.3
+---
+Task ID: 1-5
+Agent: Main
+Task: Fix AI config test, key indicator, Z.ai hiding, icons, TAURI env var
+
+Work Log:
+- Fixed /api/ai-test to read API key from httpOnly cookie as fallback when body apiKey is empty
+- Added isDesktop + hasApiKey fields to GET /api/ai-config response
+- Added TAURI=true env var in src-tauri/src/lib.rs
+- Updated AiConfigDialog: hasSavedKey state, isDesktop state, green banner when saved key exists
+- Enabled Test button when hasSavedKey is true (even with empty form field)
+- Filtered out zai provider from dropdown in desktop mode
+- Auto-switch from zai to mistral on desktop when opening dialog
+- Generated all Tauri icons (32x32, 128x128, 128x128@2x, 512x512, .ico) from public/logo.png
+
+Stage Summary:
+- /api/ai-test/route.ts: cookie fallback for apiKey
+- /api/ai-config/route.ts: added isDesktop to GET response
+- src/components/layout/app-header.tsx: hasSavedKey indicator, isDesktop filtering, auto-switch
+- src-tauri/src/lib.rs: TAURI=true env var
+- src-tauri/icons/*: regenerated from user logo
+- 0 lint errors, 0 TypeScript errors

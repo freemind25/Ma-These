@@ -8,6 +8,7 @@ import {
   isAnthropicFormat,
 } from "@/lib/ai/ai-provider";
 import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
+import { getAiConfigFromRequest } from "@/lib/ai/config-cookie";
 
 // ═══════════════════════════════════════
 // POST /api/ai-test — Test AI provider connection
@@ -46,10 +47,12 @@ export async function POST(request: NextRequest) {
 
     // Test OpenAI-compatible API
     const baseUrl = getBaseUrl(provider, body.baseUrl);
-    const apiKey = body.apiKey;
+    // Priority: body apiKey > cookie apiKey > hardcoded key
+    const cookieConfig = getAiConfigFromRequest(request);
+    const apiKey = body.apiKey || (cookieConfig?.provider === provider ? cookieConfig.apiKey : undefined);
     const model = body.model || getDefaultModel(provider);
 
-    // Try to get API key: from request body → hardcoded → fail
+    // Try to get API key: from request body → cookie → hardcoded → fail
     const effectiveKey = apiKey || getHardcodedKey(provider);
     if (!isKeylessProvider(provider) && !effectiveKey) {
       return NextResponse.json(

@@ -214,6 +214,7 @@ pub fn run() {
                     .env("PORT", port.to_string())
                     .env("HOSTNAME", "127.0.0.1")
                     .env("NODE_ENV", "production")
+                    .env("TAURI", "true")
                     .env("DATABASE_URL", &database_url);
 
                 for (key, default) in [

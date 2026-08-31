@@ -136,6 +136,8 @@ function AiConfigDialog({
   const [dynamicModels, setDynamicModels] = useState<string[]>([]);
   const [loadingModels, setLoadingModels] = useState(false);
   const [hardcodedKeys, setHardcodedKeys] = useState<HardcodedKeyInfo[]>([]);
+  const [hasSavedKey, setHasSavedKey] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   // Set of providers that have a hardcoded key
   const hardcodedSet = useMemo(
@@ -143,24 +145,32 @@ function AiConfigDialog({
     [hardcodedKeys]
   );
 
-  // Sync config on mount from localStorage (non-sensitive) + server (hasApiKey)
+  // Sync config on mount from localStorage (non-sensitive) + server (hasApiKey + isDesktop)
   useEffect(() => {
     const local = loadLocalConfig();
-    // Also check server for hasApiKey status
+    setConfig(local);
     fetch("/api/ai-config")
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (data?.data) {
-          // Merge: server provider takes precedence if different
-          setConfig({
-            provider: (data.data.provider || local.provider) as AiProviderId,
-            model: data.data.model || local.model,
-            baseUrl: data.data.baseUrl || local.baseUrl,
-          });
+          setHasSavedKey(!!data.data.hasApiKey);
+          setIsDesktop(!!data.data.isDesktop);
+          // If desktop and current provider is zai, switch to a usable provider
+          if (data.data.isDesktop && local.provider === "zai") {
+            setConfig({
+              provider: "mistral",
+              model: "mistral-small-latest",
+            });
+          } else {
+            setConfig({
+              provider: (data.data.provider || local.provider) as AiProviderId,
+              model: data.data.model || local.model,
+              baseUrl: data.data.baseUrl || local.baseUrl,
+            });
+          }
         }
       })
       .catch(() => { /* use local config */ });
-    setConfig(local);
   }, []);
 
   // Fetch hardcoded key info on mount
@@ -341,7 +351,9 @@ function AiConfigDialog({
                           </span>
                         )}
                       </SelectLabel>
-                      {cat.providers.map((p) => {
+                      {cat.providers
+                        .filter((p) => !(isDesktop && p === "zai"))
+                        .map((p) => {
                         const hasHardcoded = hardcodedSet.has(p);
                         const needsKey = providerNeedsKey(p);
                         return (
@@ -423,6 +435,13 @@ function AiConfigDialog({
                   )}
                 </Button>
               </div>
+              {/* Indicateur: clé déjà enregistrée sur le serveur */}
+              {hasSavedKey && !config.apiKey && config.provider !== "zai" && (
+                <div className="rounded-md border border-emerald-200 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-950/20 px-3 py-2 text-[11px] text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                  <KeyRound className="h-3 w-3 shrink-0" />
+                  <span>Clé API déjà enregistrée. Le test et les fonctions IA utiliseront la clé sauvegardée. Saisissez une nouvelle clé uniquement pour la modifier.</span>
+                </div>
+              )}
               {config.provider === "routesme" && (
                 <p className="text-[11px] text-muted-foreground">
                   Obtenez votre clé sur{" "}
@@ -588,7 +607,7 @@ function AiConfigDialog({
               onClick={handleTest}
               disabled={
                 testing ||
-                (config.provider !== "zai" && !config.apiKey && !currentHardcoded)
+                (config.provider !== "zai" && !config.apiKey && !currentHardcoded && !hasSavedKey)
               }
             >
               {testing ? (

@@ -28,11 +28,12 @@ const configSchema = z.object({
 // Used by the frontend to display current provider/model selection
 // ═══════════════════════════════════════
 export async function GET(request: NextRequest) {
+  const isDesktop = process.env.TAURI === "true";
   const config = getAiConfigFromRequest(request);
   if (!config) {
-    return NextResponse.json({ data: { provider: "zai", hasApiKey: false } });
+    return NextResponse.json({ data: { provider: "zai", hasApiKey: false, isDesktop } });
   }
-  return NextResponse.json({ data: stripApiKey(config) });
+  return NextResponse.json({ data: { ...stripApiKey(config), isDesktop } });
 }
 
 // ═══════════════════════════════════════
