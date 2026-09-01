@@ -7982,3 +7982,34 @@ Stage Summary:
 - 3 sources with inline API results: Project Gutenberg (70K+ books), Open Library (lending), Standard Ebooks (high quality)
 - 4 external sources with one-click search launch: ManyBooks, PDF Drive, PDF Coffee, PDF Room
 - Features: unified search bar, source filter, book cards with covers, detail dialog, download links (PDF/EPUB)
+
+---
+Task ID: 4
+Agent: Main
+Task: Implement 3 Thesisroom-inspired features
+
+Work Log:
+- Installed jstat@1.9.6 for p-value computation
+- Created /src/app/api/citation-check/route.ts — verifies citations against Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed
+  - Parses citations (DOI, title, authors, year extraction)
+  - Queries 5 registries in parallel (max 3 concurrent for rate limits)
+  - Detects retractions via is_retracted flag
+  - Computes verdict: verified/unverified/retracted/mismatch
+- Created /src/app/api/stats-recompute/route.ts — extracts and recomputes p-values
+  - Supports t-test, F-test, Chi-square, Z-test, correlation r
+  - Uses jstat for mathematical p-value computation
+  - Implements rounding range (statcheck method, stricter)
+  - Flags: ok, inconsistent, gross_error
+- Created /src/modules/verification-citations/verification-citations-page.tsx
+  - Tab 1: Citation Check — paste references, verify against 5 registries, see retraction alerts
+  - Tab 2: Stats Recompute — paste results text, see p-value discrepancies
+  - Expandable result cards with registry details
+- Registered as "verification-citations" in sidebar (methodologie category) with badge "API"
+- Lint: 0 errors
+
+Stage Summary:
+- New module "Vérification Citations" in Méthodologie section
+- 2 deterministic features (no AI): citation verification + stats recomputation
+- 5 free academic registries: Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed
+- Retraction detection included (Reference Watch feature)
+- Statistics: t, F, χ², z, r tests — Nuijten et al. (2016) method

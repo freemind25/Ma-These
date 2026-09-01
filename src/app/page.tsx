@@ -45,6 +45,7 @@ import { VerificationCoherencePage } from "@/modules/verification-coherence/veri
 import { ExplorateurThesesPage } from "@/modules/explorateur-theses/explorateur-theses-page";
 import { TraducteurPage } from "@/modules/traducteur/traducteur-page";
 import { BibliothequePage } from "@/modules/bibliotheque/bibliotheque-page";
+import { VerificationCitationsPage } from "@/modules/verification-citations/verification-citations-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -132,6 +133,8 @@ function CurrentView() {
       return <TraducteurPage />;
     case "bibliotheque":
       return <BibliothequePage />;
+    case "verification-citations":
+      return <VerificationCitationsPage />;
     default:
       return <DashboardPage />;
   }

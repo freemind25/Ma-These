@@ -44,7 +44,8 @@ export type ViewId =
   | "verification-coherence"
   | "explorateur-theses"
   | "traducteur"
-  | "bibliotheque";
+  | "bibliotheque"
+| "verification-citations";
 
 export type NavCategory =
   | "_pinned"   // toujours visible en haut (dashboard, editor)
@@ -273,6 +274,14 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "MapPin",
     description: "Complétude cartographique et questionneur socratique IA",
     badge: "IA",
+    category: "methodologie",
+  },
+  {
+    id: "verification-citations",
+    label: "Vérification Citations",
+    icon: "ShieldCheck",
+    description: "Vérifiez vos références contre 5 registres académiques + recalcul des statistiques",
+    badge: "API",
     category: "methodologie",
   },
   {
