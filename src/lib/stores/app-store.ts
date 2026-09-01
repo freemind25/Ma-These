@@ -42,7 +42,8 @@ export type ViewId =
   | "phrasebook"
   | "theses-en-ligne"
   | "verification-coherence"
-  | "explorateur-theses";
+  | "explorateur-theses"
+  | "traducteur";
 
 export type NavCategory =
   | "_pinned"   // toujours visible en haut (dashboard, editor)
@@ -340,6 +341,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "FileDown",
     description: "Exportez votre thèse en PDF avec mise en forme",
     category: "export",
+  },
+  {
+    id: "traducteur",
+    label: "Traducteur",
+    icon: "Languages",
+    description: "Traduction automatique open source (LibreTranslate)",
+    category: "ia-outils",
   },
   {
     id: "export-docx",

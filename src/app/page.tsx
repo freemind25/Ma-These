@@ -43,6 +43,7 @@ import { PhrasebookPage } from "@/modules/phrasebook/phrasebook-page";
 import { ThesesEnLignePage } from "@/modules/theses-en-ligne/theses-en-ligne-page";
 import { VerificationCoherencePage } from "@/modules/verification-coherence/verification-coherence-page";
 import { ExplorateurThesesPage } from "@/modules/explorateur-theses/explorateur-theses-page";
+import { TraducteurPage } from "@/modules/traducteur/traducteur-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -126,6 +127,8 @@ function CurrentView() {
       return <VerificationCoherencePage />;
     case "explorateur-theses":
       return <ExplorateurThesesPage />;
+    case "traducteur":
+      return <TraducteurPage />;
     default:
       return <DashboardPage />;
   }

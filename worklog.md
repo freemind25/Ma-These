@@ -7945,3 +7945,22 @@ Stage Summary:
 - TokenRouter is now a fully integrated provider appearing in "Agrégateurs gratuits" dropdown
 - Users can select it, enter their TokenRouter API key, and use z-ai/glm-5.3-free (or browse dynamic models)
 - For desktop: TokenRouter works because it uses standard HTTP API (not z-ai-web-dev-sdk)
+---
+Task ID: 2
+Agent: Main
+Task: Create LibreTranslate translation module
+
+Work Log:
+- Created /src/app/api/translate/route.ts — proxy API with 3 fallback instances
+- Created /src/modules/traducteur/traducteur-page.tsx — full translation UI
+- Registered "traducteur" in ViewId type (app-store.ts)
+- Added nav item with Languages icon under "ia-outils" category
+- Added Languages to ICON_MAP in app-sidebar.tsx
+- Added import + case in page.tsx
+- Lint: 0 errors
+
+Stage Summary:
+- New "Traducteur" module in sidebar under "IA & Outils"
+- Features: 28 languages, quick pairs (FR→EN, EN→FR, etc.), swap, copy, paste, auto-detect, Ctrl+Enter shortcut
+- Uses LibreTranslate (free, open source, no API key required)
+- Backend proxy tries 3 instances with failover
