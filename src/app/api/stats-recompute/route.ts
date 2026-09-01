@@ -79,7 +79,7 @@ const STAT_PATTERNS: Array<{
   // χ²(df) = value or Chi-square(df) = value
   {
     type: "chi2",
-    pattern: /[χχ chi-?square|chi.?2]\s*\(\s*(\d+(?:[.,]\d+)?)\s*\)\s*=\s*(\d+(?:[.,]\d+)?)/gi,
+    pattern: /(?:χ²|chi-?square|chi\.?2)\s*\(\s*(\d+(?:[.,]\d+)?)\s*\)\s*=\s*(\d+(?:[.,]\d+)?)/gi,
     extractStat: (m) => ({ statistic: parseFloat(m[2].replace(",", ".")), df1: parseFloat(m[1].replace(",", ".")) }),
   },
   // z = value

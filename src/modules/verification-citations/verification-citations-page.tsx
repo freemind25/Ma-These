@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import {
   ShieldCheck, Search, Loader2, AlertTriangle, CheckCircle2,
   XCircle, BookOpen, ExternalLink, Trash2,
-  Calculator, AlertCircle, ChevronDown, ChevronUp,
+  Calculator, AlertCircle,
   BarChart3, Database,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 // ── Types ──
 

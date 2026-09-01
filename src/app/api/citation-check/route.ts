@@ -393,8 +393,8 @@ export async function POST(request: NextRequest) {
     };
 
     const selectedCheckers = registries
-      .filter(r => checkers[r])
-      .map(r => checkers[r]);
+      .filter((r: string) => checkers[r])
+      .map((r: string) => checkers[r]);
 
     // Check all citations (max 3 concurrent to respect rate limits)
     const results: CitationCheckResult[] = [];
@@ -404,7 +404,7 @@ export async function POST(request: NextRequest) {
       const batchResults = await Promise.all(
         batch.map(async (citation) => {
           const registryResults = await Promise.all(
-            selectedCheckers.map(checker => checker(citation))
+            selectedCheckers.map((checker: (c: ParsedCitation) => Promise<RegistryResult>) => checker(citation))
           );
           return {
             citation,

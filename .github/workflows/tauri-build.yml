@@ -10,7 +10,7 @@ on:
 
 env:
   APP_NAME: Ma Thèse
-  APP_VERSION: '1.4.0'
+  APP_VERSION: '1.10.5'
 
 permissions:
   contents: write
@@ -23,11 +23,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          node: 24
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          node: 24
 
       - name: Install Bun
         shell: bash
@@ -45,6 +48,7 @@ jobs:
         with:
           workspaces: 'src-tauri -> target'
           key: tauri-${{ env.APP_VERSION }}
+          node: 24
 
       - name: Install NSIS
         shell: pwsh
@@ -185,3 +189,4 @@ jobs:
             src-tauri/target/release/*.exe
           if-no-files-found: warn
           retention-days: 7
+          node: 24
