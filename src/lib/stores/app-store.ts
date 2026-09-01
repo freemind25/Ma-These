@@ -43,7 +43,8 @@ export type ViewId =
   | "theses-en-ligne"
   | "verification-coherence"
   | "explorateur-theses"
-  | "traducteur";
+  | "traducteur"
+  | "bibliotheque";
 
 export type NavCategory =
   | "_pinned"   // toujours visible en haut (dashboard, editor)
@@ -348,6 +349,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "Languages",
     description: "Traduction automatique open source (LibreTranslate)",
     category: "ia-outils",
+  },
+  {
+    id: "bibliotheque",
+    label: "Bibliothèque",
+    icon: "Library",
+    description: "Recherche de livres sur 7 sources gratuites",
+    category: "recherche",
   },
   {
     id: "export-docx",

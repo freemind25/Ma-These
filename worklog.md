@@ -7964,3 +7964,21 @@ Stage Summary:
 - Features: 28 languages, quick pairs (FR→EN, EN→FR, etc.), swap, copy, paste, auto-detect, Ctrl+Enter shortcut
 - Uses LibreTranslate (free, open source, no API key required)
 - Backend proxy tries 3 instances with failover
+
+---
+Task ID: 3
+Agent: Main
+Task: Create Bibliothèque module with 7 book sources
+
+Work Log:
+- Created /src/app/api/books/route.ts — unified search API (OpenLibrary, Gutenberg, StandardEbooks)
+- Created /src/modules/bibliotheque/bibliotheque-page.tsx — full book search UI
+- Registered "bibliotheque" in ViewId, NAVIGATION_ITEMS (category: recherche), page.tsx
+- Library icon already in ICON_MAP — no sidebar changes needed
+- Lint: 0 errors, only pre-existing warnings
+
+Stage Summary:
+- New "Bibliothèque" module in sidebar under "Recherche & Sources"
+- 3 sources with inline API results: Project Gutenberg (70K+ books), Open Library (lending), Standard Ebooks (high quality)
+- 4 external sources with one-click search launch: ManyBooks, PDF Drive, PDF Coffee, PDF Room
+- Features: unified search bar, source filter, book cards with covers, detail dialog, download links (PDF/EPUB)

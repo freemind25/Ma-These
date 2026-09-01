@@ -44,6 +44,7 @@ import { ThesesEnLignePage } from "@/modules/theses-en-ligne/theses-en-ligne-pag
 import { VerificationCoherencePage } from "@/modules/verification-coherence/verification-coherence-page";
 import { ExplorateurThesesPage } from "@/modules/explorateur-theses/explorateur-theses-page";
 import { TraducteurPage } from "@/modules/traducteur/traducteur-page";
+import { BibliothequePage } from "@/modules/bibliotheque/bibliotheque-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -129,6 +130,8 @@ function CurrentView() {
       return <ExplorateurThesesPage />;
     case "traducteur":
       return <TraducteurPage />;
+    case "bibliotheque":
+      return <BibliothequePage />;
     default:
       return <DashboardPage />;
   }
