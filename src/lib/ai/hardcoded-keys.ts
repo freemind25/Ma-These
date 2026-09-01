@@ -27,6 +27,9 @@ export const HARDCODED_KEYS: Partial<Record<AiProviderId, string>> = {
 
   // Groq — replace with your Groq API key
   groq: process.env.GROQ_API_KEY || undefined,
+
+  // TokenRouter — replace with your TokenRouter API key (gratuit)
+  tokenrouter: process.env.TOKENROUTER_API_KEY || undefined,
 };
 
 /**

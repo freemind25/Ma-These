@@ -31,6 +31,7 @@ export type AiProviderId =
   | "aion"         // Aion Labs (gratuit)
   | "requesty"     // Requesty (router gratuit)
   | "sealion"      // SEA-LION (AI Singapore, 10 RPM)
+  | "tokenrouter"  // TokenRouter (GLM-5.3-free gratuit, OpenAI-compatible)
   // --- Vietnam ---
   | "kiraai"      // KiraAI Vietnam (GLM-5.3, OpenAI-compatible)
   // --- Personnalisé ---
@@ -90,6 +91,7 @@ export const PROVIDER_BASE_URLS: Record<AiProviderId, string> = {
   aion: "https://api.aionlabs.ai/v1",
   requesty: "https://router.requesty.ai/v1",
   sealion: "https://api.sea-lion.ai/v1",
+  tokenrouter: "https://api.tokenrouter.com/v1",
   // Vietnam
   kiraai: "https://kiraai.vn/v1",
   // Personnalisé
@@ -124,6 +126,7 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
   aion: [],
   requesty: [],
   sealion: [],
+  tokenrouter: ["z-ai/glm-5.3-free"],
   // Vietnam
   kiraai: [
     // ══ GRATUITS (tokens gratuits KiraAI) ══
@@ -180,7 +183,7 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
 export const DYNAMIC_MODEL_PROVIDERS: AiProviderId[] = [
   "mistral", "routesme", "custom", "openrouter", "groq", "cerebras",
   "huggingface", "nvidia", "cloudflare", "github", "siliconflow",
-  "routeway", "ainative", "aion", "requesty", "sealion", "google", "cohere",
+  "routeway", "ainative", "aion", "requesty", "sealion", "tokenrouter", "google", "cohere",
 ];
 
 /**
@@ -215,7 +218,7 @@ export const PROVIDER_CATEGORIES: Record<ProviderCategory, { label: string; desc
   agregateur: {
     label: "Agrégateurs gratuits",
     description: "Proxies multi-fournisseurs avec modèles gratuits",
-    providers: ["openrouter", "pollinations", "kilo", "routeway", "ainative", "aion", "requesty", "sealion"],
+    providers: ["openrouter", "pollinations", "kilo", "routeway", "ainative", "aion", "requesty", "sealion", "tokenrouter"],
   },
   custom: {
     label: "Personnalisé",
@@ -251,6 +254,7 @@ export function getProviderLabel(provider: AiProviderId): string {
     aion: "Aion Labs (gratuit)",
     requesty: "Requesty (gratuit)",
     sealion: "SEA-LION (gratuit)",
+    tokenrouter: "TokenRouter (GLM-5.3-free, gratuit)",
     kiraai: "KiraAI Vietnam (7 gratuits + 50 payants)",
     custom: "Personnalisé (API compatible)",
   };
@@ -296,7 +300,7 @@ export const ALL_PROVIDER_IDS: AiProviderId[] = [
   "zai", "openai", "anthropic", "mistral", "routesme",
   "google", "groq", "cerebras", "openrouter", "github",
   "cloudflare", "huggingface", "nvidia", "cohere", "siliconflow",
-  "pollinations", "kilo", "routeway", "ainative", "aion", "requesty", "sealion",
+  "pollinations", "kilo", "routeway", "ainative", "aion", "requesty", "sealion", "tokenrouter",
   "kiraai",
   "custom",
 ];

@@ -7923,3 +7923,25 @@ Stage Summary:
 - src-tauri/src/lib.rs: TAURI=true env var
 - src-tauri/icons/*: regenerated from user logo
 - 0 lint errors, 0 TypeScript errors
+---
+Task ID: 1
+Agent: Main
+Task: Integrate TokenRouter z-ai/glm-5.3-free as a new AI provider
+
+Work Log:
+- Read TokenRouter model page: confirmed z-ai/glm-5.3-free is 100% free ($0.0000/token), OpenAI-compatible API
+- Added `tokenrouter` to AiProviderId type union in ai-types.ts
+- Added base URL `https://api.tokenrouter.com/v1` to PROVIDER_BASE_URLS
+- Added default model `z-ai/glm-5.3-free` to PROVIDER_MODELS
+- Added to DYNAMIC_MODEL_PROVIDERS (supports /models endpoint)
+- Added to PROVIDER_CATEGORIES under "agregateur" category
+- Added label "TokenRouter (GLM-5.3-free, gratuit)" in getProviderLabel()
+- Added to ALL_PROVIDER_IDS array
+- Added TOKENROUTER_API_KEY env var support in hardcoded-keys.ts
+- No special headers needed (standard OpenAI auth)
+- Lint passed: 0 errors
+
+Stage Summary:
+- TokenRouter is now a fully integrated provider appearing in "Agrégateurs gratuits" dropdown
+- Users can select it, enter their TokenRouter API key, and use z-ai/glm-5.3-free (or browse dynamic models)
+- For desktop: TokenRouter works because it uses standard HTTP API (not z-ai-web-dev-sdk)
