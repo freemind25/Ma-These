@@ -108,10 +108,10 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
   mistral: ["mistral-large-latest", "mistral-medium-latest", "mistral-small-latest", "codestral-latest", "mistral-tiny"],
   routesme: [],
   // Fournisseurs gratuits majeurs
-  google: ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-pro", "gemma-3-27b-it"],
+  google: ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-3.6-flash", "gemma-4-26b-a4b-it"],
   groq: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"],
   cerebras: ["llama-3.3-70b", "llama-3.1-8b"],
-  openrouter: ["meta-llama/llama-4-maverick:free", "google/gemma-3-27b-it:free", "deepseek/deepseek-chat-v3-0324:free", "qwen/qwen3-235b-a22b:free"],
+  openrouter: ["z-ai/glm-5.2:free", "google/gemma-4-26b-a4b-it:free", "deepseek/deepseek-chat-v3-0324:free", "qwen/qwen3-235b-a22b:free"],
   github: ["openai/gpt-4.1-mini", "openai/gpt-4.1-nano", "meta-llama/llama-3.3-70b-instruct"],
   cloudflare: [],
   huggingface: [],

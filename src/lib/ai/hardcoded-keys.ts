@@ -13,23 +13,20 @@ import type { AiProviderId } from "./ai-types";
  * ⚠️ Replace placeholders with your own keys before deploying.
  */
 export const HARDCODED_KEYS: Partial<Record<AiProviderId, string>> = {
-  // Google Gemini — replace with your GCP API key
+  // Google Gemini
   google: process.env.GOOGLE_API_KEY || undefined,
 
-  // GitHub Models — replace with your GitHub PAT
-  github: process.env.GITHUB_TOKEN || undefined,
-
-  // OpenAI — replace with your OpenAI API key
+  // OpenAI
   openai: process.env.OPENAI_API_KEY || undefined,
 
-  // OpenRouter — replace with your OpenRouter key
+  // OpenRouter — clé principale
   openrouter: process.env.OPENROUTER_API_KEY || undefined,
 
-  // Groq — replace with your Groq API key
-  groq: process.env.GROQ_API_KEY || undefined,
+  // RoutesMe (multi-modèles)
+  routesme: process.env.ROUTESME_API_KEY || undefined,
 
-  // TokenRouter — replace with your TokenRouter API key (gratuit)
-  tokenrouter: process.env.TOKENROUTER_API_KEY || undefined,
+  // KiraAI Vietnam (7 gratuits + 50 payants)
+  kiraai: process.env.KIRA_API_KEY || undefined,
 };
 
 /**
