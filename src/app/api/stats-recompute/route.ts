@@ -1,8 +1,7 @@
-// ═══════════════════════════════════════════════════════════════
 // Ma Thèse — Statistics Recomputation API
 // Recomputes p-values from reported test statistics (t, F, χ², z, r)
 // Inspired by Nuijten et al. (2016) statcheck method
-// ═══════════════════════════════════════════════════════════════
+// Enhanced: effect sizes + APA formatting
 
 import { NextRequest, NextResponse } from "next/server";
 import jStat from "jstat";
@@ -10,17 +9,21 @@ import jStat from "jstat";
 // ── Types ──
 
 interface ExtractedStat {
- type: "t" | "F" | "chi2" | "z" | "r";
- statistic: number;
- df1: number;        // df for t, chi2; numerator df for F; n for r
-  df2?: number;       // denominator df for F
-  reportedP: number;  // as written in text
-  computedP: number;  // recomputed
-  pLower: number;     // lower bound from rounding
-  pUpper: number;     // upper bound from rounding
+  type: "t" | "F" | "chi2" | "z" | "r";
+  statistic: number;
+  df1: number;
+  df2?: number;
+  reportedP: number;
+  computedP: number;
+  pLower: number;
+  pUpper: number;
   flag: "ok" | "inconsistent" | "gross_error";
- raw: string;        // the matched text
-  context: string;    // surrounding sentence
+  raw: string;
+  context: string;
+  effectSize?: number;
+  effectSizeType?: string;
+  effectSizeLabel?: string;
+  apa?: string;
 }
 
 // ── P-value computation ──
@@ -50,23 +53,20 @@ function pFromR(r: number, n: number): number {
 // ── Extraction patterns ──
 
 const STAT_PATTERNS: Array<{
- type: ExtractedStat["type"];
- pattern: RegExp;
- extractStat: (m: RegExpMatchArray) => { statistic: number; df1: number; df2?: number };
+  type: ExtractedStat["type"];
+  pattern: RegExp;
+  extractStat: (m: RegExpMatchArray) => { statistic: number; df1: number; df2?: number };
 }> = [
-  // t(df) = value, p = value
   {
     type: "t",
     pattern: /t\s*\(\s*(\d+(?:[.,]\d+)?)\s*\)\s*=\s*(\d+(?:[.,]\d+)?)/gi,
     extractStat: (m) => ({ statistic: parseFloat(m[2].replace(",", ".")), df1: parseFloat(m[1].replace(",", ".")) }),
   },
-  // t = value, df = value, p = value
   {
     type: "t",
     pattern: /t\s*=\s*(\d+(?:[.,]\d+)?)[^p]*?df\s*=\s*(\d+(?:[.,]\d+)?)/gi,
     extractStat: (m) => ({ statistic: parseFloat(m[1].replace(",", ".")), df1: parseFloat(m[2].replace(",", ".")) }),
   },
-  // F(df1, df2) = value
   {
     type: "F",
     pattern: /F\s*\(\s*(\d+(?:[.,]\d+)?),\s*(\d+(?:[.,]\d+)?)\s*\)\s*=\s*(\d+(?:[.,]\d+)?)/gi,
@@ -76,19 +76,16 @@ const STAT_PATTERNS: Array<{
       df2: parseFloat(m[2].replace(",", ".")),
     }),
   },
-  // χ²(df) = value or Chi-square(df) = value
   {
     type: "chi2",
     pattern: /(?:χ²|chi-?square|chi\.?2)\s*\(\s*(\d+(?:[.,]\d+)?)\s*\)\s*=\s*(\d+(?:[.,]\d+)?)/gi,
     extractStat: (m) => ({ statistic: parseFloat(m[2].replace(",", ".")), df1: parseFloat(m[1].replace(",", ".")) }),
   },
-  // z = value
   {
     type: "z",
     pattern: /z\s*=\s*(\d+(?:[.,]\d+)?)/gi,
     extractStat: (m) => ({ statistic: parseFloat(m[1].replace(",", ".")), df1: 0 }),
   },
-  // r(N) = value or r(df) = value with n mentioned
   {
     type: "r",
     pattern: /r\s*\(\s*[Nn]\s*=\s*(\d+(?:[.,]\d+)?)\s*\)\s*=\s*(-?\d+(?:[.,]\d+)?)/gi,
@@ -96,9 +93,7 @@ const STAT_PATTERNS: Array<{
   },
 ];
 
-/** Extract reported p-value near a statistic */
 function extractReportedP(text: string, statStart: number, statEnd: number): number | undefined {
-  // Look for p = value, p < value, p > value within 80 chars after the stat
   const window = text.slice(statStart, statEnd + 120);
   const pPatterns = [
     /[Pp]\s*[=<→]\s*([< ]?\d*[,\.]?\d+)/,
@@ -110,7 +105,6 @@ function extractReportedP(text: string, statStart: number, statEnd: number): num
       const val = m[1].replace(",", ".").replace(/\s/g, "");
       const parsed = parseFloat(val);
       if (!isNaN(parsed) && parsed >= 0 && parsed <= 1) return parsed;
-      // Handle "< .001" or "<.05"
       if (val.startsWith("<")) {
         const inner = parseFloat(val.slice(1));
         if (!isNaN(inner)) return inner / 2;
@@ -120,11 +114,16 @@ function extractReportedP(text: string, statStart: number, statEnd: number): num
   return undefined;
 }
 
-/** Get surrounding sentence context */
 function getContext(text: string, start: number): string {
   const sentenceStart = Math.max(0, text.lastIndexOf(".", start - 1) + 1);
   const sentenceEnd = Math.min(text.length, text.indexOf(".", start + 50) + 1 || start + 150);
   return text.slice(sentenceStart, sentenceEnd).trim();
+}
+
+// ── Effect size classification ──
+
+function classifyEffect(abs: number): string {
+  return abs < 0.1 ? "négligeable" : abs < 0.3 ? "petit" : abs < 0.5 ? "moyen" : "grand";
 }
 
 // ── Main extraction ──
@@ -134,7 +133,6 @@ function extractStatistics(text: string): ExtractedStat[] {
   const seen = new Set<string>();
 
   for (const { type, pattern, extractStat } of STAT_PATTERNS) {
-    // Reset lastIndex
     pattern.lastIndex = 0;
     let match;
     while ((match = pattern.exec(text)) !== null) {
@@ -176,7 +174,7 @@ function extractStatistics(text: string): ExtractedStat[] {
 
         const reportedP = extractReportedP(text, match.index!, match.index! + raw.length) ?? 0.05;
 
-        // Rounding range: compute p-values for ±0.005 of the statistic
+        // Rounding range
         const eps = 0.005;
         let pLower = computedP;
         let pUpper = computedP;
@@ -205,11 +203,69 @@ function extractStatistics(text: string): ExtractedStat[] {
         pLower = Math.min(pLower, computedP, pUpper);
         pUpper = Math.max(pLower, computedP, pUpper);
 
-        // Flag logic
+        // Flag
         let flag: ExtractedStat["flag"] = "ok";
         if (reportedP < pLower || reportedP > pUpper) {
-          // Reported p is outside the rounding range → gross error
           flag = reportedP < pLower * 0.1 || reportedP > pUpper * 10 ? "gross_error" : "inconsistent";
+        }
+
+        // ── Effect Size ──
+        let effectSize: number | undefined;
+        let effectSizeType: string | undefined;
+        let effectSizeLabel: string | undefined;
+
+        switch (type) {
+          case "t": {
+            const d = statistic / Math.sqrt(df1);
+            effectSize = Math.round(d * 1000) / 1000;
+            effectSizeType = "d de Cohen";
+            effectSizeLabel = classifyEffect(Math.abs(d));
+            break;
+          }
+          case "F": {
+            if (df2 && df2 > 0) {
+              const eta2 = (statistic * df1) / (statistic * df1 + df2);
+              effectSize = Math.round(eta2 * 1000) / 1000;
+              effectSizeType = "η²";
+              effectSizeLabel = classifyEffect(Math.sqrt(eta2));
+            }
+            break;
+          }
+          case "chi2": {
+            const nApprox = df1 * 10;
+            const phi = Math.sqrt(statistic / nApprox);
+            effectSize = Math.round(phi * 1000) / 1000;
+            effectSizeType = "φ";
+            effectSizeLabel = classifyEffect(phi);
+            break;
+          }
+          case "r": {
+            effectSize = statistic;
+            effectSizeType = "r";
+            effectSizeLabel = classifyEffect(Math.abs(statistic));
+            break;
+          }
+        }
+
+        // ── APA formatting ──
+        const pStr = computedP < 0.001 ? "< .001" : `= .${Math.round(computedP * 1000).toString().padStart(3, "0")}`;
+        let apa: string;
+        switch (type) {
+          case "t":
+            apa = `t(${Math.round(df1)}) = ${statistic.toFixed(2)}, p ${pStr}${effectSize !== undefined ? `, ${effectSizeType} = ${effectSize}` : ""}`;
+            break;
+          case "F":
+            apa = `F(${Math.round(df1)}, ${df2 ? Math.round(df2) : "?"}) = ${statistic.toFixed(2)}, p ${pStr}${effectSize !== undefined ? `, ${effectSizeType} = ${effectSize.toFixed(3)}` : ""}`;
+            break;
+          case "chi2":
+            apa = `χ²(${Math.round(df1)}) = ${statistic.toFixed(2)}, p ${pStr}${effectSize !== undefined ? `, ${effectSizeType} = ${effectSize.toFixed(3)}` : ""}`;
+            break;
+          case "z":
+            apa = `z = ${statistic.toFixed(2)}, p ${pStr}`;
+            break;
+          case "r":
+            apa = `r(${Math.round(df1)}) = ${statistic.toFixed(3)}, p ${pStr}`;
+            break;
         }
 
         const context = getContext(text, match.index!);
@@ -226,6 +282,10 @@ function extractStatistics(text: string): ExtractedStat[] {
           flag,
           raw,
           context: context.slice(0, 300),
+          effectSize,
+          effectSizeType,
+          effectSizeLabel,
+          apa,
         });
       } catch {
         // Skip malformed entries
@@ -248,9 +308,9 @@ export async function POST(request: NextRequest) {
     }
 
     const stats = extractStatistics(text);
-    const ok = stats.filter(s => s.flag === "ok").length;
-    const inconsistent = stats.filter(s => s.flag === "inconsistent").length;
-    const grossErrors = stats.filter(s => s.flag === "gross_error").length;
+    const ok = stats.filter((s) => s.flag === "ok").length;
+    const inconsistent = stats.filter((s) => s.flag === "inconsistent").length;
+    const grossErrors = stats.filter((s) => s.flag === "gross_error").length;
 
     return NextResponse.json({
       total: stats.length,

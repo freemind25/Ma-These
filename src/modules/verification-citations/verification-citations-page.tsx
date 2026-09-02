@@ -52,6 +52,10 @@ interface ExtractedStat {
   flag: "ok" | "inconsistent" | "gross_error";
   raw: string;
   context: string;
+  effectSize?: number;
+  effectSizeType?: string;
+  effectSizeLabel?: string;
+  apa?: string;
 }
 
 // ── Registry metadata ──
@@ -269,6 +273,12 @@ export function VerificationCitationsPage() {
                   <div><span className="text-muted-foreground">Fourchette : </span>[{stat.pLower}, {stat.pUpper}]</div>
                   <div><span className="text-muted-foreground">Statistique : </span>{stat.statistic}{stat.df2 !== undefined ? ` (${stat.df1}, ${stat.df2})` : ` (df=${stat.df1})`}</div>
                 </div>
+                {(stat.effectSize !== undefined) && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs ml-7">
+                    <div><span className="text-muted-foreground">Taille d'effet : </span><span className="font-medium">{stat.effectSizeType} = {stat.effectSize}</span> <Badge variant={stat.effectSizeLabel === "grand" ? "default" : stat.effectSizeLabel === "moyen" ? "secondary" : "outline"} className="text-[10px] h-4 ml-1">{stat.effectSizeLabel}</Badge></div>
+                    <div className="sm:col-span-2"><span className="text-muted-foreground">APA : </span><code className="text-xs bg-muted px-1.5 py-0.5 rounded">{stat.apa}</code></div>
+                  </div>
+                )}
                 {!isOk && (
                   <p className="text-xs ml-7 text-red-600 dark:text-red-400">
                     {isError ? "La valeur p rapportée est en dehors de la fourchette d\u2019arrondi — erreur probable." : "Légère incohérence entre la valeur p rapportée et la statistique."}

@@ -45,7 +45,8 @@ export type ViewId =
   | "explorateur-theses"
   | "traducteur"
   | "bibliotheque"
-| "verification-citations";
+| "verification-citations"
+  | "generation-hypotheses";
 
 export type NavCategory =
   | "_pinned"   // toujours visible en haut (dashboard, editor)
@@ -282,6 +283,14 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "ShieldCheck",
     description: "Vérifiez vos références contre 5 registres académiques + recalcul des statistiques",
     badge: "API",
+    category: "methodologie",
+  },
+  {
+    id: "generation-hypotheses",
+    label: "Génération Hypothèses",
+    icon: "Lightbulb",
+    description: "Formulez des hypothèses testables et pré-enregistrez votre recherche",
+    badge: "IA",
     category: "methodologie",
   },
   {
