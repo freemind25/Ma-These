@@ -1,0 +1,758 @@
+     1→"use client";
+     2→
+     3→import { SidebarTrigger } from "@/components/ui/sidebar";
+     4→import { Separator } from "@/components/ui/separator";
+     5→import { Button } from "@/components/ui/button";
+     6→import {
+     7→  DropdownMenu,
+     8→  DropdownMenuContent,
+     9→  DropdownMenuItem,
+    10→  DropdownMenuTrigger,
+    11→  DropdownMenuSeparator,
+    12→  DropdownMenuLabel,
+    13→} from "@/components/ui/dropdown-menu";
+    14→import {
+    15→  Dialog,
+    16→  DialogContent,
+    17→  DialogDescription,
+    18→  DialogHeader,
+    19→  DialogTitle,
+    20→} from "@/components/ui/dialog";
+    21→import {
+    22→  Select,
+    23→  SelectContent,
+    24→  SelectGroup,
+    25→  SelectItem,
+    26→  SelectLabel,
+    27→  SelectSeparator,
+    28→  SelectTrigger,
+    29→  SelectValue,
+    30→} from "@/components/ui/select";
+    31→import { Input } from "@/components/ui/input";
+    32→import { Label } from "@/components/ui/label";
+    33→import { Badge } from "@/components/ui/badge";
+    34→import { ScrollArea } from "@/components/ui/scroll-area";
+    35→import { useAppStore, NAVIGATION_ITEMS } from "@/lib/stores/app-store";
+    36→import {
+    37→  Settings,
+    38→  HelpCircle,
+    39→  ChevronRight,
+    40→  Bot,
+    41→  Check,
+    42→  Loader2,
+    43→  Eye,
+    44→  EyeOff,
+    45→  RefreshCw,
+    46→  Zap,
+    47→  BookOpen,
+    48→  Keyboard,
+    49→  Info,
+    50→  KeyRound,
+    51→} from "lucide-react";
+    52→import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+    53→import { toast } from "sonner";
+    54→import {
+    55→  type AiProviderId,
+    56→  type AiProviderConfig,
+    57→  type ProviderCategory,
+    58→  getProviderLabel,
+    59→  getProviderFields,
+    60→  providerNeedsKey,
+    61→  PROVIDER_MODELS,
+    62→  PROVIDER_BASE_URLS,
+    63→  PROVIDER_CATEGORIES,
+    64→  DYNAMIC_MODEL_PROVIDERS,
+    65→} from "@/lib/ai/ai-types";
+    66→import { UsageGuideDialog } from "./usage-guide-dialog";
+    67→import { AboutDialog } from "./about-dialog";
+    68→import { ShortcutsDialog } from "./shortcuts-dialog";
+    69→
+    70→// ═══════════════════════════════════════════════════
+    71→// Config loading/saving via /api/ai-config (httpOnly cookie)
+    72→// API keys are NEVER stored in localStorage.
+    73→// ═══════════════════════════════════════════════════
+    74→
+    75→const LEGACY_STORAGE_KEY = "thesisframe-ai-config";
+    76→
+    77→/** Load non-sensitive config fields from localStorage (provider/model only) */
+    78→function loadLocalConfig(): AiProviderConfig {
+    79→  if (typeof window === "undefined") return { provider: "zai" };
+    80→  try {
+    81→    const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+    82→    if (raw) {
+    83→      const parsed = JSON.parse(raw) as AiProviderConfig;
+    84→      if (parsed.provider) return parsed;
+    85→    }
+    86→  } catch { /* ignore */ }
+    87→  return { provider: "zai" };
+    88→}
+    89→
+    90→/** Save non-sensitive config to localStorage AND full config to server httpOnly cookie */
+    91→async function saveConfigToServer(config: AiProviderConfig): Promise<boolean> {
+    92→  try {
+    93→    const res = await fetch("/api/ai-config", {
+    94→      method: "POST",
+    95→      headers: { "Content-Type": "application/json" },
+    96→      body: JSON.stringify(config),
+    97→    });
+    98→    if (res.ok) {
+    99→      // Store non-sensitive fields in localStorage for UI persistence
+   100→      const { apiKey: _, ...safeConfig } = config;
+   101→      localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(safeConfig));
+   102→      // Notify other hooks
+   103→      window.dispatchEvent(new CustomEvent("ai-config-changed"));
+   104→      return true;
+   105→    }
+   106→  } catch { /* ignore */ }
+   107→  return false;
+   108→}
+   109→
+   110→// ═══════════════════════════════════════
+   111→// Type for /api/ai-keys response
+   112→// ═══════════════════════════════════════
+   113→
+   114→interface HardcodedKeyInfo {
+   115→  provider: string;
+   116→  label: string;
+   117→  maskedKey: string;
+   118→  hasKey: boolean;
+   119→}
+   120→
+   121→// ═══════════════════════════════════════
+   122→// AI Config Dialog
+   123→// ═══════════════════════════════════════
+   124→
+   125→function AiConfigDialog({
+   126→  onOpenChange,
+   127→}: {
+   128→  open: boolean;
+   129→  onOpenChange: (v: boolean) => void;
+   130→}) {
+   131→  const { setAiProvider } = useAppStore();
+   132→  const [config, setConfig] = useState<AiProviderConfig>(loadLocalConfig);
+   133→  const [showKey, setShowKey] = useState(false);
+   134→  const [testing, setTesting] = useState(false);
+   135→  const [testResult, setTestResult] = useState<"success" | "fail" | null>(null);
+   136→  const [dynamicModels, setDynamicModels] = useState<string[]>([]);
+   137→  const [loadingModels, setLoadingModels] = useState(false);
+   138→  const [hardcodedKeys, setHardcodedKeys] = useState<HardcodedKeyInfo[]>([]);
+   139→  const [hasSavedKey, setHasSavedKey] = useState(false);
+   140→  const [isDesktop, setIsDesktop] = useState(false);
+   141→
+   142→  // Set of providers that have a hardcoded key
+   143→  const hardcodedSet = useMemo(
+   144→    () => new Set(hardcodedKeys.map((k) => k.provider)),
+   145→    [hardcodedKeys]
+   146→  );
+   147→
+   148→  // Sync config on mount from localStorage (non-sensitive) + server (hasApiKey + isDesktop)
+   149→  useEffect(() => {
+   150→    const local = loadLocalConfig();
+   151→    setConfig(local);
+   152→    fetch("/api/ai-config")
+   153→      .then((r) => r.ok ? r.json() : null)
+   154→      .then((data) => {
+   155→        if (data?.data) {
+   156→          setHasSavedKey(!!data.data.hasApiKey);
+   157→          setIsDesktop(!!data.data.isDesktop);
+   158→          // If desktop and current provider is zai, switch to a usable provider
+   159→          if (data.data.isDesktop && local.provider === "zai") {
+   160→            setConfig({
+   161→              provider: "mistral",
+   162→              model: "mistral-small-latest",
+   163→            });
+   164→          } else {
+   165→            setConfig({
+   166→              provider: (data.data.provider || local.provider) as AiProviderId,
+   167→              model: data.data.model || local.model,
+   168→              baseUrl: data.data.baseUrl || local.baseUrl,
+   169→            });
+   170→          }
+   171→        }
+   172→      })
+   173→      .catch(() => { /* use local config */ });
+   174→  }, []);
+   175→
+   176→  // Fetch hardcoded key info on mount
+   177→  useEffect(() => {
+   178→    fetch("/api/ai-keys")
+   179→      .then((r) => r.json())
+   180→      .then((data) => {
+   181→        if (Array.isArray(data.providers)) {
+   182→          setHardcodedKeys(data.providers);
+   183→        }
+   184→      })
+   185→      .catch(() => { /* ignore */ });
+   186→  }, []);
+   187→
+   188→  // Fetch dynamic models when provider is dynamic and apiKey is set
+   189→  const fetchDynamicModels = useCallback(async () => {
+   190→    const fields = getProviderFields(config.provider);
+   191→    if (!fields.dynamicModels) {
+   192→      setDynamicModels([]);
+   193→      return;
+   194→    }
+   195→
+   196→    const baseUrl =
+   197→      config.baseUrl || PROVIDER_BASE_URLS[config.provider] || "";
+   198→    // Allow fetching models even without a user-provided key if provider has hardcoded key
+   199→    if (!baseUrl || (!config.apiKey && !hardcodedSet.has(config.provider))) {
+   200→      setDynamicModels([]);
+   201→      return;
+   202→    }
+   203→
+   204→    setLoadingModels(true);
+   205→    try {
+   206→      const params = new URLSearchParams({ baseUrl });
+   207→      if (config.apiKey) params.set("apiKey", config.apiKey);
+   208→      params.set("provider", config.provider);
+   209→      const res = await fetch(`/api/ai-models?${params}`);
+   210→      const data = (await res.json()) as { models?: string[]; error?: string; cached?: boolean };
+   211→      if (data.error) {
+   212→        toast.error(data.error);
+   213→        setDynamicModels([]);
+   214→      } else if (data.models && data.models.length > 0) {
+   215→        setDynamicModels(data.models);
+   216→        // Auto-select first model if none selected or previously selected model not in list
+   217→        if (!config.model || !data.models.includes(config.model)) {
+   218→          setConfig((prev) => ({ ...prev, model: data.models![0] }));
+   219→        }
+   220→      } else {
+   221→        setDynamicModels([]);
+   222→        if (!data.cached) {
+   223→          toast.info("Aucun modèle trouvé pour ce fournisseur.");
+   224→        }
+   225→      }
+   226→    } catch (err) {
+   227→      toast.error(`Erreur réseau: ${err instanceof Error ? err.message : String(err)}`);
+   228→      setDynamicModels([]);
+   229→    } finally {
+   230→      setLoadingModels(false);
+   231→    }
+   232→  }, [config.provider, config.baseUrl, config.apiKey, config.model]);
+   233→
+   234→  // Keep a stable ref to fetchDynamicModels so the effect doesn't re-fire
+   235→  // when config.model changes (which fetchDynamicModels itself may set)
+   236→  const fetchDynamicModelsRef = useRef(fetchDynamicModels);
+   237→  fetchDynamicModelsRef.current = fetchDynamicModels;
+   238→
+   239→  // Auto-fetch when provider is dynamic and apiKey is available (user-provided or hardcoded)
+   240→  useEffect(() => {
+   241→    const hasKey = !!config.apiKey || hardcodedSet.has(config.provider);
+   242→    if (DYNAMIC_MODEL_PROVIDERS.includes(config.provider) && hasKey) {
+   243→      const timer = setTimeout(() => fetchDynamicModelsRef.current(), 300);
+   244→      return () => clearTimeout(timer);
+   245→    }
+   246→    if (!config.apiKey && !hardcodedSet.has(config.provider)) {
+   247→      setDynamicModels([]);
+   248→    }
+   249→  }, [config.provider, config.apiKey, hardcodedSet]);
+   250→
+   251→  const handleProviderChange = useCallback((value: string) => {
+   252→    const newProvider = value as AiProviderId;
+   253→    // Auto-fill the default model for this provider
+   254→    const defaultModel = PROVIDER_MODELS[newProvider]?.[0];
+   255→    // Auto-fill base URL for known providers
+   256→    const defaultBaseUrl = PROVIDER_BASE_URLS[newProvider];
+   257→
+   258→    setConfig((prev) => ({
+   259→      provider: newProvider,
+   260→      // If the provider has a hardcoded key, leave apiKey empty (server will inject it)
+   261→      // Otherwise keep previous key if user already typed one
+   262→      apiKey: hardcodedSet.has(newProvider) ? undefined : (newProvider === "zai" ? undefined : prev.apiKey),
+   263→      model: defaultModel || prev.model,
+   264→      baseUrl: newProvider === "custom" ? prev.baseUrl : (defaultBaseUrl || undefined),
+   265→    }));
+   266→    setTestResult(null);
+   267→    setDynamicModels([]);
+   268→  }, [hardcodedSet]);
+   269→
+   270→  const handleSave = useCallback(async () => {
+   271→    const ok = await saveConfigToServer(config);
+   272→    if (ok) {
+   273→      setAiProvider(config.provider);
+   274→      toast.success(`Fournisseur IA : ${getProviderLabel(config.provider)}`);
+   275→      onOpenChange(false);
+   276→    } else {
+   277→      toast.error("Erreur lors de la sauvegarde de la configuration");
+   278→    }
+   279→  }, [config, setAiProvider, onOpenChange]);
+   280→
+   281→  const handleTest = useCallback(async () => {
+   282→    setTesting(true);
+   283→    setTestResult(null);
+   284→    try {
+   285→      const res = await fetch("/api/ai-test", {
+   286→        method: "POST",
+   287→        headers: { "Content-Type": "application/json" },
+   288→        body: JSON.stringify({
+   289→          provider: config.provider,
+   290→          apiKey: config.apiKey,
+   291→          model: config.model,
+   292→          baseUrl: config.baseUrl,
+   293→        }),
+   294→      });
+   295→      const data = (await res.json()) as { ok?: boolean; error?: string };
+   296→      if (!res.ok || !data.ok) {
+   297→        throw new Error(data.error || `HTTP ${res.status}`);
+   298→      }
+   299→      setTestResult("success");
+   300→      toast.success("Connexion réussie !");
+   301→    } catch (err) {
+   302→      setTestResult("fail");
+   303→      toast.error(
+   304→        `Échec : ${err instanceof Error ? err.message : String(err)}`
+   305→      );
+   306→    } finally {
+   307→      setTesting(false);
+   308→    }
+   309→  }, [config]);
+   310→
+   311→  const fields = getProviderFields(config.provider);
+   312→  const staticModels = PROVIDER_MODELS[config.provider] || [];
+   313→  const models = dynamicModels.length > 0 ? dynamicModels : staticModels;
+   314→
+   315→  // Current provider's hardcoded key info
+   316→  const currentHardcoded = hardcodedKeys.find(
+   317→    (k) => k.provider === config.provider
+   318→  );
+   319→
+   320→  return (
+   321→    <DialogContent className="sm:max-w-lg max-h-[90vh]">
+   322→      <DialogHeader>
+   323→        <DialogTitle className="flex items-center gap-2">
+   324→          <Bot className="h-5 w-5" />
+   325→          Fournisseur IA
+   326→        </DialogTitle>
+   327→        <DialogDescription>
+   328→          Choisissez le fournisseur d&apos;intelligence artificielle pour les fonctions IA de Ma Thèse.
+   329→        </DialogDescription>
+   330→      </DialogHeader>
+   331→
+   332→      <ScrollArea className="max-h-[65vh] pr-3">
+   333→        <div className="flex flex-col gap-4 py-2">
+   334→          {/* Provider select with categories */}
+   335→          <div className="flex flex-col gap-1.5">
+   336→            <Label>Fournisseur</Label>
+   337→            <Select value={config.provider} onValueChange={handleProviderChange}>
+   338→              <SelectTrigger>
+   339→                <SelectValue placeholder="Choisir un fournisseur" />
+   340→              </SelectTrigger>
+   341→              <SelectContent className="max-h-80">
+   342→                {(Object.entries(PROVIDER_CATEGORIES) as [ProviderCategory, typeof PROVIDER_CATEGORIES[ProviderCategory]][]).map(
+   343→                  ([catId, cat], idx) => (
+   344→                    <SelectGroup key={catId}>
+   345→                      {idx > 0 && <SelectSeparator />}
+   346→                      <SelectLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+   347→                        {cat.label}
+   348→                        {cat.description && (
+   349→                          <span className="font-normal normal-case ml-1.5 text-muted-foreground/70">
+   350→                            — {cat.description}
+   351→                          </span>
+   352→                        )}
+   353→                      </SelectLabel>
+   354→                      {cat.providers
+   355→                        .filter((p) => !(isDesktop && p === "zai"))
+   356→                        .map((p) => {
+   357→                        const hasHardcoded = hardcodedSet.has(p);
+   358→                        const needsKey = providerNeedsKey(p);
+   359→                        return (
+   360→                          <SelectItem key={p} value={p}>
+   361→                            <span className="flex items-center gap-2">
+   362→                              {p === "routesme" && <Zap className="h-3.5 w-3.5 text-amber-500" />}
+   363→                              {getProviderLabel(p)}
+   364→                              {hasHardcoded && (
+   365→                                <Badge
+   366→                                  variant="secondary"
+   367→                                  className="text-[9px] px-1.5 py-0 h-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-0"
+   368→                                >
+   369→                                  <KeyRound className="h-2.5 w-2.5 mr-0.5" />
+   370→                                  clé OK
+   371→                                </Badge>
+   372→                              )}
+   373→                              {!hasHardcoded && !needsKey && p === "zai" && (
+   374→                                <Badge variant="secondary" className="text-[9px] px-1.5 py-0 h-4">
+   375→                                  natif
+   376→                                </Badge>
+   377→                              )}
+   378→                            </span>
+   379→                          </SelectItem>
+   380→                        );
+   381→                      })}
+   382→                    </SelectGroup>
+   383→                  )
+   384→                )}
+   385→              </SelectContent>
+   386→            </Select>
+   387→          </div>
+   388→
+   389→          {/* Hardcoded key indicator */}
+   390→          {currentHardcoded && (
+   391→            <div className="rounded-lg border border-emerald-200 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-950/20 p-3 text-[11px] text-emerald-800 dark:text-emerald-300 space-y-1">
+   392→              <p className="font-semibold flex items-center gap-1.5">
+   393→                <KeyRound className="h-3.5 w-3.5" />
+   394→                Clé API pré-configurée
+   395→              </p>
+   396→              <p className="font-mono text-[10px] opacity-70">
+   397→                {currentHardcoded.maskedKey}
+   398→              </p>
+   399→              <p className="opacity-80">
+   400→                Aucune clé à saisir. Le serveur utilisera automatiquement la clé intégrée.
+   401→              </p>
+   402→            </div>
+   403→          )}
+   404→
+   405→          {/* API Key (only if provider needs key AND has no hardcoded key) */}
+   406→          {fields.showApiKey && !currentHardcoded && (
+   407→            <div className="flex flex-col gap-1.5">
+   408→              <Label>Clé API</Label>
+   409→              <div className="relative">
+   410→                <Input
+   411→                  type={showKey ? "text" : "password"}
+   412→                  placeholder={
+   413→                    config.provider === "routesme"
+   414→                      ? "rm-xxxxxxxxxxxxxxxx"
+   415→                      : config.provider === "mistral"
+   416→                        ? "xxxxxxxxxxxxxxxxxxxxxxxx"
+   417→                        : "sk-..."
+   418→                  }
+   419→                  value={config.apiKey || ""}
+   420→                  onChange={(e) =>
+   421→                    setConfig((prev) => ({ ...prev, apiKey: e.target.value }))
+   422→                  }
+   423→                />
+   424→                <Button
+   425→                  type="button"
+   426→                  variant="ghost"
+   427→                  size="icon"
+   428→                  className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+   429→                  onClick={() => setShowKey(!showKey)}
+   430→                >
+   431→                  {showKey ? (
+   432→                    <EyeOff className="h-3.5 w-3.5" />
+   433→                  ) : (
+   434→                    <Eye className="h-3.5 w-3.5" />
+   435→                  )}
+   436→                </Button>
+   437→              </div>
+   438→              {/* Indicateur: clé déjà enregistrée sur le serveur */}
+   439→              {hasSavedKey && !config.apiKey && config.provider !== "zai" && (
+   440→                <div className="rounded-md border border-emerald-200 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-950/20 px-3 py-2 text-[11px] text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+   441→                  <KeyRound className="h-3 w-3 shrink-0" />
+   442→                  <span>Clé API déjà enregistrée. Le test et les fonctions IA utiliseront la clé sauvegardée. Saisissez une nouvelle clé uniquement pour la modifier.</span>
+   443→                </div>
+   444→              )}
+   445→              {config.provider === "routesme" && (
+   446→                <p className="text-[11px] text-muted-foreground">
+   447→                  Obtenez votre clé sur{" "}
+   448→                  <a
+   449→                    href="https://routesme.online"
+   450→                    target="_blank"
+   451→                    rel="noopener"
+   452→                    className="underline text-amber-600 dark:text-amber-400 hover:text-amber-700"
+   453→                  >
+   454→                    routesme.online
+   455→                  </a>
+   456→                </p>
+   457→              )}
+   458→              {config.provider === "mistral" && (
+   459→                <p className="text-[11px] text-muted-foreground">
+   460→                  Obtenez votre clé sur{" "}
+   461→                  <a
+   462→                    href="https://console.mistral.ai"
+   463→                    target="_blank"
+   464→                    rel="noopener"
+   465→                    className="underline text-sky-600 dark:text-sky-400 hover:text-sky-700"
+   466→                  >
+   467→                    console.mistral.ai
+   468→                  </a>
+   469→                </p>
+   470→              )}
+   471→            </div>
+   472→          )}
+   473→
+   474→          {/* Model select — static or dynamic */}
+   475→          {fields.showModel && models.length > 0 && (
+   476→            <div className="flex flex-col gap-1.5">
+   477→              <div className="flex items-center justify-between">
+   478→                <Label>Modèle</Label>
+   479→                {fields.dynamicModels && (
+   480→                  <Button
+   481→                    type="button"
+   482→                    variant="ghost"
+   483→                    size="icon"
+   484→                    className="h-6 w-6"
+   485→                    onClick={fetchDynamicModels}
+   486→                    disabled={loadingModels}
+   487→                  >
+   488→                    <RefreshCw
+   489→                      className={`h-3 w-3 ${loadingModels ? "animate-spin" : ""}`}
+   490→                    />
+   491→                  </Button>
+   492→                )}
+   493→              </div>
+   494→              <Select
+   495→                value={config.model || ""}
+   496→                onValueChange={(v) =>
+   497→                  setConfig((prev) => ({ ...prev, model: v }))
+   498→                }
+   499→              >
+   500→                <SelectTrigger>
+   501→                  <SelectValue placeholder={
+   502→                    loadingModels ? "Chargement des modèles…" : "Choisir un modèle"
+   503→                  } />
+   504→                </SelectTrigger>
+   505→                <SelectContent className="max-h-60 overflow-y-auto">
+   506→                  {models.map((m) => (
+   507→                    <SelectItem key={m} value={m}>
+   508→                      <span className="flex items-center gap-1.5">
+   509→                        {m}
+   510→                        {m.toLowerCase().includes("free") && (
+   511→                          <Badge
+   512→                            variant="secondary"
+   513→                            className="text-[9px] px-1 py-0 h-3.5"
+   514→                          >
+   515→                            FREE
+   516→                          </Badge>
+   517→                        )}
+   518→                      </span>
+   519→                    </SelectItem>
+   520→                  ))}
+   521→                </SelectContent>
+   522→              </Select>
+   523→              {loadingModels && (
+   524→                <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+   525→                  <Loader2 className="h-3 w-3 animate-spin" />
+   526→                  Récupération des modèles disponibles…
+   527→                </p>
+   528→              )}
+   529→            </div>
+   530→          )}
+   531→
+   532→          {/* Model input for dynamic providers when no models loaded */}
+   533→          {fields.showModel &&
+   534→            fields.dynamicModels &&
+   535→            models.length === 0 &&
+   536→            !loadingModels && (
+   537→              <div className="flex flex-col gap-1.5">
+   538→                <Label>Modèle</Label>
+   539→                <Input
+   540→                  type="text"
+   541→                  placeholder="Nom du modèle (ex: GLM5.2-free)"
+   542→                  value={config.model || ""}
+   543→                  onChange={(e) =>
+   544→                    setConfig((prev) => ({ ...prev, model: e.target.value }))
+   545→                  }
+   546→                />
+   547→                <p className="text-[11px] text-muted-foreground">
+   548→                  Entrez votre clé API ci-dessus pour charger la liste des modèles disponibles.
+   549→                </p>
+   550→              </div>
+   551→            )}
+   552→
+   553→          {/* Base URL (custom provider only) */}
+   554→          {fields.showBaseUrl && (
+   555→            <div className="flex flex-col gap-1.5">
+   556→              <Label>URL de base</Label>
+   557→              <Input
+   558→                type="url"
+   559→                placeholder="https://api.example.com/v1"
+   560→                value={config.baseUrl || ""}
+   561→                onChange={(e) =>
+   562→                  setConfig((prev) => ({ ...prev, baseUrl: e.target.value }))
+   563→                }
+   564→              />
+   565→            </div>
+   566→          )}
+   567→
+   568→          {/* Provider-specific info banners */}
+   569→          {config.provider === "routesme" && (
+   570→            <div className="rounded-lg border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/20 p-3 text-[11px] text-amber-800 dark:text-amber-300 space-y-1">
+   571→              <p className="font-semibold">RoutesMe — One API for every AI model</p>
+   572→              <p>
+   573→                Accédez à 20+ modèles (GLM 5.2, GPT-5.6, Claude Fable 5, DeepSeek V4, Kimi K3, Gemini…)
+   574→                avec une seule clé API compatible OpenAI.
+   575→              </p>
+   576→              <p>
+   577→                • <span className="font-medium">Gratuit</span> : GLM 5.2-Free, 2 000 tokens/jour
+   578→              </p>
+   579→              <p>
+   580→                • <span className="font-medium">VIP ($20/mois)</span> : Tous les modèles, 20M tokens/jour
+   581→              </p>
+   582→            </div>
+   583→          )}
+   584→
+   585→          {config.provider === "mistral" && (
+   586→            <div className="rounded-lg border border-sky-200 dark:border-sky-800/50 bg-sky-50 dark:bg-sky-950/20 p-3 text-[11px] text-sky-800 dark:text-sky-300 space-y-1">
+   587→              <p className="font-semibold">Mistral AI — Modèles IA français</p>
+   588→              <p>
+   589→                Mistral Large, Medium, Small et Codestral. API 100% compatible OpenAI.
+   590→              </p>
+   591→              <p>
+   592→                • <span className="font-medium">Gratuit</span> : Créez un compte sur{" "}
+   593→                <a href="https://console.mistral.ai" target="_blank" rel="noopener" className="underline hover:text-sky-600">
+   594→                  console.mistral.ai
+   595→                </a>{" "}
+   596→                pour obtenir des crédits gratuits.
+   597→              </p>
+   598→            </div>
+   599→          )}
+   600→
+   601→          {/* Actions */}
+   602→          <div className="flex items-center gap-2 pt-2">
+   603→            <Button
+   604→              variant="outline"
+   605→              size="sm"
+   606→              className="flex-1"
+   607→              onClick={handleTest}
+   608→              disabled={
+   609→                testing ||
+   610→                (config.provider !== "zai" && !config.apiKey && !currentHardcoded && !hasSavedKey)
+   611→              }
+   612→            >
+   613→              {testing ? (
+   614→                <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+   615→              ) : testResult === "success" ? (
+   616→                <Check className="h-4 w-4 mr-1.5 text-emerald-500" />
+   617→              ) : null}
+   618→              {testing
+   619→                ? "Test…"
+   620→                : testResult === "success"
+   621→                  ? "Connecté !"
+   622→                  : "Tester"}
+   623→            </Button>
+   624→            <Button size="sm" className="flex-1" onClick={handleSave}>
+   625→              <Check className="h-4 w-4 mr-1.5" />
+   626→              Sauvegarder
+   627→            </Button>
+   628→          </div>
+   629→        </div>
+   630→      </ScrollArea>
+   631→    </DialogContent>
+   632→  );
+   633→}
+   634→
+   635→// ═══════════════════════════════════════
+   636→// App Header
+   637→// ═══════════════════════════════════════
+   638→
+   639→export function AppHeader() {
+   640→  const { currentView, aiProvider } = useAppStore();
+   641→  const currentNav = NAVIGATION_ITEMS.find((item) => item.id === currentView);
+   642→  const [configOpen, setConfigOpen] = useState(false);
+   643→  const [guideOpen, setGuideOpen] = useState(false);
+   644→  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+   645→  const [aboutOpen, setAboutOpen] = useState(false);
+   646→
+   647→  return (
+   648→    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-4">
+   649→      <SidebarTrigger className="-ml-1" />
+   650→
+   651→      <Separator orientation="vertical" className="h-6" />
+   652→
+   653→      {/* Breadcrumb-style navigation */}
+   654→      <nav className="flex items-center gap-1.5 text-sm">
+   655→        <span className="text-muted-foreground">Ma Thèse</span>
+   656→        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
+   657→        <span className="font-medium text-foreground">
+   658→          {currentNav?.label ?? "Tableau de bord"}
+   659→        </span>
+   660→      </nav>
+   661→
+   662→      <div className="ml-auto flex items-center gap-2">
+   663→        {/* Help dropdown */}
+   664→        <DropdownMenu>
+   665→          <DropdownMenuTrigger asChild>
+   666→            <Button variant="ghost" size="icon" className="h-8 w-8">
+   667→              <HelpCircle className="h-4 w-4 text-muted-foreground" />
+   668→              <span className="sr-only">Aide</span>
+   669→            </Button>
+   670→          </DropdownMenuTrigger>
+   671→          <DropdownMenuContent align="end" className="w-56">
+   672→            <DropdownMenuLabel>Aide &amp; Support</DropdownMenuLabel>
+   673→            <DropdownMenuSeparator />
+   674→            <DropdownMenuItem
+   675→              onSelect={(e) => {
+   676→                e.preventDefault();
+   677→                setGuideOpen(true);
+   678→              }}
+   679→            >
+   680→              <BookOpen className="h-4 w-4 mr-2" />
+   681→              Guide d&apos;utilisation
+   682→            </DropdownMenuItem>
+   683→            <DropdownMenuItem
+   684→              onSelect={(e) => {
+   685→                e.preventDefault();
+   686→                setShortcutsOpen(true);
+   687→              }}
+   688→            >
+   689→              <Keyboard className="h-4 w-4 mr-2" />
+   690→              Raccourcis clavier
+   691→            </DropdownMenuItem>
+   692→            <DropdownMenuItem
+   693→              onSelect={(e) => {
+   694→                e.preventDefault();
+   695→                setAboutOpen(true);
+   696→              }}
+   697→            >
+   698→              <Info className="h-4 w-4 mr-2" />
+   699→              À propos de Ma Thèse
+   700→            </DropdownMenuItem>
+   701→          </DropdownMenuContent>
+   702→        </DropdownMenu>
+   703→
+   704→        {/* Settings dropdown */}
+   705→        <DropdownMenu>
+   706→          <DropdownMenuTrigger asChild>
+   707→            <Button variant="ghost" size="icon" className="h-8 w-8">
+   708→              <Settings className="h-4 w-4 text-muted-foreground" />
+   709→              <span className="sr-only">Paramètres</span>
+   710→            </Button>
+   711→          </DropdownMenuTrigger>
+   712→          <DropdownMenuContent align="end" className="w-56">
+   713→            <DropdownMenuLabel>Configuration</DropdownMenuLabel>
+   714→            <DropdownMenuSeparator />
+   715→            <DropdownMenuItem
+   716→              onSelect={(e) => {
+   717→                e.preventDefault();
+   718→                setConfigOpen(true);
+   719→              }}
+   720→            >
+   721→              <Bot className="h-4 w-4 mr-2" />
+   722→              Fournisseur IA
+   723→              <Badge variant="outline" className="ml-auto text-[10px]">
+   724→                {aiProvider.toUpperCase()}
+   725→              </Badge>
+   726→            </DropdownMenuItem>
+   727→            <DropdownMenuItem
+   728→              onClick={() => {
+   729→                const link = document.createElement("a");
+   730→                link.href = "https://github.com/freemind25/Ma-These";
+   731→                link.target = "_blank";
+   732→                link.rel = "noopener";
+   733→                link.click();
+   734→              }}
+   735→            >
+   736→              GitHub
+   737→            </DropdownMenuItem>
+   738→          </DropdownMenuContent>
+   739→        </DropdownMenu>
+   740→      </div>
+   741→
+   742→      {/* AI Config Dialog (rendered outside dropdown to avoid nesting) */}
+   743→      <Dialog open={configOpen} onOpenChange={setConfigOpen}>
+   744→        <AiConfigDialog open={configOpen} onOpenChange={setConfigOpen} />
+   745→      </Dialog>
+   746→
+   747→      {/* Usage Guide Dialog */}
+   748→      <UsageGuideDialog open={guideOpen} onOpenChange={setGuideOpen} />
+   749→
+   750→      {/* Shortcuts Dialog */}
+   751→      <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+   752→
+   753→      {/* About Dialog */}
+   754→      <AboutDialog open={aboutOpen} onOpenChange={setAboutOpen} />
+   755→    </header>
+   756→  );
+   757→}
+   758→

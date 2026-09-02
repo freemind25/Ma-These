@@ -1,0 +1,875 @@
+     1→// ═══════════════════════════════════════════════════════════════
+     2→// Ma Thèse — AI Client (dual-backend + failover + circuit breaker)
+     3→// z.ai SDK (sandbox) OR OpenAI-compatible API
+     4→// Failover automatique inspiré de freellmapi
+     5→// Circuit breaker: évite de répéter les appels vers un provider en panne
+     6→// ═══════════════════════════════════════════════════════════════
+     7→
+     8→import {
+     9→  type AiProviderId,
+    10→  type AiProviderConfig,
+    11→  type AiFallbackConfig,
+    12→  detectBackend,
+    13→  getBaseUrl,
+    14→  isKeylessProvider,
+    15→  isRetryableError,
+    16→  isAuthError,
+    17→  getProviderExtraHeaders,
+    18→  isAnthropicFormat,
+    19→} from "./ai-provider";
+    20→import { getHardcodedKey } from "./hardcoded-keys";
+    21→
+    22→// ═══════════════════════════════════════════════════════════════
+    23→// Dynamic SDK import — z-ai-web-dev-sdk is in serverExternalPackages,
+    24→// so it's NOT included in the Next.js standalone output.
+    25→// In the Tauri desktop app (or any non-sandbox env), the module
+    26→// simply won't exist. We load it lazily only when the "zai"
+    27→// provider is actually used.
+    28→// ═══════════════════════════════════════════════════════════════
+    29→
+    30→let _sdkModule: any = null;
+    31→let _sdkLoadAttempted = false;
+    32→
+    33→async function loadSDK(): Promise<any> {
+    34→  if (_sdkModule) return _sdkModule;
+    35→  if (_sdkLoadAttempted) return null;
+    36→  _sdkLoadAttempted = true;
+    37→  try {
+    38→    _sdkModule = await import("z-ai-web-dev-sdk");
+    39→    console.log("[zai-client] z-ai-web-dev-sdk loaded successfully");
+    40→  } catch (err) {
+    41→    console.warn("[zai-client] z-ai-web-dev-sdk not available (not in sandbox):", (err as Error).message);
+    42→  }
+    43→  return _sdkModule;
+    44→}
+    45→
+    46→// ═══════════════════════════════════════════════════════════════
+    47→// Circuit Breaker — per-provider state
+    48→// ═══════════════════════════════════════════════════════════════
+    49→
+    50→type CircuitState = "closed" | "open" | "half-open";
+    51→
+    52→interface ProviderCircuit {
+    53→  state: CircuitState;
+    54→  failureCount: number;
+    55→  lastFailureTime: number; // epoch ms
+    56→  successCount: number;  // in half-open, successes needed to close
+    57→}
+    58→
+    59→const CIRCUIT_FAILURE_THRESHOLD = 3;
+    60→const CIRCUIT_RESET_TIMEOUT_MS = 30_000; // 30s cooldown before half-open
+    61→const CIRCUIT_HALF_OPEN_SUCCESS_NEEDED = 1;
+    62→const REQUEST_TIMEOUT_MS = 60_000; // 60s global timeout
+    63→
+    64→// In-memory circuit state (persists for the lifetime of the server process)
+    65→const circuitBreaker = new Map<string, ProviderCircuit>();
+    66→
+    67→function getCircuit(provider: string): ProviderCircuit {
+    68→  let c = circuitBreaker.get(provider);
+    69→  if (!c) {
+    70→    c = { state: "closed", failureCount: 0, lastFailureTime: 0, successCount: 0 };
+    71→    circuitBreaker.set(provider, c);
+    72→  }
+    73→  return c;
+    74→}
+    75→
+    76→/**
+    77→ * Check if a provider's circuit allows requests.
+    78→ * If open, check if cooldown has elapsed → transition to half-open.
+    79→ */
+    80→function canRequest(provider: string): boolean {
+    81→  const c = getCircuit(provider);
+    82→  if (c.state === "closed") return true;
+    83→  if (c.state === "half-open") return true;
+    84→  // Open — check cooldown
+    85→  if (Date.now() - c.lastFailureTime >= CIRCUIT_RESET_TIMEOUT_MS) {
+    86→    c.state = "half-open";
+    87→    c.successCount = 0;
+    88→    return true;
+    89→  }
+    90→  return false;
+    91→}
+    92→
+    93→/** Record a successful request */
+    94→function recordSuccess(provider: string) {
+    95→  const c = getCircuit(provider);
+    96→  if (c.state === "half-open") {
+    97→    c.successCount++;
+    98→    if (c.successCount >= CIRCUIT_HALF_OPEN_SUCCESS_NEEDED) {
+    99→      c.state = "closed";
+   100→      c.failureCount = 0;
+   101→      console.log(`[Circuit] ${provider}: closed (recovered)`);
+   102→    }
+   103→  } else {
+   104→    c.failureCount = 0;
+   105→  }
+   106→}
+   107→
+   108→/** Record a failed request */
+   109→function recordFailure(provider: string) {
+   110→  const c = getCircuit(provider);
+   111→  c.failureCount++;
+   112→  c.lastFailureTime = Date.now();
+   113→  if (c.state === "half-open") {
+   114→    // Failed test → back to open
+   115→    c.state = "open";
+   116→    console.warn(`[Circuit] ${provider}: half-open test failed → open`);
+   117→  } else if (c.failureCount >= CIRCUIT_FAILURE_THRESHOLD) {
+   118→    c.state = "open";
+   119→    console.warn(
+   120→      `[Circuit] ${provider}: opened after ${c.failureCount} consecutive failures (cooldown ${CIRCUIT_RESET_TIMEOUT_MS / 1000}s)`
+   121→    );
+   122→  }
+   123→}
+   124→
+   125→/**
+   126→ * Get circuit breaker status for UI display
+   127→ */
+   128→export function getCircuitBreakerStatus(): Record<string, { state: CircuitState; failureCount: number; lastFailureTime: number }> {
+   129→ const result: Record<string, { state: CircuitState; failureCount: number; lastFailureTime: number }> = {};
+   130→  for (const [provider, c] of circuitBreaker) {
+   131→ result[provider] = { state: c.state, failureCount: c.failureCount, lastFailureTime: c.lastFailureTime };
+   132→  }
+   133→  return result;
+   134→}
+   135→
+   136→let aiClientPromise: Promise<any> | null = null;
+   137→
+   138→async function getClient(): Promise<any> {
+   139→  if (!aiClientPromise) {
+   140→    const SDK = await loadSDK();
+   141→    if (!SDK) throw new Error("z.ai SDK non disponible en dehors de l'environnement sandbox");
+   142→    aiClientPromise = SDK.default.create();
+   143→  }
+   144→  return aiClientPromise;
+   145→}
+   146→
+   147→export interface AiMessage {
+   148→  role: "system" | "user" | "assistant";
+   149→  content: string;
+   150→}
+   151→
+   152→export interface AiCompletionOptions {
+   153→  messages: AiMessage[];
+   154→  model?: string;
+   155→  temperature?: number;
+   156→  maxTokens?: number;
+   157→  /** Override provider config (passed from client via request body _aiConfig) */
+   158→  providerConfig?: AiProviderConfig;
+   159→  /** Fallback chain configuration */
+   160→  fallbackConfig?: AiFallbackConfig;
+   161→}
+   162→
+   163→export interface AiCompletionResult {
+   164→  content: string;
+   165→  model: string;
+   166→  provider: string;
+   167→  usage?: {
+   168→    promptTokens: number;
+   169→    completionTokens: number;
+   170→    totalTokens: number;
+   171→  };
+   172→  /** Which provider actually served the request */
+   173→  routedVia?: string;
+   174→}
+   175→
+   176→// ═══════════════════════════════════════════════════════════════
+   177→// z.ai SDK path (sandbox private IP)
+   178→// ═══════════════════════════════════════════════════════════════
+   179→
+   180→async function generateWithSDK(
+   181→  options: AiCompletionOptions
+   182→): Promise<AiCompletionResult> {
+   183→  const client = await getClient();
+   184→  const formattedMessages = options.messages.map((m) => ({
+   185→    role: m.role,
+   186→    content: m.content,
+   187→  }));
+   188→
+   189→  const response = await client.chat.completions.create({
+   190→    messages: formattedMessages,
+   191→    model: options.model || "default",
+   192→    temperature: options.temperature ?? 0.7,
+   193→  });
+   194→
+   195→  let content = "";
+   196→  if (typeof response === "string") {
+   197→    content = response;
+   198→  } else if (response && typeof response === "object") {
+   199→    const resp = response as Record<string, unknown>;
+   200→    if (typeof resp.content === "string") {
+   201→      content = resp.content;
+   202→    } else if (resp.content != null && typeof resp.content === "object") {
+   203→      content = JSON.stringify(resp.content);
+   204→    }
+   205→    if (!content && Array.isArray(resp.choices)) {
+   206→      const firstChoice = resp.choices[0] as Record<string, unknown> | undefined;
+   207→      const message = firstChoice?.message as Record<string, unknown> | undefined;
+   208→      if (typeof message?.content === "string") {
+   209→        content = message.content;
+   210→      }
+   211→    }
+   212→    if (!content) {
+   213→      console.warn("[zai-client] Unexpected SDK response format:", typeof response);
+   214→      content = "";
+   215→    }
+   216→  }
+   217→
+   218→  return {
+   219→    content: content.trim(),
+   220→    model: options.model || "default",
+   221→    provider: "zai",
+   222→  };
+   223→}
+   224→
+   225→// ═══════════════════════════════════════════════════════════════
+   226→// OpenAI-compatible API path
+   227→// ═══════════════════════════════════════════════════════════════
+   228→
+   229→async function generateWithAPI(
+   230→  options: AiCompletionOptions,
+   231→  config: AiProviderConfig
+   232→): Promise<AiCompletionResult> {
+   233→  const baseUrl = getBaseUrl(config.provider, config.baseUrl);
+   234→
+   235→  if (!baseUrl) {
+   236→    throw new Error(
+   237→      `Aucune URL de base configurée pour le fournisseur "${config.provider}". ` +
+   238→      `Veuillez configurer le fournisseur IA dans Paramètres → Fournisseur IA.`
+   239→    );
+   240→  }
+   241→
+   242→  const model = options.model || config.model || "gpt-4o-mini";
+   243→
+   244→  const url = `${baseUrl}/chat/completions`;
+   245→  const headers: Record<string, string> = {
+   246→    "Content-Type": "application/json",
+   247→  };
+   248→
+   249→  // Auth: keyless providers skip Authorization header
+   250→  if (isKeylessProvider(config.provider)) {
+   251→    // No auth needed
+   252→  } else if (config.apiKey) {
+   253→    if (isAnthropicFormat(config.provider)) {
+   254→      headers["x-api-key"] = config.apiKey;
+   255→      headers["anthropic-version"] = "2023-06-01";
+   256→      headers["anthropic-dangerous-direct-browser-access"] = "true";
+   257→    } else {
+   258→      headers["Authorization"] = `Bearer ${config.apiKey}`;
+   259→    }
+   260→  }
+   261→
+   262→  // Provider-specific extra headers (from freellmapi pattern)
+   263→  const extraHeaders = getProviderExtraHeaders(config.provider);
+   264→  Object.assign(headers, extraHeaders);
+   265→
+   266→  const systemMessage = options.messages.find((m) => m.role === "system");
+   267→  const nonSystemMessages = options.messages.filter((m) => m.role !== "system");
+   268→
+   269→  let body: Record<string, unknown>;
+   270→  if (isAnthropicFormat(config.provider) && systemMessage) {
+   271→    body = {
+   272→      model,
+   273→      max_tokens: options.maxTokens || 4096,
+   274→      temperature: options.temperature ?? 0.7,
+   275→      system: systemMessage.content,
+   276→      messages: nonSystemMessages.map((m) => ({
+   277→        role: m.role,
+   278→        content: m.content,
+   279→      })),
+   280→    };
+   281→  } else {
+   282→    body = {
+   283→      model,
+   284→      temperature: options.temperature ?? 0.7,
+   285→      max_tokens: options.maxTokens || 4096,
+   286→      messages: options.messages.map((m) => ({
+   287→        role: m.role,
+   288→        content: m.content,
+   289→      })),
+   290→    };
+   291→  }
+   292→
+   293→  const response = await fetch(url, {
+   294→    method: "POST",
+   295→    headers,
+   296→    body: JSON.stringify(body),
+   297→    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+   298→  });
+   299→
+   300→  if (!response.ok) {
+   301→    const err = await buildApiError(response, model);
+   302→    throw err;
+   303→  }
+   304→
+   305→  const data = await response.json() as Record<string, unknown>;
+   306→  const choices = data.choices as Array<Record<string, unknown>> | undefined;
+   307→  const firstChoice = choices?.[0];
+   308→  const message = firstChoice?.message as Record<string, unknown> | undefined;
+   309→  const content = String(message?.content || "");
+   310→
+   311→  const usage = data.usage as Record<string, number> | undefined;
+   312→
+   313→  return {
+   314→    content: content.trim(),
+   315→    model,
+   316→    provider: config.provider,
+   317→    routedVia: `${config.provider}/${model}`,
+   318→    usage: usage
+   319→      ? {
+   320→          promptTokens: usage.prompt_tokens || 0,
+   321→          completionTokens: usage.completion_tokens || 0,
+   322→          totalTokens: usage.total_tokens || 0,
+   323→        }
+   324→      : undefined,
+   325→  };
+   326→}
+   327→
+   328→/**
+   329→ * Build a structured error from an API response.
+   330→ * Returns an error with a `status` property for failover logic.
+   331→ */
+   332→async function buildApiError(response: Response, model: string): Promise<Error & { status: number; retryable: boolean; authError: boolean }> {
+   333→  let errorText = await response.text();
+   334→
+   335→  try {
+   336→    const errJson = JSON.parse(errorText) as {
+   337→      error?: { type?: string; message?: string };
+   338→      message?: string;
+   339→      code?: string;
+   340→      detail?: string;
+   341→      type?: string;
+   342→      model?: string;
+   343→    };
+   344→    const errType = errJson.error?.type || errJson.type || errJson.code || "";
+   345→    const errMsg = errJson.error?.message || errJson.message || errJson.detail || "";
+   346→
+   347→    if (errType === "all_keys_failed" || response.status === 503) {
+   348→      errorText = `Service temporairement indisponible. Modèle "${errJson.model || model}" surchargé. Réessayez dans quelques instants ou changez de modèle.`;
+   349→    } else if (errType === "rate_limit_exceeded" || response.status === 429) {
+   350→      errorText = `Limite de requêtes atteinte. ${errMsg || "Attendez quelques secondes."}`;
+   351→    } else if (
+   352→      errType === "invalid_api_key" ||
+   353→      errType === "invalid_request_error" ||
+   354→      errJson.code === "invalid_api_key" ||
+   355→      response.status === 401
+   356→    ) {
+   357→      errorText = `Clé API invalide. ${errMsg || "Vérifiez votre configuration."}`;
+   358→    } else if (response.status === 404) {
+   359→      errorText = `Modèle "${model}" introuvable. Vérifiez le nom du modèle.`;
+   360→    } else if (errMsg) {
+   361→      errorText = errMsg;
+   362→    }
+   363→  } catch {
+   364→    // keep raw errorText
+   365→  }
+   366→
+   367→  const error = new Error(`Erreur IA (${response.status}): ${errorText.slice(0, 300)}`) as Error & {
+   368→    status: number;
+   369→    retryable: boolean;
+   370→    authError: boolean;
+   371→  };
+   372→  error.status = response.status;
+   373→  error.retryable = isRetryableError(response.status);
+   374→  error.authError = isAuthError(response.status);
+   375→  return error;
+   376→}
+   377→
+   378→// ═══════════════════════════════════════════════════════════════
+   379→// Failover logic (inspired by freellmapi)
+   380→// ═══════════════════════════════════════════════════════════════
+   381→
+   382→/**
+   383→ * Try a single provider config, returns result or throws.
+   384→ */
+   385→async function tryProvider(
+   386→  options: AiCompletionOptions,
+   387→  config: AiProviderConfig
+   388→): Promise<AiCompletionResult> {
+   389→  const backend = detectBackend(config.provider);
+   390→  if (backend === "zai") {
+   391→    return generateWithSDK(options);
+   392→  }
+   393→  return generateWithAPI(options, config);
+   394→}
+   395→
+   396→/**
+   397→ * Attempt generation with a single provider, with retries.
+   398→ * Returns the result or throws the last error.
+   399→ */
+   400→async function attemptWithRetries(
+   401→  options: AiCompletionOptions,
+   402→  config: AiProviderConfig,
+   403→  maxRetries: number = 2
+   404→): Promise<AiCompletionResult> {
+   405→  let lastError: Error | null = null;
+   406→  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+   407→    try {
+   408→      return await tryProvider(options, config);
+   409→    } catch (error) {
+   410→      lastError = error instanceof Error ? error : new Error(String(error));
+   411→      const status = (lastError as Error & { status?: number }).status;
+   412→
+   413→      // Don't retry auth errors (invalid key)
+   414→      if (status && isAuthError(status)) throw lastError;
+   415→
+   416→      if (attempt < maxRetries) {
+   417→        const delay = Math.pow(2, attempt) * 1000;
+   418→        console.warn(
+   419→          `[AI] ${config.provider} attempt ${attempt + 1} failed, retrying in ${delay}ms...`,
+   420→          lastError.message
+   421→        );
+   422→        await new Promise((resolve) => setTimeout(resolve, delay));
+   423→      }
+   424→    }
+   425→  }
+   426→  throw lastError;
+   427→}
+   428→
+   429→// ═══════════════════════════════════════════════════════════════
+   430→// Main entry point — auto-detects backend + failover
+   431→// ═══════════════════════════════════════════════════════════════
+   432→
+   433→/**
+   434→ * Generate a completion using the appropriate backend with failover.
+   435→ *
+   436→ * Priority:
+   437→ *  1. If providerConfig is passed (from client), use it
+   438→ *  2. If env vars define a provider, use them
+   439→ *  3. Default: try z.ai SDK
+   440→ *
+   441→ * Failover (inspired by freellmapi):
+   442→ *  - On retryable errors (429, 5xx), tries fallback providers in order
+   443→ *  - On auth errors (401, 403), immediately fails (no fallback)
+   444→ */
+   445→export async function generateCompletion(
+   446→  options: AiCompletionOptions
+   447→): Promise<AiCompletionResult> {
+   448→  const config = options.providerConfig || getDefaultConfig();
+   449→  const fallbackConfig = options.fallbackConfig;
+   450→
+   451→  // Inject hardcoded key if config has no apiKey
+   452→  function enrichWithHardcodedKey(c: AiProviderConfig): AiProviderConfig {
+   453→    if (!c.apiKey && c.provider !== "zai") {
+   454→      const hardcoded = getHardcodedKey(c.provider);
+   455→      if (hardcoded) {
+   456→        return { ...c, apiKey: hardcoded };
+   457→      }
+   458→    }
+   459→    return c;
+   460→  }
+   461→
+   462→  // Build the chain: primary + fallbacks
+   463→  const chain: AiProviderConfig[] = [enrichWithHardcodedKey(config)];
+   464→  if (fallbackConfig?.enabled && fallbackConfig.providers.length > 0) {
+   465→    for (const fb of fallbackConfig.providers) {
+   466→      chain.push(enrichWithHardcodedKey({
+   467→        provider: fb.provider,
+   468→        model: fb.model || config.model,
+   469→        baseUrl: fb.baseUrl,
+   470→      }));
+   471→    }
+   472→  }
+   473→
+   474→  let lastError: Error | null = null;
+   475→
+   476→  for (let i = 0; i < chain.length; i++) {
+   477→    const providerConfig = chain[i];
+   478→    const pid = providerConfig.provider;
+   479→
+   480→    // Circuit breaker check
+   481→    if (!canRequest(pid)) {
+   482→      console.warn(`[Circuit] Skipping ${pid} — circuit open (cooldown ${CIRCUIT_RESET_TIMEOUT_MS / 1000}s)`);
+   483→      if (i === chain.length - 1) {
+   484→        lastError = new Error(
+   485→          `Fournisseur IA "${pid}" temporairement indisponible (trop d'échecs consécutifs). ` +
+   486→          `Réessayez dans ${Math.ceil((CIRCUIT_RESET_TIMEOUT_MS - (Date.now() - getCircuit(pid).lastFailureTime)) / 1000)}s ou changez de fournisseur.`
+   487→        );
+   488→      }
+   489→      continue;
+   490→    }
+   491→
+   492→    try {
+   493→      const result = await attemptWithRetries(options, providerConfig, 2);
+   494→      recordSuccess(pid);
+   495→      if (i > 0) {
+   496→        console.log(`[AI] Failover: primary failed, served by ${pid}`);
+   497→      }
+   498→      return result;
+   499→    } catch (error) {
+   500→      lastError = error instanceof Error ? error : new Error(String(error));
+   501→      const status = (lastError as Error & { status?: number }).status;
+   502→
+   503→      recordFailure(pid);
+   504→
+   505→      // Auth errors are terminal — don't try fallbacks
+   506→      if (status && isAuthError(status)) throw lastError;
+   507→
+   508→      // Retryable or unknown error → try next in chain
+   509→      if (i < chain.length - 1) {
+   510→        console.warn(
+   511→          `[AI] Provider ${pid} failed (status=${status ?? "unknown"}), trying fallback ${i + 2}/${chain.length}...`
+   512→        );
+   513→      }
+   514→    }
+   515→  }
+   516→
+   517→  // All providers exhausted
+   518→  throw new Error(
+   519→    `Tous les fournisseurs IA ont échoué (chaîne de ${chain.length} fournisseurs). ` +
+   520→    `Dernière erreur: ${lastError?.message}`
+   521→  );
+   522→}
+   523→
+   524→/**
+   525→ * Simple streaming-friendly generation (returns full text)
+   526→ */
+   527→export async function generateText(
+   528→  prompt: string,
+   529→  systemPrompt?: string
+   530→): Promise<string> {
+   531→  const messages: AiMessage[] = [];
+   532→  if (systemPrompt) {
+   533→    messages.push({ role: "system", content: systemPrompt });
+   534→  }
+   535→  messages.push({ role: "user", content: prompt });
+   536→
+   537→  const result = await generateCompletion({ messages });
+   538→  return result.content;
+   539→}
+   540→
+   541→// ═══════════════════════════════════════════════════════════════
+   542→// Streaming generation — SSE-compatible ReadableStream
+   543→// ═══════════════════════════════════════════════════════════════
+   544→
+   545→export interface StreamChunk {
+   546→  type: "chunk" | "done" | "error";
+   547→  content?: string;
+   548→  error?: string;
+   549→  provider?: string;
+   550→  model?: string;
+   551→}
+   552→
+   553→function formatSSE(chunk: StreamChunk): string {
+   554→  return `data: ${JSON.stringify(chunk)}\n\n`;
+   555→}
+   556→
+   557→/**
+   558→ * Stream a completion using the appropriate backend with circuit breaker + failover.
+   559→ * Returns a Response with SSE content type.
+   560→ */
+   561→export async function generateCompletionStream(
+   562→  options: AiCompletionOptions
+   563→): Promise<Response> {
+   564→  const config = options.providerConfig || getDefaultConfig();
+   565→  const fallbackConfig = options.fallbackConfig;
+   566→
+   567→  function enrichWithHardcodedKey(c: AiProviderConfig): AiProviderConfig {
+   568→    if (!c.apiKey && c.provider !== "zai") {
+   569→      const hardcoded = getHardcodedKey(c.provider);
+   570→      if (hardcoded) return { ...c, apiKey: hardcoded };
+   571→    }
+   572→    return c;
+   573→  }
+   574→
+   575→  const chain: AiProviderConfig[] = [enrichWithHardcodedKey(config)];
+   576→  if (fallbackConfig?.enabled && fallbackConfig.providers.length > 0) {
+   577→    for (const fb of fallbackConfig.providers) {
+   578→      chain.push(enrichWithHardcodedKey({
+   579→        provider: fb.provider,
+   580→        model: fb.model || config.model,
+   581→        baseUrl: fb.baseUrl,
+   582→      }));
+   583→    }
+   584→  }
+   585→
+   586→  // Try providers in chain with circuit breaker
+   587→  for (let i = 0; i < chain.length; i++) {
+   588→    const providerConfig = chain[i];
+   589→    const pid = providerConfig.provider;
+   590→
+   591→    if (!canRequest(pid)) {
+   592→      console.warn(`[Circuit/Stream] Skipping ${pid} — circuit open`);
+   593→      if (i === chain.length - 1) {
+   594→        return new Response(
+   595→          formatSSE({ type: "error", error: `Fournisseur "${pid}" temporairement indisponible. Réessayez dans quelques secondes.` }),
+   596→          { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" } }
+   597→        );
+   598→      }
+   599→      continue;
+   600→    }
+   601→
+   602→    try {
+   603→      const response = await streamWithProvider(options, providerConfig);
+   604→      recordSuccess(pid);
+   605→      if (i > 0) {
+   606→        console.log(`[AI/Stream] Failover: served by ${pid}`);
+   607→      }
+   608→      return response;
+   609→    } catch (error) {
+   610→      const err = error instanceof Error ? error : new Error(String(error));
+   611→      recordFailure(pid);
+   612→      const status = (err as Error & { status?: number }).status;
+   613→
+   614→      if (status && isAuthError(status)) {
+   615→        return new Response(
+   616→          formatSSE({ type: "error", error: err.message }),
+   617→          { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" } }
+   618→        );
+   619→      }
+   620→
+   621→      if (i < chain.length - 1) {
+   622→        console.warn(`[AI/Stream] ${pid} failed, trying fallback ${i + 2}/${chain.length}...`);
+   623→      }
+   624→    }
+   625→  }
+   626→
+   627→  return new Response(
+   628→    formatSSE({ type: "error", error: "Tous les fournisseurs IA ont échoué." }),
+   629→    { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" } }
+   630→  );
+   631→}
+   632→
+   633→/**
+   634→ * Stream from a single provider (OpenAI SSE format)
+   635→ */
+   636→async function streamWithProvider(
+   637→  options: AiCompletionOptions,
+   638→  config: AiProviderConfig
+   639→): Promise<Response> {
+   640→  const backend = detectBackend(config.provider);
+   641→
+   642→  // zai SDK doesn't support streaming natively — fall back to non-streaming
+   643→  if (backend === "zai") {
+   644→    const result = await generateWithSDK(options);
+   645→    // Convert single response to a single-chunk stream
+   646→    return new Response(
+   647→      formatSSE({ type: "chunk", content: result.content, provider: result.provider, model: result.model }) +
+   648→      formatSSE({ type: "done", provider: result.provider, model: result.model }),
+   649→      { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" } }
+   650→    );
+   651→  }
+   652→
+   653→  const baseUrl = getBaseUrl(config.provider, config.baseUrl);
+   654→  if (!baseUrl) throw new Error(`Aucune URL de base pour "${config.provider}".`);
+   655→
+   656→  const model = options.model || config.model || "gpt-4o-mini";
+   657→  const url = `${baseUrl}/chat/completions`;
+   658→  const headers: Record<string, string> = { "Content-Type": "application/json" };
+   659→
+   660→  if (!isKeylessProvider(config.provider) && config.apiKey) {
+   661→    if (isAnthropicFormat(config.provider)) {
+   662→      headers["x-api-key"] = config.apiKey;
+   663→      headers["anthropic-version"] = "2023-06-01";
+   664→      headers["anthropic-dangerous-direct-browser-access"] = "true";
+   665→    } else {
+   666→      headers["Authorization"] = `Bearer ${config.apiKey}`;
+   667→    }
+   668→  }
+   669→
+   670→  const extraHeaders = getProviderExtraHeaders(config.provider);
+   671→  Object.assign(headers, extraHeaders);
+   672→
+   673→  const systemMessage = options.messages.find((m) => m.role === "system");
+   674→  const nonSystemMessages = options.messages.filter((m) => m.role !== "system");
+   675→
+   676→  let body: Record<string, unknown>;
+   677→  if (isAnthropicFormat(config.provider) && systemMessage) {
+   678→    body = {
+   679→      model,
+   680→      max_tokens: options.maxTokens || 4096,
+   681→      temperature: options.temperature ?? 0.7,
+   682→      stream: true,
+   683→      system: systemMessage.content,
+   684→      messages: nonSystemMessages.map((m) => ({ role: m.role, content: m.content })),
+   685→    };
+   686→  } else {
+   687→    body = {
+   688→      model,
+   689→      temperature: options.temperature ?? 0.7,
+   690→      max_tokens: options.maxTokens || 4096,
+   691→      stream: true,
+   692→      messages: options.messages.map((m) => ({ role: m.role, content: m.content })),
+   693→    };
+   694→  }
+   695→
+   696→  // Create a TransformStream to convert SSE chunks into our format
+   697→  const { readable, writable } = new TransformStream<StreamChunk, string>({
+   698→    transform(chunk, controller) {
+   699→      controller.enqueue(formatSSE(chunk));
+   700→    },
+   701→  });
+   702→
+   703→  // Start fetching and parsing in the background
+   704→  (async () => {
+   705→    try {
+   706→      const fetchResponse = await fetch(url, {
+   707→        method: "POST",
+   708→        headers,
+   709→        body: JSON.stringify(body),
+   710→        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+   711→      });
+   712→
+   713→      if (!fetchResponse.ok) {
+   714→        const apiErr = await buildApiError(fetchResponse, model);
+   715→        const writer = writable.getWriter();
+   716→        await writer.write({ type: "error", error: apiErr.message });
+   717→        await writer.close();
+   718→        return;
+   719→      }
+   720→
+   721→      const reader = fetchResponse.body?.getReader();
+   722→      if (!reader) {
+   723→        const writer = writable.getWriter();
+   724→        await writer.write({ type: "error", error: "Réponse vide du fournisseur." });
+   725→        await writer.close();
+   726→        return;
+   727→      }
+   728→
+   729→      const decoder = new TextDecoder();
+   730→      let buffer = "";
+   731→      const writer = writable.getWriter();
+   732→
+   733→      try {
+   734→        while (true) {
+   735→          const { done, value } = await reader.read();
+   736→          if (done) break;
+   737→
+   738→          buffer += decoder.decode(value, { stream: true });
+   739→          const lines = buffer.split("\n");
+   740→          buffer = lines.pop() || "";
+   741→
+   742→          for (const line of lines) {
+   743→            const trimmed = line.trim();
+   744→            if (!trimmed || !trimmed.startsWith("data: ")) continue;
+   745→            const data = trimmed.slice(6);
+   746→            if (data === "[DONE]") continue;
+   747→
+   748→            try {
+   749→              const parsed = JSON.parse(data) as Record<string, unknown>;
+   750→              const choices = parsed.choices as Array<Record<string, unknown>> | undefined;
+   751→              const delta = choices?.[0]?.delta as Record<string, unknown> | undefined;
+   752→              const content = String(delta?.content || "");
+   753→              if (content) {
+   754→                await writer.write({
+   755→                  type: "chunk",
+   756→                  content,
+   757→                  provider: config.provider,
+   758→                  model,
+   759→                });
+   760→              }
+   761→            } catch {
+   762→              // Skip malformed SSE data
+   763→            }
+   764→          }
+   765→        }
+   766→
+   767→        await writer.write({ type: "done", provider: config.provider, model });
+   768→      } finally {
+   769→        await writer.close();
+   770→      }
+   771→    } catch (error) {
+   772→      const writer = writable.getWriter();
+   773→      const msg = error instanceof Error ? error.message : "Erreur de streaming";
+   774→      await writer.write({ type: "error", error: msg });
+   775→      await writer.close();
+   776→    }
+   777→  })();
+   778→
+   779→  return new Response(readable, {
+   780→    headers: {
+   781→      "Content-Type": "text/event-stream",
+   782→      "Cache-Control": "no-cache",
+   783→      "Connection": "keep-alive",
+   784→    },
+   785→  });
+   786→}
+   787→
+   788→/**
+   789→ * Read provider config from environment / defaults.
+   790→ */
+   791→function getDefaultConfig(): AiProviderConfig {
+   792→  const provider = (process.env.AI_PROVIDER || "zai") as AiProviderId;
+   793→
+   794→  const baseUrl = process.env.AI_BASE_URL || process.env.OPENAI_BASE_URL || "";
+   795→
+   796→  let apiKey = "";
+   797→  let model = process.env.AI_MODEL || "gpt-4o-mini";
+   798→
+   799→  switch (provider) {
+   800→    case "openai":
+   801→      apiKey = process.env.OPENAI_API_KEY || "";
+   802→      model = process.env.AI_MODEL || "gpt-4o-mini";
+   803→      break;
+   804→    case "anthropic":
+   805→      apiKey = process.env.ANTHROPIC_API_KEY || "";
+   806→      model = process.env.AI_MODEL || "claude-3-haiku-20240307";
+   807→      break;
+   808→    case "mistral":
+   809→      apiKey = process.env.MISTRAL_API_KEY || "";
+   810→      model = process.env.AI_MODEL || "mistral-small-latest";
+   811→      break;
+   812→    case "routesme":
+   813→      apiKey = process.env.ROUTESME_API_KEY || process.env.OPENAI_API_KEY || "";
+   814→      model = process.env.AI_MODEL || "GLM5.2-free";
+   815→      break;
+   816→    case "google":
+   817→      apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || "";
+   818→      model = process.env.AI_MODEL || "gemini-2.5-flash";
+   819→      break;
+   820→    case "groq":
+   821→      apiKey = process.env.GROQ_API_KEY || "";
+   822→      model = process.env.AI_MODEL || "llama-3.3-70b-versatile";
+   823→      break;
+   824→    case "cerebras":
+   825→      apiKey = process.env.CEREBRAS_API_KEY || "";
+   826→      model = process.env.AI_MODEL || "llama-3.3-70b";
+   827→      break;
+   828→    case "openrouter":
+   829→      apiKey = process.env.OPENROUTER_API_KEY || "";
+   830→      model = process.env.AI_MODEL || "meta-llama/llama-4-maverick:free";
+   831→      break;
+   832→    case "github":
+   833→      apiKey = process.env.GITHUB_TOKEN || process.env.GITHUB_MODELS_TOKEN || "";
+   834→      model = process.env.AI_MODEL || "openai/gpt-4.1-mini";
+   835→      break;
+   836→    case "nvidia":
+   837→      apiKey = process.env.NVIDIA_API_KEY || "";
+   838→      model = process.env.AI_MODEL || "meta/llama-3.3-70b-instruct";
+   839→      break;
+   840→    case "cohere":
+   841→      apiKey = process.env.COHERE_API_KEY || "";
+   842→      model = process.env.AI_MODEL || "command-r";
+   843→      break;
+   844→    case "huggingface":
+   845→      apiKey = process.env.HUGGINGFACE_API_KEY || process.env.HF_TOKEN || "";
+   846→      break;
+   847→    case "siliconflow":
+   848→      apiKey = process.env.SILICONFLOW_API_KEY || "";
+   849→      break;
+   850→    case "custom":
+   851→      apiKey = process.env.OPENAI_API_KEY || "";
+   852→      model = process.env.AI_MODEL || "gpt-4o-mini";
+   853→      break;
+   854→    default: // zai
+   855→      apiKey = "";
+   856→      model = "default";
+   857→  }
+   858→
+   859→  // Fallback: if no env var, try hardcoded key
+   860→  if (!apiKey && provider !== "zai") {
+   861→    const hardcoded = getHardcodedKey(provider);
+   862→    if (hardcoded) {
+   863→      apiKey = hardcoded;
+   864→      console.log(`[AI] Using hardcoded key for ${provider}`);
+   865→    }
+   866→  }
+   867→
+   868→  return {
+   869→    provider,
+   870→    apiKey: apiKey || undefined,
+   871→    model,
+   872→    baseUrl: baseUrl || undefined,
+   873→  };
+   874→}
+   875→

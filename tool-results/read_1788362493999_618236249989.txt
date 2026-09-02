@@ -1,0 +1,762 @@
+     1→# FICHE SYNTHESE — ThesisFrame
+     2→
+     3→> **Document de référence et de traçabilité du projet.**
+     4→> Mis à jour le : 11 juillet 2025
+     5→
+     6→---
+     7→
+     8→## Journal des jalons
+     9→
+    10→| Date | Commit | Description | Autorisation |
+    11→|------|--------|-------------|--------------|
+    12→| — | — | Création initiale du projet | — |
+    13→| 28/06/2025 | cf7b425 | Fix build errors — exclude skills/ from tsconfig, fix CSL-JSON duplicate key | Bugfix (hors protocole) |
+    14→| 28/06/2025 | 738ef73 | Feat: import références BibTeX/RIS/CSL-JSON + Mendeley + dashboard | Antérieure au protocole |
+    15→| 28/06/2025 | 732c298 | Fix: useAiConfig infinite re-render bug | Bugfix (hors protocole) |
+    16→| 28/06/2025 | f9c0a2a | Fix: client-side crash Vercel — separate server fs code | Bugfix (hors protocole) |
+    17→| 10/07/2025 | 7910b91 | Feat: add RoutesMe as AI provider — 1 API key for 20+ models | Autorisé |
+    18→| 10/07/2025 | c7cd748 | Fix: improve AI error messages — friendly French messages for 503, 429, 401 | Bugfix (hors protocole) |
+    19→| 10/07/2025 | 6356496 | Feat: fix Mistral AI provider — dual error parsing, dynamic models, tri-par-niveaux | Autorisé |
+    20→| 10/07/2025 | c3cf721 | Feat: RAG module "Mon IA de thèse" — indexation + chat + sources citées | Autorisé |
+    21→| 10/07/2025 | 33ed114 | Feat: guide d'utilisation + raccourcis clavier + à propos dans bouton "?" | Autorisé |
+    22→| 10/07/2025 | a33cc90 | Feat: prédiction de texte IA dans l'éditeur (ghost text + popup suggestions) | Autorisé |
+    23→| 10/07/2025 | — | Feat: restauration intégration Tauri v2 — build .exe/.msi Windows desktop | Autorisé |
+    24→| 11/07/2025 | — | Feat: vérification cartographique — Module A rule-based (complétude) + Module B socratique (LLM), référentiel analyse_urbaine (37 éléments, 5 phases), 3 modèles Prisma, 6 routes API | Autorisé |
+    25→
+    26→---
+    27→
+    28→## Protocole d'autorisation préalable
+    29→
+    30→> **En vigueur depuis le 28 juin 2025**
+    31→
+    32→**Règle :** Aucune modification de code, fonctionnalité, logique applicative ou architecture sans aval écrit préalable du propriétaire du projet.
+    33→
+    34→- ✗ Modifications de fonctionnalités existantes
+    35→- ✗ Ajouts de fonctionnalités non demandées
+    36→- ✗ Changements de logique métier / scoring / vérification
+    37→- ✗ Changements d'architecture ou dépendances structurantes
+    38→- ✗ Suppressions de code existant
+    39→
+    40→**Exempté (sans autorisation) :**
+    41→- ✓ Corrections de bugs strictement limitées au comportement initialement prévu
+    42→- ✓ Ajustements mineurs de style/formatage sans impact fonctionnel
+    43→- ✓ En cas de doute → demande d'autorisation
+    44→
+    45→**Procédure :**
+    46→1. Soumettre une proposition écrite (ce qui, pourquoi, impact)
+    47→2. Attendre l'autorisation écrite
+    48→3. Implémenter + consigner dans ce journal
+    49→
+    50→---
+    51→
+    52→# Structure de référence — version gelée
+    53→
+    54→> **Date : 28 juin 2025**
+    55→> **Statut : ⏳ EN ATTENTE DE VALIDATION**
+    56→> **Cette section constitue le point zéro à partir duquel toute divergence future doit être justifiée.**
+    57→
+    58→---
+    59→
+    60→## 1. Architecture technique
+    61→
+    62→### 1.1 Stack complète
+    63→
+    64→| Couche | Technologie | Version |
+    65→|--------|-------------|---------|
+    66→| **Framework** | Next.js (App Router) | ^16.1.1 |
+    67→| **Runtime** | Bun | (lockfile) |
+    68→| **Langage** | TypeScript | ^5 |
+    69→| **Backend desktop** | Rust (Tauri v2) | stable |
+    70→| **UI** | React | ^19.0.0 |
+    71→| **CSS** | Tailwind CSS 4 + tw-animate-css | ^4 |
+    72→| **Composants UI** | shadcn/ui (style New York) | — |
+    73→| **Icônes** | Lucide React | ^0.525.0 |
+    74→| **État client** | Zustand (persist middleware) | ^5.0.6 |
+    75→| **Serveur state** | TanStack React Query | ^5.82.0 |
+    76→| **Base de données** | SQLite via Prisma ORM | ^6.11.1 |
+    77→| **Éditeur riche** | Tiptap (+ 7 extensions, incl. AI prediction) | ^3.29.2 |
+    78→| **Formulaires** | React Hook Form + Zod v4 | ^7.60.0 / ^4.0.2 |
+    79→| **Graphiques** | Recharts | ^2.15.4 |
+    80→| **Drag & Drop** | dnd-kit | ^6.3.1 |
+    81→| **Animations** | Framer Motion | ^12.23.2 |
+    82→| **SDK IA (sandbox)** | z-ai-web-dev-sdk | ^0.0.18 |
+    83→| **Toast** | Sonner | ^2.0.6 |
+    84→| **Thème** | next-themes (class-based) | ^0.4.6 |
+    85→| **Auth (disponible)** | NextAuth v4 | ^4.24.11 |
+    86→| **Desktop shell** | Tauri v2 (Rust) | ^2 |
+    87→| **Tauri plugins** | @tauri-apps/api, @tauri-apps/plugin-shell | ^2 |
+    88→
+    89→### 1.2 Structure des dossiers
+    90→
+    91→```
+    92→.
+    93→├── src/                          # Source Next.js (frontend + backend)
+    94→│
+    95→├── src-tauri/                    # Shell desktop Tauri v2 (Rust)
+    96→│   ├── Cargo.toml                # Config Rust (dependencies tauri, serde, shell)
+    97→│   ├── build.rs                  # Script de build Tauri
+    98→│   ├── tauri.conf.json           # Config Tauri v2 (fenêtre 1400×900, NSIS, MSI)
+    99→│   ├── capabilities/
+   100→│   │   └── default.json           # Permissions (core:default, shell:allow-open)
+   101→│   ├── icons/                    # 5 icônes (32, 128, 128@2x, ico, 512)
+   102→│   └── src/
+   103→│       ├── main.rs               # Point d'entrée (windows_subsystem="windows")
+   104→│       └── lib.rs                # Setup Tauri (DB path Windows, plugins)
+   105→│
+   106→├── TAURI_BUILD.md                # Guide de build desktop Windows
+   107→├── Caddyfile                     # Reverse proxy (dev sandbox)
+   108→└── FICHE_SYNTHESE.md             # Ce document
+   109→
+   110→src/
+   111→├── app/                          # Routeur Next.js App Router
+   112→│   ├── layout.tsx                # Layout racine (server component, lang="fr")
+   113→│   ├── page.tsx                  # Page unique — SPA via Zustand currentView
+   114→│   ├── globals.css               # Styles globaux + variables CSS
+   115→│   └── api/                      # 39 routes API (REST, zéro server action)
+   116→│       ├── route.ts              # Health check
+   117→│       ├── stats/route.ts        # Agrégations dashboard
+   118→│       ├── thesis/               # CRUD thèses + chapitres + cadrages
+   119→│       ├── chapters/[id]/        # CRUD chapitres
+   120→│       ├── references/           # CRUD + export BibTeX + import
+   121→│       ├── references/import/    # Upload .bib/.ris/.csl-json
+   122→│       ├── references/[id]/      # Update/delete référence
+   123→│       ├── references/bibtex/   # Export .bib
+   124→│       ├── sources/              # Carnet de recherche CRUD
+   125→│       ├── entries/              # Notebook entries CRUD
+   126→│       ├── sprints/              # Sprints agiles CRUD
+   127→│       ├── stories/[id]/         # Stories CRUD
+   128→│       ├── cadrages/             # Cadrages + versions + fields
+   129→│       ├── ai-writing/           # Génération IA modes d'écriture
+   130→│       ├── directeur-chat/       # Chat IA directeur de thèse
+   131→│       ├── ai-test/              # Test connexion fournisseur IA
+   132→│       ├── ai-models/            # Liste dynamique modèles (mistral, routesme, custom)
+   133→│       ├── ai-config/            # Configurations IA CRUD
+   134→│       ├── thesis-rag/           # RAG — indexation + requêtes sémantiques
+   135→│       ├── text-prediction/      # Prédiction de texte IA dans l'éditeur
+   136→│       ├── search/               # Recherche plein texte booléenne
+   137→│       └── journaux-oa/          # Recherche journaux OpenAlex/DOAJ
+   138→│
+   139→├── components/
+   140→│   ├── layout/                  # AppHeader, AppSidebar, AppFooter, ModulePlaceholder,
+   141→│   │                                # UsageGuideDialog, AboutDialog, ShortcutsDialog
+   142→│   ├── dashboard/                # DashboardPage (stats, actions, modules)
+   143→│   ├── providers/                # QueryProvider (React Query)
+   144→│   ├── theme-provider.tsx        # ThemeProvider (next-themes)
+   145→│   └── ui/                       # 44 composants shadcn/ui
+   146→│
+   147→├── modules/                      # 29 modules fonctionnels (tous "use client")
+   148→│   ├── editor/                   # + composants Tiptap + hooks + AI prediction extension
+   149→│   ├── ai-writing/               # 11 modes d'écriture IA
+   150→│   ├── references/               # Biblio CRUD + import + export
+   151→│   ├── ai-tools/                  # Carnet de recherche + consensus
+   152→│   ├── methodology/              # Guides méthodologiques
+   153→│   ├── articles/                 # Guide IMRaD + checklists
+   154→│   ├── thesis-plan/              # Plan de thèse + template LaTeX
+   155→│   ├── academic-db/              # 27 bases de données académiques
+   156→│   ├── journaux-oa/              # Recherche OA OpenAlex/DOAJ
+   157→│   ├── recherche-plein-texte/    # Recherche plein texte booléenne
+   158→│   ├── auto-edition/             # Auto-évaluation IA 8 critères
+   159→│   ├── feuille-route-agile/     # Kanban sprints 5 phases
+   160→│   ├── deblocage-ecriture/       # Diagnostic + Pomodoro + suivi
+   161→│   ├── outils-slr/              # Revue systématique PRISMA
+   162→│   ├── analyse-champ-recherche/  # Cartographie IA du champ
+   163→│   ├── apa-composer/            # Formatage APA 7e édition
+   164→│   ├── verification-methodo/    # Audit méthodologique IA
+   165→│   ├── verification-carto/     # Vérif. complétude (rule-based) + questionneur socratique (IA)
+   166→│   ├── boite-doctorale/         # Boîte à outils doctorale
+   167→│   ├── box-cloud/               # Stockage cloud
+   168→│   ├── routesme/                # Comparaison multi-modèles IA
+   169→│   ├── livres-competences/       # Compétences livres
+   170→│   ├── onglet-recherche/         # Organisation onglets recherche
+   171→│   ├── grammaire/               # Correcteur grammatical IA
+   172→│   ├── export-pdf/              # Export PDF
+   173→│   ├── equilibre-chapitres/     # Équilibre chapitres IA
+   174→│   ├── diagrammes/              # Diagrammes visuels
+   175→│   ├── harper/                  # Résumé/paraphrase/extraction IA
+   176→│   └── thesis-rag/              # Chat RAG "Mon IA de thèse" + indexation
+   177→│
+   178→├── hooks/                       # useAiConfig, useMobile, useToast
+   179→├── lib/
+   180→│   ├── ai/                       # Architecture IA dual-backend
+   181→│   │   ├── ai-types.ts           # Types client-safe + constantes + DYNAMIC_MODEL_PROVIDERS
+   182→│   │   ├── ai-provider.ts        # Détection backend server-only (fs/os)
+   183→│   │   └── zai-client.ts         # Client IA (SDK + API OpenAI-compat, dual error parsing)
+   184→│   ├── rag/                      # Service RAG (chunking, indexation, retrieval)
+   185→│   │   └── rag-service.ts         # chunkText, indexThesisContent, retrieveChunks, generateRagResponse
+   186→│   ├── parsers/                  # Parsers bibliographiques
+   187→│   │   ├── bibtex-parser.ts      # Parser BibTeX (.bib)
+   188→│   │   ├── ris-parser.ts         # Parser RIS (.ris)
+   189→│   │   ├── csl-json-parser.ts    # Parser CSL-JSON (.json)
+   190→│   │   └── index.ts              # Auto-détection format
+   191→│   ├── stores/
+   192→│   │   └── app-store.ts          # Zustand (30 vues, thème, IA provider)
+   193→│   ├── api-schemas.ts            # Schemas Zod pour toutes les routes
+   194→│   ├── db.ts                     # Prisma Client singleton
+   195→│   └── utils.ts                  # Utilitaires (cn, etc.)
+   196→│
+   197→└── data/
+   198→    ├── ai-writing-modes.ts       # 11 modes d'écriture (prompts système)
+   199→    └── directeur-prompt.ts        # Prompt système directeur IA
+   200→```
+   201→
+   202→### 1.3 Base de données
+   203→
+   204→**Moteur :** SQLite (fichier `db/custom.db`)
+   205→**ORM :** Prisma Client v6
+   206→**Générateur :** prisma-client-js
+   207→**Client :** Singleton via globalThis (dev HMR-safe) dans `src/lib/db.ts`
+   208→
+   209→#### Schéma (18 modèles)
+   210→
+   211→**THÈSE**
+   212→```
+   213→Thesis                          → Chapter[], Part[], ThesisCadrage[]
+   214→  id, title, subtitle?, author, email?, institution?, laboratory?,
+   215→  discipline?, directorName?, status (draft|in_progress|review|completed),
+   216→  structureMode (chapters|parts)
+   217→
+   218→Chapter ← Thesis (Cascade)
+   219→  id, thesisId, number, title, romanNumeral?, content (HTML),
+   220→  plainText, wordCount, targetWordCount, status (not_started|in_progress|draft|review|completed),
+   221→  directorFeedback?, parentId?, sortOrder
+   222→
+   223→Part ← Thesis (Cascade)
+   224→  id, thesisId, title, sortOrder
+   225→```
+   226→
+   227→**CADRAGE**
+   228→```
+   229→ThesisCadrage ← Thesis (Cascade) → ThesisCadrageField[], ThesisCadrageVersion[]
+   230→  id, thesisId, label?, isActive
+   231→
+   232→ThesisCadrageField ← ThesisCadrage (Cascade)
+   233→  id, cadrageId, fieldKey (unique [cadrageId, fieldKey]),
+   234→  label, value?, aiSuggestion?, isLocked, sortOrder
+   235→
+   236→ThesisCadrageVersion ← ThesisCadrage (Cascade)
+   237→  id, cadrageId, label?, snapshot (JSON)
+   238→```
+   239→
+   240→**RÉFÉRENCES**
+   241→```
+   242→Reference (standalone)
+   243→  id, type (article|book|thesis|conference|report|web|other),
+   244→  authors (;-sep), title, year?, journal?, volume?, issue?, pages?,
+   245→  publisher?, doi?, isbn?, url?, abstract?, keywords (,-sep)?,
+   246→  notes?, bibtexKey?, source (manual|mendeley|zotero|bibtex|ris|csl-json|doi),
+   247→  isFavorite
+   248→  Indexes: [type], [year], [isFavorite], [source]
+   249→```
+   250→
+   251→**CARNET DE RECHERCHE**
+   252→```
+   253→ResearchSource (standalone) → NotebookEntry[]
+   254→  id, title, authors?, year?, type (article|book|thesis|report), url?, notes?
+   255→
+   256→NotebookEntry ← ResearchSource (SetNull)
+   257→  id, sourceId?, question, answer, tags (,-sep)?
+   258→```
+   259→
+   260→**IA**
+   261→```
+   262→AiToolConfig (standalone)
+   263→  id, provider (unique: openai|anthropic|mistral|zai|custom),
+   264→  apiKey?, model?, isActive
+   265→```
+   266→
+   267→**AGILE**
+   268→```
+   269→AgileSprint → AgileStory[]
+   270→  id, phase (phase_0..4), title, description?,
+   271→  startDate?, endDate?, status (planned|active|completed), sortOrder
+   272→
+   273→AgileStory ← AgileSprint (Cascade)
+   274→  id, sprintId, title, description?, status (todo|in_progress|done),
+   275→  priority (low|medium|high|critical), storyPoints?, sortOrder
+   276→```
+   277→
+   278→**RAG**
+   279→```
+   280→DocumentChunk (standalone)
+   281→  id, sourceType (chapter|reference|notebook|cadrage),
+   282→  sourceId, content, chunkIndex, metadata (JSON)
+   283→  Indexes: [sourceType], [sourceId], [content]
+   284→```
+   285→
+   286→**VÉRIFICATION MÉTHODOLOGIQUE (Module A rule-based + Module B socratique)**
+   287→```
+   288→ElementAnalyse (standalone)
+   289→  id, nom, typeElement, natureElement (spatial|bibliographique|donnee_enquete|document),
+   290→  sousAnalyse?, source, dateSource?, geojson (JSON)?, styleConfig (JSON)?, chapitreId?
+   291→  Indexes: [typeElement], [natureElement]
+   292→
+   293→TypeAnalyseMethodologique (standalone)
+   294→  id, discipline (ex: analyse_urbaine, patrimoine, sociologie_urbaine),
+   295→  nom, elementsAttendus (JSON structuré par phase), promptQuestionneur?
+   296→  Indexes: [discipline]
+   297→
+   298→SessionVerification (standalone)
+   299→  id, siteEtudeId, typeAnalyseId,
+   300→  elementsManquants (JSON), questionsPosees (JSON), reponses (JSON)?
+   301→  Indexes: [siteEtudeId], [typeAnalyseId]
+   302→```
+   303→
+   304→**AUTRES**
+   305→```
+   306→CustomBookSkill    → id, title, author?, content, tags?
+   307→LicenseKey         → id, keyHash (unique), licenseType (trial|standard|academic|premium), email?, expiresAt?
+   308→```
+   309→
+   310→### 1.4 Dépendances critiques
+   311→
+   312→| Dépendance | Rôle | Impact si supprimée |
+   313→|-----------|------|-------------------|
+   314→| `next` | Framework principal | Application complète |
+   315→| `@prisma/client` + `prisma` | ORM + génération | Toutes les données |
+   316→| `z-ai-web-dev-sdk` | SDK IA sandbox | Fonctionnalités IA (server-only) |
+   317→| `zustand` | État client + navigation | Navigation entre modules |
+   318→| `@tanstack/react-query` | Cache serveur state | Chargement de données |
+   319→| `@tiptap/*` | Éditeur riche | Module Éditeur |
+   320→| `zod` | Validation schémas | Toutes les API routes |
+   321→| `react-hook-form` | Formulaires | Formulaires dans modules |
+   322→| `lucide-react` | Icônes | Toute l'interface |
+   323→| `sonner` | Notifications toast | Feedback utilisateur |
+   324→
+   325→---
+   326→
+   327→## 2. Fonctionnalités — Module par module
+   328→
+   329→### 2.1 Dashboard (`DashboardPage`)
+   330→- **Statut :** Stable
+   331→- **Rôle :** Page d'accueil, vue d'ensemble du projet
+   332→- **Contenu :** 4 stat cards (Chapitres, Références, Mots rédigés, Progression %), 4 actions rapides, guide de démarrage 5 étapes, grille de 14+ modules
+   333→- **Déclenchement :** Affiché par défaut (viewId = "dashboard")
+   334→- **Données :** GET /api/stats
+   335→
+   336→### 2.2 Éditeur de thèse (`EditorPage`)
+   337→- **Statut :** Stable
+   338→- **Rôle :** Éditeur riche avec Tiptap pour rédiger les chapitres
+   339→- **Fonctionnalités :**
+   340→  - Créer/supprimer/modifier une thèse (dialogue formulaire)
+   341→  - 7 chapitres par défaut (Introduction → Conclusion)
+   342→  - Navigation par onglets entre chapitres
+   343→  - Édition WYSIWYG avec barre d'outils (gras, italique, titres, listes, liens, surligneur)
+   344→  - Compteur de caractères en temps réel
+   345→  - Auto-save (débounced, configurable)
+   346→  - Compteur de mots, objectif de mots par chapitre
+   347→  - Statut du chapitre (non commencé / en cours / brouillon / révision / terminé)
+   348→  - Feedback directeur sur chaque chapitre
+   349→  - Panel latéral liste des thèses
+   350→  - **Prédiction de texte IA** (v1.3.0) : ghost text gris après le curseur, popup avec suggestion principale + 2 alternatives, Tab pour accepter, Esc pour dismiss, toggle dans la toolbar
+   351→- **Données :** CRUD /api/thesis, /api/thesis/[id], /api/thesis/[id]/chapters, /api/chapters/[id], POST /api/text-prediction
+   352→
+   353→### 2.3 Assistant IA d'écriture (`AiWritingPage`)
+   354→- **Statut :** Stable
+   355→- **Rôle :** 11 modes spécialisés d'assistance à l'écriture académique
+   356→- **Onglets :** "Modes d'écriture" + "Chat Directeur"
+   357→- **11 modes :**
+   358→  1. Rédaction scientifique (formel, connecteurs, citations)
+   359→  2. Revue de littérature (thématique, chronologique)
+   360→  3. Relecture critique (peer review, 10 critères)
+   361→  4. Paraphrase académique (reformulation conservant le sens)
+   362→  5. Rédaction de résumé (abstract IMRaD, 250 mots max)
+   363→  6. Génération d'hypothèses (testables, falsifiables)
+   364→  7. Aide méthodologique (quali/quanti/mixte)
+   365→  8. Construction théorique (concepts, relations, modèle conceptuel)
+   366→  9. Documents de supervision (rapports, notes, plans)
+   367→  10. Correcteur grammatical (JSON structuré : statistiques + erreurs + corrigé)
+   368→  11. Préparation soutenance (présentation + questions jury)
+   369→- **Chat Directeur :** Conversation avec IA persona "Pr. Jean-Marc Renaud"
+   370→- **Données :** POST /api/ai-writing, POST /api/directeur-chat
+   371→
+   372→### 2.4 Références bibliographiques (`ReferencesPage`)
+   373→- **Statut :** Stable
+   374→- **Rôle :** Gestion bibliographique CRUD + import/export
+   375→- **Fonctionnalités :**
+   376→  - CRUD manuel (formulaire : type, auteurs, titre, année, journal, DOI, mots-clés, notes)
+   377→  - Filtrage par type, par source, par recherche texte, par favoris
+   378→  - Badge coloré par source (Mendeley=rouge, Zotero=orange, BibTeX=bleu, RIS=violet, CSL-JSON=vert)
+   379→  - Étoile/favori sur chaque référence
+   380→  - Export BibTeX (.bib download)
+   381→  - Import par fichier (.bib, .ris, .json CSL-JSON) avec drag-and-drop, auto-détection, aperçu, résultat détaillé
+   382→  - Bandeau informatif avec instructions d'export depuis Mendeley/Zotero/EndNote
+   383→- **Données :** GET/POST /api/references, PUT/DELETE /api/references/[id], GET /api/references/bibtex, POST /api/references/import
+   384→
+   385→### 2.5 Méthodologie (`MethodologyPage`)
+   386→- **Statut :** Stable
+   387→- **Rôle :** Guides méthodologiques pour la thèse (paradigmes, démarches, outils)
+   388→
+   389→### 2.6 Articles scientifiques (`ArticlesPage`)
+   390→- **Statut :** Stable
+   391→- **Rôle :** Guide IMRaD, checklist de soumission, boîte à outils rédaction
+   392→
+   393→### 2.7 Plan de thèse (`ThesisPlanPage`)
+   394→- **Statut :** Stable
+   395→- **Rôle :** Visualisation du plan de thèse, génération de template LaTeX personnalisé
+   396→
+   397→### 2.8 Outils IA (`AiToolsPage`)
+   398→- **Statut :** Stable
+   399→- **Rôle :** Carnet de recherche (sources + Q&A entries), analyse de consensus multi-sources, visualisation
+   400→- **Fonctionnalités :**
+   401→  - CRUD ResearchSource (types : article, book, thesis, report)
+   402→  - CRUD NotebookEntry (liées ou non à une source)
+   403→  - Analyse de consensus IA entre sources
+   404→- **Données :** CRUD /api/sources, /api/sources/[id], /api/sources/[id]/entries, /api/entries
+   405→
+   406→### 2.9 Bases de données académiques (`AcademicDbPage`)
+   407→- **Statut :** Stable
+   408→- **Rôle :** Répertoire de 27 bases de données académiques (HAL, Google Scholar, Persée, CAIRN, etc.)
+   409→
+   410→### 2.10 Journaux Open Access (`JournauxOaPage`)
+   411→- **Statut :** Stable
+   412→- **Rôle :** Recherche de journaux OA via OpenAlex + DOAJ
+   413→- **Fonctionnalités :** Recherche par mot-clé, filtrage par source/sujet, export CSV, mapping pays, filtrage type OA
+   414→- **Données :** GET /api/journaux-oa
+   415→
+   416→### 2.11 Recherche plein texte (`RecherchePleinTextePage`)
+   417→- **Statut :** Stable
+   418→- **Rôle :** Recherche booléenne (AND, OR, NOT) dans tous les chapitres
+   419→- **Données :** GET /api/search
+   420→
+   421→### 2.12 Auto-édition (`AutoEditionPage`)
+   422→- **Statut :** Stable
+   423→- **Rôle :** Auto-évaluation IA contre 8 critères de qualité
+   424→
+   425→### 2.13 Feuille de route agile (`FeuilleRouteAgilePage`)
+   426→- **Statut :** Stable
+   427→- **Rôle :** Tableau Kanban, sprints agiles en 5 phases (phase_0→phase_4), stories avec priorités et story points
+   428→- **Données :** CRUD /api/sprints, /api/sprints/[id]/stories, /api/stories/[id]
+   429→
+   430→### 2.14 Déblocage écriture (`DeblocageEcriturePage`)
+   431→- **Statut :** Stable
+   432→- **Rôle :** Diagnostic de blocage, exercices d'écriture, timer Pomodoro (25min/5min), suivi quotidien de mots
+   433→
+   434→### 2.15 Outils SLR (`OutilsSlrPage`)
+   435→- **Statut :** Stable
+   436→- **Rôle :** Revue systématique de littérature : diagramme PRISMA, criblage, extraction de données
+   437→
+   438→### 2.16 Analyse du champ de recherche (`AnalyseChampRecherchePage`)
+   439→- **Statut :** Stable
+   440→- **Rôle :** Cartographie IA du champ de recherche, identification de lacunes, positionnement
+   441→
+   442→### 2.17 APA Compositeur (`ApaComposerPage`)
+   443→- **Statut :** Stable
+   444→- **Rôle :** Formatage automatique selon APA 7e édition
+   445→
+   446→### 2.18 Vérification méthodologique (`VerificationMethodoPage`)
+   447→- **Statut :** Stable
+   448→- **Rôle :** Audit méthodologique IA, vérification de cohérence de la démarche
+   449→
+   450→### 2.19 Boîte doctorale (`BoiteDoctoralePage`)
+   451→- **Statut :** Stable
+   452→- **Rôle :** Checklist doctorale, calendrier, documents administratifs, suivi
+   453→
+   454→### 2.20 Box Cloud (`BoxCloudPage`)
+   455→- **Statut :** Stable
+   456→- **Rôle :** Gestion de stockage cloud pour les fichiers de thèse
+   457→
+   458→### 2.21 RoutesMe — Comparaison multi-modèles (`RoutesMePage`)
+   459→- **Statut :** Stable
+   460→- **Rôle :** Envoi simultané de la même question à plusieurs fournisseurs IA, affichage côte à côte des réponses
+   461→
+   462→### 2.22 Livres & Compétences (`LivresCompetencesPage`)
+   463→- **Statut :** Stable
+   464→- **Rôle :** Suivi des compétences acquises via des livres, développement doctoral
+   465→
+   466→### 2.23 Onglet de recherche (`OngletRecherchePage`)
+   467→- **Statut :** Stable
+   468→- **Rôle :** Organisation de la recherche par onglets thématiques
+   469→
+   470→### 2.24 Grammaire (`GrammairePage`)
+   471→- **Statut :** Stable
+   472→- **Rôle :** Correcteur grammatical IA (orthographe, grammaire, style, ponctuation) — retour JSON structuré
+   473→
+   474→### 2.25 Export PDF (`ExportPdfPage`)
+   475→- **Statut :** Stable
+   476→- **Rôle :** Export de la thèse en PDF avec options de formatage
+   477→
+   478→### 2.26 Équilibre des chapitres (`EquilibreChapitresPage`)
+   479→- **Statut :** Stable
+   480→- **Rôle :** Analyse de la répartition des mots par chapitre, objectifs, recommandations IA
+   481→
+   482→### 2.27 Diagrammes (`DiagrammesPage`)
+   483→- **Statut :** Stable
+   484→- **Rôle :** Création de diagrammes visuels (organigrammes, timelines, flux)
+   485→
+   486→### 2.28 Harper (`HarperPage`)
+   487→- **Statut :** Stable
+   488→- **Rôle :** Résumé IA, paraphrase, extraction de textes
+   489→
+   490→### 2.29 Mon IA de thèse — RAG (`ThesisRagPage`) 🆕
+   491→- **Statut :** Stable (v1.3.0)
+   492→- **Rôle :** Chat IA contextuel indexant le contenu de la thèse pour répondre avec des sources citées
+   493→- **Fonctionnalités :**
+   494→  - Indexation de 4 sources de données : chapitres (plainText), références (abstract/notes), entrées carnet de recherche (Q&A), champs de cadrage
+   495→  - Chunking automatique (taille configurable) avec métadonnées
+   496→  - Recherche par mots-clés dans les chunks indexés
+   497→  - Génération de réponse IA avec injection du contexte récupéré
+   498→  - Interface chat avec rendu markdown, badges de sources (chapter=emerald, reference=sky, notebook=amber, cadrage=violet)
+   499→  - Chips de suggestions pour questions rapides
+   500→  - Barre d'indexation avec stats (nombre de chunks indexés par type)
+   501→  - Input sticky en bas de page
+   502→- **Données :** POST /api/thesis-rag (actions: index, query)
+   503→- **Architecture :** RAG léger (keyword-based), SQLite-only, aucun vector DB externe
+   504→
+   505→### 2.30 Vérification cartographique (`VerificationCartoPage`) 🆕
+   506→- **Statut :** Stable (v1.3.1)
+   507→- **Rôle :** Vérification de complétude méthodologique (Module A rule-based) + questionneur socratique (Module B LLM), généralisable par discipline
+   508→- **Principe directeur :** aucun des deux modules ne génère d'interprétation à la place du chercheur. Ils vérifient la complétude et posent des questions ; le chercheur reste seul auteur de toute lecture de son objet d'étude. Cohérent avec la doctrine `directeur-prompt.ts`.
+   509→- **Fonctionnalités :**
+   510→  - **Onglet Éléments** : CRUD d'éléments d'analyse (nom, typeElement, natureElement, sousAnalyse, source, dateSource) avec formulaire dynamique peuplé depuis le référentiel, groupement par phase en accordéon
+   511→  - **Onglet Vérification** : deux sous-sections — Module A (bouton « Vérifier la complétude ») + Module B (bouton « Poser des questions méthodologiques »)
+   512→  - **Onglet Historique** : liste des sessions de vérification passées (filtrées par site d'étude)
+   513→  - **Site d'étude** : champ texte libre en entête, identifiant les éléments par contexte
+   514→- **Données :** CRUD /api/elements-analyse, /api/elements-analyse/[id], GET/POST /api/types-analyse, POST /api/types-analyse/seed, POST /api/verification-carto (actions: completude, questionneur, save-session), GET /api/verification-carto
+   515→- **Architecture :** 3 modèles Prisma, 6 routes API, moteur générique (discipline = clé de configuration)
+   516→
+   517→---
+   518→
+   519→## 3. Logiques métier
+   520→
+   521→### 3.1 Architecture IA dual-backend
+   522→
+   523→**Chaîne de propagation config (client → serveur) :**
+   524→1. `AppHeader → AiConfigDialog` → sauvegarde dans `localStorage` (clé : `thesisframe-ai-config`)
+   525→2. `useAiConfig()` hook → lit via `useSyncExternalStore` avec cache module-level
+   526→3. `withAiConfig(body)` → injecte `{ _aiConfig: config }` dans le body des requêtes fetch
+   527→4. Route serveur → extrait `_aiConfig` → passe en `providerConfig` à `generateCompletion()`
+   528→5. `generateCompletion()` → détecte backend (`detectBackend`) → route vers SDK ou API fetch
+   529→
+   530→**Détection backend (`detectBackend`) :**
+   531→- Si `provider ≠ "zai"` → toujours `"api"` (OpenAI-compatible fetch)
+   532→- Si `provider = "zai"` → vérifie existence de `/etc/.z-ai-config` (sandbox) → `"zai"` sinon `"api"`
+   533→
+   534→**Fournisseurs dynamiques (`DYNAMIC_MODEL_PROVIDERS`) :**
+   535→- `routesme`, `mistral`, `custom` — fetch auto des modèles disponibles via `GET /v1/models`
+   536→- Tri par 3 niveaux : top models → chat models → utility models (embed, ocr, tts, etc.)
+   537→- Le premier modèle du top tier est auto-sélectionné
+   538→
+   539→**Dual error parsing (v1.2.0+) :**
+   540→- OpenAI : `{"error": {"type": "...", "message": "..."}}` → extraction depuis `error.message`
+   541→- Mistral : `{"object": "error", "message": "...", "code": "..."}` → extraction depuis `message` (top-level)
+   542→- Mistral /models : `{"detail": "Invalid API Key"}` → extraction depuis `detail`
+   543→
+   544→**Fallback serveur (`getDefaultConfig`) :**
+   545→- Lit `AI_PROVIDER` env var → switch sur `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `MISTRAL_API_KEY`
+   546→- Modèle par défaut : gpt-4o-mini (openai), claude-3-haiku (anthropic), mistral-small-latest (mistral)
+   547→
+   548→**Retry :** 2 tentatives max avec backoff exponentiel (1s, 2s) sur les deux backends
+   549→
+   550→**⚠️ Point sensible :** Le hook `useAiConfig` utilise un cache module-level pour éviter les re-renders infinis. Toute modification de ce hook nécessite une attention particulière au cycle de vie React.
+   551→
+   552→### 3.2 Distribution desktop — Tauri v2 (Windows .exe / .msi)
+   553→
+   554→**Architecture :** Tauri v2 embarque le frontend Next.js standalone dans un shell Rust natif.
+   555→- **Frontend** : build Next.js `output: "standalone"` → `.next/standalone/`
+   556→- **Shell** : Rust (Tauri v2) → fenêtre native avec WebView2 (Edge)
+   557→- **Installateurs** : NSIS (.exe) et MSI, langues FR/EN
+   558→- **Portée** : `currentUser` (pas besoin d'admin pour installer)
+   559→
+   560→**Workflow de build :**
+   561→1. `bun install` → installe deps Node + Tauri CLI
+   562→2. `bun run build:tauri` → `prisma generate && next build` (standalone output)
+   563→3. `bun run tauri:build` → Rust compile + crée `.exe` + `.msi` dans `src-tauri/target/release/bundle/`
+   564→
+   565→**Artifacts produits :**
+   566→- `src-tauri/target/release/bundle/nsis/ThesisFrame_1.x.x_x64-setup.exe`
+   567→- `src-tauri/target/release/bundle/msi/ThesisFrame_1.x.x_x64_en-US.msi`
+   568→
+   569→**Scripts npm :**
+   570→- `bun run tauri:dev` → dev mode (hot reload Next.js + WebView Tauri)
+   571→- `bun run tauri:build` → build production (crée .exe/.msi)
+   572→- `bun run build:tauri` → build Next.js standalone uniquement
+   573→
+   574→**Prérequis build Windows :**
+   575→- Rust stable (rustup)
+   576→- Visual Studio C++ Build Tools
+   577→- WebView2 Runtime (préinstallé Windows 11)
+   578→
+   579→**⚠️ Point sensible :** Le dossier `src-tauri/target/` (artifacts Rust) est dans `.gitignore`. Seuls les fichiers source Rust sont versionnés.
+   580→
+   581→### 3.3 Création de thèse
+   582→- Formulaire : titre (requis), auteur (requis), email, institution, laboratoire, discipline, directeur
+   583→- Crée automatiquement 7 chapitres par défaut avec des statuts "not_started"
+   584→- Structure par défaut : "chapters" (alternative "parts" possible)
+   585→
+   586→### 3.4 Auto-save de l'éditeur
+   587→- Délai configurable (débounced)
+   588→- Sauvegarde le contenu HTML + texte brut + compteur de mots
+   589→- Se déclenche sur chaque modification du Tiptap editor
+   590→
+   591→### 3.5 Cadrage (versionning)
+   592→- Chaque thèse peut avoir plusieurs cadrages, un seul actif à la fois
+   593→- L'activation d'un cadrage désactive les autres (transaction Prisma)
+   594→- Chaque cadrage a des champs clé-valeur + des versions (snapshots JSON)
+   595→- Possibilité de suggestions IA par champ
+   596→
+   597→### 3.6 Import de références bibliographiques
+   598→- **BibTeX :** Regex `@type{key, fields}` → parse field=value → map type → map authors/keywords
+   599→- **RIS :** Split par `ER -` → parse `TAG - value` (multi-lignes supportées) → map type
+   600→- **CSL-JSON :** JSON parse → map authors (family/given/literal) → map type
+   601→- **Auto-détection :** par extension (.bib/.ris/.json) ou par contenu (@→bibtex, TY→ris, JSON avec type→csl-json)
+   602→- Maximum : 10 Mo par fichier, 500 références par import
+   603→- Le champ `source` est automatiquement renseigné selon le format
+   604→
+   605→### 3.7 Sprints agiles
+   606→- 5 phases : phase_0 (Idéation) → phase_4 (Finalisation)
+   607→- Stories avec priorité (low/medium/high/critical) et story points
+   608→- Kanban visuel avec drag & drop (dnd-kit)
+   609→
+   610→### 3.8 Recherche plein texte
+   611→- Indexation de tous les chapitres (plainText)
+   612→- Opérateurs booléens : AND, OR, NOT
+   613→- Score de pertinence, snippets de résultat
+   614→- Filtre par chapitre et dates
+   615→
+   616→### 3.9 RAG — Mon IA de thèse (v1.3.0)
+   617→- **Indexation :** 4 sources → chunking automatique → stockage en DocumentChunk (SQLite)
+   618→  - Chapters : plainText découpé en chunks de ~500 caractères
+   619→  - References : abstract + notes concaténés
+   620→  - NotebookEntries : question + answer concaténés
+   621→  - ThesisCadrageFields : label + value concaténés
+   622→- **Requêtage :** mots-clés → recherche case-insensitive dans `DocumentChunk.content` → tri par score de matching
+   623→- **Génération :** contexte top-10 chunks injecté dans prompt système IA → réponse avec instruction de citer les sources
+   624→- **Pas de vector DB externe :** approche keyword-based légère, entièrement SQLite
+   625→
+   626→### 3.10 Prédiction de texte IA (v1.3.0)
+   627→- **Extension TipTap** `ai-prediction.ts` : ProseMirror plugin avec widget decoration
+   628→  - Ghost text gris et italique après le curseur (suggestion preview)
+   629→  - Dots animés pendant l'appel API
+   630→  - Debounce 1s après arrêt de la frappe
+   631→  - Tab = accepter suggestion, Esc = dismiss
+   632→  - AbortController pour annuler les requêtes en vol
+   633→- **API route** `/api/text-prediction` : prompt système français académique, retourne suggestion principale + 2 alternatives (format : `"primary|||alt1|||alt2"`)
+   634→- **Popup** `prediction-popup.tsx` : carte flottante (React Portal) avec suggestion principale (clic) + alternatives (clic), animation fade in/out
+   635→- **Toggle** : bouton ✨ Sparkles dans la toolbar pour activer/désactiver
+   636→- Fonctionne avec tous les fournisseurs configurés (Z.ai, Mistral, OpenAI, Anthropic, RoutesMe, Custom)
+   637→
+   638→### 3.11 Vérification cartographique — Module A (complétude) + Module B (socratique) (v1.3.1)
+   639→
+   640→**Principe directeur :** Aucun des deux modules ne génère d'interprétation à la place du chercheur. Ils vérifient la complétude méthodologique et posent des questions ; le chercheur reste seul auteur de toute lecture de son objet d'étude. Cohérent avec la doctrine `directeur-prompt.ts`.
+   641→
+   642→**Décision de généralisation :** Le moteur (comparaison de listes + questionneur) est générique par nature — seul son contenu (référentiel, prompt) est spécifique à une discipline. On généralise le modèle de données et le vocabulaire dès maintenant, sans construire d'infrastructure de plugins : une table de configuration (`TypeAnalyseMethodologique`) suffit tant qu'un seul enseignant alimente les référentiels.
+   643→
+   644→**Module A — Vérificateur de complétude (rule-based, JAMAIS de LLM) :**
+   645→- Compare les `typeElement` des éléments renseignés pour un site d'étude au référentiel attendu pour la discipline déclarée
+   646→- **Prérequis bloquant** : si le référentiel définit un préalable (ex. cadrage spatial en analyse_urbaine), tant qu'il est incomplet les phases suivantes ne sont pas évaluées (`bloquant: true`, `etape: "prealable"`)
+   647→- Une fois le préalable complet, évalue toutes les phases et retourne la liste des `manquants` (typeElement + label)
+   648→- Sortie UI : simple liste à puces, aucun texte généré, aucune phrase de synthèse rédigée
+   649→- Règle d'implémentation stricte : ce module ne doit **jamais** appeler le LLM
+   650→
+   651→**Module B — Questionneur socratique (LLM, prompt par discipline) :**
+   652→- Pose des questions ouvertes sur la cohérence méthodologique des éléments renseignés, sans jamais affirmer quoi que ce soit sur l'objet d'étude
+   653→- Déclencheurs : après vérification incomplète (module A), avant export, sur demande explicite — **jamais automatiquement en continu**
+   654→- Prompt système : `typeAnalyse.promptQuestionneur ?? PROMPT_GENERIQUE`
+   655→  - Le prompt générique interdit : phrases déclaratives sur l'objet d'étude, suggestions de cause/explication, évaluations de qualité
+   656→  - Format de sortie strict : `{"questions": ["...", "..."]}`
+   657→  - Maximum 3 questions par appel
+   658→- **Garde-fous post-traitement (identiques pour toutes disciplines) :**
+   659→  1. Rejeter toute réponse dont un élément ne se termine pas par `?`
+   660→  2. Rejeter toute réponse contenant des verbes déclaratifs en tête de phrase (patterns regex : "cette zone est", "on observe", "cela montre")
+   661→  3. En cas de rejet : **ne rien afficher** plutôt que de corriger automatiquement (la correction risquerait de réintroduire une interprétation implicite)
+   662→
+   663→**Référentiel analyse_urbaine (instance disciplinaire, 37 éléments, 5 phases) :**
+   664→- Méthodologie inspirée de BENYOUCEF et PANERAI (IGTU-UC3)
+   665→- Phase 1 (préalable bloquant) — Cadrage spatial : situation_generale, perimetre_urbain, perimetre_administratif, perimetre_etude
+   666→- Phase 1B — Entités homogènes (zonage) : zonage_fonctionnel, zonage_typo_morphologique, zonage_social_environnemental
+   667→- Phase 2A — Anatomie (17 éléments) : historique/morphologique, statut foncier, forme bâtie et espaces publics, flux et accessibilité, repères et identité
+   668→- Phase 2B — Physiologie socio-économique (9 éléments, natureElement = donnee_enquete) : démographie, économie, logement
+   669→- Phase 2C — Transversales (5 éléments spatiaux + 2 catégories document) : environnement, usages (document), gouvernance (document)
+   670→- Le référentiel vit dans `TypeAnalyseMethodologique.elementsAttendus` (JSON structuré) — éditable sans toucher au code
+   671→
+   672→**Généralisation à d'autres disciplines :**
+   673→- Ajouter une discipline = ajouter 1 ligne `TypeAnalyseMethodologique` avec son propre `elementsAttendus` et `promptQuestionneur`
+   674→- Exemples possibles : `sociologie_urbaine` (grille_entretien, saturation_theorique, echantillon_justifie), `patrimoine` (releve_etat_conservation, perimetre_protection, chronologie_edifice)
+   675→- Le moteur A et les garde-fous B restent identiques — seul le contenu change
+   676→
+   677→**⚠️ Point sensible :** Le prompt générique et les garde-fous post-traitement constituent la garantie doctrinale. Toute modification du prompt ou de la logique de filtrage doit être validée au préalable car elle touche au positionnement éthique du module (pas d'interprétation par l'IA).
+   678→
+   679→---
+   680→
+   681→## 4. Points sensibles et dette technique
+   682→
+   683→### 4.1 Fichiers critiques — ne pas modifier sans autorisation
+   684→
+   685→| Fichier | Risque | Justification |
+   686→|---------|--------|---------------|
+   687→| `src/hooks/use-ai-config.ts` | 🔴 Critique | Bug de re-render infini corrigé par cache module-level. Toute modification du cycle useSyncExternalStore peut casser toute l'application. |
+   688→| `src/lib/ai/zai-client.ts` | 🔴 Critique | Dual-backend IA. Dual error parsing (OpenAI+Mistral). Retry logic, détection backend. Tous les modules IA en dépendent. |
+   689→| `src/lib/ai/ai-provider.ts` | 🔴 Critique | Utilise `require("fs")`/`require("os")` — ne doit JAMAIS être importé côté client. |
+   690→| `src/lib/ai/ai-types.ts` | 🟡 Important | Types client-safe + DYNAMIC_MODEL_PROVIDERS. Modification = impact sur toute la chaîne config IA. |
+   691→| `src/lib/stores/app-store.ts` | 🟡 Important | 30 vues, navigation, thème. Modification = impact sur toute la navigation. |
+   692→| `src/app/page.tsx` | 🟡 Important | Routeur SPA central. Tout nouveau module doit y être ajouté. |
+   693→| `prisma/schema.prisma` | 🔴 Critique | Schéma de données (18 modèles incl. DocumentChunk + 3 modèles vérification). Toute modification nécessite `db:push` + test régression. |
+   694→| `src/lib/api-schemas.ts` | 🟡 Important | Validation Zod pour toutes les routes. Modification = impact sur validation côté serveur. |
+   695→| `src/lib/rag/rag-service.ts` | 🟡 Important | Service RAG central. Chunking, indexation, retrieval. Dépend de zai-client.ts. |
+   696→| `src/modules/editor/extensions/ai-prediction.ts` | 🟡 Important | Extension TipTap ProseMirror complexe. Plugin state machine + AbortController. |
+   697→| `src/app/api/verification-carto/route.ts` | 🔴 Critique | Moteur Module A (rule-based) + Module B (socratique LLM). Le prompt générique et les garde-fous post-traitement constituent la garantie doctrinale du module. Modification = impact éthique et positionnement. |
+   698→| `src/app/api/types-analyse/seed/route.ts` | 🟡 Important | Référentiel analyse_urbaine (37 éléments, 5 phases). Modification = changement du référentiel méthodologique validé. |
+   699→
+   700→### 4.2 Dette technique identifiée
+   701→
+   702→| # | Zone | Description | Sévérité |
+   703→|---|------|-------------|----------|
+   704→| D1 | `ai-provider.ts` | Utilise `require("fs"/"os")` au runtime avec lazy init. Fonctionne mais fragile sur certaines plateformes. | Moyenne |
+   705→| D2 | `Reference` et `ResearchSource` | Modèles complètement séparés sans relation. Pas de synchronisation entre biblio et carnet de recherche. | Faible |
+   706→| D3 | `skills/` | Fichiers de skills avec erreurs TypeScript (exclus du build via tsconfig). Non maintenus. | Faible |
+   707→| D4 | Pas de middleware | Pas de middleware Next.js pour auth/redirect/logging. | Faible |
+   708→| D5 | Pas de tests | Vitest configuré mais aucun test écrit. | Moyenne |
+   709→| D6 | `AiToolConfig` | Modèle en DB mais en pratique la config IA est gérée via localStorage + hook. Redondance. | Faible |
+   710→| D7 | `app-header.tsx` | Le paramètre `open` du AiConfigDialog est défini mais non utilisé (warning lint). | Triviale |
+   711→
+   712→### 4.3 Variables d'environnement
+   713→
+   714→| Variable | Usage | Défaut |
+   715→|----------|-------|--------|
+   716→| `DATABASE_URL` | Connexion SQLite Prisma | (requis) |
+   717→| `AI_PROVIDER` | Fournisseur IA par défaut | `"zai"` |
+   718→| `AI_MODEL` | Modèle IA par défaut | Dépend du provider |
+   719→| `AI_BASE_URL` | URL de base API IA | Vide |
+   720→| `OPENAI_BASE_URL` | URL OpenAI (fallback Vercel) | Vide |
+   721→| `OPENAI_API_KEY` | Clé API OpenAI | Vide |
+   722→| `ANTHROPIC_API_KEY` | Clé API Anthropic | Vide |
+   723→| `MISTRAL_API_KEY` | Clé API Mistral | Vide |
+   724→
+   725→### 4.4 Configuration Next.js
+   726→
+   727→- `output: "standalone"` — Déploiement conteneurisé + build Tauri
+   728→- `serverExternalPackages: ["z-ai-web-dev-sdk"]` — SDK non bundlé côté client
+   729→- `images.unoptimized: true` — Pas d'optimisation images (mode desktop Tauri)
+   730→- `typescript.ignoreBuildErrors: false` — Errors bloquent le build
+   731→- `tsconfig.json` exclut : node_modules, examples, tests, tool-results, agent-ctx, pdf-gen, mini-services, skills
+   732→
+   733→### 4.5 Configuration Tauri v2
+   734→
+   735→**Fichier :** `src-tauri/tauri.conf.json`
+   736→- **Fenêtre** : 1400×900, min 1024×700, centrée, thème light
+   737→- **Bundle targets** : `nsis` (.exe) + `msi`
+   738→- **NSIS** : langues FR/EN, `currentUser` (sans admin), SHA-256
+   739→- **Ressources embarquées** : `db/*` (SQLite), `public/*` (static assets)
+   740→- **Dev URL** : `http://localhost:3000`
+   741→- **Frontend dist** : `../.next/standalone`
+   742→
+   743→**Fichier :** `src-tauri/capabilities/default.json`
+   744→- Permissions : `core:default`, `shell:allow-open`, `shell:allow-execute`
+   745→
+   746→**Fichier :** `src-tauri/Cargo.toml`
+   747→- Dependencies : `tauri v2`, `tauri-plugin-shell v2`, `serde v1`, `serde_json v1`
+   748→- Crate type : `staticlib`, `cdylib`, `rlib`
+   749→
+   750→**Scripts package.json :**
+   751→- `tauri` → commande CLI Tauri
+   752→- `tauri:dev` → mode développement (frontend + WebView)
+   753→- `tauri:build` → build production (.exe + .msi)
+   754→- `build:tauri` → build Next.js standalone (prérequis au build Tauri)
+   755→
+   756→---
+   757→
+   758→> **FIN DE LA STRUCTURE DE RÉFÉRENCE**
+   759→>
+   760→> **Statut : ⏳ EN ATTENTE DE VALIDATION**
+   761→> Cette section sera considérée comme actée après validation écrite du propriétaire du projet.
+   762→

@@ -1,0 +1,923 @@
+     1→// ═══════════════════════════════════════════════════════════════
+     2→// ThesisFrame — Knowledge Core v2 (distillé de 23 ouvrages de référence)
+     3→// SOURCE UNIQUE DE VÉRITÉ — savoir métier digéré
+     4→// ═══════════════════════════════════════════════════════════════
+     5→//
+     6→// RÈGLE ANTI-DUPLICATION :
+     7→// Ce fichier est la SEULE source de savoir métier pour tous les prompts IA.
+     8→// Les fichiers de spécialisation ne doivent JAMAIS dupliquer ces contenus.
+     9→// Toute modification de savoir métier se fait ICI uniquement.
+    10→//
+    11→// Sources distillées :
+    12→//   Kumar — Research Methodology (methodology-design, ethics)
+    13→//   Salkind — 100 Questions About Research Methods (methodology-basics, ethics, stats)
+    14→//   White — Mapping Your Thesis (writing-process, style, revision)
+    15→//   Ollhoff — How to Write a Literature Review (literature-review)
+    16→//   Rae & Wong — Applied Data Analysis (data-analysis)
+    17→//   Smith & Works — Complete Book of Grant Writing (grant-writing)
+    18→//   Gastel & Day — How to Write and Publish a Scientific Paper (publication)
+    19→//   David — AI for Nonfiction Authors (AI ethics : copyright, disclosure, hallucination)
+    20→//   Green — Claude AI Unleashed (AI ethics : hallucination taxonomy)
+    21→//   Sułkowski, Kurowska-Pysz & Szczepańska-Woszczyna — Academic Writing, Visualization,
+    22→//     Presentation, and Publishing of Research (SLR, visualization, presentation,
+    23→//     publication-process, AI-assisted writing)
+    24→//   Eco — Comment écrire sa thèse (choix sujet, sources, citations, notes, biblio)
+    25→//   Hammersley — What Is Qualitative Research (épistémologie quali, frontières disciplinaires)
+    26→//   Pearce — How to Examine a Thesis (perspective examinateur, originalité, cohérence)
+    27→//   Murray — How to Write a Thesis (révision, conclusion, Brown 8Q, couches)
+    28→//   Brause — Writing Your Doctoral Dissertation (soutenance, interprétation, pipeline)
+    29→//   Paltridge & Starfield — Thesis and Dissertation Writing in a Second Language (CARS, types de thèse, stance, reporting)
+    30→//   Carter, Kelly & Brailsford — Structuring Your Research Thesis (fonctions thèse, ordres thématiques, proportion)
+    31→//   Holtom & Fisher — Enjoy Writing Your Science Thesis (proportions sciences, révision, protocoles)
+    32→//   Gaudet & Robert — L'aventure de la Recherche Qualitative (analyse quali 3 strates, erreurs d'analyse, éthique terrain)
+    33→//   Wette — Writing Using Sources for Academic Purposes (citations intégrales/non-intégrales, fonctions rhétoriques, verbes de signalisation)
+    34→//   Zimmerman (éd.) — Methodological Innovations in Research (Q méthodologie, Giorgi, recherche historique, thèse par articles)
+    35→//   Yin — Case Study Research (étude de cas : composition, explications rivales, multi-cas)
+    36→//   Creswell & Plano Clark — Designing and Conducting Mixed Methods Research (écriture méthodes mixtes)
+    37→//
+    38→// ═══════════════════════════════════════════════════════════════
+    39→
+    40→/**
+    41→ * Module identifiers that can be selectively injected.
+    42→ * Specializations declare which modules they need.
+    43→ */
+    44→export type KnowledgeModule =
+    45→  | "style"
+    46→  | "ethics"
+    47→  | "coherence"
+    48→  | "auto-edition"
+    49→  | "peer-review"
+    50→  | "methodology"
+    51→  | "writing-process"
+    52→  | "literature-review"
+    53→  | "data-analysis"
+    54→  | "grant-writing"
+    55→  | "publication"
+    56→  | "visualization"
+    57→  | "presentation";
+    58→
+    59→// ───────────────────────────────────────
+    60→// Module: STYLE — règles rédactionnelles (White + existant)
+    61→// ───────────────────────────────────────
+    62→
+    63→const STYLE_MODULE = `
+    64→## STYLE RÉDACTIONNEL
+    65→- Français académique soigné, vouvoiement
+    66→- Phrases de 25-30 mots en moyenne
+    67→- Connecteurs logiques explicites (cependant, en revanche, ainsi, par conséquent)
+    68→- Citations entre parenthèses : (Auteur, Année)
+    69→- Jargon non défini interdit — chaque terme technique défini à première occurrence
+    70→- Affirmations non étayées interdites
+    71→- Fond avant forme : prioriser la clarté des idées sur la perfection linguistique
+    72→
+    73→### Paragraphe académique (White)
+    74→- Un paragraphe = une idée directrice (controlling idea)
+    75→- Longueur : ½ à ¾ page A4 (interligne 1.5) ; chapitre de 20 pages ≈ 30 paragraphes
+    76→- Phrase thématique (topic sentence) le plus près possible du début — jamais de citation en ouverture
+    77→- Variante efficace : question rhétorique ouvrante
+    78→- Regrouper les sous-parties d'une même idée dans un même paragraphe
+    79→
+    80→### Pièges de style (White)
+    81→- Voix passive abusive : masque l'agent, crée fausse objectivité. Exceptions légitimes : section Méthodes, agent évident/inconnu.
+    82→- Mots-persuadeurs (weasel words) : « sûrement », « évidemment », « indéniablement » — perçus comme tentatives illicites de pousser le lecteur.
+    83→- Hedging (modulation) : échelle *suggère* < *appuie* < *confirme*. Moduler sans éluder.
+    84→- Sur-écriture et quiltage : collage de segments de texte. Chaque révision doit « serrer » le texte.
+    85→- Évitement de la responsabilité : « Il est pensé que… » → « Les preuves indiquent que… »
+    86→- Règle des 10 % : un texte final peut presque toujours être réduit de 10 % et s'améliorer.
+    87→
+    88→### Métalangage et posture d'auteur (Eco)
+    89→- La thèse s'écrit en métalangage (un langage qui PARLE d'autres langages). Un psychiatre ne s'exprime pas comme ses patients. SI le doctorant étudie un objet transgressif et veut écrire dans un style « en rupture » → rappeler que même les avant-gardes (Dante, Eliot) ont écrit en prose claire pour parler de leur poésie
+    90→- Pas d'excuses dans le texte : « Nous n'avons pas les compétences… » → supprimer. « Sur votre sujet, même le plus pointu, vous êtes la plus grande autorité vivante. » Humilité dans le choix de sujet et la méthode ; fierté dans l'écriture
+    91→- SI terme technique employé sans être défini → le signaler. SI c'est un terme central et qu'on ne sait pas le définir → « laissez tomber la thèse, vous vous êtes trompé de sujet »
+    92→- Figures de rhétorique : ne jamais les expliquer ni s'excuser d'elles (pas de « plaisanterie à part »). Le lecteur visé doit les saisir seul
+    93→- Cohérence des présupposés culturels : SI un auteur célèbre (Spinoza) est présenté comme allant de soi mais un auteur moins connu (Guzzo) est nommé sans présentation → corriger. « N'expliquez pas où est Rome sans expliquer où est Tombouctou. »
+    94→
+    95→### Système stance/engagement (Paltridge & Starfield)
+    96→- Stance = hedges (might, perhaps) + boosters (in fact, definitely) + attitude markers (unfortunately, surprisingly) + self-mentions (I, we)
+    97→- Engagement = reader pronouns (we inclusif) + appeals to shared knowledge (of course, as is well known) + directives (note that, consider) + questions
+    98→- SI aucune hedge en Discussion → sur-claiming détecté. SI aucun engagement marker → le texte est un monologue, pas un dialogue avec le lecteur
+    99→- Écriture académique anglaise = « writer-responsible » : le lecteur n'infère pas. SI un passage suppose une connaissance du lecteur sans l'expliciter → ajouter du tissu connectif
+   100→
+   101→### Langage des limites en conclusion (Murray)
+   102→- Substituer : « limitation » → « focus » ou « sélection » ; « flaw » → supprimer ; « incomplete » → « continuing » ; « inconclusive » → supprimer ; « solves »/« proves » → « contributes to a resolution of »
+   103→- Toute étude a des limites par conception : les cadrer comme des décisions de périmètre, pas des échecs
+   104→
+   105→### Patchwriting vs paraphrase (Wette)
+   106→- Distinguer paraphrase légitime (transformation grammaticale + lexicale + structurelle, sens préservé) de patchwriting (copie de chaînes de 5-9 mots + substitution synonyme 1 pour 1 + réarrangement). Le patchwriting est un stade développemental fréquent chez les novices mais détectable par les logiciels
+   107→- Protocole paraphrase en 7 étapes : (1) lire à fond, (2) notes sans copier, (3) carte mentale ou résumé oral, (4) rédiger SANS consulter l'original, (5) vérifier l'exactitude, (6) si résumé → réduire à 1/3 max, (7) vérifier l'intégration stylistique
+   108→`;
+   109→
+   110→// ───────────────────────────────────────
+   111→// Module: ETHICS — éthique (existant + Kumar + Salkind)
+   112→// ───────────────────────────────────────
+   113→
+   114→const ETHICS_MODULE = `
+   115→## ÉTHIQUE DE LA RECHERCHE ET PUBLICATION
+   116→
+   117→### Plagiat et intégrité
+   118→- Paraphrase suffisante obligatoire : le simple remplacement de mots ne suffit pas
+   119→- Détection de l'auto-plagiat entre articles d'une même thèse
+   120→- Salami science : découpage artificiel d'un même travail en plusieurs articles
+   121→- Déclarations de conformité éthique exigées
+   122→
+   123→### Consentement et participants (Kumar + Salkind)
+   124→- SI participants humains ALORS consentement éclairé obligatoire (compétence, information, volontarité)
+   125→- SI participants incompétents (enfants, personnes en crise) ALORS consentement par tiers + formulaire d'assentiment adapté (> 6 ans)
+   126→- SI informations sensibles ALORS anonymiser, donner temps de décision
+   127→- Incitatif APRÈS collecte = acceptable ; AVANT = non éthique (Kumar)
+   128→- SI risque de préjudice ALORS risque doit être ≤ risque quotidien (minimum risk)
+   129→
+   130→### Biais vs. subjectivité (Kumar)
+   131→- Biais = non éthique (dissimulation ou surévaluation délibérée)
+   132→- Subjectivité ≠ biais (façon de penser, pas altération)
+   133→- SI méthodologie inappropriée utilisée délibérément ALORS non éthique
+   134→- SI commanditaire impose restrictions sur publication ALORS les déclarer
+   135→
+   136→### IRB (Salkind)
+   137→- Pas une formalité : groupe diversifié approbant AVANT la recherche
+   138→- Dossier minimal : lieu, financement, résumé, population, méthodes, risques, conflits d'intérêts
+   139→- Déception → débriefing obligatoire de tous les participants
+   140→
+   141→### Revues et DORA
+   142→- Signaux prédateurs : publication < 2 sem., APC opaques, comité fantôme, non-indexation Scopus/WoS/DOAJ
+   143→- DORA : évaluer sur le contenu, pas sur le facteur d'impact
+   144→- Seuil .05 : convention de Fisher, aucune base mathématique formelle (Salkind)
+   145→
+   146→### Usage de l'IA dans la recherche
+   147→- SI texte généré intégralement par IA sans modification humaine substantielle → non protégeable par le droit d'auteur (US 2025)
+   148→- SI IA utilisée pour structurer, réviser, formuler → mention dans les remerciements ou la méthode recommandée
+   149→- SI IA a façonné le contenu ou les idées de manière significative → mention dans l'avant-propos ou la section Méthodes
+   150→- Ne jamais copier-coller la sortie IA directement : réécrire dans sa propre voix académique
+   151→- Types de données les plus souvent hallucinées par les LLM : citations précises (auteur, année, page), statistiques de sources obscures, événements post-cutoff, détails biographiques de personnes non publiques, règles juridictionnelles spécifiques → vérification systématique obligatoire
+   152→- L'IA est un assistant de recherche, pas un auteur : authorship ICMJE exige contribution intellectuelle humaine
+   153→- Toujours vérifier les faits, statistiques et références produits par l'IA (risque d'hallucination)
+   154→- SI l'IA est utilisée pour l'analyse de données → documenter le modèle, la version, et les prompts dans la section Méthodes (reproductibilité)
+   155→- L'IA est un outil d'apprentissage, pas une béquille : expliquer POURQUOI chaque suggestion est faite (ex. « cette phrase est passive, ce qui réduit la clarté »), pas corriger silencieusement (Sułkowski et al.)
+   156→- Mode simulation d'audience : l'IA peut relire une section sous 3 perspectives — (a) non-spécialiste curieux, (b) relecteur sceptique, (c) praticien — pour anticiper les questions de chaque (Sułkowski et al.)
+   157→
+   158→### Usage du terme « positivisme » (Hammersley)
+   159→- SI un auteur ou le doctorant qualifie un travail de « positiviste » comme critique → exiger une définition dans ce contexte précis. Le mot est devenu presque exclusivement péjoratif et contextuellement variable : chaque nouvelle approche a qualifié ses prédécesseurs de positivistes. SI aucune définition → la critique est vide
+   160→
+   161→### Pratiques de citation et paraphrase (Eco)
+   162→- Toute citation sans encadrement critique (avant ET après) = le lecteur présume que le doctorant partage l'opinion citée
+   163→- Citer une évidence sous l'autorité de quelqu'un (ex. « Les médias sont, comme le dit McLuhan, importants ») → supprimer la citation : naïveté, pas érudition
+   164→- Test de la paraphrase légitime : « Pouvez-vous reformuler le texte SANS l'avoir sous les yeux ? » SI non → citer entre guillemets. Le plagiat de thèse vient souvent des fiches de lecture où les guillemets ont été oubliés
+   165→- Citer les classiques d'après l'édition critique (Pléiade) ou la plus reconnue. Pour les contemporains : première édition OU dernière revue par l'auteur — justifier si les deux divergent
+   166→- SI citation de Smith à travers Sedanelli → distinguer : (a) c'est l'opinion de Sedanelli qui intéresse → citer Sedanelli « citant Smith, p. X » ; (b) c'est l'idée de Smith → citer Smith « cité par Sedanelli, p. Y ». Ne jamais masquer qu'on utilise une source de seconde main
+   167→
+   168→### CER et recherche qualitative itérative (Gaudet & Robert)
+   169→- Le processus de recherche qualitative est par nature imprévisible : le terrain peut amener sur des avenues différentes du protocole déposé. Justifier les formulaires CER (conçus pour la recherche clinique) dans un cadre itératif inductif
+   170→- SI épistémologie constructionniste/constructiviste/critique → la divulgation partielle est rarement légitime car la coconstruction chercheur-participant exige que le participant comprenne les objectifs
+   171→
+   172→### Pièges relationnels sur le terrain (Gaudet & Robert)
+   173→- SI terrain qualitatif avec participants vulnérables → surveiller : (1) la relation de pouvoir n'est pas toujours unidirectionnelle (participants peuvent utiliser le chercheur) ; (2) la valeur thérapeutique perçue du lien peut créer des attentes irréalistes → fournir liste de ressources d'urgence ; (3) la relation de séduction (frontière floue entre argumentaire convaincant et séduction) → clarifier les limites
+   174→`;
+   175→
+   176→// ───────────────────────────────────────
+   177→// Module: COHERENCE — cohérence du manuscrit (existant, stable)
+   178→// ───────────────────────────────────────
+   179→
+   180→const COHERENCE_MODULE = `
+   181→## COHÉRENCE DU MANUSCRIT
+   182→
+   183→### Introduction ↔ Discussion
+   184→- Chaque question de recherche de l'intro doit recevoir une réponse EXPLICITE dans la discussion
+   185→- Chaque hypothèse doit être testée empiriquement et discutée
+   186→- Résultats orphelins (discutés sans lien vers une question de l'intro) = à signaler
+   187→- Discussion en entonnoir inversé : du spécifique vers le général
+   188→
+   189→### Texte ↔ Tableaux / Figures
+   190→- Renvoi au tableau (« comme le montre le Tableau 1 ») n'est PAS redondant
+   191→- Citer dans le texte CHAQUE valeur numérique déjà dans le tableau EST redondant
+   192→- Reformuler les tendances générales est acceptable si cela apporte une interprétation
+   193→
+   194→### Cohérence numérique
+   195→- Mêmes chiffres entre sections ; pourcentages correspondant aux nombres absolus
+   196→- Somme des pourcentages = 100% (sauf non-réponses expliquées)
+   197→- Dates et périodes compatibles
+   198→
+   199→### Cohérence terminologique
+   200→- Un même concept = un même terme dans toute la thèse
+   201→- Synonymies explicitées ; abréviations définies à première occurrence
+   202→- Un terme ne doit pas glisser subtilement de sens sans justification
+   203→- Un même terme ne doit pas être défini différemment selon les chapitres
+   204→
+   205→### Cohérence référentielle
+   206→- Un même auteur pas cité avec interprétations opposées sans justification
+   207→- Chaque citation dans le texte → dans la bibliographie (sinon = citation fantôme)
+   208→- Référence utilisée dans un contexte correspondant à son contenu réel
+   209→
+   210→### Cohérence argumentative
+   211→- Deux passages affirment des choses opposées sans concilier la nuance = contradiction interne
+   212→- Toute assertion importante sans référence ni preuve = affirmation non étayée
+   213→- Corrélation observée présentée comme relation causale = confusion à corriger
+   214→- Conclusion étendue au-delà de ce que les données permettent = sur-généralisation
+   215→
+   216→### Incohérences épistémologiques (Hammersley)
+   217→- SI le doctorant déclare une posture non-causale MAIS utilise « influencer », « façonner », « mener à », « résulter de » → incohérence entre posture déclarée et langage analytique. La plupart des qualitatifs font de la causalité faible en pratique
+   218→- SI le doctorant montre qu'un discours est « construit » ET en déduit qu'il est faux → sophisme. La nature construite n'implique ni vérité ni fausseté. Un compte-rendu construit peut être accurate
+   219→- SI la thèse qualitative combine « explorer l'expérience subjective » ET « les récits sont des constructions discursives » sans justifier la tension épistémologique → incohérence interne non signalée
+   220→
+   221→### Cohérence structurelle
+   222→- Un chapitre commence sans lien avec le précédent = transition absente
+   223→- Le plan annoncé dans l'intro ne correspond pas au plan réel = annonces non tenues
+   224→- Un même contenu repris quasi à l'identique dans deux chapitres = redondance inter-chapitres
+   225→- La conclusion ne reprend pas les questions de recherche et n'y répond pas = conclusion non bouclée
+   226→
+   227→### Prévisibilité pour l'examinateur (Murray)
+   228→- Trois techniques distinctes : Forecasting = menu de ce qui suit (mini-TdM par chapitre) ; Signalling = plan logique rendu explicite (connexions, shifts entre points) ; Signposting = repères rassurant le lecteur qu'il est sur le bon chemin
+   229→- Les trois doivent être présentes dans la version finale — les examinateurs les recherchent (Johnston 1997)
+   230→
+   231→### Conclusion de thèse (Murray)
+   232→- Mettre le propre travail AVANT, puis contextualiser avec la littérature — jamais structurer une conclusion comme une revue de littérature
+   233→- Temps verbal : passé dans toute la conclusion (le travail est terminé). Détecter le « présent sur-généralisant » → ajouter « This suggests that… » ou « One interpretation of this is… »
+   234→- Énoncer explicitement ce que l'on N'ARGUE PAS : « This is not to say that… » ; définir la frontière de sa claim = aussi important que la claim elle-même
+   235→- Le mot « contribution » doit apparaître — dans les MÊMES TERMES — dans le résumé, les introductions ET les conclusions
+   236→
+   237→### Sections finales distinctes (Brause)
+   238→- Summary = récapitulatif total (problème, design, résultats, conclusions)
+   239→- Conclusions = assertions fondées sur les résultats, répondant à la question théorique
+   240→- Implications = transfert des résultats vers d'autres contextes et la pratique
+   241→- Recommendations = études suivantes ciblées (restreintes à quelques priorités)
+   242→- Chaque section a sa propre logique et ne doit pas se mélanger avec les autres
+   243→
+   244→### Vérification intro ↔ conclusion (Pearce)
+   245→- Test de l'examinateur : « Pouvez-vous résumer votre thèse en deux phrases ? » SI impossible → l'intro et/ou la conclusion sont floues. Vérifier que l'énoncé de thèse est reformulable en 1-2 phrases sans perte
+   246→
+   247→### Chapitre Résultats — structure 3 moves (Paltridge & Starfield)
+   248→- Move 1 : métatexte (localiser le chapitre dans la thèse, rappeler les questions de recherche)
+   249→- Move 2 : présenter les résultats (données — quasi toujours présent)
+   250→- Move 3 : commenter les résultats (interpréter, hedger, comparer — parfois dans un chapitre Discussion séparé)
+   251→- SI chapitre Résultats sans Move 3 → signaler l'absence
+   252→
+   253→### Chapitre Discussion = miroir inversé de l'Introduction (Paltridge & Starfield)
+   254→- Dans l'Intro : littérature = primaire, étude du doctorant = secondaire
+   255→- Dans la Discussion : étude du doctorant = primaire, littérature = secondaire (confirmation, comparaison, contradistinction)
+   256→- Structure typique : (1) vue d'ensemble des résultats significatifs, (2) comparaison avec la littérature, (3) explication des résultats inattendus, (4) implications théoriques, (5) limites, (6) recommandations
+   257→
+   258→### Types de conclusion (Paltridge & Starfield)
+   259→- Thesis-oriented (plus courant) : réénonce le but, résume les résultats, puis recommandations/limites
+   260→- Field-oriented : focus sur le champ, résultats en contexte du champ entier, pattern problème/solution/évaluation
+   261→- SI conclusion se contente de résumer sans expliciter la signification → incomplète (résumé ≠ conclusion)
+   262→
+   263→### Positions emphatiques (Carter, Kelly & Brailsford)
+   264→- Aux premier et dernier positions de chaque niveau (phrase, paragraphe, chapitre, thèse) = positions les plus emphatiques. Un point important ne doit pas être enfoui au milieu
+   265→- L'intro et la conclusion de chaque chapitre sont les « bookends » les plus soignés — premières sections lues (et parfois les seules) par l'examinateur
+   266→
+   267→### Structure non conventionnelle (Carter, Kelly & Brailsford)
+   268→- SI structure de thèse non-IMRAD → justifier explicitement dans l'introduction. Les examinateurs acceptent les structures innovantes quand la logique de l'écart est ouvertement expliquée
+   269→- Sans cette justification, une structure non conventionnelle = signal de manque de maîtrise du genre thèse
+   270→
+   271→### Structure phénoménologique (Zimmerman, d'après Giorgi)
+   272→- La structure finale doit articuler des « constituants » (définis par leur relation fonctionnelle au tout) et non des « éléments » (indépendants du tout). SI les données sont trop disparates pour produire une seule structure → écrire une structure par sous-groupe ou par participant individuel
+   273→
+   274→### Complétude des structures non séquencées (Yin)
+   275→- SI un rapport (thèse ou article) utilise une structure non séquencée (chapitres thématiques réordonnables) → vérifier la complétude par une checklist de couverture thématique, non par la logique de séquence. Un thème manquant produit une version biaisée même si chaque chapitre existant est correct individuellement
+   276→`;
+   277→
+   278→// ───────────────────────────────────────
+   279→// Module: AUTO-ÉDITION — 8 critères (existant, stable)
+   280→// ───────────────────────────────────────
+   281→
+   282→const AUTO_EDITION_MODULE = `
+   283→## AUTO-ÉDITION — Méthode 8C
+   284→
+   285→Évaluer un texte selon les 8 critères :
+   286→1. CONFORMITÉ : respect des consignes formelles (gabarit, conventions)
+   287→2. EXHAUSTIVITÉ : tous les éléments attendus présents
+   288→3. COMPOSITION : structure d'ensemble appropriée
+   289→4. EXACTITUDE : information correcte (texte, tableaux, figures, références)
+   290→5. CLARTÉ : termes ambigus définis, abréviations explicitées
+   291→6. COHÉRENCE : chiffres identiques texte/tableaux, terminologie stable
+   292→7. CONCISION : pas de redondances ni contenu tangentiel
+   293→8. COURTOISIE : ton neutre envers travaux antérieurs, langage inclusif
+   294→
+   295→Barème : 90-100 exemplaire | 75-89 bon | 50-74 passable | 25-49 insuffisant | 0-24 critique
+   296→`;
+   297→
+   298→// ───────────────────────────────────────
+   299→// Module: PEER REVIEW — grille Review Commons (existant, stable)
+   300→// ───────────────────────────────────────
+   301→
+   302→const PEER_REVIEW_MODULE = `
+   303→## GRILLE DE RELECTURE (Review Commons adaptée)
+   304→
+   305→### Section 1 — Preuve, Reproductibilité, Clarté
+   306→1.1 RÉSUMÉ : conclusions principales + méthodologie. Portée → Section 2.
+   307→1.2 COMMENTAIRES MAJEURS : affirmations étayées par les données ? Expériences supplémentaires nécessaires et réalistes ? Reproductibilité ? Statistique adéquate ? Suggestions « OPTIONNELLES » si nouvelles pistes.
+   308→1.3 COMMENTAIRES MINEURS : problèmes facilement adressables (forme, présentation), références correctes, clarté figures.
+   309→
+   310→### Section 2 — Portée et Signification
+   311→2.1 BILAN : forces et limites. Aspects les plus solides vs. à améliorer.
+   312→2.2 AVANCÉE vs ÉTAT DE L'ART : comparaison avec résultats proches, nature de l'avancée (conceptuelle, technique, méthodologique, empirique).
+   313→2.3 PUBLIC CONCERNÉ : qui sera influencé ? Utilisation au-delà du champ spécifique ?
+   314→
+   315→### Recommandation finale
+   316→Choisir : ACCEPTER TEL QUEL | RÉVISIONS MINEURES | RÉVISIONS MAJEURES | REJETER — justifier en 2-3 phrases.
+   317→`;
+   318→
+   319→// ───────────────────────────────────────
+   320→// Module: METHODOLOGY — arbre de décision (Kumar + Salkind + Rae & Wong)
+   321→// ───────────────────────────────────────
+   322→
+   323→const METHODOLOGY_MODULE = `
+   324→## MÉTHODOLOGIE DE RECHERCHE
+   325→
+   326→### Arbre de décision (Kumar)
+   327→- SI exploratoire (peu connu) → qualitatif (entretiens, observation, focus groups)
+   328→- SI descriptive (prévalence, profil) → quantitatif transversal
+   329→- SI descriptive + changement → avant-après (attention : maturation, effet réactif)
+   330→- SI corrélationnelle (association sans causalité) → transversal ou longitudinal
+   331→- SI causale → expérimental ou quasi-expérimental
+   332→- SI causalité + comparaison → comparatif expérimental (randomisation, baseline + post)
+   333→- SI causalité + éthique (pas de groupe contrôle) → cross-over (ABAB) ou placebo
+   334→- SI tendance temporelle → longitudinal, cohorte ou panel
+   335→- SI compréhension profonde d'un cas → étude de cas qualitative (méthodes multiples). Préciser l'unité d'analyse plutôt qu'élargir : le critère n'est pas la généralité de la question mais la correspondance question ↔ unité d'analyse. SI le doctorant craint de perdre la richesse de son terrain en précisant → l'étude de cas qualitative est légitime.
+   336→- SI les deux (diversité + quantification) → mixte : quali → quanti → quali
+   337→- SI valeurs, croyances, significations → qualitatif
+   338→
+   339→### Échantillonnage (Kumar)
+   340→- Population finie identifiable → SRS ou systématique
+   341→- Population hétérogène sur critère corrélé → stratifié
+   342→- Population vaste, dispersée → cluster multi-étapes
+   343→- Base inexistante + critère visible → quota ; sans critère → accidentel
+   344→- Réseau caché → snowball (piège : biais faction initiale)
+   345→- Causalité/hypothèse → taille par confiance, précision, écart-type
+   346→- Qualitatif → point de saturation (pas de taille prédéterminée)
+   347→
+   348→### Validité et fiabilité (Kumar)
+   349→- Quantitatif : face/content, concurrent/predictive, construct
+   350→- Fiabilité : test/retest, formes parallèles, split-half
+   351→- Qualitatif (Guba-Lincoln) : crédibilité, transférabilité, dépendabilité, confirmabilité
+   352→
+   353→### Stats : quel test ? (Salkind)
+   354→| Question | Test | Condition |
+   355→|---|---|---|
+   356→| 2 groupes diffèrent ? | t-test | VD quantitative, n > 30 |
+   357→| 3+ groupes, 1 facteur ? | ANOVA unifacteur | VD quantitative |
+   358→| 3+ groupes, 2+ facteurs ? | ANOVA multifactorielle | VD quantitative |
+   359→| Relation 2 variables ? | Corrélation Pearson | Quantitatives, linéaire |
+   360→| Prédire Y depuis X ? | Régression | Une ou plusieurs VI |
+   361→| 1 groupe vs norme ? | Test Z | Distribution normale connue |
+   362→| Nominales/ordinales, petit n ? | Non paramétrique | Chi-carré, Mann-Whitney |
+   363→- Toujours reporter taille de l'effet avec p (Salkind) ; corrélation ≠ causalité
+   364→
+   365→### Données spatiales/urbaines (Rae & Wong)
+   366→- SI dépendance spatiale entre zones → autorégression spatiale (SAR)
+   367→- SI relations varient selon localisation → régression pondérée géographiquement (GWR)
+   368→- SI individus imbriqués dans unités administratives → modèle à effets mixtes (multilevel)
+   369→- SI big data passif → biais de couverture ; volume ne compense pas
+   370→- MAUP : résultats changent selon découpage spatial — amplifié avec big data
+   371→- Approche hybride : données traditionnelles (attributs) + big data (fréquence, couverture)
+   372→
+   373→### Erreurs doctorales courantes (Kumar, détectables)
+   374→- Instrument mesure autre chose que l'objectif
+   375→- Causale sans groupe contrôle ni randomisation
+   376→- Avant-après sans contrôle des variables extranes
+   377→- Questionnaire non prétesté
+   378→- Échelle de Likert sans items positifs ET négatifs
+   379→- Transversal présenté comme mesurant le changement
+   380→- Questions à double sens, libellé ambigu
+   381→
+   382→### Choix du sujet (Eco)
+   383→- SI sujet vaste (ex. « la littérature italienne 1945-1960 ») → orienter vers monographique (un auteur, une œuvre, un problème précis). Une thèse panoramique exige une maîtrise encyclopédique qu'un doctorant ne peut revendiquer
+   384→- SI sujet purement théorique sur un grand problème abstrait → ramener à thèse historique : la théorie devient le chapitre conclusif. Une thèse historique permet à tous de contrôler ; une théorique d'un doctorant laisse soupçonner un manque de clarté
+   385→- Test de faisabilité AVANT engagement : (1) OÙ sont les sources ? (2) Sont-elles matériellement accessibles ? (3) Sont-elles culturellement utilisables (langue, paléographie) ? SI une réponse négative → changer de sujet
+   386→- Critères de scientificité (4 conditions) : (1) objet publiquement reconnaissable, (2) résultat nouveau ou révisé, (3) utile aux travaux ultérieurs, (4) moyens de confirmer/infirmer fournis. SI (4) absent → non scientifique
+   387→- SI thèse de compilation/bilan → vérifier qu'aucun ouvrage comparable n'existe déjà. Sinon = perte de temps ou plagiat
+   388→
+   389→### Gestion des sources (Eco)
+   390→- Traduction = prothèse (lunettes), pas source de première main. SI langue accessible → consulter l'original. SI langue inaccessible → justifier le recours à la traduction et délimiter l'objet en conséquence
+   391→- Anthologie = ce que quelqu'un d'autre a déjà vu dans les textes. Faire une thèse = chercher ce que les autres n'ont pas vu → privilégier les sources primaires
+   392→- Définir l'objet AVANT de repérer les sources. Confusion objet/instruments = passer le temps sur des études critiques au lieu des textes originaux
+   393→- Règle des photocopies : dès qu'une est faite, la lire et annoter aussitôt. Ne pas en photocopier une nouvelle avant d'avoir « possédé » la précédente
+   394→- Détecter l'exploitation par le directeur : SI il dirige plusieurs thèses sur des secteurs adjacents → vérifier que les résultats seront publiés sous le nom du doctorant
+   395→
+   396→### Frontière recherche vs journalisme (Hammersley)
+   397→- SI compte-rendu narratif de terrain sans cadre théorique, sans procédures transparentes, sans interprétations alternatives → frôle la frontière journalisme/recherche. Critères minimum : (a) procédures publiques, (b) incertitudes explicitées, (c) contre-preuves présentées, (d) hypothèses rivales considérées, (e) effets de l'investigateur pris en compte
+   398→
+   399→### Trois fonctions des données d'entretien (Hammersley)
+   400→- SI entretiens qualitatifs → exiger que le doctorant explicite quelle fonction est visée (ou combinaison) :
+   401→  1. Témoignage (événements, biographies) → exiger triangulation
+   402→  2. Auto-analyse par le participant → le discours est soumis à évaluation critique, pas adopté tel quel
+   403→  3. Preuve indirecte d'attitudes → justifier que ce qui est détecté dépasse le contexte de l'entretien
+   404→- Reporting des extraits d'entretien : inclure les questions de l'intervieweur, capturer les traits interactionnels pertinents, numéroter les lignes pour référence
+   405→
+   406→### Risques épistémologiques en méthodes mixtes (Hammersley)
+   407→- SI design mixte → vérifier que le volet qualitatif n'est pas subordonné aux présupposés hypothético-déductifs du volet quantitatif. Justification épistémologique de chaque volet obligatoire
+   408→- SI approche « critique » (féministe, post-coloniale, etc.) → exiger un cadre théorique macrosocial explicite : (a) phénomène localisé dans un système plus large, (b) forces structurelles identifiées, (c) catégories de sens commun justifiées si utilisées
+   409→
+   410→### Taxonomie de l'originalité (Pearce, d'après Phillips & Pugh)
+   411→- L'originalité ne se réduit pas à la « grande O » : 15 formes acceptables dont synthèse inédite, nouvelle interprétation de matériel connu, application d'une technique à un nouveau domaine, apport de preuves nouvelles sur une question ancienne, approche interdisciplinaire
+   412→- SI le doctorant craint de ne pas être assez « original » → l'aider à identifier quelle(s) forme(s) d'originalité son travail accomplit
+   413→
+   414→### Justification méthodologique (Pearce)
+   415→- Les examinateurs évaluent la méthode comme le lieu « où le sens se construit ». Question systématique : pourquoi cette méthode et pas une autre ?
+   416→- SI la section Méthode ne contient aucune comparaison avec des alternatives → signal d'alerte majeur
+   417→
+   418→### Déclaration d'originalité (Murray)
+   419→- La thèse doit définir et défendre EXPLICITEMENT un type d'originalité (nouvelles données, nouvelle synthèse, nouvelle interprétation, interdisciplinarité, nouvelle application, etc.)
+   420→- Le type d'originalité revendiqué doit correspondre au travail réellement accompli. L'écrire tôt, le réviser au fil du travail
+   421→
+   422→### Protocoles scientifiques : traçabilité (Holtom & Fisher)
+   423→- SI protocole avec matériel biologique ou chimique : inclure fabricant + siège social (reproductibilité internationale). Pour les kits : résumer le principe, citer la publication de référence, indiquer « selon les instructions du fabricant » pour les étapes standard, décrire en détail toute modification
+   424→
+   425→### Recherche qualitative — règles essentielles (Gaudet & Robert)
+   426→- SI quali itérative → distinguer objectif théorique (définir/interpréter) et empirique (décrire/observer) ; trop théorique = césure, trop empirique = journalisme
+   427→- Question en « comment » (processus ancré) plutôt que « quel/pourquoi » causaux
+   428→- Échantillonnage intentionnel : justifier par comparabilité + diversification. Techniques : stratifié, cellulaire, quotas, théorique
+   429→- Analyse en 3 strates : verticale (condenser par source), horizontale (comparer, ne JAMAIS éliminer un cas divergent, ne PAS compter sur échantillon non aléatoire), théorisante (va-et-vient avec littérature)
+   430→- 5 erreurs : résumer au lieu d'analyser, citer au lieu d'analyser, prendre parti, compter les fréquences, présenter sans interpréter
+   431→- Réflexivité : expliciter processus analytique, contre-exemples (chercher activement), limites internes (influence, pouvoir)
+   432→- Théorisation : classer les rapports sociaux abstraits (4 formes : descriptive, abstraite, cartographie, idéal-type). Catégorie « inclassables » obligatoire
+   433→
+   434→### Méthodologies spécialisées (Zimmerman)
+   435→- SI étude de la subjectivité → Q méthodologie (Stephenson) : Q-set 30-70 énoncés → Q-sort forcé → analyse factorielle PAR PERSONNE (max ~40 participants). Ce n'est PAS un design mixte séquentiel
+   436→- SI phénoménologie → utiliser Giorgi descriptif (4 étapes : lecture globale → unités de sens → transformation sensible → structure). Ne PAS mélanger avec Moustakas/van Manen. Min 3 expériencers
+   437→- SI recherche historique → 5 étapes : structurer → sources (primaires + triangulation obligatoire) → analyse (cliométrie, contrefactuelle) → narrative (périodisation contextuelle) → théorie. Manque dans archives = signal à évaluer
+   438→
+   439→### Étude de cas (Yin)
+   440→- SI chronologique → rédiger l'état actuel AVANT l'historique (les investigateurs sur-investissent l'historique)
+   441→- SI multi-cas → analyse transversale par enjeux thématiques (pas nécessairement un chapitre par cas)
+   442→- SI explication visée → identifier et défendre les explications rivales AUSSI vigoureusement que la privilégiée
+   443→- Le protocole doit spécifier le FORMAT du rapport final (pas seulement les procédures)
+   444→
+   445→### Rédaction méthodes mixtes (Creswell & Plano Clark)
+   446→- Voix unique cohérente du début à la fin (ne PAS alterner 1re/3e personne)
+   447→- Purpose statement : 5 éléments (objectif contenu, design + définition, volet quanti, volet quali, justification intégration)
+   448→- Résultats : structure MIRROR le diagramme procédural (convergent = fusion ; séquentiel = phase 1 → connexion → phase 2 → intégrée)
+   449→- Introduction : annoncer le design dans le gap littéraire ; titre inclut « méthodes mixtes »
+   450→`;
+   451→
+   452→// ───────────────────────────────────────
+   453→// Module: WRITING PROCESS — argumentation et révision (White)
+   454→// ───────────────────────────────────────
+   455→
+   456→const WRITING_PROCESS_MODULE = `
+   457→## PROCESSUS DE RÉDACTION (White, Mapping Your Thesis)
+   458→
+   459→### Argumentation : modèle Toulmin
+   460→1. Claim (position) — sans preuve = assertion
+   461→2. Evidence (preuves empiriques ou textuelles)
+   462→3. Warrant (garant) — lien preuve → position
+   463→4. Backing (soutien) — renforce le warrant contesté
+   464→5. Rebuttal (réfutation) — invalide le warrant adverse
+   465→
+   466→3 stratégies face aux contre-arguments :
+   467→- Concession stratégique : qualifier (« généralement », « partiellement »)
+   468→- Réfutation : identifier faiblesse fondamentale dans le warrant adverse
+   469→- Irrrecevabilité : arguments adverses ne répondent pas aux critères de l'enjeu
+   470→
+   471→Règle : « Les examinateurs ne cherchent pas à être convaincus — ils cherchent un argument qu'ils peuvent prendre au sérieux. »
+   472→
+   473→### Transitions (White)
+   474→| Opération | Connecteurs FR |
+   475→|---|---|
+   476→| Concession | cependant, néanmoins, toutefois |
+   477→| Opposition | au contraire, en revanche, à l'inverse |
+   478→| Addition | en outre, de plus, par ailleurs, de même |
+   479→| Causalité | par conséquent, c'est pourquoi, de ce fait |
+   480→| Illustration | par exemple, en effet |
+   481→- Piège : rappels en début de chapitre (« Dans le chapitre précédent… ») amputent l'autonomie
+   482→
+   483→### Processus : brouillon → révision → édition
+   484→1. Brouillon : centré-auteur, libéré de l'éditeur interne. Thèse exégétique : rédiger chaque chapitre sans retravailler immédiatement.
+   485→2. Révision (critère : titre + résumé définitifs) : transformer en texte centré-lecteur. Enlever l'échafaudage (titres redondants, énoncés vides). Réduire de ~10 %.
+   486→3. Édition (critère : accent sur mot-à-mot) : élargir le lectorat au-delà du directeur. Relire à voix haute, éditer sur papier.
+   487→4. Relecture : grammaire, syntaxe, orthographe uniquement.
+   488→
+   489→### Structure de thèse (White)
+   490→Empirique : Intro → Revue littérature → Méthodes → Résultats → Discussion → Conclusion
+   491→Exégétique/qualitative : Intro (avec revue enchâssée) → Chapitres thématiques → Conclusion
+   492→- Énoncé de thèse (thesis statement) le plus près possible de l'ouverture
+   493→- Chapitres de longueur approximativement égale
+   494→
+   495→### Plan et méthode de travail (Eco)
+   496→- La table des matières se rédige en TOUT DÉBUT, comme hypothèse de travail (métaphore de l'itinéraire de voyage). Utiliser des subdivisions à disjonctions binaires pour garantir la complétude
+   497→- Commencer par le chapitre le plus prêt, pas par le premier. La table hypothèse sert de point d'ancrage
+   498→- Ne mépriser aucune source : « les meilleures idées ne viennent pas toujours des auteurs les plus importants »
+   499→
+   500→### Quatre fonctions de la thèse (Carter, Kelly & Brailsford, d'après Phillips & Pugh)
+   501→- (1) Théorie de fond : cadre disciplinaire et littérature
+   502→- (2) Théorie focale : ce que l'on cherche précisément et pourquoi
+   503→- (3) Théorie des données : fiabilité et pertinence des sources
+   504→- (4) Contribution : connaissance ou compréhension nouvelle
+   505→- Vérifier que ces quatre fonctions sont remplies même dans une structure non conventionnelle
+   506→
+   507→### Types de thèse (Paltridge & Starfield)
+   508→- Traditionnelle simple : Intro → LR → Méthodes → Résultats → Discussion → Conclusion
+   509→- Traditionnelle complexe : intro + LR + méthodes générales, puis sous-thèses Study 1/2/3 (chacune avec intro/méthodes/résultats/discussion), puis discussion générale
+   510→- Thématique : Intro → Thème 1 → Thème 2 → … → Conclusion (courant en SHS, pas de chapitre Méthodes séparé)
+   511→- Compilation d'articles : intro + contexte, puis chapitres-articles autonomes, puis discussion générale
+   512→
+   513→### Structure en sablier (Paltridge & Starfield)
+   514→- La thèse a une forme en sablier : Intro (large, champ disciplinaire) → LR → Méthodo → Résultats (étroit, étude spécifique) → Discussion → Conclusion (large, champ disciplinaire à nouveau)
+   515→
+   516→### CARS — Introduction de thèse (Paltridge & Starfield, d'après Swales)
+   517→- Move 1 : établir le territoire (1a: claim centrality, 1b: background, 1c: review clé [obligatoire], 1d: définir termes)
+   518→- Move 2 : établir la niche/gap [obligatoire]
+   519→- Move 3 : occuper la niche (3a: objectifs [obligatoire], 3b: résultats principaux [optionnel], 3c: prévisualiser structure avec mini-synopses par chapitre [obligatoire, distinctif des articles], 3d: position théorique [optionnel])
+   520→
+   521→### Métadiscours de thèse (Paltridge & Starfield)
+   522→- Le métadiscours (discours sur la structure propre du texte) est distinctif et attendu : « Le chapitre 2 examine… », « cette thèse argumente que… »
+   523→- Plus étendu dans les thèses que dans les articles. SI absent (ni renvois avant/arrière, ni previews de chapitres) → le signaler
+   524→
+   525→### Comparaison sujet par sujet vs point par point (Carter, Kelly & Brailsford)
+   526→- SI thèse compare plusieurs objets sous plusieurs thèmes : « sujet par sujet » (chaque objet = un chapitre) met les objets au premier plan ; « point par point » (chaque thème = un chapitre) met l'argument au premier plan
+   527→- Choisir selon ce qui est le cœur de la contribution
+   528→
+   529→### Ordres thématiques possibles (Carter, Kelly & Brailsford)
+   530→- Chronologique, du moins au plus important, de l'externe vers l'interne, de la théorie vers la pratique, du motif ancien vers le matériel nouveau, du général vers le spécifique, en sablier, ou de l'international vers le local
+   531→- La forme de l'organisation doit incarner la valeur de la recherche
+   532→
+   533→### Emphase proportionnelle (Carter, Kelly & Brailsford)
+   534→- L'espace accordé à chaque partie signale son importance. Si un élément « central » reçoit beaucoup moins d'espace qu'un élément « secondaire » → le lecteur ne le percevra pas comme central
+   535→- Si un chapitre diffère significativement en taille des autres → expliquer pourquoi dans l'introduction du chapitre
+   536→
+   537→### Trois placements de la revue de littérature (Carter, Kelly & Brailsford, d'après Dunleavy)
+   538→- (a) Chapitre autonome : facilite le repérage par l'examinateur mais risque de détachement du travail original
+   539→- (b) Enchâssée dans les chapitres thématiques : montre la pertinence immédiate mais rend la revue invisible comme entité
+   540→- (c) Modèle « ouverture » : brève revue en ouverture, travail original au centre, analyse littéraire en conclusion
+   541→
+   542→### Brown — 8 questions de cohérence en milieu de parcours (Murray)
+   543→À mi-parcours, répondre en 50 mots chacun : (1) Lecteurs visés ? (2) Qu'avez-vous fait ? (3) Pourquoi ? (4) Qu'est-il arrivé ? (5) Signification théorique ? (6) Signification pratique ? (7) Bénéfice pour le lecteur ? (8) Ce qui reste non résolu ? Répéter aux stades ultérieurs
+   544→
+   545→### Rédaction en couches successives (Murray)
+   546→- Construire la thèse en 6 passes progressives : (1) titres de chapitres, (2) 1-2 phrases par chapitre, (3) sous-sections, (4) notes sous chaque en-tête, (5) paragraphe introducteur par chapitre, (6) prose complète
+   547→- Utiliser des verbes actifs (définit, évalue) pas vagues (traite de) dans les plans
+   548→
+   549→### Pipeline d'écriture (Brause)
+   550→- Pendant que le comité relit les chapitres 1-3, travailler au chapitre 4. Quand ils retournent les chapitres, soumettre le suivant
+   551→- Ne jamais laisser un brouillon inactif en attendant — toujours avoir des chapitres en mouvement à différents stades
+   552→
+   553→### Proportions indicatives — thèse scientifique (Holtom & Fisher)
+   554→- Introduction 20-30 %, Matériel et Méthodes 10-20 %, Résultats 35-45 %, Discussion 20-25 %. Les Résultats = cœur de la contribution
+   555→
+   556→### Ordre de révision recommandé — thèse scientifique (Holtom & Fisher)
+   557→- (1) Matériel et Méthodes, (2) Références, (3) Résultats, (4) Introduction, (5) Discussion, (6) Résumé
+   558→- Rédiger dans cet ordre : confronter d'abord ce qui a été fait à ce qui a été trouvé, puis reconsidérer le but initial à la lumière des résultats
+   559→
+   560→### Méthodes parallèles aux Résultats (Holtom & Fisher)
+   561→- Le chapitre Matériel et Méthodes doit suivre le même ordre que le chapitre Résultats. Le lecteur qui passe d'un résultat à la méthode correspondante doit retrouver la même séquence logique
+   562→
+   563→### Résumé (abstract) — ordre de planification (Holtom & Fisher)
+   564→- Ordre de planification : (1) Méthodes, (2) Résultats, (3) Introduction, (4) Discussion
+   565→- Ordre de présentation : question → système expérimental → résultats → réponse. Rédiger d'abord les bribes dans l'ordre de planification, puis réordonner
+   566→
+   567→### Mini-proposal dans la conclusion (Murray)
+   568→- La conclusion doit inclure un mini-proposal pour les travaux futurs : pas une liste de souhaits mais un plan structuré : (1) priorité sélectionnée, (2) comment faire, (3) ressources nécessaires, (4) faisabilité, (5) réfutations anticipées, (6) bénéfices attendus
+   569→
+   570→### Thèse par articles — prévention auto-plagiat (Zimmerman, d'après Matteson & DeLozier)
+   571→- SI thèse par articles (trois articles) → risque d'auto-plagiat entre chapitres si cadres théoriques, revues de littérature ou méthodologies se recoupent. Prévention : changer le format de présentation (narratif → tableau/visuel) d'un chapitre à l'autre pour les éléments partagés
+   572→
+   573→### Documentation anticipée — étude de cas (Yin)
+   574→- SI étude de cas → rédiger quatre sections AVANT la fin de l'analyse : (1) bibliographie, (2) section méthodes, (3) revue de littérature préliminaire connectée aux questions de recherche, (4) données descriptives sur le(s) cas. Cela front-loade la documentation quand la mémoire procédurale est la plus fraîche et évite les goulots d'étranglement documentaires en fin de projet
+   575→`;
+   576→
+   577→// ───────────────────────────────────────
+   578→// Module: LITERATURE REVIEW — méthode Ollhoff
+   579→// ───────────────────────────────────────
+   580→
+   581→const LITERATURE_REVIEW_MODULE = `
+   582→## REVUE DE LITTÉRATURE — Méthode Ollhoff (6 étapes)
+   583→
+   584→### Étape 1 — Question de recherche
+   585→- Viser 3-5 articles sur un scan de 30-60 min
+   586→- Question (pas sujet) : étroite, spécifique, non binaire
+   587→
+   588→### Étape 2 — Sources
+   589→- ≥ 75 % de sources évaluées par les pairs
+   590→- Drapeaux rouges cumulatifs (pas un seul disqualifiant) :
+   591→  · Absence auteur/date/lieu · Auteur sans credentials · Idéologie visible
+   592→  · Jamais cité par d'autres · Ton hyperbolique · Confirmation uniquement · Certitude rigide
+   593→- 3 strates : recherche (50-100 %, taux déformation 0 %) → professionnelle (25 %) → populaire (50 %, exclure)
+   594→
+   595→### Étape 3 — Immersion
+   596→- Critère d'arrêt : point de saturation (lectures ne produisent plus de nouveaux insights)
+   597→- Matrice d'analyse : Titre | Auteurs | Question | Méthodologie | Résultats | Drapeaux rouges
+   598→
+   599→### Étape 4 — Plan
+   600→- Structure thématique (pas chronologique)
+   601→- ~1 page de plan pour 5-10 pages de narration
+   602→- Plan détaillé par paragraphe attendu
+   603→
+   604→### Étape 5 — Rédaction
+   605→- SI chaque paragraphe résume un seul article → erreur (bibliographie annotée)
+   606→- Regrouper par thème, comparer, contraster, identifier tendances
+   607→- Couvrir les écoles opposées ; chaque assertion citée ; pas d'opinion
+   608→
+   609→### Étape 6 — Édition
+   610→- Checklist : stacking éliminé ? neutralité ? assertions citées ? pas de vagues (« beaucoup de ») ? conformité APA ?
+   611→
+   612→### Erreurs fréquentes
+   613→- Confondre sujet et question · Question binaire · Stacking · Plaidoyer déguisé
+   614→- Assertions non citées · Vagueness · Côté unique · Lecture perpétuelle (jamais saturer)
+   615→
+   616→### Revue systématique de littérature (SLR) — Sułkowski et al.
+   617→- Question SLR = population + intervention/comparateur + résultat/contexte (PICO/PCC). Trop large → scoping review à la place
+   618→- Pré-enregistrer le protocole (OSF ou PROSPERO) AVANT la recherche pour horodater et garantir transparence
+   619→- Criblage titre/résumé : inclure par défaut en cas de doute — exclure uniquement si manifestement hors périmètre
+   620→- Exclusion plein texte : documenter le motif pour CHAQUE article exclu (ex. « pas de données primaires ») → alimenter le diagramme PRISMA
+   621→- Cadre TCCM pour structurer la synthèse : Théories utilisées (T) × Contextes (C) × Caractéristiques/VI (C) × Méthodologies (M). Combinaisons absentes = lacunes identifiées
+   622→- Modèle des 3 tableaux d'Ehsan : (1) thèmes/résultats, (2) théories/cadres, (3) méthodologies/données. Croiser les 3 = surfacer les gaps
+   623→- En sciences sociales : inclure les designs qualitatifs et mixtes, ne pas exclure sur la qualité seule (SyReMa). Documenter les problématiques de qualité et leur impact potentiel sur les conclusions
+   624→- Revue narrative (non-SLR) : mentionner quand même bases de données consultées, période couverte et nombre approximatif d'articles analysés
+   625→- Note réflexive : après synthèse, vérifier la concentration géographique, la monoculture théorique et l'homogénéité méthodologique des études incluses
+   626→- Énoncé de lacune = [LACUNE identifiée] + [JUSTIFICATION de son importance]. Jamais seulement « X n'a pas été étudié »
+   627→- Outils bibliométriques (VOSviewer, Gephi) : identifier les sous-champs silotés (peu de co-citations) = opportunités de revue passerelle
+   628→- SI l'IA assiste le criblage/extraction → marquer avec niveau de confiance et signaler les décisions incertaines pour vérification humaine
+   629→
+   630→### Bibliographie = TOUS les textes consultés (Pearce)
+   631→- La bibliographie finale doit inclure TOUS les textes consultés, pas uniquement ceux cités dans le corps. Omettre des textes consultés mais non cités prive le lecteur d'une preuve de l'étendue du travail bibliographique
+   632→- Deux conceptions opposées coexistent chez les examinateurs : (a) revue longue et exhaustive = preuve de sérieux ; (b) revue longue et ramifiée = signal de question floue. Pour éviter (b) : toute revue doit évaluer (pas seulement citer) ET relier chaque travail au projet du doctorant
+   633→
+   634→### Styles de reporting (Paltridge & Starfield)
+   635→- Central reporting : auteur en position sujet (« Burke (1986) a découvert que… ») = fort focus auteur
+   636→- Non-central reporting : auteur entre parenthèses à la fin (« Il a été montré que… (Ballard 1991) ») = faible focus auteur
+   637→- Non-reporting : pas de verbe de reporting, résultats présentés directement (« Au lieu que la motivation produise la réussite, c'est peut-être l'inverse (Spolsky 1989) ») = pas de focus auteur
+   638→- Varier les styles ; surutilisation d'un seul = monotonie
+   639→
+   640→### Temps verbaux dans la revue (Paltridge & Starfield)
+   641→- Présent simple = généralisation ou fait accepté (« Brown montre que… »)
+   642→- Passé simple = référence à une étude spécifique et ses résultats (« Brown a montré que… »)
+   643→- Present perfect = référence à un domaine d'investigation général (« La recherche a montré que… »)
+   644→- SI present perfect pour une seule étude spécifique → incorrect
+   645→
+   646→### Citation intégrale vs non-intégrale (Wette)
+   647→- Intégrale : auteur nommé, verbe de signalisation, partage de responsabilité. Non-intégrale : auteur entre parenthèses, voix de l'écrivain dominante. Les non-intégrales prédominent dans presque toutes les disciplines (sauf histoire/philosophie)
+   648→- SI l'écrivain est confiant dans l'affirmation → non-intégrale. SI il partage ou cède la responsabilité → intégrale
+   649→- Sept rôles de l'auteur en citation intégrale : (a) sujet actif (entière responsabilité à l'auteur), (b) agent (ex. « a proposé que »), (c) adjoint (égalité écrivain-auteur), (d) passif (distanciation), (e) « selon X » (neutre), (f) syntagme possessif (ex. « la théorie de X »), (g) comparaison entre auteurs. Options (a)-(c) sont les plus réussies
+   650→
+   651→### 11 fonctions rhétoriques des citations (Wette)
+   652→- Les experts utilisent 11 fonctions, pas seulement l'attribution (qui représente 80-90 % des citations chez les novices vs 18 % chez les experts) : attribution, identification de l'origine, agent passif + évaluation positive, soutien à l'argument, exemplification, comparaison multiple de sources, renvoi vers une source (see…), dialogue critique, auto-citation, plans de recherche futurs, display de connaissance, preuve d'actualité
+   653→
+   654→### Typologie des verbes de signalisation (Wette)
+   655→- Description : recherche (investigate, find, show), cognition (believe, assume, view), discours (discuss, state, point out)
+   656→- Interprétation : accepter (establish, confirm, demonstrate), soutenir (argue, claim, propose), tentative (suggest, hypothesise, indicate), désaccord (neglect, fail, disregard, refute)
+   657→- SI novice → éviter la surutilisation de claim, state, say, according to. Le verbe « mention » = item d'importance mineure
+   658→- Temps : présent pour faits généraux et résultats supportant l'argument ; passé perfect pour un domaine d'enquête général ; passé pour une étude unique ou pour prendre de la distance
+   659→`;
+   660→
+   661→// ───────────────────────────────────────
+   662→// Module: DATA ANALYSIS — spécificités spatiales (Rae & Wong)
+   663→// ───────────────────────────────────────
+   664→
+   665→const DATA_ANALYSIS_MODULE = `
+   666→## ANALYSE DE DONNÉES — Spécificités urbaines et spatiales (Rae & Wong)
+   667→
+   668→### Choix de modèle
+   669→- SI dépendance spatiale entre zones → SAR (autorégression spatiale). L'OLS ignore cette dépendance et produit des estimateurs biaisés.
+   670→- SI relations varient selon localisation → GWR (régression géographiquement pondérée). Révèle hétérogénéités régionales masquées par modèle global.
+   671→- SI données non-linéaires, nombreuses variables, big data → ML (clustering, classification). Attention : ML = patterns, pas causalité. Compléter par modèle statistique interprétable.
+   672→- SI individus imbriqués dans unités administratives → effets mixtes (multilevel). L'OLS sous-estime les erreurs standard. Vérifier par likelihood ratio test.
+   673→
+   674→### Pièges du big data urbain
+   675→- Volume ≠ couverture : données passives excluent non-connectés, orientées par le marché
+   676→- R² acceptable : 0.60-0.77 dans pays en développement sans données fiables ; insuffisant sinon
+   677→- Court-termisme analytique : exiger cadrage théorique explicite
+   678→- MAUP amplifié : résultats changent selon découpage spatial
+   679→- Flow data (mobilité) sans attributs socio-économiques → compléter par enquêtes/recensement
+   680→
+   681→### Qualité données participatives
+   682→- Norme ISO 19157:2013 : complétude, exactitude thématique, cohérence, qualité temporelle
+   683→- Plateformes internationales (OSM) : erreur positionnelle < 10 %
+   684→- Contributeurs variés → qualité dégrade ; administrateurs doivent avoir formation géodésie/cartographie
+   685→
+   686→### Gouvernance analytique
+   687→- Planning-lag : la technologie précède la capacité d'utilisation → analyses hors-sujet
+   688→- Instruments de données = chargés de politique et idéologie
+   689→- Approche hybride systématique : traditionnelles (attributs/profondeur) + big data (fréquence/couverture)
+   690→
+   691→### Critères d'une interprétation convaincante (Brause)
+   692→- (1) Exhauré : couvre toutes les dimensions majeures, inclut les données qui contredisent les inférences
+   693→- (2) Clair : symboles expliqués, cohérence tableau-récit, références exactes aux lignes de transcription
+   694→- (3) Logique : organisation systématique et prévisible, avec une « carte mentale » esquissée à l'avance
+   695→- (4) Pertinent : restreint aux trois composantes : question de recherche + théorie, données collectées, analyse conduite
+   696→- (5) Prudent : pas de sur-généralisation à partir de données limitées, mais pas de timidité excessive
+   697→`;
+   698→
+   699→// ───────────────────────────────────────
+   700→// Module: GRANT WRITING — subventions (Smith & Works)
+   701→// ───────────────────────────────────────
+   702→
+   703→const GRANT_WRITING_MODULE = `
+   704→## RÉDACTION DE SUBVENTIONS (Smith & Works)
+   705→
+   706→### Structure : 5 composants obligatoires
+   707→1. Résumé exécutif (rédiger EN DERNIER) : problème + approche + évaluation + coût + montant
+   708→2. Énoncé du besoin : données sourcées (dures + qualitatives), focus COMMUNAUTÉ pas organisation
+   709→3. Description du projet : buts + objectifs + résultats + étapes + calendrier
+   710→4. Plan d'évaluation : indicateurs + méthode (interne/externe, somnative/formative)
+   711→5. Budget + narration : correspondance biunivoque budget ↔ récit, calculs expliqués
+   712→
+   713→### Buts vs. Objectifs vs. Résultats
+   714→- But : large, pas mesurable (pas = mission de l'organisation)
+   715→- Objectif : mesurable, décrit COMMENT atteindre le but (combien ?)
+   716→- Résultat : ce qui changera concrètement (« et alors ? »)
+   717→- Étapes d'action : délai + responsable pour chaque objectif
+   718→
+   719→### Plan d'évaluation
+   720→- SI aucune méthode de mesure identifiable → revoir l'objectif
+   721→- Évaluateur externe : associer dès la CONCEPTION, pas après le début
+   722→- Vocabulaire : base de référence, indicateur, modèle logique (intrants → activités → résultats → impacts)
+   723→
+   724→### Motifs de rejet
+   725→1. Instructions non suivies (format, ordre, limites) → élimination AVANT lecture
+   726→2. Hors périmètre du financeur
+   727→3. Lettres de soutien manquantes → rejet immédiat (la subvention = contrat)
+   728→4. Pas de mention d'autres organisations du secteur → red flag
+   729→5. Budget décorrélé du récit
+   730→
+   731→### LOI (Letter of Inquiry)
+   732→- 4 composants (pas de résumé) : besoin + projet + évaluation + budget
+   733→- ¶1 = projet, ¶2 = besoin, ¶3 = plan, ¶4 = coût + demande d'invitation
+   734→- 2-4 pages max ; signaler que d'autres financeurs seront sollicités
+   735→`;
+   736→
+   737→// ───────────────────────────────────────
+   738→// Module: PUBLICATION — cycle, revue, éthique pub., vérification (Gastel & Day)
+   739→// ───────────────────────────────────────
+   740→
+   741→const PUBLICATION_MODULE = `
+   742→## PUBLICATION SCIENTIFIQUE
+   743→
+   744→### Cycle de publication
+   745→- SI année 1-2 → prioriser rédaction thèse, pas soumission hâtive
+   746→- SI chapitre = résultat original autonome et solide → candidat article
+   747→- SI thèse par articles → chaque chapitre = article soumis/accepté + chapitre synthèse
+   748→- SI thèse traditionnelle → extraire 1-2 articles post-soutenance
+   749→- SI plusieurs chapitres = même jeu de données → un seul article (anti-salami)
+   750→- SI article soumis avant soutenance → chapitre correspondant doit être compatible
+   751→
+   752→### Choix de revue
+   753→- SI revue choisie AVANT rédaction → manuscrit calibré, moins de révisions
+   754→- SI travaux de référence du sous-champ publiés dans cette revue → bon indicateur de scope
+   755→- SI indexée Scopus/WoS/DOAJ → signal de légitimité
+   756→- SI APC > budget → demander waiver AVANT soumission
+   757→- SI revue < 2 ans sans société savante → vérifier légitimité
+   758→- DORA : évaluer sur contenu, pas sur facteur d'impact comme critère principal
+   759→- Signaux prédateurs : garantie rapide | site mal écrit | métrique propriétaire | pas d'articles vérifiables | sollicitations agressives
+   760→
+   761→### Éthique de publication
+   762→- Paraphrase : SI structure identique + mots remplacés → insuffisante. SI rédigé sans consulter puis vérifié → valide.
+   763→- Citation littérale entre guillemets + source complète (auteur, année, page) → PERMIS mais exceptionnel (réservé aux définitions, formulations canoniques). Norme = paraphrase. SI reprise sans guillemets, même avec source → plagiat de paraphrase insuffisante.
+   764→- Salami : SI articles partagent méthode + données + ne diffèrent que par sous-ensemble résultats → salami probable
+   765→- Soumission simultanée 2+ revues → non éthique. Dry-labbing → faute sans degré.
+   766→- Authorship ICMJE : contribution substantielle + rédaction/révision + approbation finale + responsabilité → 4 critères obligatoires. Auteur sans contribution = fantôme (non éthique).
+   767→- Déclarations : SI sujets humains/animaux → approbation éthique dans méthode. SI conflit d'intérêts → déclarer.
+   768→
+   769→### Vérification avant soumission
+   770→IMRAD — erreurs fréquentes :
+   771→- SI intro sans vide comblé → sans orientation
+   772→- SI méthode non répliquable → incomplète
+   773→- SI résultats présentés mais non discutés → orphelins
+   774→- SI discussion camoufe limites (formulations vagues) → manquer de transparence
+   775→- SI résumé ≠ corps du texte → incohérence
+   776→
+   777→Tableaux : SI colonne > 70 % valeurs identiques → phrase suffit. SI > 70 % symboles binaires (+/−) → peu d'information. SI uniquement non significatifs → crédibilise mal. SI tableau = phrase sans perte → supprimer.
+   778→
+   779→Résultats : SI précision trompeuse (ex. 28,8136 % pour 17/59) → adapter. SI non-effets omis → biais de reporting.
+   780→
+   781→Cohérence intro/discussion et texte/tableau : voir module Cohérence (principes) — ce module fournit la procédure de détection en contexte publication.
+   782→
+   783→### Processus de soumission et révision — Sułkowski et al.
+   784→- Liste de revues cibles : 2 aspirations + 3-4 milieu de gamme. Pour chaque : IF, adéquation scope, délai type, statut OA
+   785→- Analyser la liste de références du manuscrit : les revues les plus citées = cibles à forte probabilité d'adéquation
+   786→- Citer (avec discernement) des articles de la revue cible = signaler l'ancrage dans ses débats. Jamais forcer des citations
+   787→- Après rejet : TOUJOURS réviser avant de resoumettre. Soumettre inchangé → mêmes critiques. SI rejet → « Avant de choisir une nouvelle revue, traitons d'abord les concerns des relecteurs »
+   788→- Cascade vers revue inférieure : supprimer TOUTE trace de soumission précédente (ancien format, lettre d'accompagnement, réponse aux relecteurs, en-tête/pied de page)
+   789→- « Major revision » = opportunité, pas rejet. Répondre point par point à CHAQUE commentaire. Tableau : [Commentaire] → [Action] → [Localisation manuscrit]
+   790→- Réponse au relecteur qui a mal compris : reformuler comme problème de clarté de l'auteur, jamais comme erreur du relecteur. « Il semble que nous n'ayons pas communiqué clairement ce point. Nous avons réécrit… »
+   791→- Désaccord poli : (1) reconnaître le point, (2) expliquer la contrainte, (3) proposer un accommodement alternatif
+   792→
+   793→### Lettre de réponse type (Sułkowski et al.)
+   794→- Si le relecteur demande une analyse hors scope : « Nous avons considéré cette approche ; cependant, elle nécessiterait un jeu de données au-delà du périmètre de cette étude. À la place, nous avons fourni une justification supplémentaire dans la section [X]. »
+   795→- Si le relecteur a mal compris : « Il semble que ce point n'ait pas été communiqué avec suffisamment de clarté. Nous avons réécrit le paragraphe concerné pour lever toute ambiguïté. »
+   796→
+   797→### Notes de bas de page (Eco)
+   798→- Huit fonctions : (a) source des citations, (b) références supplémentaires, (c) renvois internes/externes, (d) citer une autorité sans interrompre le fil, (e) développer une affirmation secondaire, (f) nuancer/corriger son propre propos, (g) traduction bilingue, (h) « payer ses dettes » intellectuelles
+   799→- SI une note dépasse la longueur raisonnable → transformer en appendice
+   800→- Choisir UN système (toutes en bas de page OU toutes en fin de chapitre) et s'y tenir
+   801→- Note = identification (abréviations acceptables). Bibliographie = documentation (complète, obligatoire). L'une ne dispense pas de l'autre
+   802→- Méthode citation-note vs auteur-date : SI domaine spécialisé + biblio moderne (< 2 siècles) → auteur-date. SI domaine large ou biblio ancienne → citation-note
+   803→
+   804→### Bibliographie et table des matières finales (Eco)
+   805→- SI thèse porte sur un auteur/corpus précis → structurer la biblio : « Œuvres de [Auteur] » / « Documents inédits » / « Ouvrages sur [Auteur] » / « Ouvrages généraux »
+   806→- La biblio est obligatoire même si tout est référencé en notes : « Ce serait manquer de politesse envers le lecteur que de l'obliger à feuilleter toute la thèse pour trouver une référence »
+   807→- Table des matières finale : TOUS chapitres, sous-chapitres, sections avec numéros, pages et titres EXACTS correspondant au texte. Un seul écart = erreur impérative
+   808→- Placer la TdM juste après le frontispice, pas après la préface
+   809→`;
+   810→
+   811→// ───────────────────────────────────────
+   812→// Module: VISUALIZATION — principes et bonnes pratiques (Sułkowski et al.)
+   813→// ───────────────────────────────────────
+   814→
+   815→const VISUALIZATION_MODULE = `
+   816→## VISUALISATION DE DONNÉES DE RECHERCHE (Sułkowski et al.)
+   817→
+   818→### Intégrité visuelle
+   819→- Maximiser le ratio données-encre : chaque pixel doit représenter des données, pas de la décoration. Éviter fonds chargés, effets 3D, ombres
+   820→- SI axe y tronqué (ne commence pas à 0) dans un diagramme en barres → justifier explicitement. Sinon, inclure la plage complète
+   821→- SI bulles ou pictogrammes → dimensionner par SURFACE, pas par diamètre (biais visuel si par diamètre)
+   822→- Montrer l'incertitude : ligne de régression en couleur atténuée + points de données bruts superposés. Jamais une seule ligne en gras sans variabilité
+   823→- SI l'IA génère un graphique → vérifier : (a) plages d'axes honnêtes, (2) légende complète, (3) cohérence entre visuel et récit textuel
+   824→- Palettes daltoniennes obligatoires (viridis, Okabe-Ito). SI > 2 séries de données → ajouter un encodage secondaire (motif, forme)
+   825→
+   826→### Narration visuelle
+   827→- Storyboard des figures : séquencer comme un récit — contexte (diagramme conceptuel) → preuves (données) → synthèse (implications)
+   828→- Adapter la complexité au public : même données, versions différentes. Article = scatterplot complet avec bandes de confiance. Blog = graphique annoté avec 3 points clés
+   829→- SI méthodes mixtes → « joint display » : tableau mêlant résultats quantitatifs et citations qualitatives représentatives dans une même matrice
+   830→
+   831→### Figure auto-suffisante (Holtom & Fisher)
+   832→- Une figure doit être compréhensible sans recourir au texte. Trois composants distincts : le titre (court, descriptif, pour la table des figures), la légende (description détaillée du contenu, provenance des données, annotations), le texte (qui ne reformule pas la légende mais discute les points saillants)
+   833→- Titre et légende remplissent des fonctions différentes et ne doivent pas se dupliquer
+   834→
+   835→### Structure interne du chapitre Résultats — sciences (Holtom & Fisher)
+   836→- Chaque section de résultats peut suivre : (a) brève « Stratégie » (but et approche globale), (b) résultats présentés, (c) résumé en puces des principales constatations
+   837→- Cette structure aide l'examinateur à saisir immédiatement la signification de chaque bloc de résultats
+   838→`;
+   839→
+   840→// ───────────────────────────────────────
+   841→// Module: PRESENTATION — conférences et soutenances (Sułkowski et al.)
+   842→// ───────────────────────────────────────
+   843→
+   844→const PRESENTATION_MODULE = `
+   845→## PRÉSENTATION DE RECHERCHE (Sułkowski et al.)
+   846→
+   847→### Timing et structure
+   848→- Durée cible = 85-90 % du temps alloué (ex. 13 min pour un slot de 15 min) — marge de sécurité
+   849→- Répartition indicative : 20 % intro, 20 % méthodes, 40 % résultats, 20 % discussion. SI méthodes > 25 % → signaler déséquilibre
+   850→- Livrer l'information en couches : énoncé accessible d'abord, puis détail technique pour les experts. Chaque point clé = [cadre accessible] + [approfondissement optionnel]
+   851→
+   852→### Soutenance de thèse
+   853→- Préparer des slides de secours pour les questions du jury : vérifications de robustesse, analyses alternatives, réponses aux défis méthodologiques prévisibles
+   854→- Structure Q&R : anticiper les 5 questions les plus probables et préparer une diapositive de réponse pour chacune
+   855→
+   856→### Présentation virtuelle
+   857→- SI format virtuel/hybride → contraintes renforcées : max 5 lignes par slide, police ≥ 24pt. Ce qui est lisible en salle devient illisible sur écran de laptop
+   858→- Envoyer les slides au responsable de session AVANT la présentation (plan B technique)
+   859→
+   860→### Réponse aux relecteurs (Sułkowski et al.)
+   861→- SI un relecteur a mal compris → la responsabilité est à l'auteur : reformuler. « Il semble que ce point n'ait pas été communiqué avec suffisamment de clarté. Nous avons réécrit… »
+   862→- Désaccord poli en 3 étapes : (1) reconnaître le point, (2) expliquer la contrainte, (3) proposer un accommodement
+   863→
+   864→### Fonctions de la soutenance (Brause)
+   865→- La soutenance sert 4 fonctions simultanées : (1) contrôle qualité — vérification collective que la thèse atteint les standards institutionnels, (2) conversation académique entre pairs — première discussion au niveau pair, (3) dissémination — premier partage formel des résultats, (4) clôture — marquant la fin de l'apprentissage de chercheur
+   866→- Comprendre les 4 empêche de lire l'événement comme purement adversarial
+   867→
+   868→### La soutenance selon la qualité de la thèse (Pearce)
+   869→- Pour une bonne thèse = authentication + clarification. Pour une thèse limite = test de compréhension et capacité à corriger
+   870→- Les examinateurs arrivent à une recommandation provisoire AVANT la soutenance ; la soutenance sert à confirmer ou infirmer cette impression
+   871→- SI corrections mineures prévues → l'objectif est de vérifier que le candidat comprend les critiques et peut les corriger
+   872→
+   873→### Examinateurs externes (Brause)
+   874→- Les examinateurs externes n'ont généralement pas d'historique avec le candidat — ils utilisent la thèse écrite EXCLUSIVEMENT pour préparer leurs questions
+   875→- Stratégie : rechercher leurs publications et prédispositions avant la soutenance
+   876→`;
+   877→
+   878→// ───────────────────────────────────────
+   879→// Module registry
+   880→// ───────────────────────────────────────
+   881→
+   882→const MODULES: Record<KnowledgeModule, string> = {
+   883→  style: STYLE_MODULE,
+   884→  ethics: ETHICS_MODULE,
+   885→  coherence: COHERENCE_MODULE,
+   886→  'auto-edition': AUTO_EDITION_MODULE,
+   887→  'peer-review': PEER_REVIEW_MODULE,
+   888→  methodology: METHODOLOGY_MODULE,
+   889→  'writing-process': WRITING_PROCESS_MODULE,
+   890→  'literature-review': LITERATURE_REVIEW_MODULE,
+   891→  'data-analysis': DATA_ANALYSIS_MODULE,
+   892→  'grant-writing': GRANT_WRITING_MODULE,
+   893→  publication: PUBLICATION_MODULE,
+   894→  visualization: VISUALIZATION_MODULE,
+   895→  presentation: PRESENTATION_MODULE,
+   896→};
+   897→
+   898→// ───────────────────────────────────────
+   899→// Public API
+   900→// ───────────────────────────────────────
+   901→
+   902→/**
+   903→ * Build the knowledge core by assembling the requested modules.
+   904→ * If no modules are specified, returns the full core.
+   905→ *
+   906→ * @param modules - Which knowledge modules to include. Omit for all.
+   907→ * @returns The assembled knowledge core string.
+   908→ */
+   909→export function getKnowledgeCore(modules?: KnowledgeModule[]): string {
+   910→  const selected = modules ?? (Object.keys(MODULES) as KnowledgeModule[]);
+   911→  const parts = selected.map((m) => MODULES[m]).filter(Boolean);
+   912→  return parts.join("\n");
+   913→}
+   914→
+   915→/**
+   916→ * Full knowledge core — all modules assembled.
+   917→ * Use only when the full core is needed regardless of specialization.
+   918→ */
+   919→export const KNOWLEDGE_CORE_FULL = getKnowledgeCore();
+   920→
+   921→/** All available module identifiers. */
+   922→export const ALL_KNOWLEDGE_MODULES: KnowledgeModule[] = Object.keys(MODULES) as KnowledgeModule[];
+   923→
