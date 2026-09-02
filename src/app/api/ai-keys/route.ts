@@ -12,14 +12,14 @@ import {
 import { getProviderLabel } from "@/lib/ai/ai-types";
 
 export async function GET() {
-  const providers = Object.entries(HARDCODED_KEYS).map(
-    ([providerId, rawKey]) => ({
+  const providers = Object.entries(HARDCODED_KEYS)
+    .filter(([, rawKey]) => !!rawKey)
+    .map(([providerId, rawKey]) => ({
       provider: providerId,
       label: getProviderLabel(providerId as keyof typeof HARDCODED_KEYS),
-      maskedKey: maskKey(rawKey),
+      maskedKey: maskKey(rawKey!),
       hasKey: true,
-    })
-  );
+    }));
 
   return NextResponse.json({
     providers,
