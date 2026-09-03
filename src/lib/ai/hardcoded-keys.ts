@@ -19,6 +19,12 @@ export const HARDCODED_KEYS: Partial<Record<AiProviderId, string>> = {
   // OpenAI
   openai: process.env.OPENAI_API_KEY || undefined,
 
+  // Anthropic (Claude)
+  anthropic: process.env.ANTHROPIC_API_KEY || undefined,
+
+  // Groq (ultra-rapide, gratuit)
+  groq: process.env.GROQ_API_KEY || undefined,
+
   // OpenRouter — clé principale
   openrouter: process.env.OPENROUTER_API_KEY || undefined,
 
