@@ -827,7 +827,7 @@ function getDefaultConfig(): AiProviderConfig {
       break;
     case "openrouter":
       apiKey = process.env.OPENROUTER_API_KEY || "";
-      model = process.env.AI_MODEL || "meta-llama/llama-4-maverick:free";
+      model = process.env.AI_MODEL || "z-ai/glm-5.2:free";
       break;
     case "github":
       apiKey = process.env.GITHUB_TOKEN || process.env.GITHUB_MODELS_TOKEN || "";
@@ -846,6 +846,14 @@ function getDefaultConfig(): AiProviderConfig {
       break;
     case "siliconflow":
       apiKey = process.env.SILICONFLOW_API_KEY || "";
+      break;
+    case "kiraai":
+      apiKey = process.env.KIRA_API_KEY || "";
+      model = process.env.AI_MODEL || "kira-3.5-pro";
+      break;
+    case "omniroute":
+      apiKey = process.env.OMNIROUTE_API_KEY || "";
+      model = process.env.AI_MODEL || "auto";
       break;
     case "custom":
       apiKey = process.env.OPENAI_API_KEY || "";

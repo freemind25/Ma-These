@@ -34,6 +34,8 @@ export type AiProviderId =
   | "tokenrouter"  // TokenRouter (GLM-5.3-free gratuit, OpenAI-compatible)
   // --- Vietnam ---
   | "kiraai"      // KiraAI Vietnam (GLM-5.3, OpenAI-compatible)
+  // --- Gateway auto-hébergé ---
+  | "omniroute"   // OmniRoute (352 providers, auto-routing, compression)
   // --- Personnalisé ---
   | "custom";
 
@@ -94,6 +96,8 @@ export const PROVIDER_BASE_URLS: Record<AiProviderId, string> = {
   tokenrouter: "https://api.tokenrouter.com/v1",
   // Vietnam
   kiraai: "https://kiraai.vn/v1",
+  // Gateway auto-hébergé
+  omniroute: "http://localhost:20128/v1",
   // Personnalisé
   custom: "",
 };
@@ -173,6 +177,20 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
     "qwen3.5-flash", "qwen3.5-omni-plus", "qwen3.6-flash",
     "qwen3.7-max", "qwen3.7-plus", "qwen3.8-flash", "qwen3.8-max",
   ],
+  // Gateway auto-hébergé
+  omniroute: [
+    // ══ Auto-routing (recommandé) ══
+    "auto",
+    "auto/coding",
+    "auto/fast",
+    "auto/cheap",
+    "auto/reasoning",
+    // ══ Modèles populaires via OmniRoute ══
+    "cc/claude-sonnet-4-20250514",
+    "cc/gpt-4o",
+    "cc/gemini-2.5-pro",
+    "cc/deepseek-r1",
+  ],
   // Personnalisé
   custom: [],
 };
@@ -184,6 +202,7 @@ export const DYNAMIC_MODEL_PROVIDERS: AiProviderId[] = [
   "mistral", "routesme", "custom", "openrouter", "groq", "cerebras",
   "huggingface", "nvidia", "cloudflare", "github", "siliconflow",
   "routeway", "ainative", "aion", "requesty", "sealion", "tokenrouter", "google", "cohere",
+  "omniroute",
 ];
 
 /**
@@ -197,7 +216,7 @@ export const KEYLESS_PROVIDERS: AiProviderId[] = [];
 /**
  * Provider categories for the UI
  */
-export type ProviderCategory = "natif" | "premium" | "gratuit" | "agregateur" | "custom";
+export type ProviderCategory = "natif" | "premium" | "gratuit" | "agregateur" | "gateway" | "custom";
 
 export const PROVIDER_CATEGORIES: Record<ProviderCategory, { label: string; description: string; providers: AiProviderId[] }> = {
   natif: {
@@ -219,6 +238,11 @@ export const PROVIDER_CATEGORIES: Record<ProviderCategory, { label: string; desc
     label: "Agrégateurs gratuits",
     description: "Proxies multi-fournisseurs avec modèles gratuits",
     providers: ["openrouter", "pollinations", "kilo", "routeway", "ainative", "aion", "requesty", "sealion", "tokenrouter"],
+  },
+  gateway: {
+    label: "Gateway",
+    description: "Routeurs IA auto-hébergés (multi-provider, failover, compression)",
+    providers: ["omniroute"],
   },
   custom: {
     label: "Personnalisé",
@@ -256,6 +280,7 @@ export function getProviderLabel(provider: AiProviderId): string {
     sealion: "SEA-LION (gratuit)",
     tokenrouter: "TokenRouter (GLM-5.3-free, gratuit)",
     kiraai: "KiraAI Vietnam (7 gratuits + 50 payants)",
+    omniroute: "OmniRoute (352 providers, auto-routing, 1.5B tokens/mois)",
     custom: "Personnalisé (API compatible)",
   };
   return labels[provider] || provider;
@@ -288,7 +313,7 @@ export function getProviderFields(provider: AiProviderId): {
   return {
     showApiKey: true,
     showModel: true,
-    showBaseUrl: provider === "custom",
+    showBaseUrl: provider === "custom" || provider === "omniroute",
     dynamicModels: DYNAMIC_MODEL_PROVIDERS.includes(provider),
   };
 }
@@ -302,5 +327,6 @@ export const ALL_PROVIDER_IDS: AiProviderId[] = [
   "cloudflare", "huggingface", "nvidia", "cohere", "siliconflow",
   "pollinations", "kilo", "routeway", "ainative", "aion", "requesty", "sealion", "tokenrouter",
   "kiraai",
+  "omniroute",
   "custom",
 ];

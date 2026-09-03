@@ -32,13 +32,15 @@ const ENV_KEYS: Record<string, string[]> = {
   anthropic: ["ANTHROPIC_API_KEY"],
   mistral: ["MISTRAL_API_KEY"],
   routesme: ["ROUTESME_API_KEY"],
+  kiraai: ["KIRA_API_KEY"],
+  omniroute: ["OMNIROUTE_API_KEY"],
 };
 
 const TEST_MODELS: Record<string, string> = {
-  google: "gemini-2.0-flash",
+  google: "gemini-2.5-flash",
   groq: "llama-3.3-70b-versatile",
   cerebras: "llama-3.3-70b",
-  openrouter: "meta-llama/llama-4-maverick:free",
+  openrouter: "z-ai/glm-5.2:free",
   github: "openai/gpt-4.1-mini",
   nvidia: "meta/llama-3.3-70b-instruct",
   cohere: "command-r",
@@ -49,6 +51,8 @@ const TEST_MODELS: Record<string, string> = {
   openai: "gpt-4o-mini",
   anthropic: "claude-3-haiku-20240307",
   mistral: "mistral-small-latest",
+  kiraai: "kira-3.5-pro",
+  omniroute: "auto",
 };
 
 function getEnvKey(provider: string): string | undefined {

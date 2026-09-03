@@ -598,6 +598,36 @@ function AiConfigDialog({
             </div>
           )}
 
+          {config.provider === "omniroute" && (
+            <div className="rounded-lg border border-violet-200 dark:border-violet-800/50 bg-violet-50 dark:bg-violet-950/20 p-3 text-[11px] text-violet-800 dark:text-violet-300 space-y-1">
+              <p className="font-semibold">OmniRoute — Gateway IA auto-hébergée</p>
+              <p>
+                Route automatiquement vers 352 fournisseurs. ~1,5 milliard de tokens gratuits/mois.
+                Auto-routing, compression tokens, circuit breaker intégré.
+              </p>
+              <p>
+                • <span className="font-medium">Installation</span> :{" "}
+                <code className="bg-violet-100 dark:bg-violet-900/40 px-1 rounded text-[10px]">npx omniroute</code>
+                {" "}ou{" "}
+                <code className="bg-violet-100 dark:bg-violet-900/40 px-1 rounded text-[10px]">docker run -p 20128:20128 diegosouzapw/omniroute</code>
+              </p>
+              <p>
+                • Utilisez le modèle{" "}
+                <code className="bg-violet-100 dark:bg-violet-900/40 px-1 rounded text-[10px]">auto</code>
+                {" "}pour un routage intelligent, ou{" "}
+                <code className="bg-violet-100 dark:bg-violet-900/40 px-1 rounded text-[10px]">auto/coding</code>
+                {" "}pour l'écriture académique.
+              </p>
+              <p>
+                • Configurez vos clés API dans le{" "}
+                <a href="http://localhost:20128" target="_blank" rel="noopener" className="underline hover:text-violet-600">
+                  dashboard OmniRoute
+                </a>
+                {" "}puis entrez la clé OmniRoute ci-dessus.
+              </p>
+            </div>
+          )}
+
           {/* Actions */}
           <div className="flex items-center gap-2 pt-2">
             <Button
