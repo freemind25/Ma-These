@@ -33,6 +33,9 @@ export const HARDCODED_KEYS: Partial<Record<AiProviderId, string>> = {
 
   // KiraAI Vietnam (7 gratuits + 50 payants)
   kiraai: process.env.KIRA_API_KEY || undefined,
+
+  // OmniRoute (gateway auto-hébergé, 352 providers)
+  omniroute: process.env.OMNIROUTE_API_KEY || undefined,
 };
 
 /**
