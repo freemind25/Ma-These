@@ -1,0 +1,93 @@
+diff --git a/worklog.md b/worklog.md
+index 5fad66d..389b6c1 100755
+--- a/worklog.md
++++ b/worklog.md
+@@ -8013,3 +8013,88 @@ Stage Summary:
+ - 5 free academic registries: Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed
+ - Retraction detection included (Reference Watch feature)
+ - Statistics: t, F, χ², z, r tests — Nuijten et al. (2016) method
++
++---
++Task ID: audit-externe-v1
++Agent: Z.ai (session externe)
++Task: Vérifier l'affirmation « Lot 2 invalidé par l'audit forensique » et arbitrer la consignation d'une entrée externe (analyse, zéro modification de code)
++
++Work Log:
++- Vérification de la source primaire : ETAT-PROJET-THESISFRAME.md §7.1 (l. 158-160) — citation exacte : « Sur les 7 affirmations vérifiables depuis l'audit forensique, zéro (0/7) est confirmée comme correctement exécutée par le Lot 2 ». Résultat : CAS B confirmé, l'affirmation n'est pas hallucinée.
++- Comptages re-vérifiés sur clone 4e15cda (correction vs mémoire de session) : 11 fichiers RAPPORT-LOT-*.md (mémoire : 12, corrigé) ; « Lot 2 » = 9 occurrences dans worklog.md (mémoire : 62, corrigé — la valeur 62 était erronée).
++- §7.1 documente aussi l'obsolescence possible du catalogue d'audit (cas BUG-22 : « Obsolescence confirmée » — le code a évolué post-audit sans mise à jour du catalogue). Ce point fonde l'amendment 3.
++- Deux convergences avec l'audit externe confirmées par lecture directe : gouvernance de prompts (src/lib/ai/knowledge-core.ts, modules + tests de budget tokens) ; bundle lourd (~157 Mo node_modules).
++- Arbitrage : GO option (c) — entrée worklog « audit-externe-v1 » livrée en texte avec 3 amendments.
++
++Stage Summary:
++- L'affirmation « Lot 2 invalidé » est tracée et fondée (ETAT-PROJET §7.1, 0/7).
++- 3 amendments consignés : (1) origine de l'audit externe non attestée ; (2) invalidation de l'expert ; (3) rappel de fiabilité post-audit — le catalogue d'audit peut être obsolète (preuve : BUG-22, §7.1).
++- Zéro chantier ouvert, zéro modification de code.
++- Note de consignation : entrée reconstituée depuis la session antérieure, re-sourcée et corrigée sur 4e15cda avant écriture (comptages mémoire 12/62 remplacés par 11/9 vérifiés).
++
++---
++Task ID: biblio-sources-v1
++Agent: Z.ai (session externe)
++Task: Répondre à la demande « ajouter 7 ressources bibliothécaires » (manybooks, pdfdrive, pdfcoffee, pdfroom, gutenberg, openlibrary, standardebooks)
++
++Work Log:
++- Vérification préalable (règle du projet : vérifier l'existant avant toute écriture) : les 7/7 ressources sont DÉJÀ présentes dans BOOK_SOURCES, src/modules/bibliotheque/bibliotheque-page.tsx l. 37+ (Gutenberg, Open Library, Standard Ebooks inline + ManyBooks, PDF Drive, PDF Coffee, PDF Room externes).
++- Module entièrement branché (route /api/books, nav « recherche ») — cf. entrée Task ID: 3 du présent worklog.
++- Test de disponibilité réseau (session externe) : 5 domaines OK ; pdfcoffee répond 403 (anti-bot) ; openlibrary non conclusif depuis le sandbox.
++- Aucun ajout effectué — un ajout aurait créé 7 doublons.
++
++Stage Summary:
++- Demande close sans modification : 7/7 sources déjà intégrées.
++- Le protocole de vérification a corrigé l'action avant exécution (3e cas de la session : Lot 2, .exe 1.9.7, sources biblio).
++- Disponibilité réseau notée à date ; pdfcoffee bloque les agents automatisés (403).
++
++---
++Task ID: leapspace-v1
++Agent: Z.ai (session externe)
++Task: Explorer la ressource https://www.sciencedirect.com/leapspace et identifier ce qui est prenable pour le projet
++
++Work Log:
++- Accès : la page redirige vers le portail SSO Elsevier (access.identity.elsevier.com, client research-leapspace-web) — produit authentifié, exploration vivante impossible sans compte.
++- Source feature utilisée : LibGuide officiel public (elsevier.libguides.com/LeapSpace, 7 pages, maj sept. 2026) + annonces presse nov. 2025 (produit lancé fin 2025, dispo Q1 2026).
++- Inventaire features : Trust Cards + « Link to statement » ; Claim Radar (support/contredit/mixé sur 107M+ sources Scopus) ; Compare Tables ; Deep Research (rapport structuré) ; Writing Coach (2 panneaux, zéro édition automatique) ; File Upload (5 fichiers) ; funding discovery ; expert discovery ; mode conversation temporaire.
++- Cartographie vs dépôt (clone 4e15cda, v1.10.7) : deep-research, thesis-rag, verification-citations (avec détection de rétractations — LeapSpace ne le mentionne pas), alignement-preuves, outils-slr, ai-writing déjà présents. Aucun doublon à ajouter.
++- Écarts retenus (prises) : (1) Claim Radar, (2) Compare Tables, (3) template Deep Research normalisé, (4) Link to Statement passage, (5) financements/experts par topic, (6) principe zéro édition automatique.
++
++Stage Summary:
++- Verdict : la philosophie LeapSpace (surveillance humaine, transparence, vérifiabilité) ≈ philosophie du projet ; les prises 1-2 renforceraient le positionnement au lieu de le détourner.
++- 6 prises sourcées, aucun chantier ouvert, séquence verrouillée (test .exe) intacte.
++
++---
++Task ID: claim-radar-sketch-v1
++Agent: Z.ai (session externe)
++Task: Esquisse technique de la prise #1 « Claim Radar » sur OpenAlex (texte, sans écriture au dépôt)
++
++Work Log:
++- Sourcing sur 4e15cda : searchWorks l. 250 / searchAcademicWorks l. 363 (filtres type:article, is_paratext:false, retry 429/5xx), reconstructAbstract l. 177, curation.ts (seuil 0.35 l. 36), generateCompletion l. 445, pattern citation-check, nav app-store.ts l. 281.
++- Pipeline 4 étapes designé : S1 synthèse de requêtes LLM (neutres en stance) → S2 retrieval OpenAlex déterministe (dédup DOI) → S3 classification de stance LLM par batchs de 15 (supports/contradicts/mixed/unrelated + evidenceQuote obligatoire) → S4 agrégation pondérée curationScore.
++- Contrainte respectée : 100 % OpenAlex + providers configurables — compatible mode bureau Tauri (cf. garde _sdkLoadFailed de deep-research, l. 28-48).
++- Garde-fous : pas de « pourcentage de vérité » ; confiance liée à N (<20 low, <50 medium) ; quote obligatoire anti-hallucination (stance sans quote → unrelated) ; texte de méthode fixe ; aucune écriture manuscrit.
++- Lots CR-1..CR-4 (~800 l. total, 0 dépendance nouvelle, ~8 appels LLM par claim).
++
++Stage Summary:
++- Esquisse complète et sourcée ; complément naturel de verification-citations (existe ? rétractée ? → contestée ?).
++- Statut : idée sourcée, NON chantier.
++
++---
++Task ID: leapspace-esquisses-v1
++Agent: Z.ai (session externe)
++Task: Terminer les esquisses techniques des prises LeapSpace #2 à #6 (texte, sans écriture au dépôt)
++
++Work Log:
++- #2 Compare Tables : corpus (References locales / DOI / requête OpenAlex) → dimensions proposées (LLM, 1 appel) → remplissage par cellule avec quote obligatoire (batchs) ; plafond 30 papers × 8 dimensions ; export Markdown ; module src/modules/compare-table/ (ou onglet outils-slr) ; lots CT-1..3 (~730 l.).
++- #3 Template Deep Research : prompt-only. generateAcademicReport (route.ts l. 513) gagne : Réponse directe en tête, Hypothèses & limites (contre l'outil lui-même, cf. bannière D4), Lectures suggérées (uniquement du corpus) ; generateWebReport (l. 452) gagne Réponse directe + Limites courtes ; ~25 l. sur 2 prompts.
++- #4 Link to Statement : segmentation abstract (reconstructAbstract / Reference.abstract) → présélection lexicale sans LLM → 1 appel alignement (strong/partial/weak/none) ; honnêteté full-text (« non vérifiable depuis l'abstract ») ; code mutualisé avec Claim Radar (src/lib/research/evidence-link.ts) ; points d'entrée verification-citations + claim-radar ; lots LS-1..3 (~420 l.).
++- #5 Financements & Experts : agrégation OpenAlex SANS LLM (grants[].funder_display_name, authorships[].author.id) ; +1 champ grants dans OpenAlexWork ; panneaux dans boite-doctorale et analyse-champ-recherche (précédent UI : generateKnowledgeMap l. 199) ; bannière couverture partielle des grants ; lots TD-1..2 (~430 l.).
++- #6 Zéro édition automatique : principe DÉJÀ pratiqué (editor = prédiction 3-12 mots acceptée par Tab uniquement, text-prediction l. 21 + toolbar l. 221 ; aucune commande de réécriture) ; formalisé en HUMAN_OVERSIGHT_MODULE dans knowledge-core.ts (après AUTO_EDITION_MODULE l. 282, ~15 l. + test budget tokens).
++- Toutes les esquisses réutilisent les primitives existantes, 0 dépendance nouvelle.
++
++Stage Summary:
++- 6 esquisses complètes (#1 dans claim-radar-sketch-v1). Efforts : #1 ~800 l., #2 ~730 l., #3 ~25 l. prompt, #4 ~420 l., #5 ~430 l. (0 LLM), #6 ~30 l. gouvernance.
++- Gouvernance : #6 ancre le principe humain-décideur avant toute fonctionnalité d'édition IA.
++- Statut : idées sourcées, NON chantiers — séquence verrouillée (test .exe → distribution → Camille) intouchable.
++- Consignation des 5 entrées (audit-externe-v1, biblio-sources-v1, leapspace-v1, claim-radar-sketch-v1, leapspace-esquisses-v1) effectuée dans le clone local sur instruction explicite du propriétaire ; commit local + patch exportés — le push vers GitHub reste côté propriétaire.
