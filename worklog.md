@@ -22,3 +22,19 @@ Stage Summary:
 - Le clone /tmp est volatil : le patch dans /home/z/my-project/consignations/ est la sauvegarde persistante.
 - Séquence verrouillée inchangée : test .exe → v1.9.8/distribution → Camille.
 - Deux corrections de mémoire documentées (12→11, 62→9) — l'entrée audit-externe-v1 les note explicitement.
+
+---
+Task ID: push-worklog-v1
+Agent: Z.ai Code (session externe)
+Task: Pousser le commit de consignation vers GitHub avec le jeton fourni par le propriétaire
+
+Work Log:
+- Vérifications préalables : clone intact (5b28979 sur 4e15cda, branche main) ; remote = github.com/freemind25/Ma-These.git ; tip distant toujours à 4e15cda (fast-forward propre, pas de rebase nécessaire).
+- Push one-shot : `git push https://<token>@github.com/freemind25/Ma-These.git HEAD:main` → `4e15cda..5b28979 HEAD -> main`.
+- Vérification post-push : ls-remote refs/heads/main = 5b2897995383d0610aca0f57775b99e13e247634 ✅.
+- Hygiène : jeton utilisé en URL one-shot uniquement, NON persisté (.git/config propre, aucun fichier disque).
+
+Stage Summary:
+- Le dépôt réel GitHub contient désormais les 5 entrées consignées (commit 5b28979).
+- Jeton transmis en clair dans le chat — révocation conseillée (voir rapport à l'utilisateur).
+- Séquence verrouillée inchangée : test .exe → v1.9.8/distribution → Camille.
