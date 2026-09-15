@@ -52,3 +52,22 @@ prompt
 server.log
 # Skills directory
 /skills/
+
+# Upload / Download
+/upload/
+/download/
+
+# Tool results & generated files
+tool-results/
+pdf-gen/
+roadmap-thesisframe.pdf
+agent-ctx/
+
+# Tauri build artifacts
+src-tauri/target/
+src-tauri/gen/
+# Contenu de scripts/ ignoré sauf le build script CI
+scripts/*
+!scripts/build-tauri-prep.sh
+*.exe
+*.msi

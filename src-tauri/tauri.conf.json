@@ -1,0 +1,65 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-cli/schema.json",
+  "productName": "Ma Thèse",
+  "version": "1.10.7",
+  "identifier": "com.mathese.desktop",
+  "build": {
+    "beforeDevCommand": "bun run dev",
+    "beforeBuildCommand": "bash scripts/build-tauri-prep.sh",
+    "devUrl": "http://localhost:3000",
+    "frontendDist": "../dist-tauri"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Ma Thèse — Assistant de thèse",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 1024,
+        "minHeight": 700,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true,
+        "decorations": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico",
+      "icons/icon.png"
+    ],
+    "resources": {
+      "../db/*": "db/",
+      "../build/tauri-bundle/standalone.zip": "standalone.zip",
+      "../build/tauri-bundle/node.exe": "node.exe"
+    },
+    "windows": {
+      "nsis": {
+        "languages": [
+          "French",
+          "English"
+        ],
+        "installMode": "currentUser",
+        "displayLanguageSelector": true,
+        "installerIcon": "icons/icon.ico"
+      },
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    },
+    "copyright": "Copyright © 2025-2026 Ma Thèse",
+    "shortDescription": "Assistant intelligent pour la rédaction de thèses de doctorat",
+    "longDescription": "Ma Thèse est une application de bureau complète pour la rédaction de thèses de doctorat. Elle intègre 29 modules fonctionnels, 5 fournisseurs d'IA (Z.ai, OpenAI, Anthropic, Mistral, RoutesMe), un éditeur riche avec prédiction de texte IA, un module RAG (Mon IA de thèse), et bien plus."
+  }
+}

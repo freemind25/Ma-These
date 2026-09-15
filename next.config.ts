@@ -2,11 +2,20 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  /* config options here */
+  reactStrictMode: true,
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
-  reactStrictMode: false,
+  serverExternalPackages: ["z-ai-web-dev-sdk"],
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "2mb",
+    },
+  },
+  // Tauri: image optimization not needed for desktop builds
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

@@ -38,3 +38,22 @@ Stage Summary:
 - Le dépôt réel GitHub contient désormais les 5 entrées consignées (commit 5b28979).
 - Jeton transmis en clair dans le chat — révocation conseillée (voir rapport à l'utilisateur).
 - Séquence verrouillée inchangée : test .exe → v1.9.8/distribution → Camille.
+
+---
+Task ID: test-production-theses-v1
+Agent: Z.ai Code (agent de test)
+Task: Exécuter le test de production réelle (prompt-production-these-urbanisme-tic-ia.md) — thèse complète produite à travers ThesisFrame
+
+Work Log:
+- Déploiement de l'app dans le sandbox (repo cloné, bun install, base de test dédiée urbanisme-test.db — custom.db du propriétaire intacte, geo-mcp-service port 3005).
+- Thèse créée via API (cmu2vbcp20000rlpryqxmzns4), cadrage 12 champs rempli, cadrage spatial réel (Nominatim, Gauss, CRS, 27 couches Overpass : tram 22-0, postes 26-0, cliniques 0-12, USTHB invisible).
+- Littérature : HAL 6 thèses réelles (contournement bug A.1), CrossRef 7/7 vérifiées via citation-check (DOI erroné de mémoire corrigé par le pipeline !), OpenAlex recherche bloquée budget (A.2), deep-research web 17 326 car. (A.3).
+- Rédaction : 6 supervisions directeur-chat, 7 chapitres × 2 itérations, 7 162 mots, diffs mot à mot (+705/−31).
+- Livrables : coherence-check 23/23 ✓, DOCX exporté via l'app (30,7 ko), download/THESE-urbanisme-tic-ia-production-test.md (8 549 mots, annexe A.1-A.13).
+- Vérification navigateur : thèse rendue dans l'éditeur, chapitres + comptes visibles, contenu affiché, 0 erreur console bloquante.
+- Consignation : entrée test-production-theses-v1 committée dans le clone (eee6373) ; push impossible — jeton révoqué (comme recommandé) ; patch exporté dans consignations/.
+
+Stage Summary:
+- VERDICT : critère du protocole atteint — thèse complète, réelle, sourcée, IMRaD, produite de bout en bout à travers l'app, anomalies consignées sans interrompre la rédaction.
+- 4 anomalies de code, 3 écarts de conformité, 5 mineures — détail dans l'annexe A.1-A.13 du livrable.
+- Commit prêt à pousser : eee6373 (patch : consignations/0001-docs-worklog-test-production-theses-v1.patch).
