@@ -8098,3 +8098,25 @@ Stage Summary:
 - Gouvernance : #6 ancre le principe humain-décideur avant toute fonctionnalité d'édition IA.
 - Statut : idées sourcées, NON chantiers — séquence verrouillée (test .exe → distribution → Camille) intouchable.
 - Consignation des 5 entrées (audit-externe-v1, biblio-sources-v1, leapspace-v1, claim-radar-sketch-v1, leapspace-esquisses-v1) effectuée dans le clone local sur instruction explicite du propriétaire ; commit local + patch exportés — le push vers GitHub reste côté propriétaire.
+
+---
+Task ID: test-production-theses-v1
+Agent: Z.ai Code (agent de test)
+Task: Test de production réelle — thèse complète produite à travers l'application, selon prompt-production-these-urbanisme-tic-ia.md
+
+Work Log:
+- Déploiement : repo cloné et lancé dans l'environnement d'exécution (bun, port 3000), base de test DÉDIÉE (urbanisme-test.db, custom.db du propriétaire intact), geo-mcp-service sur 3005.
+- Phase 0 : surfaces cartographiées ; écarts consignés (A.4-A.6, A.11-A.12).
+- Problématique : lisibilité numérique de la forme urbaine — cas Bab El Oued (2,25 km²) vs Bab Ezzouar (14,71 km²), Alger.
+- Phase 1 (bloquante) : géocodage Nominatim des 2 districts, superficies Gauss (2,25/14,71 km²), CRS WGS84 confirmé, 27/28 couches Overpass extraites (1 expiration → donnée manquante déclarée). Contraste clé : tram 22-0, postes 26-0, cliniques 0-12, USTHB invisible dans OSM.
+- Phase 2 : HAL 6 thèses réelles (via contournement A.1) ; CrossRef 7/7 vérifiées dont correction d'un DOI erroné de mémoire (Haklay → 10.1068/b35097) ; OpenAlex recherche bloquée budget (A.2, cas déjà connu du worklog) ; deep-research web 17 326 car. (A.3) ; 12 références importées dans la bibliothèque.
+- Phase 3 : 6 supervisions directeur-chat réelles archivées ; 7 chapitres IMRaD rédigés et sauvegardés (7 162 mots).
+- Phase 4 : 7 × 2 itérations PUT + directorFeedback ; diff mot à mot (difflib) : +705/−31 mots (l'historique natif des chapitres n'existe pas — A.4).
+- Phase 5 : coherence-check 23/23 ✓ ; export DOCX via l'app (30,7 ko) ; livrable download/THESE-urbanisme-tic-ia-production-test.md (8 549 mots avec annexe A.1-A.13).
+- Vérification navigateur : app rendue, thèse visible, chapitres avec comptes, contenu affiché, aucune erreur console bloquante.
+
+Stage Summary:
+- VERDICT DU TEST : l'application a porté la production de bout en bout — aucune rupture non contournée, thèse complète de 7 162 mots + bibliographie vérifiée + annexe technique de 12 anomalies. Critère du protocole (§1) atteint : le document est réel, sourcé, IMRaD.
+- 4 anomalies de code (A.1 HAL, A.2 OpenAlex budget, A.3 rapport sans sources/tronqué, A.4 historique chapitres absent), 3 écarts de conformité (A.5 sous-domaines, A.6 stack SIG cible, A.11 naming), 5 mineures/environnementales (A.7-A.10, A.12).
+- Garde-fous vérifiés en situation réelle : la vérification CrossRef a corrigé un DOI halluciné de mémoire — le protocole anti-invention fonctionne.
+- Livrables : THESE-urbanisme-tic-ia-production-test.md + .docx (dans download/ de l'instance de test).
