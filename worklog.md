@@ -120,3 +120,20 @@ Stage Summary:
 - POUSSÉ : rien (blocage jeton) — PRÊT : 6 commits + tag v1.10.8 à créer + pipeline CI existante (build-desktop.yml, success sur v1.10.7, crée la release draft avec setup.exe NSIS).
 - Deux voies pour le propriétaire : (a) jeton avec Repository permissions → Contents: Read and write, la séquence complète est exécutée ensuite ; (b) push autonome depuis le bundle (clone → push main → tag v1.10.8 → CI construit et publie l'exe).
 - Le jeton en clair dans le chat DOIT être révoqué (permissions partielles, usage terminé).
+
+---
+Task ID: push-release-v1.10.8-final
+Agent: Z.ai Code
+Task: Exécuter la séquence complète avec le second jeton — push, tag, CI, release, exécutable d'installation
+
+Work Log:
+- Push main OK (5b28979..3c13826, 6 commits) ; tag v1.10.8 poussé → run 35080060447 échec en 2 min : TS2695 deep-research-pipeline.ts:108 (opérateur virgule dans startsWith — seul « • » testé).
+- Hotfix 477911d (chaque préfixe testé explicitement) ; typecheck complet : 0 erreur hors .test.ts préexistants (exclus du build, preuve : v1.10.7 buildait avec). Tag v1.10.8 déplacé forcé (aucun asset produit par le run échoué — jamais utilisé).
+- Re-run 35080625925 : SUCCESS ~9,5 min → release draft créée par tauri-action (Ma.These_1.10.8_x64-setup.exe, 72,9 Mo) → publiée via API 09:49 UTC ; téléchargement public vérifié (HTTP 206).
+- Entrée worklog projet + patch 0007 consignés (commit 8d098b1, poussé) ; bundle download/ rafraîchi sur 8d098b1.
+
+Stage Summary:
+- RELEASE v1.10.8 EN LIGNE : https://github.com/freemind25/Ma-These/releases/tag/v1.10.8 — Ma.These_1.10.8_x64-setup.exe (72,9 Mo).
+- Contenu : corrections A.1-A.13 + carte livrables + db compatible (ChapterVersion, Job).
+- Prochaine étape verrouillée (propriétaire) : tester le setup.exe sur Windows avant distribution à Camille.
+- RÉVOQUER LES DEUX JETONS (circulés en clair dans le chat).

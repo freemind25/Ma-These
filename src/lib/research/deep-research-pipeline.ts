@@ -104,8 +104,11 @@ function isLikelyTruncated(report: string): boolean {
   const terminal = new Set([".", "!", "?", ":", ";", "»", '"', ")", "]", "*", "`", "—", "-"]);
   // Une liste à puces peut légitimement se terminer sans point → on vérifie
   // aussi que la dernière ligne n'est pas une puce inachevée.
-  const lastLine = tail.split("\n").pop() || "";
-  if (lastLine.trim().startsWith(("- ", "* ", "• ")) && !terminal.has(lastChar)) return true;
+  const lastLine = (tail.split("\n").pop() || "").trim();
+  // TS2695 : un tuple ("a", "b", "c") passé à startsWith ne teste que "c"
+  // (le côté gauche de la virgule est jeté) — il faut tester chaque préfixe.
+  const isBullet = ["- ", "* ", "• "].some((prefix) => lastLine.startsWith(prefix));
+  if (isBullet && !terminal.has(lastChar)) return true;
   return !terminal.has(lastChar);
 }
 
