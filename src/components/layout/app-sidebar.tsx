@@ -38,6 +38,7 @@ import {
   Binoculars,
   Languages,
   Lightbulb,
+  Zap,
   ChevronsUpDown,
   ChevronDown,
   type LucideIcon,
@@ -72,7 +73,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Wrench, Globe, Library, Search, ClipboardCheck, Route, Unlock, GitBranch,
   Compass, FileCheck, ShieldCheck, SpellCheck, FileDown, Scale, GitFork, Type,
   Briefcase, GitCompareArrows, PanelLeftOpen, PenTool, Brain, BookOpenText,
-  MapPin, FileCode2, Stamp, Binoculars, Languages, Lightbulb,
+  MapPin, FileCode2, Stamp, Binoculars, Languages, Lightbulb, Zap,
 };
 
 function NavIcon({ name, className }: { name: string; className?: string }) {

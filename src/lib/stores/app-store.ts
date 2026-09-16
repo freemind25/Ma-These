@@ -45,8 +45,9 @@ export type ViewId =
   | "explorateur-theses"
   | "traducteur"
   | "bibliotheque"
-| "verification-citations"
-  | "generation-hypotheses";
+  | "verification-citations"
+  | "generation-hypotheses"
+  | "apinex";
 
 export type NavCategory =
   | "_pinned"   // toujours visible en haut (dashboard, editor)
@@ -315,6 +316,14 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "Wrench",
     description: "Notebook, consensus, visualisation",
     badge: "IA",
+    category: "ia-outils",
+  },
+  {
+    id: "apinex",
+    label: "APInex Playground",
+    icon: "Zap",
+    description: "Chat multi-modèles (OpenAI, Claude, Gemini…) + recherche web via APInex",
+    badge: "API",
     category: "ia-outils",
   },
   {

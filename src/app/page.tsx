@@ -48,6 +48,7 @@ import { TraducteurPage } from "@/modules/traducteur/traducteur-page";
 import { BibliothequePage } from "@/modules/bibliotheque/bibliotheque-page";
 import { VerificationCitationsPage } from "@/modules/verification-citations/verification-citations-page";
 import { GenerationHypothesesPage } from "@/modules/generation-hypotheses/generation-hypotheses-page";
+import { ApinexPage } from "@/modules/apinex/apinex-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -139,6 +140,8 @@ function CurrentView() {
       return <VerificationCitationsPage />;
     case "generation-hypotheses":
       return <GenerationHypothesesPage />;
+    case "apinex":
+      return <ApinexPage />;
     default:
       return <DashboardPage />;
   }

@@ -137,3 +137,26 @@ Stage Summary:
 - Contenu : corrections A.1-A.13 + carte livrables + db compatible (ChapterVersion, Job).
 - Prochaine étape verrouillée (propriétaire) : tester le setup.exe sur Windows avant distribution à Camille.
 - RÉVOQUER LES DEUX JETONS (circulés en clair dans le chat).
+
+---
+Task ID: apinex-integration-1
+Agent: Z.ai Code (main)
+Task: Analyser apinex.bond, tester la clé API fournie par l'utilisateur, et intégrer un playground APInex complet dans ThesisFrame
+
+Work Log:
+- Analyse du site apinex.bond (overview, /docs, /developers, /developers/tools, twitter) via page_reader
+- Découverte : gateway LLM multi-fournisseurs (OpenAI, Anthropic, Gemini, DeepSeek, Zhipu, Moonshot, xAI), base URL https://api.apinex.bond/v1, compatible OpenAI + Anthropic Messages
+- Tests directs : GET /api/public/models (29 modèles), GET /v1/balance, POST /v1/chat/completions avec free/glm-5.3-flash (OK avec solde 0, cost_tokens:0), POST /v1/tools/web/search (échec 402 : coûte ~600 tokens, doc "gratuit" erronée)
+- Clé sk-apx… (fournie par l'utilisateur) placée dans .env : APINEX_API_KEY + APINEX_BASE_URL (serveur uniquement)
+- Créé src/lib/apinex/apinex-client.ts : client serveur (types, cache modèles 5 min, extraction erreurs)
+- Créé 4 routes API : /api/apinex/models (catalogue public), /api/apinex/balance (solde USD), /api/apinex/chat (proxy SSE streaming avec stream_options include_usage), /api/apinex/web-search (outil web, gestion billing_error 402)
+- Créé src/modules/apinex/apinex-page.tsx : playground complet FR — cartes solde/dépense/modèles, chat streaming markdown, sélecteur de modèles groupé par fournisseur avec badge GRATUIT + prix, température, prompt système, toggle recherche web avec dégradation gracieuse, métadonnées par message (modèle, tokens, cost_tokens, latence), sources web numérotées
+- Intégration navigation : ViewId "apinex" dans app-store.ts (catégorie ia-outils, icône Zap), ICON_MAP sidebar, case dans page.tsx
+- Lint : 0 erreur (2 warnings nouveaux corrigés)
+- Vérification agent-browser : navigation vers module, chat streaming complet avec free/glm-5.3-flash (réponse + métadonnées 384 tokens / 1152 tokens APInex / 39.4s), recherche web → 402 gérée proprement (conversation continue), layout mobile 390px OK, footer collé au bas
+
+Stage Summary:
+- Playground APInex opérationnel : 29 modèles dont 13 gratuits testables avec solde 0$
+- Comportements validés : free/* gratuits, modèles payants → billing_error (toast + bulle d'erreur), web search → 402 géré gracieusement (~600 tokens/appel dès que le solde est rechargé)
+- Clé API strictement côté serveur (.env), jamais exposée au client
+- Point d'attention : la doc APInex annonce la recherche web "gratuite" mais elle est facturée ~600 tokens ; le solde de l'utilisateur est 0$ — recharge nécessaire sur apinex.bond pour les outils web et modèles payants
