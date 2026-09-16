@@ -160,3 +160,19 @@ Stage Summary:
 - Comportements validés : free/* gratuits, modèles payants → billing_error (toast + bulle d'erreur), web search → 402 géré gracieusement (~600 tokens/appel dès que le solde est rechargé)
 - Clé API strictement côté serveur (.env), jamais exposée au client
 - Point d'attention : la doc APInex annonce la recherche web "gratuite" mais elle est facturée ~600 tokens ; le solde de l'utilisateur est 0$ — recharge nécessaire sur apinex.bond pour les outils web et modèles payants
+
+---
+Task ID: apinex-integration-2
+Agent: Z.ai Code (main)
+Task: Diagnostic et correction de l'alerte "Clé API absente" du module APInex
+
+Work Log:
+- Diagnostic : l'environnement sandbox a été réinitialisé entre les sessions — le fichier .env ne contenait plus que DATABASE_URL, la ligne APINEX_API_KEY avait disparu
+- Le serveur dev renvoyait hasKey: False sur /api/apinex/models, d'où l'alerte visible dans l'UI
+- Clé re-validée directement auprès d'APInex (balance endpoint OK, key id key_99e628d4…)
+- .env re-complété (APINEX_API_KEY + APINEX_BASE_URL) puis redémarrage du serveur dev (les variables .env ne sont lues qu'au démarrage)
+- Vérifications post-fix : hasKey: True, 29 modèles, balance 0 USD, chat streaming free/glm-5.3-flash OK, aucun erreur dans dev.log
+
+Stage Summary:
+- Incident compris : la réinitialisation du sandbox efface .env ; en cas de réapparition de l'alerte, re-ajouter les 2 lignes dans .env et redémarrer le serveur
+- Module APInex de nouveau pleinement opérationnel
