@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/layout/app-sidebar";
 import { AppHeader } from "@/components/layout/app-header";
 import { AppFooter } from "@/components/layout/app-footer";
 import { DataBanner } from "@/components/layout/data-banner";
+import { TestDeliverableCard } from "@/components/layout/test-deliverable-card";
 import { useAiConfig } from "@/hooks/use-ai-config";
 import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { EditorPage } from "@/modules/editor/editor-page";
@@ -157,6 +158,7 @@ export default function Home() {
         </main>
         <AppFooter />
       </SidebarInset>
+      <TestDeliverableCard />
     </SidebarProvider>
   );
 }
