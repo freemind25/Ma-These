@@ -101,3 +101,22 @@ Stage Summary:
 - Découvertes documentées : HAL tolère mal les cadences rapprochées (200 silencieux numFound:0) ; la voie SDK z.ai n'avait aucun timeout (cause du 320 s) ; l'environnement sandbox tue les processus hors arbre de boot (cause A.10, réplique de A.8).
 - Livrables : RAPPORT-CORRECTIONS-ANNEXE-A1-A13.md ; docs/EXPLOITATION-SERVEUR.md ; décisions dans CONTEXT-PROJET.md ; 8 nouveaux fichiers, 10 fichiers modifiés, 2 tables additives.
 - Le push GitHub reste côté propriétaire (jeton révoqué) ; patch possible sur demande.
+
+---
+Task ID: push-release-v1.10.8
+Agent: Z.ai Code
+Task: Exécuter la séquence verrouillée avec le jeton fourni (« push, patch, release, tag, exécutable d'installation »)
+
+Work Log:
+- État des lieux : dépôt local re-snapshoté (historique UUID, sans remote) — clone GitHub reconstruit comme base propre ; main distant HEAD = 5b28979 (le commit eee6373 n'avait jamais été poussé) ; release v1.10.7 + Ma.These_1.10.7_x64-setup.exe déjà en ligne.
+- Diff exhaustif clone ↔ workspace fermé : docs de session (worklog, consignations, CONTEXT-PROJET, EXPLOITATION-SERVEUR, RAPPORT-CORRECTIONS), livrables (THESE-*.md/.docx dans public/), carte livrables (3 liens, clé v2), corrections de code A.1-A.13 (8 fichiers nouveaux, 10 modifiés, 2 tables additives), package.json (écart sandbox uniquement, non poussé), db (régénérée proprement).
+- 6 commits construits dans le clone : 169699b (replay eee6373 via git am, message conservé), bbc188c (docs session + livrables + patchs persistants), 946312b (feat corrections A.1-A.13, 20 fichiers, +2380/−700), a7ea4a3 (carte livrables), 75d94ac (bump 1.10.8 : package.json, tauri.conf.json, Cargo.toml), 3c13826 (patchs format-patch 0002-0006).
+- db embarquée régénérée proprement : copie de la template v1.10.7 distante + prisma db push additif (ChapterVersion + Job) — données initiales intactes (1 thèse, 7 chapitres), compatibilité exe garantie (aucun db push au démarrage de l'app, lib.rs copie db/custom.db au premier lancement).
+- Sécurité vérifiée avant push : scan secrets négatif sur tous les fichiers poussés ; .env (DATABASE_URL locale) NON poussé (gitignoré) ; jeton retiré de .git/config du clone ; le dépôt public ne reçoit aucun secret.
+- PUSH BLOQUÉ (403) : le fine-grained PAT a Contents en LECTURE SEULE — preuve : PUT /contents → 403 « Resource not accessible by personal access token » (écriture labels : 201, lecture/metadata : OK). Le push git, la création de tag et la release exigent Contents: write — impossible avec ce jeton.
+- Travail sécurisé pour livraison : bundle git complet download/Ma-These-push-v1.10.8.bundle (8,7 Mo, historique intégral jusqu'à 3c13826, vérifié) + copies des patchs 0002-0006 dans download/ — pushable en 2 commandes depuis n'importe quelle machine.
+
+Stage Summary:
+- POUSSÉ : rien (blocage jeton) — PRÊT : 6 commits + tag v1.10.8 à créer + pipeline CI existante (build-desktop.yml, success sur v1.10.7, crée la release draft avec setup.exe NSIS).
+- Deux voies pour le propriétaire : (a) jeton avec Repository permissions → Contents: Read and write, la séquence complète est exécutée ensuite ; (b) push autonome depuis le bundle (clone → push main → tag v1.10.8 → CI construit et publie l'exe).
+- Le jeton en clair dans le chat DOIT être révoqué (permissions partielles, usage terminé).
