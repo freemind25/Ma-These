@@ -176,3 +176,20 @@ Work Log:
 Stage Summary:
 - Incident compris : la réinitialisation du sandbox efface .env ; en cas de réapparition de l'alerte, re-ajouter les 2 lignes dans .env et redémarrer le serveur
 - Module APInex de nouveau pleinement opérationnel
+
+---
+Task ID: apinex-integration-3
+Agent: Z.ai Code (main)
+Task: Corriger l'erreur "Échec de la requête HTTP 502" signalée par l'utilisateur sur le chat APInex
+
+Work Log:
+- Diagnostic : dev.log ne montre AUCUN 502 côté Next (tous 200, chats de 30-32 s) → le 502 est généré par la passerelle plateforme entre le navigateur et le serveur
+- Mesure TTFB : APInex garde les en-têtes jusqu'au premier token — 48 s mesurées sur free/glm-5.3-flash, alors que la passerelle coupe ~30 s sans données
+- Fix route /api/apinex/chat : réponse 200 + en-têtes SSE émis INSTANTANÉMENT, commentaires de battement de cœur ": ping" toutes les 7 s pendant l'attente, erreurs upstream relayées dans le flux en événement SSE {"error":…} puis "data: [DONE]"
+- Client : parsing des erreurs in-stream (billing_error → toast dédié), nouveau réglage "Tokens max (réponse)" (slider 256-4096, défaut 1024) pour borner le temps de génération
+- Vérifications : TTFB passé de 48 s à 0.046 s ; conversation complète dans le navigateur en 38.2 s (> seuil passerelle) — succès ; lint propre
+
+Stage Summary:
+- Cause racine : timeout passerelle (~30 s sans octets) vs TTFB APInex (jusqu'à ~60 s sur modèles gratuits)
+- Correctif robuste : heartbeat SSE + erreurs in-stream + max_tokens borné — validé au-delà du seuil (38.2 s OK)
+- Comportement inchangé pour l'utilisateur final, mis à part l'absence de 502 désormais

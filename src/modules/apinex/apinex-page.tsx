@@ -133,6 +133,7 @@ export function ApinexPage() {
   // Réglages chat
   const [model, setModel] = useState<string>(DEFAULT_MODEL);
   const [temperature, setTemperature] = useState(0.7);
+  const [maxTokens, setMaxTokens] = useState(1024);
   const [systemPrompt, setSystemPrompt] = useState("");
   const [webSearch, setWebSearch] = useState(false);
 
@@ -331,6 +332,7 @@ export function ApinexPage() {
           model,
           messages: apiMessages,
           temperature,
+          max_tokens: maxTokens,
           stream: true,
         }),
         signal: controller.signal,
@@ -367,6 +369,7 @@ export function ApinexPage() {
       let buffer = "";
       let acc = "";
       let usage: { total_tokens?: number; cost_tokens?: number } | undefined;
+      let streamError: { message: string; type?: string } | null = null;
 
       const applyDelta = (deltaContent: string) => {
         acc += deltaContent;
@@ -388,6 +391,11 @@ export function ApinexPage() {
             if (!dataStr || dataStr === "[DONE]") continue;
             try {
               const json = JSON.parse(dataStr);
+              // Erreur envoyée dans le flux par le proxy (après en-têtes 200)
+              if (json?.error) {
+                streamError = json.error as { message: string; type?: string };
+                break;
+              }
               const delta = json?.choices?.[0]?.delta?.content;
               if (typeof delta === "string" && delta.length > 0) applyDelta(delta);
               if (json?.usage) usage = json.usage;
@@ -398,6 +406,32 @@ export function ApinexPage() {
         }
       }
 
+      const latencyMs = Date.now() - startedAt;
+      if (streamError) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId
+              ? { ...m, error: streamError.message, latencyMs }
+              : m
+          )
+        );
+        if (streamError.type === "billing_error") {
+          toast({
+            title: "Solde insuffisant",
+            description:
+              "Ce modèle payant nécessite un solde APInex. Les modèles « free/ » restent gratuits.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Erreur APInex",
+            description: streamError.message,
+            variant: "destructive",
+          });
+        }
+        return;
+      }
+
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantId
@@ -406,7 +440,7 @@ export function ApinexPage() {
                 content: acc || m.content,
                 tokens: usage?.total_tokens,
                 costTokens: usage?.cost_tokens,
-                latencyMs: Date.now() - startedAt,
+                latencyMs,
               }
             : m
         )
@@ -432,6 +466,7 @@ export function ApinexPage() {
     messages,
     model,
     temperature,
+    maxTokens,
     systemPrompt,
     runWebSearch,
     loadBalance,
@@ -730,6 +765,26 @@ export function ApinexPage() {
                   max={2}
                   step={0.1}
                 />
+              </div>
+
+              <Separator />
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm">Tokens max (réponse)</Label>
+                  <span className="text-sm font-medium">{maxTokens}</span>
+                </div>
+                <Slider
+                  value={[maxTokens]}
+                  onValueChange={(v) => setMaxTokens(v[0] ?? 1024)}
+                  min={256}
+                  max={4096}
+                  step={128}
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  Limiter cette valeur réduit le temps de génération — utile sur les
+                  modèles gratuits, souvent lents (30-60 s avant le premier token).
+                </p>
               </div>
             </CardContent>
           </Card>
