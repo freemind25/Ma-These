@@ -272,3 +272,24 @@ Re-test T1 à prévoir : vérifier que la section Analyse du directeur cite le c
 | D15 | Export/import session complète | basse | Backlog |
 | B7 | **UX latence deep-research** — ~2 min perçu comme cassure. Progress indicator + optimiser nb sous-requêtes (économie crédits $1/jour) | moyenne | Échéance : v1.10.0 |
 | B8 | **Section Références manquante** dans la réponse 🎓 — prompt mode académique doit exiger ### Références avec [n] Auteur (Année). Titre. Venue. DOI | basse | Échéance : v1.10.0 |
+
+## Décisions d'architecture — corrections de l'annexe technique (test de production, 16/09/2026)
+
+Suite au test de production réelle (annexe technique A.1-A.13 du livrable), les décisions suivantes sont **tranchées et définitives** :
+
+### D-A.5 — Le champ `discipline` reste un texte libre (décision : aligner la documentation sur le code)
+- **Décision** : pas de liste fermée de « cinq sous-domaines ». Le champ libre `discipline` (string) est le **choix définitif**.
+- **Justification** : ThesisFrame est multi-disciplines ; une liste fermée de sous-domaines d'urbanisme briserait la généralité du produit. Le champ alimente le contexte IA, où le texte libre est plus riche que toute taxonomie fermée. La thèse de test a d'ailleurs déclaré son option dans ce champ sans friction.
+- **Conséquence documentaire** : toute mention de « cinq sous-domaines disciplinaires » dans les protocoles/prompts de test est invalidée ; ne pas l'introduire dans la documentation produit.
+
+### D-A.6 — La chaîne SIG actuelle est la cible définitive (décision : aligner la documentation sur le code)
+- **Décision** : pas de migration PostGIS → Martin → MapLibre GL. La chaîne cible = **service MCP géographique (Nominatim, superficies de Gauss, vérification CRS) + couche Overpass + module verification-carto**.
+- **Justification** : (1) portabilité desktop — l'app embarque SQLite (Tauri) ; PostGIS exigerait un serveur PostgreSQL, incompatible avec la distribution hors-ligne ; (2) la chaîne actuelle a fait ses preuves en production réelle : 27/28 couches extraites, superficies 2,25/14,71 km², CRS WGS84 vérifié ; (3) les tuiles vectorielles ne servent aucun usage actuel du produit.
+- **Conséquence documentaire** : toute fiche produit/protocole affirmant l'existence de PostGIS/Martin/MapLibre est invalidée.
+
+### D-A.11 — Nommage du superviseur : `/api/directeur-chat` + `src/lib/ai/specializations/directeur.ts`
+- Vérification forensique : `directeurThese.js` ne correspond à **aucun fichier du dépôt** ; la documentation projet (ROADMAP.md §route, CONTEXT-PROJET.md §spécialisations) référencait déjà les vrais noms. La dérive de nommage provenait du protocole de test externe, corrigé par la présente.
+
+### D-A.12 — Squelette de thèse par défaut : **7 chapitres** (référence officielle)
+- Introduction, Revue de littérature, Cadre théorique, Méthodologie, Résultats, Discussion, Conclusion.
+- Toute description du squelette en « 6 sections » est invalidée ; le chapitre III « Cadre théorique » est un chapitre propre, conformément au code (`thesis/route.ts`, création du squelette).
