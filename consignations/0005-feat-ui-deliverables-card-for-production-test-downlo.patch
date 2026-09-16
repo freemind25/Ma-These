@@ -1,0 +1,161 @@
+From a7ea4a300c21429e56bc752cdd4b37529842eaff Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Wed, 16 Sep 2026 08:57:56 +0000
+Subject: [PATCH 5/6] feat(ui): deliverables card for production-test downloads
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Carte flottante (bas-droite, fermable, persistance localStorage v2)
+avec 3 liens téléchargeables servis par l'app :
+- RAPPORT-CORRECTIONS-ANNEXE-A1-A13.md (statuts + preuves)
+- THESE-urbanisme-tic-ia-production-test.md (8 549 mots)
+- THESE-urbanisme-tic-ia-production-test.docx (export via l'app)
+Montée en charged via setTimeout(0) (règle lint : pas de setState
+synchrone dans un effet). Artefact de session, retirable en 2 lignes.
+---
+ src/app/page.tsx                              |   2 +
+ .../layout/test-deliverable-card.tsx          | 111 ++++++++++++++++++
+ 2 files changed, 113 insertions(+)
+ create mode 100755 src/components/layout/test-deliverable-card.tsx
+
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 7355560..7503bf6 100755
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/layout/app-sidebar";
+ import { AppHeader } from "@/components/layout/app-header";
+ import { AppFooter } from "@/components/layout/app-footer";
+ import { DataBanner } from "@/components/layout/data-banner";
++import { TestDeliverableCard } from "@/components/layout/test-deliverable-card";
+ import { useAiConfig } from "@/hooks/use-ai-config";
+ import { DashboardPage } from "@/components/dashboard/dashboard-page";
+ import { EditorPage } from "@/modules/editor/editor-page";
+@@ -157,6 +158,7 @@ export default function Home() {
+         </main>
+         <AppFooter />
+       </SidebarInset>
++      <TestDeliverableCard />
+     </SidebarProvider>
+   );
+ }
+diff --git a/src/components/layout/test-deliverable-card.tsx b/src/components/layout/test-deliverable-card.tsx
+new file mode 100755
+index 0000000..8536425
+--- /dev/null
++++ b/src/components/layout/test-deliverable-card.tsx
+@@ -0,0 +1,111 @@
++"use client";
++
++import { useEffect, useState } from "react";
++import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
++import { Button } from "@/components/ui/button";
++import { Badge } from "@/components/ui/badge";
++import { FileDown, FileText, FileCheck, X, GraduationCap } from "lucide-react";
++
++const STORAGE_KEY = "test-deliverable-card-dismissed-v2";
++
++const DELIVERABLES = [
++  {
++    href: "/RAPPORT-CORRECTIONS-ANNEXE-A1-A13.md",
++    label: "Rapport corrections A.1-A.13",
++    meta: "Statuts + preuves d'exécution",
++    icon: FileCheck,
++  },
++  {
++    href: "/THESE-urbanisme-tic-ia-production-test.md",
++    label: "Thèse (Markdown)",
++    meta: "8 549 mots · 57,6 ko",
++    icon: FileText,
++  },
++  {
++    href: "/THESE-urbanisme-tic-ia-production-test.docx",
++    label: "Thèse (DOCX)",
++    meta: "Export via l'app · 30,7 ko",
++    icon: FileDown,
++  },
++] as const;
++
++export function TestDeliverableCard() {
++  const [visible, setVisible] = useState(false);
++
++  useEffect(() => {
++    const timer = window.setTimeout(() => {
++      let dismissed = false;
++      try {
++        dismissed = window.localStorage.getItem(STORAGE_KEY) === "1";
++      } catch {
++        dismissed = false;
++      }
++      setVisible(!dismissed);
++    }, 0);
++    return () => window.clearTimeout(timer);
++  }, []);
++
++  const dismiss = () => {
++    setVisible(false);
++    try {
++      window.localStorage.setItem(STORAGE_KEY, "1");
++    } catch {
++      // stockage indisponible : fermeture pour la session uniquement
++    }
++  };
++
++  if (!visible) return null;
++
++  return (
++    <div
++      className="fixed bottom-16 right-4 z-50 w-[min(20rem,calc(100vw-2rem))]"
++      role="complementary"
++      aria-label="Livrable du test de production"
++    >
++      <Card className="border-amber-500/40 shadow-lg">
++        <CardHeader className="p-4 pb-2">
++          <div className="flex items-start justify-between gap-2">
++            <CardTitle className="flex items-center gap-2 text-sm">
++              <GraduationCap className="h-4 w-4 text-amber-600" aria-hidden="true" />
++              Livrable du test de production
++            </CardTitle>
++            <Button
++              variant="ghost"
++              size="icon"
++              className="h-6 w-6 shrink-0"
++              onClick={dismiss}
++              aria-label="Masquer la carte de téléchargement"
++            >
++              <X className="h-3.5 w-3.5" aria-hidden="true" />
++            </Button>
++          </div>
++          <CardDescription className="text-xs">
++            Thèse complète produite via ThesisFrame (test-production-theses-v1)
++          </CardDescription>
++        </CardHeader>
++        <CardContent className="flex flex-col gap-2 p-4 pt-2">
++          {DELIVERABLES.map(({ href, label, meta, icon: Icon }) => (
++            <a
++              key={href}
++              href={href}
++              download
++              className="flex items-center justify-between gap-2 rounded-md border p-2.5 text-sm transition-colors hover:bg-accent"
++            >
++              <span className="flex min-w-0 items-center gap-2">
++                <Icon className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
++                <span className="flex flex-col min-w-0">
++                  <span className="truncate font-medium">{label}</span>
++                  <span className="truncate text-xs text-muted-foreground">{meta}</span>
++                </span>
++              </span>
++              <Badge variant="secondary" className="shrink-0">
++                <FileDown className="mr-1 h-3 w-3" aria-hidden="true" />
++                Télécharger
++              </Badge>
++            </a>
++          ))}
++        </CardContent>
++      </Card>
++    </div>
++  );
++}
+-- 
+2.47.3
+

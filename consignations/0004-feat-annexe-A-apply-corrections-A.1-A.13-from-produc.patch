@@ -1,0 +1,3690 @@
+From 946312bb8e5e5c68aeb6cbd61c190eaa0e03ebf7 Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Wed, 16 Sep 2026 08:57:37 +0000
+Subject: [PATCH 4/6] feat(annexe-A): apply corrections A.1-A.13 from
+ production test
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Corrections root-cause issues du test de production réelle (thèse
+urbanisme-TIC-IA, 7162 mots) — preuves d'exécution réelle dans
+RAPPORT-CORRECTIONS-ANNEXE-A1-A13.md :
+
+- A.1 HAL: domaines level0_domain_s (taxonomie réelle shs/sdv/spi/info/
+  phys/chim/sdu/math/sde/scco) + fq répétés + sort — 500 -> 802 résultats
+- A.2 OpenAlex budget: academic-fallback.ts (repli CrossRef+HAL,
+  triangulation DOI) + pipeline extrait pour le worker + garde HAL
+  200-silencieux-numFound:0
+- A.3 rapport deep-research: maxTokens 12k, continuation max 2 passes,
+  validation Sources + relance, repli déterministe depuis la liste réelle
+- A.4 historique chapitres: table ChapterVersion (miroir
+  ThesisCadrageVersion), version sur PUT modifiant le contenu, GET
+  versions, word-diff LCS natif, dialogue Historique avec diff colorisé
+- A.7 Overpass: 3 tentatives, timeouts progressifs 25/35/45 s, backoff,
+  alternance endpoints (distinction zéro/manquante inchangée)
+- A.8 file de tâches persistante: modèle Job (verrou optimiste, sweep
+  orphelins 10 min), worker au boot via instrumentation.ts, API /api/jobs
+- A.9 timeouts IA: timeout explicite documenté (150 s défaut, 5-180 s),
+  withExplicitTimeout sur la voie SDK (cause racine du 320 s),
+  maxRetriesPerProvider, relance unique à prompt resserré
+- db: schema additif (ChapterVersion, Job) + custom.db template mise à
+  jour (données initiales inchangées, 2 tables vides en plus)
+---
+ db/custom.db                                  | Bin 9859072 -> 9859072 bytes
+ prisma/schema.prisma                          |  46 +
+ src/app/api/chapters/[id]/route.ts            |  28 +-
+ src/app/api/chapters/[id]/versions/route.ts   |  39 +
+ src/app/api/deep-research/route.ts            | 669 +-----------
+ src/app/api/directeur-chat/route.ts           | 102 +-
+ src/app/api/jobs/[id]/route.ts                |  46 +
+ src/app/api/jobs/route.ts                     |  84 ++
+ src/app/api/theses-en-ligne/search/route.ts   |  63 +-
+ src/instrumentation.ts                        |  13 +
+ src/lib/ai/zai-client.ts                      |  48 +-
+ src/lib/jobs/queue.ts                         | 105 ++
+ src/lib/jobs/worker.ts                        | 117 +++
+ src/lib/osm-infra.ts                          |  38 +-
+ src/lib/research/academic-fallback.ts         | 348 +++++++
+ src/lib/research/deep-research-pipeline.ts    | 954 ++++++++++++++++++
+ src/lib/word-diff.ts                          | 123 +++
+ .../editor/components/chapter-header.tsx      |   4 +
+ .../components/chapter-history-dialog.tsx     | 228 +++++
+ .../theses-en-ligne/theses-en-ligne-page.tsx  |  25 +-
+ 20 files changed, 2380 insertions(+), 700 deletions(-)
+ create mode 100644 src/app/api/chapters/[id]/versions/route.ts
+ create mode 100644 src/app/api/jobs/[id]/route.ts
+ create mode 100644 src/app/api/jobs/route.ts
+ create mode 100644 src/instrumentation.ts
+ create mode 100644 src/lib/jobs/queue.ts
+ create mode 100644 src/lib/jobs/worker.ts
+ create mode 100644 src/lib/research/academic-fallback.ts
+ create mode 100644 src/lib/research/deep-research-pipeline.ts
+ create mode 100644 src/lib/word-diff.ts
+ create mode 100644 src/modules/editor/components/chapter-history-dialog.tsx
+
+diff --git a/db/custom.db b/db/custom.db
+index 445c70fca4ebac628c033f0a89edafc2c84ed009..bc856cd06e381f954912a493715e20b694a8e617 100755
+GIT binary patch
+delta 1763
+zcmcIkUu;u#6u$TF?sm8BdcRS&4v|sHpRJ4y#sr1}TelS$umPjM0AcHBVUukw?FBaG
+zT*u%8|Den=uZf9KG$M&n34ta)DCz?-;e`i7R33~87!n>N5@Uk@ZubXieD)^i<o?b%
+z-*@is+;dLi$M58XDQBkVT@VCyzbUnXAQYL>II^H}+6AHfXf)eA$=W?rt99B#?Kkbd
+zcJE@Zu4$&l*J!Ge8dEvTh97FFhni@?Qb8yXO9ky~hb8yAz0~$Vy`m1~H0L;#Z<TkH
+zHQC=}SIWIv-)DuSJ5rydiiR2du~3!zVnFgq#;{xLP92;j-m#v%UM8llmq}H%<xcUM
+zAgvUyX(w{6_M7&@_I%sBw&m&`b#~6%Ic_DW%#kn4?OCGqneel)X2h4Dx^0saqG3}0
+zs`zUZ*N)2MeWlPi?2x^ww_?(6C3Q6_{UD}(@0G5}Oh{J}Sz=<L?Y59BIs{F3{NyOh
+zJ#DMb`6cI~vLySj?5KQKj*AZaO~)<!dHZ?u!h+*gGSA&`xliu0$$}t$Xxz2QpIhc_
+zRb0!RlF{mrU4eCx_SOnhsXjr-sz`&5OU)LS*DIY|sR!G;!gU?Ns2+}O3&-M}k)F(x
+zx~i_(?+f_d0blI~zuPn6H9m5ROO$b(@o9-zXbcyN1<9*6Tl&s%iI9nGLLn?f4xtiO
+z!baGMT*5(U1c*Fh3gINC68S^{;UWr&X~Yx6bmB>322n)JB;3R-!b8j^<`8p<c|<W$
+zLU@V!L@BX=C?m>=g~TGFf>=yc5>F9Jh^53bqKa5fJWV`9tRPkrtB7i%hVT)!L>*C2
+z_=(lT8e%QcK&&Iy6B~#|qKVi@Y$7%j&BPWWKx`$p5!;CtVh6F4*hM@`>?ZaQtwb9U
+zB-)9+M2H9z`-uHS2hmA9M;su!h;E{Xh!9cYAQ2<tgiahH4iiU+UZRgUO7s)Y69dEx
+z#2}F%hKOUtFmaqXL6A5}oFZN%ULsy5ULj5suM)2jXNVEv^(#oqS1-xYKdMJIS@LF>
+zBeubm^`-<(X)_9O_DH&U#-uv+CeC(fMY(1l+0>nac0)U$*&V0tr|j#j?^*lR2kQIk
+z&P#dj73$#H7R5E!DTO<GLgC(Y8|r=0aBF8M{jRQ_Xsm{&dVh=C^SImN-q<u|@sxPd
+z5RbQMyW;XXrS3;eaXqLXicfO+|I1|t3{FHmPB)J8c!%U|7MI^E4b2^+%xwDBz2lwT
+z5K1S=^r`ikxiY;O$oakFnKMJoJ3XTJcpsnC#pxQ1PwMcTfW_r>N-P_jP}7kvSxx3F
+znkK_1%H_tQerZZ_lg(nBD;3@O;hs=u&;H^CR=4?hqQSndNHCPVXq&dIe_+xY3&#(2
+z=^l5$-x8Pz498-TScWC2>*4OG9ydO*$j7QYX6a&jIOH>7_2xzhG&K4rp!+&|I^!Lg
+zE~|IN7R9yEJHCWQ|CBAeCKgO<MP@<N>i=;cbtH!z`Q~1-T0@b&dL$O?(TkHe)H>t9
+zRMB3L`5}`(FFB+X7EN}5$LntPul6_lo9g^q{@s6@=Zoc*fz1||uUIm^JR;>At2Ftm
+a(LQ-pv|bXUf6qLZ0Nc*8ZS;e-H}DUu-V8MW
+
+delta 14448
+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
+bdh(me7G-iC;>X9lGx<)B@ASXAv%>xtD(hP?
+
+diff --git a/prisma/schema.prisma b/prisma/schema.prisma
+index 1dc0633..50c36a4 100755
+--- a/prisma/schema.prisma
++++ b/prisma/schema.prisma
+@@ -55,11 +55,31 @@ model Chapter {
+ 
+   thesis          Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+   part            Part?     @relation(fields: [partId], references: [id], onDelete: SetNull)
++  versions        ChapterVersion[]
+ 
+   @@index([thesisId])
+   @@index([partId])
+ }
+ 
++// A.4 (annexe technique) : historique natif des chapitres.
++// Le test de production a dû calculer les diffs mot à mot HORS outil
++// (difflib) car Chapter n'avait aucune table d'historique — seul le
++// cadrage possédait des versions (ThesisCadrageVersion). Même schéma :
++// un instantané par sauvegarde modifiant le contenu.
++model ChapterVersion {
++  id        String   @id @default(cuid())
++  chapterId String
++  content   String   @default("") // HTML (Tiptap) au moment de la sauvegarde
++  plainText String   @default("")
++  wordCount Int      @default(0)
++  author    String   @default("doctorant") // auteur de la modification
++  createdAt DateTime @default(now())
++
++  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
++
++  @@index([chapterId])
++}
++
+ model Part {
+   id        String  @id @default(cuid())
+   thesisId  String
+@@ -371,3 +391,29 @@ model DocumentChunk {
+   @@index([sourceId])
+   @@index([thesisId])
+ }
++
++// ═════════════════════════════════════
++// FILE DE TÂCHES PERSISTANTE (A.8)
++// ═════════════════════════════════════
++
++// A.8 (annexe technique) : les opérations longues lancées ad hoc (nohup)
++// étaient tuées entre les sessions. Correction à la racine : file de tâches
++// PERSISTANTE en base — un job survit au processus qui l'a créé ; le worker
++// (src/lib/jobs/worker.ts, démarré par src/instrumentation.ts) reprend les
++// jobs en attente et récupère les jobs "running" devenus orphelins (stale).
++model Job {
++  id         String    @id @default(cuid())
++  type       String // ex : "deep-research" — enregistré dans le registre du worker
++  status     String    @default("pending") // pending | running | done | failed
++  payload    String    @default("{}") // JSON — paramètres d'exécution
++  result     String? // JSON — sortie du handler
++  error      String? // erreur d'échec (si failed)
++  attempts   Int       @default(0)
++  createdAt  DateTime  @default(now())
++  updatedAt  DateTime  @updatedAt
++  startedAt  DateTime?
++  finishedAt DateTime?
++
++  @@index([status])
++  @@index([type])
++}
+diff --git a/src/app/api/chapters/[id]/route.ts b/src/app/api/chapters/[id]/route.ts
+index ef60a99..7ff9042 100755
+--- a/src/app/api/chapters/[id]/route.ts
++++ b/src/app/api/chapters/[id]/route.ts
+@@ -5,6 +5,10 @@ import { z } from "zod/v4";
+ 
+ // ═══════════════════════════════════════
+ // PUT /api/chapters/[id] — Update a chapter
++// A.4 (annexe technique) : chaque sauvegarde qui MODIFIE le contenu crée
++// une entrée d'historique (ChapterVersion) — même schéma que les versions
++// du cadrage (ThesisCadrageVersion). Les sauvegardes sans changement de
++// contenu (statut, feedback directeur…) ne polluent pas l'historique.
+ // ═══════════════════════════════════════
+ 
+ 
+@@ -17,12 +21,34 @@ export async function PUT(
+     const body = await request.json();
+     const validated = updateChapterSchema.parse(body);
+ 
++    // A.4 : l'historique n'a de sens que si le contenu change réellement.
++    const contentWillChange =
++      typeof validated.content === "string" &&
++      (await db.chapter.findUnique({
++        where: { id },
++        select: { content: true },
++      }))?.content !== validated.content;
++
+     const chapter = await db.chapter.update({
+       where: { id },
+       data: validated,
+     });
+ 
+-    return NextResponse.json({ data: chapter });
++    let versionId: string | null = null;
++    if (contentWillChange) {
++      const version = await db.chapterVersion.create({
++        data: {
++          chapterId: id,
++          content: chapter.content,
++          plainText: chapter.plainText,
++          wordCount: chapter.wordCount,
++          author: "doctorant",
++        },
++      });
++      versionId = version.id;
++    }
++
++    return NextResponse.json({ data: chapter, versionId });
+   } catch (error) {
+     if (error instanceof z.ZodError) {
+       return NextResponse.json(
+diff --git a/src/app/api/chapters/[id]/versions/route.ts b/src/app/api/chapters/[id]/versions/route.ts
+new file mode 100644
+index 0000000..977567f
+--- /dev/null
++++ b/src/app/api/chapters/[id]/versions/route.ts
+@@ -0,0 +1,39 @@
++import { NextRequest, NextResponse } from "next/server";
++import { db } from "@/lib/db";
++
++// ═══════════════════════════════════════
++// GET /api/chapters/[id]/versions — Historique du chapitre (A.4)
++// Retourne les versions (la plus récente d'abord) avec le contenu,
++// pour le calcul du diff mot à mot côté client.
++// ═══════════════════════════════════════
++
++export async function GET(
++  _request: NextRequest,
++  { params }: { params: Promise<{ id: string }> }
++) {
++  try {
++    const { id } = await params;
++
++    const versions = await db.chapterVersion.findMany({
++      where: { chapterId: id },
++      orderBy: { createdAt: "desc" },
++      take: 50,
++      select: {
++        id: true,
++        content: true,
++        plainText: true,
++        wordCount: true,
++        author: true,
++        createdAt: true,
++      },
++    });
++
++    return NextResponse.json({ data: versions });
++  } catch (error) {
++    console.error("[GET /api/chapters/[id]/versions] Error:", error);
++    return NextResponse.json(
++      { error: "Erreur lors de la récupération de l'historique" },
++      { status: 500 }
++    );
++  }
++}
+diff --git a/src/app/api/deep-research/route.ts b/src/app/api/deep-research/route.ts
+index 7d4b981..8726116 100644
+--- a/src/app/api/deep-research/route.ts
++++ b/src/app/api/deep-research/route.ts
+@@ -1,53 +1,16 @@
+ // ═══════════════════════════════════════════════════════════════
+-// POST /api/deep-research — Pipeline de recherche approfondie
+-// Inspiré de langchain-ai/open_deep_research
+-// Pipeline : Brief → Plan → Search → Read → Compress → Report
++// POST /api/deep-research — wrapper mince autour du pipeline
++// Le pipeline complet vit dans src/lib/research/deep-research-pipeline.ts
++// afin d'être exécutable aussi par le worker de la file de tâches (A.8).
+ // v1.9.3 : ajout mode "academic" (OpenAlex + curation déterministe)
+-//   Inspiration retriever : gpt-researcher (Apache 2.0 — attribution si copie de code)
+-//   Aucun code copié — architecture inspirée, implémentation originale
++// A.2 : repli automatique CrossRef + HAL avec triangulation
++// A.3 : rapport web robuste (continuation + section Sources garantie)
+ // ═══════════════════════════════════════════════════════════════
+ 
+ import { NextRequest, NextResponse } from "next/server";
+ import { z } from "zod/v4";
+-import {
+-  generateCompletion,
+-  type AiMessage,
+-} from "@/lib/ai/zai-client";
+ import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
+-import { type AiProviderConfig } from "@/lib/ai/ai-types";
+-import {
+-  searchWorks,
+-  type CoreWork,
+-} from "@/lib/core-api";
+-import {
+-  searchAcademicWorks,
+-  formatWorksForPrompt,
+-  formatWorksAsReferences,
+-  type CuratedWork,
+-} from "@/lib/research/openalex";
+-import {
+-  curateWorks,
+-  curationSummary,
+-  CURATION_THRESHOLD_ACCEPTABLE,
+-} from "@/lib/research/curation";
+-
+-// ── ZAI SDK singleton (web search + page reader) ──────────────────
+-// Dynamic import — SDK is serverExternalPackages, may not exist in standalone/desktop
+-let zaiInstance: Promise<any> | null = null;
+-let _sdkLoadFailed = false;
+-async function getZai(): Promise<any> {
+-  if (_sdkLoadFailed) throw new Error("Le mode de recherche web nécessite l'environnement z.ai (non disponible en mode bureau). Utilisez le mode académique.");
+-  if (!zaiInstance) {
+-    try {
+-      const SDK = await import("z-ai-web-dev-sdk");
+-      zaiInstance = SDK.default.create();
+-    } catch {
+-      _sdkLoadFailed = true;
+-      throw new Error("Le mode de recherche web nécessite l'environnement z.ai (non disponible en mode bureau). Utilisez le mode académique.");
+-    }
+-  }
+-  return zaiInstance;
+-}
++import { runDeepResearch } from "@/lib/research/deep-research-pipeline";
+ 
+ // ── Validation ──────────────────────────────────────────────────
+ const schema = z.object({
+@@ -57,628 +20,20 @@ const schema = z.object({
+   _aiConfig: z.unknown().optional(),
+ });
+ 
+-// ── Types ───────────────────────────────────────────────────────
+-interface SearchResult {
+-  url: string;
+-  name: string;
+-  snippet: string;
+-  host_name: string;
+-}
+-
+-interface SubQuery {
+-  query: string;
+-  rationale: string;
+-}
+-
+-type SourceMode = "web" | "academic";
+-
+-// ── Pipeline Steps ─────────────────────────────────────────────
+-
+-/** Step 1: Transform user query into a structured research brief */
+-async function generateResearchBrief(
+-  userQuery: string,
+-  providerConfig?: AiProviderConfig,
+-  thesisContext?: string,
+-): Promise<string> {
+-  const systemPrompt = `Tu es un assistant de recherche académique. Tu transformes une question d'utilisateur en un brief de recherche détaillé et structuré.
+-
+-RÈGLES :
+-1. Maximise la spécificité et le détail
+-2. Si l'utilisateur n'a pas précisé certains aspects, indique-le comme ouvert
+-3. Ne fais PAS d'hypothèses non justifiées
+-4. Formule à la première personne (du point de vue du chercheur)
+-5. Pour les requêtes académiques, privilégie les sources originales et les revues à comité de lecture
+-6. Si la question est en français, le brief doit être en français
+-
+-FORMAT : Un paragraphe structuré décrivant la recherche à mener, les dimensions à explorer, et les attentes.`;
+-
+-  const messages: AiMessage[] = [
+-    { role: "system", content: systemPrompt },
+-  ];
+-  if (thesisContext) {
+-    messages.push({
+-      role: "system",
+-      content: `CONTEXTE DE LA THÈSE DE L'UTILISATEUR :\n${thesisContext}`,
+-    });
+-  }
+-  messages.push({ role: "user", content: userQuery });
+-
+-  const result = await generateCompletion({
+-    messages,
+-    temperature: 0.5,
+-    providerConfig,
+-  });
+-  return result.content;
+-}
+-
+-/** Step 2: Plan sub-queries for parallel search */
+-async function planSubQueries(
+-  researchBrief: string,
+-  providerConfig?: AiProviderConfig,
+-  sourceMode?: SourceMode,
+-): Promise<SubQuery[]> {
+-  // En mode academic, on optimise pour les requêtes en anglais
+-  const modeHint = sourceMode === "academic"
+-    ? "\n- IMPORTANT : Formule TOUTES les requêtes en ANGLAIS pour optimiser la recherche OpenAlex (base de données anglophone)"
+-    : "";
+-
+-  const systemPrompt = `Tu es un planificateur de recherche. Tu décomposes un brief de recherche en 3 à 5 sous-requêtes de recherche indépendantes et parallélisables.
+-
+-RÈGLES :
+-- Chaque sous-requête doit cibler un aspect distinct du brief
+-- Les sous-requêtes doivent être complémentaires, pas redondantes
+-- Formule les requêtes en français OU en anglais selon ce qui donnera les meilleurs résultats académiques
+-- Privilégie les termes anglophones pour les sujets scientifiques internationaux${modeHint}
+-- Chaque requête doit pouvoir être utilisée directement dans un moteur de recherche
+-
+-RÉPONDS UNIQUEMENT au format JSON suivant, sans aucun texte avant ou après :
+-{"queries": [{"query": "...", "rationale": "..."}]}
+-
+-LIMITE : 3 à 5 requêtes maximum.`;
+-
+-  const result = await generateCompletion({
+-    messages: [
+-      { role: "system", content: systemPrompt },
+-      { role: "user", content: `BRIEF DE RECHERCHE :\n${researchBrief}` },
+-    ],
+-    temperature: 0.4,
+-    providerConfig,
+-  });
+-
+-  try {
+-    const jsonStr = result.content.replace(/```json\n?|```\n?/g, "").trim();
+-    const parsed = JSON.parse(jsonStr);
+-    const queries: SubQuery[] = (parsed.queries || []).slice(0, 5);
+-    return queries;
+-  } catch {
+-    return [{ query: researchBrief.substring(0, 200), rationale: "Requête principale" }];
+-  }
+-}
+-
+-/** Step 3a: Execute web searches in parallel (mode "web") */
+-async function executeWebSearches(
+-  subQueries: SubQuery[],
+-): Promise<SearchResult[]> {
+-  const zai = await getZai();
+-  const allResults: SearchResult[] = [];
+-
+-  const searchPromises = subQueries.map(async (sq) => {
+-    try {
+-      const results = await zai.functions.invoke("web_search", {
+-        query: sq.query,
+-        num: 5,
+-      });
+-      return (Array.isArray(results) ? results : []).map((r) => ({
+-        url: (r as unknown as Record<string, string>).url || "",
+-        name: (r as unknown as Record<string, string>).name || "",
+-        snippet: (r as unknown as Record<string, string>).snippet || "",
+-        host_name: (r as unknown as Record<string, string>).host_name || "",
+-      }));
+-    } catch (err) {
+-      console.error(`[deep-research] Search failed for: ${sq.query}`, err);
+-      return [] as SearchResult[];
+-    }
+-  });
+-
+-  const searchResults = await Promise.all(searchPromises);
+-
+-  // Deduplicate by URL
+-  const seen = new Set<string>();
+-  for (const results of searchResults) {
+-    for (const r of results) {
+-      if (r.url && !seen.has(r.url)) {
+-        seen.add(r.url);
+-        allResults.push(r);
+-      }
+-    }
+-  }
+-
+-  return allResults;
+-}
+-
+-/** Step 3b: Search CORE (open access academic papers) — mode "web" */
+-async function searchCorePapers(
+-  subQueries: SubQuery[],
+-): Promise<CoreWork[]> {
+-  const allWorks: CoreWork[] = [];
+-  const seen = new Set<number>();
+-
+-  const queriesToUse = subQueries.slice(0, 3);
+-
+-  const corePromises = queriesToUse.map(async (sq) => {
+-    try {
+-      const results = await searchWorks(sq.query, 5, 0);
+-      return results.results;
+-    } catch (err) {
+-      console.error(`[deep-research] CORE search failed for: ${sq.query}`, err);
+-      return [] as CoreWork[];
+-    }
+-  });
+-
+-  const coreResults = await Promise.all(corePromises);
+-
+-  for (const works of coreResults) {
+-    for (const w of works) {
+-      if (!seen.has(w.id)) {
+-        seen.add(w.id);
+-        allWorks.push(w);
+-      }
+-    }
+-  }
+-
+-  return allWorks
+-    .sort((a, b) => (b.citationCount || 0) - (a.citationCount || 0))
+-    .slice(0, 8);
+-}
+-
+-/** Step 3c: Search OpenAlex + curation déterministe — mode "academic" */
+-async function searchOpenAlexWorks(
+-  subQueries: SubQuery[],
+-): Promise<CuratedWork[]> {
+-  const allRawWorks = [];
+-  const seenIds = new Set<string>();
+-
+-  const queriesToUse = subQueries.slice(0, 4);
+-
+-  const promises = queriesToUse.map(async (sq) => {
+-    try {
+-      const works = await searchAcademicWorks(sq.query, { limit: 15, sort: "cited_by_count:desc" });
+-      return works;
+-    } catch (err) {
+-      console.error(`[deep-research] OpenAlex search failed for: ${sq.query}`, err);
+-      return [];
+-    }
+-  });
+-
+-  const results = await Promise.all(promises);
+-
+-  for (const works of results) {
+-    for (const w of works) {
+-      if (!seenIds.has(w.id)) {
+-        seenIds.add(w.id);
+-        allRawWorks.push(w);
+-      }
+-    }
+-  }
+-
+-  // Curation déterministe : filtre + score + tri
+-  const curated = curateWorks(allRawWorks, {
+-    maxResults: 15,
+-    minScore: CURATION_THRESHOLD_ACCEPTABLE,
+-  });
+-
+-  const summary = curationSummary(curated);
+-  console.error(
+-    `[deep-research] OpenAlex curation: ${summary.total} sources (${summary.bons} bons, ${summary.acceptables} acceptables, ${summary.faibles} faibles), score moyen: ${summary.avgScore}`,
+-  );
+-
+-  return curated;
+-}
+-
+-/** Step 4: Read top pages and extract content (mode "web") */
+-async function readTopPages(
+-  searchResults: SearchResult[],
+-  maxPages = 6,
+-): Promise<{ title: string; url: string; content: string }[]> {
+-  const zai = await getZai();
+-  const topPages = searchResults.slice(0, maxPages);
+-
+-  const readPromises = topPages.map(async (page) => {
+-    try {
+-      const result = await zai.functions.invoke("page_reader", {
+-        url: page.url,
+-      });
+-      const html = (result as unknown as Record<string, string>).html || "";
+-      const text = html
+-        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+-        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+-        .replace(/<[^>]+>/g, " ")
+-        .replace(/\s+/g, " ")
+-        .trim();
+-      return {
+-        title: page.name,
+-        url: page.url,
+-        content: text.substring(0, 8000),
+-      };
+-    } catch (err) {
+-      console.error(`[deep-research] Failed to read: ${page.url}`, err);
+-      return null;
+-    }
+-  });
+-
+-  const results = await Promise.all(readPromises);
+-  return results.filter((r): r is NonNullable<typeof r> => r !== null);
+-}
+-
+-/** Step 5a: Compress findings (mode "web") */
+-async function compressWebFindings(
+-  researchBrief: string,
+-  pages: { title: string; url: string; content: string }[],
+-  searchSnippets: SearchResult[],
+-  corePapers: CoreWork[],
+-  providerConfig?: AiProviderConfig,
+-): Promise<string> {
+-  let sourceIndex = 0;
+-
+-  const webSources = pages
+-    .map((p) => { sourceIndex++; return `[${sourceIndex}] ${p.title}: ${p.url}`; })
+-    .join("\n");
+-
+-  const allContent = pages
+-    .map((p) => { const idx = sourceIndex - pages.length + pages.indexOf(p) + 1; return `--- SOURCE ${idx}: ${p.title} ---\n${p.content}`; })
+-    .join("\n\n");
+-
+-  const coreSources = corePapers
+-    .map((w) => {
+-      sourceIndex++;
+-      const authors = w.authors.map((a) => a.name).join(", ");
+-      return `[${sourceIndex}] ${authors} (${w.yearPublished || "s.d."}). ${w.title}
+-   URL: https://core.ac.uk/works/${w.id}${w.doi ? ` | DOI: ${w.doi}` : ""}
+-   Abstract: ${(w.abstract || "").substring(0, 1500)}`;
+-    })
+-    .join("\n\n");
+-
+-  const coreSourceList = corePapers
+-    .map((w) => {
+-      sourceIndex++;
+-      const authors = w.authors.map((a) => a.name).join(", ");
+-      return `[${sourceIndex - corePapers.length}] ${authors} (${w.yearPublished || "s.d."}). ${w.title}: https://core.ac.uk/works/${w.id}`;
+-    })
+-    .join("\n");
+-
+-  const readUrls = new Set(pages.map((p) => p.url));
+-  const extraSnippets = searchSnippets
+-    .filter((s) => !readUrls.has(s.url))
+-    .slice(0, 5)
+-    .map(
+-      (s) => {
+-        sourceIndex++;
+-        return `[${sourceIndex}] ${s.name}: ${s.url}\nRésumé : ${s.snippet}`;
+-      }
+-    )
+-    .join("\n\n");
+-
+-  const allSources = [webSources, coreSourceList].filter(Boolean).join("\n");
+-
+-  const systemPrompt = `Tu es un assistant de recherche qui compresse les résultats de recherche. Ton travail est de nettoyer les résultats en préservant TOUTES les informations pertinentes.
+-
+-<Règles>
+-1. Conserve TOUTES les informations pertinentes — répète les données clés textuellement
+-2. Le rapport doit être COMPLET — il sera utilisé pour générer le rapport final
+-3. Inclus des citations entre crochets [n] pour chaque source
+-4. Inclue une section "### Sources" à la fin
+-5. Ne résume PAS au point de perdre des informations
+-</Règles>
+-
+-<Format de sortie>
+-**Requêtes de recherche et sources consultées**
+-(liste des requêtes)
+-
+-**Résultats synthétisés**
+-(contenu détaillé avec citations)
+-
+-**Liste de toutes les sources**
+-[1] Titre: URL
+-[2] Titre: URL
+-...`;
+-
+-  const result = await generateCompletion({
+-    messages: [
+-      { role: "system", content: systemPrompt },
+-      {
+-        role: "user",
+-        content: `BRIEF DE RECHERCHE :\n${researchBrief}\n\nCONTENU DES PAGES LUES (WEB) :\n${allContent}${coreSources ? `\n\n--- ARTICLES ACADÉMIQUES (CORE Open Access) ---\n${coreSources}` : ""}${extraSnippets ? `\n\nEXTRAITS SUPPLÉMENTAIRES (WEB) :\n${extraSnippets}` : ""}\n\nSOURCES :\n${allSources}`,
+-      },
+-    ],
+-    temperature: 0.3,
+-    maxTokens: 8000,
+-    providerConfig,
+-  });
+-
+-  return result.content;
+-}
+-
+-/** Step 5b: Compress findings (mode "academic" — OpenAlex curé) */
+-async function compressAcademicFindings(
+-  researchBrief: string,
+-  curatedWorks: CuratedWork[],
+-  providerConfig?: AiProviderConfig,
+-): Promise<string> {
+-  const worksContent = formatWorksForPrompt(curatedWorks);
+-  const references = formatWorksAsReferences(curatedWorks);
+-
+-  const curationInfo = curatedWorks
+-    .map((w, i) => `[${i + 1}] Score: ${w.curationScore} (${w.curationDetails.isPeerReviewed ? "peer-reviewed" : w.type}) | Citations: ${w.citedByCount} | OA: ${w.oaStatus}`)
+-    .join("\n");
+-
+-  const systemPrompt = `Tu es un assistant de recherche académique spécialisé dans la synthèse de littérature. Tu reçois des articles académiques déjà filtrés et évalués (curation déterministe).
+-
+-<Règles>
+-1. Conserve TOUTES les informations pertinentes — répète les données clés textuellement
+-2. Le rapport doit être COMPLET — il sera utilisé pour générer le rapport final
+-3. Inclus des citations entre crochets [n] pour chaque source
+-4. Organise par thématiques, pas par article
+-5. Identifie les convergences, divergences et lacunes entre les sources
+-6. Ne résume PAS au point de perdre des informations
+-</Règles>
+-
+-<Format de sortie>
+-**Requêtes de recherche et sources académiques consultées**
+-(liste des requêtes)
+-
+-**Résultats synthétisés par thématique**
+-(contenu détaillé avec citations [n])
+-
+-**Convergences et divergences identifiées**
+-(analyse comparative des sources)
+-
+-**Lacunes et pistes de recherche**
+-(gaps identifiés dans la littérature)`;
+-
+-  const result = await generateCompletion({
+-    messages: [
+-      { role: "system", content: systemPrompt },
+-      {
+-        role: "user",
+-        content: `BRIEF DE RECHERCHE :\n${researchBrief}\n\n--- SOURCES ACADÉMIQUES CURÉES (OpenAlex) ---\nScores de curation :\n${curationInfo}\n\nDétail des sources :\n${worksContent}\n\nRÉFÉRENCES :\n${references}`,
+-      },
+-    ],
+-    temperature: 0.3,
+-    maxTokens: 8000,
+-    providerConfig,
+-  });
+-
+-  return result.content;
+-}
+-
+-/** Step 6: Generate final report — mode "web" */
+-async function generateWebReport(
+-  researchBrief: string,
+-  compressedFindings: string,
+-  providerConfig?: AiProviderConfig,
+-): Promise<string> {
+-  const systemPrompt = `Tu es un chercheur académique expérimenté. Tu rédiges un rapport de recherche approfondi et structuré.
+-
+-<Règles>
+-1. Structure le rapport avec des titres (## pour sections, ### pour sous-sections)
+-2. Inclus des faits spécifiques et des données des sources
+-3. Réfère les sources avec le format [Titre](URL)
+-4. Analyse de manière équilibrée et exhaustive
+-5. N'utilise PAS de langage auto-référentiel (ne dis pas "je vais...")
+-6. Chaque section doit être aussi longue que nécessaire pour répondre en profondeur
+-7. Utilise des listes à puces quand c'est pertinent
+-8. Rédige en français académique
+-</Règles>
+-
+-<Citation Rules>
+-- Assigne un numéro unique [n] à chaque URL dans le texte
+-- Termine par une section ### Sources avec toutes les références
+-- Format : [1] Titre de la source: URL
+-- Chaque source sur une ligne séparée
+-</Citation Rules>
+-
+-<Structure possible>
+-Pour une question comparative :
+-1. Introduction
+-2. Vue d'ensemble du sujet A
+-3. Vue d'ensemble du sujet B
+-4. Comparaison A vs B
+-5. Conclusion
+-
+-Pour une question de synthèse :
+-1. Introduction
+-2. Concept 1
+-3. Concept 2
+-4. Concept 3
+-5. Conclusion
+-
+-Adapte la structure au sujet. Le rapport doit être complet et professionnel.`;
+-
+-  const result = await generateCompletion({
+-    messages: [
+-      { role: "system", content: systemPrompt },
+-      {
+-        role: "user",
+-        content: `BRIEF DE RECHERCHE :\n${researchBrief}\n\nRÉSULTATS DE LA RECHERCHE :\n${compressedFindings}`,
+-      },
+-    ],
+-    temperature: 0.5,
+-    maxTokens: 10000,
+-    providerConfig,
+-  });
+-
+-  return result.content;
+-}
+-
+-/** Step 6: Generate final report — mode "academic" */
+-async function generateAcademicReport(
+-  researchBrief: string,
+-  compressedFindings: string,
+-  curatedWorks: CuratedWork[],
+-  providerConfig?: AiProviderConfig,
+-): Promise<string> {
+-  const references = formatWorksAsReferences(curatedWorks);
+-
+-  const systemPrompt = `Tu es un chercheur académique expérimenté. Tu rédiges une synthèse de littérature structurée à partir de sources académiques peer-reviewed.
+-
+-<Règles>
+-1. Structure la synthèse avec des titres (## pour thématiques, ### pour sous-thèmes)
+-2. Inclus des faits spécifiques et des données des sources
+-3. Réfère les sources avec le format (Auteur, Année) et numérotation [n]
+-4. Analyse de manière équilibrée et exhaustive
+-5. N'utilise PAS de langage auto-référentiel
+-6. Chaque section doit être aussi longue que nécessaire pour répondre en profondeur
+-7. Utilise des listes à puces quand c'est pertinent
+-8. Rédige en français académique
+-9. Signale explicitement les convergences et divergences entre auteurs
+-10. Identifie les lacunes dans la littérature (research gaps)
+-</Règles>
+-
+-<Citation Rules>
+-- Assigne un numéro unique [n] à chaque source dans le texte
+-- Utilise le format (Auteur, Année) dans le corps du texte
+-- Termine par une section ### Références avec toutes les références complètes
+-- Format : [1] Auteurs (Année). Titre. Venue. DOI.
+-</Citation Rules>
+-
+-<Structure attendue>
+-1. Introduction et périmètre de la synthèse
+-2. Thématiques identifiées (2-4 sections)
+-3. Synthèse comparative et convergences/divergences
+-4. Lacunes et pistes de recherche
+-5. Conclusion`;
+-
+-  const result = await generateCompletion({
+-    messages: [
+-      { role: "system", content: systemPrompt },
+-      {
+-        role: "user",
+-        content: `BRIEF DE RECHERCHE :\n${researchBrief}\n\nRÉSULTATS DE LA RECHERCHE ACADÉMIQUE :\n${compressedFindings}\n\nRÉFÉRENCES COMPLÈTES :\n${references}`,
+-      },
+-    ],
+-    temperature: 0.5,
+-    maxTokens: 10000,
+-    providerConfig,
+-  });
+-
+-  return result.content;
+-}
+-
+-// ── Main Handler ────────────────────────────────────────────────
+-
+ export async function POST(request: NextRequest) {
+   try {
+     const body = await request.json();
+     const validated = schema.parse(body);
+     const providerConfig = resolveAiConfig(request, validated._aiConfig);
+-    const sourceMode = validated.sourceMode as SourceMode;
+ 
+-    // ── Step 1: Research Brief ──
+-    const researchBrief = await generateResearchBrief(
+-      validated.prompt,
++    const result = await runDeepResearch({
++      prompt: validated.prompt,
++      context: validated.context,
++      sourceMode: validated.sourceMode,
+       providerConfig,
+-      validated.context,
+-    );
+-
+-    // ── Step 2: Plan Sub-Queries ──
+-    const subQueries = await planSubQueries(researchBrief, providerConfig, sourceMode);
+-
+-    // ── Step 3+4+5+6: Branch by source mode ──
+-    if (sourceMode === "academic") {
+-      // ── Mode académique : OpenAlex + curation déterministe ──
+-      const curatedWorks = await searchOpenAlexWorks(subQueries);
+-
+-      if (curatedWorks.length === 0) {
+-        return NextResponse.json({
+-          data: {
+-            content:
+-              "Aucune source académique pertinente trouvée via OpenAlex. Essayez de reformuler votre question en termes plus spécifiques, ou utilisez le mode Web pour élargir la recherche.",
+-            mode: "deep-research",
+-            sourceMode: "academic",
+-            steps: { brief: researchBrief, queries: subQueries, curatedSources: 0 },
+-          },
+-        });
+-      }
+-
+-      const summary = curationSummary(curatedWorks);
+-      const compressedFindings = await compressAcademicFindings(
+-        researchBrief,
+-        curatedWorks,
+-        providerConfig,
+-      );
+-
+-      const finalReport = await generateAcademicReport(
+-        researchBrief,
+-        compressedFindings,
+-        curatedWorks,
+-        providerConfig,
+-      );
+-
+-      return NextResponse.json({
+-        data: {
+-          content: finalReport,
+-          mode: "deep-research",
+-          sourceMode: "academic",
+-          steps: {
+-            brief: researchBrief,
+-            queriesCount: subQueries.length,
+-            curatedSources: summary.total,
+-            curatedBon: summary.bons,
+-            curatedAcceptable: summary.acceptables,
+-            avgCurationScore: summary.avgScore,
+-          },
+-        },
+-      });
+-    }
+-
+-    // ── Mode web (existant, inchangé) : Tavily + CORE ──
+-    const [searchResults, corePapers] = await Promise.all([
+-      executeWebSearches(subQueries),
+-      searchCorePapers(subQueries),
+-    ]);
+-
+-    if (searchResults.length === 0 && corePapers.length === 0) {
+-      return NextResponse.json({
+-        data: {
+-          content:
+-            "Aucun résultat de recherche trouvé. Veuillez reformuler votre question ou essayer un autre sujet.",
+-          mode: "deep-research",
+-          sourceMode: "web",
+-          steps: { brief: researchBrief, queries: subQueries, sources: 0 },
+-        },
+-      });
+-    }
+-
+-    const pages = await readTopPages(searchResults, 6);
+-
+-    const compressedFindings = await compressWebFindings(
+-      researchBrief,
+-      pages,
+-      searchResults,
+-      corePapers,
+-      providerConfig,
+-    );
+-
+-    const finalReport = await generateWebReport(
+-      researchBrief,
+-      compressedFindings,
+-      providerConfig,
+-    );
+-
+-    return NextResponse.json({
+-      data: {
+-        content: finalReport,
+-        mode: "deep-research",
+-        sourceMode: "web",
+-        steps: {
+-          brief: researchBrief,
+-          queriesCount: subQueries.length,
+-          searchResultsCount: searchResults.length,
+-          corePapersCount: corePapers.length,
+-          pagesRead: pages.length,
+-        },
+-      },
+     });
++
++    return NextResponse.json({ data: result });
+   } catch (error) {
+     if (error instanceof z.ZodError) {
+       return NextResponse.json(
+diff --git a/src/app/api/directeur-chat/route.ts b/src/app/api/directeur-chat/route.ts
+index ec69369..24e306a 100755
+--- a/src/app/api/directeur-chat/route.ts
++++ b/src/app/api/directeur-chat/route.ts
+@@ -10,8 +10,25 @@ import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
+ // POST /api/directeur-chat — Chat with AI thesis director
+ // Corpus-aware: injects relevant fiches from the publication corpus
+ // System prompt centralized in src/lib/ai/specializations/directeur.ts
++//
++// ── A.9 (annexe technique) — timeout explicite et relance automatique ──
++// Pendant le test de production, un appel superviseur a couru plus de 320 s
++// avant d'échouer, sans limite ni filet. Correction à la racine :
++//   • Timeout EXPLICITE et DOCUMENTÉ (voir DIRECTEUR_TIMEOUT_MS ci-dessous) ;
++//   • En cas de dépassement : UNE relance automatique à prompt resserré
++//     (contexte tronqué, historique plafonné, consigne de concision) —
++//     exactement le geste manuel qui avait débloqué le test ;
++//   • Aucun appel ne peut plus courir sans limite.
+ // ═══════════════════════════════════════
+ 
++// Timeout nominal de l'appel superviseur (ms) — documenté ici et dans la doc.
++// Surcharge d'environnement possible ; borné côté schéma (5 s → 180 s).
++const DIRECTEUR_TIMEOUT_MS = Number(process.env.DIRECTEUR_TIMEOUT_MS || 150_000);
++// Timeout de la relance à prompt resserré (plus court : la réponse attendue l'est aussi).
++const DIRECTEUR_RETRY_TIMEOUT_MS = Number(
++  process.env.DIRECTEUR_RETRY_TIMEOUT_MS || 120_000
++);
++
+ const DOCTORAL_LEVELS = ["debutant", "intermediaire", "avance"] as const;
+ 
+ const directeurChatSchema = z.object({
+@@ -23,13 +40,58 @@ const directeurChatSchema = z.object({
+   ).min(1),
+   thesisContext: z.string().max(50_000, "Le contexte de thèse ne doit pas dépasser 50 000 caractères").optional(),
+   doctoralLevel: z.enum(DOCTORAL_LEVELS).optional(),
++  // A.9 : timeout explicite par appel, sous contrôle du client (borné).
++  timeoutMs: z
++    .number()
++    .int()
++    .min(5_000, "Le timeout ne peut pas être inférieur à 5 s")
++    .max(180_000, "Le timeout ne peut pas dépasser 180 s")
++    .optional(),
+   _aiConfig: z.unknown().optional(),
+ });
+ 
++/** Détecte une erreur de dépassement de délai (AbortSignal.timeout, réseau). */
++function isTimeoutError(error: unknown): boolean {
++  if (error instanceof DOMException && error.name === "TimeoutError") return true;
++  const message = error instanceof Error ? error.message : String(error);
++  return /timeout|timed out|aborted|TimeoutError|d[ée]lai.*d[ée]pass[ée]/i.test(message);
++}
++
++/** Reconstruit un appel « resserré » : consigne de concision + contexte tronqué + historique plafonné. */
++function buildTightenedMessages(
++  validated: z.infer<typeof directeurChatSchema>,
++  levelCalibration: string
++): AiMessage[] {
++  const TIGHTEN_NOTE =
++    "\n\nMODE REPRISE (l'appel précédent a dépassé le délai) : réponds de manière CONCISE et structurée — environ 600 mots maximum, va droit aux points essentiels, aucun préambule, aucune formule de transition générique.";
++
++  const messages: AiMessage[] = [
++    { role: "system", content: DIRECTEUR_PROMPT + TIGHTEN_NOTE + levelCalibration },
++  ];
++
++  // Contexte tronqué à l'essentiel (8 000 caractères max)
++  if (validated.thesisContext) {
++    messages.push({
++      role: "system",
++      content: `INFORMATIONS SUR LA THÈSE DU DOCTORANT (extrait resserré) :\n${validated.thesisContext.slice(0, 8_000)}`,
++    });
++  }
++
++  // Historique plafonné : 4 derniers messages, chacun tronqué à 4 000 caractères
++  const cappedHistory = validated.messages.slice(-4).map((m) => ({
++    role: m.role,
++    content: m.content.slice(0, 4_000),
++  }));
++  messages.push(...cappedHistory);
++
++  return messages;
++}
++
+ export async function POST(request: NextRequest) {
+   try {
+     const body = await request.json();
+     const validated = directeurChatSchema.parse(body);
++    const timeoutMs = validated.timeoutMs ?? DIRECTEUR_TIMEOUT_MS;
+ 
+     // Extract the latest user message for fiche detection
+     const latestUserMessage = [...validated.messages]
+@@ -47,7 +109,8 @@ export async function POST(request: NextRequest) {
+       const ficheContent = getFichesContentForPrompt(relevantFicheIds);
+       systemPrompt += ficheContent;
+     }
+-    systemPrompt += getLevelCalibration(validated.doctoralLevel);
++    const levelCalibration = getLevelCalibration(validated.doctoralLevel);
++    systemPrompt += levelCalibration;
+ 
+     // Build messages array for AI
+     const aiMessages: AiMessage[] = [
+@@ -73,16 +136,43 @@ export async function POST(request: NextRequest) {
+     // Resolve AI config from httpOnly cookie (secure) or body (backward compat)
+     const providerConfig = resolveAiConfig(request, validated._aiConfig);
+ 
+-    const result = await generateCompletion({
+-      messages: aiMessages,
+-      temperature: 0.7,
+-      providerConfig,
+-    });
++    // ── A.9 : appel nominal borné par un timeout explicite ──
++    // maxRetriesPerProvider: 0 → le budget total de l'appel est prévisible
++    // (timeoutMs + chaîne de fallback éventuelle), pas de multiplication cachée.
++    let result;
++    let retried = false;
++    try {
++      result = await generateCompletion({
++        messages: aiMessages,
++        temperature: 0.7,
++        timeoutMs,
++        maxRetriesPerProvider: 0,
++        providerConfig,
++      });
++    } catch (firstError) {
++      // Autre erreur que timeout → remontée normale
++      if (!isTimeoutError(firstError)) throw firstError;
++
++      // ── A.9 : relance automatique unique à prompt resserré ──
++      console.warn(
++        `[directeur-chat] Dépassement du timeout (${timeoutMs} ms) — relance automatique unique à prompt resserré (${DIRECTEUR_RETRY_TIMEOUT_MS} ms)`
++      );
++      retried = true;
++      result = await generateCompletion({
++        messages: buildTightenedMessages(validated, levelCalibration),
++        temperature: 0.6,
++        timeoutMs: DIRECTEUR_RETRY_TIMEOUT_MS,
++        maxRetriesPerProvider: 0,
++        providerConfig,
++      });
++    }
+ 
+     return NextResponse.json({
+       data: {
+         content: result.content,
+         role: "assistant",
++        retried,
++        timeoutMs,
+       },
+     });
+   } catch (error) {
+diff --git a/src/app/api/jobs/[id]/route.ts b/src/app/api/jobs/[id]/route.ts
+new file mode 100644
+index 0000000..c766a3c
+--- /dev/null
++++ b/src/app/api/jobs/[id]/route.ts
+@@ -0,0 +1,46 @@
++import { NextRequest, NextResponse } from "next/server";
++import { db } from "@/lib/db";
++
++// ═══════════════════════════════════════
++// GET /api/jobs/[id] — État détaillé d'un job (A.8)
++// ═══════════════════════════════════════
++
++export async function GET(
++  _request: NextRequest,
++  { params }: { params: Promise<{ id: string }> }
++) {
++  try {
++    const { id } = await params;
++
++    const job = await db.job.findUnique({
++      where: { id },
++    });
++
++    if (!job) {
++      return NextResponse.json({ error: "Job introuvable" }, { status: 404 });
++    }
++
++    return NextResponse.json({
++      data: {
++        ...job,
++        payload: safeParse(job.payload),
++        result: job.result ? safeParse(job.result) : null,
++      },
++    });
++  } catch (error) {
++    console.error("[GET /api/jobs/[id]] Error:", error);
++    return NextResponse.json(
++      { error: "Erreur lors de la récupération du job" },
++      { status: 500 }
++    );
++  }
++}
++
++function safeParse(json: string | null): unknown {
++  if (!json) return null;
++  try {
++    return JSON.parse(json);
++  } catch {
++    return json;
++  }
++}
+diff --git a/src/app/api/jobs/route.ts b/src/app/api/jobs/route.ts
+new file mode 100644
+index 0000000..7b5507a
+--- /dev/null
++++ b/src/app/api/jobs/route.ts
+@@ -0,0 +1,84 @@
++import { NextRequest, NextResponse } from "next/server";
++import { z } from "zod/v4";
++import { db } from "@/lib/db";
++import { enqueueJob } from "@/lib/jobs/queue";
++import { getRegisteredJobTypes } from "@/lib/jobs/worker";
++
++// ═══════════════════════════════════════
++// POST /api/jobs — Soumettre une opération longue à la file persistante (A.8)
++// GET  /api/jobs — Lister les jobs (suivi d'état)
++// ═══════════════════════════════════════
++
++const createSchema = z.object({
++  type: z.string().refine(
++    (t) => getRegisteredJobTypes().includes(t),
++    { message: "Type de job inconnu — voir data.registeredTypes" }
++  ),
++  payload: z.record(z.string(), z.unknown()).optional().default({}),
++});
++
++export async function POST(request: NextRequest) {
++  try {
++    const body = await request.json();
++    const validated = createSchema.parse(body);
++
++    const job = await enqueueJob(validated.type, validated.payload);
++
++    return NextResponse.json(
++      {
++        data: {
++          id: job.id,
++          type: job.type,
++          status: job.status,
++          createdAt: job.createdAt,
++        },
++        registeredTypes: getRegisteredJobTypes(),
++      },
++      { status: 201 }
++    );
++  } catch (error) {
++    if (error instanceof z.ZodError) {
++      return NextResponse.json(
++        { error: "Données invalides", details: error.flatten() },
++        { status: 400 }
++      );
++    }
++    console.error("[POST /api/jobs] Error:", error);
++    return NextResponse.json(
++      { error: "Erreur lors de la soumission du job" },
++      { status: 500 }
++    );
++  }
++}
++
++export async function GET(request: NextRequest) {
++  try {
++    const { searchParams } = request.nextUrl;
++    const status = searchParams.get("status");
++    const limit = Math.min(Number(searchParams.get("limit") || 20), 100);
++
++    const jobs = await db.job.findMany({
++      where: status ? { status } : undefined,
++      orderBy: { createdAt: "desc" },
++      take: limit,
++      select: {
++        id: true,
++        type: true,
++        status: true,
++        attempts: true,
++        error: true,
++        createdAt: true,
++        startedAt: true,
++        finishedAt: true,
++      },
++    });
++
++    return NextResponse.json({ data: jobs });
++  } catch (error) {
++    console.error("[GET /api/jobs] Error:", error);
++    return NextResponse.json(
++      { error: "Erreur lors de la récupération des jobs" },
++      { status: 500 }
++    );
++  }
++}
+diff --git a/src/app/api/theses-en-ligne/search/route.ts b/src/app/api/theses-en-ligne/search/route.ts
+index 946547c..fe0bea8 100644
+--- a/src/app/api/theses-en-ligne/search/route.ts
++++ b/src/app/api/theses-en-ligne/search/route.ts
+@@ -6,17 +6,23 @@ import { NextRequest, NextResponse } from "next/server";
+ 
+ const HAL_API = "https://api.archives-ouvertes.fr/search/";
+ 
++// ── A.1 (annexe technique) : codes de domaine corrigés à la racine ──
++// Les thèses HAL indexent leurs domaines de niveau 0 dans le champ
++// `level0_domain_s` avec les codes réels de la taxonomie HAL (vérifié par
++// facette sur docType_s:THESE : shs, sdv, spi, info, phys, chim, sdu, math,
++// sde, scco). Les anciens codes (sci, sm, chimie, stat, cca) n'existent
++// pas chez HAL — le filtre ne retournait jamais aucun résultat.
+ const DOMAINS: Record<string, string> = {
+   shs: "Sciences humaines et sociales",
+-  sci: "Sciences",
+   sdv: "Sciences du vivant",
+-  sde: "Sciences de l'ingénieur",
+-  sm: "Sciences mathématiques",
+-  phys: "Physique",
+-  chimie: "Chimie",
++  spi: "Sciences de l'ingénieur",
+   info: "Informatique",
+-  stat: "Statistiques",
+-  cca: "Sciences cognitives",
++  phys: "Physique",
++  chim: "Chimie",
++  sdu: "Planète et Univers",
++  math: "Mathématiques",
++  sde: "Sciences de l'environnement",
++  scco: "Sciences cognitives",
+ };
+ 
+ export interface ThesisResult {
+@@ -50,7 +56,7 @@ export async function GET(request: NextRequest) {
+     const domain = searchParams.get("domain") || "";
+     const yearMin = searchParams.get("yearMin") || "";
+     const yearMax = searchParams.get("yearMax") || "";
+-    const sort = searchParams.get("sort") || "publicationDateY_i+desc";
++    const sort = searchParams.get("sort") || "publicationDateY_i desc";
+     const page = searchParams.get("page") || "0";
+     const rows = searchParams.get("rows") || "15";
+ 
+@@ -62,9 +68,10 @@ export async function GET(request: NextRequest) {
+     }
+ 
+     // Build Solr query
++    // A.1 : filtre de domaine sur `level0_domain_s` (champ réel des thèses HAL)
+     const fq: string[] = ["docType_s:THESE"];
+     if (domain && DOMAINS[domain]) {
+-      fq.push(`domain_s:${domain}`);
++      fq.push(`level0_domain_s:${domain}`);
+     }
+     if (yearMin) {
+       fq.push(`publicationDateY_i:[${yearMin} TO *]`);
+@@ -73,6 +80,10 @@ export async function GET(request: NextRequest) {
+       fq.push(`publicationDateY_i:[* TO ${yearMax}]`);
+     }
+ 
++    // ── A.1 (annexe technique) : construction d'URL corrigée à la racine ──
++    // Bug historique : `fq.join("&fq=")` passé comme VALEUR d'un seul paramètre `fq`
++    // — URLSearchParams encodait le `&` interne au lieu de créer des paramètres répétés.
++    // Correction : un append() par filtre → plusieurs paramètres fq natifs.
+     const params = new URLSearchParams({
+       q: q,
+       rows: rows,
+@@ -84,16 +95,30 @@ export async function GET(request: NextRequest) {
+         "publicationDateY_i",
+         "abstract_s",
+         "uri_s",
++        "level0_domain_s",
+         "domain_s",
+         "keyword_s",
+         "submittedDate_s",
+       ].join(","),
+-      fq: fq.join("&fq="),
+-      sort: sort,
+       wt: "json",
+     });
++    for (const filter of fq) {
++      params.append("fq", filter);
++    }
+ 
+-    const url = `${HAL_API}?${params.toString()}`;
++    // ── A.1 (suite) : le tri ──
++    // Solr exige `champ ordre` séparé par un ESPACE ; la forme `champ+ordre`
++    // était encodée %2B (plus littéral) et rejetée par l'API HAL.
++    // On normalise tout séparateur (+ ou %2B) en espace, avec défaut sûr.
++    const sortNormalized =
++      sort.replace(/%2B/gi, " ").replace(/\+/g, " ").trim() ||
++      "publicationDateY_i desc";
++    params.set("sort", sortNormalized);
++
++    // Encodage final : les espaces deviennent %20 (forme acceptée par Solr/HAL),
++    // jamais le `+` form-urlencoded que HAL interprète mal sur ce champ.
++    const queryString = params.toString().replace(/\+/g, "%20");
++    const url = `${HAL_API}?${queryString}`;
+     const res = await fetch(url, {
+       headers: { "User-Agent": "MaThese-App/1.0" },
+       signal: AbortSignal.timeout(15000),
+@@ -113,6 +138,7 @@ export async function GET(request: NextRequest) {
+       (doc: Record<string, unknown>) => {
+         const titles = (doc.title_s as string[]) || [];
+         const abstracts = (doc.abstract_s as string[]) || [];
++        const level0Domains = (doc.level0_domain_s as string[]) || [];
+         const domains = (doc.domain_s as string[]) || [];
+         const keywords = (doc.keyword_s as string[]) || [];
+         const authors = (doc.authFullName_s as string[]) || [];
+@@ -126,10 +152,15 @@ export async function GET(request: NextRequest) {
+         // Clean keywords (remove duplicates, limit)
+         const cleanKeywords = [...new Set(keywords)].slice(0, 10);
+ 
+-        // Map domain codes to labels
+-        const domainLabels = domains.map(
+-          (d: string) => DOMAINS[d] || d.replace(/^\d+\./, "")
+-        );
++        // Map domain codes to labels — niveau 0 d'abord (A.1), puis sous-domaines nettoyés
++        const domainLabels = [
++          ...new Set([
++            ...level0Domains.map((d: string) => DOMAINS[d] || d),
++            ...domains
++              .filter((d: string) => !level0Domains.includes(d.replace(/^\d+\./, "")))
++              .map((d: string) => DOMAINS[d] || d.replace(/^\d+\./, "")),
++          ]),
++        ];
+ 
+         return {
+           id: doc.docid as string,
+diff --git a/src/instrumentation.ts b/src/instrumentation.ts
+new file mode 100644
+index 0000000..89b0b0f
+--- /dev/null
++++ b/src/instrumentation.ts
+@@ -0,0 +1,13 @@
++// ═══════════════════════════════════════════════════════════════
++// Instrumentation Next.js — démarrage du worker de la file de
++// tâches persistante (A.8, annexe technique) au boot du serveur.
++// Le worker reprend les jobs "pending" et récupère les jobs
++// "running" orphelins après un redémarrage.
++// ═══════════════════════════════════════════════════════════════
++
++export async function register() {
++  if (process.env.NEXT_RUNTIME === "nodejs") {
++    const { startJobWorker } = await import("@/lib/jobs/worker");
++    startJobWorker();
++  }
++}
+diff --git a/src/lib/ai/zai-client.ts b/src/lib/ai/zai-client.ts
+index e1f4353..df2e10a 100755
+--- a/src/lib/ai/zai-client.ts
++++ b/src/lib/ai/zai-client.ts
+@@ -154,6 +154,10 @@ export interface AiCompletionOptions {
+   model?: string;
+   temperature?: number;
+   maxTokens?: number;
++  /** A.9 : timeout explicite par appel (ms). Défaut : REQUEST_TIMEOUT_MS (60 s). */
++  timeoutMs?: number;
++  /** A.9 : nb de reprises par fournisseur (défaut 2). 0 = une seule tentative. */
++  maxRetriesPerProvider?: number;
+   /** Override provider config (passed from client via request body _aiConfig) */
+   providerConfig?: AiProviderConfig;
+   /** Fallback chain configuration */
+@@ -294,7 +298,7 @@ async function generateWithAPI(
+     method: "POST",
+     headers,
+     body: JSON.stringify(body),
+-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
++    signal: AbortSignal.timeout(options.timeoutMs || REQUEST_TIMEOUT_MS),
+   });
+ 
+   if (!response.ok) {
+@@ -379,6 +383,36 @@ async function buildApiError(response: Response, model: string): Promise<Error &
+ // Failover logic (inspired by freellmapi)
+ // ═══════════════════════════════════════════════════════════════
+ 
++/**
++ * A.9 : borne le temps d'un appel par un timeout explicite.
++ * Le chemin SDK (backend z.ai) n'expose pas d'AbortSignal — on l'entoure
++ * donc d'une course avec un rejet à échéance. Sans cela, un appel
++ * superviseur pouvait courir plus de 320 s sans limite (anomalie du test
++ * de production).
++ */
++function withExplicitTimeout<T>(
++  promise: Promise<T>,
++  timeoutMs: number,
++  label: string
++): Promise<T> {
++  let timer: ReturnType<typeof setTimeout> | undefined;
++  const timeout = new Promise<never>((_, reject) => {
++    timer = setTimeout(
++      () =>
++        reject(
++          new DOMException(
++            `Délai ${label} dépassé (${Math.round(timeoutMs / 1000)} s)`,
++            "TimeoutError"
++          )
++        ),
++      timeoutMs
++    );
++  });
++  return Promise.race([promise, timeout]).finally(() => {
++    if (timer) clearTimeout(timer);
++  });
++}
++
+ /**
+  * Try a single provider config, returns result or throws.
+  */
+@@ -387,8 +421,10 @@ async function tryProvider(
+   config: AiProviderConfig
+ ): Promise<AiCompletionResult> {
+   const backend = detectBackend(config.provider);
++  const timeoutMs = options.timeoutMs || REQUEST_TIMEOUT_MS;
+   if (backend === "zai") {
+-    return generateWithSDK(options);
++    // A.9 : la voie SDK est désormais soumise au timeout explicite aussi
++    return withExplicitTimeout(generateWithSDK(options), timeoutMs, "de la requête IA");
+   }
+   return generateWithAPI(options, config);
+ }
+@@ -490,7 +526,11 @@ export async function generateCompletion(
+     }
+ 
+     try {
+-      const result = await attemptWithRetries(options, providerConfig, 2);
++      const result = await attemptWithRetries(
++        options,
++        providerConfig,
++        options.maxRetriesPerProvider ?? 2
++      );
+       recordSuccess(pid);
+       if (i > 0) {
+         console.log(`[AI] Failover: primary failed, served by ${pid}`);
+@@ -707,7 +747,7 @@ async function streamWithProvider(
+         method: "POST",
+         headers,
+         body: JSON.stringify(body),
+-        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
++        signal: AbortSignal.timeout(options.timeoutMs || REQUEST_TIMEOUT_MS),
+       });
+ 
+       if (!fetchResponse.ok) {
+diff --git a/src/lib/jobs/queue.ts b/src/lib/jobs/queue.ts
+new file mode 100644
+index 0000000..e6d1a25
+--- /dev/null
++++ b/src/lib/jobs/queue.ts
+@@ -0,0 +1,105 @@
++// ═══════════════════════════════════════════════════════════════
++// ThesisFrame — File de tâches persistante (A.8, annexe technique)
++// Les opérations longues étaient lancées ad hoc (nohup) et tuées
++// entre les sessions. Correction à la racine : file persistante en
++// base (modèle Job) — un job survit au processus qui l'a créé et le
++// worker le reprend, y compris après redémarrage du serveur.
++// ═══════════════════════════════════════════════════════════════
++
++import { db } from "@/lib/db";
++
++export type JobStatus = "pending" | "running" | "done" | "failed";
++
++export interface JobRecord {
++  id: string;
++  type: string;
++  status: JobStatus;
++  payload: string;
++  result: string | null;
++  error: string | null;
++  attempts: number;
++  createdAt: Date;
++  updatedAt: Date;
++  startedAt: Date | null;
++  finishedAt: Date | null;
++}
++
++/** Crée un job persistant — renvoie immédiatement, exécution par le worker. */
++export async function enqueueJob(type: string, payload: unknown = {}): Promise<JobRecord> {
++  const job = await db.job.create({
++    data: {
++      type,
++      payload: JSON.stringify(payload ?? {}),
++      status: "pending",
++    },
++  });
++  return job as JobRecord;
++}
++
++/**
++ * Réserve atomiquement le prochain job en attente.
++ * Le `updateMany` conditionnel garantit qu'un seul worker s'approprie le job
++ * (compteur conditionnel = verrou optimiste, sûr même en multi-instances).
++ */
++export async function claimNextJob(): Promise<JobRecord | null> {
++  const candidate = await db.job.findFirst({
++    where: { status: "pending" },
++    orderBy: { createdAt: "asc" },
++    select: { id: true },
++  });
++  if (!candidate) return null;
++
++  const claimed = await db.job.updateMany({
++    where: { id: candidate.id, status: "pending" },
++    data: {
++      status: "running",
++      startedAt: new Date(),
++      attempts: { increment: 1 },
++    },
++  });
++  if (claimed.count === 0) return null; // un autre worker l'a pris
++
++  return (await db.job.findUnique({ where: { id: candidate.id } })) as JobRecord | null;
++}
++
++/** Termine un job avec succès. */
++export async function completeJob(id: string, result: unknown): Promise<void> {
++  await db.job.update({
++    where: { id },
++    data: {
++      status: "done",
++      result: JSON.stringify(result ?? null),
++      finishedAt: new Date(),
++    },
++  });
++}
++
++/** Marque un job comme échoué. */
++export async function failJob(id: string, error: unknown): Promise<void> {
++  const message = error instanceof Error ? error.message : String(error);
++  await db.job.update({
++    where: { id },
++    data: {
++      status: "failed",
++      error: message.slice(0, 2_000),
++      finishedAt: new Date(),
++    },
++  });
++}
++
++/**
++ * Récupère les jobs orphelins : status "running" mais processus disparu
++ * (crash / redémarrage). Appelé périodiquement par le worker — c'est ce qui
++ * garantit la reprise après arrêt, propriété que nohup ne fournissait pas.
++ */
++export async function requeueStaleJobs(staleThresholdMs = 10 * 60 * 1_000): Promise<number> {
++  const threshold = new Date(Date.now() - staleThresholdMs);
++  const result = await db.job.updateMany({
++    where: {
++      status: "running",
++      startedAt: { lt: threshold },
++    },
++    data: { status: "pending", startedAt: null },
++  });
++  return result.count;
++}
+diff --git a/src/lib/jobs/worker.ts b/src/lib/jobs/worker.ts
+new file mode 100644
+index 0000000..ad376e0
+--- /dev/null
++++ b/src/lib/jobs/worker.ts
+@@ -0,0 +1,117 @@
++// ═══════════════════════════════════════════════════════════════
++// ThesisFrame — Worker de la file de tâches (A.8)
++// Démarré par src/instrumentation.ts au lancement du serveur Node.
++// Boucle : récupération des jobs orphelins → revendication du plus
++// ancien job "pending" → exécution par le handler enregistré →
++// done/failed persistés. Toutes les opérations longues doivent
++// passer par cette file au lieu de nohup.
++// ═══════════════════════════════════════════════════════════════
++
++import {
++  claimNextJob,
++  completeJob,
++  failJob,
++  requeueStaleJobs,
++} from "@/lib/jobs/queue";
++import { runDeepResearch } from "@/lib/research/deep-research-pipeline";
++
++/** Registre des handlers — tout type de job long doit s'y enregistrer. */
++type JobHandler = (payload: Record<string, unknown>) => Promise<unknown>;
++
++const HANDLERS: Record<string, JobHandler> = {
++  // Job technique minimal (preuves de bout en bout de la file)
++  noop: async (payload) => ({ ok: true, echo: payload }),
++
++  // Recherche approfondie longue — exécutable hors requête HTTP
++  "deep-research": async (payload) => {
++    const prompt = String(payload.prompt ?? "");
++    if (prompt.length < 10) throw new Error("prompt manquant (min 10 caractères)");
++    const result = await runDeepResearch({
++      prompt,
++      context: typeof payload.context === "string" ? payload.context : undefined,
++      sourceMode: payload.sourceMode === "academic" ? "academic" : "web",
++      // Worker sans requête HTTP : configuration IA par défaut de l'instance
++      providerConfig: undefined,
++    });
++    return result;
++  },
++};
++
++export function getRegisteredJobTypes(): string[] {
++  return Object.keys(HANDLERS);
++}
++
++const POLL_INTERVAL_MS = 3_000;
++const STALE_SWEEP_EVERY_MS = 60_000;
++
++interface WorkerState {
++  started: boolean;
++  timer: NodeJS.Timeout | null;
++  lastSweep: number;
++}
++
++// Cache global — survit aux recompilations HMR du module
++const globalForWorker = globalThis as unknown as {
++  __tfJobWorker?: WorkerState;
++};
++
++async function processOneJob(): Promise<boolean> {
++  const job = await claimNextJob();
++  if (!job) return false;
++
++  const handler = HANDLERS[job.type];
++  if (!handler) {
++    await failJob(job.id, `Type de job inconnu : ${job.type}`);
++    return true;
++  }
++
++  console.warn(`[job-worker] Exécution du job ${job.id} (${job.type})`);
++  try {
++    const payload = JSON.parse(job.payload || "{}") as Record<string, unknown>;
++    const result = await handler(payload);
++    await completeJob(job.id, result);
++    console.warn(`[job-worker] Job ${job.id} (${job.type}) terminé`);
++  } catch (error) {
++    await failJob(job.id, error);
++    console.error(`[job-worker] Job ${job.id} (${job.type}) échoué :`, error);
++  }
++  return true;
++}
++
++export function startJobWorker(): void {
++  const state: WorkerState = (globalForWorker.__tfJobWorker ??= {
++    started: false,
++    timer: null,
++    lastSweep: 0,
++  });
++  if (state.started) return;
++  state.started = true;
++
++  console.warn("[job-worker] Démarrage — file de tâches persistante (A.8)");
++
++  // Reprise des jobs orphelins dès le démarrage (crash / redémarrage)
++  requeueStaleJobs()
++    .then((n) => {
++      if (n > 0) console.warn(`[job-worker] ${n} job(s) orphelin(s) requalifié(s) en attente`);
++    })
++    .catch(() => undefined);
++
++  const tick = async () => {
++    try {
++      const now = Date.now();
++      if (now - state.lastSweep > STALE_SWEEP_EVERY_MS) {
++        state.lastSweep = now;
++        const n = await requeueStaleJobs();
++        if (n > 0) console.warn(`[job-worker] ${n} job(s) orphelin(s) requalifié(s) en attente`);
++      }
++      // Traite au plus un job par tick — la boucle suivante enchaîne s'il y en a d'autres
++      await processOneJob();
++    } catch (error) {
++      console.error("[job-worker] Erreur de boucle :", error);
++    }
++  };
++
++  state.timer = setInterval(tick, POLL_INTERVAL_MS);
++  // Ne bloque pas l'arrêt propre du processus
++  if (typeof state.timer.unref === "function") state.timer.unref();
++}
+diff --git a/src/lib/osm-infra.ts b/src/lib/osm-infra.ts
+index 26d7056..9e14675 100644
+--- a/src/lib/osm-infra.ts
++++ b/src/lib/osm-infra.ts
+@@ -1455,17 +1455,43 @@ out center tags;`;
+ }
+ 
+ /* ═══════════════════════════════════════════════════════════════
+-   Overpass Query Executor (with failover)
++   Overpass Query Executor (avec reprise automatique — A.7)
+    ═══════════════════════════════════════════════════════════════ */
+ 
++// A.7 (annexe technique) : une requête expirée deux fois (timeout 25 s) était
++// déclarée « donnée manquante » sans reprise. Correction à la racine :
++// au moins deux tentatives avec timeout PROGRESSIF et backoff entre tentatives,
++// en alternant les endpoints. La distinction « zéro réel » vs « donnée
++// manquante déclarée » reste portée par l'appelant, inchangée.
++const OVERPASS_ATTEMPTS = 3; // 1 tentative initiale + 2 reprises
++const OVERPASS_TIMEOUTS_MS = [25_000, 35_000, 45_000]; // timeout progressif
++const OVERPASS_BACKOFF_MS = [2_000, 5_000]; // délai avant reprise n
++
+ export async function executeOverpassQuery(
+   query: string
+ ): Promise<InfraResult[]> {
+   let lastError: Error | null = null;
+ 
+-  for (const endpoint of OVERPASS_ENDPOINTS) {
++  for (let attempt = 0; attempt < OVERPASS_ATTEMPTS; attempt++) {
++    if (attempt > 0) {
++      const backoff = OVERPASS_BACKOFF_MS[Math.min(attempt - 1, OVERPASS_BACKOFF_MS.length - 1)];
++      console.warn(
++        `[Overpass] Reprise ${attempt}/${OVERPASS_ATTEMPTS - 1} après échec (backoff ${backoff}ms) : ${lastError?.message}`
++      );
++      await new Promise((r) => setTimeout(r, backoff));
++    }
++
++    const endpoint = OVERPASS_ENDPOINTS[attempt % OVERPASS_ENDPOINTS.length];
++    const timeoutMs = OVERPASS_TIMEOUTS_MS[Math.min(attempt, OVERPASS_TIMEOUTS_MS.length - 1)];
++
++    // Timeout progressif : réécrit le [timeout:NN] serveur de la requête Overpass
++    const attemptQuery = query.replace(
++      /\[timeout:\d+\]/,
++      `[timeout:${Math.round(timeoutMs / 1000)}]`
++    );
++
+     const controller = new AbortController();
+-    const timeoutId = setTimeout(() => controller.abort(), 25_000);
++    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+ 
+     try {
+       const response = await fetch(endpoint, {
+@@ -1474,7 +1500,7 @@ export async function executeOverpassQuery(
+           "Content-Type": "application/x-www-form-urlencoded",
+           "User-Agent": USER_AGENT,
+         },
+-        body: `data=${encodeURIComponent(query)}`,
++        body: `data=${encodeURIComponent(attemptQuery)}`,
+         signal: controller.signal,
+       });
+ 
+@@ -1507,13 +1533,13 @@ export async function executeOverpassQuery(
+     } catch (err) {
+       clearTimeout(timeoutId);
+       lastError = err instanceof Error ? err : new Error(String(err));
+-      // Try next endpoint
++      // Tentative suivante (endpoint alterné + timeout progressif)
+       continue;
+     }
+   }
+ 
+   throw new Error(
+-    `All Overpass API endpoints failed: ${lastError?.message || "unknown error"}`
++    `All Overpass API endpoints failed after ${OVERPASS_ATTEMPTS} attempts: ${lastError?.message || "unknown error"}`
+   );
+ }
+ 
+diff --git a/src/lib/research/academic-fallback.ts b/src/lib/research/academic-fallback.ts
+new file mode 100644
+index 0000000..429d668
+--- /dev/null
++++ b/src/lib/research/academic-fallback.ts
+@@ -0,0 +1,348 @@
++// ═══════════════════════════════════════════════════════════════
++// ThesisFrame — Repli académique automatique (A.2, annexe technique)
++// OpenAlex indisponible (429 / budget épuisé) → bascule automatique
++// vers CrossRef + HAL avec triangulation des DOI, puis curation
++// déterministe identique (curateWorks).
++// Les deux registres sont publics et sans clé API.
++// ═══════════════════════════════════════════════════════════════
++
++import {
++  curateWorks,
++  curationSummary,
++  CURATION_THRESHOLD_ACCEPTABLE,
++} from "./curation";
++import type { OpenAlexWork, CuratedWork } from "./openalex";
++
++const CROSSREF_BASE = "https://api.crossref.org/works";
++const HAL_BASE = "https://api.archives-ouvertes.fr/search/";
++const FALLBACK_MAILTO = "thesisframe@research-tool.dev";
++const FALLBACK_TIMEOUT_MS = 15_000;
++
++// ── Types internes ───────────────────────────────────────────────
++
++interface CrossRefItem {
++  DOI?: string;
++  title?: string[];
++  author?: Array<{ given?: string; family?: string; name?: string }>;
++  issued?: { "date-parts"?: Array<Array<number | null>> };
++  "container-title"?: string[];
++  "is-referenced-by-count"?: number;
++  type?: string;
++  abstract?: string;
++}
++
++export interface FallbackSearchOutcome {
++  works: CuratedWork[];
++  /** Nombre de DOI retrouvés dans les DEUX registres (triangulation) */
++  corroboratedDois: number;
++  /** Répartition brute par registre, pour la traçabilité */
++  crossRefHits: number;
++  halHits: number;
++  errors: string[];
++}
++
++// ── Helpers ──────────────────────────────────────────────────────
++
++/** Reconstruit un index inversé façon OpenAlex à partir d'un texte simple,
++ *  afin de réutiliser la curation existante sans duplication. */
++function textToInvertedIndex(text: string): Record<string, number[]> {
++  const index: Record<string, number[]> = {};
++  const words = text
++    .replace(/<[^>]+>/g, " ") // dépouille le JATS/XML éventuel de CrossRef
++    .split(/\s+/)
++    .filter(Boolean);
++  words.forEach((word, position) => {
++    (index[word] ||= []).push(position);
++  });
++  return index;
++}
++
++/** Normalise un DOI pour la déduplication et la triangulation. */
++function normalizeDoi(doi: string | undefined): string {
++  if (!doi) return "";
++  return doi
++    .toLowerCase()
++    .replace(/^https?:\/\/(dx\.)?doi\.org\//, "")
++    .replace(/^doi:\s*/, "")
++    .trim();
++}
++
++async function fetchJson(url: string): Promise<unknown> {
++  const res = await fetch(url, {
++    headers: {
++      "User-Agent": `ThesisFrame/1.0 (mailto:${FALLBACK_MAILTO})`,
++      Accept: "application/json",
++    },
++    signal: AbortSignal.timeout(FALLBACK_TIMEOUT_MS),
++  });
++  if (!res.ok) {
++    throw new Error(`HTTP ${res.status} sur ${new URL(url).host}`);
++  }
++  return res.json();
++}
++
++// ── Garde HAL ────────────────────────────────────────────────────────
++// Comportement constaté en conditions réelles (preuve A.2) : HAL répond
++// 200 + numFound:0 — SANS erreur — lorsque des requêtes arrivent trop
++// rapprochées depuis la même IP (cadence < ~4 s). Correction à la racine :
++// (1) sérialisation des appels HAL (porte d'exclusion),
++// (2) cadence minimale entre débuts d'appels,
++// (3) reprise unique après backoff si le résultat est vide.
++let halGate: Promise<unknown> = Promise.resolve();
++const HAL_MIN_INTERVAL_MS = 4_000;
++let halLastStart = 0;
++
++function withHalGate<T>(task: () => Promise<T>): Promise<T> {
++  const run = halGate.then(task, task);
++  halGate = run.catch(() => undefined);
++  return run;
++}
++
++async function searchHalWithGuard(query: string, limit: number): Promise<OpenAlexWork[]> {
++  return withHalGate(async () => {
++    // Respecte la cadence minimale depuis le dernier appel HAL lancé
++    const wait = Math.max(0, halLastStart + HAL_MIN_INTERVAL_MS - Date.now());
++    if (wait > 0) await new Promise((r) => setTimeout(r, wait));
++    halLastStart = Date.now();
++
++    const first = await searchHal(query, limit);
++    if (first.length > 0) return first;
++
++    // Résultat vide : possiblement un étranglement HAL — reprise unique espacée
++    await new Promise((r) => setTimeout(r, HAL_MIN_INTERVAL_MS));
++    halLastStart = Date.now();
++    return searchHal(query, limit);
++  });
++}
++
++// ── CrossRef ─────────────────────────────────────────────────────
++
++async function searchCrossRef(query: string, limit: number): Promise<OpenAlexWork[]> {
++  const url = new URL(CROSSREF_BASE);
++  url.searchParams.set("query", query);
++  url.searchParams.set("rows", String(Math.min(limit, 25)));
++  url.searchParams.set(
++    "select",
++    "DOI,title,author,issued,container-title,is-referenced-by-count,type,abstract"
++  );
++  url.searchParams.set("mailto", FALLBACK_MAILTO);
++
++  const data = (await fetchJson(url.toString())) as {
++    message?: { items?: CrossRefItem[] };
++  };
++  const items = data.message?.items || [];
++
++  return items
++    .filter((item) => item.title && item.title.length > 0)
++    .map((item) => {
++      const year = item.issued?.["date-parts"]?.[0]?.[0];
++      const authors = (item.author || [])
++        .map((a) =>
++          a.name || [a.given, a.family].filter(Boolean).join(" ")
++        )
++        .filter(Boolean);
++
++      const work: OpenAlexWork = {
++        id: `crossref-${(item.DOI || "").toLowerCase()}`,
++        doi: item.DOI ? `https://doi.org/${item.DOI}` : undefined,
++        display_name: item.title?.[0] || "",
++        publication_year: year || undefined,
++        type: item.type || "article",
++        cited_by_count: item["is-referenced-by-count"] || 0,
++        authorships: authors.map((name) => ({ author: { display_name: name } })),
++        primary_location: {
++          source: item["container-title"]?.[0]
++            ? { display_name: item["container-title"][0] }
++            : undefined,
++        },
++        abstract_inverted_index: item.abstract
++          ? textToInvertedIndex(item.abstract)
++          : undefined,
++      };
++      return work;
++    });
++}
++
++// ── HAL ──────────────────────────────────────────────────────────
++
++// Même construction d'URL corrigée que la route A.1 : fq répétés via
++// append(), tri avec espace encodé %20.
++async function searchHal(query: string, limit: number): Promise<OpenAlexWork[]> {
++  const params = new URLSearchParams({
++    q: query,
++    rows: String(Math.min(limit, 25)),
++    fl: [
++      "docid",
++      "title_s",
++      "authFullName_s",
++      "publicationDateY_i",
++      "doiId_s",
++      "uri_s",
++      "abstract_s",
++      "docType_s",
++    ].join(","),
++    wt: "json",
++  });
++  params.append("fq", "docType_s:THESE OR docType_s:ART OR docType_s:COMM OR docType_s:COUV");
++  params.set("sort", "score desc");
++
++  const url = `${HAL_BASE}?${params.toString().replace(/\+/g, "%20")}`;
++
++  interface HalDoc {
++    docid?: string;
++    title_s?: string[];
++    authFullName_s?: string[];
++    publicationDateY_i?: number;
++    doiId_s?: string;
++    uri_s?: string;
++    abstract_s?: string[];
++    docType_s?: string[];
++  }
++
++  const data = (await fetchJson(url)) as { response?: { docs?: HalDoc[] } };
++  const docs = data.response?.docs || [];
++
++  const typeMap: Record<string, string> = {
++    THESE: "dissertation",
++    ART: "journal-article",
++    COMM: "proceedings-article",
++    COUV: "book-chapter",
++  };
++
++  return docs
++    .filter((doc) => doc.title_s && doc.title_s.length > 0)
++    .map((doc) => {
++      const halType = (doc.docType_s || [])[0] || "";
++      return {
++        id: `hal-${doc.docid || crypto.randomUUID()}`,
++        doi: doc.doiId_s ? `https://doi.org/${doc.doiId_s}` : undefined,
++        display_name: doc.title_s?.[0] || "",
++        publication_year: doc.publicationDateY_i || undefined,
++        type: typeMap[halType] || "article",
++        cited_by_count: 0, // HAL n'expose pas de compteur de citations
++        authorships: (doc.authFullName_s || []).map((name) => ({
++          author: { display_name: name },
++        })),
++        primary_location: {
++          source: doc.uri_s
++            ? { display_name: "HAL archives-ouvertes" }
++            : undefined,
++          pdf_url: doc.uri_s,
++        },
++        open_access: { is_oa: true, oa_status: "green" },
++        abstract_inverted_index: doc.abstract_s?.[0]
++          ? textToInvertedIndex(doc.abstract_s[0])
++          : undefined,
++      } satisfies OpenAlexWork;
++    });
++}
++
++// ── Triangulation + curation ─────────────────────────────────────
++
++/**
++ * Recherche de repli : interroge CrossRef ET HAL pour chaque sous-requête,
++ * déduplique par DOI normalisé, triangule (DOI présents dans les deux
++ * registres) puis applique la curation déterministe identique à OpenAlex.
++ */
++export async function fallbackAcademicSearch(
++  subQueries: Array<{ query: string }>,
++  options?: { limitPerQuery?: number }
++): Promise<FallbackSearchOutcome> {
++  const limitPerQuery = options?.limitPerQuery || 15;
++  const errors: string[] = [];
++
++  const perQuery = subQueries.slice(0, 4).map(async (sq) => {
++    const [crossRefRes, halRes] = await Promise.allSettled([
++      searchCrossRef(sq.query, limitPerQuery),
++      // A.2 : HAL est sérialisé + repris si vide (comportement 200/numFound:0 constaté)
++      searchHalWithGuard(sq.query, limitPerQuery),
++    ]);
++
++    const crossRefWorks = crossRefRes.status === "fulfilled" ? crossRefRes.value : [];
++    const halWorks = halRes.status === "fulfilled" ? halRes.value : [];
++
++    if (crossRefRes.status === "rejected") {
++      errors.push(`CrossRef: ${String(crossRefRes.reason?.message || crossRefRes.reason)}`);
++    }
++    if (halRes.status === "rejected") {
++      errors.push(`HAL: ${String(halRes.reason?.message || halRes.reason)}`);
++    }
++
++    // Déduplication intra-requête par DOI (et par titre normalisé en secours)
++    const byDoi = new Map<string, OpenAlexWork>();
++    const byTitle = new Set<string>();
++
++    for (const work of [...crossRefWorks, ...halWorks]) {
++      const doi = normalizeDoi(work.doi);
++      const titleKey = (work.display_name || "").toLowerCase().replace(/\s+/g, " ").trim();
++      if (doi) {
++        if (!byDoi.has(doi)) byDoi.set(doi, work);
++      } else if (titleKey && !byTitle.has(titleKey)) {
++        byTitle.add(titleKey);
++        byDoi.set(`no-doi-${byDoi.size}`, work);
++      }
++    }
++    return [...byDoi.values()];
++  });
++
++  const perQueryResults = await Promise.all(perQuery);
++
++  // Déduplication inter-requêtes
++  const allWorks: OpenAlexWork[] = [];
++  const seenDois = new Set<string>();
++  const seenTitles = new Set<string>();
++  for (const works of perQueryResults) {
++    for (const work of works) {
++      const doi = normalizeDoi(work.doi);
++      const titleKey = (work.display_name || "").toLowerCase().replace(/\s+/g, " ").trim();
++      if (doi) {
++        if (seenDois.has(doi)) continue;
++        seenDois.add(doi);
++      } else {
++        if (seenTitles.has(titleKey)) continue;
++        seenTitles.add(titleKey);
++      }
++      allWorks.push(work);
++    }
++  }
++
++  // Triangulation : DOI corroborés par les deux registres (préfixes d'id distincts)
++  const doiSources = new Map<string, Set<string>>();
++  for (const works of perQueryResults) {
++    for (const work of works) {
++      const doi = normalizeDoi(work.doi);
++      if (!doi) continue;
++      const registry = work.id.startsWith("crossref-") ? "crossref" : "hal";
++      let registries = doiSources.get(doi);
++      if (!registries) {
++        registries = new Set<string>();
++        doiSources.set(doi, registries);
++      }
++      registries.add(registry);
++    }
++  }
++  let corroboratedDois = 0;
++  for (const registries of doiSources.values()) {
++    if (registries.has("crossref") && registries.has("hal")) corroboratedDois++;
++  }
++
++  // Curation déterministe — le même pipeline qu'OpenAlex
++  const curated = curateWorks(allWorks, {
++    maxResults: 15,
++    minScore: CURATION_THRESHOLD_ACCEPTABLE,
++  });
++
++  return {
++    works: curated,
++    corroboratedDois,
++    crossRefHits: allWorks.filter((w) => w.id.startsWith("crossref-")).length,
++    halHits: allWorks.filter((w) => w.id.startsWith("hal-")).length,
++    errors,
++  };
++}
++
++/** Résumé compact pour les logs et la réponse API. */
++export function fallbackSummary(outcome: FallbackSearchOutcome): string {
++  const s = curationSummary(outcome.works);
++  return `repli CrossRef+HAL : ${s.total} sources curées (${outcome.crossRefHits} CrossRef, ${outcome.halHits} HAL), ${outcome.corroboratedDois} DOI corroborés, score moyen ${s.avgScore}`;
++}
+diff --git a/src/lib/research/deep-research-pipeline.ts b/src/lib/research/deep-research-pipeline.ts
+new file mode 100644
+index 0000000..65898f9
+--- /dev/null
++++ b/src/lib/research/deep-research-pipeline.ts
+@@ -0,0 +1,954 @@
++// ═══════════════════════════════════════════════════════════════
++// ThesisFrame — Pipeline deep-research (extrait de la route, v2)
++// Inspiré de langchain-ai/open_deep_research
++// Pipeline : Brief → Plan → Search → Read → Compress → Report
++// Mode "web" : recherche web + CORE + (A.3) rapport robuste
++// Mode "academic" : OpenAlex + curation déterministe
++//   + (A.2) repli automatique CrossRef + HAL avec triangulation
++// Extrait en module pour être exécuté aussi par le worker de la
++// file de tâches persistante (A.8) — la route n'est qu'un wrapper.
++// ═══════════════════════════════════════════════════════════════
++
++import {
++  generateCompletion,
++  type AiMessage,
++} from "@/lib/ai/zai-client";
++import { type AiProviderConfig } from "@/lib/ai/ai-types";
++import {
++  searchWorks,
++  type CoreWork,
++} from "@/lib/core-api";
++import {
++  searchAcademicWorks,
++  formatWorksForPrompt,
++  formatWorksAsReferences,
++  type CuratedWork,
++  type OpenAlexWork,
++} from "@/lib/research/openalex";
++import {
++  curateWorks,
++  curationSummary,
++  CURATION_THRESHOLD_ACCEPTABLE,
++} from "@/lib/research/curation";
++import {
++  fallbackAcademicSearch,
++  fallbackSummary,
++} from "@/lib/research/academic-fallback";
++
++// ── ZAI SDK singleton (web search + page reader) ──────────────────
++// Dynamic import — SDK is serverExternalPackages, may not exist in standalone/desktop
++interface ZaiClient {
++  functions: {
++    invoke(name: string, args: Record<string, unknown>): Promise<unknown>;
++  };
++}
++let zaiInstance: Promise<ZaiClient> | null = null;
++let _sdkLoadFailed = false;
++async function getZai(): Promise<ZaiClient> {
++  if (_sdkLoadFailed) throw new Error("Le mode de recherche web nécessite l'environnement z.ai (non disponible en mode bureau). Utilisez le mode académique.");
++  if (!zaiInstance) {
++    try {
++      const SDK = await import("z-ai-web-dev-sdk");
++      zaiInstance = SDK.default.create() as Promise<ZaiClient>;
++    } catch {
++      _sdkLoadFailed = true;
++      throw new Error("Le mode de recherche web nécessite l'environnement z.ai (non disponible en mode bureau). Utilisez le mode académique.");
++    }
++  }
++  return zaiInstance;
++}
++
++// ── Types ───────────────────────────────────────────────────────
++
++export interface DeepResearchInput {
++  prompt: string;
++  context?: string;
++  sourceMode: "web" | "academic";
++  providerConfig?: AiProviderConfig;
++}
++
++export interface DeepResearchResult {
++  content: string;
++  mode: "deep-research";
++  sourceMode: "web" | "academic";
++  steps: Record<string, unknown>;
++}
++
++interface SearchResult {
++  url: string;
++  name: string;
++  snippet: string;
++  host_name: string;
++}
++
++interface SubQuery {
++  query: string;
++  rationale: string;
++}
++
++type SourceMode = "web" | "academic";
++
++/** Source consultée, pour la section Sources déterministe (A.3). */
++interface ReportSource {
++  label: string;
++  url: string;
++}
++
++// ── A.3 : utilitaires de robustesse du rapport ──────────────────
++
++/** Détecte un rapport probablement tronqué (fin sans ponctuation terminale). */
++function isLikelyTruncated(report: string): boolean {
++  const tail = report.replace(/\s+$/, "");
++  if (tail.length === 0) return true;
++  const lastChar = tail.slice(-1);
++  const terminal = new Set([".", "!", "?", ":", ";", "»", '"', ")", "]", "*", "`", "—", "-"]);
++  // Une liste à puces peut légitimement se terminer sans point → on vérifie
++  // aussi que la dernière ligne n'est pas une puce inachevée.
++  const lastLine = tail.split("\n").pop() || "";
++  if (lastLine.trim().startsWith(("- ", "* ", "• ")) && !terminal.has(lastChar)) return true;
++  return !terminal.has(lastChar);
++}
++
++/** Détecte une section Sources / Références dans le rapport. */
++function hasSourcesSection(report: string): boolean {
++  return /#{2,3}\s*(sources|références|references)\b/i.test(report);
++}
++
++/**
++ * A.3 — Prolonge un rapport tronqué par passes de continuation (max 2).
++ * Chaque passe reprend EXACTEMENT à la dernière phrase écrite.
++ */
++async function continueIfTruncated(
++  report: string,
++  researchBrief: string,
++  providerConfig: AiProviderConfig | undefined,
++  maxTokens: number,
++  maxPasses = 2
++): Promise<string> {
++  let current = report;
++  for (let pass = 0; pass < maxPasses && isLikelyTruncated(current); pass++) {
++    const head = current.slice(-4_000);
++    console.warn(
++      `[deep-research] Rapport probablement tronqué (passe de continuation ${pass + 1}/${maxPasses})`
++    );
++    const result = await generateCompletion({
++      messages: [
++        {
++          role: "system",
++          content:
++            "Tu poursuis la rédaction d'un rapport de recherche déjà écrit. On te donne la FIN du rapport. Reprends EXACTEMENT là où le texte s'arrête (au milieu de la phrase si nécessaire) et poursuis la rédaction de manière fluide, sans reprendre depuis le début, sans répéter de contenu déjà écrit, sans préambule. Le texte que tu produis sera concaténé directement après le fragment fourni.",
++        },
++        {
++          role: "user",
++          content: `BRIEF (contexte) :\n${researchBrief.slice(0, 1_000)}\n\nFIN DU RAPPORT À POURSUIVER :\n${head}`,
++        },
++      ],
++      temperature: 0.4,
++      maxTokens,
++      providerConfig,
++    });
++    const continuation = result.content.trim();
++    if (!continuation) break;
++    current = `${current.replace(/\s+$/, "")} ${continuation}`;
++  }
++  return current;
++}
++
++/**
++ * A.3 — Garantit la section Sources : relance automatique si absente,
++ * puis ajout déterministe (liste réelle des sources consultées) en dernier recours.
++ */
++async function ensureSourcesSection(
++  report: string,
++  sources: ReportSource[],
++  mode: SourceMode,
++  providerConfig: AiProviderConfig | undefined
++): Promise<{ report: string; mechanism: "present" | "relance" | "deterministe" }> {
++  if (hasSourcesSection(report)) {
++    return { report, mechanism: "present" };
++  }
++
++  console.warn("[deep-research] Section Sources absente — relance automatique demandée");
++  const sectionHeader = mode === "academic" ? "### Références" : "### Sources";
++  const relance = await generateCompletion({
++    messages: [
++      {
++        role: "system",
++        content: `Tu produis UNIQUEMENT une section "${sectionHeader}" pour un rapport de recherche. RÈGLE ABSOLUE : chaque ligne cite une source RÉELLE fournie ci-dessous, au format Markdown "[n] [Titre](URL)", une source par ligne, sans aucune invention, sans aucun texte d'introduction. Sortie = la section seule, commençant par "${sectionHeader}".`,
++      },
++      {
++        role: "user",
++        content: `FIN DU RAPPORT (pour le contexte de style) :\n${report.slice(-2_000)}\n\nLISTE RÉELLE DES SOURCES CONSULTÉES (ne citer QUE celles-ci) :\n${sources
++          .map((s, i) => `[${i + 1}] ${s.label}: ${s.url}`)
++          .join("\n")}`,
++      },
++    ],
++    temperature: 0.2,
++    maxTokens: 4_000,
++    providerConfig,
++  });
++
++  const relanceText = relance.content.trim();
++  const looksLikeSection =
++    /#{2,3}\s*(sources|références|references)\b/i.test(relanceText) ||
++    /\[\d+\]/.test(relanceText);
++
++  if (looksLikeSection) {
++    return { report: `${report.replace(/\s+$/, "")}\n\n${relanceText}`, mechanism: "relance" };
++  }
++
++  // Dernier recours DÉTERMINISTE : la liste réelle, sans aucun LLM (liens Markdown).
++  console.warn("[deep-research] Relance Sources inexploitable — ajout déterministe de la liste réelle");
++  const deterministic = `${sectionHeader}\n${sources
++    .map((s, i) => `[${i + 1}] [${s.label}](${s.url})`)
++    .join("\n")}`;
++  return {
++    report: `${report.replace(/\s+$/, "")}\n\n${deterministic}`,
++    mechanism: "deterministe",
++  };
++}
++
++// ── Pipeline Steps ─────────────────────────────────────────────
++
++/** Step 1: Transform user query into a structured research brief */
++async function generateResearchBrief(
++  userQuery: string,
++  providerConfig?: AiProviderConfig,
++  thesisContext?: string,
++): Promise<string> {
++  const systemPrompt = `Tu es un assistant de recherche académique. Tu transformes une question d'utilisateur en un brief de recherche détaillé et structuré.
++
++RÈGLES :
++1. Maximise la spécificité et le détail
++2. Si l'utilisateur n'a pas précisé certains aspects, indique-le comme ouvert
++3. Ne fais PAS d'hypothèses non justifiées
++4. Formule à la première personne (du point de vue du chercheur)
++5. Pour les requêtes académiques, privilégie les sources originales et les revues à comité de lecture
++6. Si la question est en français, le brief doit être en français
++
++FORMAT : Un paragraphe structuré décrivant la recherche à mener, les dimensions à explorer, et les attentes.`;
++
++  const messages: AiMessage[] = [
++    { role: "system", content: systemPrompt },
++  ];
++  if (thesisContext) {
++    messages.push({
++      role: "system",
++      content: `CONTEXTE DE LA THÈSE DE L'UTILISATEUR :\n${thesisContext}`,
++    });
++  }
++  messages.push({ role: "user", content: userQuery });
++
++  const result = await generateCompletion({
++    messages,
++    temperature: 0.5,
++    providerConfig,
++  });
++  return result.content;
++}
++
++/** Step 2: Plan sub-queries for parallel search */
++async function planSubQueries(
++  researchBrief: string,
++  providerConfig?: AiProviderConfig,
++  sourceMode?: SourceMode,
++): Promise<SubQuery[]> {
++  // En mode academic, on optimise pour les requêtes en anglais
++  const modeHint = sourceMode === "academic"
++    ? "\n- IMPORTANT : Formule TOUTES les requêtes en ANGLAIS pour optimiser la recherche OpenAlex (base de données anglophone)"
++    : "";
++
++  const systemPrompt = `Tu es un planificateur de recherche. Tu décomposes un brief de recherche en 3 à 5 sous-requêtes de recherche indépendantes et parallélisables.
++
++RÈGLES :
++- Chaque sous-requête doit cibler un aspect distinct du brief
++- Les sous-requêtes doivent être complémentaires, pas redondantes
++- Formule les requêtes en français OU en anglais selon ce qui donnera les meilleurs résultats académiques
++- Privilégie les termes anglophones pour les sujets scientifiques internationaux${modeHint}
++- Chaque requête doit pouvoir être utilisée directement dans un moteur de recherche
++
++RÉPONDS UNIQUEMENT au format JSON suivant, sans aucun texte avant ou après :
++{"queries": [{"query": "...", "rationale": "..."}]}
++
++LIMITE : 3 à 5 requêtes maximum.`;
++
++  const result = await generateCompletion({
++    messages: [
++      { role: "system", content: systemPrompt },
++      { role: "user", content: `BRIEF DE RECHERCHE :\n${researchBrief}` },
++    ],
++    temperature: 0.4,
++    providerConfig,
++  });
++
++  try {
++    const jsonStr = result.content.replace(/```json\n?|```\n?/g, "").trim();
++    const parsed = JSON.parse(jsonStr);
++    const queries: SubQuery[] = (parsed.queries || []).slice(0, 5);
++    return queries;
++  } catch {
++    return [{ query: researchBrief.substring(0, 200), rationale: "Requête principale" }];
++  }
++}
++
++/** Step 3a: Execute web searches in parallel (mode "web") */
++async function executeWebSearches(
++  subQueries: SubQuery[],
++): Promise<SearchResult[]> {
++  const zai = await getZai();
++  const allResults: SearchResult[] = [];
++
++  const searchPromises = subQueries.map(async (sq) => {
++    try {
++      const results = await zai.functions.invoke("web_search", {
++        query: sq.query,
++        num: 5,
++      });
++      return (Array.isArray(results) ? results : []).map((r) => ({
++        url: (r as unknown as Record<string, string>).url || "",
++        name: (r as unknown as Record<string, string>).name || "",
++        snippet: (r as unknown as Record<string, string>).snippet || "",
++        host_name: (r as unknown as Record<string, string>).host_name || "",
++      }));
++    } catch (err) {
++      console.error(`[deep-research] Search failed for: ${sq.query}`, err);
++      return [] as SearchResult[];
++    }
++  });
++
++  const searchResults = await Promise.all(searchPromises);
++
++  // Deduplicate by URL
++  const seen = new Set<string>();
++  for (const results of searchResults) {
++    for (const r of results) {
++      if (r.url && !seen.has(r.url)) {
++        seen.add(r.url);
++        allResults.push(r);
++      }
++    }
++  }
++
++  return allResults;
++}
++
++/** Step 3b: Search CORE (open access academic papers) — mode "web" */
++async function searchCorePapers(
++  subQueries: SubQuery[],
++): Promise<CoreWork[]> {
++  const allWorks: CoreWork[] = [];
++  const seen = new Set<number>();
++
++  const queriesToUse = subQueries.slice(0, 3);
++
++  const corePromises = queriesToUse.map(async (sq) => {
++    try {
++      const results = await searchWorks(sq.query, 5, 0);
++      return results.results;
++    } catch (err) {
++      console.error(`[deep-research] CORE search failed for: ${sq.query}`, err);
++      return [] as CoreWork[];
++    }
++  });
++
++  const coreResults = await Promise.all(corePromises);
++
++  for (const works of coreResults) {
++    for (const w of works) {
++      if (!seen.has(w.id)) {
++        seen.add(w.id);
++        allWorks.push(w);
++      }
++    }
++  }
++
++  return allWorks
++    .sort((a, b) => (b.citationCount || 0) - (a.citationCount || 0))
++    .slice(0, 8);
++}
++
++// ── Step 3c : mode académique (A.2) ─────────────────────────────
++
++export interface OpenAlexSearchStatus {
++  curated: CuratedWork[];
++  /** Au moins une requête OpenAlex a échoué (429, budget, réseau…) */
++  failureDetected: boolean;
++  /** Le message d'échec évoque un 429 / budget / rate-limit */
++  budgetLikeError: boolean;
++  /** Message d'erreur consolidé (traçabilité) */
++  errorMessages: string;
++}
++
++/** Step 3c: Search OpenAlex + curation déterministe — mode "academic".
++ *  A.2 : remonte l'état d'échec au lieu de l'avaler, pour déclencher le repli. */
++async function searchOpenAlexWorks(
++  subQueries: SubQuery[],
++): Promise<OpenAlexSearchStatus> {
++  const allRawWorks: OpenAlexWork[] = [];
++  const seenIds = new Set<string>();
++  const errors: string[] = [];
++
++  const queriesToUse = subQueries.slice(0, 4);
++
++  const promises = queriesToUse.map(async (sq) => {
++    try {
++      const works = await searchAcademicWorks(sq.query, { limit: 15, sort: "cited_by_count:desc" });
++      return { ok: true as const, works, error: null };
++    } catch (err) {
++      const message = err instanceof Error ? err.message : String(err);
++      console.error(`[deep-research] OpenAlex search failed for: ${sq.query} — ${message}`);
++      return { ok: false as const, works: [], error: message };
++    }
++  });
++
++  const results = await Promise.all(promises);
++
++  for (const r of results) {
++    if (!r.ok && r.error) errors.push(r.error);
++    for (const w of r.works) {
++      if (!seenIds.has(w.id)) {
++        seenIds.add(w.id);
++        allRawWorks.push(w);
++      }
++    }
++  }
++
++  // Curation déterministe : filtre + score + tri
++  const curated = curateWorks(allRawWorks, {
++    maxResults: 15,
++    minScore: CURATION_THRESHOLD_ACCEPTABLE,
++  });
++
++  const summary = curationSummary(curated);
++  console.error(
++    `[deep-research] OpenAlex curation: ${summary.total} sources (${summary.bons} bons, ${summary.acceptables} acceptables, ${summary.faibles} faibles), score moyen: ${summary.avgScore}`,
++  );
++
++  const failureDetected = errors.length > 0;
++  const budgetLikeError = errors.some((e) => /429|rate.?limit|budget/i.test(e));
++
++  return {
++    curated,
++    failureDetected,
++    budgetLikeError,
++    errorMessages: errors.join(" | ").slice(0, 500),
++  };
++}
++
++/** Step 3c-bis : repli CrossRef + HAL avec triangulation (A.2). */
++async function searchWithFallback(
++  subQueries: SubQuery[],
++  status: OpenAlexSearchStatus,
++): Promise<{ curated: CuratedWork[]; fallback: Record<string, unknown> | null }> {
++  const shouldFallback =
++    status.curated.length === 0 ||
++    status.failureDetected;
++
++  if (!shouldFallback) {
++    return { curated: status.curated, fallback: null };
++  }
++
++  const reason = status.budgetLikeError
++    ? "OpenAlex indisponible (budget API épuisé / rate-limit)"
++    : status.failureDetected
++      ? `OpenAlex indisponible (${status.errorMessages.slice(0, 120)})`
++      : "OpenAlex : aucun résultat curé pour ces requêtes";
++
++  console.warn(`[deep-research] ${reason} — bascule automatique vers CrossRef + HAL (triangulation)`);
++
++  const outcome = await fallbackAcademicSearch(subQueries);
++  console.warn(`[deep-research] ${fallbackSummary(outcome)}`);
++
++  return {
++    curated: outcome.works,
++    fallback: {
++      triggered: true,
++      reason,
++      providers: ["CrossRef", "HAL"],
++      sourcesCurated: outcome.works.length,
++      corroboratedDois: outcome.corroboratedDois,
++      crossRefHits: outcome.crossRefHits,
++      halHits: outcome.halHits,
++      errors: outcome.errors.slice(0, 5),
++    },
++  };
++}
++
++/** Step 4: Read top pages and extract content (mode "web") */
++async function readTopPages(
++  searchResults: SearchResult[],
++  maxPages = 6,
++): Promise<{ title: string; url: string; content: string }[]> {
++  const zai = await getZai();
++  const topPages = searchResults.slice(0, maxPages);
++
++  const readPromises = topPages.map(async (page) => {
++    try {
++      const result = await zai.functions.invoke("page_reader", {
++        url: page.url,
++      });
++      const html = (result as unknown as Record<string, string>).html || "";
++      const text = html
++        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
++        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
++        .replace(/<[^>]+>/g, " ")
++        .replace(/\s+/g, " ")
++        .trim();
++      return {
++        title: page.name,
++        url: page.url,
++        content: text.substring(0, 8000),
++      };
++    } catch (err) {
++      console.error(`[deep-research] Failed to read: ${page.url}`, err);
++      return null;
++    }
++  });
++
++  const results = await Promise.all(readPromises);
++  return results.filter((r): r is NonNullable<typeof r> => r !== null);
++}
++
++/** Step 5a: Compress findings (mode "web") */
++async function compressWebFindings(
++  researchBrief: string,
++  pages: { title: string; url: string; content: string }[],
++  searchSnippets: SearchResult[],
++  corePapers: CoreWork[],
++  providerConfig?: AiProviderConfig,
++): Promise<string> {
++  let sourceIndex = 0;
++
++  const webSources = pages
++    .map((p) => { sourceIndex++; return `[${sourceIndex}] ${p.title}: ${p.url}`; })
++    .join("\n");
++
++  const allContent = pages
++    .map((p) => { const idx = sourceIndex - pages.length + pages.indexOf(p) + 1; return `--- SOURCE ${idx}: ${p.title} ---\n${p.content}`; })
++    .join("\n\n");
++
++  const coreSources = corePapers
++    .map((w) => {
++      sourceIndex++;
++      const authors = w.authors.map((a) => a.name).join(", ");
++      return `[${sourceIndex}] ${authors} (${w.yearPublished || "s.d."}). ${w.title}
++   URL: https://core.ac.uk/works/${w.id}${w.doi ? ` | DOI: ${w.doi}` : ""}
++   Abstract: ${(w.abstract || "").substring(0, 1500)}`;
++    })
++    .join("\n\n");
++
++  const coreSourceList = corePapers
++    .map((w) => {
++      sourceIndex++;
++      const authors = w.authors.map((a) => a.name).join(", ");
++      return `[${sourceIndex - corePapers.length}] ${authors} (${w.yearPublished || "s.d."}). ${w.title}: https://core.ac.uk/works/${w.id}`;
++    })
++    .join("\n");
++
++  const readUrls = new Set(pages.map((p) => p.url));
++  const extraSnippets = searchSnippets
++    .filter((s) => !readUrls.has(s.url))
++    .slice(0, 5)
++    .map(
++      (s) => {
++        sourceIndex++;
++        return `[${sourceIndex}] ${s.name}: ${s.url}\nRésumé : ${s.snippet}`;
++      }
++    )
++    .join("\n\n");
++
++  const allSources = [webSources, coreSourceList].filter(Boolean).join("\n");
++
++  const systemPrompt = `Tu es un assistant de recherche qui compresse les résultats de recherche. Ton travail est de nettoyer les résultats en préservant TOUTES les informations pertinentes.
++
++<Règles>
++1. Conserve TOUTES les informations pertinentes — répète les données clés textuellement
++2. Le rapport doit être COMPLET — il sera utilisé pour générer le rapport final
++3. Inclus des citations entre crochets [n] pour chaque source
++4. Incluse une section "### Sources" à la fin
++5. Ne résume PAS au point de perdre des informations
++</Règles>
++
++<Format de sortie>
++**Requêtes de recherche et sources consultées**
++(liste des requêtes)
++
++**Résultats synthétisés**
++(contenu détaillé avec citations)
++
++**Liste de toutes les sources**
++[1] Titre: URL
++[2] Titre: URL
++...`;
++
++  const result = await generateCompletion({
++    messages: [
++      { role: "system", content: systemPrompt },
++      {
++        role: "user",
++        content: `BRIEF DE RECHERCHE :\n${researchBrief}\n\nCONTENU DES PAGES LUES (WEB) :\n${allContent}${coreSources ? `\n\n--- ARTICLES ACADÉMIQUES (CORE Open Access) ---\n${coreSources}` : ""}${extraSnippets ? `\n\nEXTRAITS SUPPLÉMENTAIRES (WEB) :\n${extraSnippets}` : ""}\n\nSOURCES :\n${allSources}`,
++      },
++    ],
++    temperature: 0.3,
++    maxTokens: 8000,
++    providerConfig,
++  });
++
++  return result.content;
++}
++
++/** Step 5b: Compress findings (mode "academic" — sources curées) */
++async function compressAcademicFindings(
++  researchBrief: string,
++  curatedWorks: CuratedWork[],
++  providerConfig?: AiProviderConfig,
++  sourceLabel = "OpenAlex",
++): Promise<string> {
++  const worksContent = formatWorksForPrompt(curatedWorks);
++  const references = formatWorksAsReferences(curatedWorks);
++
++  const curationInfo = curatedWorks
++    .map((w, i) => `[${i + 1}] Score: ${w.curationScore} (${w.curationDetails.isPeerReviewed ? "peer-reviewed" : w.type}) | Citations: ${w.citedByCount} | OA: ${w.oaStatus}`)
++    .join("\n");
++
++  const systemPrompt = `Tu es un assistant de recherche académique spécialisé dans la synthèse de littérature. Tu reçois des articles académiques déjà filtrés et évalués (curation déterministe).
++
++<Règles>
++1. Conserve TOUTES les informations pertinentes — répète les données clés textuellement
++2. Le rapport doit être COMPLET — il sera utilisé pour générer le rapport final
++3. Inclus des citations entre crochets [n] pour chaque source
++4. Organise par thématiques, pas par article
++5. Identifie les convergences, divergences et lacunes entre les sources
++6. Ne résume PAS au point de perdre des informations
++</Règles>
++
++<Format de sortie>
++**Requêtes de recherche et sources académiques consultées**
++(liste des requêtes)
++
++**Résultats synthétisés par thématique**
++(contenu détaillé avec citations [n])
++
++**Convergences et divergences identifiées**
++(analyse comparative des sources)
++
++**Lacunes et pistes de recherche**
++(gaps identifiés dans la littérature)`;
++
++  const result = await generateCompletion({
++    messages: [
++      { role: "system", content: systemPrompt },
++      {
++        role: "user",
++        content: `BRIEF DE RECHERCHE :\n${researchBrief}\n\n--- SOURCES ACADÉMIQUES CURÉES (${sourceLabel}) ---\nScores de curation :\n${curationInfo}\n\nDétail des sources :\n${worksContent}\n\nRÉFÉRENCES :\n${references}`,
++      },
++    ],
++    temperature: 0.3,
++    maxTokens: 8000,
++    providerConfig,
++  });
++
++  return result.content;
++}
++
++/** Step 6: Generate final report — mode "web" (A.3 : robuste) */
++async function generateWebReport(
++  researchBrief: string,
++  compressedFindings: string,
++  providerConfig?: AiProviderConfig,
++): Promise<string> {
++  const systemPrompt = `Tu es un chercheur académique expérimenté. Tu rédiges un rapport de recherche approfondi et structuré.
++
++<Règles>
++1. Structure le rapport avec des titres (## pour sections, ### pour sous-sections)
++2. Inclus des faits spécifiques et des données des sources
++3. Cite les sources dans le corps avec leur numéro [n]
++4. Analyse de manière équilibrée et exhaustive
++5. N'utilise PAS de langage auto-référentiel (ne dis pas "je vais...")
++6. Chaque section doit être aussi longue que nécessaire pour répondre en profondeur
++7. Utilise des listes à puces quand c'est pertinent
++8. Rédige en français académique
++</Règles>
++
++<Citation Rules>
++- Assigne un numéro unique [n] à chaque source dans le texte
++- Termine par une section ### Sources : une ligne par source, au format [n] [Titre de la source](URL)
++- Chaque source sur une ligne séparée, avec son URL en lien Markdown
++</Citation Rules>
++
++<RÈGLES DE FIN DE RAPPORT — OBLIGATOIRES>
++- La section "### Sources" est OBLIGATOIRE en fin de rapport, même si le corps doit être condensé pour la laisser place
++- Chaque phrase doit être COMPLÈTE — le rapport ne doit JAMAIS se terminer au milieu d'une phrase ou d'une liste
++- Si tu approches de la limite de longueur, clos proprement : conclus, ajoute la section Sources
++</RÈGLES DE FIN DE RAPPORT>
++
++<Structure possible>
++Pour une question comparative :
++1. Introduction
++2. Vue d'ensemble du sujet A
++3. Vue d'ensemble du sujet B
++4. Comparaison A vs B
++5. Conclusion
++
++Pour une question de synthèse :
++1. Introduction
++2. Concept 1
++3. Concept 2
++4. Concept 3
++5. Conclusion
++
++Adapte la structure au sujet. Le rapport doit être complet et professionnel.`;
++
++  const result = await generateCompletion({
++    messages: [
++      { role: "system", content: systemPrompt },
++      {
++        role: "user",
++        content: `BRIEF DE RECHERCHE :\n${researchBrief}\n\nRÉSULTATS DE LA RECHERCHE :\n${compressedFindings}`,
++      },
++    ],
++    temperature: 0.5,
++    maxTokens: 12000,
++    providerConfig,
++  });
++
++  return result.content;
++}
++
++/** Step 6: Generate final report — mode "academic" (A.3 : robuste aussi) */
++async function generateAcademicReport(
++  researchBrief: string,
++  compressedFindings: string,
++  curatedWorks: CuratedWork[],
++  providerConfig?: AiProviderConfig,
++): Promise<string> {
++  const references = formatWorksAsReferences(curatedWorks);
++
++  const systemPrompt = `Tu es un chercheur académique expérimenté. Tu rédiges une synthèse de littérature structurée à partir de sources académiques peer-reviewed.
++
++<Règles>
++1. Structure la synthèse avec des titres (## pour thématiques, ### pour sous-thèmes)
++2. Inclus des faits spécifiques et des données des sources
++3. Réfère les sources avec le format (Auteur, Année) et numérotation [n]
++4. Analyse de manière équilibrée et exhaustive
++5. N'utilise PAS de langage auto-référentiel
++6. Chaque section doit être aussi longue que nécessaire pour répondre en profondeur
++7. Utilise des listes à puces quand c'est pertinent
++8. Rédige en français académique
++9. Signale explicitement les convergences et divergences entre auteurs
++10. Identifie les lacunes dans la littérature (research gaps)
++</Règles>
++
++<Citation Rules>
++- Assigne un numéro unique [n] à chaque source dans le texte
++- Utilise le format (Auteur, Année) dans le corps du texte
++- Termine par une section ### Références avec toutes les références complètes
++- Format : [1] Auteurs (Année). Titre. Venue. DOI.
++</Citation Rules>
++
++<RÈGLES DE FIN DE SYNTHÈSE — OBLIGATOIRES>
++- La section "### Références" est OBLIGATOIRE en fin de synthèse
++- Chaque phrase doit être COMPLÈTE — jamais de texte coupé en fin de document
++</RÈGLES DE FIN DE SYNTHÈSE>
++
++<Structure attendue>
++1. Introduction et périmètre de la synthèse
++2. Thématiques identifiées (2-4 sections)
++3. Synthèse comparative et convergences/divergences
++4. Lacunes et pistes de recherche
++5. Conclusion`;
++
++  const result = await generateCompletion({
++    messages: [
++      { role: "system", content: systemPrompt },
++      {
++        role: "user",
++        content: `BRIEF DE RECHERCHE :\n${researchBrief}\n\nRÉSULTATS DE LA RECHERCHE ACADÉMIQUE :\n${compressedFindings}\n\nRÉFÉRENCES COMPLÈTES :\n${references}`,
++      },
++    ],
++    temperature: 0.5,
++    maxTokens: 12000,
++    providerConfig,
++  });
++
++  return result.content;
++}
++
++// ── Orchestration ───────────────────────────────────────────────
++
++/**
++ * Pipeline complet de deep-research. Utilisé par la route /api/deep-research
++ * ET par le worker de la file de tâches persistante (A.8).
++ */
++export async function runDeepResearch(
++  input: DeepResearchInput
++): Promise<DeepResearchResult> {
++  const { prompt, context, providerConfig } = input;
++  const sourceMode = input.sourceMode;
++
++  // ── Step 1: Research Brief ──
++  const researchBrief = await generateResearchBrief(
++    prompt,
++    providerConfig,
++    context,
++  );
++
++  // ── Step 2: Plan Sub-Queries ──
++  const subQueries = await planSubQueries(researchBrief, providerConfig, sourceMode);
++
++  // ── Step 3+4+5+6: Branch by source mode ──
++  if (sourceMode === "academic") {
++    // ── Mode académique : OpenAlex + curation, repli CrossRef+HAL (A.2) ──
++    const status = await searchOpenAlexWorks(subQueries);
++    const { curated: curatedWorks, fallback } = await searchWithFallback(subQueries, status);
++
++    if (curatedWorks.length === 0) {
++      const noSourceMsg = fallback
++        ? `Aucune source académique trouvée, y compris via le repli automatique CrossRef + HAL (${(fallback as { reason?: string }).reason}). Essayez de reformuler votre question, ou utilisez le mode Web pour élargir la recherche.`
++        : "Aucune source académique pertinente trouvée via OpenAlex. Essayez de reformuler votre question en termes plus spécifiques, ou utilisez le mode Web pour élargir la recherche.";
++      return {
++        content: noSourceMsg,
++        mode: "deep-research",
++        sourceMode: "academic",
++        steps: { brief: researchBrief, queries: subQueries, curatedSources: 0, fallback },
++      };
++    }
++
++    const summary = curationSummary(curatedWorks);
++    const sourceLabel = fallback ? "repli CrossRef + HAL" : "OpenAlex";
++    const compressedFindings = await compressAcademicFindings(
++      researchBrief,
++      curatedWorks,
++      providerConfig,
++      sourceLabel,
++    );
++
++    let finalReport = await generateAcademicReport(
++      researchBrief,
++      compressedFindings,
++      curatedWorks,
++      providerConfig,
++    );
++
++    // A.3 (robustesse étendue) : continuation si tronqué + section Références garantie
++    finalReport = await continueIfTruncated(
++      finalReport,
++      researchBrief,
++      providerConfig,
++      12_000
++    );
++    const academicSources: ReportSource[] = curatedWorks
++      .filter((w) => w.title)
++      .map((w) => ({
++        label: `${w.authors} (${w.year}). ${w.title}`,
++        url: w.doi || w.openAccessUrl || "",
++      }));
++    const { report: guaranteedReport, mechanism } = await ensureSourcesSection(
++      finalReport,
++      academicSources,
++      "academic",
++      providerConfig
++    );
++    finalReport = guaranteedReport;
++
++    // A.2 : notice visible de repli, sans message d'erreur brut
++    if (fallback) {
++      const fb = fallback as { reason?: string; corroboratedDois?: number; sourcesCurated?: number };
++      const notice = `> **Repli automatique** : ${fb.reason}. La recherche a été menée via CrossRef + HAL avec triangulation des DOI (${fb.sourcesCurated} sources curées, ${fb.corroboratedDois} DOI corroborés par les deux registres). Le rapport ci-dessous repose exclusivement sur ces sources.\n\n`;
++      finalReport = notice + finalReport;
++    }
++
++    return {
++      content: finalReport,
++      mode: "deep-research",
++      sourceMode: "academic",
++      steps: {
++        brief: researchBrief,
++        queriesCount: subQueries.length,
++        curatedSources: summary.total,
++        curatedBon: summary.bons,
++        curatedAcceptable: summary.acceptables,
++        avgCurationScore: summary.avgScore,
++        fallback,
++        sourcesGuarantee: mechanism,
++      },
++    };
++  }
++
++  // ── Mode web : recherche web + CORE ──
++  const [searchResults, corePapers] = await Promise.all([
++    executeWebSearches(subQueries),
++    searchCorePapers(subQueries),
++  ]);
++
++  if (searchResults.length === 0 && corePapers.length === 0) {
++    return {
++      content:
++        "Aucun résultat de recherche trouvé. Veuillez reformuler votre question ou essayer un autre sujet.",
++      mode: "deep-research",
++      sourceMode: "web",
++      steps: { brief: researchBrief, queries: subQueries, sources: 0 },
++    };
++  }
++
++  const pages = await readTopPages(searchResults, 6);
++
++  const compressedFindings = await compressWebFindings(
++    researchBrief,
++    pages,
++    searchResults,
++    corePapers,
++    providerConfig,
++  );
++
++  let finalReport = await generateWebReport(
++    researchBrief,
++    compressedFindings,
++    providerConfig,
++  );
++
++  // ── A.3 : robustesse post-génération ──
++  // 1) continuation si le rapport est tronqué (max 2 passes)
++  finalReport = await continueIfTruncated(
++    finalReport,
++    researchBrief,
++    providerConfig,
++    12_000
++  );
++
++  // 2) section Sources garantie : relance automatique, puis ajout déterministe
++  //    construit depuis la liste RÉELLE des sources consultées.
++  const realSources: ReportSource[] = [
++    ...pages.map((p) => ({ label: p.title || p.url, url: p.url })),
++    ...corePapers.map((w) => ({
++      label: `${w.authors.map((a) => a.name).join(", ")} (${w.yearPublished || "s.d."}). ${w.title}`,
++      url: w.doi ? `https://doi.org/${w.doi}` : `https://core.ac.uk/works/${w.id}`,
++    })),
++    ...searchResults
++      .filter((s) => !pages.some((p) => p.url === s.url))
++      .slice(0, 5)
++      .map((s) => ({ label: s.name || s.host_name, url: s.url })),
++  ];
++
++  const { report: guaranteedReport, mechanism } = await ensureSourcesSection(
++    finalReport,
++    realSources,
++    "web",
++    providerConfig
++  );
++  finalReport = guaranteedReport;
++
++  return {
++    content: finalReport,
++    mode: "deep-research",
++    sourceMode: "web",
++    steps: {
++      brief: researchBrief,
++      queriesCount: subQueries.length,
++      searchResultsCount: searchResults.length,
++      corePapersCount: corePapers.length,
++      pagesRead: pages.length,
++      sourcesGuarantee: mechanism,
++    },
++  };
++}
+diff --git a/src/lib/word-diff.ts b/src/lib/word-diff.ts
+new file mode 100644
+index 0000000..3d10ddd
+--- /dev/null
++++ b/src/lib/word-diff.ts
+@@ -0,0 +1,123 @@
++// ═══════════════════════════════════════════════════════════════
++// ThesisFrame — Diff mot à mot natif (A.4, annexe technique)
++// Pendant le test de production, le diff a été calculé HORS outil
++// (difflib). Ce module fournit un diff LCS au niveau du mot, sans
++// dépendance externe, pour l'historique des chapitres.
++// ═══════════════════════════════════════════════════════════════
++
++export type DiffSegmentType = "equal" | "add" | "del";
++
++export interface DiffSegment {
++  type: DiffSegmentType;
++  text: string;
++}
++
++/** Plafond de sécurité : au-delà, on bascule au niveau paragraphe. */
++const MAX_TOKENS_WORD_LEVEL = 3_000;
++
++/**
++ * Tokenise un texte en mots / signes / espaces (permet un diff lisible).
++ */
++function tokenize(text: string): string[] {
++  return text.match(/\s+|[^\s]+/g) || [];
++}
++
++/**
++ * Diff LCS entre deux tableaux de jetons.
++ * Renvoie la liste de segments fusionnés (equal / add / del).
++ */
++function lcsDiff(oldTokens: string[], newTokens: string[]): DiffSegment[] {
++  const n = oldTokens.length;
++  const m = newTokens.length;
++
++  // Table DP (n+1) × (m+1) — Int32Array pour la compacité mémoire.
++  const width = m + 1;
++  const dp = new Int32Array((n + 1) * width);
++  for (let i = n - 1; i >= 0; i--) {
++    for (let j = m - 1; j >= 0; j--) {
++      dp[i * width + j] =
++        oldTokens[i] === newTokens[j]
++          ? dp[(i + 1) * width + (j + 1)] + 1
++          : Math.max(dp[(i + 1) * width + j], dp[i * width + (j + 1)]);
++    }
++  }
++
++  // Backtracking → segments bruts
++  const raw: DiffSegment[] = [];
++  let i = 0;
++  let j = 0;
++  while (i < n && j < m) {
++    if (oldTokens[i] === newTokens[j]) {
++      raw.push({ type: "equal", text: oldTokens[i] });
++      i++;
++      j++;
++    } else if (dp[(i + 1) * width + j] >= dp[i * width + (j + 1)]) {
++      raw.push({ type: "del", text: oldTokens[i] });
++      i++;
++    } else {
++      raw.push({ type: "add", text: newTokens[j] });
++      j++;
++    }
++  }
++  while (i < n) {
++    raw.push({ type: "del", text: oldTokens[i] });
++    i++;
++  }
++  while (j < m) {
++    raw.push({ type: "add", text: newTokens[j] });
++    j++;
++  }
++
++  // Fusion des segments consécutifs de même type
++  const merged: DiffSegment[] = [];
++  for (const seg of raw) {
++    const last = merged[merged.length - 1];
++    if (last && last.type === seg.type) {
++      last.text += seg.text;
++    } else {
++      merged.push({ ...seg });
++    }
++  }
++  return merged;
++}
++
++/**
++ * Diff mot à mot entre deux textes.
++ * Au-delà du plafond de jetons, bascule automatiquement au niveau
++ * paragraphe (garantie de performance pour les très longs chapitres).
++ */
++export function wordDiff(oldText: string, newText: string): DiffSegment[] {
++  const oldTokens = tokenize(oldText);
++  const newTokens = tokenize(newText);
++
++  if (
++    oldTokens.length > MAX_TOKENS_WORD_LEVEL ||
++    newTokens.length > MAX_TOKENS_WORD_LEVEL
++  ) {
++    // Repli paragraphe : granularité plus grossière, mais toujours natif.
++    const oldParas = oldText.split(/\n{2,}/);
++    const newParas = newText.split(/\n{2,}/);
++    return lcsDiff(
++      oldParas.map((p) => `${p}\n\n`),
++      newParas.map((p) => `${p}\n\n`)
++    );
++  }
++
++  return lcsDiff(oldTokens, newTokens);
++}
++
++/** Statistiques compactes du diff (pour l'affichage : +X / −Y). */
++export function diffStats(segments: DiffSegment[]): {
++  added: number;
++  deleted: number;
++} {
++  let added = 0;
++  let deleted = 0;
++  for (const seg of segments) {
++    if (seg.type === "equal") continue;
++    const words = seg.text.trim() ? seg.text.trim().split(/\s+/).length : 0;
++    if (seg.type === "add") added += words;
++    else deleted += words;
++  }
++  return { added, deleted };
++}
+diff --git a/src/modules/editor/components/chapter-header.tsx b/src/modules/editor/components/chapter-header.tsx
+index e68bc19..0bdad10 100755
+--- a/src/modules/editor/components/chapter-header.tsx
++++ b/src/modules/editor/components/chapter-header.tsx
+@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
+ import { Pencil, Check, X, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+ import { useState } from "react";
+ import type { ThesisChapter } from "@/modules/editor/hooks/use-thesis";
++import { ChapterHistoryButton } from "@/modules/editor/components/chapter-history-dialog";
+ 
+ interface ChapterHeaderProps {
+   chapter: ThesisChapter | null;
+@@ -140,6 +141,9 @@ export function ChapterHeader({
+           <span> mots</span>
+         </div>
+ 
++        {/* A.4 : historique natif du chapitre (versions + diff mot à mot) */}
++        <ChapterHistoryButton chapterId={chapter.id} />
++
+         <Select
+           value={chapter.status}
+           onValueChange={onStatusChange}
+diff --git a/src/modules/editor/components/chapter-history-dialog.tsx b/src/modules/editor/components/chapter-history-dialog.tsx
+new file mode 100644
+index 0000000..84a3f76
+--- /dev/null
++++ b/src/modules/editor/components/chapter-history-dialog.tsx
+@@ -0,0 +1,228 @@
++"use client";
++
++import { useCallback, useEffect, useMemo, useState } from "react";
++import { Button } from "@/components/ui/button";
++import {
++  Dialog,
++  DialogContent,
++  DialogDescription,
++  DialogHeader,
++  DialogTitle,
++  DialogTrigger,
++} from "@/components/ui/dialog";
++import { ScrollArea } from "@/components/ui/scroll-area";
++import { Skeleton } from "@/components/ui/skeleton";
++import { History, Loader2, GitCompareArrows } from "lucide-react";
++import { wordDiff, diffStats, type DiffSegment } from "@/lib/word-diff";
++
++// ═══════════════════════════════════════════════════════════════
++// A.4 (annexe technique) — Historique natif des chapitres avec
++// diff mot à mot affiché dans l'application (plus de calcul hors outil).
++// Deux sauvegardes successives modifiant le contenu → deux versions
++// comparables ici, sans aucune intervention extérieure.
++// ═══════════════════════════════════════════════════════════════
++
++interface ChapterVersion {
++  id: string;
++  content: string;
++  plainText: string;
++  wordCount: number;
++  author: string;
++  createdAt: string;
++}
++
++function formatDateTime(iso: string): string {
++  try {
++    return new Date(iso).toLocaleString("fr-FR", {
++      day: "2-digit",
++      month: "2-digit",
++      year: "numeric",
++      hour: "2-digit",
++      minute: "2-digit",
++    });
++  } catch {
++    return iso;
++  }
++}
++
++function DiffView({ segments }: { segments: DiffSegment[] }) {
++  return (
++    <div className="whitespace-pre-wrap break-words text-sm leading-relaxed">
++      {segments.map((seg, i) => {
++        if (seg.type === "equal") {
++          return <span key={i} className="text-foreground/70">{seg.text}</span>;
++        }
++        if (seg.type === "add") {
++          return (
++            <span
++              key={i}
++              className="rounded-sm bg-emerald-500/15 text-emerald-800 dark:text-emerald-300"
++            >
++              {seg.text}
++            </span>
++          );
++        }
++        return (
++          <span
++            key={i}
++            className="rounded-sm bg-red-500/15 text-red-700 line-through decoration-red-400/60 dark:text-red-400"
++          >
++            {seg.text}
++          </span>
++        );
++      })}
++    </div>
++  );
++}
++
++export function ChapterHistoryButton({ chapterId }: { chapterId: string }) {
++  const [open, setOpen] = useState(false);
++  const [loading, setLoading] = useState(false);
++  const [error, setError] = useState<string | null>(null);
++  const [versions, setVersions] = useState<ChapterVersion[]>([]);
++  // Index des versions comparées : par défaut la plus récente (0) vs la précédente (1)
++  const [newerIdx, setNewerIdx] = useState(0);
++  const [olderIdx, setOlderIdx] = useState(1);
++
++  const fetchVersions = useCallback(async () => {
++    setLoading(true);
++    setError(null);
++    try {
++      const res = await fetch(`/api/chapters/${chapterId}/versions`);
++      const json = await res.json();
++      if (!res.ok) throw new Error(json.error || "Échec du chargement");
++      const list: ChapterVersion[] = json.data || [];
++      setVersions(list);
++      setNewerIdx(0);
++      setOlderIdx(list.length > 1 ? 1 : 0);
++    } catch (e) {
++      setError(e instanceof Error ? e.message : "Erreur inconnue");
++    } finally {
++      setLoading(false);
++    }
++  }, [chapterId]);
++
++  useEffect(() => {
++    if (open) {
++      fetchVersions();
++    }
++  }, [open, fetchVersions]);
++
++  const segments = useMemo(() => {
++    const older = versions[olderIdx];
++    const newer = versions[newerIdx];
++    if (!older || !newer || older.id === newer.id) return null;
++    return wordDiff(older.plainText, newer.plainText);
++  }, [versions, olderIdx, newerIdx]);
++
++  const stats = useMemo(
++    () => (segments ? diffStats(segments) : null),
++    [segments]
++  );
++
++  return (
++    <Dialog open={open} onOpenChange={setOpen}>
++      <DialogTrigger asChild>
++        <Button
++          variant="ghost"
++          size="sm"
++          className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
++          title="Historique et diff des versions du chapitre"
++        >
++          <History className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
++          Historique
++        </Button>
++      </DialogTrigger>
++      <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col">
++        <DialogHeader>
++          <DialogTitle className="flex items-center gap-2 text-base">
++            <GitCompareArrows className="h-4 w-4" aria-hidden="true" />
++            Historique du chapitre
++          </DialogTitle>
++          <DialogDescription>
++            Chaque sauvegarde modifiant le contenu crée une version. Sélectionnez
++            deux versions pour comparer — le diff est calculé au niveau du mot,
++            dans l&apos;application.
++          </DialogDescription>
++        </DialogHeader>
++
++        {loading ? (
++          <div className="flex items-center justify-center gap-2 py-12 text-sm text-muted-foreground">
++            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
++            Chargement de l&apos;historique…
++          </div>
++        ) : error ? (
++          <div className="py-8 text-center text-sm text-destructive">{error}</div>
++        ) : versions.length < 2 ? (
++          <div className="py-8 text-center text-sm text-muted-foreground">
++            {versions.length === 0
++              ? "Aucune version enregistrée pour l'instant — la prochaine sauvegarde modifiant le contenu créera la première."
++              : "Une seule version enregistrée — effectuez une seconde sauvegarde après modification pour voir le diff."}
++          </div>
++        ) : (
++          <>
++            {/* Sélecteurs de comparaison */}
++            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
++              <label className="flex flex-col gap-1 text-xs text-muted-foreground">
++                Version récente (après)
++                <select
++                  className="h-9 rounded-md border bg-background px-3 text-sm text-foreground"
++                  value={newerIdx}
++                  onChange={(e) => setNewerIdx(Number(e.target.value))}
++                >
++                  {versions.map((v, idx) =>
++                    idx === olderIdx ? null : (
++                      <option key={v.id} value={idx}>
++                        {formatDateTime(v.createdAt)} — {v.wordCount} mots
++                      </option>
++                    )
++                  )}
++                </select>
++              </label>
++              <label className="flex flex-col gap-1 text-xs text-muted-foreground">
++                Version ancienne (avant)
++                <select
++                  className="h-9 rounded-md border bg-background px-3 text-sm text-foreground"
++                  value={olderIdx}
++                  onChange={(e) => setOlderIdx(Number(e.target.value))}
++                >
++                  {versions.map((v, idx) =>
++                    idx === newerIdx ? null : (
++                      <option key={v.id} value={idx}>
++                        {formatDateTime(v.createdAt)} — {v.wordCount} mots
++                      </option>
++                    )
++                  )}
++                </select>
++              </label>
++            </div>
++
++            {/* Statistiques du diff */}
++            {stats && (
++              <div className="flex items-center gap-3 text-xs">
++                <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 font-medium text-emerald-700 dark:text-emerald-400 tabular-nums">
++                  +{stats.added} mot{stats.added > 1 ? "s" : ""}
++                </span>
++                <span className="rounded-full bg-red-500/15 px-2.5 py-1 font-medium text-red-700 dark:text-red-400 tabular-nums">
++                  −{stats.deleted} mot{stats.deleted > 1 ? "s" : ""}
++                </span>
++                <span className="text-muted-foreground">
++                  {versions[newerIdx]?.author} → comparaison mot à mot native
++                </span>
++              </div>
++            )}
++
++            {/* Diff scrollable */}
++            <ScrollArea className="flex-1 min-h-0 max-h-[46vh] rounded-md border p-4">
++              {segments ? (
++                <DiffView segments={segments} />
++              ) : (
++                <Skeleton className="h-24 w-full" />
++              )}
++            </ScrollArea>
++          </>
++        )}
++      </DialogContent>
++    </Dialog>
++  );
++}
+diff --git a/src/modules/theses-en-ligne/theses-en-ligne-page.tsx b/src/modules/theses-en-ligne/theses-en-ligne-page.tsx
+index fa0ad08..7bdc63d 100644
+--- a/src/modules/theses-en-ligne/theses-en-ligne-page.tsx
++++ b/src/modules/theses-en-ligne/theses-en-ligne-page.tsx
+@@ -67,24 +67,29 @@ const EXTERNAL_SOURCES: ExternalSource[] = [
+   { name: "Shodhganga", url: "https://shodhganga.inflibnet.ac.in", description: "Thèses des universités indiennes", coverage: "Inde", flag: "\ud83c\uddee" },
+ ];
+ 
++// A.1 (annexe technique) : codes de domaine alignés sur la taxonomie HAL réelle
++// (level0_domain_s des thèses — facette vérifiée : shs, sdv, spi, info, phys,
++// chim, sdu, math, sde, scco). Les anciens codes (sci, sm, chimie, stat, cca)
++// n'existent pas chez HAL — le filtre ne retournait aucun résultat.
+ const DOMAIN_OPTIONS = [
+   { value: "", label: "Toutes les disciplines" },
+   { value: "shs", label: "Sciences humaines et sociales" },
+   { value: "info", label: "Informatique" },
+-  { value: "sde", label: "Sciences de l\u2019ingénieur" },
++  { value: "spi", label: "Sciences de l'ingénieur" },
+   { value: "sdv", label: "Sciences du vivant" },
+-  { value: "sci", label: "Sciences" },
+-  { value: "sm", label: "Sciences mathématiques" },
++  { value: "sde", label: "Sciences de l'environnement" },
++  { value: "sdu", label: "Planète et Univers" },
++  { value: "math", label: "Mathématiques" },
+   { value: "phys", label: "Physique" },
+-  { value: "chimie", label: "Chimie" },
+-  { value: "stat", label: "Statistiques" },
+-  { value: "cca", label: "Sciences cognitives" },
++  { value: "chim", label: "Chimie" },
++  { value: "scco", label: "Sciences cognitives" },
+ ];
+ 
+ const SORT_OPTIONS = [
+-  { value: "publicationDateY_i+desc", label: "Plus récentes" },
+-  { value: "publicationDateY_i+asc", label: "Plus anciennes" },
+-  { value: "score+desc", label: "Plus pertinentes" },
++  // A.1 : séparateur champ/ordre = espace (la route normalise en %20 pour HAL)
++  { value: "publicationDateY_i desc", label: "Plus récentes" },
++  { value: "publicationDateY_i asc", label: "Plus anciennes" },
++  { value: "score desc", label: "Plus pertinentes" },
+ ];
+ 
+ // ── Main Component ──
+@@ -94,7 +99,7 @@ export function ThesesEnLignePage() {
+   const [domain, setDomain] = useState("");
+   const [yearMin, setYearMin] = useState("");
+   const [yearMax, setYearMax] = useState("");
+-  const [sort, setSort] = useState("publicationDateY_i+desc");
++  const [sort, setSort] = useState("publicationDateY_i desc");
+   const [page, setPage] = useState(0);
+   const [results, setResults] = useState<ThesisResult[]>([]);
+   const [total, setTotal] = useState(0);
+-- 
+2.47.3
+
