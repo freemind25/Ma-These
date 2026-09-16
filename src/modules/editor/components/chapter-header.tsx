@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Check, X, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import type { ThesisChapter } from "@/modules/editor/hooks/use-thesis";
+import { ChapterHistoryButton } from "@/modules/editor/components/chapter-history-dialog";
 
 interface ChapterHeaderProps {
   chapter: ThesisChapter | null;
@@ -139,6 +140,9 @@ export function ChapterHeader({
           )}
           <span> mots</span>
         </div>
+
+        {/* A.4 : historique natif du chapitre (versions + diff mot à mot) */}
+        <ChapterHistoryButton chapterId={chapter.id} />
 
         <Select
           value={chapter.status}

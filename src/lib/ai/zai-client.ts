@@ -154,6 +154,10 @@ export interface AiCompletionOptions {
   model?: string;
   temperature?: number;
   maxTokens?: number;
+  /** A.9 : timeout explicite par appel (ms). Défaut : REQUEST_TIMEOUT_MS (60 s). */
+  timeoutMs?: number;
+  /** A.9 : nb de reprises par fournisseur (défaut 2). 0 = une seule tentative. */
+  maxRetriesPerProvider?: number;
   /** Override provider config (passed from client via request body _aiConfig) */
   providerConfig?: AiProviderConfig;
   /** Fallback chain configuration */
@@ -294,7 +298,7 @@ async function generateWithAPI(
     method: "POST",
     headers,
     body: JSON.stringify(body),
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    signal: AbortSignal.timeout(options.timeoutMs || REQUEST_TIMEOUT_MS),
   });
 
   if (!response.ok) {
@@ -380,6 +384,36 @@ async function buildApiError(response: Response, model: string): Promise<Error &
 // ═══════════════════════════════════════════════════════════════
 
 /**
+ * A.9 : borne le temps d'un appel par un timeout explicite.
+ * Le chemin SDK (backend z.ai) n'expose pas d'AbortSignal — on l'entoure
+ * donc d'une course avec un rejet à échéance. Sans cela, un appel
+ * superviseur pouvait courir plus de 320 s sans limite (anomalie du test
+ * de production).
+ */
+function withExplicitTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  label: string
+): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () =>
+        reject(
+          new DOMException(
+            `Délai ${label} dépassé (${Math.round(timeoutMs / 1000)} s)`,
+            "TimeoutError"
+          )
+        ),
+      timeoutMs
+    );
+  });
+  return Promise.race([promise, timeout]).finally(() => {
+    if (timer) clearTimeout(timer);
+  });
+}
+
+/**
  * Try a single provider config, returns result or throws.
  */
 async function tryProvider(
@@ -387,8 +421,10 @@ async function tryProvider(
   config: AiProviderConfig
 ): Promise<AiCompletionResult> {
   const backend = detectBackend(config.provider);
+  const timeoutMs = options.timeoutMs || REQUEST_TIMEOUT_MS;
   if (backend === "zai") {
-    return generateWithSDK(options);
+    // A.9 : la voie SDK est désormais soumise au timeout explicite aussi
+    return withExplicitTimeout(generateWithSDK(options), timeoutMs, "de la requête IA");
   }
   return generateWithAPI(options, config);
 }
@@ -490,7 +526,11 @@ export async function generateCompletion(
     }
 
     try {
-      const result = await attemptWithRetries(options, providerConfig, 2);
+      const result = await attemptWithRetries(
+        options,
+        providerConfig,
+        options.maxRetriesPerProvider ?? 2
+      );
       recordSuccess(pid);
       if (i > 0) {
         console.log(`[AI] Failover: primary failed, served by ${pid}`);
@@ -707,7 +747,7 @@ async function streamWithProvider(
         method: "POST",
         headers,
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+        signal: AbortSignal.timeout(options.timeoutMs || REQUEST_TIMEOUT_MS),
       });
 
       if (!fetchResponse.ok) {

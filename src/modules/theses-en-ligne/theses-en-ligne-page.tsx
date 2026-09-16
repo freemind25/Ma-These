@@ -67,24 +67,29 @@ const EXTERNAL_SOURCES: ExternalSource[] = [
   { name: "Shodhganga", url: "https://shodhganga.inflibnet.ac.in", description: "Thèses des universités indiennes", coverage: "Inde", flag: "\ud83c\uddee" },
 ];
 
+// A.1 (annexe technique) : codes de domaine alignés sur la taxonomie HAL réelle
+// (level0_domain_s des thèses — facette vérifiée : shs, sdv, spi, info, phys,
+// chim, sdu, math, sde, scco). Les anciens codes (sci, sm, chimie, stat, cca)
+// n'existent pas chez HAL — le filtre ne retournait aucun résultat.
 const DOMAIN_OPTIONS = [
   { value: "", label: "Toutes les disciplines" },
   { value: "shs", label: "Sciences humaines et sociales" },
   { value: "info", label: "Informatique" },
-  { value: "sde", label: "Sciences de l\u2019ingénieur" },
+  { value: "spi", label: "Sciences de l'ingénieur" },
   { value: "sdv", label: "Sciences du vivant" },
-  { value: "sci", label: "Sciences" },
-  { value: "sm", label: "Sciences mathématiques" },
+  { value: "sde", label: "Sciences de l'environnement" },
+  { value: "sdu", label: "Planète et Univers" },
+  { value: "math", label: "Mathématiques" },
   { value: "phys", label: "Physique" },
-  { value: "chimie", label: "Chimie" },
-  { value: "stat", label: "Statistiques" },
-  { value: "cca", label: "Sciences cognitives" },
+  { value: "chim", label: "Chimie" },
+  { value: "scco", label: "Sciences cognitives" },
 ];
 
 const SORT_OPTIONS = [
-  { value: "publicationDateY_i+desc", label: "Plus récentes" },
-  { value: "publicationDateY_i+asc", label: "Plus anciennes" },
-  { value: "score+desc", label: "Plus pertinentes" },
+  // A.1 : séparateur champ/ordre = espace (la route normalise en %20 pour HAL)
+  { value: "publicationDateY_i desc", label: "Plus récentes" },
+  { value: "publicationDateY_i asc", label: "Plus anciennes" },
+  { value: "score desc", label: "Plus pertinentes" },
 ];
 
 // ── Main Component ──
@@ -94,7 +99,7 @@ export function ThesesEnLignePage() {
   const [domain, setDomain] = useState("");
   const [yearMin, setYearMin] = useState("");
   const [yearMax, setYearMax] = useState("");
-  const [sort, setSort] = useState("publicationDateY_i+desc");
+  const [sort, setSort] = useState("publicationDateY_i desc");
   const [page, setPage] = useState(0);
   const [results, setResults] = useState<ThesisResult[]>([]);
   const [total, setTotal] = useState(0);

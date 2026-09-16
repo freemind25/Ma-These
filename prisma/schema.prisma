@@ -55,9 +55,29 @@ model Chapter {
 
   thesis          Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
   part            Part?     @relation(fields: [partId], references: [id], onDelete: SetNull)
+  versions        ChapterVersion[]
 
   @@index([thesisId])
   @@index([partId])
+}
+
+// A.4 (annexe technique) : historique natif des chapitres.
+// Le test de production a dû calculer les diffs mot à mot HORS outil
+// (difflib) car Chapter n'avait aucune table d'historique — seul le
+// cadrage possédait des versions (ThesisCadrageVersion). Même schéma :
+// un instantané par sauvegarde modifiant le contenu.
+model ChapterVersion {
+  id        String   @id @default(cuid())
+  chapterId String
+  content   String   @default("") // HTML (Tiptap) au moment de la sauvegarde
+  plainText String   @default("")
+  wordCount Int      @default(0)
+  author    String   @default("doctorant") // auteur de la modification
+  createdAt DateTime @default(now())
+
+  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@index([chapterId])
 }
 
 model Part {
@@ -370,4 +390,30 @@ model DocumentChunk {
   @@index([sourceType])
   @@index([sourceId])
   @@index([thesisId])
+}
+
+// ═════════════════════════════════════
+// FILE DE TÂCHES PERSISTANTE (A.8)
+// ═════════════════════════════════════
+
+// A.8 (annexe technique) : les opérations longues lancées ad hoc (nohup)
+// étaient tuées entre les sessions. Correction à la racine : file de tâches
+// PERSISTANTE en base — un job survit au processus qui l'a créé ; le worker
+// (src/lib/jobs/worker.ts, démarré par src/instrumentation.ts) reprend les
+// jobs en attente et récupère les jobs "running" devenus orphelins (stale).
+model Job {
+  id         String    @id @default(cuid())
+  type       String // ex : "deep-research" — enregistré dans le registre du worker
+  status     String    @default("pending") // pending | running | done | failed
+  payload    String    @default("{}") // JSON — paramètres d'exécution
+  result     String? // JSON — sortie du handler
+  error      String? // erreur d'échec (si failed)
+  attempts   Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  startedAt  DateTime?
+  finishedAt DateTime?
+
+  @@index([status])
+  @@index([type])
 }

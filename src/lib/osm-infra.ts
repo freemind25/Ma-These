@@ -1455,17 +1455,43 @@ out center tags;`;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Overpass Query Executor (with failover)
+   Overpass Query Executor (avec reprise automatique — A.7)
    ═══════════════════════════════════════════════════════════════ */
+
+// A.7 (annexe technique) : une requête expirée deux fois (timeout 25 s) était
+// déclarée « donnée manquante » sans reprise. Correction à la racine :
+// au moins deux tentatives avec timeout PROGRESSIF et backoff entre tentatives,
+// en alternant les endpoints. La distinction « zéro réel » vs « donnée
+// manquante déclarée » reste portée par l'appelant, inchangée.
+const OVERPASS_ATTEMPTS = 3; // 1 tentative initiale + 2 reprises
+const OVERPASS_TIMEOUTS_MS = [25_000, 35_000, 45_000]; // timeout progressif
+const OVERPASS_BACKOFF_MS = [2_000, 5_000]; // délai avant reprise n
 
 export async function executeOverpassQuery(
   query: string
 ): Promise<InfraResult[]> {
   let lastError: Error | null = null;
 
-  for (const endpoint of OVERPASS_ENDPOINTS) {
+  for (let attempt = 0; attempt < OVERPASS_ATTEMPTS; attempt++) {
+    if (attempt > 0) {
+      const backoff = OVERPASS_BACKOFF_MS[Math.min(attempt - 1, OVERPASS_BACKOFF_MS.length - 1)];
+      console.warn(
+        `[Overpass] Reprise ${attempt}/${OVERPASS_ATTEMPTS - 1} après échec (backoff ${backoff}ms) : ${lastError?.message}`
+      );
+      await new Promise((r) => setTimeout(r, backoff));
+    }
+
+    const endpoint = OVERPASS_ENDPOINTS[attempt % OVERPASS_ENDPOINTS.length];
+    const timeoutMs = OVERPASS_TIMEOUTS_MS[Math.min(attempt, OVERPASS_TIMEOUTS_MS.length - 1)];
+
+    // Timeout progressif : réécrit le [timeout:NN] serveur de la requête Overpass
+    const attemptQuery = query.replace(
+      /\[timeout:\d+\]/,
+      `[timeout:${Math.round(timeoutMs / 1000)}]`
+    );
+
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25_000);
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
       const response = await fetch(endpoint, {
@@ -1474,7 +1500,7 @@ export async function executeOverpassQuery(
           "Content-Type": "application/x-www-form-urlencoded",
           "User-Agent": USER_AGENT,
         },
-        body: `data=${encodeURIComponent(query)}`,
+        body: `data=${encodeURIComponent(attemptQuery)}`,
         signal: controller.signal,
       });
 
@@ -1507,13 +1533,13 @@ export async function executeOverpassQuery(
     } catch (err) {
       clearTimeout(timeoutId);
       lastError = err instanceof Error ? err : new Error(String(err));
-      // Try next endpoint
+      // Tentative suivante (endpoint alterné + timeout progressif)
       continue;
     }
   }
 
   throw new Error(
-    `All Overpass API endpoints failed: ${lastError?.message || "unknown error"}`
+    `All Overpass API endpoints failed after ${OVERPASS_ATTEMPTS} attempts: ${lastError?.message || "unknown error"}`
   );
 }
 
