@@ -4,11 +4,17 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileDown, FileText, X, GraduationCap } from "lucide-react";
+import { FileDown, FileText, FileCheck, X, GraduationCap } from "lucide-react";
 
-const STORAGE_KEY = "test-deliverable-card-dismissed";
+const STORAGE_KEY = "test-deliverable-card-dismissed-v2";
 
 const DELIVERABLES = [
+  {
+    href: "/RAPPORT-CORRECTIONS-ANNEXE-A1-A13.md",
+    label: "Rapport corrections A.1-A.13",
+    meta: "Statuts + preuves d'exécution",
+    icon: FileCheck,
+  },
   {
     href: "/THESE-urbanisme-tic-ia-production-test.md",
     label: "Thèse (Markdown)",

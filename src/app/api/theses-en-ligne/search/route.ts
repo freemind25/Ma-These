@@ -6,17 +6,23 @@ import { NextRequest, NextResponse } from "next/server";
 
 const HAL_API = "https://api.archives-ouvertes.fr/search/";
 
+// ── A.1 (annexe technique) : codes de domaine corrigés à la racine ──
+// Les thèses HAL indexent leurs domaines de niveau 0 dans le champ
+// `level0_domain_s` avec les codes réels de la taxonomie HAL (vérifié par
+// facette sur docType_s:THESE : shs, sdv, spi, info, phys, chim, sdu, math,
+// sde, scco). Les anciens codes (sci, sm, chimie, stat, cca) n'existent
+// pas chez HAL — le filtre ne retournait jamais aucun résultat.
 const DOMAINS: Record<string, string> = {
   shs: "Sciences humaines et sociales",
-  sci: "Sciences",
   sdv: "Sciences du vivant",
-  sde: "Sciences de l'ingénieur",
-  sm: "Sciences mathématiques",
-  phys: "Physique",
-  chimie: "Chimie",
+  spi: "Sciences de l'ingénieur",
   info: "Informatique",
-  stat: "Statistiques",
-  cca: "Sciences cognitives",
+  phys: "Physique",
+  chim: "Chimie",
+  sdu: "Planète et Univers",
+  math: "Mathématiques",
+  sde: "Sciences de l'environnement",
+  scco: "Sciences cognitives",
 };
 
 export interface ThesisResult {
@@ -50,7 +56,7 @@ export async function GET(request: NextRequest) {
     const domain = searchParams.get("domain") || "";
     const yearMin = searchParams.get("yearMin") || "";
     const yearMax = searchParams.get("yearMax") || "";
-    const sort = searchParams.get("sort") || "publicationDateY_i+desc";
+    const sort = searchParams.get("sort") || "publicationDateY_i desc";
     const page = searchParams.get("page") || "0";
     const rows = searchParams.get("rows") || "15";
 
@@ -62,9 +68,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Build Solr query
+    // A.1 : filtre de domaine sur `level0_domain_s` (champ réel des thèses HAL)
     const fq: string[] = ["docType_s:THESE"];
     if (domain && DOMAINS[domain]) {
-      fq.push(`domain_s:${domain}`);
+      fq.push(`level0_domain_s:${domain}`);
     }
     if (yearMin) {
       fq.push(`publicationDateY_i:[${yearMin} TO *]`);
@@ -73,6 +80,10 @@ export async function GET(request: NextRequest) {
       fq.push(`publicationDateY_i:[* TO ${yearMax}]`);
     }
 
+    // ── A.1 (annexe technique) : construction d'URL corrigée à la racine ──
+    // Bug historique : `fq.join("&fq=")` passé comme VALEUR d'un seul paramètre `fq`
+    // — URLSearchParams encodait le `&` interne au lieu de créer des paramètres répétés.
+    // Correction : un append() par filtre → plusieurs paramètres fq natifs.
     const params = new URLSearchParams({
       q: q,
       rows: rows,
@@ -84,16 +95,30 @@ export async function GET(request: NextRequest) {
         "publicationDateY_i",
         "abstract_s",
         "uri_s",
+        "level0_domain_s",
         "domain_s",
         "keyword_s",
         "submittedDate_s",
       ].join(","),
-      fq: fq.join("&fq="),
-      sort: sort,
       wt: "json",
     });
+    for (const filter of fq) {
+      params.append("fq", filter);
+    }
 
-    const url = `${HAL_API}?${params.toString()}`;
+    // ── A.1 (suite) : le tri ──
+    // Solr exige `champ ordre` séparé par un ESPACE ; la forme `champ+ordre`
+    // était encodée %2B (plus littéral) et rejetée par l'API HAL.
+    // On normalise tout séparateur (+ ou %2B) en espace, avec défaut sûr.
+    const sortNormalized =
+      sort.replace(/%2B/gi, " ").replace(/\+/g, " ").trim() ||
+      "publicationDateY_i desc";
+    params.set("sort", sortNormalized);
+
+    // Encodage final : les espaces deviennent %20 (forme acceptée par Solr/HAL),
+    // jamais le `+` form-urlencoded que HAL interprète mal sur ce champ.
+    const queryString = params.toString().replace(/\+/g, "%20");
+    const url = `${HAL_API}?${queryString}`;
     const res = await fetch(url, {
       headers: { "User-Agent": "MaThese-App/1.0" },
       signal: AbortSignal.timeout(15000),
@@ -113,6 +138,7 @@ export async function GET(request: NextRequest) {
       (doc: Record<string, unknown>) => {
         const titles = (doc.title_s as string[]) || [];
         const abstracts = (doc.abstract_s as string[]) || [];
+        const level0Domains = (doc.level0_domain_s as string[]) || [];
         const domains = (doc.domain_s as string[]) || [];
         const keywords = (doc.keyword_s as string[]) || [];
         const authors = (doc.authFullName_s as string[]) || [];
@@ -126,10 +152,15 @@ export async function GET(request: NextRequest) {
         // Clean keywords (remove duplicates, limit)
         const cleanKeywords = [...new Set(keywords)].slice(0, 10);
 
-        // Map domain codes to labels
-        const domainLabels = domains.map(
-          (d: string) => DOMAINS[d] || d.replace(/^\d+\./, "")
-        );
+        // Map domain codes to labels — niveau 0 d'abord (A.1), puis sous-domaines nettoyés
+        const domainLabels = [
+          ...new Set([
+            ...level0Domains.map((d: string) => DOMAINS[d] || d),
+            ...domains
+              .filter((d: string) => !level0Domains.includes(d.replace(/^\d+\./, "")))
+              .map((d: string) => DOMAINS[d] || d.replace(/^\d+\./, "")),
+          ]),
+        ];
 
         return {
           id: doc.docid as string,

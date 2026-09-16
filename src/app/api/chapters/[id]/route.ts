@@ -5,6 +5,10 @@ import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
 // PUT /api/chapters/[id] — Update a chapter
+// A.4 (annexe technique) : chaque sauvegarde qui MODIFIE le contenu crée
+// une entrée d'historique (ChapterVersion) — même schéma que les versions
+// du cadrage (ThesisCadrageVersion). Les sauvegardes sans changement de
+// contenu (statut, feedback directeur…) ne polluent pas l'historique.
 // ═══════════════════════════════════════
 
 
@@ -17,12 +21,34 @@ export async function PUT(
     const body = await request.json();
     const validated = updateChapterSchema.parse(body);
 
+    // A.4 : l'historique n'a de sens que si le contenu change réellement.
+    const contentWillChange =
+      typeof validated.content === "string" &&
+      (await db.chapter.findUnique({
+        where: { id },
+        select: { content: true },
+      }))?.content !== validated.content;
+
     const chapter = await db.chapter.update({
       where: { id },
       data: validated,
     });
 
-    return NextResponse.json({ data: chapter });
+    let versionId: string | null = null;
+    if (contentWillChange) {
+      const version = await db.chapterVersion.create({
+        data: {
+          chapterId: id,
+          content: chapter.content,
+          plainText: chapter.plainText,
+          wordCount: chapter.wordCount,
+          author: "doctorant",
+        },
+      });
+      versionId = version.id;
+    }
+
+    return NextResponse.json({ data: chapter, versionId });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
