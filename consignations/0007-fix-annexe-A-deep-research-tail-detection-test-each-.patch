@@ -1,0 +1,39 @@
+From 477911d939e52c3cf65f4e0d28f9d896271b23a0 Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Wed, 16 Sep 2026 09:39:07 +0000
+Subject: [PATCH] =?UTF-8?q?fix(annexe-A):=20deep-research=20tail=20detecti?=
+ =?UTF-8?q?on=20=E2=80=94=20test=20each=20bullet=20prefix=20(TS2695)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+startsWith(("- ", "* ", "• ")) ne testait que "• " (opérateur virgule :
+côté gauche jeté — TS2695), et le typecheck du build Next échouait sur
+la ligne. Correction : chaque préfixe testé explicitement.
+Typecheck complet re-vérifié : 0 erreur hors fichiers .test.ts
+préexistants (exclus du build, preuve : v1.10.7 buildait avec eux).
+---
+ src/lib/research/deep-research-pipeline.ts | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/src/lib/research/deep-research-pipeline.ts b/src/lib/research/deep-research-pipeline.ts
+index 65898f9..2017936 100644
+--- a/src/lib/research/deep-research-pipeline.ts
++++ b/src/lib/research/deep-research-pipeline.ts
+@@ -104,8 +104,11 @@ function isLikelyTruncated(report: string): boolean {
+   const terminal = new Set([".", "!", "?", ":", ";", "»", '"', ")", "]", "*", "`", "—", "-"]);
+   // Une liste à puces peut légitimement se terminer sans point → on vérifie
+   // aussi que la dernière ligne n'est pas une puce inachevée.
+-  const lastLine = tail.split("\n").pop() || "";
+-  if (lastLine.trim().startsWith(("- ", "* ", "• ")) && !terminal.has(lastChar)) return true;
++  const lastLine = (tail.split("\n").pop() || "").trim();
++  // TS2695 : un tuple ("a", "b", "c") passé à startsWith ne teste que "c"
++  // (le côté gauche de la virgule est jeté) — il faut tester chaque préfixe.
++  const isBullet = ["- ", "* ", "• "].some((prefix) => lastLine.startsWith(prefix));
++  if (isBullet && !terminal.has(lastChar)) return true;
+   return !terminal.has(lastChar);
+ }
+ 
+-- 
+2.47.3
+

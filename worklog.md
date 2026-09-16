@@ -8203,3 +8203,26 @@ Stage Summary:
 - Découvertes documentées : HAL tolère mal les cadences rapprochées (200 silencieux numFound:0) ; la voie SDK z.ai n'avait aucun timeout (cause du 320 s) ; l'environnement sandbox tue les processus hors arbre de boot (cause A.10, réplique de A.8).
 - Livrables : RAPPORT-CORRECTIONS-ANNEXE-A1-A13.md ; docs/EXPLOITATION-SERVEUR.md ; décisions dans CONTEXT-PROJET.md ; 8 nouveaux fichiers, 10 fichiers modifiés, 2 tables additives.
 - Le push GitHub reste côté propriétaire (jeton révoqué) ; patch possible sur demande.
+
+---
+Task ID: push-release-v1.10.8
+Agent: Z.ai Code
+Task: Exécuter la séquence « push, patch, release, tag, exécutable d'installation » avec le jeton fourni par le propriétaire
+
+Work Log:
+- État des lieux : dépôt sandbox re-snapshoté (historique UUID, sans remote) — clone GitHub reconstruit comme base propre ; main distant HEAD = 5b28979 (eee6373 jamais poussé) ; release v1.10.7 + Ma.These_1.10.7_x64-setup.exe déjà en ligne.
+- Diff exhaustif clone ↔ workspace fermé (docs de session, livrables, carte, corrections A.1-A.13, écart sandbox package.json non poussé, db régénérée).
+- 6 commits construits : 169699b (replay eee6373 via git am), bbc188c (docs session + livrables + patchs), 946312b (feat corrections A.1-A.13 : 20 fichiers, +2380/−700), a7ea4a3 (carte livrables), 75d94ac (bump 1.10.8), 3c13826 (patchs 0002-0006).
+- db embarquée régénérée proprement : template v1.10.7 exacte + prisma db push additif (ChapterVersion, Job) — l'exe n'ayant aucun db push au démarrage, condition indispensable pour v1.10.8.
+- Premier jeton (fin de session précédente) : Contents en lecture seule (PUT contents → 403) — push impossible ; travail sécurisé en bundle + patchs (download/).
+- Second jeton du propriétaire : push main OK (5b28979..3c13826), tag v1.10.8 poussé → run 35080060447 → ÉCHEC en 2 min : TS2695 sur deep-research-pipeline.ts:108 (opérateur virgule dans startsWith — seul « • » testé).
+- Hotfix : chaque préfixe de puce testé explicitement ; typecheck complet re-vérifié (0 erreur hors .test.ts préexistants, exclus du build — preuve : v1.10.7 buildait avec eux). Commit 477911d poussé, tag v1.10.8 déplacé (jamais utilisé : aucun asset produit par le run échoué).
+- Re-run 35080625925 : SUCCESS en ~9,5 min. Release draft créée par tauri-action avec Ma.These_1.10.8_x64-setup.exe (72,9 Mo, NSIS).
+- Release publiée via API (draft → false, 09:49 UTC) ; téléchargement public vérifié (HTTP 206). Patchs 0007+ consignés.
+
+Stage Summary:
+- Séquence COMPLÈTE exécutée : push ✅, patchs ✅, tag v1.10.8 ✅, release ✅, exécutable d'installation Ma.These_1.10.8_x64-setup.exe ✅ (https://github.com/freemind25/Ma-These/releases/tag/v1.10.8).
+- v1.10.8 = corrections A.1-A.13 du test de production + carte livrables + db compatible (2 tables additives).
+- Un hotfix TS2695 pendant le CI (477911d) — détecté par le typecheck du build Next, invisible du lint local.
+- Les jetons ont circulé en clair dans le chat : révocation recommandée pour les deux.
+- Séquence verrouillée suivante (côté propriétaire) : tester Ma.These_1.10.8_x64-setup.exe sur Windows avant distribution.
