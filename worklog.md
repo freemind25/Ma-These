@@ -193,3 +193,19 @@ Stage Summary:
 - Cause racine : timeout passerelle (~30 s sans octets) vs TTFB APInex (jusqu'à ~60 s sur modèles gratuits)
 - Correctif robuste : heartbeat SSE + erreurs in-stream + max_tokens borné — validé au-delà du seuil (38.2 s OK)
 - Comportement inchangé pour l'utilisateur final, mis à part l'absence de 502 désormais
+
+---
+Task ID: openresearch-analysis
+Agent: Z.ai Code (main)
+Task: Vérifier si alphaXiv/OpenResearch est intégré ; sinon identifier ce qui est utile
+
+Work Log:
+- Analyse du dépôt github.com/alphaXiv/OpenResearch (README, structure) via page_reader
+- Constat : 0 occurrence de "alphaxiv|openresearch" dans src/ → AUCUNE intégration existante
+- Inventaire croisé des intégrations académiques du projet : theses.fr (26), OpenAlex (21), DOAJ (3), CrossRef (3), Semantic Scholar (2), CORE (2), arXiv (1, indirect)
+
+Stage Summary:
+- OpenResearch = harness CLI Rust (orx) + dashboard local pour transformer Claude Code/Codex/Cursor en agents de recherche (autoresearch, arbre d'expériences git, worktrees isolés, compute Slurm/K8s/SSH) — hors périmètre direct d'une app web
+- Chevauchements déjà couverts par ThesisFrame : découverte de littérature, SLR/PRISMA, hypothèses IA, deep-research, paper2code, multi-modèles
+- Utile à réutiliser : (1) arXiv API directe quasi absente, (2) concept de journal d'expérimentations (runs/variants/preuves/verdicts) inexistant, (3) format SKILL.md pour spécialisations IA composables
+- Recommandation livrée à l'utilisateur ; pas de code modifié dans cette tâche
