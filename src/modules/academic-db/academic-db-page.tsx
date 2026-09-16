@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Globe, Search, ExternalLink } from "lucide-react";
 import { useState, useMemo } from "react";
+import { ArxivSearchSection } from "./arxiv-search";
 
 interface Database {
   name: string;
@@ -319,6 +320,9 @@ export function AcademicDbPage() {
           Ressources en ligne pour la recherche
         </p>
       </div>
+
+      {/* Recherche arXiv en direct (prépublications) */}
+      <ArxivSearchSection />
 
       {/* Search & Filter */}
       <div className="flex flex-col sm:flex-row gap-3">

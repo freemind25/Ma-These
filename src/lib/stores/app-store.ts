@@ -47,7 +47,8 @@ export type ViewId =
   | "bibliotheque"
   | "verification-citations"
   | "generation-hypotheses"
-  | "apinex";
+  | "apinex"
+  | "experimentations";
 
 export type NavCategory =
   | "_pinned"   // toujours visible en haut (dashboard, editor)
@@ -325,6 +326,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     description: "Chat multi-modèles (OpenAI, Claude, Gemini…) + recherche web via APInex",
     badge: "API",
     category: "ia-outils",
+  },
+  {
+    id: "experimentations",
+    label: "Expérimentations",
+    icon: "FlaskConical",
+    description: "Journal d'expérimentations : hypothèses, runs, preuves et verdicts",
+    category: "methodologie",
   },
   {
     id: "routesme",

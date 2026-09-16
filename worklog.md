@@ -209,3 +209,22 @@ Stage Summary:
 - Chevauchements déjà couverts par ThesisFrame : découverte de littérature, SLR/PRISMA, hypothèses IA, deep-research, paper2code, multi-modèles
 - Utile à réutiliser : (1) arXiv API directe quasi absente, (2) concept de journal d'expérimentations (runs/variants/preuves/verdicts) inexistant, (3) format SKILL.md pour spécialisations IA composables
 - Recommandation livrée à l'utilisateur ; pas de code modifié dans cette tâche
+
+---
+Task ID: openresearch-integration-1
+Agent: Z.ai Code (main)
+Task: Intégrer les éléments utiles d'alphaXiv/OpenResearch identifiés : ① recherche arXiv native, ② journal d'expérimentations
+
+Work Log:
+- ① arXiv : route GET /api/arxiv/search (API Atom export.arxiv.org, parsing XML sans dépendance, throttle 1.2s + cache 10 min, recherche phrase exacte via guillemets, tri pertinence/récence, BibTeX généré clé type dupont2026titre)
+- ① UI : composant src/modules/academic-db/arxiv-search.tsx inséré en tête du module Bases de données — recherche live, résultats scrollables (titre/auteurs/date/badges catégories/abstract dépliable/journal_ref), actions : "Ajouter aux références" (POST /api/references, source "arxiv"), copie BibTeX, lien PDF, pagination "Charger plus"
+- ② Prisma : modèles Experiment (question, hypothesisRef, protocol, status planned|running|concluded, verdict supported|refuted|inconclusive, conclusion, tags) + ExperimentRun (label, variant, metrics JSON, result, evidenceUrl, status, verdict, notes) — db:push OK
+- ② API : /api/experiments (GET/POST), /api/experiments/[id] (GET/PATCH/DELETE), /api/experiments/[id]/runs (POST), /api/experiments/[id]/runs/[runId] (PATCH/DELETE) — validation zod, cascade delete
+- ② UI : module src/modules/experimentations (liste + détail 2 colonnes, dialogs création expérimentation et run, métriques saisies en "nom: valeur" → JSON, verdicts run + globaux, conclusion à la conclue, preuves liées)
+- Nav : ViewId "experimentations" (catégorie methodologie, icône FlaskConical) + case page.tsx
+- Bugs corrigés : client Prisma périmé après db:push (redémarrage serveur), exp.runs undefined à la création (normalisation runs ?? [])
+- Vérifié : CRUD complet via curl (create→run→verdicts→conclusion→delete), recherche arXiv "urban digital twin" (201 résultats), référence arXiv insérée en base (do2025digital), run ajouté via UI avec métriques rendues, lint propre, mobile 390px OK
+
+Stage Summary:
+- arXiv est désormais une source de recherche native avec export BibTeX et alimentation directe de la bibliothèque de références
+- Le workflow doctoral couvre maintenant la boucle complète hypothèse → expérimentation → preuve → verdict (inspirée d'OpenResearch, adaptée au web)

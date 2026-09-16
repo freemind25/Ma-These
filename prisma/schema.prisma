@@ -393,6 +393,51 @@ model DocumentChunk {
 }
 
 // ═════════════════════════════════════
+// JOURNAL D'EXPÉRIMENTATIONS
+// Inspiré d'alphaXiv/OpenResearch : hypothèses → runs → preuves → verdicts
+// ═════════════════════════════════════
+
+model Experiment {
+  id             String   @id @default(cuid())
+  title          String
+  question       String   // question de recherche / hypothèse testée
+  hypothesisRef  String?  // référence libre vers une hypothèse du module Génération Hypothèses
+  protocol       String?  // protocole / méthode appliquée
+  status         String   @default("planned") // planned | running | concluded
+  conclusion     String?  // conclusion globale (si concluded)
+  verdict        String?  // supported | refuted | inconclusive
+  tags           String?  // comma separated
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  runs ExperimentRun[]
+
+  @@index([status])
+}
+
+model ExperimentRun {
+  id           String    @id @default(cuid())
+  experimentId String
+  label        String    // nom du run / variante (ex : "baseline", "var-A lr=0.01")
+  variant      String?   // configuration et paramètres (texte ou JSON)
+  metrics      String?   // JSON : [{ "name": "rmse", "value": 0.42 }]
+  result       String?   // résultat observé (texte)
+  evidenceUrl  String?   // lien vers la preuve (artefact, notebook, dépôt, figure)
+  status       String    @default("pending") // pending | running | done | failed
+  verdict      String?   // confirmed | refuted | inconclusive
+  notes        String?
+  startedAt    DateTime?
+  sortOrder    Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  experiment Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+
+  @@index([experimentId])
+  @@index([status])
+}
+
+// ═════════════════════════════════════
 // FILE DE TÂCHES PERSISTANTE (A.8)
 // ═════════════════════════════════════
 
