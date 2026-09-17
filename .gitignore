@@ -50,8 +50,9 @@ test
 prompt
 
 server.log
-# Skills directory
-/skills/
+# Skills directory — ignoré sauf le protocole SDD versionné
+/skills/*
+!/skills/sdd-thesisframe/
 
 # Upload / Download
 /upload/
