@@ -228,3 +228,22 @@ Work Log:
 Stage Summary:
 - arXiv est désormais une source de recherche native avec export BibTeX et alimentation directe de la bibliothèque de références
 - Le workflow doctoral couvre maintenant la boucle complète hypothèse → expérimentation → preuve → verdict (inspirée d'OpenResearch, adaptée au web)
+
+---
+Task ID: sdd-activation-1
+Agent: Z.ai Code (main)
+Task: Analyser le SKILL SDD fourni (upload/SKILL(2).md), donner un avis d'expert, puis l'activer sur feu vert : skill amendé + CONSTITUTION.md + FICHE_SYNTHESE.md
+
+Work Log:
+- Audit factuel du document (11 affirmations vérifiées contre le dépôt, chemins + lignes cités) : 8 exactes (directeur.ts, Tauri v2, geo-MCP, troncature deep-research-pipeline.ts l.128-190, encodage HAL l.111-118, etc.), 1 obsolète (ChapterVersion existe — prisma/schema.prisma l.69 — là où le texte affirmait que Chapter n'avait pas d'historique), 1 inexacte ici (sous-agents réels disponibles), 1 à adapter (db:push vs migration Prisma)
+- Avis d'expert livré : adopter avec 6 amendements (correction ChapterVersion, règle Prisma db:push avec preuve d'intégrité, voie rapide ≤ 20 lignes/1 fichier/0 impact transverse, sous-agents séquentiels pour l'implémentation + exploration parallèle sourcée, outils de preuve listés, nommage harmonisé)
+- Feu vert propriétaire reçu sur les 3 points + 2 décisions enregistrées (seuil voie rapide : ne pas trancher seul en cas de doute ; exploration parallélisable avec citations obligatoires)
+- Point nommage résolu avec preuve : l'incohérence vient de l'exemplaire uploadé (upload/SKILL(2).md l.2 "name: sdd-Ma Thèse" vs l.6 "SDD — ThesisFrame") ; aucun autre SKILL*.md dans le dépôt ; exemplaire du propriétaire (name: sdd-thesisframe) fait foi
+- Créé skills/sdd-thesisframe/SKILL.md : version amendée complète (frontmatter name: sdd-thesisframe, contrainte d'exécution réécrite, repère ChapterVersion corrigé, fragilités sourcées avec chemins+lignes, section "Voie rapide", 3 anti-patterns ajoutés/modifiés, moyens de preuve du dépôt listés)
+- Créé CONSTITUTION.md (Étape 0) : 7 articles (preuve avant affirmation avec leçons de drift, autorisation avant modification, une tâche = un commit conventionnel, pas de reconstruction silencieuse, preuve d'exécution obligatoire, intégrité des données Prisma, décisions de cadrage enregistrées) — EN ATTENTE DE VALIDATION (point d'arrêt)
+- Créé FICHE_SYNTHESE.md : première entrée de session (décisions, points ouverts)
+
+Stage Summary:
+- Protocole SDD opérationnel : skill versionné dans skills/sdd-thesisframe/SKILL.md, constitution proposée à validation, fiche de synthèse instaurée
+- Bloquant avant tout premier cycle spec → plan : validation de CONSTITUTION.md par le propriétaire
+- La prochaine fonctionnalité démarre à l'Étape 1 (spécifier) ; openresearch-integration-1 confirmée livrée, rien en vol
