@@ -329,3 +329,55 @@ lib.rs l.210 : Command::new(&node_exe) — lancement du serveur embarqué ; l.27
 **Ressources embarquées** (`tauri.conf.json` l.42-46) : `../db/*` → `db/` dans le bundle, `standalone.zip`, `node.exe`. **Constat de confidentialité** : la base propriétaire `custom.db` (données de thèse réelles) est copiée dans CHAQUE installeur NSIS — distribuer le .exe = distribuer la base. Complète le constat d'hygiène du groupe A (binaires versionnés git).
 
 **Recommandations (hors périmètre — aucune modification exécutée)** : (1) retirer `shell:allow-execute` puis `shell:allow-open` et `tauri_plugin_shell::init()` + déps `@tauri-apps/*` si aucun usage prévu ; (2) définir une CSP ; (3) décision produit sur l'embarquement de la DB (séparateur d'installeur / base vierge en distribution / purge avant build).
+
+## Délégation du propriétaire (2026-09-18, 15:28-15:38) — exécution des corrections
+
+Mandat : « vous êtes le spécialiste ici (le choix pris sera nécessairement le plus pertinent), faites le nécessaire. Je valide toutes vos prochaines actions. » → feu vert T13/T14 + choix C-D2 + ré-synchro autorisée. Déclaration Article 2 faite avant exécution ; lignes rouges non touchées.
+
+### T13 — `.env.example` créé (C-D1) : ✓ FAIT
+
+```
+.env.example : 32 variables définissables, groupées (BD · IA 20 clés · recherche académique ·
+endpoints · tunables A.9/RAG · runtime documentaire), placeholders « your-key-here », AUCUNE valeur réelle.
+Correspondance prouvée : diff(inventaire src/ 35 vars, .env.example) =
+  35 − 4 runtime documentaires (NODE_ENV, NEXT_RUNTIME, PORT, TAURI — « définies par l'environnement,
+  ne pas définir manuellement ») + DATABASE_URL (lue par Prisma, pas par src/) = 32 ✓
+DATABASE_URL : valeur par défaut « file:./db/custom.db » (chemin local documenté, pas un secret).
+bun run lint → 0 erreur (warnings inchangés)
+```
+
+### T14 — clé OpenAlex sortie du code (C-D2 **option a : env-only**) : ✓ FAIT
+
+Choix du spécialiste : (a) — alignée sur le pattern env-only de tous les autres secrets du projet ; desktop sans clé = quota anonyme **couvert par la bascule CrossRef/HAL prouvée en direct (T15)** ; l'option (c) (variable de build) exigerait le pipeline CI non prouvé (R-CI).
+
+```
+src-tauri/src/lib.rs l.220-230 : ("OPENALEX_API_KEY", "qsdRrHIu…") → ("OPENALEX_API_KEY", "")
+  + commentaire T14/C-D2. Logique du bloc inchangée (default vide = ne pas écraser l'environnement).
+grep post-modification sur src/ + src-tauri/ + .env.example + docs/ → 0 occurrence de la valeur.
+docs/EXPLOITATION-SERVEUR.md §3 : procédure documentée (var OPENALEX_API_KEY à définir pour un
+  quota dédié ; sinon quota anonyme + bascule A.2 ; renvoi .env.example ; recommandation de rotation).
+```
+
+**Réserves consignées** : (1) compilation Rust non vérifiable en sandbox (cargo absent — R-CI) ; le diff est une string literal → "" sans effet de type. (2) La valeur reste dans l'historique git (jamais purgée, T10) et dans 2 documents d'audit qui citent le constat (plan.md, preuves.md — même canal que l'historique, exposition inchangée) → **rotation de la clé chez OpenAlex = action propriétaire, seule remédiation effective**.
+
+### Ré-synchronisation `urbanisme-test.db` : ✓ FAIT (épisode transparent consigné)
+
+```
+1er essai : DATABASE_URL="file:db/urbanisme-test.db" bun run db:push → INEFFICACE
+  → Prisma résout les chemins file: relatifs au DOSSIER DU SCHÉMA (prisma/) : un résidu
+    prisma/db/urbanisme-test.db vide a été créé, puis NETTOYÉ (rm -rf prisma/db).
+  → Cette erreur VALIDE AVEC PREUVE le garde-fou du test de non-régression
+    tests/database-runtime-build.sh (« database path must be absolute ») : la chaîne de
+    build réelle (BUILD_DIR absolu) est correcte par construction.
+2e essai : DATABASE_URL="file:/home/z/my-project/db/urbanisme-test.db" bun run db:push
+  → bunx prisma migrate diff (schéma → urbanisme-test.db) : « No difference detected. » ✓
+Intégrité des données (push additif pur, aucune table supprimée) : Thesis 1 · Chapter 7
+  (identiques aux données du test de production) · Experiment 0 (table créée, vide).
+```
+
+### Retest Overpass (tentative de levée R-OVERPASS) : réserve MAINTENUE
+
+```
+curl overpass-api.de/api/interpreter → HTTP 000 en 0,50 s (blocage réseau sandbox, stable)
+```
+Preuve d'exécution réelle A.7 toujours à produire au poste du propriétaire : log `[Overpass] Reprise n/2`.
