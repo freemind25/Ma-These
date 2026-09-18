@@ -345,3 +345,17 @@ Work Log:
 Stage Summary:
 - CONSTITUTION.md restauré en 100644 (contenu intact) — dernier point ouvert du cycle n°1 entièrement soldé
 - Aucune tâche en vol ; suite de tests 1428/1428 verte ; observation passive : deux autres fichiers suivis en 100755, décision laissée au propriétaire
+
+---
+Task ID: mode-audit-1
+Agent: Z.ai Code (main)
+Task: Commande du propriétaire (« termine tous les chantiers ») — état des lieux complet + correction de l'observation sur les modes git
+
+Work Log:
+- Audit complet des modes : git ls-files -s → 424/433 fichiers en 100755, 9 en 100644 (specs/* créés dans le sandbox + CONSTITUTION.md restaurée). L'observation précédente (« ex. SKILL.md, ai-types.test.ts ») sous-estimait le périmètre : l'anomalie est généralisée, héritée du commit d'import externe 1359333
+- Correction consignée dans FICHE_SYNTHESE.md (points ouverts n°2) avec proposition chiffrée : normalisation 644 pour tout sauf .zscripts/*.sh (légitimement exécutables), ≈ 410 changements de mode, zéro ligne de contenu, 1 commit chore: — décision laissée au propriétaire, aucune action exécutée (article 2 : impact massif cosmétique, l'agent ne tranche pas seul)
+- État des chantiers vérifié : aucune tâche en vol, aucun cycle ouvert, arbre propre, suite 1428/1428 verte, cycle n°1 clos des deux volets
+
+Stage Summary:
+- Aucun chantier actif restant ; seule décision en suspens : normalisation optionnelle des modes git (proposition consignée dans la fiche)
+- Dépôt prêt pour de nouveaux cycles SDD (Étape 1 — spécifier)

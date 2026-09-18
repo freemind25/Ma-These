@@ -45,4 +45,4 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Points ouverts pour la session suivante** :
 
 1. Aucune tâche en vol, aucun cycle ouvert ; suite de tests intégralement verte ; permissions de `CONSTITUTION.md` restaurées (100644, commit `8334a86`).
-2. Observation (aucune action décidée) : d'autres fichiers suivis sont en mode git 100755 (ex. `skills/sdd-thesisframe/SKILL.md`, `src/lib/ai/ai-types.test.ts`) — même traitement éventuel à la discrétion du propriétaire.
+2. Observation (aucune action décidée) : anomalie de modes git **généralisée** — 424/433 fichiers suivis en 100755 (héritage du commit d'import externe `1359333`) contre 9 en 100644 (fichiers créés dans le sandbox + `CONSTITUTION.md`). Normalisation éventuelle : 644 pour tout sauf `.zscripts/*.sh` (légitimement exécutables) ≈ 410 changements de mode, zéro ligne de contenu, 1 commit `chore:` unique — décision au propriétaire (audit du 2026-09-18, voir worklog `mode-audit-1`).
