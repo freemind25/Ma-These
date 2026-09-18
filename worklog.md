@@ -522,3 +522,23 @@ Stage Summary:
 - Une seule écriture de code de tout le cycle : T1b e17e233 (2 erreurs TS bloquant next build, révélées par l'audit) — lignes rouges intactes, aucune autre modification.
 - Attente propriétaire : 7 réserves → CI/Tauri Windows (URL run ?), T14 option clé OpenAlex + rotation, T13 feu vert .env.example, ré-synchro urbanisme-test.db, MD-4 ×2 (supervision, timeout hébergeur), log Overpass réel, rapport externe MD-2.
 - Recommandations hors périmètre consignées : 37 routes sans test, 230 warnings lint, sur-privilèges capabilities + CSP, DB dans installeur, binaires versionnés.
+
+---
+Task ID: prod-readiness-audit-7
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Délégation propriétaire (« vous êtes le spécialiste… je valide toutes vos prochaines actions ») — choix C-D2, exécution T13/T14/ré-synchro, mise à jour du verdict.
+
+Work Log:
+- Choix de spécialiste déclaré (Article 2) : C-D2 = option (a) env-only — pattern des autres secrets du projet ; desktop sans clé = quota anonyme couvert par la bascule CrossRef/HAL prouvée en direct (T15) ; l'option (c) exigerait le pipeline CI non prouvé (R-CI).
+- T13 : `.env.example` créé (32 vars groupées : BD, 20 clés IA, recherche académique, endpoints, tunables A.9/RAG, runtime documentaire ; placeholders your-key-here, aucune valeur réelle) ; correspondance prouvée : 35 inventaire − 4 runtime documentaires + DATABASE_URL = 32 ; lint 0 erreur. Correctif chaîne : `.gitignore` avait `.env*` → exception `!.env.example` (modèle versionné, cohérent avec la politique du dépôt où .env est versionné).
+- T14 : `src-tauri/src/lib.rs` l.221 — valeur par défaut vidée (`("OPENALEX_API_KEY", "")`) + commentaire de mécanisme ; logique du bloc intacte (default vide = ne pas écraser l'environnement) ; doc `EXPLOITATION-SERVEUR.md` §3 (procédure var OPENALEX_API_KEY, renvoi .env.example, recommandation rotation) ; grep post-modification : 0 occurrence de la valeur dans src/, src-tauri/, .env.example, docs/.
+- Ré-synchro `urbanisme-test.db` : 1er push chemin relatif INEFFICACE (Prisma résout file: depuis prisma/ → résidu prisma/db créé puis nettoyé) — épisode VALIDANT le garde-fou « database path must be absolute » du test de non-régression ; 2e push chemin ABSOLU → migrate diff « No difference detected » ; intégrité prouvée (Thesis 1, Chapter 7, Experiment 0).
+- Retest Overpass : HTTP 000 (blocage sandbox stable) → R-OVERPASS maintenue, preuve au poste propriétaire.
+- Suite finale relancée : 1452/1452 verts ; arbre propre.
+- Commits : `0543a4f` (T13+T14+ré-synchro), `9d5639c` (preuves + verdict maj).
+- Verdict mis à jour dans tasks.md : PRÊT AVEC RÉSERVES confirmé — 3 levées (R-ENV, R-DRIFT, R-KEY réduite à la rotation), restantes R-CI (renforcée : binaire à reconstruire), R-OVERPASS, R-MD4 ×2.
+
+Stage Summary:
+- Cycle prod-readiness-audit : 20/20 tâches + délégation exécutée, tout commité, lignes rouges intactes, suite verte.
+- Restent au propriétaire (toutes externes au dépôt) : run CI/build Windows vert (ou cycle pipeline), rotation de la clé OpenAlex, log Overpass réel, supervision prod + timeout hébergeur.
+- Chantier suivant recommandé : cycle SDD « build-desktop-pipeline » (versionner le workflow GitHub Actions + preuve de run vert) — annonce requise.

@@ -147,4 +147,6 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 
 1. **7 réserves attendent le propriétaire** : R-CI (URL d'un run CI/build Windows vert ?) · R-KEY (option C-D2 a/b/c + rotation clé OpenAlex) · R-ENV (feu vert T13 → `.env.example`) · R-DRIFT (feu vert ré-synchro `urbanisme-test.db`) · R-MD4 (supervision prod ? timeout hébergeur ?) · R-OVERPASS (log Reprise réel au poste) · R-REPORT (fournir le rapport externe MD-2 ou le considérer inexistant).
 2. Recommandations hors périmètre (à la demande) : 37 routes sans test (dont `arxiv/search`), sur-privilèges capabilities + CSP, DB dans installeur, 230 warnings lint, renommer `hardcoded-keys.ts`.
-3. Aucune tâche en vol ; arbre propre ; suite verte ; lignes rouges intactes.
+3. **Délégation spécialiste exécutée (même session)** : T13 `.env.example` créé (32 vars, correspondance prouvée, gitignore corrigé) · T14 clé OpenAlex sortie du binaire (C-D2 option a env-only + doc exploitation) · `urbanisme-test.db` resynchronisée (drift zéro, données intactes, épisode validant le garde-fou « chemin absolu ») · suite 1452/1452 re-verte.
+4. Réserves RESTANTES (externes au dépôt) : run CI/build Windows vert (ou cycle pipeline) · rotation clé OpenAlex · log `[Overpass] Reprise` réel · supervision prod + timeout hébergeur.
+5. Aucune tâche en vol ; arbre propre ; lignes rouges intactes.
