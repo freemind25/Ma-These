@@ -103,3 +103,29 @@ export function parseFiltersJson(filters: string): Record<string, string> {
     return {};
   }
 }
+
+// ═══════════════════════════════════════════════════════════════
+// Vérification automatique (specs/veille-check-auto)
+// Constante + éligibilité pures — testables sans db ni réseau.
+// ═══════════════════════════════════════════════════════════════
+
+/** Intervalle fixe entre deux vérifications automatiques (décision n°2 : 6 h, non configurable). */
+export const AUTO_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
+
+/**
+ * Éligibilité d'une veille à une vérification automatique :
+ * opt-in actif ET (jamais vérifiée OU dernière vérification plus ancienne que l'intervalle).
+ * Premier relevé auto autorisé (décision n°3) — il crée la base de référence (CA-2.1).
+ */
+export function isDueForAutoCheck(
+  autoCheck: boolean,
+  lastCheckedAt: Date | string | null,
+  now: Date,
+  intervalMs: number = AUTO_CHECK_INTERVAL_MS
+): boolean {
+  if (!autoCheck) return false;
+  if (!lastCheckedAt) return true;
+  const last = new Date(lastCheckedAt).getTime();
+  if (!Number.isFinite(last)) return true;
+  return now.getTime() - last >= intervalMs;
+}

@@ -7,13 +7,20 @@
 // passer par cette file au lieu de nohup.
 // ═══════════════════════════════════════════════════════════════
 
+import { db } from "@/lib/db";
 import {
   claimNextJob,
   completeJob,
+  enqueueJob,
   failJob,
   requeueStaleJobs,
 } from "@/lib/jobs/queue";
 import { runDeepResearch } from "@/lib/research/deep-research-pipeline";
+import {
+  AUTO_CHECK_INTERVAL_MS,
+  isDueForAutoCheck,
+} from "@/lib/veille/check-core";
+import { runCheckForSavedSearch } from "@/lib/veille/run-check";
 
 /** Registre des handlers — tout type de job long doit s'y enregistrer. */
 type JobHandler = (payload: Record<string, unknown>) => Promise<unknown>;
@@ -35,6 +42,15 @@ const HANDLERS: Record<string, JobHandler> = {
     });
     return result;
   },
+
+  // Vérification automatique d'une veille (specs/veille-check-auto T4) —
+  // même séquence que le check manuel (run-check) ; VeilleNotFoundError /
+  // SourceFetchError sont enregistrées comme échecs de job (CA-2.3).
+  "veille-check": async (payload) => {
+    const savedSearchId = String(payload.savedSearchId ?? "");
+    if (!savedSearchId) throw new Error("savedSearchId manquant");
+    return runCheckForSavedSearch(savedSearchId, VEILLE_CHECK_ORIGIN);
+  },
 };
 
 export function getRegisteredJobTypes(): string[] {
@@ -43,17 +59,53 @@ export function getRegisteredJobTypes(): string[] {
 
 const POLL_INTERVAL_MS = 3_000;
 const STALE_SWEEP_EVERY_MS = 60_000;
+const VEILLE_SWEEP_EVERY_MS = 60_000; // specs/veille-check-auto — balayage de planification
+
+/** Origine interne pour les auto-fetch du worker (aucune requête HTTP entrante ici). */
+const VEILLE_CHECK_ORIGIN = `http://127.0.0.1:${process.env.PORT ?? 3000}`;
 
 interface WorkerState {
   started: boolean;
   timer: NodeJS.Timeout | null;
   lastSweep: number;
+  lastVeilleSweep: number;
 }
 
 // Cache global — survit aux recompilations HMR du module
 const globalForWorker = globalThis as unknown as {
   __tfJobWorker?: WorkerState;
 };
+
+/**
+ * Balayage de planification des vérifications automatiques (specs/veille-check-auto T4).
+ * Chaque veille `autoCheck=true` échue reçoit AU PLUS UN job "veille-check" en
+ * attente/en cours (garde anti-empilement CA-2.2) — le handler exécute exactement
+ * la même séquence que le check manuel (CA-2.1).
+ */
+async function sweepDueVeilleChecks(): Promise<void> {
+  const now = new Date();
+  const candidates = await db.savedSearch.findMany({
+    where: { autoCheck: true },
+    select: { id: true, lastCheckedAt: true },
+  });
+  for (const veille of candidates) {
+    if (!isDueForAutoCheck(true, veille.lastCheckedAt, now, AUTO_CHECK_INTERVAL_MS)) {
+      continue;
+    }
+    // Anti-empilement : un job pending/running pour cette veille suffit.
+    const inFlight = await db.job.findFirst({
+      where: {
+        type: "veille-check",
+        status: { in: ["pending", "running"] },
+        payload: { contains: veille.id },
+      },
+      select: { id: true },
+    });
+    if (inFlight) continue;
+    await enqueueJob("veille-check", { savedSearchId: veille.id });
+    console.warn(`[job-worker] Vérification automatique programmée pour la veille ${veille.id}`);
+  }
+}
 
 async function processOneJob(): Promise<boolean> {
   const job = await claimNextJob();
@@ -83,6 +135,7 @@ export function startJobWorker(): void {
     started: false,
     timer: null,
     lastSweep: 0,
+    lastVeilleSweep: 0,
   });
   if (state.started) return;
   state.started = true;
@@ -103,6 +156,10 @@ export function startJobWorker(): void {
         state.lastSweep = now;
         const n = await requeueStaleJobs();
         if (n > 0) console.warn(`[job-worker] ${n} job(s) orphelin(s) requalifié(s) en attente`);
+      }
+      if (now - state.lastVeilleSweep > VEILLE_SWEEP_EVERY_MS) {
+        state.lastVeilleSweep = now;
+        await sweepDueVeilleChecks();
       }
       // Traite au plus un job par tick — la boucle suivante enchaîne s'il y en a d'autres
       await processOneJob();
