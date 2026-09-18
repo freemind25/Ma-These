@@ -296,3 +296,36 @@ Work Log:
 Stage Summary:
 - Groupe A proposé à la recette (compte rendu transmis au propriétaire) — convergence (Étape 6) après acceptation
 - Signalement article 4 : échec préexistant src/lib/ai/ai-types.test.ts (catalogue 20 providers vs test figé à 18) — correction non annoncée, non effectuée, décision au propriétaire
+
+---
+Task ID: hal-search-encoding-3
+Agent: Z.ai Code (main)
+Task: Cycle n°1 fin — Groupe A recetté par le propriétaire : coche T1, Étape 6 (verdict de convergence)
+
+Work Log:
+- Recette Groupe A reçue (« Groupe A recetté ») — T1 cochée dans specs/hal-search-encoding/tasks.md (la case n'a été cochée qu'après acceptation, conformément au protocole)
+- Étape 6 : relecture assess.md + tasks.md + preuves.md contre le code produit (src/app/api/theses-en-ligne/search/route.test.ts, 14 tests, mock fetch, route.ts intacte) — verdict CONVERGÉ consigné dans tasks.md (critères 1/1, écart : aucun, dette : aucune)
+- Correction sur preuve de la mention d'apparence « routesme+apinex » consignée à l'entrée précédente : apinex absent du catalogue (git log -S 'apinex' sur ai-types.ts : aucun commit), test né périmé au commit 1359333 (2026-09-15, catalogue 20 + assertion 18 ensemble), jamais vert ; 6463078 = mode uniquement
+- Commit docs: cb9145a (coche T1 + verdict convergence) — zéro code modifié
+
+Stage Summary:
+- Cycle n°1 hal-search-encoding CLOS : verdict CONVERGÉ daté du 2026-09-18 dans tasks.md
+- Le test de non-régression (14 tests) fige durablement M1 (fq répétés), M2 (tri %2B/+ → espace), M3 (%20 final) — annexe A.1 protégée contre régression
+
+---
+Task ID: ai-types-provider-count-1
+Agent: Z.ai Code (main)
+Task: Tâche commandée par le propriétaire — voie rapide ai-types-provider-count : échec préexistant ai-types.test.ts (18 figé vs 20 réels), correction conditionnée à la vérification que 20 est le compte voulu
+
+Work Log:
+- Vérification préalable sur preuve : DYNAMIC_MODEL_PROVIDERS (src/lib/ai/ai-types.ts l.201-206) = 20 entrées, 20 uniques, 0 inconnu (bun -e) ; ALL_PROVIDER_IDS 26, catégories couvrent 26, 0 orphelin, 6 hors dynamique (zai, openai, anthropic, pollinations, kilo, kiraai) — cohérent
+- routesme : légitime et pleinement câblé (ai-types.ts l.14/76/230/263/325 ; ROUTESME_API_KEY hardcoded-keys.ts l.32 ; zai-client.ts l.852 ; module routesme-page.tsx) mais présent dès la création du catalogue ; apinex : JAMAIS dans ai-types.ts (git -S vide), gateway distincte hors catalogue (apinex-client.ts, https://api.apinex.bond, routes /api/apinex/*) — hypothèse du propriétaire corrigée sur preuve, signalée (article 4)
+- Attribution réelle : catalogue 20 + assertion 18 arrivés ensemble au commit externe 1359333 (2026-09-15) — test né périmé, jamais vert ; condition « 20 = compte voulu » confirmée → correctif autorisé par la commande conditionnelle
+- Correctif : src/lib/ai/ai-types.test.ts l.120-122 — libellé + toHaveLength 18 → 20 (1 ligne, 1 fichier, voie rapide éligible)
+- Preuves : avant = 1 failed | 38 passed (39) ; après = 39/39 verts ciblé, suite complète 62/62 fichiers, 1428/1428 tests (précédemment 1427/1428) ; specs/ai-types-provider-count/assess.md + preuves.md rédigés (sorties réelles)
+- Commit test: e6eeb82 ; FICHE_SYNTHESE.md mise à jour (session 2026-09-18) ; clôture cycle n°1 consignée
+
+Stage Summary:
+- Suite de tests intégralement verte (1428/1428) — échec préexistant éradiqué, aucune régression
+- Le 20 est le compte réel et sain (0 doublon, 0 reliquat) ; l'attribution « routesme+apinex » du delta est factuellement corrigée : test né périmé au commit 1359333, apinex hors catalogue
+- Cycle n°1 fermé des deux volets (hal-search-encoding CONVERGÉ + ai-types-provider-count clos) ; point ouvert restant : mode 100755 de CONSTITUTION.md (décision propriétaire)
