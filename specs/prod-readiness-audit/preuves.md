@@ -122,3 +122,60 @@ Les 37 sans `route.test.ts`, classées par risque (classification raisonnée sur
 **Lecture / IO local (2)** : `api/theses/stats` (agrégats DB), `api/export-docx` (génération de fichier, sans réseau)
 
 Constat chiffré : le précédent cycle de corrections avait doté `api/theses-en-ligne/search` d'un test (présent : `route.test.ts`, 14 tests) — son équivalent ligne rouge `api/arxiv/search` reste **sans aucun test**. Correction hors périmètre (inventaire demandé) → **recommandation** au rapport final.
+
+## Groupe C — Schéma & données (2026-09-18, 14:45-14:47)
+
+### T7 — Drift schéma/bases : ✓ CUSTOM.DB = ZÉRO DRIFT · ⚠️ URBANISME-TEST.DB = DRIFT (4 tables)
+
+```
+ls prisma/migrations          → "No such file or directory"
+```
+**Constat : aucune migration versionnée** — le projet est 100 % en workflow `db:push`, l'état du schéma n'est garanti que par la commande, pas par un historique.
+
+```
+bunx prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-url file:db/custom.db
+  → No difference detected.   EXIT=0        (base propriétaire : synchrone)
+
+bunx prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-url file:db/urbanisme-test.db
+  → [-] Removed tables
+      - Experiment
+      - ExperimentRun
+      - SavedSearch
+      - SavedSearchResult      EXIT=0        (base de test : EN RETARD)
+
+# diff inverse (confirmation de direction) :
+bunx prisma migrate diff --from-url file:db/urbanisme-test.db --to-schema-datamodel prisma/schema.prisma
+  → [+] Added tables (les 4 mêmes) + 6 index manquants :
+      Experiment(status) · ExperimentRun(experimentId, status) ·
+      SavedSearch(source) · SavedSearchResult(savedSearchId, unique savedSearchId+externalId)
+```
+
+Métadonnées fichiers : `db/custom.db` — 9 994 240 o, modifié **2026-09-18 11:48** ; `db/urbanisme-test.db` — 491 520 o, modifié **2026-09-16 07:51**. Les tables `Experiment`/`SavedSearch*` ont été poussées sur `custom.db` lors de cycles ultérieurs au 16/09 sans re-synchronisation de la base de test (RAPPORT-CORRECTIONS-ANNEXE-A1-A13.md mentionnait « poussées sur custom.db et urbanisme-test.db » — vrai à la date du rapport, faux aujourd'hui).
+
+**Portée du constat** : `EXPLOITATION-SERVEUR.md` qualifie `urbanisme-test.db` de « base du test de production ». Utilisée telle quelle pour un test de production, toute fonctionnalité Expériences ou Recherches sauvegardées échouera (tables absentes). **Correction candidate (hors liste → question recette)** : ré-exécuter `db:push` sur `urbanisme-test.db`. Aucune modification exécutée (règle du mandat).
+
+### T8 — Cartographie `db: push --accept-data-loss` : ✓ CONFORME AU PLAN (2 écarts de numéro de ligne consignés)
+
+```
+package.json l.12 (le mandat disait l.14 — écart consigné) :
+  "db:push": "prisma db push --accept-data-loss",
+
+.zscripts/build.sh l.146 (conforme) :
+  bash "$SCRIPT_DIR/database-runtime-build.sh"
+
+.zscripts/database-runtime-build.sh (audit complet, 34 lignes) :
+  l.8   SOURCE_DB_PATH="$PROJECT_DIR/db/custom.db"
+  l.10  TARGET_DB_PATH="$TARGET_DB_DIR/custom.db"          # copie artefact
+  l.16  cp -a "$SOURCE_DB_DIR/." "$TARGET_DB_DIR/"         # copie, jamais push
+  l.18  (si source absente) « 将初始化空的生产数据库 »        # init vide dans l'artefact
+  l.24  DATABASE_URL="file:$TARGET_DB_PATH" bun run db:push # (mandat disait l.27 — écart consigné)
+```
+
+**Arbre d'appel** : `.zscripts/build.sh` l.146 → `database-runtime-build.sh` l.24 → `package.json` l.12 (`prisma db push --accept-data-loss`). La cible du push automatique est **exclusivement** la copie dans l'artefact de build ; la base source n'est jamais la cible d'un push (elle n'est que copiée). Le flag `--accept-data-loss` est permanent dans le script npm : tout `bun run db:push` **manuel** s'exécute lui aussi sans prompt — caractérisé comme risque résiduel d'usage, pas de chaîne automatique.
+
+**Test de non-régression** : `tests/database-runtime-build.sh` (75 lignes) **exécuté en sandbox** :
+
+```
+bash tests/database-runtime-build.sh   → EXIT=0 · « database runtime build tests passed »
+```
+Il prouve par mock de `bun` : (1) sans base preview → init vide dans l'artefact, **aucun fichier créé dans le projet** (`test ! -e "$EMPTY_PROJECT/db/custom.db"`) ; (2) avec base preview → données + fichiers adjacents copiés tels quels ; (3) exactement 2 appels db:push, tous deux avec `DATABASE_URL=file:<artefact>` absolu. Le comportement « automatique au build, sur la copie artefact uniquement » est donc **prouvé par test**, pas seulement par lecture.
