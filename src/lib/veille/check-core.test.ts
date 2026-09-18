@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 import {
   applyRetention,
+  AUTO_CHECK_INTERVAL_MS,
   diffResults,
+  isDueForAutoCheck,
   parseFiltersJson,
   type FetchedItem,
   type StoredItem,
@@ -168,5 +170,51 @@ describe("parseFiltersJson", () => {
     expect(parseFiltersJson("")).toEqual({});
     expect(parseFiltersJson('"texte"')).toEqual({});
     expect(parseFiltersJson("[1,2]")).toEqual({});
+  });
+});
+
+// ────────────────────────────────────────────────────────────────────────
+// Vérification automatique (T6 — specs/veille-check-auto)
+// isDueForAutoCheck — pure : éligibilité au déclenchement planifié.
+// ────────────────────────────────────────────────────────────────────────
+
+describe("isDueForAutoCheck", () => {
+  const now = new Date("2026-09-18T12:00:00.000Z");
+  const hoursAgo = (h: number) => new Date(now.getTime() - h * 3600_000);
+
+  it("retourne false quand l'opt-in est désactivé (défaut)", () => {
+    expect(isDueForAutoCheck(false, null, now)).toBe(false);
+    expect(isDueForAutoCheck(false, hoursAgo(48), now)).toBe(false);
+  });
+
+  it("retourne true pour une veille activée jamais vérifiée (premier relevé auto — décision n°3)", () => {
+    expect(isDueForAutoCheck(true, null, now)).toBe(true);
+  });
+
+  it("retourne false quand la dernière vérification est plus récente que l'intervalle", () => {
+    expect(isDueForAutoCheck(true, hoursAgo(1), now)).toBe(false);
+    expect(isDueForAutoCheck(true, hoursAgo(5), now)).toBe(false);
+  });
+
+  it("retourne true quand l'intervalle est écoulé (≥ 6 h)", () => {
+    expect(isDueForAutoCheck(true, hoursAgo(7), now)).toBe(true);
+    expect(isDueForAutoCheck(true, hoursAgo(48), now)).toBe(true);
+  });
+
+  it("retourne true à la borne exacte de l'intervalle (>=)", () => {
+    expect(isDueForAutoCheck(true, hoursAgo(6), now)).toBe(true);
+  });
+
+  it("respecte un intervalle passé explicitement (testabilité du balayage)", () => {
+    expect(isDueForAutoCheck(true, hoursAgo(0.5), now, 10 * 60_000)).toBe(true);
+    expect(isDueForAutoCheck(true, hoursAgo(0.001), now, 10 * 60_000)).toBe(false);
+  });
+
+  it("traite une date non parsable comme jamais vérifiée (défensive)", () => {
+    expect(isDueForAutoCheck(true, "date-invalide", now)).toBe(true);
+  });
+
+  it("expose la constante d'intervalle à 6 h (décision n°2)", () => {
+    expect(AUTO_CHECK_INTERVAL_MS).toBe(6 * 60 * 60 * 1000);
   });
 });
