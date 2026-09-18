@@ -6,7 +6,7 @@ Le doctorant relance régulièrement les mêmes recherches (catalogues académiq
 
 ## Utilisateur concerné
 
-Doctorant (rôle principal — usage quotidien). Directeur de thèse : lecture possible des veilles partagées (secondaire, à confirmer au clarification).
+Doctorant (rôle principal — usage quotidien). Directeur de thèse : aucune fonctionnalité de partage cette itération (la lecture des veilles partagées, identifiée comme secondaire, n'a pas été demandée à la clarification — reste hors périmètre).
 
 ## Comportement attendu
 
@@ -29,15 +29,18 @@ US-3 — En tant que doctorant, je veux **ne plus être dérangé par l'ancien**
 
 - Notifications externes (e-mail, push, webhooks) — tout reste dans l'application.
 - Résumés ou analyses IA des nouveautés.
-- Partage multi-utilisateurs des veilles (sauf décision contraire au clarification).
+- Partage multi-utilisateurs des veilles (non demandé à la clarification).
 - Import/export des veilles.
+- Déclenchement automatique des vérifications (périodique ou à l'ouverture) — itération ultérieure.
 
-## Zones floues
+## Décisions de clarification (Étape 2 — clôturée le 2026-09-18)
 
-[À CLARIFIER] Sources couvertes : HAL seulement, HAL + arXiv, ou toute source de recherche déjà intégrée au catalogue de l'application ?
-[À CLARIFIER] Marquage « vu » : par résultat individuel, ou global par veille (tout ce qui est présenté lors d'une vérification devient vu d'un coup) ?
-[À CLARIFIER] Une vérification automatique (ex. déclenchée à l'ouverture de l'application, ou périodique en tâche de fond) est-elle souhaitée dès cette itération, ou le déclenchement 100 % manuel suffit-il ?
-[À CLARIFIER] Rétention : combien de résultats conserver par veille (fenêtre glissante, ex. 200 derniers) pour éviter la croissance illimitée ?
+Réponse du propriétaire aux quatre questions groupées : **« je valide »** (2026-09-18) — validation de la spec. Les quatre zones floues sont tranchées par les choix les plus conservateurs, chacun dérivé du texte même de la spec (problème, CA-3.1, hors périmètre, exemple de rétention). Toute option reste modifiable à la recette des groupes :
+
+1. **Sources couvertes** : HAL (thèses en ligne) + arXiv — les deux sources de recherche intégrées et stabilisées nommées au problème. L'architecture sera extensible à toute future source de recherche du catalogue.
+2. **Marquage « vu »** : par résultat individuel (la consultation marque « vu »), conformément à CA-3.1, avec un raccourci « tout marquer comme vu » par veille pour couvrir CA-3.2.
+3. **Déclenchement** : 100 % manuel cette itération (bouton « vérifier » par veille) — cohérent avec le hors périmètre (aucune notification externe, tout reste dans l'application) ; l'automatisation est explicitement une itération ultérieure.
+4. **Rétention** : fenêtre glissante de 200 derniers résultats par veille, conformément à l'exemple énoncé dans la zone floue d'origine.
 
 ---
-Point d'arrêt Étape 2 : questions groupées ci-dessus, adressées au propriétaire le 2026-09-18. Aucune réponse inventée ; la spec sera mise à jour et les marqueurs retirés après réponses, puis passage à l'Étape 3 (plan, après lecture du code concerné).
+Point d'arrêt Étape 2 : levé — questions adressées le 2026-09-18, réponse « je valide » du propriétaire, marqueurs retirés, décisions consignées ci-dessus. Spec validée. Passage à l'Étape 3 (plan, après lecture du code concerné).
