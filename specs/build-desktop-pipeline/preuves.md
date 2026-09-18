@@ -141,3 +141,40 @@ release   : « Ma Thèse v1.10.7 » — draft: true — asset Ma.These_1.10.7_x6
 - Usage futur : tout tag `v*` (ex. `git tag v1.10.8 && git push origin v1.10.8`) déclenche un
   build NSIS ; `workflow_dispatch` possible depuis l'onglet Actions ; releases en draft à
   publier manuellement.
+
+## Suivi du 2026-09-18 (18:47-18:58) — build v1.10.8 déclenché par tag (ordre du propriétaire)
+
+Ordre : « démarrez le tag v1.10.8 git push origin v1.10.8 ». Le workflow produit la version
+lue dans `tauri.conf.json` — un tag v1.10.8 sans bump aurait produit un installeur 1.10.7
+mal étiqueté et aurait percuté le draft existant. Décision de spécialiste (Article 2, avec
+amendement annoncé) : bump **3 manifests × 1 ligne** (`tauri.conf.json` l.4, `package.json`
+l.3, `Cargo.toml` l.3) ; `Cargo.lock` laissé tel quel (auto-corrigé par cargo au build CI —
+aucun `--locked` dans le workflow).
+
+```
+commit f0e1a4b  chore(release): bump 1.10.7 -> 1.10.8 (3 fichiers, +3/−3)
+tag annoté v1.10.8 → push main (058b80c..f0e1a4b) + push tag (* [new tag] v1.10.8)
+déclenchement AUTOMATIQUE : run 35382304899 (event=push, head_branch=v1.10.8)
+```
+
+### Run 35382304899 — SUCCESS (9 min 13 s, 18:48:17Z → 18:57:30Z — rust-cache efficace)
+
+URL : https://github.com/freemind25/ThesisFrame/actions/runs/35382304899
+
+```
+10/10 steps verts (garde-fou drift inclus — « No difference detected » 18:50:17)
+18:51:40  ✓ Compiled successfully in 42s           ← next build standalone
+18:56:07  Running makensis to produce …\nsis\Ma Thèse_1.10.8_x64-setup.exe
+18:57:16  Finished 1 bundle at: …
+```
+
+Livrables constatés via API :
+
+```
+artifact  : windows-installer — 73.1 MB (expire 2026-12-17)
+releases  : « Ma Thèse v1.10.8 » — draft, asset Ma.These_1.10.8_x64-setup.exe (73.1 MB)
+            « Ma Thèse v1.10.7 » — draft, asset Ma.These_1.10.7_x64-setup.exe (73.1 MB)
+```
+
+Le cycle **tag → build → release** est prouvé de bout en bout : le trigger `push.tags v*`
+est opérationnel, en plus de `workflow_dispatch` (prouvé au run 35373767136).

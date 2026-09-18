@@ -596,3 +596,21 @@ Stage Summary:
 - **R-CI DISSOUTE** : le workflow build-desktop.yml a produit un installeur Windows NSIS signé-draft en run vert prouvé — la partie reproductible ET la preuve d'exécution sont désormais acquises.
 - Repo distant : https://github.com/freemind25/ThesisFrame (privé). Build futurs : tag `v*` ou workflow_dispatch.
 - Actions de sécurité restantes côté propriétaire : révoquer les 2 clés GitHub transités par chat + rotation de la clé OpenAlex (historique du dépôt).
+
+---
+Task ID: build-desktop-pipeline-4
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Ordre du propriétaire « démarrez le tag v1.10.8 git push origin v1.10.8 » — bump version, tag, push, build CI, preuves.
+
+Work Log:
+- Analyse préalable (Article 2) : sans bump, le tag v1.10.8 aurait produit un installeur 1.10.7 mal étiqueté (le workflow lit la version dans tauri.conf.json l.4, tauri-action crée la release sur v__VERSION__) et aurait percuté le draft v1.10.7 existant.
+- Décision de spécialiste + amendement annoncé : bump 3 manifests ×1 ligne (tauri.conf.json l.4, package.json l.3, Cargo.toml l.3 — constaté à la lecture) ; Cargo.lock laissé tel quel (auto-corrigé par cargo au build CI, aucun --locked).
+- Commit f0e1a4b (+3/−3), tag annoté v1.10.8, push main (058b80c..f0e1a4b) + push tag via askpass éphémère (clé jamais dans .git/config).
+- Déclenchement automatique prouvé : run 35382304899 (event=push, head_branch=v1.10.8) → **SUCCESS en 9 min 13 s** (18:48:17Z → 18:57:30Z, rust-cache efficace), 10/10 steps verts, garde-fou drift vert (No difference detected 18:50:17), makensis → Ma Thèse_1.10.8_x64-setup.exe.
+- Livrables via API : artefact windows-installer 73.1 MB ; release draft « Ma Thèse v1.10.8 » (asset Ma.These_1.10.8_x64-setup.exe 73.1 MB) — la v1.10.7 draft demeure.
+- Preuves : preuves.md § Suivi 18:47-18:58 (extraits logs horodatés) ; fiche complétée.
+
+Stage Summary:
+- Le cycle **tag → build → release** est prouvé de bout en bout (trigger `push.tags v*` opérationnel en plus de `workflow_dispatch`).
+- Deux releases draft disponibles côté propriétaire (v1.10.7, v1.10.8) à publier manuellement.
+- Sécurité inchangée : révoquer les 2 clés GitHub transités par chat ; rotation OpenAlex en attente.
