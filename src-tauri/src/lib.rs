@@ -217,8 +217,15 @@ pub fn run() {
                     .env("TAURI", "true")
                     .env("DATABASE_URL", &database_url);
 
+                // T14 (C-D2, option a env-only) : les clés API ne sont plus
+                // embarquées dans le binaire — la variable d'environnement
+                // OPENALEX_API_KEY (si définie sur la machine) est transmise
+                // telle quelle au process Next.js. Sans elle : quota anonyme
+                // OpenAlex + bascule automatique CrossRef/HAL (mécanisme A.2).
+                // Boucle conservée pour transmettre toute valeur fournie par
+                // l'environnement sans l'écraser (CORE_API_KEY, etc.).
                 for (key, default) in [
-                    ("OPENALEX_API_KEY", "qsdRrHIuOptAWiFw3ErWLr"),
+                    ("OPENALEX_API_KEY", ""),
                     ("CORE_API_KEY", ""),
                 ] {
                     if std::env::var(key).is_err() && !default.is_empty() {
