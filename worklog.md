@@ -503,3 +503,22 @@ Stage Summary:
 - Dossier Étapes 1-4 complet présenté au feu vert — aucun code modifié, lignes rouges intactes, suite 63/1452 verte
 - Réserves d'environnement déjà identifiées (MD-1) : pas de cargo, pas de .github/remote, pas de Windows → build Tauri Windows + CI non prouvables ici, preuve externe requise
 - Verdict final attendu en Étape 6 : PRÊT / PRÊT AVEC RÉSERVES / NON PRÊT (réserves déjà probables : CI Windows, clé en dur, cible de déploiement non documentée)
+
+---
+Task ID: prod-readiness-audit-6
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Exécution enchaînée A→F du cycle SDD prod-readiness-audit (« go » du propriétaire, 2026-09-18) — audit de mise en production, preuve d'exécution par point, verdict final.
+
+Work Log:
+- Groupe A (c2f0a7a + fix e17e233) : T1 build ÉCHEC au départ — 2 erreurs TypeScript latentes révélées (run-check.ts l.290 checkedAt Date|null, veille-academique-page.tsx l.275 signature onCheck) → T1b corrigé (diff minimal +7/−4) → build exit 0, 0 warning bloquant ; T2 git propre (0 mode 755 hors .zscripts, 419 fichiers prouvés vs 410 au mandat, MD-6) ; T3 réserve CI nommée (aucun .github/, aucun remote, cargo absent) + 3 questions propriétaire.
+- Groupe B (990f33a) : T4 suite 63 fichiers / 1452 tests verte, ai-types ciblé 39/39, correctif e6eeb82 vérifié en HEAD ; T5 lint exit 0 (0 erreur / 230 warnings qualifiés) ; T6 inventaire 84 routes = 47 testées / 37 sans test classées (17 réseau/IA, 18 mutation, 2 lecture) — constat arxiv/search ligne rouge sans test, recommandation consignée.
+- Groupe C (6dfa1b7) : T7 zéro migration versionnée ; custom.db ZÉRO drift ; urbanisme-test.db DRIFT — 4 tables manquantes (Experiment, ExperimentRun, SavedSearch, SavedSearchResult) + 6 index (direction confirmée par diff inverse) ; T8 chaîne db:push cartographiée (package.json l.12 réel, runtime-build l.24 réel, build.sh l.146) + test de non-régression exécuté EXIT=0 — le push automatique ne frappe que la copie artefact, preuve par mock.
+- Groupe D (34afb88) : T9 1 seul secret réel (OpenAlex lib.rs l.221) ; hardcoded-keys.ts = env-only sain (nom trompeur) ; custom.db saine (LicenseKey 0 ligne, pas de sk-/gsk_/AIza) ; T10 clé JAMAIS PURGÉE (présente depuis 1359333 jusqu'à HEAD ; mon commit dossier 2a8a4e3 en cite la valeur — consigné) ; autres patterns historique = 0 ; T11 artefacts propres (1 résidu cache dev turbopack consigné) ; T12 35 vars confirmées, .env.example absent, scan piratage/Mendeley NÉGATIF sur HEAD+historique+artefacts+base (mendeley = parsers légitimes, pirat = aspirations/évapotranspiration), zéro OAuth Mendeley, MD-2 confirmé (rapport externe introuvable).
+- Groupe E (8cc708c) : T15 A.2 CONTOURNÉ — OpenAlex 429 et CrossRef 200 OBSERVÉS en direct, bascule branchée pipeline l.446-476/806, openalex.test 17/17 ; T16 A.3 CORRIGÉ — continueIfTruncated l.121-158 branché aux 2 sites, maxTokens 12000 l.714 ; T17 A.7 CORRIGÉ AU NIVEAU CODE (l.1466-1468, alternance endpoints) + réserve nommée — endpoints Overpass inatteignables en sandbox (HTTP 000 ×2), preuve réelle = log Reprise au poste propriétaire ; T18 A.8 CORRIGÉ — worker in-process (instrumentation), requeueStaleJobs, zéro nohup, dev.log [job-worker] en direct ; T19 A.9 CORRIGÉ — défaut 150 s, bornes 5-180 s, relance auto, route.test 18/18 ; MD-4 : 2 questions ouvertes (supervision prod, timeout hébergeur).
+- Groupe F + verdict (3f78972) : T20 dépôt en TAURI V2 (mandat disait v1.10.7 — consigné) ; 0 import @tauri-apps dans src/ → allow-open sur-privilège, allow-execute sur-privilège CRITIQUE ; CSP null confirmée ; DB propriétaire embarquée dans chaque installeur ; powershell = extraction bundle légitime ; 3 recommandations. VERDICT FINAL : PRÊT AVEC RÉSERVES (7 réserves nommées avec acteurs, 0 bloquant).
+
+Stage Summary:
+- Cycle prod-readiness-audit CONVERGÉ : 20/20 tâches exécutées avec preuve horodatée dans specs/prod-readiness-audit/preuves.md, 1 commit documentaire par groupe, verdict PRÊT AVEC RÉSERVES consigné dans tasks.md.
+- Une seule écriture de code de tout le cycle : T1b e17e233 (2 erreurs TS bloquant next build, révélées par l'audit) — lignes rouges intactes, aucune autre modification.
+- Attente propriétaire : 7 réserves → CI/Tauri Windows (URL run ?), T14 option clé OpenAlex + rotation, T13 feu vert .env.example, ré-synchro urbanisme-test.db, MD-4 ×2 (supervision, timeout hébergeur), log Overpass réel, rapport externe MD-2.
+- Recommandations hors périmètre consignées : 37 routes sans test, 230 warnings lint, sur-privilèges capabilities + CSP, DB dans installeur, binaires versionnés.
