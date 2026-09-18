@@ -75,3 +75,50 @@ Constat associé (hygiène, sans modification) : binaires versionnés dans git �
 
 - Commit T1b : `e17e233` — 2 fichiers, +7/−4.
 - Lignes rouges : `theses-en-ligne/search/route.ts`, `arxiv/search/route.ts`, `app-sidebar.tsx` — non touchés (le diff du commit le prouve).
+
+## Groupe B — Tests & qualité (2026-09-18, 14:09-14:12)
+
+### T4 — Suite complète : ✓ VERTE
+
+```
+bun run test:run        → EXIT=0
+ Test Files  63 passed (63)
+      Tests  1452 passed (1452)
+   Start at  14:09:30 · Duration 15.21s
+
+bunx vitest run src/lib/ai/ai-types.test.ts → 39 passed (39)
+git log --oneline --all -3 -- src/lib/ai/ai-types.test.ts :
+  0348dcb chore: normalisation des modes git
+  e6eeb82 test: ai-types-provider-count — compte fige aligne sur le catalogue (18 -> 20)
+  6463078 (import externe)
+```
+
+Le correctif du cycle précédent (`e6eeb82`, 18 → 20) est bien présent en HEAD et le test ciblé est vert (39 tests, y compris le compte figé 20). Aucun échec sur la suite entière.
+
+### T5 — Lint dépôt entier : ✓ 0 ERREUR (230 warnings non bloquants, qualifiés)
+
+```
+bun run lint   (= eslint .)   → EXIT=0
+✖ 230 problems (0 errors, 230 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
+```
+
+Nature des warnings (extraction du log) : `no-explicit-any` 129 · `no-unused-vars` 39 · `no-non-null-assertion` 35 · `no-console` 17 · `exhaustive-deps` 5 · `no-img-element` 3 · directive eslint-disable inutilisée 1 (le résidu d'extraction ≈ 1). **Conforme au critère du mandat (« 0 erreur bloquante »)** — les warnings sont de la dette de style, aucun ne masque une erreur. Recommandation hors périmètre : un pass `--fix` + traiter `no-explicit-any` progressivement.
+
+### T6 — Inventaire couverture routes API : ✓ INVENTAIRE (aucune correction, MD-5)
+
+Producteur : `git ls-files 'src/app/api' | rg '/route\.ts$'` croisé avec l'existence d'un `route.test.ts` adjacent.
+
+**Total : 84 `route.ts` — 47 avec test — 37 sans test.**
+
+Les 37 sans `route.test.ts`, classées par risque (classification raisonnée sur le code réel, tags vérifiés manuellement) :
+
+**Réseau externe / coût IA (17)** — un échec ou un quota peut impacter l'utilisateur sans être détecté par la suite :
+`api/ai-probe`, `api/apinex/balance`, `api/apinex/chat`, `api/apinex/models`, `api/apinex/web-search`, **`api/arxiv/search` (ligne rouge — jamais modifiée, jamais testée)**, `api/books`, `api/citation-check`, `api/coherence-check`, `api/core/search`, `api/deep-research`, `api/osm-infra`, `api/theses/detail`, `api/theses/persons`, `api/theses/search`, `api/translate`
+
+**Mutation de données / file de traitements (18)** :
+`api/ai-config`, `api/ai-keys`, `api/alignement-preuves`, `api/book-skills`, `api/book-skills/[id]`, `api/chapters/[id]/versions`, `api/experiments`, `api/experiments/[id]`, `api/experiments/[id]/runs`, `api/experiments/[id]/runs/[runId]`, `api/jobs`, `api/jobs/[id]`, `api/parts/[id]`, `api/stats-recompute`, `api/veille`, `api/veille/[id]`, `api/veille/[id]/check`, `api/veille/[id]/results` (logique métier pure couverte indirectement par `check-core.test.ts`, 24 tests — pas de test de route)
+
+**Lecture / IO local (2)** : `api/theses/stats` (agrégats DB), `api/export-docx` (génération de fichier, sans réseau)
+
+Constat chiffré : le précédent cycle de corrections avait doté `api/theses-en-ligne/search` d'un test (présent : `route.test.ts`, 14 tests) — son équivalent ligne rouge `api/arxiv/search` reste **sans aucun test**. Correction hors périmètre (inventaire demandé) → **recommandation** au rapport final.

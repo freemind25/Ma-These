@@ -13,9 +13,9 @@ Dépendances : aucune.
 
 ## Groupe B — Tests & qualité
 
-- [ ] T4 — `bun run test:run` : 0 échec (base 63 fichiers / 1452) ; `ai-types.test.ts` ciblé vert ; correctif `e6eeb82` vérifié présent en HEAD · preuve attendue : sortie vitest ciblée + `git log` du fichier
-- [ ] T5 — `bun run lint` (= `eslint .`, dépôt entier) : 0 erreur · preuve attendue : sortie + code de retour
-- [ ] T6 — Inventaire couverture routes API : 84 `route.ts`, 47 avec test, **37 sans** — liste complète classée critique / non-critique (MD-5 : inventaire seul, aucune correction) · preuve attendue : tableau dans `preuves.md` avec la commande productrice
+- [x] T4 — `bun run test:run` : 0 échec (base 63 fichiers / 1452) ; `ai-types.test.ts` ciblé vert ; correctif `e6eeb82` vérifié présent en HEAD · preuve attendue : sortie vitest ciblée + `git log` du fichier · **réalisé (« go », 2026-09-18 14:09) : 63/1452 verts, ai-types 39/39 verts, correctif e6eeb82 en HEAD**
+- [x] T5 — `bun run lint` (= `eslint .`, dépôt entier) : 0 erreur · preuve attendue : sortie + code de retour · **réalisé (« go », 2026-09-18) : exit 0, 0 erreur / 230 warnings non bloquants qualifiés (no-explicit-any 129, no-unused-vars 39, no-non-null-assertion 35, no-console 17, exhaustive-deps 5, no-img-element 3)**
+- [x] T6 — Inventaire couverture routes API : 84 `route.ts`, 47 avec test, **37 sans** — liste complète classée critique / non-critique (MD-5 : inventaire seul, aucune correction) · preuve attendue : tableau dans `preuves.md` avec la commande productrice · **réalisé (« go », 2026-09-18) : 17 réseau/IA + 18 mutation + 2 lecture/IO ; constat arxiv/search ligne rouge sans test ; recommandation consignée**
 
 Dépendances : aucune.
 
