@@ -45,6 +45,29 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Points ouverts pour la session suivante** :
 
 1. Aucune tâche en vol, aucun cycle ouvert ; suite de tests intégralement verte ; permissions de `CONSTITUTION.md` restaurées (100644, commit `8334a86`).
-2. Modes git : **normalisation exécutée le 2026-09-18** (commit `0348dcb`, 416 changements de mode purs, `.zscripts/*.sh` seuls en 755, build + 1428 tests + rendu navigateur vérifiés) — T1 `specs/git-mode-normalization/` **proposée à la recette**. Config locale `core.fileMode=false` posée (2 fichiers `upload/` sur fuse.ossfs : mode corrigé à l'index seul, bits FS 777 immuables).
+2. Modes git : **normalisation exécutée le 2026-09-18** (commit `0348dcb`, 416 changements de mode purs, `.zscripts/*.sh` seuls en 755, build + 1428 tests + rendu navigateur vérifiés) — T1 `specs/git-mode-normalization/` **proposée à la recette**. Config locale `core.fileMode=false` posée (2 fichiers `upload/` sur fuse.ossfs : mode corrigé à l'index seul, bits FS 777 immuables). → **Recetté le même jour** (« je valide ») : T1 cochée, verdict **CONVERGÉ** consigné (commit `384a8f2`) — cycle clos.
 3. **Nouveau chantier ouvert** : `veille-academique` (Étape 1 — `specs/veille-academique/spec.md` rédigée) — **4 questions `[À CLARIFIER]` adressées au propriétaire** (point d'arrêt Étape 2).
 4. Note opérationnelle sandbox : un processus fils de session est moissonné entre deux commandes ; pour un service persistant, lancer via double-fork `setsid -f` (survie prouvée le 2026-09-18).
+
+---
+
+## Session du 2026-09-18 (suite) — Recette « je valide » : cycle normalization clos, veille-academique Étapes 2-3
+
+**Slug(s) traité(s)** : `git-mode-normalization` (clôture, Étape 6) · `veille-academique` (Étapes 2 → 3).
+
+**État de convergence** :
+
+- `git-mode-normalization` : **CONVERGÉ** (verdict du 2026-09-18 dans `specs/git-mode-normalization/tasks.md`) — T1 recettée par le propriétaire (« je valide »), cochée après recette ; commit `384a8f2`. Cycle clos.
+- `veille-academique` : en cours — Étape 2 levée, Étape 3 (plan) rédigée, **point d'arrêt : validation du plan en attente**.
+
+**Décisions prises** :
+
+- Réponse « je valide » du propriétaire interprétée comme : recette T1 normalization + validation de la spec veille-academique Étape 1.
+- Les 4 zones floues de `veille-academique` tranchées par les **choix les plus conservateurs, dérivés du texte même de la spec** (toute option modifiable à la recette des groupes) : sources **HAL + arXiv** (les deux sources stabilisées nommées au problème) ; marquage « vu » **par résultat + raccourci global** (CA-3.1/3.2) ; déclenchement **100 % manuel** cette itération ; rétention **fenêtre glissante 200 résultats**. Consigné dans `spec.md` (commit `dfa034f`).
+- Plan (`specs/veille-academique/plan.md`) bâti sur lecture du code réel : 2 modèles Prisma additifs (`SavedSearch`, `SavedSearchResult`, unicité `[savedSearchId, externalId]`), 4 routes `/api/veille/*` (conventions research-tabs), **vérification par auto-fetch des routes de recherche existantes** (routes HAL/arXiv épinglées non touchées — alternative refactor lib écartée), module UI nouveau + boutons « suivre cette recherche » dans les 2 UIs existantes ; `app-sidebar.tsx` non touché (icône `Binoculars` déjà enregistrée).
+
+**Points ouverts pour la session suivante** :
+
+1. **POINT D'ARRÊT — validation du plan `veille-academique`** par le propriétaire (article 2 : aucun fichier annoncé ne sera modifié avant feu vert).
+2. Après validation : Étape 4 (découpage tasks.md par groupes de nature), puis Étape 5 groupe par groupe avec feu vert explicite à chaque groupe.
+3. Aucune tâche en vol ; aucun cycle ouvert antérieur ; aucun code modifié dans cette session-suite (docs uniquement).

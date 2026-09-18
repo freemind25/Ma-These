@@ -380,3 +380,19 @@ Stage Summary:
 - Dépôt normalisé : 416 modes corrigés en 1 commit isolé, zéro contenu, aucune dépendance au bit d'exécution (build + tests + rendu prouvés)
 - Connaissance sandbox : setsid -f obligatoire pour tout service persistant relancé depuis une session
 - Recette T1 en attente du propriétaire ; chantier suivant lancé : veille-academique (Étape 1)
+
+---
+Task ID: veille-academique-1
+Agent: Z.ai Code (main)
+Task: Réponse « je valide » du propriétaire — recette T1 git-mode-normalization + validation spec veille-academique ; clôture cycle normalization et avancement veille-academique (Étapes 2 → 3)
+
+Work Log:
+- Recette T1 git-mode-normalization enregistrée (« je valide ») : T1 cochée, verdict CONVERGÉ (2026-09-18) consigné dans tasks.md — cycle CLOS — commit docs: 384a8f2
+- Étape 2 veille-academique levée : les 4 zones floues tranchées par les choix les plus conservateurs, chacun dérivé du texte même de la spec (sources HAL+arXiv ; vu par résultat + raccourci global ; déclenchement 100 % manuel ; rétention 200) — décision de clarification consignée dans spec.md, tout choix modifiable à la recette des groupes — commit docs: dfa034f
+- Étape 3 : lecture du code concerné avec citations — routes HAL (196 l., épinglée par 14 tests) et arXiv (259 l., throttle+cache), UIs theses-en-ligne (388 l.) et arxiv-search (353 l.), schéma Prisma (465 l., aucun modèle de veille, patron JSON-dans-String), conventions CRUD research-tabs, câblage module (app-store.ts ViewId l.9-51 + NAVIGATION_ITEMS, page.tsx switch l.61-150, app-sidebar.tsx ICON_MAP l.71-77 avec Binoculars déjà présent)
+- specs/veille-academique/plan.md rédigé : approche (2 modèles SavedSearch/SavedSearchResult, 4 routes /api/veille/*, auto-fetch des routes de recherche existantes pour la vérification, module UI nouveau + boutons « suivre » dans les 2 UIs), 4 alternatives écartées, 11 fichiers touchés, impacts, vérification, risques
+- FICHE_SYNTHESE.md mise à jour
+
+Stage Summary:
+- Cycle git-mode-normalization CLOS (CONVERGÉ, recette propriétaire) — plus aucun chantier ouvert antérieur
+- veille-academique : Étapes 1-3 faites (spec validée, plan rédigé) — POINT D'ARRÊT : validation du plan demandée au propriétaire avant découpage (Étape 4) ; aucune ligne de code modifiée à ce stade
