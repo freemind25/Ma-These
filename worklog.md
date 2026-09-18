@@ -484,3 +484,22 @@ Stage Summary:
 - Deux cycles livrés et convergés en une session, zéro écart au plan, épinglés (HAL/arXiv, app-sidebar) intacts
 - La vérification automatique réutilise le worker persistant existant — aucun processus externe, opt-in par veille, intervalle 6 h
 - Le raccourci « M » n'expose aucun nouveau chemin réseau (réutilise markSeen)
+
+---
+Task ID: 1
+Agent: Z.ai Code (principal)
+Task: prod-readiness-audit — Étapes 1-4 (spec, plan sur code réel, tasks 6 groupes), zéro code modifié
+
+Work Log:
+- Investigation dépôt réel : CI (aucun .github/, aucun remote git, référence orpheline build-desktop.yml dans scripts/build-tauri-prep.sh l.3), src-tauri complet (tauri.conf.json, capabilities/default.json 3 permissions, lib.rs serveur embarqué 127.0.0.1:14325, mem::forget l.271)
+- Trouvaille critique : clé OpenAlex en dur src-tauri/src/lib.rs l.221 (qsdRrHIu…, introduite au commit externe 1359333, jamais purgée, livrée dans l'installeur NSIS)
+- Comptages prouvés : 84 routes API (47 testées / 37 sans route.test.ts), 35 process.env.* lues vs .env 1 var vs .env.example absent, commit modes 0348dcb = 419 fichiers (mandat disait 410), arbre main propre, 0 mode 755 hors .zscripts
+- db:push --accept-data-loss : package.json l.14 (manuel) ET .zscripts/database-runtime-build.sh l.27 appelé par .zscripts/build.sh l.146 (automatique au build, sur copie artefact uniquement, test tests/database-runtime-build.sh)
+- Fragilités ancrées : A.2 academic-fallback.ts l.3-4, A.3 deep-research-pipeline.ts l.121-155/l.714, A.7 osm-infra.ts l.1461-1490, A.8/A.10 queue+worker+instrumentation+EXPLOITATION-SERVEUR.md l.14, A.9 directeur-chat route.ts l.14-57
+- Rapport « Mendeley OAuth + piratage » référencé par le mandat : introuvable (dépôt + upload/, matches initiaux = faux positifs « expiration/inspiration ») — micro-décision MD-2 : scan frais dans le cycle
+- Rédaction specs/prod-readiness-audit/{spec,plan,tasks}.md : CA-0 (preuve d'exécution par point, réserves nommées), MD-1 à MD-6, corrections candidates C-D1 (.env.example) et C-D2 (clé lib.rs, 3 options au propriétaire), 20 tâches / 6 groupes indépendants
+
+Stage Summary:
+- Dossier Étapes 1-4 complet présenté au feu vert — aucun code modifié, lignes rouges intactes, suite 63/1452 verte
+- Réserves d'environnement déjà identifiées (MD-1) : pas de cargo, pas de .github/remote, pas de Windows → build Tauri Windows + CI non prouvables ici, preuve externe requise
+- Verdict final attendu en Étape 6 : PRÊT / PRÊT AVEC RÉSERVES / NON PRÊT (réserves déjà probables : CI Windows, clé en dur, cible de déploiement non documentée)
