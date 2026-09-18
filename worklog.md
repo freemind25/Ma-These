@@ -329,3 +329,19 @@ Stage Summary:
 - Suite de tests intégralement verte (1428/1428) — échec préexistant éradiqué, aucune régression
 - Le 20 est le compte réel et sain (0 doublon, 0 reliquat) ; l'attribution « routesme+apinex » du delta est factuellement corrigée : test né périmé au commit 1359333, apinex hors catalogue
 - Cycle n°1 fermé des deux volets (hal-search-encoding CONVERGÉ + ai-types-provider-count clos) ; point ouvert restant : mode 100755 de CONSTITUTION.md (décision propriétaire)
+
+---
+Task ID: constitution-mode-1
+Agent: Z.ai Code (main)
+Task: Commande du propriétaire — voie rapide : restauration des permissions CONSTITUTION.md (chmod 644), déjà validée précédemment
+
+Work Log:
+- Preuve avant : git ls-files -s CONSTITUTION.md = 100755 (blob cf930073…) ; ls -l = -rwxr-xr-x
+- chmod 644 + git add — preuve après : index 100644, git diff --cached --summary = « mode change 100755 => 100644 CONSTITUTION.md », blob inchangé (contenu strictement intact, 0 ligne)
+- specs/constitution-mode/assess.md (condensé) + preuves.md rédigés, inclus au commit de la tâche
+- Commit chore: 8334a86 ; FICHE_SYNTHESE.md : point ouvert soldé, observation consignée (autres fichiers suivis en 100755 : skills/sdd-thesisframe/SKILL.md, src/lib/ai/ai-types.test.ts — sans action décidée)
+- Commit docs: (fiche + worklog)
+
+Stage Summary:
+- CONSTITUTION.md restauré en 100644 (contenu intact) — dernier point ouvert du cycle n°1 entièrement soldé
+- Aucune tâche en vol ; suite de tests 1428/1428 verte ; observation passive : deux autres fichiers suivis en 100755, décision laissée au propriétaire

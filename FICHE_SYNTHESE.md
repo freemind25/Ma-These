@@ -40,8 +40,9 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 - Vérification préalable exigée par le propriétaire menée sur preuve avant tout correctif : `DYNAMIC_MODEL_PROVIDERS` (`src/lib/ai/ai-types.ts` l.201-206) = 20 entrées, 20 uniques, 0 inconnu du catalogue ; 26 providers catalogués, 0 orphelin. **Le 20 n'est pas un symptôme.**
 - Hypothèse « routesme + apinex » **corrigée sur preuve** : `routesme` est légitime et pleinement câblé mais présent dès la création du catalogue ; `apinex` n'a jamais figuré dans `ai-types.ts` (`git log -S 'apinex'` vide) — c'est une gateway distincte hors catalogue (`src/lib/apinex/apinex-client.ts`, routes `/api/apinex/*`). Le test `ai-types.test.ts` est né périmé au commit externe `1359333` (2026-09-15, catalogue 20 + assertion 18 dans le même commit) — il n'a jamais été vert ; dernier commit le touchant (`6463078`, 2026-09-16) : mode fichier uniquement.
 - Le test de non-régression HAL (`src/app/api/theses-en-ligne/search/route.test.ts`, 14 tests) fige durablement les trois mécanismes de l'annexe A.1 : fq répétés natifs, normalisation du tri `%2B`/`+` → espace, encodage final `%20`.
+- Mode de `CONSTITUTION.md` : décision du propriétaire (« chore: restauration des permissions, chmod 644 ») exécutée en voie rapide — 100755 → 100644, blob inchangé `cf93007…` (commit `8334a86`, `specs/constitution-mode/`). Point ouvert soldé.
 
 **Points ouverts pour la session suivante** :
 
-1. `CONSTITUTION.md` est toujours en mode git 100755 (`git ls-files -s` vérifié le 2026-09-18) — déclaration en attente de décision du propriétaire : `chore:` pour restaurer 644, ou acceptation du mode actuel.
-2. Aucune tâche en vol, aucun cycle ouvert ; suite de tests intégralement verte.
+1. Aucune tâche en vol, aucun cycle ouvert ; suite de tests intégralement verte ; permissions de `CONSTITUTION.md` restaurées (100644, commit `8334a86`).
+2. Observation (aucune action décidée) : d'autres fichiers suivis sont en mode git 100755 (ex. `skills/sdd-thesisframe/SKILL.md`, `src/lib/ai/ai-types.test.ts`) — même traitement éventuel à la discrétion du propriétaire.
