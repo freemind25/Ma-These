@@ -150,3 +150,20 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 3. **Délégation spécialiste exécutée (même session)** : T13 `.env.example` créé (32 vars, correspondance prouvée, gitignore corrigé) · T14 clé OpenAlex sortie du binaire (C-D2 option a env-only + doc exploitation) · `urbanisme-test.db` resynchronisée (drift zéro, données intactes, épisode validant le garde-fou « chemin absolu ») · suite 1452/1452 re-verte.
 4. Réserves RESTANTES (externes au dépôt) : run CI/build Windows vert (ou cycle pipeline) · rotation clé OpenAlex · log `[Overpass] Reprise` réel · supervision prod + timeout hébergeur.
 5. Aucune tâche en vol ; arbre propre ; lignes rouges intactes.
+
+---
+
+## Session du 2026-09-18 (quater) — Cycle SDD n°6 : build-desktop-pipeline
+
+**Slug traité** : `build-desktop-pipeline` (« go » sur recommandation) — cycle complet en délégation.
+
+**État de convergence** : **CONVERGÉ (prêt pour la CI)** — réserve unique : le run vert, invérifiable en sandbox, acteur propriétaire après push.
+
+**Ce qui a été fait** :
+
+- `.github/workflows/build-desktop.yml` versionné (102 lignes, YAML validé par parseur ×2) : déclencheurs tag `v*` + manuel, runner `windows-latest`, bun, **garde-fou de drift en tête de pipeline** (`prisma migrate diff --exit-code` sur les 2 bases, lecture seule, échec avant tout build coûteux), Rust MSVC, `tauri-action@v0` (exécute `beforeBuildCommand` = `scripts/build-tauri-prep.sh` l.8 de la conf), cible NSIS, release draft + artefact.
+- Garde-fou **prouvé dans les deux sens** : exit 0 (custom.db synchrone) / exit 2 (copie de drift fabriquée) — note de discipline : première mesure faussée par `| head`, re-mesurée proprement.
+- 7 contrats croisés cités en preuve (conf→script→next.config→package.json→RUNNER_OS).
+- Précision d'énoncé : « v1.10.7 » = version du **produit** (`tauri.conf.json` l.4) ; le framework est Tauri v2.
+
+**Reste au propriétaire** : pousser le dépôt sur GitHub → `workflow_dispatch` ou tag `v1.10.7` → fournir l'URL du run vert. Recommandation hors périmètre : signature Authenticode.
