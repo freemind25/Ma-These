@@ -179,3 +179,54 @@ DELETE → {"data":{"deleted":true,"remainingResults":0}}
 Base rendue propre : 0 veille, 0 résultat (deux veilles de test supprimées, cascades prouvées).
 Routes de recherche existantes (`theses-en-ligne/search`, `arxiv/search`) : jamais modifiées
 (`git log --oneline -- src/app/api/theses-en-ligne/search/` inchangé hors tests).
+
+### Recette complémentaire — exécution reprise après reprise de session (2026-09-18)
+
+Les 5 fichiers T2-T6 ont été **refondus et re-recettés intégralement** (nouveau cycle curl,
+jeu de requêtes différent : HAL `q=fablab` + `yearMin=2020`, arXiv `q=large language models`).
+Cette recette élargit la précédente : validations 400 étendues, 404, simulation d'un nouveau
+résultat (CA-2.2), test de rétention avec injection de 180 lignes, vérification des orphelins.
+
+```
+=== 1. GET /api/veille (vide) === {"data":[],"meta":{"count":0}}
+=== 2. POST sans label (attendu 400) === {"error":"Le libellé de la veille est requis"} HTTP 400
+=== 3. POST source invalide (attendu 400) === {"error":"Source invalide (attendu : \"hal\" ou \"arxiv\")"} HTTP 400
+=== 4. POST sans query (attendu 400) === {"error":"La requête de recherche est requise"} HTTP 400
+=== 5. POST veille HAL (201) ===
+  {"data":{"id":"cmu6tdaph002cpy6k3723vty4","label":"Thèses sur les fablabs","source":"hal",
+   "query":"fablab","filters":{"sort":"publicationDateY_i desc","yearMin":"2020"},...}} HTTP 201
+=== 6. CHECK n°1 — CA-2.1 (base de référence, aucun « nouveau ») ===
+  {"isFirstCheck":true,"fetchedCount":9,"added":9,"newCount":0,"totalResults":9,"unreadCount":0}
+=== 7. CHECK n°2 (jeu identique) ===
+  {"isFirstCheck":false,"fetchedCount":9,"added":0,"newCount":0}   ← déduplication CA-2.2
+=== 8. GET /api/veille (compteurs CA-3.2) ===
+  [{"label":"Thèses sur les fablabs","source":"hal","totalResults":9,"unreadCount":0,
+    "lastCheckedAt":"2026-09-18T10:27:01.393Z"}]
+=== 9. CHECK n°3 après éviction simulée d'un résultat (re-check → réinsertion en non-vu) ===
+  {"isFirstCheck":false,"added":1,"newCount":1,"totalResults":9,"unreadCount":1}  ← CA-2.2 dynamique
+=== 10. GET results — non-vu EN PREMIER ===
+  meta {"count":9,"unreadCount":1} ; 1er élément seen:false, puis seen:true (firstSeenAt desc)
+=== 11. PATCH partiel {"ids":[…]} === {"data":{"updated":1,"scope":"ids"}}
+=== 12. PATCH corps invalide (attendu 400) === {"error":"Fournir { ids: [...] } ou { all: true }"} HTTP 400
+=== 13. PATCH {"all":true} (plus rien de non-vu) === {"data":{"updated":0,"scope":"all"}}
+=== 14. GET final === meta {"count":9,"unreadCount":0}
+=== 15. PATCH renommage (CA-1.1) === label: "Veille fablabs (2020+)"
+=== 16. PATCH renommage vide (attendu 400) === {"error":"Le nouveau libellé est requis"} HTTP 400
+=== 17. avant suppression : résultats = 9
+=== 18. DELETE (CA-1.2) === {"data":{"deleted":true,…}} ; veilles restantes: 0 ; résultats orphelins: 0
+=== 19. POST check sur veille supprimée (attendu 404) === {"error":"Veille introuvable"} HTTP 404
+=== 20. CHECK arXiv (max=30 respecté) ===
+  {"isFirstCheck":true,"fetchedCount":30,"added":30,"newCount":0,"totalResults":30,"unreadCount":0}
+=== 21. RÉTENTION 200 — injection de 180 faux résultats (total 210) puis check ===
+  {"isFirstCheck":false,"fetchedCount":30,"added":0,"removedByRetention":10,"totalResults":200}
+```
+
+### Différences de la refonte (justifiées par la spec)
+
+- Erreur de source propagée **502** dans tous les cas (la précédente version renvoyait 504 sur
+  timeout) — conformité stricte au task T5 « erreur source propagée 502 ».
+- Déduplication assurée en amont par `diffResults` (filtre externalId vide/connu) + filet de
+  sécurité P2002 → insertion ligne à ligne (skipDuplicates non supporté sur SQLite, cf. incident
+  de session antérieure) — `dedupeByExternalId` n'est plus nécessaire.
+- Réponse check enrichie : fetchedCount / added / newCount / removedByRetention / totalResults /
+  unreadCount / checkedAt.
