@@ -63,3 +63,45 @@ Commande : `git diff --cached --numstat | awk '$1!=0 || $2!=0' | wc -l` → `0` 
 ## Vérifications post-commit (T1 — suite)
 
 → voir section ci-dessous, ajoutée après commit (build, suite de tests, dev server).
+
+## Vérifications post-commit (T1 — suite)
+
+### Build de production (`bun run build` = `prisma generate && next build`)
+
+Premier essai : échec sur fetch Google Fonts (`Geist` / `Geist Mono`) — défaut
+réseau transitoire sans rapport avec les modes (les 2 seules erreurs Turbopack ;
+aucune sur un module du projet, i.e. les 414 fichiers normalisés ont compilé).
+Deuxième essai : **SUCCÈS** — table de routes complète imprimée :
+
+```
+├ ƒ /api/theses-en-ligne/search
+├ ƒ /api/thesis/[id]/chapters
+├ ƒ /api/verification-publication   … (toutes les routes listées)
+ƒ Proxy (Middleware)
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+```
+
+### Suite de tests + lint
+
+```
+bun run test:run → Test Files  62 passed (62) | Tests  1428 passed (1428) | Duration  13.92s
+bun run lint     → ✖ 230 problems (0 errors, 230 warnings)   [warnings préexistants]
+```
+
+### Dev server + vérification navigateur
+
+Particularité sandbox consignée : un processus fils de session est moissonné entre
+deux commandes — relance réussie via double-fork `setsid -f` (survie prouvée sur
+commandes séparées, worklog `git-mode-normalization-1`).
+
+```
+curl http://localhost:3000 → HTTP 200 (vérifié sur 2 commandes distinctes)
+agent-browser : titre « Ma Thèse — Assistant de thèse »
+agent-browser errors → (aucune erreur JS)
+snapshot UI complète : sidebar Tableau de bord / Éditeur / IA / Structure / Recherche & Sources
+console : HMR connected, Fast Refresh OK, 1 warning préexistant (logo aspect-ratio)
+capture : test-snapshots/13-mode-normalization-check.png
+```
+
+**Aucun script npm ni hook ne dépendait d'un bit d'exécution sur un fichier normalisé** — build, suite de tests, dev server et rendu navigateur intacts après normalisation.

@@ -359,3 +359,24 @@ Work Log:
 Stage Summary:
 - Aucun chantier actif restant ; seule décision en suspens : normalisation optionnelle des modes git (proposition consignée dans la fiche)
 - Dépôt prêt pour de nouveaux cycles SDD (Étape 1 — spécifier)
+
+---
+Task ID: git-mode-normalization-1
+Agent: Z.ai Code (main)
+Task: Commande du propriétaire — cycle court (assess.md) : normalisation des modes git, exclusivité .zscripts/*.sh à 755 avant commit, build après commit, un seul commit chore:
+
+Work Log:
+- specs/git-mode-normalization/assess.md + tasks.md + preuves.md rédigés (cycle court variante bug, dette d'import 1359333)
+- Due diligence pré-commit : toutes les invocations de scripts hors .zscripts passent par bash/sh (tauri.conf l.8 : « bash scripts/build-tauri-prep.sh »), aucune exécution directe ./x.sh, node_modules non suivi (bits .bin intacts)
+- Exception upload/ : upload/LR.rar + upload/res.pdf sur montage fuse.ossfs (chmod FS refusé) → mode corrigé à l'index seul via git update-index --chmod=-x ; bits FS 777 root inchangés, contenu intact
+- Exclusivité vérifiée avant commit : git ls-files -s → seuls les 8 .zscripts/*.sh en 755 ; diff --cached --summary = 416 × « mode change 100755 => 100644 », numstat contenu = 0 (24 binaires en - -)
+- Commit chore: 0348dcb unique (416 modes + 3 artefacts specs, zéro contenu sur l'existant) ; core.fileMode=false posé (config locale, sinon 2 fichiers ossfs paraissent modifiés en permanence)
+- Post-commit : bun run build — 1er essai échoué sur fetch Google Fonts (transitoire, réseau ; les 2 seules erreurs, aucune sur un module), 2e essai SUCCÈS (table de routes complète) ; bun run test:run 1428/1428 ; lint 0 erreur
+- Dev server : arrêté pour le build, relance découverte sandbox — tout fils de session est moissonné entre commandes (sleep test mort, même setsid simple) ; setsid -f (double-fork → orphelin) SURVIT (prouvé sur commandes séparées) ; curl 200 inter-commandes
+- Vérification navigateur agent-browser : « Ma Thèse — Assistant de thèse », 0 erreur JS, UI complète (sidebar, 20+ modules), console propre, capture test-snapshots/13-mode-normalization-check.png
+- FICHE_SYNTHESE.md mise à jour ; T1 laissée NON cochée (recette requise)
+
+Stage Summary:
+- Dépôt normalisé : 416 modes corrigés en 1 commit isolé, zéro contenu, aucune dépendance au bit d'exécution (build + tests + rendu prouvés)
+- Connaissance sandbox : setsid -f obligatoire pour tout service persistant relancé depuis une session
+- Recette T1 en attente du propriétaire ; chantier suivant lancé : veille-academique (Étape 1)

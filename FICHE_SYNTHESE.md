@@ -45,4 +45,6 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Points ouverts pour la session suivante** :
 
 1. Aucune tâche en vol, aucun cycle ouvert ; suite de tests intégralement verte ; permissions de `CONSTITUTION.md` restaurées (100644, commit `8334a86`).
-2. Observation (aucune action décidée) : anomalie de modes git **généralisée** — 424/433 fichiers suivis en 100755 (héritage du commit d'import externe `1359333`) contre 9 en 100644 (fichiers créés dans le sandbox + `CONSTITUTION.md`). Normalisation éventuelle : 644 pour tout sauf `.zscripts/*.sh` (légitimement exécutables) ≈ 410 changements de mode, zéro ligne de contenu, 1 commit `chore:` unique — décision au propriétaire (audit du 2026-09-18, voir worklog `mode-audit-1`).
+2. Modes git : **normalisation exécutée le 2026-09-18** (commit `0348dcb`, 416 changements de mode purs, `.zscripts/*.sh` seuls en 755, build + 1428 tests + rendu navigateur vérifiés) — T1 `specs/git-mode-normalization/` **proposée à la recette**. Config locale `core.fileMode=false` posée (2 fichiers `upload/` sur fuse.ossfs : mode corrigé à l'index seul, bits FS 777 immuables).
+3. **Nouveau chantier ouvert** : `veille-academique` (Étape 1 — `specs/veille-academique/spec.md` rédigée) — **4 questions `[À CLARIFIER]` adressées au propriétaire** (point d'arrêt Étape 2).
+4. Note opérationnelle sandbox : un processus fils de session est moissonné entre deux commandes ; pour un service persistant, lancer via double-fork `setsid -f` (survie prouvée le 2026-09-18).
