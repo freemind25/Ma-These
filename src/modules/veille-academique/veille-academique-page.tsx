@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -50,6 +51,7 @@ interface VeilleItem {
   label: string;
   source: string;
   query: string;
+  autoCheck: boolean;
   lastCheckedAt: string | null;
   createdAt: string;
   totalResults: number;
@@ -193,6 +195,35 @@ export function VeilleAcademiquePage() {
     }
   };
 
+  const toggleAuto = useCallback(async (veille: VeilleItem, autoCheck: boolean) => {
+    // Mise à jour optimiste, rollback en cas d'échec
+    setSearches((prev) =>
+      prev.map((s) => (s.id === veille.id ? { ...s, autoCheck } : s))
+    );
+    try {
+      const res = await fetch(`/api/veille/${veille.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ autoCheck }),
+      });
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload.error || "Erreur");
+      toast.success(
+        autoCheck
+          ? "Vérification automatique activée"
+          : "Vérification automatique désactivée",
+        { description: "Vérification toutes les 6 heures." }
+      );
+    } catch (err) {
+      setSearches((prev) =>
+        prev.map((s) => (s.id === veille.id ? { ...s, autoCheck: !autoCheck } : s))
+      );
+      toast.error("Échec du réglage", {
+        description: err instanceof Error ? err.message : undefined,
+      });
+    }
+  }, []);
+
   const openRename = (veille: VeilleItem) => {
     setRenameTarget(veille);
     setRenameLabel(veille.label);
@@ -278,6 +309,7 @@ export function VeilleAcademiquePage() {
               onOpen={() => setSelectedId(veille.id)}
               onRename={() => openRename(veille)}
               onDelete={() => setDeleteTarget(veille)}
+              onToggleAuto={(checked) => void toggleAuto(veille, checked)}
             />
           ))}
         </div>
@@ -342,6 +374,7 @@ function VeilleCard({
   onOpen,
   onRename,
   onDelete,
+  onToggleAuto,
 }: {
   veille: VeilleItem;
   checking: boolean;
@@ -349,6 +382,7 @@ function VeilleCard({
   onOpen: () => void;
   onRename: () => void;
   onDelete: () => void;
+  onToggleAuto: (checked: boolean) => void;
 }) {
   return (
     <Card className="group transition-all hover:shadow-md hover:border-violet-300 dark:hover:border-violet-700">
@@ -386,6 +420,17 @@ function VeilleCard({
             </p>
           </button>
           <div className="flex items-center gap-1.5 shrink-0">
+            <div
+              className="flex items-center gap-1.5 mr-1"
+              title="Vérification automatique toutes les 6 h"
+            >
+              <Switch
+                checked={veille.autoCheck}
+                onCheckedChange={onToggleAuto}
+                aria-label={`Vérification automatique pour ${veille.label}`}
+              />
+              <span className="text-xs text-muted-foreground select-none">Auto</span>
+            </div>
             <Button
               variant="outline"
               size="sm"
