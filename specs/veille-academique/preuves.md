@@ -91,3 +91,91 @@ total SavedSearch: 0 | total SavedSearchResult: 0
 - Doublon `externalId` même veille : refusé par Prisma (`P2002` = violation d'unicité).
 - Suppression de la veille : cascade effective (0 résultat restant).
 - État final : 0 / 0 — le smoke test ne laisse aucun résidu.
+
+## Groupe B — Backend / routes API (T2-T6)
+
+Note d'exécution : le premier POST a révélé que le client Prisma du serveur de dev
+était périmé (`db.savedSearch` undefined — serveur démarré avant le `db:push` du
+Groupe A) → redémarrage du serveur (`setsid -f`), preuve consignée. Second incident :
+`skipDuplicates` non supporté par Prisma 6.19.2 sur SQLite (`Unknown argument`) →
+corrigé dans le groupe : déduplication amont par `dedupeByExternalId` (les deux
+branches de `createMany`), option supprimée.
+
+### Cycle curl complet — HAL (`q=urbanisme`, `filters={"domain":"shs"}`)
+
+**1. POST /api/veille** → `201`
+```json
+{"data":{"id":"cmu6smst80000py6kobfz5lbe","label":"Veille test — urbanisme","source":"hal","query":"urbanisme","filters":"{\"domain\":\"shs\"}","lastCheckedAt":null}}
+```
+
+**2. check n°1** — CA-2.1 (base de référence, aucun « nouveau ») :
+```json
+{"data":{"isFirstCheck":true,"fetchedCount":50,"newCount":0,"evictedCount":0,"storedTotal":50}}
+```
+
+**3. check n°2** — CA-2.2 (résultats identiques → jamais re-marqués) :
+```json
+{"data":{"isFirstCheck":false,"fetchedCount":50,"newCount":0,"evictedCount":0,"storedTotal":50}}
+```
+
+**4. GET /api/veille** — CA-2.4 + CA-3.2 :
+```json
+{"data":[{"id":"cmu6smst80000py6kobfz5lbe","label":"Veille test — urbanisme","source":"hal","query":"urbanisme","filters":{"domain":"shs"},"lastCheckedAt":"2026-09-18T10:07:24.330Z","totalResults":50,"unseenCount":0}],"meta":{"count":1}}
+```
+
+**5. Simulation d'évolution de la source** (éviction de 2 résultats via script temporaire
+supprimé ensuite — même mécanisme que la rétention) : `evicted: 2 → restants: 48`
+
+**6. check n°3** — CA-2.2 (les 2 inconnus reviennent marqués « nouveau ») :
+```json
+{"data":{"isFirstCheck":false,"fetchedCount":50,"newCount":2,"evictedCount":0,"storedTotal":50}}
+```
+
+**7. GET /api/veille** — compteur CA-3.2 : `"totalResults":50,"unseenCount":2`
+
+**8. GET results** — ordre non vus d'abord :
+```
+meta: {"count": 50, "unseenCount": 2, ...}
+ordre seen flags (10 premiers): [False, False, True, True, True, True, True, True, True, True]
+premier non-vu: cmu6sot4q001fpy6k4k00z0uj | Au nom des Jeux : Une ethnographie multisituée de la fabriqu…
+```
+
+**9. PATCH vu partiel** `{ids:[...]}` — CA-3.1 : `{"data":{"markedSeen":1}}` → `unseenCount après partiel: 1`
+
+**10. PATCH vu global** `{all:true}` — CA-3.1 : `{"data":{"markedSeen":1}}` → `unseenCount après global: 0`
+
+**11. PATCH renommage** — CA-1.1 : `label: Veille renommée — urbanisme SHS`
+
+**12. DELETE** — CA-1.2 : `{"data":{"deleted":true,"remainingResults":0}}` (cascade prouvée) ;
+GET liste de retour : `{"data":[],"meta":{"count":0}}`
+
+**13. Validation 400** (source invalide « pubmed ») : `400`
+
+### Cycle curl — arXiv (`q=urban morphology`, `sort=submittedDate`)
+
+```json
+POST → {"data":{"id":"cmu6sqq4e001hpy6k1dfix9td","label":"Veille test arXiv — urban morphology","source":"arxiv",...}}
+check n°1 → {"data":{"isFirstCheck":true,"fetchedCount":30,"newCount":0,"evictedCount":0,"storedTotal":30}}
+check n°2 → {"data":{"isFirstCheck":false,"fetchedCount":30,"newCount":0,"evictedCount":0,"storedTotal":30}}
+```
+3 premiers résultats (normalisation itemsFromArxiv) :
+```
+- 2609.13029 | 2026 | Geometry of Urban Order
+- 2609.07608 | 2026 | Solution for UCF UrbanTwin V2X-Real Track: Sim-to-Real…
+- 2609.05744 | 2026 | Gaussian Linear Functional Manifold Method for Massive…
+meta: 30 résultats, unseen 0
+DELETE → {"data":{"deleted":true,"remainingResults":0}}
+```
+
+### Lint
+
+```
+✖ 230 problems (0 errors, 230 warnings)
+```
+0 erreur — les 230 warnings sont préexistants sur l'ensemble du dépôt (présents avant ce groupe).
+
+### État final
+
+Base rendue propre : 0 veille, 0 résultat (deux veilles de test supprimées, cascades prouvées).
+Routes de recherche existantes (`theses-en-ligne/search`, `arxiv/search`) : jamais modifiées
+(`git log --oneline -- src/app/api/theses-en-ligne/search/` inchangé hors tests).
