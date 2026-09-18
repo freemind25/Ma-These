@@ -560,3 +560,21 @@ Work Log:
 Stage Summary:
 - La référence orpheline (script l.3 → workflow) est comblée : la chaîne desktop complète est versionnée, auditable localement, avec un garde-fou de désynchronisation de base (défaut urbanisme-test.db ne peut plus se reproduire en CI).
 - Réserve unique restante : URL d'un run vert — propriétaire après push sur GitHub (workflow_dispatch ou tag v1.10.7).
+
+---
+Task ID: build-desktop-pipeline-2
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Suivi R-CI — exécuter la partie externe de T4 (repo distant → push → run vert) avec la clé GitHub fournie par le propriétaire (« clé provisoire pour faire le travail »).
+
+Work Log:
+- Article 2 : enquête lecture seule (scripts, conf, git, blobs) + vérification de la clé côté API GitHub.
+- Clé rejetée par GitHub : HTTP 401 Bad credentials — 3 tentatives (Bearer /user, Bearer /rate_limit, token /user), format ghp_ classique correct (40 caractères). Verdict : révoquée, expirée ou erreur de copie. Aucune valeur de clé écrite dans un fichier versionné ni dans .git/config.
+- Mesures pré-push : arbre propre, branche main, aucun remote, 46.36 MiB, plus gros blob 9.5 MB (db/custom.db) — pas de LFS requis, aucun zip/exe suivi ; db/custom.db + db/urbanisme-test.db suivies (ressources du bundle attendues par tauri.conf.json l.42-46).
+- Écart documentaire trouvé : workflow réel = 84 lignes (wc -l ; git show --stat cfa3377 = 84 insertions) contre « 102 lignes » consigné (preuves T1, worklog, fiche) — fiche corrigée, correction consignée dans preuves.md, journal historique intact.
+- Script de push préparé hors dépôt (/home/z/push-thesisframe.sh) : création repo privé « ThesisFrame » → remote sans token → push via askpass éphémère (/tmp, mode 700) → workflow_dispatch ref main → URL Actions.
+- Preuves + suivi T4 consignés (specs/build-desktop-pipeline/preuves.md § Suivi, tasks.md) ; fiche session « quinquies » ; commit docs: unique.
+
+Stage Summary:
+- T4 toujours en attente, prérequis reformulé précisément : clé GitHub classique VALIDE avec scopes repo + workflow.
+- Tout le reste est prêt : une commande exécutera création repo → push → dispatch → surveillance du run → URL verte.
+- Sécurité : révoquer la clé transmise par chat après usage (invalide mais transitée) ; rotation OpenAlex toujours en attente.

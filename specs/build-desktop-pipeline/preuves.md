@@ -42,3 +42,45 @@ Première mesure de l'audit : DRIFT_EXIT initialement lu « 0 » à cause d'un p
 Preuve manquante exacte : une URL de run GitHub Actions vert du workflow `build-desktop.yml` produisant un artefact `windows-installer` (ou un run en échec dont la cause est externalisée au dépôt). **Acteur : propriétaire** — le sandbox n'a ni remote git, ni cargo, ni Windows ; la chaîne complète hors CI est désormais versionnée et auditable localement (contrats croisés + garde-fou prouvés ici).
 
 **Recette au propriétaire** : (1) pousser le dépôt sur GitHub ; (2) `workflow_dispatch` ou pousser un tag `v1.10.7` ; (3) fournir l'URL du run. Recommandations consignées (hors périmètre) : signature Authenticode de l'installeur ; secret `OPENALEX_API_KEY` à définir côté machines utilisateurs si quota dédié voulu (runtime-only, T14).
+
+## Suivi du 2026-09-18 (16:40-16:55) — R-CI : clé GitHub fournie puis rejetée ; push préparé
+
+Contexte : le propriétaire fournit une clé GitHub « provisoire » pour déléguer le reste de T4
+(créer le dépôt distant → pousser → déclencher le run → livrer l'URL verte).
+
+Preuves (aucune valeur de clé consignée, nulle part) :
+
+```
+Tentative 1 — curl -H "Authorization: Bearer ***" https://api.github.com/user
+  → HTTP 401 {"message":"Bad credentials"}   login: null
+Tentative 2 — curl -H "Authorization: Bearer ***" https://api.github.com/rate_limit
+  → HTTP 401 {"message":"Bad credentials"}
+Tentative 3 — curl -H "Authorization: token ***" https://api.github.com/user
+  → HTTP 401 {"message":"Bad credentials"}
+Format clé : ghp_ + 36 caractères = 40 (classique, format correct) →
+  le jeton n'existe plus côté GitHub (révoquée, expirée ou erreur de copie).
+```
+
+Préparation push (mesurée) :
+
+```
+git status --porcelain      → vide (arbre propre) ; branche : main ; remote : aucun
+git count-objects -vH       → size: 46.36 MiB
+plus gros blob historique   → 9.5 MB (db/custom.db) — aucun objet > 100 MiB, pas de LFS requis
+git ls-files | zip/exe      → aucun suivi ; db/custom.db + db/urbanisme-test.db suivies
+                              (ressources attendues par tauri.conf.json l.42-46)
+```
+
+Script de push préparé HORS dépôt : `/home/z/push-thesisframe.sh` (création repo privé
+`ThesisFrame` → remote SANS token → push via askpass éphémère `/tmp` mode 700 →
+`workflow_dispatch` ref main → URL Actions). La clé ne transitera ni dans un fichier
+versionné ni dans `.git/config`.
+
+Correction documentaire (preuve avant affirmation) :
+« 102 lignes » était consigné pour le workflow (preuves T1 ci-dessus, worklog, fiche) ;
+mesure réelle : `wc -l .github/workflows/build-desktop.yml` → **84** ;
+`git show --stat cfa3377` → **84 insertions**. Fiche corrigée dans ce commit ; les
+entrées historiques du worklog restent inchangées (journal), la correction est consignée ici.
+
+État de T4 : inchangé — prérequis externe = **une clé GitHub valide**
+(classique, scopes `repo` + `workflow`).

@@ -161,9 +161,17 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 
 **Ce qui a été fait** :
 
-- `.github/workflows/build-desktop.yml` versionné (102 lignes, YAML validé par parseur ×2) : déclencheurs tag `v*` + manuel, runner `windows-latest`, bun, **garde-fou de drift en tête de pipeline** (`prisma migrate diff --exit-code` sur les 2 bases, lecture seule, échec avant tout build coûteux), Rust MSVC, `tauri-action@v0` (exécute `beforeBuildCommand` = `scripts/build-tauri-prep.sh` l.8 de la conf), cible NSIS, release draft + artefact.
+- `.github/workflows/build-desktop.yml` versionné (**84 lignes réelles** — wc -l, git stat cfa3377 ; « 102 » corrigé le 2026-09-18, voir preuves § Suivi ; YAML validé par parseur ×2) : déclencheurs tag `v*` + manuel, runner `windows-latest`, bun, **garde-fou de drift en tête de pipeline** (`prisma migrate diff --exit-code` sur les 2 bases, lecture seule, échec avant tout build coûteux), Rust MSVC, `tauri-action@v0` (exécute `beforeBuildCommand` = `scripts/build-tauri-prep.sh` l.8 de la conf), cible NSIS, release draft + artefact.
 - Garde-fou **prouvé dans les deux sens** : exit 0 (custom.db synchrone) / exit 2 (copie de drift fabriquée) — note de discipline : première mesure faussée par `| head`, re-mesurée proprement.
 - 7 contrats croisés cités en preuve (conf→script→next.config→package.json→RUNNER_OS).
 - Précision d'énoncé : « v1.10.7 » = version du **produit** (`tauri.conf.json` l.4) ; le framework est Tauri v2.
 
 **Reste au propriétaire** : pousser le dépôt sur GitHub → `workflow_dispatch` ou tag `v1.10.7` → fournir l'URL du run vert. Recommandation hors périmètre : signature Authenticode.
+
+## Session du 2026-09-18 (quinquies) — R-CI : délégation du push bloquée par une clé GitHub invalide
+
+- Le propriétaire fournit une clé GitHub « provisoire » pour déléguer le reste de T4 (créer le repo distant → pousser → `workflow_dispatch` → URL du run vert).
+- **Clé rejetée par GitHub : HTTP 401 Bad credentials, 3 tentatives, 2 schémas** (Bearer ×2, token ×1) ; format `ghp_` classique correct (40 car.) → jeton inexistant côté GitHub (révoquée, expirée ou erreur de copie). Aucune valeur de clé consignée dans le dépôt.
+- Préparation complète (mesurée) : arbre propre, `main`, 46.36 MiB, blob max 9.5 MB (`db/custom.db`) — pas de LFS ; script `/home/z/push-thesisframe.sh` hors dépôt (repo privé → remote sans token → askpass éphémère → dispatch → URL Actions).
+- Correction documentaire : workflow = **84 lignes** réelles (wc -l, git stat cfa3377), pas « 102 » (fiche corrigée ; preuves/worklog historiques inchangés, correction consignée dans preuves.md).
+- **Prérequis restant** : une clé GitHub classique valide, scopes `repo` + `workflow` — dès réception, le push complet s'exécute en une commande. Rappel : révoquer la clé après usage ; rotation OpenAlex toujours en attente.

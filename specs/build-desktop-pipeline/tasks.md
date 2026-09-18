@@ -5,6 +5,8 @@
 - [x] T3 — Valider le garde-fou drift dans la CI : comportement prouvé (0/2), step `if` explicite · preuve : sortie locale des 2 mesures
 - [x] T4 — Verdict : le workflow est prêt ; le run vert reste réserve nommée (preuve manquante : URL d'un run ; acteur : propriétaire après push du dépôt)
 
+  Suivi 2026-09-18 (délégation via clé fournie) : clé rejetée par GitHub (HTTP 401 Bad credentials ×3, 2 schémas ; format `ghp_` correct) — prérequis inchangé : une clé valide, scopes `repo` + `workflow`. Script de push prêt hors dépôt ; mesures dans preuves.md § Suivi.
+
 Dépendances : T1 → T2/T3/T4.
 
 ## Verdict
