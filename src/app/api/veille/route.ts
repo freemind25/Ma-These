@@ -1,46 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { parseFiltersJson } from "@/lib/veille/check-core";
 
-// ═══════════════════════════════════════
-// VEILLE ACADÉMIQUE — collection
-// GET  /api/veille — liste des veilles avec compteurs (CA-3.2)
-// POST /api/veille — créer une veille depuis une recherche (CA-1.1)
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// /api/veille — recherches suivies (veille académique)
+// specs/veille-academique — T3
+// ═══════════════════════════════════════════════════════════════
 
-function safeParse(json: string): Record<string, unknown> {
-  try {
-    const parsed = JSON.parse(json);
-    return parsed && typeof parsed === "object" ? parsed : {};
-  } catch {
-    return {};
-  }
-}
+const SOURCES = ["hal", "arxiv"] as const;
+type Source = (typeof SOURCES)[number];
 
+// ═══════════════════════════════════════════════════════════════
+// GET /api/veille — liste des veilles + compteur de non-vus (CA-3.2)
+// ═══════════════════════════════════════════════════════════════
 export async function GET() {
   try {
-    const veilles = await db.savedSearch.findMany({
+    const searches = await db.savedSearch.findMany({
       orderBy: { createdAt: "desc" },
       include: { _count: { select: { results: true } } },
     });
-    const unseen = await db.savedSearchResult.groupBy({
+    const unreadGroups = await db.savedSearchResult.groupBy({
       by: ["savedSearchId"],
       where: { seen: false },
       _count: { _all: true },
     });
-    const unseenByVeille = new Map(
-      unseen.map((u) => [u.savedSearchId, u._count._all])
+    const unreadBySearch = new Map(
+      unreadGroups.map((group) => [group.savedSearchId, group._count._all])
     );
-    const data = veilles.map((v) => ({
-      id: v.id,
-      label: v.label,
-      source: v.source,
-      query: v.query,
-      filters: safeParse(v.filters),
-      lastCheckedAt: v.lastCheckedAt,
-      createdAt: v.createdAt,
-      totalResults: v._count.results,
-      unseenCount: unseenByVeille.get(v.id) ?? 0,
+
+    const data = searches.map((search) => ({
+      id: search.id,
+      label: search.label,
+      source: search.source,
+      query: search.query,
+      filters: parseFiltersJson(search.filters),
+      lastCheckedAt: search.lastCheckedAt,
+      createdAt: search.createdAt,
+      updatedAt: search.updatedAt,
+      totalResults: search._count.results,
+      unreadCount: unreadBySearch.get(search.id) ?? 0,
     }));
+
     return NextResponse.json({ data, meta: { count: data.length } });
   } catch (error) {
     console.error("[GET /api/veille] Error:", error);
@@ -51,22 +51,30 @@ export async function GET() {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// POST /api/veille — création d'une veille
+// (label, source "hal"|"arxiv", query, filters optionnels)
+// ═══════════════════════════════════════════════════════════════
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json().catch(() => null);
+    if (!body || typeof body !== "object") {
+      return NextResponse.json({ error: "Corps de requête invalide" }, { status: 400 });
+    }
+
     const label = typeof body.label === "string" ? body.label.trim() : "";
+    const source = typeof body.source === "string" ? body.source.trim() : "";
     const query = typeof body.query === "string" ? body.query.trim() : "";
-    const source = body.source;
 
     if (!label) {
       return NextResponse.json(
-        { error: "Le libellé est requis" },
+        { error: "Le libellé de la veille est requis" },
         { status: 400 }
       );
     }
-    if (source !== "hal" && source !== "arxiv") {
+    if (!(SOURCES as readonly string[]).includes(source)) {
       return NextResponse.json(
-        { error: "Source invalide — « hal » ou « arxiv » attendu" },
+        { error: 'Source invalide (attendu : "hal" ou "arxiv")' },
         { status: 400 }
       );
     }
@@ -77,18 +85,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const veille = await db.savedSearch.create({
+    // filters : objet → JSON ; string → validé puis normalisé ; autre → {}
+    let filters = "{}";
+    if (typeof body.filters === "string" && body.filters.trim()) {
+      try {
+        filters = JSON.stringify(JSON.parse(body.filters));
+      } catch {
+        return NextResponse.json(
+          { error: "Filtres invalides (JSON malformé)" },
+          { status: 400 }
+        );
+      }
+    } else if (body.filters && typeof body.filters === "object" && !Array.isArray(body.filters)) {
+      filters = JSON.stringify(body.filters);
+    }
+
+    const search = await db.savedSearch.create({
       data: {
         label,
-        source,
+        source: source as Source,
         query,
-        filters:
-          typeof body.filters === "string"
-            ? body.filters
-            : JSON.stringify(body.filters ?? {}),
+        filters,
       },
     });
-    return NextResponse.json({ data: veille }, { status: 201 });
+
+    return NextResponse.json(
+      { data: { ...search, filters: parseFiltersJson(search.filters) } },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("[POST /api/veille] Error:", error);
     return NextResponse.json(

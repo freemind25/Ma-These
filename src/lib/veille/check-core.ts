@@ -1,71 +1,105 @@
-// Veille académique — cœur de vérification, fonctions pures.
-// Zéro accès base, zéro fetch : ces comportements sont épinglés sans réseau
-// ni base par src/lib/veille/check-core.test.ts (Groupe E).
+// ═══════════════════════════════════════════════════════════════
+// Veille académique — noyau de diff (fonctions PURES)
+// specs/veille-academique — T2
+//
+// Contraintes : zéro db, zéro fetch — uniquement des entrées/sorties
+// typées, testables hors réseau (T11 : check-core.test.ts).
+// ═══════════════════════════════════════════════════════════════
 
+/** Résultat normalisé renvoyé par une route de source (HAL ou arXiv). */
 export interface FetchedItem {
-  externalId: string;
+  externalId: string; // docid HAL ou arxivId — identifiant stable
   title: string;
-  authors: string;
+  authors: string; // séparés « ; »
   year: number | null;
   url: string;
   abstract: string | null;
 }
 
+/** Résultat déjà stocké en base (lecture minimale pour le diff). */
+export interface StoredItem {
+  externalId: string;
+  seen: boolean;
+}
+
 export interface DiffResult {
+  /** true si la base stockée est vide → premier contrôle (CA-2.1). */
   isFirstCheck: boolean;
+  /** Résultats inconnus à insérer comme « nouveaux » (CA-2.2). */
   newItems: FetchedItem[];
 }
 
 /**
- * Diff entre les identifiants déjà stockés pour une veille et les résultats
- * fraîchement récupérés de la source.
- * - CA-2.1 — première vérification (aucun identifiant stocké) : tous les
- *   résultats actuels constituent la base de référence ; aucun n'est marqué
- *   « nouveau » (isFirstCheck = true, newItems vide — la base est insérée « vue »).
- * - CA-2.2 — vérifications suivantes : seuls les identifiants absents du stock
- *   sont nouveaux ; les résultats connus ne sont jamais re-marqués.
+ * Diff entre les résultats stockés et ceux fraîchement récupérés.
+ *
+ * - CA-2.1 : premier contrôle (base vide) → la base de référence est
+ *   construite sans aucun « nouveau » (newItems vide) ; l'appelant
+ *   insère alors l'intégralité des résultats avec seen = true.
+ * - CA-2.2 : contrôles suivants → un résultat dont l'externalId est
+ *   inconnu est marqué nouveau. Les résultats déjà connus ne sont
+ *   JAMAIS re-marqués (seen conservé tel quel).
  */
-export function diffResults(
-  storedExternalIds: string[],
-  fetched: FetchedItem[]
-): DiffResult {
-  if (storedExternalIds.length === 0) {
-    return { isFirstCheck: true, newItems: [] };
+export function diffResults(stored: StoredItem[], fetched: FetchedItem[]): DiffResult {
+  const isFirstCheck = stored.length === 0;
+  if (isFirstCheck) {
+    return { isFirstCheck, newItems: [] };
   }
-  const known = new Set(storedExternalIds);
+  const known = new Set(stored.map((item) => item.externalId));
   const newItems = fetched.filter(
-    (item) => item.externalId && !known.has(item.externalId)
+    (item) => item.externalId.trim() !== "" && !known.has(item.externalId)
   );
-  return { isFirstCheck: false, newItems };
+  return { isFirstCheck, newItems };
+}
+
+export interface RetainableItem {
+  id: string;
+  firstSeenAt: Date | string;
+}
+
+export interface RetentionResult<T extends RetainableItem> {
+  /** Résultats conservés (fenêtre glissante). */
+  kept: T[];
+  /** Résultats à supprimer (au-delà de la limite). */
+  removed: T[];
 }
 
 /**
- * Rétention (décision de clarification n°4 de la spec) : fenêtre glissante —
- * on conserve les `limit` résultats les plus récents, triés par firstSeenAt
- * décroissant. Retourne les éléments à CONSERVER ; le surplus s'en déduit.
+ * Rétention — fenêtre glissante : ne conserve que les `limit` résultats
+ * les plus récents (tri par firstSeenAt desc). Décision de clarification
+ * n°4 : 200 résultats maximum par veille.
  */
-export function applyRetention<T extends { firstSeenAt: Date }>(
+export function applyRetention<T extends RetainableItem>(
   items: T[],
   limit = 200
-): T[] {
-  if (items.length <= limit) return items;
-  return [...items]
-    .sort((a, b) => b.firstSeenAt.getTime() - a.firstSeenAt.getTime())
-    .slice(0, limit);
+): RetentionResult<T> {
+  if (items.length <= limit) {
+    return { kept: [...items], removed: [] };
+  }
+  const sorted = [...items].sort(
+    (a, b) =>
+      new Date(b.firstSeenAt).getTime() - new Date(a.firstSeenAt).getTime()
+  );
+  return { kept: sorted.slice(0, limit), removed: sorted.slice(limit) };
 }
 
 /**
- * Déduplique une liste de résultats récupérés par identifiant source
- * (garde la première occurrence) — protège createMany contre les doublons
- * intra-lot avant l'unicité [savedSearchId, externalId].
+ * Petit assistant pur : parse la colonne `filters` (JSON-dans-String,
+ * patron du dépôt) en objet exploitable. Valeur invalide → objet vide,
+ * jamais d'exception.
  */
-export function dedupeByExternalId(items: FetchedItem[]): FetchedItem[] {
-  const seen = new Set<string>();
-  const out: FetchedItem[] = [];
-  for (const item of items) {
-    if (!item.externalId || seen.has(item.externalId)) continue;
-    seen.add(item.externalId);
-    out.push(item);
+export function parseFiltersJson(filters: string): Record<string, string> {
+  if (!filters) return {};
+  try {
+    const parsed: unknown = JSON.parse(filters);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+    const out: Record<string, string> = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      if (typeof value === "string" && value.trim() !== "") {
+        out[key] = value.trim();
+      }
+    }
+    return out;
+  } catch {
+    return {};
   }
-  return out;
 }

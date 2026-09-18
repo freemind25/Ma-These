@@ -1,73 +1,73 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 
-// ═══════════════════════════════════════
-// VEILLE ACADÉMIQUE — item
-// PATCH  /api/veille/[id] — renommer (CA-1.1 : libellé éditable)
-// DELETE /api/veille/[id] — supprimer (CA-1.2, cascade résultats)
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// /api/veille/[id] — gestion d'une veille
+// PATCH : renommage (CA-1.1) — DELETE : suppression (CA-1.2)
+// specs/veille-academique — T4
+// ═══════════════════════════════════════════════════════════════
 
+function isNotFound(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2025"
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PATCH /api/veille/[id] — renommage de la veille (CA-1.1)
+// ═══════════════════════════════════════════════════════════════
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const body = await request.json();
-    const label = typeof body.label === "string" ? body.label.trim() : "";
+    const body = await request.json().catch(() => null);
 
-    if (!label) {
+    if (!body || typeof body.label !== "string" || !body.label.trim()) {
       return NextResponse.json(
-        { error: "Le libellé est requis" },
+        { error: "Le nouveau libellé est requis" },
         { status: 400 }
       );
     }
-    const existing = await db.savedSearch.findUnique({
+
+    const search = await db.savedSearch.update({
       where: { id },
-      select: { id: true },
+      data: { label: body.label.trim() },
     });
-    if (!existing) {
+
+    return NextResponse.json({ data: search });
+  } catch (error) {
+    if (isNotFound(error)) {
       return NextResponse.json({ error: "Veille introuvable" }, { status: 404 });
     }
-
-    const veille = await db.savedSearch.update({
-      where: { id },
-      data: { label },
-    });
-    return NextResponse.json({ data: veille });
-  } catch (error) {
     console.error("[PATCH /api/veille/[id]] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la mise à jour de la veille" },
+      { error: "Erreur lors du renommage de la veille" },
       { status: 500 }
     );
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// DELETE /api/veille/[id] — suppression (CA-1.2)
+// Les résultats sont supprimés en cascade (onDelete: Cascade).
+// ═══════════════════════════════════════════════════════════════
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const existing = await db.savedSearch.findUnique({
-      where: { id },
-      select: { id: true },
-    });
-    if (!existing) {
+    await db.savedSearch.delete({ where: { id } });
+
+    return NextResponse.json({ data: { deleted: true, id } });
+  } catch (error) {
+    if (isNotFound(error)) {
       return NextResponse.json({ error: "Veille introuvable" }, { status: 404 });
     }
-
-    await db.savedSearch.delete({ where: { id } });
-    // La cascade (onDelete: Cascade, prisma/schema.prisma) supprime les
-    // résultats ; le compteur ci-dessous en apporte la preuve en sortie.
-    const remainingResults = await db.savedSearchResult.count({
-      where: { savedSearchId: id },
-    });
-    return NextResponse.json({
-      data: { deleted: true, remainingResults },
-    });
-  } catch (error) {
     console.error("[DELETE /api/veille/[id]] Error:", error);
     return NextResponse.json(
       { error: "Erreur lors de la suppression de la veille" },
