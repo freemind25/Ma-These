@@ -263,3 +263,21 @@ Work Log:
 Stage Summary:
 - Étape 0 close : CONSTITUTION.md validée et en vigueur, protocole SDD actif
 - Toute nouvelle demande de modification du dépôt suit désormais le cycle : Étape 1 spec.md (sans nom technique, zones floues [À CLARIFIER]) → clarification → plan → découpage → implémentation par groupes recettés → convergence
+
+---
+Task ID: hal-search-encoding-1
+Agent: Z.ai Code (main)
+Task: Cycle SDD n°1 — bug d'encodage route HAL (/api/theses-en-ligne/search), variante assess.md, à partir de la reproduction
+
+Work Log:
+- Lecture du code : route.ts (196 l., commentaires A.1 l.83-120 décrivant des corrections déjà appliquées) + frontend (l.70-93 : codes domaine alignés, tris à espace) — lecture seule, aucune modification
+- Reproduction réelle : 9 scénarios contre le serveur de dev (baseline, filtre shs, tri +, tri %2B, années, combiné + pagination, multi-mots) → 9/9 HTTP 200, filtres appliqués (802 < 905), bornes d'années respectées, pagination filtrée OK
+- Démonstration du mécanisme historique en direct chez HAL : sort=%2B → {"msg": "Error. See help : /docs"} ; fq avec & interne encodé → même erreur ; forme actuelle (fq répétés + %20) → 802 résultats, identique à la route locale
+- Source documentaire de la correction trouvée : public/RAPPORT-CORRECTIONS-ANNEXE-A1-A13.md l.13 + l.33-36 (A.1 « corrigé à la racine — preuve 200 réel », mission 16/09/2026, v1.10.7)
+- specs/hal-search-encoding/assess.md rédigé : verdict NON REPRODUCTIBLE, sorties réelles collées, correctif proposé : aucun, cycle arrêté conformément au protocole
+- Commit docs: de l'assess.md ; aucune modification de code
+
+Stage Summary:
+- Le bug allégué (encodage %2B / fq HAL) est réel historiquement mais DÉJÀ CORRIGÉ par l'annexe A.1 — non reproductible sur le code actuel, preuves live + upstream + rapport A.1-A13
+- Cycle n°1 arrêté à la reproduction (règle « non reproductible → le dire, s'arrêter ») — aucun code modifié
+- Décision laissée au propriétaire : clore le cycle, et/ou commander un test de non-régression vitest (route sans route.test.ts) en tâche dédiée
