@@ -430,3 +430,22 @@ Stage Summary:
 - Groupe B exécuté intégralement, 5 commits (un par tâche), arbre propre
 - CA couverts en backend : CA-1.1, CA-1.2, CA-2.1, CA-2.2, CA-2.4, CA-3.1, CA-3.2 (CA-2.3 reste UI)
 - Compte rendu présenté au propriétaire — recette en attente avant Groupes C/D/E
+
+---
+Task ID: veille-academique-4
+Agent: Z.ai Code (main)
+Task: Feu vert global (« continu pour tous les groupes et termine cette tache ») — finalisation groupe B + Groupes C, D, E + convergence Étape 6
+
+Work Log:
+- Reprise après débordement de contexte : découverte que la session 1 avait déjà committé T2-T6 (834749d → 3bb0834) ; les 5 fichiers ont été refondus puis re-recettés intégralement par curl (21 contrôles : validations 400, check 1 base 9 HAL, check 2 dédup, éviction simulée → newCount 1, ordre non-vus, PATCH ids/all/400, renommage, DELETE cascade + 0 orphelin, 404, arXiv base 30 max=30, rétention 210→200) — commits d2c2264 (feat) + 23e492c (docs)
+- Groupe C (T7-T8) : src/modules/veille-academique/veille-academique-page.tsx (liste/détail, CA-1.3, CA-3.2, CA-2.4, CA-3.1, CA-2.3, dialogs) + ViewId/NAVIGATION_ITEMS/app-store + case page.tsx — commit 8ddb97a
+- Groupe D (T9-T10) : boutons « suivre cette recherche » + dialogs dans theses-en-ligne-page.tsx (hal) et arxiv-search.tsx (arxiv) — commit 12ab2c8 ; git diff vide sur les routes de recherche (garantie tenue)
+- Groupe E (T11) : check-core.test.ts 16 tests (CA-2.1/2.2, rétention, parseFiltersJson) — commit 2fe9e16 ; suite complète 63 fichiers / 1444 tests verte (base 62/1428)
+- Vérification navigateur (agent-browser) : module dans la sidebar, état vide CA-1.3, création veille HAL depuis l'UI (dialog défaut = requête), premier relevé via bouton (32 résultats), badge « Nouveau » après éviction simulée + re-check, marquage vu → CA-2.3, veille arXiv créée depuis l'UI, mobile 390 px (hScroll:false, footer ok), 0 erreur console — 10 captures test-snapshots/veille-*.png
+- tasks.md : T7-T11 cochées + bloc Convergence ; preuves.md : sections Groupe B (recette complémentaire) / C / D / E ; FICHE_SYNTHESE.md : section de session finale (CONVERGÉ)
+- Nettoyage : veilles de démonstration supprimées via API (cascade rejouée, état final 0/0), scripts temporaires .tmp-*.mjs supprimés, base commitée propre
+
+Stage Summary:
+- veille-academique CONVERGÉ (Étapes 1-6, 11/11 tâches recettées) — chaîne complète de commits documentée dans tasks.md
+- Garanties maintenues : routes HAL/arXiv épinglées et app-sidebar.tsx jamais modifiées
+- Suite de tests : 63 fichiers / 1444 tests verts ; lint 0 erreur ; arbre propre ; preuves réelles dans preuves.md

@@ -22,24 +22,28 @@ Dépendances : Groupe A recetté. Ordre interne T2 → T3 → T4 → T5 → T6.
 
 ## Groupe C — Frontend / UI : module nouveau + câblage [DÉPEND DE Groupe B]
 
-- [ ] T7 — Créer `src/modules/veille-academique/veille-academique-page.tsx` : liste des veilles (badge source, compteur non-vus — CA-3.2, dernière vérification — CA-2.4, bouton « Vérifier » par veille, renommage, suppression), état vide explicite invitant à créer depuis une recherche (CA-1.3), vue détail (résultats avec badge « nouveau », marquage vu par résultat + bouton « tout marquer comme vu » — CA-3.1, état vide « aucun nouveau résultat depuis le … » — CA-2.3), spinners/états d'erreur · preuve attendue : rendu navigateur du module (état vide puis avec veille), capture `test-snapshots/`
-- [ ] T8 — Câbler la navigation : `src/lib/stores/app-store.ts` (union `ViewId` l.9-51 + entrée `NAVIGATION_ITEMS` « Veille académique », catégorie `recherche`, icône `Binoculars`) + `src/app/page.tsx` (import + `case "veille-academique"` dans le switch l.61-150) · preuve attendue : `bun run lint` 0 erreur, module atteignable dans la barre latérale (rendu navigateur)
+- [x] T7 — Créer `src/modules/veille-academique/veille-academique-page.tsx` : liste des veilles (badge source, compteur non-vus — CA-3.2, dernière vérification — CA-2.4, bouton « Vérifier » par veille, renommage, suppression), état vide explicite invitant à créer depuis une recherche (CA-1.3), vue détail (résultats avec badge « nouveau », marquage vu par résultat + bouton « tout marquer comme vu » — CA-3.1, état vide « aucun nouveau résultat depuis le … » — CA-2.3), spinners/états d'erreur · preuve attendue : rendu navigateur du module (état vide puis avec veille), capture `test-snapshots/` · **rendu navigateur vérifié (agent-browser) : état vide CA-1.3 + raccourcis, carte avec compteur + dernière vérification, détail avec badge « Nouveau », marquage vu, CA-2.3 — 9 captures `test-snapshots/veille-0*.png`, commit `8ddb97a`**
+- [x] T8 — Câbler la navigation : `src/lib/stores/app-store.ts` (union `ViewId` l.9-51 + entrée `NAVIGATION_ITEMS` « Veille académique », catégorie `recherche`, icône `Binoculars`) + `src/app/page.tsx` (import + `case "veille-academique"` dans le switch l.61-150) · preuve attendue : `bun run lint` 0 erreur, module atteignable dans la barre latérale (rendu navigateur) · **lint 0 erreur ; entrée « Veille académique » visible dans la barre latérale (Recherche & Sources) et cliquable — captures navigateur, commit `8ddb97a`**
 
 Dépendances : Groupe B recetté (les appels réels doivent répondre).
 
 ## Groupe D — Frontend / UI : boutons « suivre » dans les UIs de recherche existantes [DÉPEND DE Groupe B]
 
-- [ ] T9 — `src/modules/theses-en-ligne/theses-en-ligne-page.tsx` : ajouter « suivre cette recherche » (zone résultats, visible après une recherche) — dialog léger de nommage (défaut = requête courante) puis POST `/api/veille` avec source "hal", query et filtres courants (l.98-110) — toast de confirmation ; aucune autre modification du fichier · preuve attendue : bouton actif en rendu navigateur, veille créée visible dans `/api/veille`
-- [ ] T10 — `src/modules/academic-db/arxiv-search.tsx` : même ajout (source "arxiv", query + sort courants) — aucune autre modification du fichier · preuve attendue : idem T9
+- [x] T9 — `src/modules/theses-en-ligne/theses-en-ligne-page.tsx` : ajouter « suivre cette recherche » (zone résultats, visible après une recherche) — dialog léger de nommage (défaut = requête courante) puis POST `/api/veille` avec source "hal", query et filtres courants (l.98-110) — toast de confirmation ; aucune autre modification du fichier · preuve attendue : bouton actif en rendu navigateur, veille créée visible dans `/api/veille` · **vérifié en navigateur : recherche HAL « urbanisme participatif » → bouton → dialog (défaut « Veille : urbanisme participatif ») → POST → veille visible dans GET /api/veille avec filtres {sort} — capture `test-snapshots/veille-03-dialog-suivre.png`, commit `12ab2c8`**
+- [x] T10 — `src/modules/academic-db/arxiv-search.tsx` : même ajout (source "arxiv", query + sort courants) — aucune autre modification du fichier · preuve attendue : idem T9 · **vérifié en navigateur : recherche arXiv « digital twin urban » → dialog → POST → veille source "arxiv" visible avec filters {sort:"relevance"} — capture `test-snapshots/veille-10-arxiv-suivi.png`, commit `12ab2c8` ; routes de recherche inchangées (git diff vide)**
 
 Dépendances : Groupe B recetté. **Garantie** : les routes de recherche restent inchangées — seule l'UI consommatrice est modifiée.
 
 ## Groupe E — Tests / non-régression [DÉPEND DE Groupe B]
 
-- [ ] T11 — Créer `src/lib/veille/check-core.test.ts` : tests vitest épinglant `diffResults` (premier check → aucun nouveau — CA-2.1 ; diff par `externalId` — CA-2.2 ; résultats déjà connus jamais re-marqués) et `applyRetention` (fenêtre 200, les plus récents conservés) — zéro réseau, zéro db · preuve attendue : test ciblé vert, puis suite complète `bun run test:run` intégralement verte (base : 62 fichiers / 1428 tests + nouveaux)
+- [x] T11 — Créer `src/lib/veille/check-core.test.ts` : tests vitest épinglant `diffResults` (premier check → aucun nouveau — CA-2.1 ; diff par `externalId` — CA-2.2 ; résultats déjà connus jamais re-marqués) et `applyRetention` (fenêtre 200, les plus récents conservés) — zéro réseau, zéro db · preuve attendue : test ciblé vert, puis suite complète `bun run test:run` intégralement verte (base : 62 fichiers / 1428 tests + nouveaux) · **test ciblé 16/16 vert ; suite complète `bun run test:run` : 63 fichiers / 1444 tests verts (base 1428 + 16 nouveaux, zéro régression), commit `2fe9e16`**
 
 Dépendances : Groupe B recetté (T2). Indépendant des groupes C et D.
 
 ---
 
 Dépendances globales : **A [BLOQUANT] → B → {C, D, E}** (C, D, E mutuellement indépendants). Un groupe à la fois : annonce → feu vert → exécution → preuves → commit(s) → compte rendu → recette.
+
+---
+
+**Convergence (2026-09-18)** : les 11 tâches sont réalisées et recettées. Feu vert global du propriétaire (« continu pour tous les groupes et termine cette tache ») — exécution B → C → D → E enchaînée avec preuves à chaque groupe. Chaîne de commits : `834749d` `f528be4` `0d4f4b0` `5a6889f` `3bb0834` (B, session 1) → `d2c2264` `23e492c` (B refondu + re-recette 21 contrôles) → `8ddb97a` (C) → `12ab2c8` (D) → `2fe9e16` (E).

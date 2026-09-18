@@ -71,3 +71,31 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 1. Plan `veille-academique` **validé** par le propriétaire (« go », 2026-09-18) — Étape 4 faite : `tasks.md` rédigé (5 groupes A→B→{C,D,E}).
 2. En cours : Étape 5 — Groupe A (Schéma) annoncé, feu vert demandé au propriétaire.
 3. Aucune tâche en vol ; aucun cycle ouvert antérieur ; aucun code modifié dans cette session-suite (docs uniquement).
+
+## Session du 2026-09-18 (fin) — veille-academique : Étapes 4-6, CONVERGENCE complète
+
+**Slug(s) traité(s)** : `veille-academique` (Étapes 4 → 6 — cycle clos).
+
+**État de convergence** :
+
+- `veille-academique` : **CONVERGÉ** (2026-09-18) — les 11 tâches (T1-T11, 5 groupes) réalisées, recettées et commitées. Découpage : `9e6454e` (Étape 4) ; Schéma : `1da1584` + recette `2a6c555` ; Backend : `834749d` `f528be4` `0d4f4b0` `5a6889f` `3bb0834` puis refonte finale + re-recette 21 contrôles `d2c2264` `23e492c` ; UI module + câblage : `8ddb97a` ; boutons « suivre » : `12ab2c8` ; tests : `2fe9e16`.
+- Déclencheur : feu vert global du propriétaire (« continu pour tous les groupes et termine cette tache ») — les groupes B → C → D → E exécutés enchaînés, preuves à chaque groupe dans `specs/veille-academique/preuves.md`.
+
+**Implémentation livrée** :
+
+- Backend (T2-T6) : `src/lib/veille/check-core.ts` (pures : `diffResults` CA-2.1/2.2, `applyRetention` fenêtre 200, `parseFiltersJson`) + 4 routes `/api/veille` (GET liste + compteurs non-vus CA-3.2 / POST validé 400), `/api/veille/[id]` (PATCH renommage CA-1.1 / DELETE cascade CA-1.2), `/api/veille/[id]/check` (auto-fetch des routes de source épinglées, HAL rows=50 / arXiv max=30, timeout 20 s, erreur source propagée **502**, premier check = base de référence sans « nouveau » CA-2.1, inconnus marqués non-vus CA-2.2, `lastCheckedAt` CA-2.4, rétention 200), `/api/veille/[id]/results` (GET non-vus d'abord / PATCH `{ids}` ou `{all}` CA-3.1).
+- Frontend (T7-T10) : module `src/modules/veille-academique/veille-academique-page.tsx` (liste + détail, états vides CA-1.3/CA-2.3, badges « Nouveau », spinners, dialogs renommage/suppression) ; navigation (`ViewId` + `NAVIGATION_ITEMS` + `case` dans `page.tsx`) ; boutons « suivre cette recherche » dans `theses-en-ligne-page.tsx` (T9) et `arxiv-search.tsx` (T10) — dialogs légers, POST `/api/veille`, toasts.
+- Tests (T11) : `src/lib/veille/check-core.test.ts` — 16 tests verts ; **suite complète : 63 fichiers / 1444 tests** (base 62/1428, zéro régression). Lint global : 0 erreur.
+- Garanties tenues : routes de recherche (`theses-en-ligne/search`, `arxiv/search`) et `app-sidebar.tsx` jamais modifiées (git diff vide, vérifié) ; base rendue propre en fin de recette (0 veille / 0 résultat).
+
+**Vérification navigateur (agent-browser)** : module visible dans la barre latérale, état vide CA-1.3, création depuis recherche HAL (dialog → POST → veille en base), premier relevé via UI (32 résultats, base de référence), détail avec badge « Nouveau » après réinsertion simulée, marquage « vu » → état CA-2.3, veille arXiv créée depuis l'UI, mobile 390 px sans scroll horizontal, footer présent, zéro erreur console. 10 captures dans `test-snapshots/veille-*.png`.
+
+**Décisions notables** :
+
+- Refonte du groupe B (session reprise après débordement de contexte) : propagation 502 stricte (l'intermédiaire renvoyait 504 sur timeout), déduplication confiée à `diffResults` + filet P2002 (skipDuplicates non supporté sur SQLite), réponse check enrichie (fetchedCount/added/newCount/removedByRetention/totalResults/unreadCount) — re-recette complète de 21 contrôles consignée dans `preuves.md`.
+- Les deux veilles de démonstration créées en recette navigateur ont été supprimées via l'API (cascade rejouée, état final 0/0).
+
+**Points ouverts pour la session suivante** :
+
+1. Aucune tâche en vol, aucun cycle ouvert. `veille-academique` clos — évolution possible (hors périmètre actuel) : raccourci global de marquage « vu », déclenchement automatique via le worker `Job` (décision n°3 reportée).
+2. Suite de tests intégralement verte ; arbre git propre ; documentation de specs à jour (`spec.md`, `plan.md`, `tasks.md` convergé, `preuves.md` § 1-6 + Groupes B/C/D/E).

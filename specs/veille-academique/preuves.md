@@ -230,3 +230,148 @@ résultat (CA-2.2), test de rétention avec injection de 180 lignes, vérificati
   de session antérieure) — `dedupeByExternalId` n'est plus nécessaire.
 - Réponse check enrichie : fetchedCount / added / newCount / removedByRetention / totalResults /
   unreadCount / checkedAt.
+
+## Groupe C — Module UI + câblage navigation (T7-T8)
+
+### Lint
+
+```
+bunx eslint src/modules/veille-academique/ src/lib/stores/app-store.ts src/app/page.tsx
+→ EXIT: 0 (aucun problème)
+```
+
+### Rendu navigateur (agent-browser, 2026-09-18)
+
+Entrée de navigation « Veille académique » présente dans la barre latérale (catégorie
+Recherche & Sources, passée de 9 à 10 items) et cliquable :
+
+```
+- generic "Recherche & Sources10" [ref=e39] clickable
+- button "Veille académique" [ref=e64]
+```
+
+État vide (CA-1.3) — rendu après clic :
+
+```
+Aucune veille active
+… cliquez sur « suivre cette recherche » pour être alerté des nouveaux résultats.
+- button "Thèses en ligne" [ref=e88]
+- button "Bases de données (arXiv)" [ref=e89]
+```
+
+Carte veille après création (compteur CA-3.2 + dernière vérification CA-2.4) :
+
+```
+- button "Ouvrir la veille Veille : urbanisme participatif" [ref=e154]
+- button "Vérifier la veille Veille : urbanisme participatif" [ref=e155]
+- button "Renommer la veille" [ref=e156]
+- button "Supprimer la veille" [ref=e157]
+Dernière vérification : 18 sept. 2026, 12:39 · 32 résultats suivis
+```
+
+Premier relevé déclenché depuis l'UI (bouton Vérifier) → état API :
+
+```
+totalResults: 32 | unreadCount: 0 | lastCheckedAt: 2026-09-18T10:39:53.602Z
+```
+
+Vue détail — badge « Nouveau » après réinsertion d'un résultat évité puis re-check
+(CA-2.2 dynamique), puis marquage « vu » par bouton → retour à l'état CA-2.3 :
+
+```
+- button "Tout marquer comme vu" [ref=e250]
+- button "Marquer comme vu" [ref=e253]
+Nouveau  ← badge visible sur le résultat non vu
+[clic « Marquer comme vu »]
+Aucun nouveau résultat   ← état vide CA-2.3
+Aucun nouveau résultat depuis la vérification du 18 sept. 2026, 12:40.
+```
+
+Captures : `test-snapshots/veille-01-vide.png`, `veille-02-hal-resultats-suivre.png`,
+`veille-03-dialog-suivre.png`, `veille-04-liste-carte.png`, `veille-05-apres-verif.png`,
+`veille-06-detail-ca2-3.png`, `veille-07-badge-nouveau.png`, `veille-08-marque-vu.png`,
+`veille-09-mobile-390.png`, `veille-10-arxiv-suivi.png`.
+
+### Responsive (390 px) — vérification programme
+
+```
+{"hScroll":false,"footerVisible":true}   ← aucun scroll horizontal, footer présent
+```
+
+Commit : `8ddb97a`.
+
+## Groupe D — Boutons « suivre » (T9-T10)
+
+### T9 — HAL (Thèses en ligne)
+
+Recherche « urbanisme participatif » → bouton « suivre cette recherche » (zone résultats,
+à côté du badge Source : HAL) → dialog avec libellé prérempli :
+
+```
+- textbox "Nom de la veille" [ref=e148]: Veille : urbanisme participatif
+- button "Suivre" [ref=e150]
+```
+
+Après confirmation → veille visible dans GET /api/veille (filtres courants inclus) :
+
+```json
+[{"label":"Veille : urbanisme participatif","source":"hal",
+  "query":"urbanisme participatif","filters":{"sort":"publicationDateY_i desc"}}]
+```
+
+### T10 — arXiv (Bases de données)
+
+Recherche « digital twin urban » → bouton → dialog → confirmation :
+
+```json
+[{"label":"Veille : digital twin urban","source":"arxiv",
+  "query":"digital twin urban","filters":{"sort":"relevance"}},
+ {"label":"Veille : urbanisme participatif","source":"hal", …}]
+```
+
+### Garantie — routes de recherche inchangées
+
+```
+git diff HEAD --stat -- src/app/api/theses-en-ligne/ src/app/api/arxiv/
+→ (vide) ; dernier commit sur ces routes : 0348dcb (antérieur au cycle)
+```
+
+Lint des deux modules : EXIT 0. Commit : `12ab2c8`.
+
+## Groupe E — Tests (T11)
+
+### Test ciblé
+
+```
+bunx vitest run src/lib/veille/check-core.test.ts
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+```
+
+Couvrent : CA-2.1 (premier check sans « nouveau », y compris base vide + aucun résultat),
+CA-2.2 (inconnus marqués, connus jamais re-marqués, seen sans influence, ids vides ignorés,
+non-mutation), rétention 200 (sous/au-delà de la limite, tri desc, défaut 200, dates ISO,
+non-mutation, liste vide) + parseFiltersJson.
+
+### Suite complète — non-régression
+
+```
+bun run test:run
+ Test Files  63 passed (63)     ← base : 62 fichiers
+      Tests  1444 passed (1444) ← base : 1428 + 16 nouveaux
+ Duration  15.13s
+```
+
+### Erreurs runtime navigateur
+
+```
+agent-browser errors → (aucune)
+dev.log → aucune erreur runtime liée à la veille
+```
+
+Commit : `2fe9e16`.
+
+### État final
+
+Base rendue propre : 0 veille, 0 résultat (deux veilles de démonstration supprimées via
+DELETE — cascades rejouées). Lint global : 0 erreur. Arbre commité.
