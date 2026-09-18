@@ -99,3 +99,26 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 
 1. Aucune tâche en vol, aucun cycle ouvert. `veille-academique` clos — évolution possible (hors périmètre actuel) : raccourci global de marquage « vu », déclenchement automatique via le worker `Job` (décision n°3 reportée).
 2. Suite de tests intégralement verte ; arbre git propre ; documentation de specs à jour (`spec.md`, `plan.md`, `tasks.md` convergé, `preuves.md` § 1-6 + Groupes B/C/D/E).
+
+## Session du 2026-09-18 (bis) — Deux itérations veille : raccourci clavier « vu » + vérification automatique
+
+**Slug(s) traité(s)** : `veille-raccourci-vu` (cycle complet, convergé) · `veille-check-auto` (cycle complet, convergé).
+
+**État de convergence** :
+
+- `veille-raccourci-vu` : **CONVERGÉ** (2026-09-18) — 1 tâche, 1 fichier, 5/5 CA prouvés navigateur. Commits `c8b1ca7` + `e8f24ab`.
+- `veille-check-auto` : **CONVERGÉ** (2026-09-18) — 6 tâches (4 groupes A→B→{C,D}), 6/6 CA prouvés (curl + dev.log + navigateur). Commits `5ade854` `dbc00f7` `77e9861` `3aca394` `19e12b0` `6f0d789`.
+
+**Déclencheur** : « go pour les deux propositions » puis « go » — specs + plans + exécution enchaînée jusqu'à convergence (rythme global, précédent `veille-academique`).
+
+**Implémentation livrée** :
+
+- Raccourci clavier **« M »** dans la vue détail d'une veille (équivalent exact du bouton « Tout marquer comme vu ») — listener `window` monté avec la vue, gardes input/textarea/contenteditable et Ctrl/Cmd/Alt, indice `<kbd>M</kbd>` sur le bouton ; `markSeen` stabilisé `useCallback`.
+- Vérification **automatique opt-in** : champ `autoCheck Boolean @default(false)` (db:push, diff comptes 25 tables vide) ; extraction `src/lib/veille/run-check.ts` commune au check manuel (wrapper, contrat inchangé) et au worker (handler `veille-check`, origine interne `127.0.0.1:PORT`) ; `isDueForAutoCheck` pure + `AUTO_CHECK_INTERVAL_MS` (6 h) dans `check-core` ; balayage de planification 60 s dans le tick du worker avec garde anti-empilement (payload contains) ; GET/PATCH `/api/veille*` étendus (400/404 préservés) ; interrupteur « Auto » persistant sur les cartes.
+
+**Preuves clés** (`specs/*/preuves.md`) : auto e2e — backdate 7 h → balayage → job `veille-check` done → `lastCheckedAt` rafraîchi sans clic ; anti-empilement — compteur de programmations figé pendant un job pending ; échec réel HAL 500 → job failed, veille intacte (CA-2.3) ; raccourci — marquage 2→0 au clavier, aucune requête à 0 non-vu, Ctrl+m et garde input inopérants ; suite **63 fichiers / 1452 tests** (base 1444 + 8), lint 0 erreur, captures `test-snapshots/` (raccourci-0*, checkauto-0*).
+
+**Points ouverts pour la session suivante** :
+
+1. Aucune tâche en vol, aucun cycle ouvert ; arbre propre ; base rendue propre (0 veille).
+2. Évolutions possibles (hors périmètre, à la demande) : fréquence configurable par veille, retry dédié après échec, raccourci en vue liste (marquage toutes veilles), notifications externes.

@@ -466,3 +466,21 @@ Stage Summary:
 - Deux dossiers SDD complets présentés au propriétaire pour validation unique (spec+plan+taches consolidés, micro-décisions conservatrices listées avec veto possible)
 - Aucune ligne de code modifiée — attente du feu vert (protocole : validation spec+plan avant tout code)
 - Épinglés intacts : HAL/arXiv search routes, app-sidebar.tsx
+
+---
+Task ID: 2 (exécution des deux cycles veille)
+Agent: Z.ai Code (session principale)
+Task: « go » — exécution enchaînée veille-raccourci-vu + veille-check-auto jusqu'à convergence
+
+Work Log:
+- Cycle ① raccourci (T1) : listener keydown « m » + useCallback markSeen + kbd hint ; lint 0 erreur ; recette navigateur complète (5 CA : marquage 2→0, garde input synthétique, Ctrl+m inopérant, aucune requête à 0 non-vu, indice visible) ; captures raccourci-0*.png ; commits c8b1ca7 + e8f24ab
+- Cycle ② A (T1) : autoCheck @default(false), db:push, dump 25 tables avant/après diff vide ; commit 5ade854
+- Cycle ② B (T2-T4) : run-check.ts (extraction, VeilleNotFoundError/SourceFetchError), wrapper route contrat inchangé, GET/PATCH autoCheck (400/404 prouvés), isDueForAutoCheck pur + AUTO_CHECK_INTERVAL_MS, handler veille-check + balayage 60 s anti-empilement ; redémarrage dev server (worker en mémoire) ; recette e2e : backdate → job done → lastCheckedAt rafraîchi sans clic ; anti-empilement prouvé ; échec réel HAL 500 → failed veille intacte + chemin not-found ; commits dbc00f7 77e9861 3aca394
+- Cycle ② C (T5) : Switch Auto carte (optimiste + rollback), bascules OFF/ON persistées après rechargement, captures checkauto-0*.png ; commit 19e12b0
+- Cycle ② D (T6) : 8 tests isDueForAutoCheck, suite 63 fichiers / 1452 verte ; commit 6f0d789
+- Convergence : verdicts CONVERGÉ dans les 2 tasks.md ; preuves.md des 2 slugs ; FICHE_SYNTHESE à jour ; base nettoyée (0 veille), scripts temporaires supprimés
+
+Stage Summary:
+- Deux cycles livrés et convergés en une session, zéro écart au plan, épinglés (HAL/arXiv, app-sidebar) intacts
+- La vérification automatique réutilise le worker persistant existant — aucun processus externe, opt-in par veille, intervalle 6 h
+- Le raccourci « M » n'expose aucun nouveau chemin réseau (réutilise markSeen)

@@ -11,3 +11,13 @@ Dépendances : aucune.
 ---
 
 Dépendances globales : groupe unique. Un groupe : annonce → feu vert → exécution → preuves → commit → compte rendu → recette (rythme global applicable si le propriétaire le demande, comme sur `veille-academique`).
+
+---
+
+**Convergence (2026-09-18)** : l'unique tâche est réalisée et recettée. Feu vert global du propriétaire (« go »). Commits : `c8b1ca7` (feat) + `e8f24ab` (docs).
+
+## Convergence — 2026-09-18
+Critères d'acceptation satisfaits : 5/5 (CA-1.1 à CA-1.5 — preuves navigateur dans `preuves.md`)
+Écarts au plan : aucun (1 fichier modifié, `markSeen` stabilisé en `useCallback` sans changement de comportement)
+Dette introduite : aucune
+Verdict : **CONVERGÉ**
