@@ -122,3 +122,29 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 
 1. Aucune tâche en vol, aucun cycle ouvert ; arbre propre ; base rendue propre (0 veille).
 2. Évolutions possibles (hors périmètre, à la demande) : fréquence configurable par veille, retry dédié après échec, raccourci en vue liste (marquage toutes veilles), notifications externes.
+
+---
+
+## Session du 2026-09-18 (ter) — Cycle SDD n°5 : prod-readiness-audit (audit de mise en production)
+
+**Slug traité** : `prod-readiness-audit` — cycle complet Étapes 1-6. Dossier `2a8a4e3` → exécution enchaînée A→F sur « go » → verdict consigné `3f78972`.
+
+**État de convergence** : **CONVERGÉ — verdict final PRÊT AVEC RÉSERVES** (7 réserves nommées avec preuve manquante exacte + acteur ; 0 bloquant NON PRÊT).
+
+**Ce qui a été fait** :
+
+- Dossier SDD (Étapes 1-4) : spec CA-0 (preuve d'exécution par point, interdiction de simuler) + CA-1 (verdict trois valeurs) ; plan ancré sur mesures réelles ; 20 tâches / 6 groupes indépendants ; 6 micro-décisions (MD-1…MD-6) ; 2 corrections candidates verrouillées derrière feu vert (C-D1 `.env.example`, C-D2 clé OpenAlex 3 options).
+- Groupe A : **T1 a révélé 2 erreurs TypeScript latentes bloquant `next build`** → correction T1b (`e17e233`, +7/−4) → build exit 0. Git propre (419 fichiers, 0 mode 755 hors .zscripts). Réserve CI nommée (aucun `.github/`, aucun remote, cargo absent).
+- Groupe B : suite **63 fichiers / 1452 tests** verte, ai-types 39/39, lint 0 erreur / 230 warnings qualifiés, inventaire 84 routes → **37 sans test** classées par risque (recommandation, non corrigé — MD-5).
+- Groupe C : custom.db **zéro drift** ; **urbanisme-test.db en retard (4 tables + 6 index)** ; zéro migration versionnée ; chaîne `db:push --accept-data-loss` prouvée par test de non-régression exécuté (la base source n'est jamais la cible du push automatique).
+- Groupe D : 1 seul secret réel (OpenAlex `lib.rs` l.221, **jamais purgée**, embarquée dans l'installeur) ; base propriétaire saine ; artefacts propres ; 35 vars confirmées ; scan piratage/Mendeley **négatif** sur les 4 canaux ; MD-2 confirmé (rapport externe introuvable).
+- Groupe E : A.2 **CONTOURNÉ** (429/CrossRef 200 observés en direct) ; A.3/A.8/A.9 **CORRIGÉS** avec preuves (worker in-process vivant dans dev.log, timeout borné 5-180 s testé 18/18) ; A.7 corrigé au niveau code + réserve (endpoints Overpass bloqués en sandbox).
+- Groupe F : dépôt en **Tauri v2** (mandat disait v1.10.7 — consigné) ; 0 import `@tauri-apps` dans le frontend → `shell:allow-execute` = sur-privilège critique ; CSP null ; **DB propriétaire embarquée dans chaque installeur**.
+
+**Preuves clés** (`specs/prod-readiness-audit/preuves.md`) : build exit 0 ; 1452/1452 ; drift diffs complets ; mock db:push (2 appels, URL absolue artefact) ; 429 en direct ; dev.log `[job-worker]` ; 18/18 directeur-chat ; greps capabilities/CSP/ressources.
+
+**Points ouverts pour la session suivante** :
+
+1. **7 réserves attendent le propriétaire** : R-CI (URL d'un run CI/build Windows vert ?) · R-KEY (option C-D2 a/b/c + rotation clé OpenAlex) · R-ENV (feu vert T13 → `.env.example`) · R-DRIFT (feu vert ré-synchro `urbanisme-test.db`) · R-MD4 (supervision prod ? timeout hébergeur ?) · R-OVERPASS (log Reprise réel au poste) · R-REPORT (fournir le rapport externe MD-2 ou le considérer inexistant).
+2. Recommandations hors périmètre (à la demande) : 37 routes sans test (dont `arxiv/search`), sur-privilèges capabilities + CSP, DB dans installeur, 230 warnings lint, renommer `hardcoded-keys.ts`.
+3. Aucune tâche en vol ; arbre propre ; suite verte ; lignes rouges intactes.
