@@ -449,3 +449,20 @@ Stage Summary:
 - veille-academique CONVERGÉ (Étapes 1-6, 11/11 tâches recettées) — chaîne complète de commits documentée dans tasks.md
 - Garanties maintenues : routes HAL/arXiv épinglées et app-sidebar.tsx jamais modifiées
 - Suite de tests : 63 fichiers / 1444 tests verts ; lint 0 erreur ; arbre propre ; preuves réelles dans preuves.md
+
+---
+Task ID: 1 (specs+plans+tasks des deux évolutions veille)
+Agent: Z.ai Code (session principale)
+Task: « go pour les deux propositions » — ouverture des cycles SDD raccourci clavier « vu » + vérification automatique des veilles
+
+Work Log:
+- Recharge du protocole SDD (skills/sdd-thesisframe/SKILL.md)
+- Exploration factuelle : specs/veille-academique/spec.md (l.34 hors périmètre, décision n°2 l.41) ; src/lib/jobs/queue.ts (file persistante) ; src/lib/jobs/worker.ts (worker réactif HANDLERS l.21-38, tick 3 s l.99-112, sans planificateur) ; src/app/api/jobs/route.ts ; src/app/api/veille/[id]/check/route.ts (logique check l.118-276 à extraire) ; src/app/api/veille/[id]/route.ts (PATCH label-only l.29-34) ; src/app/api/veille/route.ts (GET l.31-42) ; src/modules/veille-academique/veille-academique-page.tsx (bouton « Tout marquer comme vu » l.512-520, markSeen l.454-475) ; src/instrumentation.ts ; switch.tsx présent ; autoCheck absent partout
+- Écriture specs/veille-raccourci-vu/{spec,plan,tasks}.md — touche M, portée vue détail, gardes input/modificateurs, 1 groupe 1 tâche (cycle complet, >20 l.)
+- Écriture specs/veille-check-auto/{spec,plan,tasks}.md — autoCheck Boolean @default(false), extraction run-check.ts, fn pure isDueForAutoCheck + AUTO_CHECK_INTERVAL_MS 6 h dans check-core, handler veille-check + balayage 60 s anti-empilement dans worker.ts, Switch UI ; 4 groupes A→B→{C,D}
+- Commits d5317aa (raccourci) + 374a880 (check-auto) — arbre propre
+
+Stage Summary:
+- Deux dossiers SDD complets présentés au propriétaire pour validation unique (spec+plan+taches consolidés, micro-décisions conservatrices listées avec veto possible)
+- Aucune ligne de code modifiée — attente du feu vert (protocole : validation spec+plan avant tout code)
+- Épinglés intacts : HAL/arXiv search routes, app-sidebar.tsx
