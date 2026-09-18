@@ -272,7 +272,7 @@ export function VeilleAcademiquePage() {
           </CardContent>
         </Card>
       ) : selected ? (
-        <VeilleDetail veille={selected} onCheck={runCheck} checking={checkingId === selected.id} />
+        <VeilleDetail veille={selected} onCheck={() => runCheck(selected.id)} checking={checkingId === selected.id} />
       ) : searches.length === 0 ? (
         /* État vide explicite — CA-1.3 : invitation à créer depuis une recherche */
         <Card className="border-dashed">

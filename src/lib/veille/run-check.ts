@@ -275,9 +275,12 @@ export async function runCheckForSavedSearch(
   }
 
   // ── Horodatage du contrôle (CA-2.4) ──
-  const updated = await db.savedSearch.update({
+  // T1b (prod-readiness-audit) : lastCheckedAt est Date | null côté Prisma ; on
+  // capture l'horodatage une fois, on l'écrit et on le retourne — mêmes valeurs.
+  const checkedAt = new Date();
+  await db.savedSearch.update({
     where: { id },
-    data: { lastCheckedAt: new Date() },
+    data: { lastCheckedAt: checkedAt },
   });
 
   const [totalResults, unreadCount] = await Promise.all([
@@ -287,7 +290,7 @@ export async function runCheckForSavedSearch(
 
   return {
     isFirstCheck,
-    checkedAt: updated.lastCheckedAt,
+    checkedAt,
     fetchedCount: fetched.length,
     added,
     newCount: newItems.length,
