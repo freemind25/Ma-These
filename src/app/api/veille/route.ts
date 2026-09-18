@@ -34,6 +34,7 @@ export async function GET() {
       source: search.source,
       query: search.query,
       filters: parseFiltersJson(search.filters),
+      autoCheck: search.autoCheck,
       lastCheckedAt: search.lastCheckedAt,
       createdAt: search.createdAt,
       updatedAt: search.updatedAt,

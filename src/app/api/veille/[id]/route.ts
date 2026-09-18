@@ -16,7 +16,10 @@ function isNotFound(error: unknown): boolean {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// PATCH /api/veille/[id] — renommage de la veille (CA-1.1)
+// PATCH /api/veille/[id] — réglages de la veille
+// specs/veille-academique — T4 (renommage CA-1.1)
+// specs/veille-check-auto — T3 (autoCheck CA-1.1/1.2)
+// Accepte { label? } et/ou { autoCheck? : boolean } — 400 si les deux absents.
 // ═══════════════════════════════════════════════════════════════
 export async function PATCH(
   request: NextRequest,
@@ -24,18 +27,40 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const body = await request.json().catch(() => null);
+    const body = (await request.json().catch(() => null)) as {
+      label?: unknown;
+      autoCheck?: unknown;
+    } | null;
 
-    if (!body || typeof body.label !== "string" || !body.label.trim()) {
+    const hasLabel = !!body && typeof body.label === "string";
+    const hasAutoCheck = !!body && "autoCheck" in body;
+    const autoCheckValid = !hasAutoCheck || typeof body?.autoCheck === "boolean";
+
+    if (!body || (!hasLabel && !hasAutoCheck)) {
+      return NextResponse.json(
+        { error: "Fournir un nouveau libellé et/ou le réglage autoCheck" },
+        { status: 400 }
+      );
+    }
+    if (hasLabel && !String(body.label).trim()) {
       return NextResponse.json(
         { error: "Le nouveau libellé est requis" },
+        { status: 400 }
+      );
+    }
+    if (!autoCheckValid) {
+      return NextResponse.json(
+        { error: "autoCheck doit être un booléen" },
         { status: 400 }
       );
     }
 
     const search = await db.savedSearch.update({
       where: { id },
-      data: { label: body.label.trim() },
+      data: {
+        ...(hasLabel ? { label: String(body.label).trim() } : {}),
+        ...(hasAutoCheck ? { autoCheck: body.autoCheck as boolean } : {}),
+      },
     });
 
     return NextResponse.json({ data: search });
