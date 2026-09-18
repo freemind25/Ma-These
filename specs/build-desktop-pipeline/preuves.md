@@ -84,3 +84,60 @@ entrées historiques du worklog restent inchangées (journal), la correction est
 
 État de T4 : inchangé — prérequis externe = **une clé GitHub valide**
 (classique, scopes `repo` + `workflow`).
+
+## Suivi du 2026-09-18 (17:15-17:35) — R-CI DISSOUTE : RUN VERT OBTENU
+
+2e clé reçue et valide (login `freemind25`, scopes `repo, workflow` — header X-OAuth-Scopes).
+Décision de spécialiste (Article 2) : les repos candidats existants (`these-frame`,
+`Ma-These`,…) ont des historiques divergents (aucun ancêtre commun avec le dépôt local)
+et sont publics — création d'un **nouveau repo privé** plutôt qu'un push forcé destructif
+ou une exposition publique de `.env` + ancienne clé OpenAlex (historique).
+
+```
+HTTP 201  → repo privé freemind25/ThesisFrame créé
+push main → * [new branch] main -> main  (historique complet 46.36 MiB, remote SANS token)
+dispatch  → HTTP 204 (workflow_dispatch, ref main, head_sha 058b80c)
+```
+
+### Run 35373767136 — SUCCESS (13 min 42 s, 17:20:39Z → 17:34:21Z)
+
+URL : https://github.com/freemind25/ThesisFrame/actions/runs/35373767136
+
+```
+job "Windows (NSIS)" : success — 10/10 steps verts :
+  Set up job · Checkout · Setup Bun · Install dependencies ·
+  Garde-fou (bases synchronisées, lecture seule) · Setup Rust · Cache Rust ·
+  Build Tauri (NSIS) + release draft · Upload artefact · Post-complétions
+```
+
+Extraits réels des logs du run (zip téléchargé via API, 51 Ko) :
+
+```
+17:22:11  No difference detected.                    ← garde-fou custom.db (exit 0)
+17:22:11  custom.db : synchrone avec le schéma.
+17:22:12  No difference detected.                    ← garde-fou urbanisme-test.db (exit 0)
+17:23:02  ✓ Compiled successfully in 26.9s           ← next build standalone (prep [2/6])
+17:24:17  standalone.zip: 69M                        ← prep [5/6] (2351 fichiers)
+17:24:18  node.exe: 83M                              ← prep [6/6]
+17:32:05  Finished `release` profile [optimized] target(s) in 7m 45s
+17:33:16  Finished 1 bundle at: …\bundle\nsis\Ma Thèse_1.10.7_x64-setup.exe
+17:33:21  Artifact name is valid! … 1 file uploaded  ← windows-installer
+```
+
+Livrables constatés via API :
+
+```
+artifact  : windows-installer — 73.1 MB (expire 2026-12-17)
+release   : « Ma Thèse v1.10.7 » — draft: true — asset Ma.These_1.10.7_x64-setup.exe (73.1 MB)
+```
+
+### État final
+
+- **T4 : preuve obtenue** — run vert + artefact + release draft. La réserve **R-CI du cycle
+  `prod-readiness-audit` est dissoute** (workflow versionné + run vert prouvé).
+- Discipline tenue : la clé n'a été écrite dans aucun fichier versionné ni `.git/config`
+  (askpass éphémère `/tmp`, mode 700). Les 2 clés transités par ce chat sont à révoquer ;
+  rotation OpenAlex toujours en attente.
+- Usage futur : tout tag `v*` (ex. `git tag v1.10.8 && git push origin v1.10.8`) déclenche un
+  build NSIS ; `workflow_dispatch` possible depuis l'onglet Actions ; releases en draft à
+  publier manuellement.

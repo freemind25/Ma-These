@@ -578,3 +578,21 @@ Stage Summary:
 - T4 toujours en attente, prérequis reformulé précisément : clé GitHub classique VALIDE avec scopes repo + workflow.
 - Tout le reste est prêt : une commande exécutera création repo → push → dispatch → surveillance du run → URL verte.
 - Sécurité : révoquer la clé transmise par chat après usage (invalide mais transitée) ; rotation OpenAlex toujours en attente.
+
+---
+Task ID: build-desktop-pipeline-3
+Agent: Z.ai Code (orchestrateur SDD)
+Task: R-CI — exécution complète du push distant avec la 2e clé (valide) : repo privé → push → dispatch → run vert → preuves.
+
+Work Log:
+- 2e clé vérifiée : login freemind25, scopes repo, workflow (X-OAuth-Scopes) — valide.
+- Décision de spécialiste (Article 2) : repos candidats existants (these-frame, Ma-These, Thesis-Manager-Application, thesis-manager-v3, thesis-deploy-assistant) inspectés — historiques divergents (aucun SHA commun avec le local), publics en majorité → création d'un NOUVEAU repo privé `freemind25/ThesisFrame` (HTTP 201) au lieu d'un push forcé destructif ou d'une exposition publique.
+- Push exécuté via /home/z/push-thesisframe.sh : remote SANS token (askpass éphémère /tmp mode 700) → `* [new branch] main -> main` (historique complet 46.36 MiB) ; workflow_dispatch HTTP 204 (head_sha 058b80c).
+- Surveillance : run 35373767136 — in_progress → completed/**success** en 13 min 42 s (17:20:39Z → 17:34:21Z). 10/10 steps verts, dont le garde-fou drift (No difference detected ×2 en CI, preuve log 17:22:11-12) et Build Tauri NSIS (Rust 7m 45s, makensis, « Finished 1 bundle »).
+- Livrables constatés via API : artefact `windows-installer` 73.1 MB ; release draft « Ma Thèse v1.10.7 » avec asset Ma.These_1.10.7_x64-setup.exe (73.1 MB).
+- Preuves consignées : specs/build-desktop-pipeline/preuves.md § Suivi 17:15-17:35 (extraits logs réels horodatés) ; tasks.md T4 + verdict mis à jour ; fiche session « quinquies » complétée.
+
+Stage Summary:
+- **R-CI DISSOUTE** : le workflow build-desktop.yml a produit un installeur Windows NSIS signé-draft en run vert prouvé — la partie reproductible ET la preuve d'exécution sont désormais acquises.
+- Repo distant : https://github.com/freemind25/ThesisFrame (privé). Build futurs : tag `v*` ou workflow_dispatch.
+- Actions de sécurité restantes côté propriétaire : révoquer les 2 clés GitHub transités par chat + rotation de la clé OpenAlex (historique du dépôt).
