@@ -451,30 +451,56 @@ function VeilleDetail({
     loadResults();
   }, [loadResults]);
 
-  const markSeen = async (ids?: string[]) => {
-    const global = !ids;
-    if (global) setMarkingAll(true);
-    else setMarkingId(ids[0] ?? null);
-    try {
-      const res = await fetch(`/api/veille/${veille.id}/results`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(global ? { all: true } : { ids }),
-      });
-      const payload = await res.json();
-      if (!res.ok) throw new Error(payload.error || "Erreur");
-      await loadResults();
-    } catch (err) {
-      toast.error("Échec du marquage", {
-        description: err instanceof Error ? err.message : undefined,
-      });
-    } finally {
-      setMarkingAll(false);
-      setMarkingId(null);
-    }
-  };
+  const markSeen = useCallback(
+    async (ids?: string[]) => {
+      const global = !ids;
+      if (global) setMarkingAll(true);
+      else setMarkingId(ids[0] ?? null);
+      try {
+        const res = await fetch(`/api/veille/${veille.id}/results`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(global ? { all: true } : { ids }),
+        });
+        const payload = await res.json();
+        if (!res.ok) throw new Error(payload.error || "Erreur");
+        await loadResults();
+      } catch (err) {
+        toast.error("Échec du marquage", {
+          description: err instanceof Error ? err.message : undefined,
+        });
+      } finally {
+        setMarkingAll(false);
+        setMarkingId(null);
+      }
+    },
+    [veille.id, loadResults]
+  );
 
   const unreadCount = results.filter((r) => !r.seen).length;
+
+  // Raccourci clavier « M » — tout marquer comme vu (specs/veille-raccourci-vu).
+  // Monté avec la vue détail uniquement ; ignoré dans les champs de saisie
+  // (input/textarea/contenteditable) et en combinaison Ctrl/Cmd/Alt.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "m" || e.ctrlKey || e.metaKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+      if (unreadCount === 0 || markingAll) return;
+      e.preventDefault();
+      void markSeen();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [markSeen, unreadCount, markingAll]);
 
   return (
     <div className="space-y-4">
@@ -517,6 +543,12 @@ function VeilleDetail({
               >
                 {markingAll ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <CheckCheck className="w-4 h-4 mr-1.5" />}
                 Tout marquer comme vu
+                <kbd
+                  className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded border bg-muted px-1 font-mono text-[10px] font-semibold text-muted-foreground"
+                  aria-hidden="true"
+                >
+                  M
+                </kbd>
               </Button>
             </div>
           </div>
