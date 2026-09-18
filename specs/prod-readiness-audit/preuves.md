@@ -179,3 +179,60 @@ package.json l.12 (le mandat disait l.14 — écart consigné) :
 bash tests/database-runtime-build.sh   → EXIT=0 · « database runtime build tests passed »
 ```
 Il prouve par mock de `bun` : (1) sans base preview → init vide dans l'artefact, **aucun fichier créé dans le projet** (`test ! -e "$EMPTY_PROJECT/db/custom.db"`) ; (2) avec base preview → données + fichiers adjacents copiés tels quels ; (3) exactement 2 appels db:push, tous deux avec `DATABASE_URL=file:<artefact>` absolu. Le comportement « automatique au build, sur la copie artefact uniquement » est donc **prouvé par test**, pas seulement par lecture.
+
+## Groupe D — Secrets & configuration (2026-09-18, 14:52-15:02)
+
+### T9 — Scan secrets HEAD : ✓ 1 SEUL SECRET RÉEL (le constat connu l.221), base saine
+
+```
+git ls-files | rg -i 'api[_-]?key|secret|bearer|sk-…' → 25 fichiers code (après exclusion tool-results/, *.md, tests)
+rg '(api[_-]?key|secret|bearer|sk-…)\s*[:=]?\s*["…'][a-zA-Z0-9_-.]{16,}["…']  → AUCUN littéral codé en dur hormis :
+src-tauri/src/lib.rs l.221 :  ("OPENALEX_API_KEY", "qsdRrHIuOptAWiFw3ErWLr")   (bloc l.219-223)
+```
+Injection : si `OPENALEX_API_KEY` absent de l'environnement au lancement, le process Next.js embarqué reçoit la clé en dur → **la clé voyage dans le binaire Tauri et donc dans chaque installeur Windows**. → traitement à la T14 (C-D2, décision propriétaire).
+
+Faux positifs éliminés : `tool-results/` (transcripts d'outils, 2 fichiers) ; `src/lib/ai/hardcoded-keys.ts` — **nom trompeur, comportement sain** : ne contient aucune valeur, lit uniquement `process.env.*` (8 providers + `OPENROUTER_BACKUP_KEY`) ; recommandation hors périmètre : renommer (ex. `env-keys.ts`).
+
+**Scan de la base `db/custom.db`** (versionnée dans git) : aucun pattern `sk-`/`gsk_`/`AIza` ; table `LicenseKey` = **0 ligne** ; les 5 hits `apikey|bearer` = noms de champs/champs vides de config. Aucun secret réel dans la base propriétaire.
+
+### T10 — Scan historique git : verdict **JAMAIS PURGÉE** (le reste de l'historique est propre)
+
+```
+git log --all --oneline -S "qsdRrHIuOptAWiFw3ErWLr" →
+  1359333  0b1ffc11-2589-4251-b6a2-977baa361415   (import externe : INTRODUCTION)
+  2a8a4e3  docs: prod-readiness-audit (mon commit dossier — ajoute une OCCURRENCE CITÉE de la valeur dans specs/…/plan.md, même canal public ; consigné pour transparence)
+git grep -c "qsdRrHIuOptAWiFw3ErWLr" HEAD -- src-tauri/src/lib.rs → 1   (encore en HEAD)
+```
+La clé est donc dans **tous** les objets git depuis `1359333` jusqu'à HEAD — jamais purgée. La purge par réécriture d'histoire est rejetée (plan §4) ; la remédiation efficace reste la **rotation de la clé** chez OpenAlex (option de C-D2).
+
+Autres patterns sur tout l'historique (`sk-[a-z0-9]{25,}`, `gsk_…`, `AIza…`, clés OpenRouter littérales) : **zéro commit**.
+
+### T11 — Artefacts de build locaux : ✓ PROPRES (1 résidu de cache dev consigné)
+
+```
+dist-tauri/  → 8 Ko, 1 seul fichier index.html (préparation) — scan -a (binaires inclus) : AUCUN hit
+.next/       → 628 Mo — scan -a : 1 hit = .next/dev/cache/turbopack/731ace46/00001322.sst
+build/       → inexistant
+```
+Le hit `.next/dev/...` est le **cache du serveur de développement** (contenu source indexé par Turbopack) — pas un artefact de production (un `next build` régénère `.next/`). Résidu de station de travail ; nettoyage non exécuté (hors périmètre, R4). Aucun artefact distribuable ne contient la clé.
+
+### T12 — Inventaire configuration : 35 VARS CONFIRMÉES · scan Mendeley/piratage NÉGATIF · rapport MD-2 introuvable confirmé
+
+```
+rg -o 'process\.env\.[A-Z_][A-Z0-9_]*' src/ | sort -u  → 35 variables (liste complète en preuve)
+.env         → 1 variable : DATABASE_URL (chemin SQLite local — PAS un secret) ; fichier versionné dans git (hygiène consignée)
+.env.example → ABSENT (ls: cannot access)
+```
+Les 35 : 19 clés/URLs IA & recherche (ANTHROPIC_API_KEY…SILICONFLOW_API_KEY, CORE_API_KEY, OPENALEX_API_KEY, HF_TOKEN, GITHUB_TOKEN/GITHUB_MODELS_TOKEN…), 7 tunables applicatifs (DIRECTEUR_TIMEOUT_MS, RAG_*_WEIGHT…), 9 infra (NODE_ENV, PORT, NEXT_RUNTIME, TAURI, AI_PROVIDER…). → T13 (C-D1) produira le `.env.example` correspondant sur feu vert.
+
+**Scan frais Mendeley + plateformes piratage** (HEAD + historique + artefacts + base) :
+
+```
+URLs https?://…(sci-hub|libgen|z-lib|arab-sci|annas-archive|b-ok|booksc) sur fichiers trackés → 0 hit
+mots sci-hub/libgen/z-lib/arab-sci sur HEAD → 0 hit code (seulement mes docs d'audit tasks.md/plan.md)
+git log --all -S 'sci-hub' → 2a8a4e3 uniquement (mes docs) ; -S 'libgen' → idem ; -S 'mendeley' → 1359333+90e3783 (parsers importés)+2a8a4e3
+custom.db : mendeley ×14 (citations académiques : « Mendeley — a last.fm for research? »,Henning & Reichelt 2008) ; pirat ×43 = « aspirations », « evapotranspiration » ; sci-hub/libgen/z-lib ×0
+.next artefacts : hits mendeley = chunks compilés des parsers légitimes
+OAuth Mendeley : rg 'oauth' src/ filtré mendeley → AUCUN flux OAuth Mendeley dans le code
+```
+**Verdict MD-2 confirmé** : aucun lien vers plateforme de piratage, aucun flux OAuth Mendeley dans HEAD, l'historique, les artefacts ou la base. Le « rapport » visé par le mandat (Mendeley OAuth + liens piratage) est **introuvable dans le dépôt** — il s'agit d'un document externe que seul le propriétaire peut fournir pour un contre-examen.
