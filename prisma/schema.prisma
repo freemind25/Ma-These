@@ -477,6 +477,7 @@ model SavedSearch {
   source        String // "hal" | "arxiv"
   query         String
   filters       String    @default("{}") // JSON : { domain?, yearMin?, yearMax?, sort? } (hal) | { sort? } (arxiv)
+  autoCheck     Boolean   @default(false) // vérification automatique (opt-in) — specs/veille-check-auto
   lastCheckedAt DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
