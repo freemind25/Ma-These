@@ -50,6 +50,7 @@ import { VerificationCitationsPage } from "@/modules/verification-citations/veri
 import { GenerationHypothesesPage } from "@/modules/generation-hypotheses/generation-hypotheses-page";
 import { ApinexPage } from "@/modules/apinex/apinex-page";
 import { ExperimentationsPage } from "@/modules/experimentations/experimentations-page";
+import { VeilleAcademiquePage } from "@/modules/veille-academique/veille-academique-page";
 import {
   SidebarProvider,
   SidebarInset,
@@ -145,6 +146,8 @@ function CurrentView() {
       return <ApinexPage />;
     case "experimentations":
       return <ExperimentationsPage />;
+    case "veille-academique":
+      return <VeilleAcademiquePage />;
     default:
       return <DashboardPage />;
   }

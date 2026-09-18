@@ -48,7 +48,8 @@ export type ViewId =
   | "verification-citations"
   | "generation-hypotheses"
   | "apinex"
-  | "experimentations";
+  | "experimentations"
+  | "veille-academique";
 
 export type NavCategory =
   | "_pinned"   // toujours visible en haut (dashboard, editor)
@@ -232,6 +233,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     icon: "Binoculars",
     description: "Recherchez dans les thèses françaises via l'API officielle theses.fr",
     badge: "API",
+    category: "recherche",
+  },
+  {
+    id: "veille-academique",
+    label: "Veille académique",
+    icon: "Binoculars",
+    description: "Suivez vos recherches HAL et arXiv, soyez alerté des nouveaux résultats",
     category: "recherche",
   },
   {
