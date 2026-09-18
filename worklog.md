@@ -542,3 +542,21 @@ Stage Summary:
 - Cycle prod-readiness-audit : 20/20 tâches + délégation exécutée, tout commité, lignes rouges intactes, suite verte.
 - Restent au propriétaire (toutes externes au dépôt) : run CI/build Windows vert (ou cycle pipeline), rotation de la clé OpenAlex, log Overpass réel, supervision prod + timeout hébergeur.
 - Chantier suivant recommandé : cycle SDD « build-desktop-pipeline » (versionner le workflow GitHub Actions + preuve de run vert) — annonce requise.
+
+---
+Task ID: build-desktop-pipeline
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Cycle SDD build-desktop-pipeline (« go » du propriétaire) — versionner le workflow de build desktop pour lever la réserve R-CI (partie reproductible).
+
+Work Log:
+- Étapes 0-1 : investigation des contrats réels — scripts/build-tauri-prep.sh (produit standalone.zip via PowerShell sur RUNNER_OS=Windows + node.exe l.60-71), tauri.conf.json (beforeBuildCommand l.8 = bash scripts/build-tauri-prep.sh, frontendDist ../dist-tauri, resources l.42-46), next.config.ts l.4 output standalone, package.json l.8. Précision d'énoncé : « v1.10.7 » = version du produit (tauri.conf.json l.4), le framework est Tauri v2.
+- Étapes 2-4 : specs/build-desktop-pipeline/{spec,plan,tasks}.md — CA-1 workflow conforme au contrat, CA-3 interdiction d'affirmer l'invérifiable (run vert = réserve), CA-4 garde-fou drift lecture seule.
+- T3 preuve : migrate diff --exit-code → exit 0 sur custom.db (synchrone), exit 2 sur une copie de drift fabriquée (DROP TABLE Experiment sur copie temporaire, base réelle intacte). Note de discipline : première mesure faussée par un pipe | head (capte le code de head), re-mesurée proprement = 2.
+- T1 : .github/workflows/build-desktop.yml créé (102 lignes) — déclencheurs v*/workflow_dispatch, windows-latest, setup-bun, garde-fou drift ×2 en tête (set -e), rust-toolchain x86_64-pc-windows-msvc, rust-cache, tauri-action@v0 (bunx tauri, release draft), upload-artifact nsis/*.exe. YAML validé par parseur (2 fois, après correction d'une citation de ligne l.11→l.8 dans le commentaire).
+- T2 : 7 contrats croisés cités (conf→script→next.config→package.json→RUNNER_OS).
+- Commits : workflow + dossier + preuves (voir git log).
+- Worklog/fiche mis à jour.
+
+Stage Summary:
+- La référence orpheline (script l.3 → workflow) est comblée : la chaîne desktop complète est versionnée, auditable localement, avec un garde-fou de désynchronisation de base (défaut urbanisme-test.db ne peut plus se reproduire en CI).
+- Réserve unique restante : URL d'un run vert — propriétaire après push sur GitHub (workflow_dispatch ou tag v1.10.7).
