@@ -4,9 +4,10 @@ Contexte : mandat du propriétaire (2026-09-18) — audit de mise en production,
 
 ## Groupe A — Build & CI
 
-- [ ] T1 — `bun run build` : succès, warnings consignés et qualifiés (MD-3) · preuve attendue : sortie de build horodatée dans `preuves.md`
-- [ ] T2 — Propreté git : `git status` vide sur `main` ; `git ls-files -s` = aucun 100755 hors `.zscripts/*.sh` ; `git show --stat 0348dcb` = 419 fichiers (MD-6) · preuve attendue : sorties des trois commandes
-- [ ] T3 — Constat CI / build Tauri Windows : `.github/` absent, `git remote -v` vide, référence orpheline `build-desktop.yml` (`scripts/build-tauri-prep.sh` l.3), `cargo`/`rustc` absents → **réserve nommée** (MD-1) + questions au propriétaire : le pipeline existe-t-il sur un dépôt distant ? URL du dernier run vert ? · preuve attendue : sorties des commandes + section « Réserve P2 » dans `preuves.md`
+- [x] T1 — `bun run build` : succès, warnings consignés et qualifiés (MD-3) · preuve attendue : sortie de build horodatée dans `preuves.md` · **réalisé (« go », 2026-09-18) : build ÉCHEC au départ — 2 erreurs TypeScript latentes (run-check.ts l.290, veille-academique-page.tsx l.275) révélées par l'audit ; corrigées en T1b ; build final exit 0, 0 warning bloquant (2 notes : dépréciation middleware→proxy, experiments serverActions) — commits `e17e233`**
+- [x] T1b — **[CORRECTION NÉCESSAIRE, issue de T1]** corriger les 2 erreurs de type bloquant `next build` : `run-check.ts` (horodatage capturé une fois, écrit et retourné) + `veille-academique-page.tsx` l.275 (`onCheck={() => runCheck(selected.id)}`, pattern existant l.308) — diff minimal +7/−4, comportement inchangé · preuve : build exit 0 (preuves.md § T1) — **commit `e17e233`**
+- [x] T2 — Propreté git : `git status` vide sur `main`, `git ls-files -s` 755 hors `.zscripts/*.sh` = 0, `git show --stat 0348dcb` = 419 fichiers (MD-6) · preuve attendue : sorties des trois commandes · **réalisé (« go », 2026-09-18) : conforme — 0 mode 755 hors .zscripts, 419 fichiers prouvés (mandat disait 410)**
+- [x] T3 — Constat CI / build Tauri Windows : `.github/` absent, `git remote -v` vide, référence orpheline `build-desktop.yml` (`scripts/build-tauri-prep.sh` l.3), `cargo`/`rustc` absents → **réserve nommée** (MD-1) + questions au propriétaire (pipeline externe ? URL de run ?) · preuve attendue : sorties des commandes + section « Réserve P2 » · **réalisé (« go », 2026-09-18) : réserve P2 consignée, 3 questions au propriétaire (preuves.md § T3)**
 
 Dépendances : aucune.
 
