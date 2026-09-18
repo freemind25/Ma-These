@@ -410,3 +410,23 @@ Work Log:
 Stage Summary:
 - Étapes 1-4 complètes (spec validée, plan validé, découpage écrit)
 - POINT D'ARRÊT Étape 5 : Groupe A annoncé (1 fichier : prisma/schema.prisma), feu vert demandé — aucune modification exécutée
+
+---
+Task ID: veille-academique-3
+Agent: Z.ai Code (main)
+Task: Groupe B (Backend) — feu vert « je valide » : T2-T6, check-core + 4 routes /api/veille/*
+
+Work Log:
+- T2 : src/lib/veille/check-core.ts — fonctions pures diffResults (CA-2.1/2.2), applyRetention (fenêtre 200), dedupeByExternalId ; commit 834749d
+- T3 : src/app/api/veille/route.ts — GET liste (compteurs non-vus groupBy) + POST création (validation 400 : libellé, source hal|arxiv, requête) ; commit f528be4
+- T4 : src/app/api/veille/[id]/route.ts — PATCH renommage (CA-1.1) + DELETE cascade (CA-1.2, remainingResults en sortie) ; commit 0d4f4b0
+- T5 : src/app/api/veille/[id]/check/route.ts — rejeu de la recherche stockée par auto-fetch des routes existantes (origin du request.nextUrl, HAL rows=50 / arXiv max=30, timeout 20 s, 502 si source en erreur, 504 si timeout), diff via check-core, premier check inséré « vu » (CA-2.1), suivants « non vus » (CA-2.2), lastCheckedAt (CA-2.4), rétention 200 ; commit 5a6889f
+- T6 : src/app/api/veille/[id]/results/route.ts — GET (non vus d'abord) + PATCH {ids}|{all:true} (CA-3.1) ; preuves curl complètes ; commit 3bb0834
+- Incident 1 : client Prisma du serveur de dev périmé (démarré avant le db:push du Groupe A — db.savedSearch undefined) → redémarrage setsid -f, 200 retrouvé
+- Incident 2 : skipDuplicates non supporté par Prisma 6.19.2 sur SQLite → correction dans le groupe : déduplication amont dedupeByExternalId sur les deux branches createMany, option supprimée
+- Preuves réelles dans specs/veille-academique/preuves.md : cycle HAL complet (création → check 1 base 50 résultats → check 2 sans nouveau → éviction simulée de 2 → check 3 newCount 2 → compteurs → vu partiel puis global → renommage → suppression cascade → validation 400) + cycle arXiv (base 30, normalisation, suppression) ; lint 0 erreur ; base rendue propre (0/0) ; routes de recherche jamais modifiées (git log vérifié, dernier commit dessus = 0348dcb, modes)
+
+Stage Summary:
+- Groupe B exécuté intégralement, 5 commits (un par tâche), arbre propre
+- CA couverts en backend : CA-1.1, CA-1.2, CA-2.1, CA-2.2, CA-2.4, CA-3.1, CA-3.2 (CA-2.3 reste UI)
+- Compte rendu présenté au propriétaire — recette en attente avant Groupes C/D/E
