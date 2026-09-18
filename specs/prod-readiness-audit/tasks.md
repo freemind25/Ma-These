@@ -49,7 +49,7 @@ Dépendances : aucune.
 
 ## Groupe F — Desktop (Tauri)
 
-- [ ] T20 — Capabilities vs usage réel : grep `plugin:shell` / invoke shell dans `src/` ; verdict par permission (`core:default`, `shell:allow-open`, `shell:allow-execute` — suspect car `lib.rs` utilise `std::process::Command` natif) ; CSP `null` (`tauri.conf.json` l.27) ; ressources `../db/*` = DB propriétaire embarquée dans l'installeur — **constats + recommandations, aucune modification** (MD-5) · preuve attendue : greps + extraits de config + section recommandations
+- [x] T20 — Capabilities vs usage réel : grep `plugin:shell` / invoke shell dans `src/` ; verdict par permission (`core:default`, `shell:allow-open`, `shell:allow-execute` — suspect car `lib.rs` utilise `std::process::Command` natif) ; CSP `null` (`tauri.conf.json` l.27) ; ressources `../db/*` = DB propriétaire embarquée dans l'installeur — **constats + recommandations, aucune modification** (MD-5) · preuve attendue : greps + extraits de config + section recommandations · **réalisé (« go », 2026-09-18 15:18) : dépôt en Tauri v2 (mandat disait v1.10.7 — consigné) ; 0 import @tauri-apps dans src/ → allow-open = sur-privilège, allow-execute = sur-privilège critique ; CSP null confirmé ; DB propriétaire embarquée dans chaque installeur ; powershell = extraction bundle légitime ; 3 recommandations consignées**
 
 Dépendances : aucune.
 
@@ -60,3 +60,33 @@ Dépendances globales : **6 groupes indépendants** (audit en lecture seule ; se
 ---
 
 **Verdict final (Étape 6)** : à compléter à la convergence — PRÊT / PRÊT AVEC RÉSERVES (lister) / NON PRÊT (lister les bloquants), avec pour chaque réserve : la preuve manquante exacte et l'acteur qui peut la produire.
+
+
+---
+
+## Verdict final (Étape 6 — 2026-09-18, 15:25)
+
+### **PRÊT AVEC RÉSERVES**
+
+Fondations de production **vérifiées par preuve exécutée** : build vert (après T1b — 2 erreurs TS latentes révélées et corrigées par l'audit même, commit `e17e233`), suite 63 fichiers / 1 452 tests verte, lint 0 erreur, arbre git propre (0 fichier 755 hors .zscripts), base propriétaire `custom.db` **zéro drift**, chaîne automatique `db:push --accept-data-loss` **prouvée par test** comme ne frappant jamais la base source, worker in-process vivant (log direct), timeout directeur-chat borné et testé (18/18), bascule OpenAlex→CrossRef/HAL **observée en direct** (429 réel). Aucun bloquant de niveau NON PRÊT.
+
+### Réserves (preuve manquante exacte + acteur)
+
+1. **R-CI** — Build Tauri Windows / pipeline CI **non prouvé** (impossible en sandbox) : aucun `.github/`, aucun remote, cargo absent. Preuve manquante : URL d'un run CI vert du workflow `build-desktop.yml` ou build NSIS local Windows avec lancement de l'exe. **Acteur : propriétaire** (3 questions posées à la recette du groupe A).
+2. **R-KEY** — Clé OpenAlex en dur (`lib.rs` l.221), **jamais purgée** de l'historique (présente depuis `1359333`), embarquée dans chaque binaire/installeur. Décision requise : (a) env-only / (b) assumée documentée / (c) variable de build — rotation de la clé recommandée dans tous les cas. **Acteur : propriétaire** (T14, feu vert + option).
+3. **R-ENV** — `.env.example` absent. Correctif C-D1 prêt (T13), attend feu vert. **Acteur : propriétaire**.
+4. **R-DRIFT** — `urbanisme-test.db` en retard : 4 tables (`Experiment`, `ExperimentRun`, `SavedSearch`, `SavedSearchResult`) + 6 index absents. Ré-synchro = 1 `db:push` ciblé, hors liste de l'audit → feu vert requis ou exécution par le propriétaire. **Acteur : propriétaire**.
+5. **R-MD4** — Deux questions sans réponse : supervision de la cible de production (tini/systemd ?) ; limite de timeout du proxy/hébergeur cible (si < 150 s, la valeur nominale A.9 est coupée en amont). **Acteur : propriétaire**.
+6. **R-OVERPASS** — Correction A.7 prouvée au niveau code uniquement : endpoints Overpass inatteignables depuis le sandbox (HTTP 000 ×2). Preuve manquante : un log `[Overpass] Reprise n/2` issu d'une recherche réelle au poste. **Acteur : propriétaire**.
+7. **R-REPORT (MD-2)** — Le « rapport » Mendeley OAuth + liens piratage visé par le mandat est introuvable dans le dépôt ; scans frais (HEAD + historique + artefacts + base) **négatifs**. S'il existe, le propriétaire le fournit pour contre-examen. **Acteur : propriétaire**.
+
+### Recommandations (hors périmètre, sans valeur bloquante)
+
+37 routes API sans test (dont `arxiv/search`, ligne rouge) · 230 warnings lint (no-explicit-any 129 en tête) · retirer `shell:allow-execute`/`shell:allow-open` + CSP explicite · décision produit sur la DB embarquée dans l'installeur · renommer `hardcoded-keys.ts` · binaires versionnés dans git · ré-synchroniser les numéros de ligne du mandat (l.12 réel vs l.14, l.24 vs l.27).
+
+### Constats d'exécution
+
+- L'audit a produit **une correction nécessaire** : T1b (`e17e233`) — 2 erreurs TypeScript bloquant `next build`, révélées par T1, corrigées, build revérifié vert.
+- Chiffre du mandat ajusté sur preuve : **Tauri v2** (pas v1.10.7) ; 419 fichiers (pas 410, MD-6) ; 35 vars confirmées.
+- Les 6 groupes ont été exécutés en séquence A → B → C → D → E → F, un commit documentaire par groupe (`c2f0a7a`, `990f33a`, `6dfa1b7`, `34afb88`, `8cc708c`, + F).
+- Lignes rouges intactes : aucun commit n'a touché `theses-en-ligne/search/route.ts`, `arxiv/search/route.ts`, `app-sidebar.tsx` (seule écriture code : T1b, hors lignes rouges).

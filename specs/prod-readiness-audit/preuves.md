@@ -300,3 +300,32 @@ src/app/api/directeur-chat/route.ts :
 bunx vitest run src/app/api/directeur-chat/route.test.ts → 18 passed (18)
 ```
 Question MD-4 restée ouverte au propriétaire (recette) : la limite de timeout du proxy/hébergeur de la cible de production — si elle est < 150 s, la valeur nominale serait coupée en amont de l'application.
+
+## Groupe F — Desktop (Tauri) (2026-09-18, 15:16-15:22)
+
+### T20 — Capabilities vs usage réel : SUR-PRIVILÈGES CONSTATÉS · CSP null · DB embarquée — aucune modification (MD-5)
+
+**Correction de version d'abord** : le dépôt est en **Tauri v2** — `src-tauri/Cargo.toml` l.13 `tauri-build = { version = "2" }`, l.16 `tauri = { version = "2" }`, `package.json` l.61-62 `@tauri-apps/api ^2` + `@tauri-apps/plugin-shell ^2` (le mandat mentionnait v1.10.7 — écart consigné, le format capabilities/default.json v2 confirme).
+
+```
+src-tauri/capabilities/default.json l.5-9 : permissions = ["core:default", "shell:allow-open", "shell:allow-execute"]
+rg 'from "@tauri-apps' src/  → AUCUN import de l'API Tauri dans tout le frontend (0 fichier)
+rg 'plugin-shell|invoke.*shell' src/  → 0 usage
+lib.rs l.127 : .plugin(tauri_plugin_shell::init())   (plugin initialisé côté Rust, jamais appelé côté JS)
+lib.rs l.96 : std::process::Command::new("powershell") — Expand-Archive du standalone.zip au premier
+              lancement (-NoProfile -NonInteractive, chemins internes) — usage NATIF légitime, pas le plugin
+lib.rs l.210 : Command::new(&node_exe) — lancement du serveur embarqué ; l.271 mem::forget(child) — détachement
+```
+
+**Verdict par permission** :
+| Permission | Usage réel | Verdict |
+|---|---|---|
+| `core:default` | infrastructure v2 (événements, fenêtre) | **nécessaire** |
+| `shell:allow-open` | 0 import JS | **sur-privilège** — à retirer (ou prouver un usage futur documenté) |
+| `shell:allow-execute` | 0 import JS ; tout process passe par `std::process::Command` natif côté Rust | **sur-privilège critique** — autorise l'exécution de programmes arbitraires depuis le webview ; surface d'attaque pure en cas d'injection XSS |
+
+**CSP** : `tauri.conf.json` l.27-29 `"csp": null` — confirmé. Aucune politique de contenu : faiblesse defense-in-depth (le contenu sert depuis le serveur local embarqué, ce qui borne l'exposition, mais une CSP explicite reste recommandée).
+
+**Ressources embarquées** (`tauri.conf.json` l.42-46) : `../db/*` → `db/` dans le bundle, `standalone.zip`, `node.exe`. **Constat de confidentialité** : la base propriétaire `custom.db` (données de thèse réelles) est copiée dans CHAQUE installeur NSIS — distribuer le .exe = distribuer la base. Complète le constat d'hygiène du groupe A (binaires versionnés git).
+
+**Recommandations (hors périmètre — aucune modification exécutée)** : (1) retirer `shell:allow-execute` puis `shell:allow-open` et `tauri_plugin_shell::init()` + déps `@tauri-apps/*` si aucun usage prévu ; (2) définir une CSP ; (3) décision produit sur l'embarquement de la DB (séparateur d'installeur / base vierge en distribution / purge avant build).
