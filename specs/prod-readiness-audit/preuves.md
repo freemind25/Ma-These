@@ -236,3 +236,67 @@ custom.db : mendeley ×14 (citations académiques : « Mendeley — a last.fm fo
 OAuth Mendeley : rg 'oauth' src/ filtré mendeley → AUCUN flux OAuth Mendeley dans le code
 ```
 **Verdict MD-2 confirmé** : aucun lien vers plateforme de piratage, aucun flux OAuth Mendeley dans HEAD, l'historique, les artefacts ou la base. Le « rapport » visé par le mandat (Mendeley OAuth + liens piratage) est **introuvable dans le dépôt** — il s'agit d'un document externe que seul le propriétaire peut fournir pour un contre-examen.
+
+## Groupe E — Fragilités connues (2026-09-18, 15:04-15:12)
+
+### T15 — A.2 OpenAlex quota anonyme : verdict **CONTOURNÉ** (bascule auto prouvée, observée en direct)
+
+```
+src/lib/research/academic-fallback.ts l.2-6 : « OpenAlex indisponible (429 / budget épuisé) → bascule
+automatique vers CrossRef + HAL avec triangulation des DOI » (registres publics sans clé)
+src/lib/research/deep-research-pipeline.ts l.446-452 : déclenchement = 0 résultat curé OU échec détecté
+                                      l.454-460 : raison tracée « budget API épuisé / rate-limit »
+                                      l.462 : fallbackAcademicSearch() → l.467-476 objet fallback{triggered, providers, corroboratedDois…}
+bunx vitest run src/lib/research/openalex.test.ts → 17 passed (17)
+```
+**Observation réseau EN DIRECT (2026-09-18 15:05)** : `curl api.openalex.org` → **HTTP 429** ; `curl api.crossref.org` → **HTTP 200**. Le scénario exact de la fragilité est actif dans l'environnement et le chemin de repli est joignable — le contournement est branché sur le pipeline réel (l.806). Réserve légère consignée : pas de test unitaire dédié à `academic-fallback.ts` (la curation partagée est couverte par `curation.test.ts`).
+
+### T16 — A.3 maxTokens deep-research : verdict **CORRIGÉ** (réserve : pas de test unitaire dédié)
+
+```
+src/lib/research/deep-research-pipeline.ts :
+  l.100  isLikelyTruncated()            — détecteur de troncature
+  l.121-158  continueIfTruncated()      — passes de continuation (max 2), reprise EXACTE à la dernière phrase
+  l.714  maxTokens: 12000               — quota de génération du rapport
+  l.837 + l.915 : continueIfTruncated branché sur les DEUX chemins de génération
+bunx vitest run src/lib/research → 2 fichiers, 39 passed (39)
+```
+Le mécanisme correspond à la correction racine décrite au plan (rapport tronqué 24 524 car. du rapport A.3 → prolongation automatique). Réserve consignée : aucune troncature réelle reproductible en sandbox sans appel IA payant — la preuve d'exécution reste le code + l'intégration aux 2 sites + la suite verte.
+
+### T17 — A.7 Overpass : verdict **CORRIGÉ au niveau code** — réserve nommée MD-1 (exécution réelle non observable en sandbox)
+
+```
+src/lib/osm-infra.ts :
+  l.1466  OVERPASS_ATTEMPTS = 3
+  l.1467  OVERPASS_TIMEOUTS_MS = [25_000, 35_000, 45_000]   (timeout progressif)
+  l.1468  OVERPASS_BACKOFF_MS = [2_000, 5_000]
+  l.1475-1485  boucle : backoff, ALTERNANCE des endpoints (l.1484), timeout réécrit dans la requête [timeout:NN] (l.1488-1491)
+  l.1404-1407  endpoints : overpass-api.de (officiel) + maps.mail.ru (miroir)
+```
+**Tentative d'observation réelle** : `overpass.kumi.systems` → HTTP 000 après 60 s (timeout) ; `overpass-api.de` → HTTP 000 en 0,53 s. **Les endpoints Overpass sont inatteignables depuis ce sandbox** (filtrage réseau — OpenAlex/CrossRef passent, Overpass non). Preuve manquante exacte : un log `[Overpass] Reprise n/2 …` produit par une recherche infra réelle depuis le poste du propriétaire. Acteur pouvant la produire : propriétaire. Pas de test unitaire dédié à la boucle de reprise (constat, recommandation).
+
+### T18 — A.8/A.10 nohup/processus : verdict **CORRIGÉ** (architecture file persistante, preuve log en direct)
+
+```
+src/instrumentation.ts : register() → startJobWorker() DANS le process serveur (plus de processus détaché)
+src/lib/jobs/worker.ts l.1-13 : boucle orphelins → pending → exécution → done/failed persistés ;
+       handlers enregistrés : noop, deep-research, veille (runCheckForSavedSearch)
+src/lib/jobs/queue.ts l.95 : requeueStaleJobs(10 min) — reprise des jobs orphelins après redémarrage
+rg 'nohup|setsid' src/ → 0 usage en code (3 commentaires expliquant le remplacement)
+dev.log l.10 : « [job-worker] Démarrage — file de tâches persistante (A.8) » — le worker TOURNE en ce moment
+docs/EXPLOITATION-SERVEUR.md l.10-14 : cause A.8 diagnostiquée EXTERNE (l'environnement d'exécution tue
+       les processus détachés à la frontière de session — reproduction contrôlée documentée)
+```
+Question MD-4 restée ouverte au propriétaire (recette) : quel mécanisme de supervision sur l'infrastructure de PRODUCTION cible (tini/systemd/service manager ?) — le document d'exploitation décrit l'arbre de boot du sandbox de test (tini → start.sh → caddy), pas celui de la cible.
+
+### T19 — A.9 timeout directeur-chat : verdict **CORRIGÉ** (18/18 tests verts)
+
+```
+src/app/api/directeur-chat/route.ts :
+  l.23  DIRECTEUR_TIMEOUT_MS = env DIRECTEUR_TIMEOUT_MS || 150_000   (défaut 150 s, documenté)
+  l.26  DIRECTEUR_RETRY_TIMEOUT_MS = … || 120_000                    (relance plus courte)
+  l.44-49  schéma zod : timeoutMs borné min 5_000 / max 180_000      (aucun appel sans limite possible)
+  isTimeoutError() + relance automatique à prompt resserré (contexte tronqué, historique plafonné, consigne de concision)
+bunx vitest run src/app/api/directeur-chat/route.test.ts → 18 passed (18)
+```
+Question MD-4 restée ouverte au propriétaire (recette) : la limite de timeout du proxy/hébergeur de la cible de production — si elle est < 150 s, la valeur nominale serait coupée en amont de l'application.
