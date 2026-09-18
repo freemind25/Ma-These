@@ -3,8 +3,6 @@
 Principes non négociables du projet. Toute intervention sur ce dépôt — agent ou humain — s'y soumet.
 Le workflow d'application (spécification → plan → tâches → implémentation par groupes recettés → convergence) est défini dans [`skills/sdd-thesisframe/SKILL.md`](skills/sdd-thesisframe/SKILL.md).
 
-Statut : **en attente de validation par le propriétaire** (point d'arrêt de l'Étape 0 — la constitution prend effet à l'acceptation).
-
 ---
 
 ## Article 1 — Preuve avant affirmation

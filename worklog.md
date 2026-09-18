@@ -247,3 +247,19 @@ Stage Summary:
 - Protocole SDD opérationnel : skill versionné dans skills/sdd-thesisframe/SKILL.md, constitution proposée à validation, fiche de synthèse instaurée
 - Bloquant avant tout premier cycle spec → plan : validation de CONSTITUTION.md par le propriétaire
 - La prochaine fonctionnalité démarre à l'Étape 1 (spécifier) ; openresearch-integration-1 confirmée livrée, rien en vol
+
+---
+Task ID: sdd-activation-2
+Agent: Z.ai Code (main)
+Task: Recette de CONSTITUTION.md par le propriétaire — retrait du statut d'attente, commit docs:
+
+Work Log:
+- Recette reçue : les 7 articles validés tels quels, rien à modifier
+- Écart .gitignore (l.54 /skills/ → /skills/*) approuvé rétroactivement par le propriétaire, raisonnement jugé correct et prouvé (git check-ignore -v)
+- CONSTITUTION.md : ligne « Statut : en attente de validation par le propriétaire » retirée (fichier annoncé par le propriétaire, conformément à l'article 2) — la constitution est en vigueur
+- Commit docs: conformément à l'article 3
+- FICHE_SYNTHESE.md volontairement non retouchée à ce stade (non annoncée) — sa mise à jour interviendra au rendu de fin de session
+
+Stage Summary:
+- Étape 0 close : CONSTITUTION.md validée et en vigueur, protocole SDD actif
+- Toute nouvelle demande de modification du dépôt suit désormais le cycle : Étape 1 spec.md (sans nom technique, zones floues [À CLARIFIER]) → clarification → plan → découpage → implémentation par groupes recettés → convergence
