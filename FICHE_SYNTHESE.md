@@ -68,6 +68,6 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 
 **Points ouverts pour la session suivante** :
 
-1. **POINT D'ARRÊT — validation du plan `veille-academique`** par le propriétaire (article 2 : aucun fichier annoncé ne sera modifié avant feu vert).
-2. Après validation : Étape 4 (découpage tasks.md par groupes de nature), puis Étape 5 groupe par groupe avec feu vert explicite à chaque groupe.
+1. Plan `veille-academique` **validé** par le propriétaire (« go », 2026-09-18) — Étape 4 faite : `tasks.md` rédigé (5 groupes A→B→{C,D,E}).
+2. En cours : Étape 5 — Groupe A (Schéma) annoncé, feu vert demandé au propriétaire.
 3. Aucune tâche en vol ; aucun cycle ouvert antérieur ; aucun code modifié dans cette session-suite (docs uniquement).

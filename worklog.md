@@ -396,3 +396,17 @@ Work Log:
 Stage Summary:
 - Cycle git-mode-normalization CLOS (CONVERGÉ, recette propriétaire) — plus aucun chantier ouvert antérieur
 - veille-academique : Étapes 1-3 faites (spec validée, plan rédigé) — POINT D'ARRÊT : validation du plan demandée au propriétaire avant découpage (Étape 4) ; aucune ligne de code modifiée à ce stade
+
+---
+Task ID: veille-academique-2
+Agent: Z.ai Code (main)
+Task: Plan validé (« go ») — Étape 4 : découpage tasks.md par groupes de nature
+
+Work Log:
+- specs/veille-academique/tasks.md rédigé : 5 groupes — A Schéma [BLOQUANT] (T1 modèles SavedSearch/SavedSearchResult + preuve de survie db:push), B Backend (T2 check-core pur, T3-T6 routes /api/veille/*), C Frontend module+câblage (T7 UI, T8 app-store/page.tsx), D Frontend boutons « suivre » dans les UIs existantes (T9 HAL, T10 arXiv), E Tests non-régression (T11 check-core.test.ts) — dépendances A → B → {C,D,E}
+- Garanties réaffirmées dans tasks.md : routes de recherche épinglées jamais modifiées, app-sidebar.tsx non touché
+- FICHE_SYNTHESE.md mise à jour (plan validé, Étape 4 faite, Groupe A annoncé)
+
+Stage Summary:
+- Étapes 1-4 complètes (spec validée, plan validé, découpage écrit)
+- POINT D'ARRÊT Étape 5 : Groupe A annoncé (1 fichier : prisma/schema.prisma), feu vert demandé — aucune modification exécutée
