@@ -462,3 +462,47 @@ model Job {
   @@index([status])
   @@index([type])
 }
+
+// ═════════════════════════════════════
+// VEILLE ACADÉMIQUE — recherches suivies
+// (specs/veille-academique — plan.md : modèles purement additifs)
+// ═════════════════════════════════════
+
+// Une veille = une recherche enregistrée (source "hal" | "arxiv"),
+// revérifiable manuellement ; filters en JSON conserve les paramètres
+// exacts de la recherche d'origine (patron JSON-dans-String du dépôt).
+model SavedSearch {
+  id            String    @id @default(cuid())
+  label         String
+  source        String // "hal" | "arxiv"
+  query         String
+  filters       String    @default("{}") // JSON : { domain?, yearMin?, yearMax?, sort? } (hal) | { sort? } (arxiv)
+  lastCheckedAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  results SavedSearchResult[]
+
+  @@index([source])
+}
+
+// Un résultat observé lors d'une vérification. L'unicité par veille
+// garantit la déduplication (CA-2.2) : un résultat déjà connu n'est
+// jamais re-marqué « nouveau ».
+model SavedSearchResult {
+  id            String   @id @default(cuid())
+  savedSearchId String
+  externalId    String // docid HAL ou arxivId — identifiant stable de la source
+  title         String
+  authors       String   @default("") // séparés « ; »
+  year          Int?
+  url           String   @default("")
+  abstract      String?
+  seen          Boolean  @default(false)
+  firstSeenAt   DateTime @default(now()) // première observation lors d'une vérification
+
+  savedSearch SavedSearch @relation(fields: [savedSearchId], references: [id], onDelete: Cascade)
+
+  @@unique([savedSearchId, externalId])
+  @@index([savedSearchId])
+}
