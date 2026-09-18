@@ -281,3 +281,18 @@ Stage Summary:
 - Le bug allégué (encodage %2B / fq HAL) est réel historiquement mais DÉJÀ CORRIGÉ par l'annexe A.1 — non reproductible sur le code actuel, preuves live + upstream + rapport A.1-A13
 - Cycle n°1 arrêté à la reproduction (règle « non reproductible → le dire, s'arrêter ») — aucun code modifié
 - Décision laissée au propriétaire : clore le cycle, et/ou commander un test de non-régression vitest (route sans route.test.ts) en tâche dédiée
+
+---
+Task ID: hal-search-encoding-2
+Agent: Z.ai Code (main)
+Task: Cycle n°1 suite — commande du propriétaire : test de non-régression vitest (Étapes 4 → 6, périmètre fermé au fichier test)
+
+Work Log:
+- Étape 4 : specs/hal-search-encoding/tasks.md rédigé — Groupe A unique (Tests / non-régression), T1 : écrire route.test.ts épinglant M1 (fq répétés), M2 (normalisation tri %2B/+ → espace), M3 (%20 final, aucun + littéral) ; feu vert préalable explicite (fichier nommé par la commande)
+- Étape 5, T1 : lecture des conventions du dépôt (vitest.config.ts l.10-14 ; verification-carto/route.test.ts l.2-3) puis écriture de src/app/api/theses-en-ligne/search/route.test.ts — 14 tests, mock global.fetch avec capture d'URL, zéro réseau, zéro modification de route.ts
+- Preuves : test ciblé 14/14 verts (24 ms) ; eslint ciblé 0 erreur ; suite complète 1427/1428 avec 1 échec PRÉEXISTANT hors périmètre (ai-types.test.ts : 18 providers attendus / 20 réels — routesme+apinex ajoutés au catalogue sans mise à jour du test ; échec seul reproduit : 1/39, preuve d'indépendance)
+- preuves.md rédigé avec sorties réelles ; commit test: ; tasks.md volontairement non cochée (recette requise)
+
+Stage Summary:
+- Groupe A proposé à la recette (compte rendu transmis au propriétaire) — convergence (Étape 6) après acceptation
+- Signalement article 4 : échec préexistant src/lib/ai/ai-types.test.ts (catalogue 20 providers vs test figé à 18) — correction non annoncée, non effectuée, décision au propriétaire
