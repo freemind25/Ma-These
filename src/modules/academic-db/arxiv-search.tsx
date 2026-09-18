@@ -12,6 +12,7 @@ import {
   BookPlus,
   ChevronDown,
   ChevronUp,
+  Binoculars,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface ArxivEntry {
   arxivId: string;
@@ -55,6 +64,9 @@ export function ArxivSearchSection() {
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [addingId, setAddingId] = useState<string | null>(null);
+  const [followOpen, setFollowOpen] = useState(false);
+  const [followLabel, setFollowLabel] = useState("");
+  const [following, setFollowing] = useState(false);
 
   const runSearch = useCallback(
     async (offset: number) => {
@@ -153,6 +165,47 @@ export function ArxivSearchSection() {
     [toast]
   );
 
+  // Veille académique : suivre la recherche courante (T10 — specs/veille-academique)
+  const openFollowDialog = () => {
+    setFollowLabel(query.trim() ? `Veille : ${query.trim()}` : "");
+    setFollowOpen(true);
+  };
+
+  const submitFollow = async () => {
+    if (!followLabel.trim()) return;
+    setFollowing(true);
+    try {
+      const res = await fetch("/api/veille", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          label: followLabel.trim(),
+          source: "arxiv",
+          query: query.trim(),
+          filters: { sort },
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || data?.error) {
+        throw new Error(data?.error || `HTTP ${res.status}`);
+      }
+      toast({
+        title: "Recherche suivie",
+        description:
+          "Retrouvez-la dans Veille académique — cliquez sur « Vérifier » pour le premier relevé.",
+      });
+      setFollowOpen(false);
+    } catch (err) {
+      toast({
+        title: "Impossible de créer la veille",
+        description: err instanceof Error ? err.message : "Réseau indisponible",
+        variant: "destructive",
+      });
+    } finally {
+      setFollowing(false);
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -209,10 +262,21 @@ export function ArxivSearchSection() {
         {/* Résultats */}
         {entries.length > 0 && (
           <div className="space-y-3">
-            <p className="text-xs text-muted-foreground">
-              {total} résultat{total !== 1 ? "s" : ""} sur arXiv — affichage{" "}
-              {start + 1}–{Math.min(start + entries.length, total)}
-            </p>
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <p className="text-xs text-muted-foreground">
+                {total} résultat{total !== 1 ? "s" : ""} sur arXiv — affichage{" "}
+                {start + 1}–{Math.min(start + entries.length, total)}
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 text-xs"
+                onClick={openFollowDialog}
+              >
+                <Binoculars className="h-3.5 w-3.5 mr-1.5" />
+                suivre cette recherche
+              </Button>
+            </div>
             <div className="max-h-[480px] overflow-y-auto rounded-lg border divide-y scrollbar-thin">
               {entries.map((entry) => {
                 const added = addedIds.has(entry.arxivId);
@@ -347,6 +411,47 @@ export function ArxivSearchSection() {
             Aucun résultat arXiv pour cette requête.
           </p>
         )}
+
+        {/* Dialog « suivre cette recherche » — veille académique (T10) */}
+        <Dialog open={followOpen} onOpenChange={setFollowOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Binoculars className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                Suivre cette recherche
+              </DialogTitle>
+              <DialogDescription>
+                Créez une veille sur arXiv pour être alerté des nouvelles prépublications à chaque
+                vérification manuelle (module « Veille académique »).
+              </DialogDescription>
+            </DialogHeader>
+            <Input
+              value={followLabel}
+              onChange={(e) => setFollowLabel(e.target.value)}
+              placeholder="Nom de la veille"
+              onKeyDown={(e) => e.key === "Enter" && submitFollow()}
+              autoFocus
+            />
+            <p className="text-xs text-muted-foreground">
+              Requête suivie :{" "}
+              <span className="font-medium text-foreground">{query.trim()}</span> — tri{" "}
+              {sort === "submittedDate" ? "Plus récents" : "Pertinence"}
+            </p>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setFollowOpen(false)}>
+                Annuler
+              </Button>
+              <Button onClick={submitFollow} disabled={following || !followLabel.trim()}>
+                {following ? (
+                  <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+                ) : (
+                  <Binoculars className="h-4 w-4 mr-1.5" />
+                )}
+                Suivre
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );

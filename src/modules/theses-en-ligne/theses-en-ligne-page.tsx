@@ -15,6 +15,7 @@ import {
   X,
   Loader2,
   ArrowUpDown,
+  Binoculars,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // ── Types ──
 
@@ -108,6 +117,9 @@ export function ThesesEnLignePage() {
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState("");
   const [showExternal, setShowExternal] = useState(false);
+  const [followOpen, setFollowOpen] = useState(false);
+  const [followLabel, setFollowLabel] = useState("");
+  const [following, setFollowing] = useState(false);
 
   const doSearch = useCallback(
     async (p = 0) => {
@@ -159,6 +171,45 @@ export function ThesesEnLignePage() {
   };
 
   const hasFilters = domain || yearMin || yearMax;
+
+  // Veille académique : suivre la recherche courante (T9 — specs/veille-academique)
+  const openFollowDialog = () => {
+    setFollowLabel(query.trim() ? `Veille : ${query.trim()}` : "");
+    setFollowOpen(true);
+  };
+
+  const submitFollow = async () => {
+    if (!followLabel.trim()) return;
+    setFollowing(true);
+    try {
+      const filters: Record<string, string> = { sort };
+      if (domain) filters.domain = domain;
+      if (yearMin) filters.yearMin = yearMin;
+      if (yearMax) filters.yearMax = yearMax;
+      const res = await fetch("/api/veille", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          label: followLabel.trim(),
+          source: "hal",
+          query: query.trim(),
+          filters,
+        }),
+      });
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload.error || "Erreur");
+      toast.success("Recherche suivie", {
+        description: "Retrouvez-la dans Veille académique — cliquez sur « Vérifier » pour le premier relevé.",
+      });
+      setFollowOpen(false);
+    } catch (err) {
+      toast.error("Impossible de créer la veille", {
+        description: err instanceof Error ? err.message : undefined,
+      });
+    } finally {
+      setFollowing(false);
+    }
+  };
 
   return (
     <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto">
@@ -290,12 +341,23 @@ export function ThesesEnLignePage() {
         </Card>
       ) : (
         <>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
             <p className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">{total}</span> thèse{total > 1 ? "s" : ""} trouvée{total > 1 ? "s" : ""}
               {total > 15 && <span> (page {page + 1}/{totalPages})</span>}
             </p>
-            <Badge variant="outline" className="text-xs">Source : HAL</Badge>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs"
+                onClick={openFollowDialog}
+              >
+                <Binoculars className="w-3.5 h-3.5 mr-1.5" />
+                suivre cette recherche
+              </Button>
+              <Badge variant="outline" className="text-xs">Source : HAL</Badge>
+            </div>
           </div>
 
           <ScrollArea className="max-h-[65vh]">
@@ -321,6 +383,40 @@ export function ThesesEnLignePage() {
           )}
         </>
       )}
+
+      {/* Dialog « suivre cette recherche » — veille académique (T9) */}
+      <Dialog open={followOpen} onOpenChange={setFollowOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Binoculars className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+              Suivre cette recherche
+            </DialogTitle>
+            <DialogDescription>
+              Créez une veille sur HAL pour être alerté des nouveaux résultats à chaque vérification
+              manuelle (module « Veille académique »).
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={followLabel}
+            onChange={(e) => setFollowLabel(e.target.value)}
+            placeholder="Nom de la veille"
+            onKeyDown={(e) => e.key === "Enter" && submitFollow()}
+            autoFocus
+          />
+          <p className="text-xs text-muted-foreground">
+            Requête suivie : <span className="font-medium text-foreground">{query.trim()}</span>
+            {hasFilters && <span> — filtres courants inclus</span>}
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setFollowOpen(false)}>Annuler</Button>
+            <Button onClick={submitFollow} disabled={following || !followLabel.trim()}>
+              {following ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <Binoculars className="w-4 h-4 mr-1.5" />}
+              Suivre
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
