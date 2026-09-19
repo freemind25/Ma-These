@@ -665,3 +665,19 @@ Stage Summary:
 - Icône d'application (exécutable/installeur/taskbar/favicon) = symbole M+plume centré ; effet visible au prochain installeur (v1.10.9+) — v1.10.8 publiée conserve l'ancienne icône.
 - README actualisé (logo actuel + vraie version).
 - Lignes rouges intactes ; arbre poussé.
+
+---
+Task ID: branding-logo-reload-2
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Retour propriétaire « le logo "svg" ne correspond pas à celui de mon application et n'apparaît pas dans le readme, utilisez le fichier "png" présent dans "public" » — purge du faux logo SVG, PNG officiel seul référent.
+
+Work Log:
+- Audit d'identité : public/logo.svg = logo Z.ai (échafaudage, Z animé), 0 usage code ; public/logo.png = logo officiel Ma Thèse déjà utilisé aux 5 emplacements UI + bannière README (e11d731) ; app-icon.png = crop carré cohérent.
+- Article 2 déclaré puis exécuté : git rm public/logo.svg ; README l.129 (section structure) → logo.png (bannière) + app-icon.png (icône carrée) ; aucune modification code.
+- Vérifications : agent-browser desktop (logo sidebar + dashboard visibles, 0 erreur), network /logo.png 200 + /app-icon.png 200, /logo.svg 404 attendu (plus demandé par aucun composant) ; mobile 390×844 layout intact ; README GitHub (main=e11d731) : raw logo.png HTTP 200 taille identique au local.
+- Lignes rouges : 0 diff avant commit ; preuves preuves.md § Suivi 08:05-08:17.
+
+Stage Summary:
+- Le faux logo Z.ai n'existe plus dans l'arbre ; logo.png (officiel) + app-icon.png sont les deux seuls assets de marque référencés (README structure + bannière + favicon + UI).
+- Si le README GitHub semble encore montrer l'ancien logo côté propriétaire → cache navigateur/camo, rafraîchir (Ctrl+F5) ; l'arbre poussé est correct.
+- Sécurité inchangée : rotation OpenAlex en attente côté propriétaire ; rotation APINEX ; révocation des 2 clés GitHub transités par chat.

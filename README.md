@@ -126,7 +126,8 @@ ma-these/
 ├── mini-services/              # Services externes (geo-mcp, etc.)
 ├── vitest.config.ts            # Configuration des tests
 └── public/
-    └── logo.svg                # Logo de l'application
+    ├── logo.png                # Logo de l'application (bannière)
+    └── app-icon.png            # Icône carrée (favicon, icônes app)
 ```
 
 ## Installation

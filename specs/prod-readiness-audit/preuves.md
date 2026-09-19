@@ -393,3 +393,29 @@ Audit d'identité (preuves réelles) :
 - nouvelle valeur installée dans `.env.local` (couvert par `.gitignore` `.env*`, `git check-ignore` OK) — prioritaire sur `.env` dans Next.js ; l'app desktop lit la variable d'environnement de la machine (lib.rs l.222-228, doc EXPLOITATION-SERVEUR.md).
 
 Reste propriétaire : **régénérer la clé sur openalex.org/settings/api** puis transmettre la nouvelle valeur → remplacement dans `.env.local` ; une fois l'ancienne révoquée, l'historique git devient inoffensif (purge inutile — tags v1.10.7/v1.10.8 des releases publiées préservés).
+
+## Suivi du 2026-09-19 (08:05-08:17) — Branding : faux logo.svg supprimé ; PNG officiel seul référent
+
+Retour du propriétaire : « le logo "svg" ne correspond pas à celui de mon application et n'apparaît pas dans le readme, utilisez le fichier "png" présent dans "public" ».
+
+Audit d'identité des assets (preuves réelles) :
+- `public/logo.svg` (1 065 o) = logo **Z.ai** (carré sombre, Z blanc animé « breathe », viewBox 0 0 30 30) — asset d'échafaudage, ne correspond PAS au logo de l'application ; **0 usage dans le code** (grep src/ + src-tauri/tauri.conf.json : 0 occurrence ; seule mention : README l.129 section structure).
+- `public/logo.png` (852 742 o) = logo officiel **Ma Thèse** (M+plume, bannière horizontale) — déjà utilisé aux 5 emplacements UI (sidebar, dashboard, footer, about ×2) + bannière README l.2 (commit e11d731).
+- `public/app-icon.png` = recadrage carré M+plume du logo officiel — favicon (layout.tsx l.37) + source des 5 icônes du bundle Tauri.
+
+Modifications (champ exact) :
+```
+git rm public/logo.svg                       → D  public/logo.svg
+README.md l.129 : "└── logo.svg  # Logo de l'application"
+    → "├── logo.png      # Logo de l'application (bannière)"
+      "└── app-icon.png  # Icône carrée (favicon, icônes app)"
+Aucune modification de code. Lignes rouges : 0 diff (contrôle avant commit).
+```
+
+Vérifications navigateur (agent-browser, dev server :3000) :
+- rendu desktop 1280×720 : logo M+plume visible sidebar + en-tête dashboard ; zéro erreur page.
+- network : `GET /logo.png → 200`, `GET /app-icon.png → 200` ; aucun composant ne demande logo.svg ; `GET /logo.svg → 404` (supprimé, volontaire).
+- rendu mobile 390×844 : bannière logo en tête de dashboard, layout intact.
+- README côté GitHub (ref main = e11d731) : bannière pointe déjà `public/logo.png` ; raw.githubusercontent `public/logo.png → HTTP 200, 852 742 octets` (= fichier local exact) → le README public affiche bien le PNG officiel.
+
+Note : si le propriétaire voyait encore l'ancien logo dans le README GitHub, il s'agit du cache navigateur/camo — rafraîchir (Ctrl+F5) ; l'arbre poussé référence exclusivement les PNG.
