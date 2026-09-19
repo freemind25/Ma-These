@@ -178,3 +178,37 @@ releases  : « Ma Thèse v1.10.8 » — draft, asset Ma.These_1.10.8_x64-setup.e
 
 Le cycle **tag → build → release** est prouvé de bout en bout : le trigger `push.tags v*`
 est opérationnel, en plus de `workflow_dispatch` (prouvé au run 35373767136).
+
+## Suivi du 2026-09-19 (05:58-06:05) — PUBLICATION des releases v1.10.7 + v1.10.8 (ordre du propriétaire)
+
+Ordre : « publish the draft release ». Publication par API (`PATCH /releases/{id}`, corps
+`{"draft":false}`), clé en en-tête uniquement, jamais dans le dépôt :
+
+```
+05:58:20  tags avant publication : v1.10.8 → HTTP 200 (objet annoté 3f70bc29e) ; v1.10.7 → HTTP 404
+05:58:22  PATCH release 391660798 → v1.10.7 PUBLISHED (published_at 2026-09-19T05:58:22Z)
+          → tag v1.10.7 créé à la publication → 058b80c (commit construit par le run 35373767136)
+05:58:23  PATCH release 391715732 → v1.10.8 PUBLISHED (published_at 2026-09-19T05:58:23Z)
+          → rattachée au tag v1.10.8 existant (→ f0e1a4b)
+05:59:05  relecture GET /releases : 2/2 PUBLISHED, 0 draft restant
+```
+
+Livrables publics (repo privé — accès propriétaire/collaborateurs) :
+
+```
+v1.10.8 : https://github.com/freemind25/ThesisFrame/releases/tag/v1.10.8
+          asset Ma.These_1.10.8_x64-setup.exe — 73.1 MB
+v1.10.7 : https://github.com/freemind25/ThesisFrame/releases/tag/v1.10.7
+          asset Ma.These_1.10.7_x64-setup.exe — 73.1 MB
+```
+
+### Incident d'environnement consigné (transparence)
+
+Le sandbox local a été restauré sur un instantané ancien et divergent (HEAD `995916c`,
+époque « activation SDD », aucun remote) alors que le remote contenait déjà toute la chaîne
+v1.10.8 (bump `f0e1a4b`, run 35382304899 SUCCESS, preuves `e3f2f93`). Réalignement sans perte :
+sauvegarde du worklog local (249 l.) → `git remote add origin` + `fetch` (askpass éphémère) →
+contrôle « zéro entrée locale absente du remote » (worklog remote 616 l. = sur-ensemble) →
+`git reset --hard origin/main` (e3f2f93). Lignes rouges vérifiées identiques dans les deux
+lignées (diff `53ac660..995916c` : 0 changement sur les 3 fichiers). `upload/LR.rar` et
+`upload/res.pdf` (fichiers du propriétaire) laissés modifiés, non commités.

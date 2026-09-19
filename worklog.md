@@ -614,3 +614,19 @@ Stage Summary:
 - Le cycle **tag → build → release** est prouvé de bout en bout (trigger `push.tags v*` opérationnel en plus de `workflow_dispatch`).
 - Deux releases draft disponibles côté propriétaire (v1.10.7, v1.10.8) à publier manuellement.
 - Sécurité inchangée : révoquer les 2 clés GitHub transités par chat ; rotation OpenAlex en attente.
+
+---
+Task ID: build-desktop-pipeline-5
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Ordre du propriétaire « publish the draft release » — publication des releases draft v1.10.7 + v1.10.8, preuves, réalignement du sandbox local restauré sur un instantané ancien.
+
+Work Log:
+- Diagnostic préalable : sandbox local restauré sur un instantané ancien/divergent (HEAD `995916c`, époque activation SDD, aucun remote) alors que le remote contenait déjà toute la chaîne v1.10.8 (bump `f0e1a4b`, run 35382304899 SUCCESS, preuves `e3f2f93`).
+- Publication API (Article 2 déclaré) : `PATCH /releases/391660798` puis `/releases/391715732` avec `{"draft":false}` → **v1.10.7 PUBLISHED** (2026-09-19T05:58:22Z, tag créé à la publication → `058b80c`) et **v1.10.8 PUBLISHED** (05:58:23Z, tag existant `3f70bc29e` → `f0e1a4b`). Relecture GET /releases : 2/2 published, 0 draft restante.
+- Réalignement local : backup worklog (249 l. → /tmp) → `git remote add origin` + `fetch` (askpass éphémère, clé jamais dans .git/config) → contrôle « zéro entrée locale absente du remote » (worklog remote 616 l. = sur-ensemble) → `git reset --hard origin/main` (`e3f2f93`). Lignes rouges identiques dans les deux lignées (diff `53ac660..995916c` : 0 changement). `upload/LR.rar` + `upload/res.pdf` (fichiers du propriétaire) laissés intacts, non commités.
+- Preuves : preuves.md § Suivi 05:58-06:05 (releases + incident d'environnement) ; tasks.md suivi + verdict ; fiche session quinquies complétée.
+
+Stage Summary:
+- Les deux releases sont **PUBLIÉES** avec assets NSIS téléchargeables (73.1 MB chacun) ; plus aucune draft en attente côté GitHub.
+- Sandbox local resynchronisé sur `origin/main` (`e3f2f93`) ; incident d'environnement consigné pour les sessions suivantes (ne pas supposer que le local est à jour : vérifier contre le remote).
+- Sécurité inchangée : révoquer les 2 clés GitHub transités par chat ; rotation OpenAlex en attente.
