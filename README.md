@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/logo.svg" alt="Ma Thèse Logo" width="80" height="80" />
+  <img src="public/logo.png" alt="Ma Thèse — de l'idée à l'impact" width="440" />
 </p>
 
 <h1 align="center">Ma Thèse</h1>
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.5.1-22c55e" alt="v1.5.1" />
+  <img src="https://img.shields.io/badge/Version-1.10.8-22c55e" alt="v1.10.8" />
   <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js 16" />
   <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss" alt="Tailwind CSS 4" />

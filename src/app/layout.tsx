@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Ma Thèse" }],
   icons: {
-    icon: "/logo.png",
+    icon: "/app-icon.png",
   },
 };
 

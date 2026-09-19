@@ -647,3 +647,21 @@ Stage Summary:
 - La rotation OpenAlex reste EN ATTENTE côté propriétaire : régénérer sur openalex.org/settings/api puis transmettre la nouvelle valeur.
 - Fuites en clair du HEAD corrigées ; historique git contient toujours l'ancienne clé (inoffensive dès révocation).
 - Restes : rotation APINEX (clé dans .env historique 04dc5ab/763ee5d) ; révocation des clés GitHub transités par chat.
+
+---
+Task ID: branding-logo-reload-1
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Ordre « recharger le logo dans l'application et dans le readme file » — icônes app lisibles + favicon + README à jour.
+
+Work Log:
+- Diagnostic : icônes Tauri = bannière horizontale complète rétrécie (illisible ≤128 px, taskbar/installeur) ; favicon = bannière ; README = ancien logo.svg sombre animé + badge version obsolète (1.5.1).
+- Icône carrée créée par crop du logo officiel (symbole M+plume — segmentation par profil de colonnes pour exclure le texte, seuil blanc 14, padding 14 %) : 1024×1024 → public/app-icon.png.
+- bunx tauri icon → régénération des 5 icônes du bundle (32x32, 128x128, 128@2x, icon.ico, icon.png) ; extras générés (Square*, StoreLogo, android/, ios/, icns) supprimés — tauri.conf.json inchangé.
+- Favicon : layout.tsx l.37 /logo.png → /app-icon.png ; public/logo.png (bannière) INTACT — les 5 usages UI (sidebar red-line non touchée, dashboard, footer, about) préservés.
+- README : bannière logo.png (440 px) remplace logo.svg ; badge Version 1.5.1 → 1.10.8 (aligné sur tauri.conf.json).
+- Preuve visuelle : 128x128.png régénérée — M+plume net et lisible.
+
+Stage Summary:
+- Icône d'application (exécutable/installeur/taskbar/favicon) = symbole M+plume centré ; effet visible au prochain installeur (v1.10.9+) — v1.10.8 publiée conserve l'ancienne icône.
+- README actualisé (logo actuel + vraie version).
+- Lignes rouges intactes ; arbre poussé.
