@@ -38,6 +38,8 @@ import {
   Library,
 } from "lucide-react";
 
+import { ResourcesSection } from "./resources-section";
+
 // ═══ Stats types ═══
 interface DashboardStats {
   totalTheses: number;
@@ -361,6 +363,9 @@ export function DashboardPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Ressources pédagogiques */}
+      <ResourcesSection />
     </div>
   );
 }

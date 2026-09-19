@@ -681,3 +681,19 @@ Stage Summary:
 - Le faux logo Z.ai n'existe plus dans l'arbre ; logo.png (officiel) + app-icon.png sont les deux seuls assets de marque référencés (README structure + bannière + favicon + UI).
 - Si le README GitHub semble encore montrer l'ancien logo côté propriétaire → cache navigateur/camo, rafraîchir (Ctrl+F5) ; l'arbre poussé est correct.
 - Sécurité inchangée : rotation OpenAlex en attente côté propriétaire ; rotation APINEX ; révocation des 2 clés GitHub transités par chat.
+
+---
+Task ID: dashboard-resources-1
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Ordre propriétaire « ajouter ces ressources » — intégration des 2 infographies pédagogiques reçues (thumbnail.jpg, thumbnail2.jpg) dans l'application et le README.
+
+Work Log:
+- Assets : copies vers public/resources/ (choisir-directeur-these-7-etapes.jpg 58 644 o ; article-recherche-vs-revue.jpg 91 192 o) — originaux upload/ intacts.
+- Nouveau composant resources-section.tsx : section « Ressources pédagogiques » du dashboard (vignettes sans recadrage, Dialog plein format défilable, crédits @PhDtoProfMentor / Razia Aliani — Editage Open Academics visibles 2 fois).
+- dashboard-page.tsx : insertion après « Modules disponibles » (0 diff lignes rouges) ; README : nouvelle section entre Fonctionnalités et Stack technique.
+- Vérifié agent-browser : desktop + dialog + mobile, JPG en 200, zéro erreur, eslint 0 erreur.
+
+Stage Summary:
+- Les 2 ressources sont visibles dans l'app (dashboard, bas de page) et sur GitHub (README) avec attribution des sources.
+- upload/ inchangé ; lignes rouges intactes ; preuves § Suivi 10:28-10:45.
+- Sécurité inchangée : rotation OpenAlex en attente côté propriétaire ; rotation APINEX ; révocation des 2 clés GitHub transités par chat.

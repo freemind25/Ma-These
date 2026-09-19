@@ -419,3 +419,33 @@ Vérifications navigateur (agent-browser, dev server :3000) :
 - README côté GitHub (ref main = e11d731) : bannière pointe déjà `public/logo.png` ; raw.githubusercontent `public/logo.png → HTTP 200, 852 742 octets` (= fichier local exact) → le README public affiche bien le PNG officiel.
 
 Note : si le propriétaire voyait encore l'ancien logo dans le README GitHub, il s'agit du cache navigateur/camo — rafraîchir (Ctrl+F5) ; l'arbre poussé référence exclusivement les PNG.
+
+## Suivi du 2026-09-19 (10:28-10:45) — Dashboard : section « Ressources pédagogiques » (2 infographies du propriétaire)
+
+Ordre : « ajouter ces ressources » — 2 JPG reçus dans upload/ (thumbnail.jpg 58 644 o, thumbnail2.jpg 91 192 o, tous deux 527×659 RGB).
+
+Assets (copies, originaux upload/ intacts) :
+```
+upload/thumbnail.jpg  → public/resources/choisir-directeur-these-7-etapes.jpg   (PhD supervisor en 7 étapes)
+upload/thumbnail2.jpg → public/resources/article-recherche-vs-revue.jpg         (research paper vs review paper)
+```
+
+Code (Article 2 déclaré) :
+```
++ src/components/dashboard/resources-section.tsx  (nouveau, "use client")
+    Carte « Ressources pédagogiques » — grille 2 col (1 col mobile), vignette complète
+    (527×659, ratio 4:5, sans recadrage), Dialog plein format max-h-[85vh] défilable,
+    crédits visibles sous chaque vignette ET dans le Dialog.
+~ src/components/dashboard/dashboard-page.tsx : import + <ResourcesSection /> après
+    « Modules disponibles » (fichier non ligne rouge — lignes rouges : 0 diff avant commit).
+~ README.md : section « Ressources pédagogiques » entre Fonctionnalités et Stack technique
+    (vignettes 300 px + bloc crédits).
+```
+
+Crédits intégrés (visibles in-app + README) : « Bien choisir son directeur de thèse » — @PhDtoProfMentor ; « Article de recherche vs article de revue » — Razia Aliani, Source : Editage Open Academics.
+
+Vérifications navigateur (agent-browser, dev :3000) :
+- eslint 2 fichiers : 0 erreur ; rendu desktop : section visible en bas du dashboard, 2 cartes + crédits.
+- Dialog : clic vignette 1 → plein format avec titre + crédit, défilement OK ; fermeture Escape OK.
+- network : GET /resources/choisir-directeur-these-7-etapes.jpg → 200 ; GET /resources/article-recherche-vs-revue.jpg → 200 ; zéro erreur page.
+- mobile 390×844 : pile 1 colonne, infographie entière lisible, layout intact ; footer collé au bas.

@@ -79,6 +79,18 @@
 - **Livres-compétences** : suivi des compétences doctorales
 - **Équilibre des chapitres** : analyse de répartition
 
+## Ressources pédagogiques
+
+Infographies sélectionnées, également disponibles dans l'application (tableau de bord → « Ressources pédagogiques »).
+
+<p>
+  <img src="public/resources/choisir-directeur-these-7-etapes.jpg" alt="Les 7 étapes pour choisir un bon directeur de thèse" width="300" />
+  &nbsp;
+  <img src="public/resources/article-recherche-vs-revue.jpg" alt="Article de recherche vs article de revue" width="300" />
+</p>
+
+> Crédits : « Bien choisir son directeur de thèse » — @PhDtoProfMentor · « Article de recherche vs article de revue » — Razia Aliani, Source : Editage Open Academics
+
 ## Stack technique
 
 | Technologie | Rôle |
