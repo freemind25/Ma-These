@@ -630,3 +630,20 @@ Stage Summary:
 - Les deux releases sont **PUBLIÉES** avec assets NSIS téléchargeables (73.1 MB chacun) ; plus aucune draft en attente côté GitHub.
 - Sandbox local resynchronisé sur `origin/main` (`e3f2f93`) ; incident d'environnement consigné pour les sessions suivantes (ne pas supposer que le local est à jour : vérifier contre le remote).
 - Sécurité inchangée : révoquer les 2 clés GitHub transités par chat ; rotation OpenAlex en attente.
+
+---
+Task ID: security-openalex-rotation-1
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Rotation de la clé OpenAlex (fuite historique lib.rs pré-0543a4f) — vérification d'identité de la clé transmise, masquage des preuves versionnées, installation hors dépôt.
+
+Work Log:
+- Audit préalable : clé réelle en dur dans src-tauri/src/lib.rs jusqu'à 0543a4f ("OPENALEX_API_KEY", "") ; valeur toujours dans l'historique poussé (repo privé) ; code actuel env-only ; installeurs v1.10.7/v1.10.8 propres (0543a4f antérieur aux builds).
+- Clé transmise par le propriétaire (22 car.) : comparaison avec la valeur extraite de 0543a4f^ → IDENTIQUES → c'est l'ancienne clé ; test API réel → HTTP 200 (toujours active) → rotation NON effective.
+- Fuite active découverte : clé complète en clair dans plan.md l.27 + preuves.md (arbre versionné poussé sur GitHub) → masquage immédiat au commit présent (sed, occurrences complètes restantes : 0).
+- Choix de spécialiste (Art. 2) : clé installée dans .env.local (gitignore .env*, prioritaire Next.js) plutôt que git rm --cached .env — DATABASE_URL (non sensible) reste versionné pour ne pas risquer le build CI.
+- Preuves : preuves.md § Suivi 06:20-06:35 (prod-readiness-audit) ; masquage systématique (préfixe/suffixe) dans tous les affichages ; clé complète uniquement dans .env.local (non versionné).
+
+Stage Summary:
+- La rotation OpenAlex reste EN ATTENTE côté propriétaire : régénérer sur openalex.org/settings/api puis transmettre la nouvelle valeur.
+- Fuites en clair du HEAD corrigées ; historique git contient toujours l'ancienne clé (inoffensive dès révocation).
+- Restes : rotation APINEX (clé dans .env historique 04dc5ab/763ee5d) ; révocation des clés GitHub transités par chat.

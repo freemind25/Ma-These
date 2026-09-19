@@ -187,7 +187,7 @@ Il prouve par mock de `bun` : (1) sans base preview → init vide dans l'artefac
 ```
 git ls-files | rg -i 'api[_-]?key|secret|bearer|sk-…' → 25 fichiers code (après exclusion tool-results/, *.md, tests)
 rg '(api[_-]?key|secret|bearer|sk-…)\s*[:=]?\s*["…'][a-zA-Z0-9_-.]{16,}["…']  → AUCUN littéral codé en dur hormis :
-src-tauri/src/lib.rs l.221 :  ("OPENALEX_API_KEY", "qsdRrHIuOptAWiFw3ErWLr")   (bloc l.219-223)
+src-tauri/src/lib.rs l.221 :  ("OPENALEX_API_KEY", "qsdRrHIu…(masqué — rotation 2026-09-19)")   (bloc l.219-223)
 ```
 Injection : si `OPENALEX_API_KEY` absent de l'environnement au lancement, le process Next.js embarqué reçoit la clé en dur → **la clé voyage dans le binaire Tauri et donc dans chaque installeur Windows**. → traitement à la T14 (C-D2, décision propriétaire).
 
@@ -198,10 +198,10 @@ Faux positifs éliminés : `tool-results/` (transcripts d'outils, 2 fichiers) ; 
 ### T10 — Scan historique git : verdict **JAMAIS PURGÉE** (le reste de l'historique est propre)
 
 ```
-git log --all --oneline -S "qsdRrHIuOptAWiFw3ErWLr" →
+git log --all --oneline -S "qsdRrHIu…(masqué — rotation 2026-09-19)" →
   1359333  0b1ffc11-2589-4251-b6a2-977baa361415   (import externe : INTRODUCTION)
   2a8a4e3  docs: prod-readiness-audit (mon commit dossier — ajoute une OCCURRENCE CITÉE de la valeur dans specs/…/plan.md, même canal public ; consigné pour transparence)
-git grep -c "qsdRrHIuOptAWiFw3ErWLr" HEAD -- src-tauri/src/lib.rs → 1   (encore en HEAD)
+git grep -c "qsdRrHIu…(masqué — rotation 2026-09-19)" HEAD -- src-tauri/src/lib.rs → 1   (encore en HEAD)
 ```
 La clé est donc dans **tous** les objets git depuis `1359333` jusqu'à HEAD — jamais purgée. La purge par réécriture d'histoire est rejetée (plan §4) ; la remédiation efficace reste la **rotation de la clé** chez OpenAlex (option de C-D2).
 
@@ -381,3 +381,15 @@ Intégrité des données (push additif pur, aucune table supprimée) : Thesis 1 
 curl overpass-api.de/api/interpreter → HTTP 000 en 0,50 s (blocage réseau sandbox, stable)
 ```
 Preuve d'exécution réelle A.7 toujours à produire au poste du propriétaire : log `[Overpass] Reprise n/2`.
+
+## Suivi du 2026-09-19 (06:20-06:35) — Rotation OpenAlex : clé fournie = ancienne ; masquage preuves ; clé installée hors dépôt
+
+Le propriétaire a transmis une clé par chat en réponse à la demande de rotation.
+
+Audit d'identité (preuves réelles) :
+- clé fournie (22 car., `qsd…WLr`) **==** clé extraite de `0543a4f^:src-tauri/src/lib.rs` → IDENTIQUES → **c'est l'ancienne clé, pas une régénération**.
+- ancienne clé **toujours active** : GET `api.openalex.org/works?per_page=1&api_key=…` → **HTTP 200**, meta.count=327389651 (les deux appels, nouvelle et ancienne).
+- occurrence **complète en clair** dans l'arbre versionné avant ce commit : `plan.md` l.27 (22 car.) + `preuves.md` (1×22, 1×8 tronquée) → **masquées au commit présent** (fuite active sur GitHub repo privé, corrigée).
+- nouvelle valeur installée dans `.env.local` (couvert par `.gitignore` `.env*`, `git check-ignore` OK) — prioritaire sur `.env` dans Next.js ; l'app desktop lit la variable d'environnement de la machine (lib.rs l.222-228, doc EXPLOITATION-SERVEUR.md).
+
+Reste propriétaire : **régénérer la clé sur openalex.org/settings/api** puis transmettre la nouvelle valeur → remplacement dans `.env.local` ; une fois l'ancienne révoquée, l'historique git devient inoffensif (purge inutile — tags v1.10.7/v1.10.8 des releases publiées préservés).

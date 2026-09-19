@@ -24,7 +24,7 @@ Date : 2026-09-18 · Prérequis : `spec.md` validée. Plan bâti sur lecture du 
 - Drift : exécutable en sandbox — `bunx prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-url file:db/custom.db` (lecture seule) ; idem `db/urbanisme-test.db`.
 
 ### Secrets & configuration
-- **Clé API OpenAlex en dur : `src-tauri/src/lib.rs` l.221** — `("OPENALEX_API_KEY", "qsdRrHIuOptAWiFw3ErWLr")` injectée dans le serveur embarqué si l'env ne la définit pas (bloc l.219-223) ; introduite au commit externe `1359333` (import d'origine, `git log -S`), **toujours en HEAD** — livrée dans chaque installeur NSIS.
+- **Clé API OpenAlex en dur : `src-tauri/src/lib.rs` l.221** — `("OPENALEX_API_KEY", "qsdRrHIu…(masqué — rotation 2026-09-19)")` injectée dans le serveur embarqué si l'env ne la définit pas (bloc l.219-223) ; introduite au commit externe `1359333` (import d'origine, `git log -S`), **toujours en HEAD** — livrée dans chaque installeur NSIS.
 - `src/lib/ai/hardcoded-keys.ts` : nom trompeur mais lit uniquement `process.env` (aucune clé en dur).
 - `.env` : 1 seule variable (`DATABASE_URL`) ; **`.env.example` absent** ; **35 variables** `process.env.*` lues par `src/` (inventaire obtenu, cf. § 2 P12).
 - Rapport « Mendeley OAuth + plateformes de piratage » : **introuvable** (dépôt + `upload/`) — scan frais requis (MD-2).
