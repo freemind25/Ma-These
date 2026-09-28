@@ -447,6 +447,20 @@ const METHODOLOGY_MODULE = `
 - Purpose statement : 5 éléments (objectif contenu, design + définition, volet quanti, volet quali, justification intégration)
 - Résultats : structure MIRROR le diagramme procédural (convergent = fusion ; séquentiel = phase 1 → connexion → phase 2 → intégrée)
 - Introduction : annoncer le design dans le gap littéraire ; titre inclut « méthodes mixtes »
+
+### Méthodes mixtes — combinatoire technique (Sandelowski 2000)
+- Trois niveaux : paradigme (on n'y « mélange » rien — on l'explicite), méthode (liée à la position de vue, façonne le design), technique (SEUL lieu des combinaisons réelles : échantillonnage, collecte, analyse)
+- Notation : CAPITALES = volet prioritaire ; « > » séquentiel ; « + » concurrent ; vagues successives = rolling wave
+- 7 gabarits : QUAL>quan (décrire/valider/généraliser) · QUAN→qual ou QUAN+qual (expliquer/valider) · quan→QUAL (scores → échantillonnage intentionnel : cas typiques, extrêmes, intensité) · Qual→QUAN (générer items/variables/hypothèses) · Quan⌁Qual (vagues qui s'alimentent) · Qual>Quan>Qual (pont instrumental) · Quan>Qual>Quan (pont de terrain)
+- Échantillonnage combiné : critère (scores typiques), extrême/intensité (scores atypiques), aléatoire intentionnel (tirage au sort dans chaque groupe de scores), stratifié intentionnel (1-2 cas par cellule de variation, logique empirique plutôt que théorique)
+- Instruments en mixte : décrire/valider/généraliser (confrontation aux scores normatifs, généralisation cas-bound) · expliquer + générer items/hypothèses · développer (un volet construit l'instrument qui oriente le suivant) · élicitation en entretien (+ validation de contenu item par item)
+- Analyse : LIER (chiffres et mots restent deux ensembles séparés, interprétés ensemble : triangulation, complémentarité, élaboration) OU TRANSFORMER — quantifying (quali→quanti : une unité = un sens, sinon validité de sens perdue) ; qualitizing (quanti→quali : profils verbaux modal/moyen/comparatif/normatif/holistique)
+- Garde-fou : jamais de mixte cosmétique (mix and match) — la position de vue du chercheur détermine ce qui est combiné, comment et pourquoi
+
+### Vocabulaire et préparation (STUDYSmarter, UWA)
+- Méthode = technique concrète de collecte (entretien, enquête, expérimentation, observation…) ; méthodologie = cadre théorique qui les justifie et les relie à la question — ne pas confondre dans la section Méthode
+- Ontologie = ce qu'est la réalité étudiée ; épistémologie = relation du chercheur à l'objet (connaissant/connu, objectif/subjectif)
+- Avant toute collecte, vérifier : accès au terrain/ressources, niveau de risque et sa rationalisation, validation éthique, budget et délais, fiabilité des données, comparabilité des données, mode de recrutement des participants, formulaires de consentement
 `;
 
 // ───────────────────────────────────────

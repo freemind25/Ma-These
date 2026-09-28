@@ -161,11 +161,11 @@ src/lib/ai/
 9. **Processus de feedback (cf. `feedback.md`) :** Tout signal de divergence (retour utilisateur, test, audit) suit le processus : Capture → Triage (trou du noyau ? duplication ? faux positif ?) → Correction dans le bon fichier → Validation (lint + tests + convergence inter-modes) → Documentation dans le worklog. **Jamais** corriger dans une spécialisation ce qui appartient au noyau.
 10. **Banques de phrases (phrasebank) :** `src/lib/data/phrasebank-data.ts` est du contenu d'affichage (phrases académiques pour l'utilisateur), **jamais** injecté dans les prompts. Ne pas le confondre avec du savoir métier.
 
-**Modules de connaissance disponibles (11) :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`, `writing-process`, `literature-review`, `data-analysis`, `grant-writing`, `publication`
+**Modules de connaissance disponibles (13) :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`, `writing-process`, `literature-review`, `data-analysis`, `grant-writing`, `publication`, `visualization`, `presentation`
 
-**Sources distillées :** Kumar (Research Methodology), Salkind (100 Questions), White (Mapping Your Thesis), Ollhoff (Literature Review), Rae & Wong (Applied Data Analysis), Smith & Works (Grant Writing), Gastel & Day (How to Write and Publish a Scientific Paper)
+**Sources distillées :** Kumar (Research Methodology), Salkind (100 Questions), White (Mapping Your Thesis), Ollhoff (Literature Review), Rae & Wong (Applied Data Analysis), Smith & Works (Grant Writing), Gastel & Day (How to Write and Publish a Scientific Paper), Sandelowski (Combining Qualitative and Quantitative…, RNH 2000 — méthodes mixtes), STUDYSmarter/UWA (Methods and Methodology Survival Guide)
 
-**Token budget :** full core ~3 900 tokens (≤ 4 500 max), directeur mode ~2 600 tokens (≤ 3 000 max)
+**Token budget (capteur permanent : `src/lib/ai/knowledge-core.budget.test.ts`, CHARS_PER_TOKEN = 3) :** full core ~20 928 tokens mesurés (budget 22 000), mode le plus lourd ~15 300 (budget 17 000), module max 5 000 — méthodologie ~4 470 après digestion 2026-09-28 (Sandelowski + STUDYSmarter). Le tableau ci-dessous conserve des mesures historiques plus anciennes (drift signalé, voir preuves specs/ressource-methodes-mixtes).
 
 | Mode | Modules injectés | Tokens ≈ |
 |------|-------------------|----------|
