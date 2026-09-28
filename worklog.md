@@ -800,3 +800,21 @@ Stage Summary:
 - La notice documente désormais TOUS les modules avec leur mode d'emploi détaillé (MD 717 lignes / PDF 22 pages) — commit bc0159e poussé sur origin/main.
 - Compteurs produits alignés sur le code dans les 3 documents (README, note, notice) ; lignes rouges 0 diff avant commit.
 - Sécurité inchangée : rotation OpenAlex en attente côté propriétaire ; rotation APINEX ; révocation des clés GitHub transités par chat.
+
+---
+Task ID: ressource-methodes-mixtes-1
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Ordre propriétaire « ajouter cette ressource en respectant le protocole d'ajout, de digestion, etc. » — PDF ressources.pdf (12 p. : article Sandelowski 2000 p.1-9 + guide STUDYSmarter/UWA p.10-11) — double intégration : Ressources pédagogiques (ajout) + socle IA (digestion).
+
+Work Log:
+- Identification du document : pages 10-11 = le guide UWA déjà reçu le 14/09 (upload/res.pdf, 2 pages, jamais intégré) — extrait en verbatim (pdftoppm 110 dpi, chrome Tuta recadré, en-tête + logo UWA et filigrane d'origine conservés) ; pages 1-9 = article Sandelowski (RNH 23(3), 246-255, 2000) → fiche de lecture FR 2 pages (HTML → chromium headless 2× → ffmpeg) dont les sources HTML sont versionnées dans docs/pdf-sources/ressources/.
+- Protocole d'ajout : 4 JPG dans public/resources/ (935×990 ×2, 1840×2380 ×2) ; resources-section.tsx étendu (typage Resource/ResourcePage, ResourcePager Précédente/Suivante + compteur aria-live, pastille « N pages ») — les 2 infographies d'origine restent mono-page ; README : section Ressources enrichie (4 vignettes, crédits UWA + citation Sandelowski, renvoi au socle).
+- Protocole de digestion (§7 ARCHITECTURE-CONNAISSANCE) : triage — la combinatoire technique de Sandelowski (niveaux paradigme/méthode/technique, 7 gabarits, échantillonnage combiné, instruments multi-usages, lier/transformer, quantizing/qualitizing) et le vocabulaire methods/méthodologie + check-list pré-collecte UWA ABSENTS du noyau ; correction : 2 sections compactes dans METHODOLOGY_MODULE + 2 sources brutes modules/methods-mixtes-sandelowski.md et modules/methodes-methodologie-uwa.md ; documentation : AGENTS.md (11→13 modules, sources, ligne budget alignée sur le capteur) et ARCHITECTURE-CONNAISSANCE.md (date, arbre, ligne methodology, note de mesure).
+- Validation : lint 0 erreur ; test:run 1452/1452 ; capteur budget avant/après : 60 370→62 785 chars (20 123→20 928 tok / budget 22 000), méthodologie 3 665→4 470 tok (plafond 5 000, reste le plus grand module), 7/7 tests budget verts, tests de digestion existants verts.
+- Recette navigateur (agent-browser) : 4 cartes rendues ; pagination prouvée sur les 2 nouvelles (1/2→2/2, src commutée) ; Escape ferme ; 0 erreur console/page ; mobile 390 px OK ; 5 captures dans test-snapshots/.
+- Écarts signalés (Article 4, preuves.md) : tableau tokens AGENTS et colonne Tokens ARCHITECTURE restent historiques ; filigrane « Askpstudyinaustralia » conservé (forme originale reçue) ; article non affiché en 9 pages verbatim (choix tracé dans spec.md).
+
+Stage Summary:
+- La ressource est doublement intégrée : visible dans l'app (2 nouvelles cartes multi-pages) et distillée dans le socle IA (module methodology, budget prouvé) ; lignes rouges 0 diff avant chaque commit ; upload/ inchangé.
+- Leçon d'identification : « ressources.pdf » (Tuta 28/09) contient le guide déjà transmis via res.pdf (14/09) — traité une seule fois, en verbatim propre cette fois.
+- Sécurité inchangée : rotation OpenAlex en attente côté propriétaire ; rotation APINEX ; révocation des clés GitHub transités par chat.
