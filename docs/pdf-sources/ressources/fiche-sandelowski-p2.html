@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 920px; height: 1190px; overflow: hidden; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #FCFBF8; color: #292524;
+    display: flex; flex-direction: column;
+  }
+  .sheet { flex: 1; display: flex; flex-direction: column; padding: 52px 56px 0; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: #B45309; font-weight: 700; margin-bottom: 8px;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 30px; line-height: 1.2; color: #1C1917; font-weight: 700; margin-bottom: 6px;
+  }
+  .rule { height: 3px; background: #B45309; width: 84px; margin: 14px 0 22px; }
+  h2 {
+    font-size: 15px; letter-spacing: 1.4px; text-transform: uppercase;
+    color: #B45309; font-weight: 700; margin: 0 0 12px;
+  }
+  .sec { margin-bottom: 24px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .box { background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 10px; padding: 15px 17px 13px; }
+  .box h3 { font-size: 15px; color: #1C1917; margin-bottom: 7px; }
+  .box h3 span { color: #B45309; }
+  .box p { font-size: 12.8px; line-height: 1.52; color: #44403C; }
+  .box p b { color: #1C1917; }
+  ul { list-style: none; }
+  ul li {
+    font-size: 12.9px; line-height: 1.5; color: #44403C;
+    padding-left: 16px; position: relative; margin-bottom: 6.5px;
+  }
+  ul li::before { content: ""; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: 2px; background: #B45309; }
+  ul li b { color: #1C1917; }
+  .warn {
+    background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px;
+    padding: 15px 18px 12px;
+  }
+  .warn h3 { font-size: 15px; color: #92400E; margin-bottom: 7px; }
+  .warn ul li::before { background: #D97706; }
+  .footer {
+    margin-top: auto; border-top: 1px solid #E7E5E4; padding: 14px 56px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11.5px; color: #78716C; background: #FCFBF8;
+  }
+  .footer b { color: #44403C; }
+  .pagenum { font-weight: 700; color: #B45309; }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="eyebrow">Fiche de lecture · Méthodes de recherche · suite</div>
+    <h1>Combiner en pratique — et les garde-fous</h1>
+    <div class="rule"></div>
+
+    <div class="sec">
+      <h2>4 · Combiner l'échantillonnage</h2>
+      <div class="grid2">
+        <div class="box">
+          <h3><span>a.</span> Par critère</h3>
+          <p>Cas retenus sur leurs <b>scores à un instrument</b> : cas typiques (moyens) ou extrêmes / d'intensité (très hauts, très bas) — « déviants » par rapport à une norme.</p>
+        </div>
+        <div class="box">
+          <h3><span>b.</span> Aléatoire intentionnel</h3>
+          <p>Grand bassin de cas riches en information, <b>pas de raison de préférer l'un</b> : tirage au sort dans chaque groupe de scores (ex. 300 douleurs faibles / 150 égales / 50 supérieures).</p>
+        </div>
+        <div class="box">
+          <h3><span>c.</span> Stratifié intentionnel</h3>
+          <p>Remplir les cellules d'un plan : <b>1–2 cas par combinaison</b> de paramètres (ex. dyade de soin × rôle × type de maladie) pour maximiser la variation — plutôt empirique que théorique.</p>
+        </div>
+        <div class="box">
+          <h3><span>d.</span> Pour la complémentarité</h3>
+          <p>Échantillonner sur les scores pour <b>obtenir plus d'information</b> (entretiens, observation) auprès des participants atypiques — convergence de validité en prime.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>5 · Combiner la collecte : les usages multiples des instruments</h2>
+      <ul>
+        <li><b>Décrire / valider / généraliser</b> : confronter les cas qualitatifs aux scores normatifs de l'instrument (généralisation « cas-bound », pas de population).</li>
+        <li><b>Expliquer et générer</b> : l'instrument fournit les variables les plus fructueuses à explorer qualitativement (et inversement, générer items et hypothèses).</li>
+        <li><b>Développer</b> : un instrument construit à partir d'un volet qualitatif sert de « pont » vers le volet suivant — qui échantillonner, quoi collecter ensuite.</li>
+        <li><b>Dispositif d'élicitation</b> : en entretien, l'instrument provoque pensées et sentiments difficilement exprimables ; l'interroger item par item éclaire aussi sa validité de contenu.</li>
+      </ul>
+    </div>
+
+    <div class="sec">
+      <h2>6 · Combiner l'analyse : lier ou transformer</h2>
+      <div class="grid2">
+        <div class="box">
+          <h3><span>Lier</span></h3>
+          <p><b>Chiffres et mots restent deux ensembles séparés</b>, interprétés à un niveau d'inférence commun : triangulation (corroborer), complémentarité (clarifier), élaboration (approfondir).</p>
+        </div>
+        <div class="box">
+          <h3><span>Transformer</span></h3>
+          <p><b>Quantifying</b> (quali → quanti) : réduire mots et observations en données à une seule signification, corrélables — attention à la validité de sens. <b>Qualitizing</b> (quanti → quali) : profils verbaux de groupes — modal, moyen, comparatif, normatif, holistique.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec" style="margin-bottom:0;">
+      <h2>7 · Garde-fous</h2>
+      <div class="warn">
+        <ul>
+          <li><b>Jamais de mixte cosmétique</b> (« mix and match syndrome », « quagmire qualitatif ») : chaque combinaison doit avoir un pourquoi explicite.</li>
+          <li>C'est la <b>position de vue du chercheur</b> qui détermine ce qui est combiné, comment et pourquoi — pas la mode méthodologique.</li>
+          <li>Le mixte <b>élargit le champ et la puissance analytique</b> d'une étude ; il ne compense jamais un design incohérent.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span><b>Fiche pédagogique ThesisFrame</b> — contenu d'après M. Sandelowski, <em>Research in Nursing &amp; Health</em>, 23(3), 246–255, 2000</span>
+    <span class="pagenum">2 / 2</span>
+  </div>
+</body>
+</html>

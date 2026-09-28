@@ -81,15 +81,22 @@
 
 ## Ressources pédagogiques
 
-Infographies sélectionnées, également disponibles dans l'application (tableau de bord → « Ressources pédagogiques »).
+Guides, fiches de lecture et infographies sélectionnés, également disponibles dans l'application (tableau de bord → « Ressources pédagogiques », visionneur multi-pages).
 
 <p>
   <img src="public/resources/choisir-directeur-these-7-etapes.jpg" alt="Les 7 étapes pour choisir un bon directeur de thèse" width="300" />
   &nbsp;
   <img src="public/resources/article-recherche-vs-revue.jpg" alt="Article de recherche vs article de revue" width="300" />
 </p>
+<p>
+  <img src="public/resources/methodes-methodologie-uwa-1.jpg" alt="Guide de survie UWA — Methods and Methodology, page 1" width="300" />
+  &nbsp;
+  <img src="public/resources/methodes-mixtes-sandelowski-fiche-1.jpg" alt="Fiche de lecture — Les méthodes mixtes (Sandelowski 2000), page 1" width="300" />
+</p>
 
-> Crédits : « Bien choisir son directeur de thèse » — @PhDtoProfMentor · « Article de recherche vs article de revue » — Razia Aliani, Source : Editage Open Academics
+> Crédits : « Bien choisir son directeur de thèse » — @PhDtoProfMentor · « Article de recherche vs article de revue » — Razia Aliani, Source : Editage Open Academics · « Méthodes & méthodologie — guide de survie » — STUDYSmarter, The University of Western Australia (reproduction conservée dans sa forme originale, en-tête et logo UWA) · « Les méthodes mixtes : combiner quali et quanti » — fiche de lecture ThesisFrame d'après M. Sandelowski, *Research in Nursing & Health*, 23(3), 246-255, 2000.
+>
+> Le savoir de ces ressources est également distillé dans le socle de connaissances IA (module `methodology`, voir `docs/ARCHITECTURE-CONNAISSANCE.md`).
 
 ## Documentation
 
