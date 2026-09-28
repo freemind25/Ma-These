@@ -782,3 +782,21 @@ Work Log:
 
 Stage Summary:
 - Rapport d'exploration exhaustif livré (module par module, libellés entre guillemets, sources externes, replis en cas d'échec, garde-fous) — prêt pour réécrire docs/NOTICE-UTILISATION.md ; zéro modification de code, aucun commit.
+
+---
+Task ID: docs-notice-exhaustive-1
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Retour propriétaire « votre manuel d'utilisation est trop sommaire et n'explique pas toutes les fonctionnalités et comment les utiliser. veuillez faire l'effort de plus de générosité » — réécriture exhaustive de la notice (MD + PDF).
+
+Work Log:
+- Exploration du code réel par 4 agents parallèles (Task 1-a..1-d, rapports dans ce worklog) : 44 entrées NAVIGATION_ITEMS, 26 modes d'écriture (src/data/ai-writing-modes.ts), 26 fournisseurs ALL_PROVIDER_IDS dont 22 gratuits (src/lib/ai/ai-types.ts), shell complet (header, settings, sidebar, footer, bandeau D4, raccourcis).
+- docs/NOTICE-UTILISATION.md : 215 -> 717 lignes, 13 sections — installation, interface (menus, badges, 10 raccourcis clavier), 26 fournisseurs IA (tableau par catégorie), 44 modules documentés un par un (onglets, champs, boutons exacts, flux pas-à-pas, sorties/exports), persistance base vs session par module, 10 bonnes pratiques, FAQ 18 entrées, glossaire 21 termes.
+- 6 emoji neutralisés (règle anti-tofu ReportLab) ; corrections factuelles propagées à README.md et NOTE-PRESENTATION.md (34→44 modules, 21→26 modes, 22/16→26/22 fournisseurs, drag-and-drop→boutons fléchés, import DOI/ISBN/URL automatique→import par fichier + saisie manuelle).
+- PDF régénéré (route Report) : couverture Template 07 versionnée revalidée (poster_validate PASS, cover_validate 0 chevauchement) ; corps ReportLab DejaVu, TocDocTemplate + multiBuild, PageLabelCanvas (sommaire romain i-ii, corps arabe remis à 1) ; fusion + normalisation A4 stricte ; 2 allers-retours QA (taille couverture 595,9→595,3 pt ; tiret cadratin p.20 neutralisé dans le MD) -> pdf_qa PASS ; font.check 0 ; pages.clean 0 page blanche ; sommaire cliquable (98 liens) synchronisé avec la pagination ; contrôle visuel de 6 pages.
+- Pipeline PDF versionné (docs/pdf-sources/gen_notice.py + merge_notice.py) — nouvelles preuves horodatées 13:08-13:52 dans preuves.md.
+- Fetch anti-divergence avant push : origin/main (70f3086) ancêtre direct, avance rapide -> push 70f3086..bc0159e ; ls-remote = bc0159e ; askpass éphémère supprimé.
+
+Stage Summary:
+- La notice documente désormais TOUS les modules avec leur mode d'emploi détaillé (MD 717 lignes / PDF 22 pages) — commit bc0159e poussé sur origin/main.
+- Compteurs produits alignés sur le code dans les 3 documents (README, note, notice) ; lignes rouges 0 diff avant commit.
+- Sécurité inchangée : rotation OpenAlex en attente côté propriétaire ; rotation APINEX ; révocation des clés GitHub transités par chat.
