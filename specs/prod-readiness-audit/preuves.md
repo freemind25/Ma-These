@@ -449,3 +449,28 @@ Vérifications navigateur (agent-browser, dev :3000) :
 - Dialog : clic vignette 1 → plein format avec titre + crédit, défilement OK ; fermeture Escape OK.
 - network : GET /resources/choisir-directeur-these-7-etapes.jpg → 200 ; GET /resources/article-recherche-vs-revue.jpg → 200 ; zéro erreur page.
 - mobile 390×844 : pile 1 colonne, infographie entière lisible, layout intact ; footer collé au bas.
+
+## Suivi du 2026-09-19 (10:33-11:31) — Documentation : note de présentation + notice d'utilisation (MD + PDF)
+
+Ordre : « préparez une note de présentation et une notice d'utilisation de cette application ».
+
+Livrables (4 fichiers + 2 sources HTML) :
+```
+docs/NOTE-PRESENTATION.md   (7,1 Ko)  + docs/NOTE-PRESENTATION.pdf   (176 Ko, 5 pages)
+docs/NOTICE-UTILISATION.md  (13 Ko)   + docs/NOTICE-UTILISATION.pdf  (191 Ko, 9 pages)
+docs/pdf-sources/cover-note-presentation.html + cover-notice-utilisation.html (sources de couvertures)
+```
+
+Contenu (français, vérifié contre le code source — 34 vues de app-store.ts, fonctionnalités README, guide intégré) :
+- Note : présentation générale + bandeau de métriques (34 modules / 21 modes / 22 fournisseurs / 1 318 tests), publics cibles, 7 familles (tableau), 5 points forts, architecture, confidentialité, distribution, accompagnement.
+- Notice : installation (bureau + web), interface, configuration fournisseur IA (+ circuit breaker), parcours 5 étapes (tableau), guide des 7 familles de modules (8 tableaux, libellés exacts de la sidebar), bonnes pratiques, FAQ, glossaire.
+
+Pipeline PDF (skill pdf, route Report/ReportLab) :
+- Couvertures Template 07 « Crystal Blue » (typesetting/cover.md) : HTML -> html2poster.js --width 794px ; poster_validate check-html PASS ; cover_validate.js PASS (0 chevauchement, gap texte-cadre > 1U).
+- Corps : ReportLab, palette fixe Template 07 (en-têtes tableaux #1a4a7a, accent #2d7ab3), FreeSerif + install_font_fallback(), cellules toutes en Paragraph(), colWidths <= largeur utile (assert), repeatRows=1, hAlign CENTER, CondPageBreak 25 % avant H1, pagination : couverture masquée, sommaire en romain (i), corps arabe remis à 1 (après correction de afterFlowable : entrées du sommaire = numérotation du corps, alignée sur les pieds de page).
+- Sommaire auto : TocDocTemplate + multiBuild + bookmarks cliquables.
+- Préflight : code.sanitize OK ; font.check 0 problème (2 PDF) ; pages.clean : 0 page blanche ; toc_validate check-pdf : pass=true (avertissement TOC_NOT_FOUND = faux négatif, détecteur sans motif français « Table des matières » — sommaire présent p.2, vérifié visuellement) ; pdf_qa : note = 1 avertissement (symétrie marges couverture, propre au template aligné à gauche, cadre symétrique) — erreur de taille de page initiale (595,9 vs 595,3 pt) corrigée par normalisation stricte (seuil 0,1 pt) puis QA revue ; notice = idem après correction d'un tiret cadratin en début de ligne (espace insécable).
+- Contrôle visuel pypdfium2 : 6 pages rendues et inspectées (couvertures, sommaire, corps, tableaux).
+
+README : nouvelle section « Documentation » (liens MD + PDF + docs existants + rappel guide intégré).
+Lignes rouges : 0 diff. Champ : docs/ + README.md uniquement (aucun code applicatif).

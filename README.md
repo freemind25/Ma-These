@@ -91,6 +91,17 @@ Infographies sélectionnées, également disponibles dans l'application (tableau
 
 > Crédits : « Bien choisir son directeur de thèse » — @PhDtoProfMentor · « Article de recherche vs article de revue » — Razia Aliani, Source : Editage Open Academics
 
+## Documentation
+
+| Document | Formats |
+|---|---|
+| **Note de présentation** (produit, publics, fonctionnalités, points forts) | [Markdown](docs/NOTE-PRESENTATION.md) · [PDF](docs/NOTE-PRESENTATION.pdf) |
+| **Notice d'utilisation** (installation, configuration, guide des modules, FAQ) | [Markdown](docs/NOTICE-UTILISATION.md) · [PDF](docs/NOTICE-UTILISATION.pdf) |
+| Exploitation serveur (arrêts/redémarrages, procédures) | [Markdown](docs/EXPLOITATION-SERVEUR.md) |
+| Architecture de connaissance | [Markdown](docs/ARCHITECTURE-CONNAISSANCE.md) |
+
+Un guide intégré est également disponible dans l'application via l'icône **?** de l'en-tête.
+
 ## Stack technique
 
 | Technologie | Rôle |

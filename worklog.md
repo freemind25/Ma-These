@@ -697,3 +697,19 @@ Stage Summary:
 - Les 2 ressources sont visibles dans l'app (dashboard, bas de page) et sur GitHub (README) avec attribution des sources.
 - upload/ inchangé ; lignes rouges intactes ; preuves § Suivi 10:28-10:45.
 - Sécurité inchangée : rotation OpenAlex en attente côté propriétaire ; rotation APINEX ; révocation des 2 clés GitHub transités par chat.
+
+---
+Task ID: docs-presentation-notice-1
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Ordre « préparez une note de présentation et une notice d'utilisation de cette application » — 2 documents en Markdown + 2 PDF professionnels + section README Documentation.
+
+Work Log:
+- Sources : contenu dérivé du code réel (34 vues NAVIGATION_ITEMS app-store.ts, README, guide intégré usage-guide-dialog) — zéro invention ; libellés des modules identiques à la sidebar.
+- Rédaction MD : docs/NOTE-PRESENTATION.md (8 sections + métriques) et docs/NOTICE-UTILISATION.md (8 sections, parcours 5 étapes, 8 tableaux de modules, FAQ, glossaire).
+- PDF via skill pdf (route Report) : couvertures Template 07 Crystal Blue (HTML/Playwright, validateurs PASS), corps ReportLab palette fixe Template 07, sommaire auto cliquable (TocDocTemplate + multiBuild), pagination romaine/arabe corrigée, normalisation A4 stricte ; préflight complet (font.check 0, pages.clean 0, toc pass, pdf_qa 1 avertissement accepté et documenté) ; contrôle visuel de 6 pages.
+- README : section « Documentation » (MD + PDF + docs existants).
+
+Stage Summary:
+- 4 livrables + 2 sources HTML dans docs/ ; commit docs+README uniquement, lignes rouges 0 diff.
+- Le sommaire de la notice et les numéros de page du corps sont synchronisés (numérotation du corps remise à 1 après le sommaire).
+- Sécurité inchangée : rotation OpenAlex en attente côté propriétaire ; rotation APINEX ; révocation des 2 clés GitHub transités par chat.
