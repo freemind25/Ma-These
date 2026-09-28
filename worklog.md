@@ -713,3 +713,16 @@ Stage Summary:
 - 4 livrables + 2 sources HTML dans docs/ ; commit docs+README uniquement, lignes rouges 0 diff.
 - Le sommaire de la notice et les numéros de page du corps sont synchronisés (numérotation du corps remise à 1 après le sommaire).
 - Sécurité inchangée : rotation OpenAlex en attente côté propriétaire ; rotation APINEX ; révocation des 2 clés GitHub transités par chat.
+
+---
+Task ID: docs-presentation-notice-1b
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Consolidation — incident de divergence lors du push du commit documentation.
+
+Work Log:
+- Push initial rejeté (non fast-forward) : le commit « ressources » existait en double (distant d247645, local 1ad9119 même contenu réappliqué après restauration de snapshot ; seuls .zscripts/dev.pid et les modes de fichiers différaient).
+- Résolution : vérification de contenu (arbres identiques hors pid/modes) -> stash du pid runtime -> rebase --onto origin/main 1ad9119 -> commit docs rejoué en 98ffcd7 -> stash pop (conflit pid résolu hors commit) -> push OK (d247645..98ffcd7).
+- Leçon confirmée (cf. build-desktop-pipeline-5) : après toute reprise de sandbox, toujours fetch + comparer contre origin/main avant de committer ; ne jamais réécrire les tags/releases.
+
+Stage Summary:
+- HEAD = origin/main = 98ffcd7 (docs livrés) ; incident consigné ; lignes rouges intactes.
