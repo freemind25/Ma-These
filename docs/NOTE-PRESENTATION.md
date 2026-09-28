@@ -20,7 +20,7 @@ Le parcours doctoral est fragmenté : le candidat jongle entre un traitement de 
 
 ## 3. La solution
 
-Ma Thèse réunit dans une seule application cohérente **34 modules** organisés en 7 familles, autour d'un cœur central : **votre thèse**. L'IA n'y est pas un gadget : elle est contextuelle (elle lit votre propre travail), paramétrable (22 fournisseurs, dont 16 gratuits) et surtout **vérifiée** — des modules entiers sont consacrés au contrôle de cohérence méthodologique, cartographique et bibliographique.
+Ma Thèse réunit dans une seule application cohérente **44 modules** organisés en 7 familles, autour d'un cœur central : **votre thèse**. L'IA n'y est pas un gadget : elle est contextuelle (elle lit votre propre travail), paramétrable (26 fournisseurs, dont 22 gratuits) et surtout **vérifiée** — des modules entiers sont consacrés au contrôle de cohérence méthodologique, cartographique et bibliographique.
 
 ## 4. Public cible
 
@@ -34,16 +34,16 @@ Ma Thèse réunit dans une seule application cohérente **34 modules** organisé
 | Famille | Contenu |
 |---|---|
 | **Principal** | Tableau de bord (statistiques de progression, actions rapides, ressources pédagogiques) · Éditeur de thèse |
-| **Rédaction** | Assistant IA (21 modes d'écriture : rédaction scientifique, revue de littérature, reformulation, résumé, traduction académique…) · Mon IA de thèse (RAG : interrogez votre propre thèse) · Harper (résumeur/paraphraseur/extracteur) · Grammaire (correcteur IA académique) · Phrasier académique (phrases prêtes par section) · Déblocage écriture (exercices, Pomodoro) · Auto-édition 8C (8 critères de qualité) |
+| **Rédaction** | Assistant IA (26 modes d'écriture : rédaction scientifique, revue de littérature, reformulation, résumé, préparation de soutenance…) · Mon IA de thèse (RAG : interrogez votre propre thèse) · Harper (résumeur/paraphraseur/extracteur) · Grammaire (correcteur IA académique) · Phrasier académique (phrases prêtes par section) · Déblocage écriture (exercices, Pomodoro) · Auto-édition 8C (8 critères de qualité) |
 | **Structure & Planification** | Cadrage de thèse · Plan de thèse (+ template LaTeX) · Feuille de route agile (Kanban, sprints) · Boîte doctorale (checklist, calendrier, documents) · Équilibre des chapitres (IA) |
-| **Recherche & Sources** | Références (BibTeX, RIS, CSL-JSON ; import DOI/ISBN/URL ; compatible Mendeley, Zotero, EndNote) · Articles scientifiques (guide IMRaD) · Bases de données (27 ressources : HAL, Persée, CAIRN…) · Journaux Open Access (OpenAlex + DOAJ) · Thèses en ligne (HAL) · Explorateur Thèses (API theses.fr) · Veille académique (HAL + arXiv, alertes) · Recherche plein texte · Bibliothèque (7 sources de livres) |
+| **Recherche & Sources** | Références (import BibTeX, RIS, CSL-JSON ; compatible Mendeley, Zotero, EndNote ; export BibTeX) · Articles scientifiques (guide IMRaD) · Bases de données (27 ressources : HAL, Persée, CAIRN…) · Journaux Open Access (OpenAlex + DOAJ) · Thèses en ligne (HAL) · Explorateur Thèses (API theses.fr) · Veille académique (HAL + arXiv, alertes) · Recherche plein texte · Bibliothèque (7 sources de livres) |
 | **Méthodologie & Vérification** | Guides méthodologiques · Analyse du champ (cartographie IA) · Outils SLR (PRISMA, criblage, extraction) · Vérification méthodologique · Vérification cartographique (questionneur socratique) · Vérification Citations (5 registres académiques) · Génération d'hypothèses · Vérification de cohérence · Alignement preuves (citations/références par chapitre) · Expérimentations (journal hypothèses/runs/preuves) |
 | **IA & Outils** | Carnet de recherche, consensus multi-sources, visualisation · APInex Playground (chat multi-modèles + recherche web) · RoutesMe (comparaison multi-modèles) · Article → Code (Python reproductible) · Diagrammes · APA Composer (7ᵉ édition) · Livres-compétences · Traducteur |
 | **Export** | Export PDF professionnel · Export DOCX Word formaté (styles APA, table des matières) |
 
 ## 6. Points forts différenciants
 
-1. **IA multi-fournisseurs avec résilience** : 22 fournisseurs configurables (Z.ai natif sans clé, OpenAI, Anthropic, Mistral, Gemini, Groq… + endpoint personnalisé OpenAI-compatible), **circuit breaker** avec bascule automatique en cas de panne d'un fournisseur.
+1. **IA multi-fournisseurs avec résilience** : 26 fournisseurs configurables (Z.ai natif sans clé, OpenAI, Anthropic, Mistral, Gemini, Groq… + endpoint personnalisé OpenAI-compatible), **circuit breaker** avec bascule automatique en cas de panne d'un fournisseur.
 2. **IA contextuelle (RAG)** : l'assistant interroge *votre* thèse — réponses ancrées dans votre contenu, pas génériques.
 3. **Culture de la vérification** : 6 modules de contrôle (méthodologique, cartographique, citations, cohérence, preuves, hypothèses) — rares dans les outils d'écriture IA.
 4. **Souveraineté des données** : base **SQLite locale** (fichier `db/`), aucune donnée de thèse sur un serveur tiers ; fonctionne hors cloud pour le stockage.

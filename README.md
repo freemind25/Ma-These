@@ -28,8 +28,8 @@
 ## Fonctionnalités principales
 
 ### Rédaction assistée par IA
-- **36 modules fonctionnels** couvrant l'ensemble du parcours doctoral
-- **21 modes d'écriture IA** : rédaction scientifique, revue de littérature, reformulation, résumé, traduction académique, style calibration, écriture qualité, vérification citations, et plus
+- **44 modules fonctionnels** couvrant l'ensemble du parcours doctoral
+- **26 modes d'écriture IA** : rédaction scientifique, revue de littérature, reformulation, résumé, préparation de soutenance, vérification de sources, argumentation bilatérale, et plus
 - **Suggestion intelligente de modes** : détection automatique du meilleur mode selon le contenu du prompt
 - **Deep Research** : recherche approfondie avec navigation web et synthèse
 - **Déblocage d'écriture** : génération de suggestions, reformulations, transitions
@@ -38,22 +38,22 @@
 ### Éditeur de thèse
 - **Éditeur riche** (TipTap) avec support des thèmes clair/sombre
 - **Auto-save** avec compteur de mots en temps réel
-- **Structure en parties et chapitres** avec drag-and-drop
+- **Structure en parties et chapitres** avec réorganisation par boutons fléchés
 - **RAG contextuel** : interrogez votre propre thèse avec l'IA
 - **Export PDF** et **Export DOCX** professionnels
 
-### Fournisseurs IA (22 providers)
+### Fournisseurs IA (26 providers)
 - **Z.ai SDK** (natif, sans clé)
 - **OpenAI** (GPT-4o, o3-mini)
 - **Anthropic** (Claude Sonnet 4, Haiku)
-- **Mistral AI**, **RoutesMe** (proxy multi-modèles)
-- **16 fournisseurs gratuits** : Google Gemini, Groq, Cerebras, OpenRouter, GitHub Models, NVIDIA NIM, Cohere, Cloudflare, HuggingFace, SiliconFlow, Pollinations, Kilo, Routeway, AINative, Aion, Requesty, SEA-LION
+- **Mistral AI**, **RoutesMe** (proxy multi-modèles), **KiraAI**, **OmniRoute** (gateway auto-hébergée)
+- **22 fournisseurs gratuits** : Google Gemini, Groq, Cerebras, OpenRouter, GitHub Models, NVIDIA NIM, Cohere, Cloudflare, HuggingFace, SiliconFlow, Pollinations, Kilo, Routeway, AINative, Aion, Requesty, SEA-LION, TokenRouter…
 - **Provider personnalisé** : pointez vers n'importe quel endpoint OpenAI-compatible
 - **Circuit breaker** intégré avec failover automatique entre providers
 
 ### Recherche et références
 - **Gestion bibliographique** complète (BibTeX, RIS, CSL-JSON)
-- **Import automatique** depuis DOI, ISBN, URL
+- **Import par fichier** (auto-détection de format) et saisie manuelle avec DOI — export BibTeX
 - **Recherche plein texte** dans les chapitres
 - **CORE.ac.uk API v3** : accès à 200M+ articles open access
 - **Journaux Open Access** (OpenAlex + DOAJ)
@@ -96,7 +96,7 @@ Infographies sélectionnées, également disponibles dans l'application (tableau
 | Document | Formats |
 |---|---|
 | **Note de présentation** (produit, publics, fonctionnalités, points forts) | [Markdown](docs/NOTE-PRESENTATION.md) · [PDF](docs/NOTE-PRESENTATION.pdf) |
-| **Notice d'utilisation** (installation, configuration, guide des modules, FAQ) | [Markdown](docs/NOTICE-UTILISATION.md) · [PDF](docs/NOTICE-UTILISATION.pdf) |
+| **Notice d'utilisation** (manuel exhaustif : les 44 modules pas à pas, raccourcis clavier, persistance des données, FAQ, glossaire) | [Markdown](docs/NOTICE-UTILISATION.md) · [PDF](docs/NOTICE-UTILISATION.pdf) |
 | Exploitation serveur (arrêts/redémarrages, procédures) | [Markdown](docs/EXPLOITATION-SERVEUR.md) |
 | Architecture de connaissance | [Markdown](docs/ARCHITECTURE-CONNAISSANCE.md) |
 
@@ -130,9 +130,9 @@ ma-these/
 │   │   ├── ui/                 # 40+ composants shadcn/ui
 │   │   ├── layout/             # Header, sidebar, footer, dialogs
 │   │   └── dashboard/          # Composants du tableau de bord
-│   ├── modules/                # 36 modules fonctionnels
+│   ├── modules/                # 44 modules fonctionnels
 │   │   ├── editor/             # Éditeur de thèse (TipTap)
-│   │   ├── ai-writing/         # 21 modes d'écriture IA
+│   │   ├── ai-writing/         # 26 modes d'écriture IA
 │   │   ├── thesis-rag/         # RAG contextuel
 │   │   ├── references/         # Gestion bibliographique
 │   │   └── ...                 # Autres modules

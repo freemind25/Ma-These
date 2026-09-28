@@ -726,3 +726,59 @@ Work Log:
 
 Stage Summary:
 - HEAD = origin/main = 98ffcd7 (docs livrés) ; incident consigné ; lignes rouges intactes.
+
+---
+Task ID: 1-c
+Agent: Explore (méthodologie+vérification)
+Task: Exploration code des modules méthodologie/vérification pour notice d'utilisation exhaustive
+
+Work Log:
+- Lecture intégrale des 11 pages de modules (11 053 lignes) : methodology, analyse-champ-recherche, outils-slr, verification-methodo, verification-carto, generation-hypotheses, verification-coherence, alignement-preuves, experimentations, routesme, paper2code — onglets, champs, boutons, libellés exacts extraits du code.
+- API connexes inspectées : verification-carto/route (completude rule-based + questionneur socratique + save-session + geo-enrich), types-analyse/seed (référentiel « Diagnostic morphologique complet », 4 phases), geo-mcp (9 outils MCP géo intégrés), coherence-check (truthmark = score ≥ 70), alignement-preuves (densité de preuves/cit./1000 mots), paper2code/generate (pipeline 3 étapes streaming).
+- Données structurées relevées : COHERENCE_CATEGORIES (6 catégories, 22 contrôles), AUDIT_SECTIONS (8 sections × 4 critères pondérés), PICO/PICOS + CASP/JBI + 14 champs d'extraction SLR, statuts/verdicts expérimentations, 4 modèles simulés + 8 templates RoutesMe.
+- Libellés sidebar confirmés dans app-store.ts (section « Méthodologie & Vérification » + « IA & Outils ») ; worklog précédent (docs-presentation-notice-1b) lu pour contexte.
+
+Stage Summary:
+- Rapport d'exploration détaillé (module par module, libellés exacts) remis à l'orchestrateur pour la réécriture exhaustive de docs/NOTICE-UTILISATION.md ; aucun fichier modifié hors worklog.
+
+---
+Task ID: 1-a
+Agent: Explore (rédaction+structure)
+Task: Exploration code des modules rédaction/structure pour notice d'utilisation exhaustive
+
+Work Log:
+- Lu worklog.md (fin) puis parcouru intégralement le code de 11 modules : editor/ (9 fichiers incl. tiptap, historique+diff mot à mot, prédiction IA Tab/Esc, autosave 2500 ms), ai-writing/ (26 modes dans src/data/ai-writing-modes.ts + Chat Directeur), thesis-rag/ (indexation chunks + chat sourcé), harper/ (6 onglets), grammaire/, phrasebook/ (101 phrases, 7 sections, 10 fonctions), deblocage-ecriture/ (4 onglets), auto-edition/ (4 onglets, 8C exacts + 3 outils publication), cadrage/ (12 champs exacts, verrouillage, versions), thesis-plan/ (2 modes de structure, template LaTeX 8 disciplines), feuille-route-agile/ (kanban 4 colonnes, 5 phases).
+- Documenté pour chaque module : libellés exacts de boutons/champs/placeholders, listes déroulantes et valeurs, flux pas-à-pas, garde-fous (min 20 caractères, max 50 000, avant 3 champs…), états vides, raccourcis clavier, endpoints API et persistance (Prisma vs état session vs localStorage).
+- Exploré src/components/dashboard/ (stats /api/stats, 4 actions rapides, parcours 5 étapes avec conditions de cochage, 14 modules cartes, Ressources pédagogiques 2 infographies) et src/components/layout/data-banner.tsx (bandeau transparence fournisseur IA, clé localStorage thesisframe-d4-banner-dismissed).
+- Vérifié les points transverses : withAiConfig (enveloppe _aiConfig sans clé), persistance zustand « thesisframe-app-store », config IA localStorage « thesisframe-ai-config » lue par la prédiction.
+- Zéro modification de code ; seul worklog.md complété (append).
+
+Stage Summary:
+- Rapport d'exploration exhaustif produit (module par module, libellés entre guillemets) prêt pour la rédaction de la NOTICE-UTILISATION ; aucun fichier de code touché, worklog complété en append.
+
+---
+Task ID: 1-d
+Agent: Explore (outils+export+shell)
+Task: Exploration code des modules outils/export et du shell (header, settings, sidebar) pour notice d'utilisation exhaustive
+
+Work Log:
+- Exploré 9 modules en lecture seule (ai-tools, apinex, diagrammes, apa-composer, livres-competences, traducteur, export-pdf, export-docx, equilibre-chapitres) + routes API associées (apinex/*, translate, export-docx, ai-writing) : onglets, libellés exacts, options, flux, garde-fous, messages extraits du code réel.
+- Shell audité : app-header (fil d'Ariane « Ma Thèse », menu Aide & Support, dialogue Fournisseur IA), app-sidebar (recherche, 6 catégories + _pinned, badges IA/RAG/API/OA, toggle thème), app-footer, data-banner, about-dialog, shortcuts-dialog, usage-guide-dialog (8 catégories/30 sections).
+- Liste fournisseurs IA extraite de src/lib/ai/ai-types.ts : 26 IDs (ALL_PROVIDER_IDS), 6 catégories UI, 22 fournisseurs avec accès gratuit identifiés ; clés stockées en cookie httpOnly via /api/ai-config (jamais en localStorage) ; circuit breaker serveur documenté (zai-client.ts : 3 échecs → open, 30 s).
+- Incohérences version détectées pour la notice : footer « v1.2.0 », guide intégré « v1.4.0 », tauri.conf 1.10.8 ; guide intégré annonce « 24 fournisseurs » (code = 26). Aucune modification de code.
+
+Stage Summary:
+- Rapport d'exploration exhaustif (libellés exacts entre guillemets) remis pour la réécriture de docs/NOTICE-UTILISATION.md ; zéro fichier modifié à part cet append au worklog.
+---
+Task ID: 1-b
+Agent: Explore (recherche+sources)
+Task: Exploration code des modules recherche pour notice d'utilisation exhaustive
+
+Work Log:
+- Lu la fin du worklog (contexte docs-presentation-notice-1) puis exploré les 12 fichiers des 11 modules ciblés (8 596 lignes) : references, articles, academic-db (+arxiv-search), journaux-oa, recherche-plein-texte, theses-en-ligne, explorateur-theses, veille-academique, onglet-recherche, bibliotheque, verification-citations.
+- Vérifié les routes API associées : /api/references (import 10 Mo max / 500 refs max, détection auto de format ; export bibtex 404 si vide), /api/journaux-oa (OpenAlex+DOAJ en parallèle, warnings par source), /api/theses-en-ligne (HAL, codes domaine taxonomie réelle A.1), /api/theses/* (stats, search, detail, persons via theses.fr), /api/citation-check (5 registres, timeout 15 s, rétractations), /api/stats-recompute (statcheck déterministe sans IA), /api/books (3 API réelles : Open Library, Gutendex, Standard Ebooks), /api/arxiv/search (Atom export.arxiv.org), /api/veille (worker autoCheck 6 h confirmé dans lib/jobs/worker.ts).
+- Capturé les libellés exacts (boutons, champs, selects, états vides, toasts, raccourci « M » de la veille), les flux pas-à-pas, la persistance (Prisma vs état mémoire) et les exports (references.bib, CSV journaux) pour la rédaction du manuel.
+- Points saillants relevés pour la notice : checklist Articles NON persistée (useState) ; Références sans collections/tags et sans fetch DOI/ISBN automatique ; 27 bases en 5 catégories ; 7 sources Bibliothèque dont 3 avec API (Gutenberg, Open Library, Standard Ebooks) ; verdicts Vérification Citations = verified/unverified/retracted/mismatch ; Onglet Recherche avec onglet auto-créé « Recherche principale » et sauvegarde debounce 1,5 s.
+
+Stage Summary:
+- Rapport d'exploration exhaustif livré (module par module, libellés entre guillemets, sources externes, replis en cas d'échec, garde-fous) — prêt pour réécrire docs/NOTICE-UTILISATION.md ; zéro modification de code, aucun commit.

@@ -474,3 +474,34 @@ Pipeline PDF (skill pdf, route Report/ReportLab) :
 
 README : nouvelle section « Documentation » (liens MD + PDF + docs existants + rappel guide intégré).
 Lignes rouges : 0 diff. Champ : docs/ + README.md uniquement (aucun code applicatif).
+
+## Suivi du 2026-09-28 (13:08-13:52) — Notice d'utilisation réécrite en manuel exhaustif (retour propriétaire : « trop sommaire »)
+
+Ordre : « votre manuel d'utilisation est trop sommaire et n'explique pas toutes les fonctionnalités et comment les utiliser. veuillez faire l'effort de plus de générosité ».
+
+Exploration du code réel (4 agents parallèles, rapports Task 1-a..1-d dans worklog.md) :
+- 44 entrées de NAVIGATION_ITEMS (src/lib/stores/app-store.ts l.82-410) documentées une par une ; 26 modes d'écriture comptés dans src/data/ai-writing-modes.ts ; 26 fournisseurs dans ALL_PROVIDER_IDS (src/lib/ai/ai-types.ts l.324-332) dont 22 gratuits.
+- Corrections factuelles apportées au passage (MD + README + NOTE-PRESENTATION) : 34→44 modules, 21→26 modes, 22/16→26/22 fournisseurs, « drag-and-drop »→« boutons fléchés » (éditeur et plan), « import DOI/ISBN/URL automatique »→« import par fichier + saisie manuelle » (conforme au code).
+
+Livrables :
+```
+docs/NOTICE-UTILISATION.md  215 -> 717 lignes (13 sections, ~60 tableaux/listes, 44 modules pas à pas)
+docs/NOTICE-UTILISATION.pdf 191 Ko / 9 pages -> 254 Ko / 22 pages (sommaire 2 p. romain, corps 19 p. arabe)
+docs/pdf-sources/gen_notice.py + merge_notice.py (pipeline PDF versionné, en plus des 2 covers HTML)
+README.md : ligne Documentation notice actualisée ; NOTE-PRESENTATION.md : compteurs corrigés
+```
+
+Pipeline PDF (regénération complète, mêmes garde-fous que 10:33) :
+```
+13:22 poster_validate check-html cover-notice-utilisation.html -> PASS ; cover_validate.js PASS (0 chevauchement)
+13:23 html2poster.js --width 794px -> cover-notice.pdf (92,5 Ko)
+13:24 python3 .pdfbuild/gen_notice.py -> notice-body.pdf (TocDocTemplate + multiBuild, body_start=3 ; DejaVu ; palette Template 07 ; PageLabelCanvas romain/arabe)
+13:30 merge + scale_to A4 exact (595,276 x 841,890 pt) -> docs/NOTICE-UTILISATION.pdf (22 pages)
+13:31 font.check : 0 problème ; pages.clean : 0 page blanche ; pdf_qa --skip-cover : PASS (après 2 allers-retours : normalisation taille de couverture + tiret cadratin p.20 neutralisé dans le MD)
+Sommaire cliquable vérifié : 98 liens sur la page i ; numéros du sommaire = pagination arabe du corps (contrôle pypdf).
+Contrôle visuel : 6 pages rendues (couverture, sommaire i, corps, tableaux 8C/Export).
+```
+
+Emoji : 6 symboles neutralisés dans le MD (👁→texte, 🌐/🎓→libellés sans emoji, ⭐/✅/💡→équivalents) — règle anti-tofu ReportLab, lisibilité lecteurs d'écran inchangée.
+
+Lignes rouges : 0 diff (13:45). Champ : docs/ + README.md uniquement (aucun code applicatif).
