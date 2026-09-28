@@ -76,9 +76,13 @@ git diff HEAD --stat -- src/app/api/theses-en-ligne/search/route.ts src/app/api/
 ## Suivi
 
 ```
-15:59  git fetch origin (sans identifiants) → fatal: could not read Username (attendu) ;
-       HEAD = dd83ae5 = dernier état connu d'origin/main (commit worklog docs-notice-exhaustive-1)
-push   [à compléter au moment du push — askpass éphémère, ls-remote de contrôle, script supprimé]
+15:59  git fetch origin (sans identifiants) → fatal: could not read Username (attendu)
+16:04  push avec askpass éphémère (mode 700, supprimé après usage) :
+       origin/main = dd83ae5 | HEAD = b1cdba6 → merge-base --is-ancestor OK (« FAST-FORWARD OK »)
+       git push origin main → « dd83ae5..b1cdba6  main -> main »
+       git ls-remote origin refs/heads/main → b1cdba626357784cfd1a73e7264c32f884252aaa
+       Commits poussés : b358b60 (feat dashboard), 094edd8 (docs ia), b1cdba6 (docs sdd)
+16:0x  consignation du push : présent § Suivi + FICHE_SYNTHESE.md (session du 2026-09-28)
 ```
 
 ## Écarts signalés (Article 4) — non corrigés, hors périmètre
