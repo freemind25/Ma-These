@@ -33,6 +33,7 @@ model Thesis {
   parts            Part[]
   cadrages         ThesisCadrage[]
   doctoralToolbox  DoctoralToolbox?
+  soutenancePrep   SoutenancePrep?
   researchTabs     ResearchTab[]
 }
 
@@ -157,6 +158,25 @@ model DoctoralToolbox {
   updatedAt   DateTime @updatedAt
 
   thesis      Thesis   @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+
+  @@index([thesisId])
+}
+
+// ═══════════════════════════════════════
+// SOUTENANCE — Persistance 1:1 avec Thesis
+// ═══════════════════════════════════════
+
+model SoutenancePrep {
+  id                String   @id @default(cuid())
+  thesisId          String   @unique
+  slides            String   @default("[]")        // JSON : [{ title, points: [] }]
+  speech            String   @default("")          // Discours de soutenance (texte)
+  speechDurationMin Int      @default(15)          // Durée cible : 10 | 15 | 20
+  questions         String   @default("[]")        // JSON : [{ family, items: [{ question, angle }] }]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  thesis            Thesis   @relation(fields: [thesisId], references: [id], onDelete: Cascade)
 
   @@index([thesisId])
 }
