@@ -39,6 +39,8 @@ import {
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas-pro';
 import { toast } from 'sonner';
+import { collectFootnotes, replaceCitationsWithMarks, stripHtml, type CitationReference } from "@/lib/citations";
+import { formatReferenceApa } from "@/lib/apa-format";
 
 // ═══════════════════════════════════════════════════
 // Types
@@ -75,6 +77,7 @@ interface ExportOptions {
   includePageNumbers: boolean;
   includeToc: boolean;
   includeCoverPage: boolean;
+  includeFootnotes: boolean;
 }
 
 interface ThesisMetadata {
@@ -175,9 +178,28 @@ export function ExportPdfPage() {
     includePageNumbers: true,
     includeToc: true,
     includeCoverPage: true,
+    includeFootnotes: false,
   });
 
+  const [references, setReferences] = useState<CitationReference[]>([]);
+
   const [pdfGenerating, setPdfGenerating] = useState(false);
+
+  // Fetch references when footnotes option is enabled (global library)
+  useEffect(() => {
+    if (!options.includeFootnotes || references.length > 0) return;
+    async function fetchReferences() {
+      try {
+        const res = await fetch("/api/references");
+        if (!res.ok) return;
+        const json = await res.json();
+        setReferences(json.data || []);
+      } catch {
+        // Silencieux : sans références, aucune note n'est collectée
+      }
+    }
+    fetchReferences();
+  }, [options.includeFootnotes, references.length]);
 
   const previewRef = useRef<HTMLIFrameElement>(null);
 
@@ -352,9 +374,20 @@ export function ExportPdfPage() {
       `;
     }
 
+    // Notes de bas de page — collecte des citations reconnues (une note par référence,
+    // ordre de première apparition ; section « Notes » en fin de document)
+    const footnoteEntries =
+      options.includeFootnotes && references.length > 0
+        ? collectFootnotes(
+            selectedChapters.map((ch) => ch.plainText || stripHtml(ch.content || "")),
+            references
+          )
+        : [];
+
     // Chapter content
     selectedChapters.forEach((ch) => {
       const contentHtml = ch.content || `<p><em>Ce chapitre ne contient pas encore de contenu.</em></p>`;
+      const markedHtml = footnoteEntries.length > 0 ? replaceCitationsWithMarks(contentHtml, footnoteEntries) : contentHtml;
       bodyContent += `
         <div class="chapter" style="page-break-before: always;">
           <h2 style="
@@ -369,11 +402,32 @@ export function ExportPdfPage() {
             ${ch.title}
           </h2>
           <div class="chapter-content" style="font-size: ${fs}px; line-height: ${lh}; color: #333;">
-            ${contentHtml}
+            ${markedHtml}
           </div>
         </div>
       `;
     });
+
+    // Section « Notes » en fin de document (formes PDF — les exposants renvoient ici)
+    if (footnoteEntries.length > 0) {
+      bodyContent += `
+        <div class="notes-section" style="page-break-before: always;">
+          <h2 style="
+            font-size: ${fs * 1.6}px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #1a1a1a;
+            color: #1a1a1a;
+          ">Notes</h2>
+          <ol style="font-size: ${fs}px; line-height: ${lh}; color: #333; padding-left: 24px;">
+            ${footnoteEntries
+              .map((e) => `<li style="margin-bottom: 10px;">${formatReferenceApa(e.reference)}</li>`)
+              .join("")}
+          </ol>
+        </div>
+      `;
+    }
 
     const fullHtml = `<!DOCTYPE html>
 <html lang="fr">
@@ -438,6 +492,7 @@ export function ExportPdfPage() {
       }
     }
     ` : ""}
+    .footnote-ref { font-size: 0.75em; vertical-align: super; }
     @media print {
       .no-print { display: none !important; }
     }
@@ -449,7 +504,7 @@ export function ExportPdfPage() {
 </html>`;
 
     return fullHtml;
-  }, [options, metadata, selectedChapters]);
+  }, [options, metadata, selectedChapters, references]);
 
   // Update preview
   useEffect(() => {
@@ -1011,6 +1066,20 @@ export function ExportPdfPage() {
                           </span>
                         </div>
                       </label>
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <Checkbox
+                          checked={options.includeFootnotes}
+                          onCheckedChange={(checked) =>
+                            setOptions((o) => ({ ...o, includeFootnotes: !!checked }))
+                          }
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-sm">Notes de bas de page</span>
+                          <span className="text-xs text-muted-foreground">
+                            Citations reconnues (Auteur, année) annotées d'un exposant, références listées en fin de document
+                          </span>
+                        </div>
+                      </label>
                     </div>
                   </CardContent>
                 </Card>
@@ -1158,6 +1227,12 @@ export function ExportPdfPage() {
                     <span className="text-xs text-muted-foreground">N° pages</span>
                     <Badge variant={options.includePageNumbers ? "default" : "outline"} className="text-[10px] h-5 ml-auto">
                       {options.includePageNumbers ? "Oui" : "Non"}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-lg border p-3">
+                    <span className="text-xs text-muted-foreground">Notes</span>
+                    <Badge variant={options.includeFootnotes ? "default" : "outline"} className="text-[10px] h-5 ml-auto">
+                      {options.includeFootnotes ? "Oui" : "Non"}
                     </Badge>
                   </div>
                 </div>
