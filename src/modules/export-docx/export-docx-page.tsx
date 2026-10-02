@@ -52,6 +52,7 @@ interface DocxOptions {
   includeCover: boolean;
   includeToc: boolean;
   includeReferences: boolean;
+  includeFootnotes: boolean;
   lineSpacing: "1.15" | "1.5" | "2.0";
   fontSize: "11" | "12" | "13";
   margins: "normal" | "narrow" | "wide";
@@ -101,6 +102,7 @@ export function ExportDocxPage() {
     includeCover: true,
     includeToc: true,
     includeReferences: true,
+    includeFootnotes: false,
     lineSpacing: "1.5",
     fontSize: "12",
     margins: "normal",
@@ -330,6 +332,16 @@ export function ExportDocxPage() {
                     <div>
                       <p className="text-sm font-medium">Références</p>
                       <p className="text-xs text-muted-foreground">Bibliographie APA</p>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-2.5 rounded-lg border p-3 cursor-pointer hover:bg-muted/50 transition-colors">
+                    <Checkbox
+                      checked={options.includeFootnotes}
+                      onCheckedChange={() => toggleOption("includeFootnotes")}
+                    />
+                    <div>
+                      <p className="text-sm font-medium">Notes de bas de page</p>
+                      <p className="text-xs text-muted-foreground">Citations reconnues (Auteur, année) — référence complète APA en note</p>
                     </div>
                   </label>
                 </div>
