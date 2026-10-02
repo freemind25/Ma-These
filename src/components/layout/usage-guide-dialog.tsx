@@ -45,6 +45,7 @@ import {
   ListTree,
   SearchIcon,
   ClipboardCheck,
+  PenTool,
   PanelLeftOpen,
   Bot,
   ArrowRight,
@@ -384,6 +385,62 @@ const GUIDE_CATEGORIES: GuideCategory[] = [
                 ))}
               </div>
             </div>
+          </div>
+        ),
+      },
+      {
+        id: "brouillon-chapitre",
+        title: "Brouillon de chapitre (IA)",
+        icon: PenTool,
+        keywords: [
+          "brouillon",
+          "chapitre",
+          "generation chapitre",
+          "redaction chapitre",
+          "ia",
+          "references",
+          "citations",
+          "insertion",
+          "premier jet",
+        ],
+        content: (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Le module <strong>Brouillon de chapitre</strong> produit un premier jet
+              structuré d&apos;un chapitre entier — introduction, sections avec sous-titres,
+              conclusion — ancré dans le titre du chapitre, le cadrage actif et les titres
+              des autres chapitres de votre thèse.
+            </p>
+            <div className="rounded-lg border bg-muted/50 p-3">
+              <p className="text-sm font-medium">Flux pas à pas :</p>
+              <ul className="mt-1.5 space-y-1 text-xs text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <ArrowRight className="h-3 w-3 shrink-0" /> Choisissez le chapitre cible et
+                  la longueur visée (préremplie avec l&apos;objectif du chapitre, sinon 2 000 mots)
+                </li>
+                <li className="flex items-center gap-2">
+                  <ArrowRight className="h-3 w-3 shrink-0" /> Sélectionnez les références de
+                  votre bibliothèque autorisées (recherche incluse, 20 maximum) ; sans
+                  sélection, aucune citation n&apos;est produite
+                </li>
+                <li className="flex items-center gap-2">
+                  <ArrowRight className="h-3 w-3 shrink-0" /> Lancez « Générer le brouillon » :
+                  le texte s&apos;écrit en direct et « Arrêter » interrompt la génération
+                </li>
+                <li className="flex items-center gap-2">
+                  <ArrowRight className="h-3 w-3 shrink-0" /> Vérifiez l&apos;aperçu et le
+                  compteur « X mots / cible Y », puis « Copier » ou « Insérer dans le chapitre »
+                </li>
+              </ul>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              <strong>Garde-fou à l&apos;insertion :</strong> une confirmation rappelle que le
+              contenu actuel du chapitre sera remplacé et qu&apos;une version est
+              automatiquement sauvegardée dans l&apos;historique du chapitre. Les citations
+              proviennent uniquement des références que vous avez choisies, au format
+              « (Auteur, année) ». Le brouillon n&apos;est pas persisté (mémoire de session) :
+              l&apos;artefact utile est le chapitre inséré, en base.
+            </p>
           </div>
         ),
       },

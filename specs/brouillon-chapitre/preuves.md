@@ -46,4 +46,11 @@ Progression : [T4] navigation enregistrée (sidebar Rédaction, badge IA) — co
 - 17:27/17:28 — `bunx vitest run` → 1506/1506 verts (65 fichiers préexistants + 2 nouveaux en T3 ; la page n'ajoute pas de test, conforme tasks.md).
 - Page créée (~480 lignes) : états vides sans thèse/sans chapitres (aucun appel IA) ; Select chapitre (présélection 1er chapitre) ; Input longueur cible préremplie (targetWordCount si ≥ 500 sinon 2000) ; recherche + liste Checkbox de références (GET /api/references, max 20, max-h-96 overflow-y-auto) ; « Générer le brouillon » (SSE live) / « Arrêter » (AbortController) ; aperçu ReactMarkdown + Badge compteur « X mots / cible Y » (même comptage que l'éditeur) ; chips de rappel des références ; « Copier » ; « Insérer dans le chapitre » → AlertDialog (texte contractuel : remplacement + version automatique) → markdownToHtml + htmlToPlainText + countWords → useUpdateChapter (PUT /api/chapters/[id], invalidations thesisKeys.all) → toast succès mentionnant l'historique de versions ; toasts erreurs (génération, insertion) ; libellés 100 % français, aucun emoji, composants shadcn.
 
-Progression : [T5] page créée, lint baseline, suite verte.
+Progression : [T5] page créée, lint baseline, suite verte — commit 96340b0.
+
+## T6 — Entrée dans le guide intégré (usage-guide-dialog.tsx)
+
+- 17:30 — `bun run lint` → `✖ 231 problems (0 errors, 231 warnings)` (baseline exacte).
+- Section « Brouillon de chapitre (IA) » ajoutée dans la catégorie « Assistants IA », juste après « Assistant IA d'écriture » et avant « Mon IA de thèse (RAG) » : description, flux pas-à-pas (chapitre cible + longueur, références autorisées 20 max, génération en direct + Arrêter, aperçu + compteur + Copier / Insérer), garde-fou d'insertion (remplacement + version automatique), règle de citations « (Auteur, année) », persistance (brouillon en session, chapitre en base). Import `PenTool` ajouté aux icônes lucide du dialog. Mots-clés de recherche inclus (brouillon, chapitre, premier jet…).
+
+Progression : [T6] entrée guide intégré ajoutée.
