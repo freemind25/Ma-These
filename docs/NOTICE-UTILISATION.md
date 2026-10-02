@@ -336,6 +336,23 @@ Module **Auto-édition 8C** (badge IA) — d'après Gastel & Day. **4 onglets** 
 3. **« Checklist article »** — 7 points de contrôle de soumission (titre, résumé, introduction, méthode reproductible, ordre des résultats, discussion, auteurs).
 4. **« Langue seconde »** — analyse de la structure des paragraphes : chaque paragraphe s'ouvre-t-il sur une phrase d'ancrage directe ? (min. 50 caractères).
 
+### 5.8 Brouillon de chapitre — un premier jet structuré, chapitre par chapitre
+
+Module **Brouillon de chapitre** (badge IA, catégorie Rédaction). Là où l'Assistant IA assiste à l'échelle d'un passage, ce module produit un premier jet **d'un chapitre entier** : introduction du chapitre, sections de développement avec sous-titres, conclusion. Le brouillon est ancré dans le titre du chapitre, le cadrage actif et les titres des autres chapitres de votre thèse. Les citations proviennent **uniquement des références que vous avez choisies** dans votre bibliothèque, au format « (Auteur, année) » ; sans sélection, aucune citation n'est produite — aucune référence inventée.
+
+**Flux pas à pas :**
+
+1. Ouvrez **« Brouillon de chapitre »** (catégorie Rédaction). Sans thèse active ou sans chapitre, un état vide clair s'affiche (créez/sélectionnez la thèse ou ajoutez des chapitres d'abord) — aucun appel IA n'est lancé.
+2. **« Chapitre cible »** : choisissez le chapitre dans le menu déroulant (le total de mots actuel du chapitre est rappelé le cas échéant).
+3. **« Longueur cible (mots) »** : préremplie avec l'objectif du chapitre s'il est défini et ≥ 500 mots, sinon 2 000 ; modifiable de 300 à 8 000.
+4. **« Références autorisées (0/20) »** : recherchez par titre, auteur ou année, puis cochez jusqu'à **20 références** de votre bibliothèque (liste déroulante avec défilement). Ce sont les seules références citables du brouillon.
+5. **« Générer le brouillon »** : le texte s'écrit en direct dans l'aperçu ; **« Arrêter »** interrompt à tout moment (le brouillon partiel reste affiché et copiable).
+6. Vérifiez l'aperçu mis en forme (introduction, sections, conclusion) et le compteur **« X mots / cible Y »** ; les références sélectionnées restent rappelées sous l'aperçu.
+7. **« Copier »** place le brouillon dans le presse-papiers, ou **« Insérer dans le chapitre »** : une confirmation explicite rappelle que « Le contenu actuel du chapitre sera remplacé. Une version est automatiquement sauvegardée dans l'historique du chapitre. » — confirmez par **« Remplacer le contenu »**.
+8. Après insertion : le chapitre reflète le nouveau contenu (compteur de mots recalculé à l'identique de l'éditeur) et l'état antérieur reste consultable dans l'**historique de versions** du chapitre depuis l'éditeur de thèse.
+
+**Persistance :** le brouillon lui-même vit en mémoire de session (copiez-le avant de quitter le module) ; le contenu inséré est enregistré en base avec l'état antérieur versionné automatiquement par l'historique natif du chapitre.
+
 ---
 
 ## 6. Recherche et sources

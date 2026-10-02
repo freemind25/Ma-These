@@ -53,4 +53,12 @@ Progression : [T5] page créée, lint baseline, suite verte — commit 96340b0.
 - 17:30 — `bun run lint` → `✖ 231 problems (0 errors, 231 warnings)` (baseline exacte).
 - Section « Brouillon de chapitre (IA) » ajoutée dans la catégorie « Assistants IA », juste après « Assistant IA d'écriture » et avant « Mon IA de thèse (RAG) » : description, flux pas-à-pas (chapitre cible + longueur, références autorisées 20 max, génération en direct + Arrêter, aperçu + compteur + Copier / Insérer), garde-fou d'insertion (remplacement + version automatique), règle de citations « (Auteur, année) », persistance (brouillon en session, chapitre en base). Import `PenTool` ajouté aux icônes lucide du dialog. Mots-clés de recherche inclus (brouillon, chapitre, premier jet…).
 
-Progression : [T6] entrée guide intégré ajoutée.
+Progression : [T6] entrée guide intégré ajoutée — commit 93b264e.
+
+## T7 — Section du module dans docs/NOTICE-UTILISATION.md
+
+- 17:32 — insertion de la sous-section **« 5.8 Brouillon de chapitre — un premier jet structuré, chapitre par chapitre »** en fin de la section 5 « Rédiger avec l'IA » (juste avant « ## 6. Recherche et sources »). Numérotation vérifiée : 5.1-5.7 existants inchangés (insertion en fin de section = aucune renumérotation, aucun lien croisé cassé — même convention que §7.10 Soutenance du cycle 4-a) ; table des matières (niveaux 1-13 uniquement) sans changement.
+- Contenu : positionnement (échelle chapitre vs passage), flux pas-à-pas en 8 étapes avec libellés exacts (« Chapitre cible », « Longueur cible (mots) », « Références autorisées (0/20) », « Générer le brouillon », « Arrêter », « X mots / cible Y », « Copier », « Insérer dans le chapitre », « Remplacer le contenu »), garde-fou de remplacement/version (citation exacte du dialog), règle de citations, persistance (brouillon en session, chapitre en base + historique).
+- `git diff --stat docs/NOTICE-UTILISATION.md` → `1 file changed, 17 insertions(+)` (aucune suppression ; compteurs « 44 modules » et les 26 modes non touchés).
+
+Progression : [T7] section notice ajoutée (§5.8).
