@@ -17,3 +17,9 @@
 
 ## Groupe E — Documentation [DÉPEND DE Groupe C]
 - [ ] T8 — Section du module dans `docs/NOTICE-UTILISATION.md` (onglets, flux, persistance) · preuve : cohérence avec le code réel (compteurs globaux gérés en fin de session par l'orchestrateur).
+
+## Convergence — 2026-10-02
+Critères d'acceptation satisfaits : 12/12 (CA-1.1→1.4, CA-2.1→2.3, CA-3.1→3.3, CA-4.1→4.3 — preuves : tests 1471/1471 à la clôture, 8 captures navigateur dont génération IA réelle des 3 artefacts, persistance prouvée)
+Écarts au plan : aucun fonctionnel ; cache client localStorage en miroir ajouté par l'implémentation (restauration CA-4.1/4.2 renforcée)
+Dette introduite : aucune
+Verdict : **CONVERGÉ** (recette propriétaire en attente)

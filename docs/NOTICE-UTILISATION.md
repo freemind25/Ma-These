@@ -9,7 +9,7 @@
 | **Compléments** | Note de présentation : `docs/NOTE-PRESENTATION.md` · Guide intégré : menu **?** de l'en-tête |
 | **Méthode** | Document rédigé d'après le code source de l'application — les libellés entre guillemets sont ceux affichés à l'écran |
 
-> Cette notice décrit **les 44 modules de l'application, un par un**, avec leur usage pas à pas. Utilisez la table des matières ci-dessous pour naviguer ; dans l'application, la recherche de la barre latérale reste le moyen le plus rapide d'ouvrir un module.
+> Cette notice décrit **les 46 modules de l'application, un par un**, avec leur usage pas à pas. Utilisez la table des matières ci-dessous pour naviguer ; dans l'application, la recherche de la barre latérale reste le moyen le plus rapide d'ouvrir un module.
 
 ---
 
@@ -68,7 +68,7 @@ Au premier démarrage, le **Tableau de bord** affiche :
 
 | Zone | Rôle |
 |---|---|
-| **Barre latérale gauche** | Navigation : **44 modules** organisés en **7 catégories** (Principal, Rédaction, Structure & Planification, Recherche & Sources, Méthodologie & Vérification, IA & Outils, Export), avec **champ de recherche** « Rechercher un module… » filtrant sur les noms et descriptions |
+| **Barre latérale gauche** | Navigation : **46 modules** organisés en **7 catégories** (Principal, Rédaction, Structure & Planification, Recherche & Sources, Méthodologie & Vérification, IA & Outils, Export), avec **champ de recherche** « Rechercher un module… » filtrant sur les noms et descriptions |
 | **En-tête** | Bouton d'ouverture/fermeture de la barre latérale (Ctrl+B), fil d'Ariane « Ma Thèse › module courant », menu **Aide** (?), menu **Paramètres** (engrenage) |
 | **Contenu central** | Zone de travail du module actif |
 | **Pied de page** | Logo, version et rappel du produit |

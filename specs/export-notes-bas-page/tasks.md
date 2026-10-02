@@ -14,3 +14,9 @@
 
 ## Groupe D — Documentation [DÉPEND DE Groupes B+C]
 - [ ] T7 — Mention de l'option dans `docs/NOTICE-UTILISATION.md` §9.1/§9.2 · preuve : cohérence code.
+
+## Convergence — 2026-10-02
+Critères d'acceptation satisfaits : 9/9 (CA-1.1→1.5 prouvés par curl + unzip DOCX : note unique partagée, citation inconnue intacte, option OFF byte-identique 7399==7399, gras préservé ; CA-2.1→2.4 : option UI vérifiée navigateur sur les 2 pages, logique exposants+section Notes couverte par 25 tests unitaires, les 2 voies PDF consomment le même HTML)
+Écarts au plan : aucun fonctionnel ; limite honnête — le rendu PDF avec citations réelles n'a pas été exercé de bout en bout en navigateur (chapitre de recette sans citation reconnue) ; la logique est prouvée par tests unitaires et le chemin HTML est commun aux 2 voies
+Dette introduite : aucune nouvelle ; écart préexistant signalé (titres DOCX sans HeadingLevel — TDM Word, hors périmètre)
+Verdict : **CONVERGÉ** (recette propriétaire en attente)

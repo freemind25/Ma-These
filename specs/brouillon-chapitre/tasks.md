@@ -14,3 +14,9 @@
 
 ## Groupe D — Documentation [DÉPEND DE Groupe C]
 - [ ] T7 — Section du module dans `docs/NOTICE-UTILISATION.md` · preuve : cohérence code (compteurs globaux en fin de session).
+
+## Convergence — 2026-10-02
+Critères d'acceptation satisfaits : 11/11 (CA-1.1→1.4, CA-2.1→2.3, CA-3.1→3.4 — preuves : tests 1506/1506, génération SSE réelle en direct + Arrêter, aperçu « X mots / cible Y », insertion après AlertDialog → chapitre 1 957 mots/cible 2 000, 2 versions dans l'historique dont l'état antérieur, copie)
+Écarts au plan : aucun fonctionnel ; preuve navigateur de l'insertion complétée par l'orchestrateur (l'agent délégué avait été coupé pendant la recette) ; incident environnemental SQLite readonly (journal chaud + double serveur de dev) résolu par redémarrage propre — sans rapport avec le code
+Dette introduite : aucune
+Verdict : **CONVERGÉ** (recette propriétaire en attente)

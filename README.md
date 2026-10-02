@@ -28,7 +28,7 @@
 ## Fonctionnalités principales
 
 ### Rédaction assistée par IA
-- **44 modules fonctionnels** couvrant l'ensemble du parcours doctoral
+- **46 modules fonctionnels** couvrant l'ensemble du parcours doctoral
 - **26 modes d'écriture IA** : rédaction scientifique, revue de littérature, reformulation, résumé, préparation de soutenance, vérification de sources, argumentation bilatérale, et plus
 - **Suggestion intelligente de modes** : détection automatique du meilleur mode selon le contenu du prompt
 - **Deep Research** : recherche approfondie avec navigation web et synthèse
@@ -103,7 +103,7 @@ Guides, fiches de lecture et infographies sélectionnés, également disponibles
 | Document | Formats |
 |---|---|
 | **Note de présentation** (produit, publics, fonctionnalités, points forts) | [Markdown](docs/NOTE-PRESENTATION.md) · [PDF](docs/NOTE-PRESENTATION.pdf) |
-| **Notice d'utilisation** (manuel exhaustif : les 44 modules pas à pas, raccourcis clavier, persistance des données, FAQ, glossaire) | [Markdown](docs/NOTICE-UTILISATION.md) · [PDF](docs/NOTICE-UTILISATION.pdf) |
+| **Notice d'utilisation** (manuel exhaustif : les 46 modules pas à pas, raccourcis clavier, persistance des données, FAQ, glossaire) | [Markdown](docs/NOTICE-UTILISATION.md) · [PDF](docs/NOTICE-UTILISATION.pdf) |
 | Exploitation serveur (arrêts/redémarrages, procédures) | [Markdown](docs/EXPLOITATION-SERVEUR.md) |
 | Architecture de connaissance | [Markdown](docs/ARCHITECTURE-CONNAISSANCE.md) |
 
@@ -137,7 +137,7 @@ ma-these/
 │   │   ├── ui/                 # 40+ composants shadcn/ui
 │   │   ├── layout/             # Header, sidebar, footer, dialogs
 │   │   └── dashboard/          # Composants du tableau de bord
-│   ├── modules/                # 44 modules fonctionnels
+│   ├── modules/                # 46 modules fonctionnels
 │   │   ├── editor/             # Éditeur de thèse (TipTap)
 │   │   ├── ai-writing/         # 26 modes d'écriture IA
 │   │   ├── thesis-rag/         # RAG contextuel

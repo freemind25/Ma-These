@@ -57,7 +57,7 @@ src/
 │   ├── ui/                 # 40+ composants shadcn/ui (NE PAS MODIFIER)
 │   ├── layout/             # Sidebar, header, footer, dialogs
 │   └── dashboard/          # Widgets du tableau de bord
-├── modules/                # 36 modules fonctionnels (1 dossier = 1 module)
+├── modules/                # 46 modules fonctionnels (1 dossier = 1 module)
 │   ├── editor/             # Éditeur TipTap + auto-save + prediction IA
 │   ├── ai-writing/         # 21 modes d'écriture IA + streaming
 │   ├── thesis-rag/         # RAG contextuel sur la thèse
@@ -238,7 +238,7 @@ src/lib/ai/
 
 ---
 
-## 36 modules fonctionnels
+## 46 modules fonctionnels
 
 | # | Module | Dossier | Catégorie sidebar |
 |---|--------|---------|---------------------|

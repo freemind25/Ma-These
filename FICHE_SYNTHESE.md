@@ -193,3 +193,25 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Livrés** : commits b358b60 (feat dashboard), 094edd8 (docs ia), b1cdba6 (docs sdd) + consignation push — poussés dd83ae5..b1cdba6 sur origin/main ; lignes rouges 0 diff avant chaque commit ; upload/ inchangé.
 
 **Points ouverts pour la session suivante** : si le propriétaire préfère l'article Sandelowski en 9 pages verbatim (filigrane inclus), la variante est faisable en un cycle court ; révision du tableau historique des tokens (AGENTS l.170+, ARCHITECTURE §4) à faire lors d'une passe de documentation dédiée ; sécu inchangée — rotation OpenAlex et APINEX en attente côté propriétaire, révocation des clés GitHub transités par chat à opérer.
+
+---
+
+## Session du 2026-10-02 — Cycles SDD n°8-10 : pack-soutenance, brouillon-chapitre, export-notes-bas-page
+
+**Déclencheur** : comparatif TrustMémoireAI (2026-09-19) puis mandat « ok pour vos propositions » — 3 fonctionnalités approuvées, traitées selon le rythme global (specs + plans + exécution enchaînée, précédent veille-check-auto).
+
+**État de convergence** : les 3 cycles **CONVERGÉS** (recette propriétaire en attente).
+
+- `pack-soutenance` : module Soutenance (catégorie Méthodologie, badge IA) — 3 onglets Slides/Discours/Questions du jury, modèle `SoutenancePrep` 1:1, route d'IA dédiée (maxTokens 2500/8000/6000, extraction JSON, normalisation caps), persistance GET/PUT. 9 commits `bf7aa33`..`0172cac`. 65 fichiers/1471 tests à la clôture, 8 captures dont générations IA réelles.
+- `brouillon-chapitre` : module Brouillon de chapitre (Rédaction, badge IA) — route SSE `/api/chapter-draft/stream` (maxTokens 12 000, prompt strict « citer uniquement les références fournies »), convertisseur `src/lib/markdown-to-html.ts` (liste blanche), aperçu + insertion après confirmation (remplacement, version native). 8 commits `f6680e6`..`e9b3e57`. 67/1506. Insertion réellement prouvée : 1 957 mots, 2 versions d'historique.
+- `export-notes-bas-page` : notes de bas de page DOCX (vraies notes Word, `Document({footnotes})`, ids ≥ 1, une note par référence, option OFF byte-identique) + PDF (exposants + section « Notes » fin de document). Bibliothèques partagées `src/lib/citations.ts` (adaptée d'alignement-preuves, module non retouché) et `src/lib/apa-format.ts`. 7 commits `6c403ff`..`f319bc2` + docs. 68/1531. Preuve DOCX par unzip (footnotes.xml, 2 renvois même note, citation inconnue intacte).
+
+**Compteurs** : 44 → **46 modules** partout (README ×3, NOTICE ×2, NOTE-PRESENTATION, AGENTS ×2 qui restait à « 36 » obsolète).
+
+**Décisions** : délégation d'implémentation aux agents spécialisés (T4-a/T4-b) avec consignation anticipée anti-coupure ; reprise orchestrateur sur les fins de cycles coupées par délai (T4-c : T4-T7). Compte rendu par groupe dans chaque preuves.md.
+
+**Incidents** : (1) SQLite « readonly database » (1032) sur le serveur de dev de longue date — journal chaud + double serveur concurrent ; résolu par purge des journaux + redémarrage unique ; sans rapport avec le code. (2) Chapitre 1 de la thèse de démonstration utilisé comme cible de recette : le contenu préalable (1 983 caractères de type brouillon IA, déjà présent avant la session — prouvé par git 0b27f0c) est récupérable dans l'historique git de db/custom.db ; l'état actuel (brouillon de recette, 1 957 mots) reste démonstratif.
+
+**Résidus signalés (hors périmètre)** : références de test d'août en base (« Test Reference for E2E Testing », « Test Reference T4 Persistence ») ; titres DOCX sans HeadingLevel (TDM Word) ; PDF de la notice non régénéré après l'ajout des sections 5.8/7.10 et des mentions d'options (pipeline docs/pdf-sources disponible).
+
+**Points ouverts** : recette propriétaire des 3 modules (cases tasks.md non cochées — cochées après acceptation) ; rotation OpenAlex et APINEX toujours en attente ; révocation des clés GitHub transités par chat.

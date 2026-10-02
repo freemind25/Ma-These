@@ -20,7 +20,7 @@ Le parcours doctoral est fragmenté : le candidat jongle entre un traitement de 
 
 ## 3. La solution
 
-Ma Thèse réunit dans une seule application cohérente **44 modules** organisés en 7 familles, autour d'un cœur central : **votre thèse**. L'IA n'y est pas un gadget : elle est contextuelle (elle lit votre propre travail), paramétrable (26 fournisseurs, dont 22 gratuits) et surtout **vérifiée** — des modules entiers sont consacrés au contrôle de cohérence méthodologique, cartographique et bibliographique.
+Ma Thèse réunit dans une seule application cohérente **46 modules** organisés en 7 familles, autour d'un cœur central : **votre thèse**. L'IA n'y est pas un gadget : elle est contextuelle (elle lit votre propre travail), paramétrable (26 fournisseurs, dont 22 gratuits) et surtout **vérifiée** — des modules entiers sont consacrés au contrôle de cohérence méthodologique, cartographique et bibliographique.
 
 ## 4. Public cible
 
