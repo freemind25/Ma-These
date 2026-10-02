@@ -817,4 +817,88 @@ Work Log:
 Stage Summary:
 - La ressource est doublement intégrée : visible dans l'app (2 nouvelles cartes multi-pages) et distillée dans le socle IA (module methodology, budget prouvé) ; lignes rouges 0 diff avant chaque commit ; upload/ inchangé.
 - Leçon d'identification : « ressources.pdf » (Tuta 28/09) contient le guide déjà transmis via res.pdf (14/09) — traité une seule fois, en verbatim propre cette fois.
+
+---
+Task ID: 2-c
+Agent: Explore (exports PDF/DOCX)
+Task: Exploration lecture seule pour spec/plan des notes de bas de page d'export
+
+Work Log:
+- Lu worklog.md (fin) pour contexte projet ; exploré export-pdf (src/modules/export-pdf/export-pdf-page.tsx, 1268 l.) : jsPDF + html2canvas-pro côté client (l.39-40), impression navigateur via window.open+print (l.467-481), HTML imprimable généré par generatePrintHtml (l.278-452), options ExportOptions (l.71-78, défauts l.171-178), cases « Page de couverture »/« Table des matières »/« Numéros de page » (l.968-1014), numéros de page en CSS @page @bottom-center (l.432-440, ignorés par le chemin jsPDF), contenu Tiptap injecté brut (l.356-376) — AUCUNE bibliographie dans l'export PDF (0 occurrence biblio/référence/apa).
+- Exploré export-docx : page client src/modules/export-docx/export-docx-page.tsx (509 l., DocxOptions l.51-60, libellés « Page de garde » l.311, « Références »/« Bibliographie APA » l.331-332, « Inclure les numéros de page » l.441, POST l.159-163) + route serveur src/app/api/export-docx/route.ts (1145 l., docx npm ^9.7.1, POST l.976, parseHtmlToBlocks l.225-292, buildCoverSection l.334-502, buildTocSection avec TableOfContents l.507-577, buildBodySection l.582-886, références « Références » triées auteur/année l.774-819, en-tête/pied PageNumber.CURRENT l.822-855, formatReferenceApa l.891-970, Packer.toBuffer l.1118). Caveat noté : titres construits en TextRun manuel sans HeadingLevel → styles Titre 1/2/3 définis (l.1078-1111) mais non référencés par les paragraphes.
+- Vérifié support footnotes dans node_modules/docx 9.7.1 : OUI — Document footnotes Record<string,{children:Paragraph[]}> (dist/index.d.ts l.1605), FootnoteReferenceRun(id) (l.756, ParagraphChild l.2515), câblage dist/index.mjs l.26850 ; séparateurs auto id -1/0 → ids notes à partir de 1. Aucun usage footnotes dans src actuellement.
+- APA en code : DUPLEX sans fonction partagée — serveur formatReferenceApa (export-docx route l.891-970, « APA-like ») vs client apa-composer formatAuthorsAPA/generateCitationAPA/generateInTextCitation (apa-composer-page.tsx l.137-264, la dernière retourne déjà « (Nom, année) »).
+- Détection citations : alignement-preuves route (extractCitations l.221-285 : parenthèses /\(([^)]+?(?:19|20)\d{2}[^)]*?)\)/ l.227, split «;», /^(.+?),\s*((?:19|20)\d{2})\b/ l.241, narratif l.254, crochets l.268 ; parseSingleAuthorYear l.150-218 ; buildReferenceIndex/findMatchingReference l.303-337+ ; plainText chapitre l.479-486 ; MAX 100/chapitre l.71) — logique serveur auto-contenue réutilisable. citation-check (6.10) parse des lignes de références complètes (l.102-105) → moins adapté aux citations dans le texte.
+- Tests : aucun test vitest sur export-docx/export-pdf ; seule occurrence « export » = app-store.test.ts l.88 (ViewId). Suite : src/**/*.test.ts(x), environnement node (vitest.config.ts). Schéma Prisma Reference vérifié (prisma/schema.prisma l.190+ : authors «;»-séparés, title, year, journal, volume, issue, pages, publisher, doi, url) — données suffisantes pour le texte APA complet des notes.
+
+Stage Summary:
+- DOCX : ajouter includeFootnotes aux options (page l.51-60/304-335 + route l.23-35), réutiliser extractCitations + un formateur APA partagé, injecter FootnoteReferenceRun dans parseInlineRuns/paragraphes et Document({footnotes}) — lib docx 9.7.1 prête.
+- PDF : pas de bibliographie aujourd'hui ; notes de bas de page réalisables dans le chemin HTML/impression (footnotes CSS ou renvois + section en fin de chapitre), mais le chemin jsPDF rastérise une image → vraies footnotes natives impossibles sans changement de stratégie (à arbitrer en spec).
+- Aucune modification de code ; seul worklog.md complété (append).
 - Sécurité inchangée : rotation OpenAlex en attente côté propriétaire ; rotation APINEX ; révocation des clés GitHub transités par chat.
+
+---
+Task ID: 2-a
+Agent: Explore (nav+IA+soutenance)
+Task: Exploration lecture seule pour spec/plan du module Soutenance
+
+Work Log:
+- Lu worklog.md (fin, 150 dernières lignes) pour contexte maison (format entrées, compteurs produits, leçons reprise-sandbox).
+- Navigation : src/app/page.tsx (173 l., switch CurrentView l.59-154) et src/lib/stores/app-store.ts — ViewId (l.8-52, 44 ids), NavCategory (l.54-61, 7 catégories), NAV_CATEGORY_META (l.63-71), NavigationItem (l.73-80 : id/label/icon/description/badge?/category?), NAVIGATION_ITEMS (l.82-410 : 44 entrées comptées). app-sidebar.tsx : ICON_MAP (l.71-77, « Presentation » absent), CATEGORY_ORDER (l.88-90), rendu badges (l.194-201).
+- Module IA représentatif : generation-hypotheses-page.tsx (593 l.) — hook useAIStream (l.20-89, fetch POST /api/ai-writing/stream, parsing SSE « data: », AbortController), 3 onglets, toasts use-toast, export Markdown client. DÉFAUT DÉTECTÉ : mode « generation-hypotheses » absent de WRITING_MODES (src/data/ai-writing-modes.ts l.30-280) → /api/ai-writing/stream renvoie 400 « Mode d'écriture non trouvé » (stream/route.ts l.28-34) ; SPECIALIZATION_PROMPTS sans clé correspondante.
+- Routes IA : /api/ai-writing (route.ts : zod l.15-21, resolveAiConfig l.67, generateCompletion l.69-73), /api/ai-writing/stream (stream/route.ts : generateCompletionStream l.73-77), /api/directeur-chat (timeout A.9 l.26-30, relance à prompt resserré l.152-168), zai-client.ts (generateCompletion l.481, generateCompletionStream l.601, generateText l.567, circuit breaker l.59-65 : 3 échecs/30 s, max_tokens 4096 par défaut l.277/720, temperature 0.7), resolve-ai-config.ts (cookie httpOnly > _aiConfig body déprécié, l.30-57), use-ai-config.ts (withAiConfig l.184-190 sans apiKey).
+- Prisma : Thesis (l.17-37), Chapter (l.39-62), ThesisCadrage/Field/Version (l.101-142), DoctoralToolbox 1:1 JSON-in-String (l.148-162), ResearchTab (l.168-184), AgileSprint/AgileStory non liés à Thesis (l.257-291), DocumentChunk (l.376-393), SavedSearch/Result (l.474-509). Accès thèse active : état client useAppStore.activeThesisId (l.424-427, persist l.454-461) + hooks react-query use-thesis.ts (fetch /api/thesis, /api/thesis/[id]).
+- Persistance par thèse : DoctoralToolbox avec /api/thesis/[id]/doctoral-toolbox (GET/POST 409/PUT 404, JSON.stringify conditionnel l.53-62, 95-112) ; Sprint/Story avec /api/sprints, /api/sprints/[id], /api/sprints/[id]/stories, /api/stories/[id] + schémas zod centralisés api-schemas.ts (l.273-318).
+- RAG : /api/thesis-rag (route.ts 58 l., actions index/query) + rag-service.ts (indexThesisContent l.160 : chapters par thesisId + references/notebook globaux + cadrage fields ; chunkText 500 tok/overlap 100 l.65-68 ; retrieveChunks l.376 hybride keyword+embeddings ; generateRagResponse l.597, maxTokens 2048 l.661).
+- Grep soutenance/slides/defense/jury : aucun module dédié ; existant = mode IA « defense » (ai-writing-modes.ts l.130-138), DEFENSE_PROMPT (specializations/defense.ts, clé « defense » index.ts l.81), knowledge-core PRESENTATION_MODULE (l.855-889), prompt-builder calibration « pré-soutenance » (l.58-63), checklist Soutenance boite-doctorale (l.182-193), template RoutesMe (l.161-165), usages theses.fr (dateSoutenance, Président du jury).
+- Compteurs : README.md l.31, 106, 140 « 44 » (l.238 historique 36) ; NOTICE-UTILISATION.md l.12, 71 ; NOTE-PRESENTATION.md l.23 ; AGENTS.md OBSOLÈTE « 36 modules » l.60 et 241. Aucun test n'exige 44 : app-store.test.ts l.215-253 teste seulement >0, champs requis, unicité, premier=dashboard ; grep « \b44\b » dans src = rien de pertinent.
+- Zéro modification de code ; seul ce worklog complété en append.
+
+Stage Summary:
+- Ajout d'un module = 3 fichiers obligatoires : app-store.ts (ViewId + NAVIGATION_ITEMS avec category+badge), page.tsx (import + case), dossier src/modules/<id>/<id>-page.tsx ; icône à choisir dans ICON_MAP (app-sidebar l.71-77, « Presentation » absent) ; usage-guide-dialog.tsx optionnel.
+- Pattern IA recommandé pour Soutenance : POST /api/ai-writing/stream avec mode enregistré à la fois dans WRITING_MODES ET SPECIALIZATION_PROMPTS (piège du défaut « generation-hypotheses » constaté), streaming SSE parsé côté client, avecAiConfig pour la config (cookie httpOnly), toasts destructifs sur validation.
+- Persistance artefact par thèse : modèle Prisma avec thesisId + onDelete Cascade (type DoctoralToolbox 1:1 ou ResearchTab N:1), route /api/thesis/[id]/... ou /api/<ressource> avec schémas zod de src/lib/api-schemas.ts, réponses enveloppées { data } / { error }, ZodError → 400 flatten.
+- Compteurs à synchroniser (3 doc en « 44 » + AGENTS.md resté à « 36 ») et aucun test de comptage à mettre à jour ; nouveau module → 45 partout, incl. README l.31/106/140, NOTICE l.12/71, NOTE-PRESENTATION l.23.
+- Base prête pour spec/plan SDD du module Soutenance (3 onglets : slides, discours, simulation jury) ; rapport détaillé remis à l'orchestrateur.
+
+---
+Task ID: 2-b
+Agent: Explore (chapitres+RAG+références)
+Task: Exploration lecture seule pour spec/plan du générateur de brouillon de chapitre
+
+Work Log:
+- Lu worklog.md (dernières entrées) pour le contexte ThesisFrame, puis exploré prisma/schema.prisma en intégralité (509 l.) : Thesis l.17-37, Chapter l.39-62 (content HTML/plainText/wordCount/targetWordCount/status l.45-49), ChapterVersion l.69-81, ThesisCadrage/Field/Version l.101-142, Reference l.190-217 (GLOBAL — aucun thesisId), DocumentChunk l.376-393.
+- Routes chapitres : PUT/DELETE /api/chapters/[id] (PUT, PAS de PATCH) avec création automatique de ChapterVersion uniquement si le contenu change (l.24-49, author "doctorant", versionId retourné l.51) ; GET /api/chapters/[id]/versions (take 50, l.17-29) ; GET/POST /api/thesis/[id]/chapters (numéro auto l.48-49) ; schémas zod api-schemas.ts l.51-69.
+- Word count calculé 100 % côté client (tiptap-editor.tsx l.73-81, 98-101), envoyé via PUT par useUpdateChapter (use-thesis.ts l.176-197) ; autosave debounce 2500 ms (editor-page.tsx l.74-87 + use-auto-save.ts l.100-124) ; status bar CharacterCount l.132-140.
+- 26 modes d'écriture : src/data/ai-writing-modes.ts l.28-290 (interface l.10-22, systemPrompt déprécié, customEndpoint pour deep-research l.288) ; prompts centralisés SPECIALIZATION_PROMPTS (specializations/index.ts l.70-97) ; /api/ai-writing (schéma prompt 50k/context 100k l.15-21, contexte injecté comme 2e message system « CONTEXTE ADDITIONNEL DE LA THÈSE » l.54-59) ; /api/ai-writing/stream (SSE, refuse customEndpoint l.37-42) ; maxTokens défaut 4096 (zai-client.ts l.277/289/720/730) ; calibration niveau doctoral (prompt-builder.ts l.33-75).
+- Textes longs : deep-research-pipeline.ts — continueIfTruncated (max 2 passes, fin 4 000 chars, l.124-158), isLikelyTruncated (ponctuation terminale l.100-113), ensureSourcesSection (relance + repli déterministe l.164-212), rapport maxTokens 12 000 (l.714/773), règles de citation (Auteur, Année) + [n] (l.745-750) ; directeur-chat — A.9 timeout 150 s borné 5-180 s (l.26-49), relance unique à prompt resserré (contexte 8 000 chars, historique 4×4 000, l.61-88, 156-167).
+- Insertion dans Tiptap : les 26 modes ne font QUE copier au presse-papiers (ai-writing-page.tsx l.218-222) — la seule insertion directe = prédiction fantôme ai-prediction.ts (Tab → tr.insertText l.86-97, widget fantôme l.22-37, debounce 1 000 ms, contexte 400 chars) ; sync contenu externe via editor.commands.setContent (tiptap-editor.tsx l.84-93).
+- RAG : rag-service.ts — chunkText 500 tokens/overlap 100 (l.65-68, 99-146), indexThesisContent (chapitres via plainText l.191-207, refs global l.210-228, cadrage l.246-263, batch 100 l.341-353), retrieveChunks hybride 35 % keyword / 65 % sémantique (l.76-79, 376-430), generateRagResponse (top 5, libellés [Chapitre X - Titre] / [Réf: Auteur (Année)] l.626-642, maxTokens 2 048 l.661) ; POST /api/thesis-rag action index|query (l.30-46) ; GET/DELETE /api/document-chunks (l.9-104) ; embedding-service (timeout 30 s, batch 20, providers non supportés l.33-37).
+- Références : GET /api/references GLOBAL (filtres type/source/favorites/search title+authors+keywords l.11-27, orderBy updatedAt desc) ; APA 7 — export-docx/route.ts formatReferenceApa (l.891-959) et apa-composer-page.tsx formatAuthorsAPA/generateCitationAPA/generateInTextCitation (l.137-259+, champ in-text = 1er nom + année, l.257-258).
+- Citations en ligne : alignement-preuves/route.ts — stripHtml l.78-90, extractCitations l.221-285 (parenthétique /\(...(?:19|20)\d{2}...\)/ l.227, narrative l.254, [n] l.268, « et al. » l.162), matching refs par clé auteur+année (l.303-353), densité = citations/1000 mots (l.491-493, seuils 3.0/1.5 l.506) ; citation-check/route.ts (parseCitation l.60-99, DOI l.47-57, verdicts l.40, 5 registres, timeout 15 s l.122) — mais entrée = texte collé, pas les chapitres.
+- Prévisualisation : meilleur pattern = chapter-history-dialog.tsx (Dialog, 2 sélecteurs de versions, wordDiff + diffStats l.111-121, DiffView coloré l.48-76) ; autres « Aperçu » : export-pdf l.1040-1076, apa-composer l.1006, verification-methodo l.1299-1346. Aucun flux existant « générer → prévisualiser → insérer dans chapitre ».
+- Zéro modification de code ; seul worklog.md complété (append).
+
+Stage Summary:
+- Générateur de brouillon faisable avec les briques existantes : chapitre cible (Chapter cible + targetWordCount l.48 pour la longueur), contexte thèse (pattern thesisContext du Chat Directeur l.435-447 + CONTEXTE ADDITIONNEL /api/ai-writing l.54-59), refs sélectionnables via GET /api/references (global), APA in-text via generateInTextCitation (apa-composer l.252) ou formatReferenceApa (export-docx l.891).
+- Sauvegarde de version gratuite : le simple PUT /api/chapters/[id] avec contenu modifié crée automatiquement la ChapterVersion (l.38-49) — l'insertion du brouillon créerait l'historique sans code additionnel ; diff avant/après disponible via wordDiff (chapter-history-dialog l.115).
+- Vigilances : pas de PATCH (PUT uniquement) ; maxTokens 4 096 par défaut insuffisant pour un brouillon complet (deep-research utilise 12 000 + passes de continuation, pattern à réutiliser) ; pas de streaming pour un futur customEndpoint dans /api/ai-writing/stream (refusé l.37-42) ; wordCount doit être recalculé côté client après insertion ; streaming à parser en SSE « data: {type:'chunk'} » (l.174-203 ai-writing-page).
+- Références GLOBALES (non liées à une thèse) : la « sélection de références de SA bibliothèque » sera un filtre UI, pas une contrainte DB ; matching citation↔référence existant à réutiliser (alignement-preuves l.303-353).
+
+---
+Task ID: 4-a
+Agent: full-stack-developer (délégation SDD, compte rendu reconstitué par l'orchestrateur après dépassement de délai de l'appel)
+Task: Implémentation du cycle SDD pack-soutenance — module Soutenance (slides, discours, questions du jury)
+
+Work Log:
+- Groupe A (T1) : modèle SoutenancePrep 1:1 (thesisId @unique, slides/speech/questions JSON-string, speechDurationMin, cascade) — diff prisma migrate avant/après (table seule), db:push, survie des données prouvée (commit bf7aa33).
+- Groupe B (T2) : zod api-schemas + route GET/PUT /api/thesis/[id]/soutenance (upsert, normalisation caps : 12 slides, 6 points, 12 questions) (db70ca2).
+- Groupe B (T3) : route POST /api/soutenance/generate + prompts src/lib/ai/prompts/soutenance-prompts.ts (contexte thèse tronqué, maxTokens 2500/8000/6000, extraction JSON, 502 si non structuré, artefact persisté) (94f0296).
+- Groupe C (T4-T6) : ViewId "soutenance" + NAVIGATION_ITEMS (ClipboardCheck, methodologie, IA) ; page 3 onglets ; entrée guide intégré (e37ecbc, 9e7cc02, 08c69bc).
+- Groupe D (T7) : 2 fichiers de tests routes — 65 fichiers / 1471 tests verts (+19) (f91b347).
+- Groupe E (T8) : NOTICE-UTILISATION.md §7.10 Soutenance + §10.1 persistance mise à jour (2f8a027).
+- Recette navigateur : 8 captures test-snapshots/soutenance-*.png dont génération IA réelle des 3 artefacts (slides, discours, questions), confirmation de relance, états vides, persistance au rechargement.
+
+Stage Summary:
+- Cycle pack-soutenance implémenté et prouvé : 8 commits (bf7aa33..2f8a027), lint 0 erreur, suite 1471/1471, lignes rouges 0 diff, preuves horodatées dans specs/pack-soutenance/preuves.md.
+- Entrée worklog rédigée par l'orchestrateur : l'agent délégué a été coupé par le délai de l'outil avant son append (tout le reste, y compris preuves.md et captures, était déjà consigné).
