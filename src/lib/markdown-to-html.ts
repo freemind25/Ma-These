@@ -26,8 +26,9 @@ export function escapeHtml(text: string): string {
 /** Rendu en ligne : échappement puis gras (**x**) puis italique (*x*). */
 function renderInline(raw: string): string {
   let out = escapeHtml(raw);
-  // Gras AVANT italique : il ne reste plus de ** après le premier remplacement.
-  out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  // Gras AVANT italique : le contenu du gras peut lui-même contenir de
+  // l'italique (*…*) — d'où un motif non gourmand qui l'autorise.
+  out = out.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   out = out.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
   return out;
 }
