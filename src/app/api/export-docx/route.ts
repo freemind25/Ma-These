@@ -13,9 +13,16 @@ import {
   SectionType,
   FileChild,
   ParagraphChild,
+  FootnoteReferenceRun,
 } from 'docx';
 import { db } from '@/lib/db';
 import { formatReferenceApa } from '@/lib/apa-format';
+import {
+  buildFootnoteRawMap,
+  collectFootnotes,
+  splitTextAtCitations,
+  FootnoteRawInfo,
+} from '@/lib/citations';
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -27,6 +34,8 @@ interface ExportDocxRequest {
     includeCover: boolean;
     includeToc: boolean;
     includeReferences: boolean;
+    /** Notes de bas de page : citations reconnues → renvois numérotés, référence APA en note. Défaut : false. */
+    includeFootnotes?: boolean;
     lineSpacing: '1.15' | '1.5' | '2.0';
     fontSize: '11' | '12' | '13';
     margins: 'normal' | 'narrow' | 'wide';
@@ -89,6 +98,12 @@ function stripHtml(html: string): string {
 
 /**
  * Parse inline HTML (<strong>, <b>, <em>, <i>, <a>, <br>) into TextRun arrays.
+ *
+ * `footnoteRawMap` (optionnel — notes de bas de page activées) associe chaque forme
+ * littérale de citation reconnue à son identifiant de note : le texte est découpé aux
+ * occurrences des citations et un `FootnoteReferenceRun(id)` est inséré entre les runs,
+ * lesquels conservent leurs propriétés (gras/italique préservés). Sans map (ou map vide),
+ * le comportement et la sérialisation sont strictement identiques à l'ancien chemin.
  */
 function parseInlineRuns(
   html: string,
@@ -98,9 +113,34 @@ function parseInlineRuns(
     color?: string;
     bold?: boolean;
     italics?: boolean;
-  } = {}
+  } = {},
+  footnoteRawMap?: Map<string, FootnoteRawInfo>
 ): TextRun[] {
   const runs: TextRun[] = [];
+
+  const pushRunsForText = (text: string, bold: boolean | undefined, italic: boolean | undefined) => {
+    const segments =
+      footnoteRawMap && footnoteRawMap.size > 0
+        ? splitTextAtCitations(text, footnoteRawMap)
+        : [{ text, footnoteId: null }];
+    for (const segment of segments) {
+      if (segment.text) {
+        runs.push(
+          new TextRun({
+            font: baseRunOpts.font,
+            size: baseRunOpts.size,
+            color: baseRunOpts.color,
+            text: segment.text,
+            bold: bold || baseRunOpts.bold,
+            italics: italic || baseRunOpts.italics,
+          })
+        );
+      }
+      if (segment.footnoteId != null) {
+        runs.push(new FootnoteReferenceRun(segment.footnoteId));
+      }
+    }
+  };
 
   // Pre-convert <br> to a sentinel character for reliable splitting
   const preprocessed = html.replace(/<br\s*\/?/gi, '\n');
@@ -150,29 +190,11 @@ function parseInlineRuns(
           );
         }
         if (lines[i]) {
-          runs.push(
-            new TextRun({
-              font: baseRunOpts.font,
-              size: baseRunOpts.size,
-              color: baseRunOpts.color,
-              text: lines[i],
-              bold: isBold || baseRunOpts.bold,
-              italics: isItalic || baseRunOpts.italics,
-            })
-          );
+          pushRunsForText(lines[i], isBold || baseRunOpts.bold, isItalic || baseRunOpts.italics);
         }
       }
     } else {
-      runs.push(
-        new TextRun({
-          font: baseRunOpts.font,
-          size: baseRunOpts.size,
-          color: baseRunOpts.color,
-          text: cleaned,
-          bold: isBold || baseRunOpts.bold,
-          italics: isItalic || baseRunOpts.italics,
-        })
-      );
+      pushRunsForText(cleaned, isBold || baseRunOpts.bold, isItalic || baseRunOpts.italics);
     }
 
     currentText = '';
@@ -603,7 +625,8 @@ function buildBodySection(
   options: ExportDocxRequest['options'],
   margins: MarginPreset,
   lineSpacing: number,
-  fontSize: number
+  fontSize: number,
+  footnoteRawMap?: Map<string, FootnoteRawInfo>
 ): SectionConfig {
   const children: FileChild[] = [];
 
@@ -694,7 +717,7 @@ function buildBodySection(
           const text = stripHtml(block.content);
           if (!text) continue;
 
-          const runs = parseInlineRuns(block.content, baseOpts);
+          const runs = parseInlineRuns(block.content, baseOpts, footnoteRawMap);
           children.push(
             new Paragraph({
               alignment: AlignmentType.JUSTIFIED,
@@ -709,7 +732,7 @@ function buildBodySection(
           const text = stripHtml(block.content);
           if (!text) continue;
 
-          const runs = parseInlineRuns(block.content, baseOpts);
+          const runs = parseInlineRuns(block.content, baseOpts, footnoteRawMap);
           children.push(
             new Paragraph({
               alignment: AlignmentType.JUSTIFIED,
@@ -730,7 +753,7 @@ function buildBodySection(
           const text = stripHtml(block.content);
           if (!text) continue;
 
-          const runs = parseInlineRuns(block.content, baseOpts);
+          const runs = parseInlineRuns(block.content, baseOpts, footnoteRawMap);
           children.push(
             new Paragraph({
               alignment: AlignmentType.JUSTIFIED,
@@ -932,7 +955,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch all references (global — no thesisId in schema)
+    // Chargées aussi pour les notes de bas de page (appariement citations ↔ références),
+    // même quand la section Références n'est pas demandée.
     let references: {
+      id: string;
       authors: string;
       title: string;
       year: number | null;
@@ -946,7 +972,7 @@ export async function POST(request: NextRequest) {
       url: string | null;
     }[] = [];
 
-    if (options.includeReferences) {
+    if (options.includeReferences || options.includeFootnotes === true) {
       const refs = await db.reference.findMany({
         orderBy: [{ year: 'asc' }, { authors: 'asc' }],
       });
@@ -957,6 +983,41 @@ export async function POST(request: NextRequest) {
     const fontSize = FONT_SIZES[options.fontSize] || 24;
     const lineSpacing = LINE_SPACINGS[options.lineSpacing] || 360;
     const margins = MARGINS[options.margins] || MARGINS.normal;
+
+    // Notes de bas de page (option désactivée par défaut — aucun changement de chemin si absente)
+    const includeFootnotes = options.includeFootnotes === true;
+    let footnoteRawMap: Map<string, FootnoteRawInfo> | undefined;
+    let footnotesRecord: Record<string, { children: Paragraph[] }> | undefined;
+
+    if (includeFootnotes && references.length > 0) {
+      // plainText stocké, sinon dérivation du HTML (même convention que le module Alignement Preuves)
+      const chaptersPlainText = thesis.chapters.map((ch) =>
+        ch.plainText && ch.plainText.trim().length > 0 ? ch.plainText : stripHtml(ch.content)
+      );
+      const entries = collectFootnotes(chaptersPlainText, references);
+      footnoteRawMap = buildFootnoteRawMap(entries);
+
+      if (entries.length > 0) {
+        footnotesRecord = {};
+        for (const entry of entries) {
+          // Ids notes : débute à 1 (les ids -1/0 sont les séparateurs Word) ;
+          // chaque référence = UNE note partagée par toutes ses citations (CA-1.5).
+          footnotesRecord[String(entry.id)] = {
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: formatReferenceApa(entry.reference),
+                    size: 18,
+                    italics: false,
+                  }),
+                ],
+              }),
+            ],
+          };
+        }
+      }
+    }
 
     // Build sections
     const sections: SectionConfig[] = [];
@@ -979,12 +1040,14 @@ export async function POST(request: NextRequest) {
         options,
         margins,
         lineSpacing,
-        fontSize
+        fontSize,
+        footnoteRawMap
       )
     );
 
     // Build document
     const doc = new Document({
+      ...(footnotesRecord ? { footnotes: footnotesRecord } : {}),
       styles: {
         default: {
           document: {

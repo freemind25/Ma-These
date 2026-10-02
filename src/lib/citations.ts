@@ -18,11 +18,18 @@
 
 export type CitationKind = 'parenthetical' | 'narrative';
 
+/** Une occurrence littérale de la citation dans la source, avec sa forme. */
+export interface CitationOccurrence {
+  /** Texte littéral exact présent dans la source (parenthétique avec parenthèses). */
+  raw: string;
+  kind: CitationKind;
+}
+
 export interface ExtractedCitation {
   /** Forme littérale principale de la citation dans la source (parenthétique avec parenthèses). */
   raw: string;
   /** Toutes les formes littérales distinctes repérées pour cette citation (occurrences multiples). */
-  raws: string[];
+  occurrences: CitationOccurrence[];
   /** Auteur tel qu'écrit dans le texte (ex. « Smith et al. »). */
   author: string;
   /** Clé auteur normalisée pour l'appariement aux références. */
@@ -159,7 +166,7 @@ function extractReferenceAuthorKey(authorStr: string): string {
 
 /**
  * Parse a single author-year pair from a citation fragment.
- * Returns { raw, raws, author, authorKey, year, display, kind } or null.
+ * Returns { raw, occurrences, author, authorKey, year, display, kind } or null.
  */
 function parseSingleAuthorYear(
   authorPart: string,
@@ -174,13 +181,15 @@ function parseSingleAuthorYear(
   const a = authorPart.trim();
   if (!a) return null;
 
+  const occurrence: CitationOccurrence = { raw, kind };
+
   // Check for "Surname et al." or "Surname et" (French)
   const etAlMatch = a.match(/^(.+?)\s+et\s+al\.?$/i);
   if (etAlMatch) {
     const surname = etAlMatch[1].trim();
     return {
       raw,
-      raws: [raw],
+      occurrences: [occurrence],
       author: a,
       authorKey: buildAuthorKey(surname),
       year,
@@ -197,7 +206,7 @@ function parseSingleAuthorYear(
     if (secondSurname) {
       return {
         raw,
-        raws: [raw],
+        occurrences: [occurrence],
         author: a,
         authorKey: buildAuthorKey(firstSurname),
         year,
@@ -207,7 +216,7 @@ function parseSingleAuthorYear(
     }
     return {
       raw,
-      raws: [raw],
+      occurrences: [occurrence],
       author: a,
       authorKey: buildAuthorKey(firstSurname),
       year,
@@ -224,7 +233,7 @@ function parseSingleAuthorYear(
     const surname = initialSurname[2];
     return {
       raw,
-      raws: [raw],
+      occurrences: [occurrence],
       author: a,
       authorKey: buildAuthorKey(surname, initial),
       year,
@@ -239,7 +248,7 @@ function parseSingleAuthorYear(
 
   return {
     raw,
-    raws: [raw],
+    occurrences: [occurrence],
     author: a,
     authorKey: buildAuthorKey(surname),
     year,
@@ -307,12 +316,16 @@ export function extractCitationsFromText(text: string): ExtractedCitation[] {
   for (const { citation } of found) {
     const existing = byDisplay.get(citation.display);
     if (existing) {
-      // Priorité parenthétique : le raw avec parenthèses est la meilleure cible de remplacement.
+      // Priorité parenthétique : la forme principale avec parenthèses est la
+      // meilleure cible de remplacement (le kind de CHAQUE occurrence reste
+      // toutefois attaché à sa propre forme littérale).
       if (citation.kind === 'parenthetical' && existing.kind === 'narrative') {
         existing.raw = citation.raw;
         existing.kind = 'parenthetical';
       }
-      if (!existing.raws.includes(citation.raw)) existing.raws.push(citation.raw);
+      if (!existing.occurrences.some((o) => o.raw === citation.raw)) {
+        existing.occurrences.push(...citation.occurrences);
+      }
       continue;
     }
     byDisplay.set(citation.display, citation);
@@ -439,8 +452,11 @@ export function buildFootnoteRawMap(entries: FootnoteEntry[]): Map<string, Footn
   const map = new Map<string, FootnoteRawInfo>();
   for (const entry of entries) {
     for (const citation of entry.citations) {
-      for (const raw of citation.raws) {
-        map.set(raw, { id: entry.id, keepAuthor: citation.kind === 'narrative' });
+      for (const occurrence of citation.occurrences) {
+        map.set(occurrence.raw, {
+          id: entry.id,
+          keepAuthor: occurrence.kind === 'narrative',
+        });
       }
     }
   }
