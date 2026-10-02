@@ -834,6 +834,53 @@ const GUIDE_CATEGORIES: GuideCategory[] = [
           </div>
         ),
       },
+      {
+        id: "soutenance",
+        title: "Soutenance",
+        icon: ClipboardCheck,
+        keywords: [
+          "soutenance",
+          "slides",
+          "diapositives",
+          "presentation",
+          "discours",
+          "questions du jury",
+          "preparation orale",
+          "jury",
+        ],
+        content: (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Le module <strong>Soutenance</strong> réunit les trois artefacts de la
+              soutenance orale dans un espace de travail unique, générés par IA à
+              partir du contenu réel de la thèse (cadrage actif et chapitres).
+            </p>
+            <div className="rounded-lg border bg-muted/50 p-3">
+              <p className="text-sm font-medium">Les 3 onglets :</p>
+              <ul className="mt-1.5 space-y-1 text-xs text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <ArrowRight className="h-3 w-3" /> Slides — plan de diapositives numéroté
+                  (titre et points de contenu)
+                </li>
+                <li className="flex items-center gap-2">
+                  <ArrowRight className="h-3 w-3" /> Discours — texte oral calibré
+                  (durée cible de 10, 15 ou 20 minutes)
+                </li>
+                <li className="flex items-center gap-2">
+                  <ArrowRight className="h-3 w-3" /> Questions du jury — 10 questions
+                  regroupées par famille, avec angle de réponse suggéré
+                </li>
+              </ul>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Chaque artefact est enregistré pour la thèse active et restauré à la
+              réouverture du module. Chaque onglet permet de copier le contenu en
+              texte lisible ; la régénération demande une confirmation car elle
+              remplace l&apos;artefact existant.
+            </p>
+          </div>
+        ),
+      },
     ],
   },
 
