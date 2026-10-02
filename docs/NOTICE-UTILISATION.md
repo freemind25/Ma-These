@@ -528,6 +528,24 @@ Module **Expérimentations** — tracez vos hypothèses jusqu'aux verdicts :
 3. À la clôture (statut « Conclue ») : rédigez la « Conclusion » et attribuez le « Verdict global… » (« Hypothèse soutenue » / « Réfutée » / « Non concluante »).
 4. Tout est persisté en base — c'est la traçabilité exigée par un comité ou un directeur rigoureux.
 
+### 7.10 Soutenance — préparation de la soutenance orale
+
+Module **Soutenance** (lié à la thèse active). **3 onglets** : « Slides », « Discours », « Questions du jury ». Les artefacts sont générés par IA à partir du contenu réel de votre thèse (titre, auteur, discipline, directeur, cadrage actif, chapitres) avec le fournisseur configuré (section 3).
+
+- **Onglet « Slides »** — le plan de diapositives de la présentation : chaque diapositive est affichée en carte numérotée avec son titre et ses points de contenu (6 points maximum par diapositive, dans l'esprit des bonnes pratiques de présentation). Boutons : « Générer les slides », « Copier le plan » (format texte lisible : « Diapositive 1 — Titre » puis ses points), « Régénérer les slides ».
+- **Onglet « Discours »** — le texte oral complet, calibré sur une « Durée cible » au choix (10, 15 ou 20 minutes ; 15 par défaut) et structuré selon la progression d'une soutenance : salutations du jury, problématique, méthodologie, résultats, limites, conclusion, remerciements. Boutons : « Générer le discours », « Copier le discours », « Régénérer le discours ». Le texte s'affiche dans un bloc déroulant avec la durée enregistrée (« Durée enregistrée : N minutes »).
+- **Onglet « Questions du jury »** — une simulation de 10 questions regroupées par famille (Fond théorique, Méthodologie, Résultats, Limites et perspectives, Ouverture). Chaque question est accompagnée d'un « Angle de réponse » suggéré, ancré dans votre thèse. Boutons : « Générer 10 questions », « Copier les questions », « Régénérer les questions ».
+
+Flux recommandé :
+
+1. Activez votre thèse (Éditeur de thèse) puis ouvrez **Soutenance** dans la catégorie « Méthodologie & Vérification ».
+2. Générez le plan de slides, lisez-le, puis copiez-le comme base de travail de votre support de présentation.
+3. Choisissez la « Durée cible » puis générez le discours ; relisez-le à voix haute et copiez-le pour le répéter.
+4. Générez les questions du jury et préparez une réponse pour chacune en suivant les angles suggérés.
+5. Chaque bouton de régénération demande une confirmation (« Relancer la génération ? ») : la nouvelle génération **remplace** l'artefact enregistré.
+
+Sans thèse active, le module affiche « Aucune thèse active » et vous invite à en choisir une dans l'éditeur. Un artefact jamais généré s'affiche en état vide avec son bouton de génération. Tout est **persisté par thèse** (`soutenance`) : slides, discours et questions sont restaurés à la réouverture du module et survivent à la fermeture de l'application.
+
 ---
 
 ## 8. IA et outils complémentaires
@@ -636,7 +654,7 @@ Cliquez **« Générer le document DOCX »** → fichier nommé `auteur_titre…
 
 ### 10.1 Ce qui est sauvegardé en base (SQLite locale)
 
-Thèses, chapitres (contenu + versions), parties, cadrages (champs, suggestions, verrous, versions), références, sources et notes du carnet de recherche, sprints et stories, veilles et leurs résultats, onglets de recherche, boîte doctorale, expérimentations et runs, éléments et sessions de vérification cartographique.
+Thèses, chapitres (contenu + versions), parties, cadrages (champs, suggestions, verrous, versions), références, sources et notes du carnet de recherche, sprints et stories, veilles et leurs résultats, onglets de recherche, boîte doctorale, expérimentations et runs, éléments et sessions de vérification cartographique, préparation de soutenance (slides, discours, questions du jury).
 
 ### 10.2 Ce qui vit en mémoire de session (non persisté)
 
