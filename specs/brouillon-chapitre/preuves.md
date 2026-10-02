@@ -38,4 +38,12 @@ Progression : [T3] tests verts — suite complète 67 fichiers / 1506 tests — 
 - `page.tsx` : import `BrouillonChapitrePage` + case `brouillon-chapitre` (juste après ai-writing).
 - Suite vitest complète re-vérifiée après la page (T5) : 1506/1506 (voir T5) — `app-store.test.ts` (unicité ViewId, premier = dashboard) vert.
 
-Progression : [T4] navigation enregistrée (sidebar Rédaction, badge IA).
+Progression : [T4] navigation enregistrée (sidebar Rédaction, badge IA) — commit d9d6ae7.
+
+## T5 — Page du module (src/modules/brouillon-chapitre/brouillon-chapitre-page.tsx)
+
+- 17:28 — `bun run lint` après création (avertissement react-hooks/exhaustive-deps corrigé par useMemo sur `chapters`) → `✖ 231 problems (0 errors, 231 warnings)` (baseline exacte).
+- 17:27/17:28 — `bunx vitest run` → 1506/1506 verts (65 fichiers préexistants + 2 nouveaux en T3 ; la page n'ajoute pas de test, conforme tasks.md).
+- Page créée (~480 lignes) : états vides sans thèse/sans chapitres (aucun appel IA) ; Select chapitre (présélection 1er chapitre) ; Input longueur cible préremplie (targetWordCount si ≥ 500 sinon 2000) ; recherche + liste Checkbox de références (GET /api/references, max 20, max-h-96 overflow-y-auto) ; « Générer le brouillon » (SSE live) / « Arrêter » (AbortController) ; aperçu ReactMarkdown + Badge compteur « X mots / cible Y » (même comptage que l'éditeur) ; chips de rappel des références ; « Copier » ; « Insérer dans le chapitre » → AlertDialog (texte contractuel : remplacement + version automatique) → markdownToHtml + htmlToPlainText + countWords → useUpdateChapter (PUT /api/chapters/[id], invalidations thesisKeys.all) → toast succès mentionnant l'historique de versions ; toasts erreurs (génération, insertion) ; libellés 100 % français, aucun emoji, composants shadcn.
+
+Progression : [T5] page créée, lint baseline, suite verte.
