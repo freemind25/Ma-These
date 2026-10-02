@@ -50,7 +50,8 @@ export type ViewId =
   | "apinex"
   | "experimentations"
   | "veille-academique"
-  | "soutenance";
+  | "soutenance"
+  | "brouillon-chapitre";
 
 export type NavCategory =
   | "_pinned"   // toujours visible en haut (dashboard, editor)
@@ -100,6 +101,14 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Assistant IA",
     icon: "Sparkles",
     description: "Modes d'écriture assistée par IA",
+    badge: "IA",
+    category: "redaction",
+  },
+  {
+    id: "brouillon-chapitre",
+    label: "Brouillon de chapitre",
+    icon: "PenTool",
+    description: "Générez un brouillon structuré d'un chapitre entier, ancré dans vos références",
     badge: "IA",
     category: "redaction",
   },

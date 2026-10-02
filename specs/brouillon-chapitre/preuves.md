@@ -29,4 +29,13 @@ Progression : [T2] route SSE créée, lint 0 erreur, tsc baseline inchangée —
 - Couverture : titres ##/### (+ normalisation #/####), gras/italique imbriqués, listes -/1., blockquote, paragraphes, échappement `<script>` / `<div>` (aucune balise hors liste blanche), htmlToPlainText ; route : 400 zod (chapterId manquant, targetWords < 300 / > 8000 / non entier, > 20 références), 404 chapitre inconnu, succès SSE (chunks transmis + un seul done, maxTokens 12 000 vérifié, prompt sans référence = « AUCUNE citation », avec références = « BIBLIOGRAPHIE AUTORISÉE » + « Bertholet (2012). La ville durable en question » + cadrage actif), relance de continuation unique si troncature, aucune relance si ponctuation terminale, relais du chunk error. Aucun appel IA réel (generateCompletionStream / generateCompletion / db mockés).
 - 17:23 — `bun run lint` → `✖ 231 problems (0 errors, 231 warnings)` (0 erreur).
 
-Progression : [T3] tests verts — suite complète 67 fichiers / 1506 tests.
+Progression : [T3] tests verts — suite complète 67 fichiers / 1506 tests — commit 1979c92.
+
+## T4 — Navigation (ViewId, entrée Rédaction, page.tsx)
+
+- 17:28 — `bun run lint` → `✖ 231 problems (0 errors, 231 warnings)` (baseline exacte).
+- `app-store.ts` : ViewId union + `"brouillon-chapitre"` (après soutenance) ; NAVIGATION_ITEMS : entrée après « Assistant IA » — label « Brouillon de chapitre », icône `PenTool` (présente dans ICON_MAP, app-sidebar l.71-77 — non modifié), catégorie `redaction`, badge `IA`.
+- `page.tsx` : import `BrouillonChapitrePage` + case `brouillon-chapitre` (juste après ai-writing).
+- Suite vitest complète re-vérifiée après la page (T5) : 1506/1506 (voir T5) — `app-store.test.ts` (unicité ViewId, premier = dashboard) vert.
+
+Progression : [T4] navigation enregistrée (sidebar Rédaction, badge IA).
