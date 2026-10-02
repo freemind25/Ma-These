@@ -49,7 +49,8 @@ export type ViewId =
   | "generation-hypotheses"
   | "apinex"
   | "experimentations"
-  | "veille-academique";
+  | "veille-academique"
+  | "soutenance";
 
 export type NavCategory =
   | "_pinned"   // toujours visible en haut (dashboard, editor)
@@ -340,6 +341,14 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Expérimentations",
     icon: "FlaskConical",
     description: "Journal d'expérimentations : hypothèses, runs, preuves et verdicts",
+    category: "methodologie",
+  },
+  {
+    id: "soutenance",
+    label: "Soutenance",
+    icon: "ClipboardCheck",
+    description: "Préparation de la soutenance : slides, discours, questions du jury",
+    badge: "IA",
     category: "methodologie",
   },
   {
