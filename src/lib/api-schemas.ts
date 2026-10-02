@@ -387,6 +387,50 @@ export function normalizeSoutenanceQuestions(
   return out;
 }
 
+/** DTO structuré exposé au client (le modèle Prisma stocke slides/questions en JSON-string). */
+export interface SoutenanceRecordDto {
+  id: string;
+  thesisId: string;
+  slides: SoutenanceSlide[];
+  speech: string;
+  speechDurationMin: number;
+  questions: SoutenanceQuestionFamily[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+function parseJsonArray<T>(raw: string): T[] {
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as T[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Sérialise une ligne SoutenancePrep en DTO structuré (JSON des colonnes désérialisé). */
+export function serializeSoutenanceRecord(record: {
+  id: string;
+  thesisId: string;
+  slides: string;
+  speech: string;
+  speechDurationMin: number;
+  questions: string;
+  createdAt: Date;
+  updatedAt: Date;
+}): SoutenanceRecordDto {
+  return {
+    id: record.id,
+    thesisId: record.thesisId,
+    slides: parseJsonArray<SoutenanceSlide>(record.slides),
+    speech: record.speech,
+    speechDurationMin: record.speechDurationMin,
+    questions: parseJsonArray<SoutenanceQuestionFamily>(record.questions),
+    createdAt: record.createdAt.toISOString(),
+    updatedAt: record.updatedAt.toISOString(),
+  };
+}
+
 // ═══════════════════════════════════════
 // AI TOOL CONFIG
 // ═══════════════════════════════════════

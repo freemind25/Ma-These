@@ -5,59 +5,8 @@ import {
   updateSoutenanceSchema,
   normalizeSoutenanceSlides,
   normalizeSoutenanceQuestions,
-  type SoutenanceSlide,
-  type SoutenanceQuestionFamily,
+  serializeSoutenanceRecord,
 } from "@/lib/api-schemas";
-
-// ═══════════════════════════════════════
-// Types d'artefacts exposés au client
-// (les colonnes Prisma stockent du JSON en String)
-// ═══════════════════════════════════════
-
-export interface SoutenanceRecordDto {
-  id: string;
-  thesisId: string;
-  slides: SoutenanceSlide[];
-  speech: string;
-  speechDurationMin: number;
-  questions: SoutenanceQuestionFamily[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-type SoutenancePrepRow = {
-  id: string;
-  thesisId: string;
-  slides: string;
-  speech: string;
-  speechDurationMin: number;
-  questions: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-function parseJsonArray<T>(raw: string): T[] {
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as T[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-/** Sérialise la ligne Prisma en DTO structuré (JSON des colonnes désérialisé). */
-function serializeSoutenanceRecord(record: SoutenancePrepRow): SoutenanceRecordDto {
-  return {
-    id: record.id,
-    thesisId: record.thesisId,
-    slides: parseJsonArray<SoutenanceSlide>(record.slides),
-    speech: record.speech,
-    speechDurationMin: record.speechDurationMin,
-    questions: parseJsonArray<SoutenanceQuestionFamily>(record.questions),
-    createdAt: record.createdAt.toISOString(),
-    updatedAt: record.updatedAt.toISOString(),
-  };
-}
 
 // ═══════════════════════════════════════
 // GET /api/thesis/[id]/soutenance — artefacts de soutenance d'une thèse
