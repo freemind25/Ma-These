@@ -902,3 +902,26 @@ Work Log:
 Stage Summary:
 - Cycle pack-soutenance implémenté et prouvé : 8 commits (bf7aa33..2f8a027), lint 0 erreur, suite 1471/1471, lignes rouges 0 diff, preuves horodatées dans specs/pack-soutenance/preuves.md.
 - Entrée worklog rédigée par l'orchestrateur : l'agent délégué a été coupé par le délai de l'outil avant son append (tout le reste, y compris preuves.md et captures, était déjà consigné).
+
+---
+Task ID: 4-b
+Agent: full-stack-developer
+Task: Implémentation du cycle SDD brouillon-chapitre (générateur de brouillon de chapitre)
+
+Work Log:
+- Groupe A (T1) : convertisseur minimal `src/lib/markdown-to-html.ts` — liste blanche h2/h3/p/ul/ol/li/strong/em/blockquote, échappement HTML systématique, gras puis italique (motif non gourmand pour l'italique imbriqué), `htmlToPlainText` pour le plainText d'insertion (f6680e6, inclut les artefacts spec/plan/tasks/preuves du cycle).
+- Groupe A (T2) : route POST `/api/chapter-draft/stream` — zod {chapterId, targetWords 300-8000, referenceIds ≤ 20}, chapitre 404, contexte thèse (titre/auteur/discipline, titres des chapitres, cadrage actif), bibliographie du prompt « Auteur (année). Titre », prompt strict « citer UNIQUEMENT les références fournies (Auteur, année) », generateCompletionStream maxTokens 12 000, relais SSE + UNE relance de continuation si troncature (reprise 4 000 derniers caractères, pattern deep-research) (13e2521).
+- Groupe B (T3) : `markdown-to-html.test.ts` (18 tests : titres, gras/italique imbriqués, listes, blockquote, échappement <script>/<div>, aucune balise hors liste, htmlToPlainText) + `chapter-draft/stream/route.test.ts` (13 tests : 400 zod, 404, succès SSE mocké avec done unique + maxTokens 12 000 vérifié, règles de citations du prompt, relance unique si troncature, relais d'erreur) — suite complète 67 fichiers / 1506 tests verts (+2 fichiers, +35) (1979c92).
+- Groupe C (T4) : ViewId « brouillon-chapitre » + entrée NAVIGATION_ITEMS (PenTool, catégorie redaction, badge IA) après « Assistant IA » ; import + case page.tsx (d9d6ae7).
+- Groupe C (T5) : page `src/modules/brouillon-chapitre/brouillon-chapitre-page.tsx` — états vides sans thèse/chapitres (aucun appel IA), Select chapitre, longueur cible préremplie (objectif ≥ 500 sinon 2 000), recherche + Checkbox références (max 20, max-h-96), génération SSE live + Arrêter (AbortController), aperçu ReactMarkdown + compteur « X mots / cible Y », chips de rappel des références, Copier, Insérer → AlertDialog contractuel (remplacement + version automatique) → markdownToHtml + htmlToPlainText + wordCount (comptage éditeur) → useUpdateChapter (PUT) → invalidations + toast succès mentionnant l'historique de versions (96340b0).
+- Groupe C (T6) : entrée « Brouillon de chapitre (IA) » dans le guide intégré (catégorie Assistants IA, après Assistant IA d'écriture) : flux pas-à-pas, garde-fou, citations, persistance (93b264e).
+- Groupe D (T7) : sous-section §5.8 « Brouillon de chapitre » en fin de la section 5 de la notice (insertion sans renumérotation, liens croisés §5.3/§5.7 préservés, compteurs non touchés) (720c62c).
+- Écart environnement consigné : serveur de dev auto-lancé :3000 arrêté depuis 16:17 (dev.log figé, port 3000 libre, processus next absent) — preuves curl/SSE reportées à la recette navigateur.
+- Recette navigateur (consignée ensuite dans specs/brouillon-chapitre/preuves.md) : module dans la sidebar Rédaction, états vides, sélection chapitre + références, génération en direct, Arrêter, aperçu + compteur, insertion après confirmation avec preuve de version dans l'historique du chapitre, copie, mobile 390 px, captures test-snapshots/brouillon-*.png.
+
+Stage Summary:
+- Cycle SDD brouillon-chapitre implémenté : 7 commits T1-T7 (f6680e6 → 720c62c), un commit par tâche, messages conventionnels `feat(brouillon)/test/docs`, non poussés.
+- Qualité : lint 0 erreur (baseline 231 avertissements inchangée), suite 65 fichiers préexistants / 1471 tests verts + 2 fichiers / 35 tests nouveaux (67/1506), tsc : 0 erreur sur les fichiers nouveaux (84 erreurs baseline préexistantes inchangées).
+- Lignes rouges : `git diff HEAD --stat` sur app-sidebar.tsx, theses-en-ligne/search, arxiv/search = vide avant chaque commit ; les 26 modes d'écriture et leurs compteurs, README/AGENTS/NOTE-PRESENTATION non touchés.
+- Preuves horodatées (TZ='Etc/GMT-1') dans specs/brouillon-chapitre/preuves.md, mises à jour après chaque commit.
+- Écarts Article 4 : (1) le serveur dev auto-géré est tombé (16:17) avant la recette — relance locale documentée dans preuves.md au moment de la vérification navigateur ; (2) artefacts spec/plan/tasks committés avec T1 (aucun commit docs séparé, à la différence du cycle 4-a).
