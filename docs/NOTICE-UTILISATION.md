@@ -650,7 +650,8 @@ Tout est **persisté par thèse** (`doctoral-toolbox`) — c'est votre dossier a
 
 Module **Export PDF**. **3 onglets** :
 
-1. **« Configuration »** : sélectionnez la thèse et les « Chapitres à exporter » (tous pré-cochés, boutons « Tout sélectionner » / « Tout désélectionner ») ; vérifiez les « Métadonnées de la thèse » (titre, sous-titre, auteur, directeur, établissement, année, laboratoire, discipline — affichées sur la couverture) ; réglez « Options de mise en forme » : « Taille de la police » (10/11/12 pt), « Interligne » (1.0/1.5/2.0), « Marges » (« Réduites (1,5 cm) », « Normales (2,5 cm) », « Larges (3,5 cm) »), cases « Page de couverture », « Table des matières », « Numéros de page ». A4, Times New Roman, paragraphe justifié.
+1. **« Configuration »** : sélectionnez la thèse et les « Chapitres à exporter » (tous pré-cochés, boutons « Tout sélectionner » / « Tout désélectionner ») ; vérifiez les « Métadonnées de la thèse » (titre, sous-titre, auteur, directeur, établissement, année, laboratoire, discipline — affichées sur la couverture) ; réglez « Options de mise en forme » : « Taille de la police » (10/11/12 pt), « Interligne » (1.0/1.5/2.0), « Marges » (« Réduites (1,5 cm) », « Normales (2,5 cm) », « Larges (3,5 cm) »), cases « Page de couverture », « Table des matières », « Numéros de page », « Notes de bas de page ». A4, Times New Roman, paragraphe justifié.
+   - **« Notes de bas de page »** (désactivée par défaut) : les citations reconnues au format « (Auteur, année) » ou « Auteur (année) » et correspondant à une référence de votre bibliothèque reçoivent un exposant numéroté, et la référence complète formatée APA est listée dans une section « Notes » en fin de document (dans l'ordre de première apparition, une note unique par référence). Une citation sans correspondance reste inchangée. Valable pour les voies « Imprimer / Sauvegarder PDF » et « Télécharger PDF ».
 2. **« Aperçu »** : rendu avant export.
 3. **« Exporter »** : 3 voies — **« Imprimer / Sauvegarder PDF »** (boîte d'impression du navigateur, la plus fidèle), **« Télécharger PDF »** (fichier généré, toast « PDF téléchargé avec succès »), **« Télécharger HTML »** (fichier `.html` nommé d'après le titre).
 
@@ -658,7 +659,7 @@ Module **Export PDF**. **3 onglets** :
 
 Module **Export DOCX** — document **Word** avec de vrais styles éditables (Titre 1/2/3, Normal) :
 
-- « Structure du document » : « Page de garde », « Table des matières » (numérotation i, ii, iii — mise à jour par clic droit dans Word), « Références » (bibliographie APA triée) ;
+- « Structure du document » : « Page de garde », « Table des matières » (numérotation i, ii, iii — mise à jour par clic droit dans Word), « Références » (bibliographie APA triée), « Notes de bas de page » (citations reconnues « (Auteur, année) » transformées en vraies notes Word avec la référence complète APA en bas de page — une note unique par référence, citations sans correspondance intactes, désactivé par défaut) ;
 - « Typographie » : police 11/12/13 pt, interligne 1.15/1.5/2.0, marges 1,5/2,5/3,5 cm ;
 - « En-tête et pied de page » : « Texte d'en-tête » (prérempli avec le titre), numéros de page ;
 - chapitres numérotés (« I. Introduction, 1.1 Contexte... »), paragraphe justifié avec alinéa français, gras/italique préservés.

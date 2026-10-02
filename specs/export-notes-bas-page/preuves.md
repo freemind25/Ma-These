@@ -67,3 +67,20 @@ core.xml identique hors horodatages de génération: True
 → CA-1.4 prouvé : chemin option OFF strictement inchangé.
 
 Note de conception consignée : la correction en cours de T3 (premier test) a remplacé `raws: string[]` par `occurrences: {raw, kind}[]` — la forme narrative « Smith (2020) » garde son auteur devant l'exposant (« Smith¹ »), la forme parenthétique est remplacée en entier ; vérifié au run 2 ci-dessus.
+
+## T5 — Option DOCX côté page (reprise orchestrateur après coupure de l'agent)
+
+- 18:14 — export-docx-page.tsx : DocxOptions.includeFootnotes (défaut false) + case « Notes de bas de page » dans la grille « Structure du document » (après « Références ») ; description exacte « Citations reconnues (Auteur, année) — référence complète APA en note ». Vérification route : `rg includeFootnotes src/app/api/export-docx/route.ts` → l.38 (schéma), l.975 (références chargées si notes), l.988-992 (collecte). Lint : 0 erreur. Commit.
+
+## T6 — Option PDF côté page (exposants + section Notes)
+
+- export-pdf-page.tsx (+77/−2) : ExportOptions.includeFootnotes (défaut false) ; case après « Numéros de page » ; fetch des références à l'activation (GET /api/references, silencieux si échec) ; generatePrintHtml : collectFootnotes sur les chapitres (plainText ou stripHtml), replaceCitationsWithMarks sur le HTML de chaque chapitre, section « Notes » (h2 + ol APA) en fin de document si ≥ 1 note ; CSS `.footnote-ref` (exposant) ; badge récapitulatif « Notes » Oui/Non ; dépendances useCallback mises à jour. Lint : 0 erreur ; suite complète : 68 fichiers / 1531 tests verts. Commit.
+
+## T7 — Mention dans la notice
+
+- docs/NOTICE-UTILISATION.md §9.1 (case « Notes de bas de page » + paragraphe explicatif : exposants + section Notes en fin de document, une note par référence, citations sans correspondance intactes, valable impression + téléchargement) et §9.2 (vraies notes Word, note unique par référence, désactivé par défaut).
+
+## Nettoyage des données de test (base rendue propre)
+
+- Suppression de la thèse de test « Test Notes Bas de Page » (cascade chapitre), des 2 références de test (« Comprendre les notes de bas de page », « Méthodologie de la recherche ») et de l'enregistrement SoutenancePrep résiduel du cycle 4-a — preuves : sorties `DELETED` ci-dessus dans la trace orchestrateur.
+- Résidus plus anciens NON touchés (hors périmètre, signalés) : « Test Reference for E2E Testing » (2026-08-18), « Test Reference T4 Persistence » (2026-08-18).

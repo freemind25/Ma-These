@@ -925,3 +925,23 @@ Stage Summary:
 - Lignes rouges : `git diff HEAD --stat` sur app-sidebar.tsx, theses-en-ligne/search, arxiv/search = vide avant chaque commit ; les 26 modes d'écriture et leurs compteurs, README/AGENTS/NOTE-PRESENTATION non touchés.
 - Preuves horodatées (TZ='Etc/GMT-1') dans specs/brouillon-chapitre/preuves.md, mises à jour après chaque commit.
 - Écarts Article 4 : (1) le serveur dev auto-géré est tombé (16:17) avant la recette — relance locale documentée dans preuves.md au moment de la vérification navigateur ; (2) artefacts spec/plan/tasks committés avec T1 (aucun commit docs séparé, à la différence du cycle 4-a).
+
+---
+Task ID: 4-c
+Agent: full-stack-developer (T1-T4) puis orchestrateur (T4 fin - T7, après dépassement de délai de l'appel délégué)
+Task: Implémentation du cycle SDD export-notes-bas-page (notes de bas de page exports DOCX + PDF)
+
+Work Log:
+- T1 : src/lib/citations.ts (bibliothèque pure adaptée d'alignement-preuves, module non retouché) — commit 6c403ff.
+- T2 : formatReferenceApa extrait dans src/lib/apa-format.ts, route DOCX réécrite pour importer — commit 5efac00.
+- T3 : route DOCX includeFootnotes — Document({footnotes}) ids ≥ 1, FootnoteReferenceRun injecté dans les runs (gras/italique préservés), option OFF = sérialisation byte-identique (preuve : document.xml 7399 == 7399 octets) ; curl + unzip : 3 renvois dont 2 sur la même note (CA-1.5), citation inconnue intacte (CA-1.3) — commit aae2cb9.
+- T4 : citations.test.ts 25 tests verts — commit (reprise orchestrateur).
+- T5 : page DOCX — option + case (commit orchestrateur).
+- T6 : page PDF — option, fetch références, exposants, section « Notes » fin de document (commit orchestrateur).
+- T7 : NOTICE §9.1/§9.2 mises à jour.
+- Nettoyage : données de test du cycle supprimées (thèse Test Notes Bas de Page, 2 refs Smith/Doe, SoutenancePrep résiduel) ; résidus d'août signalés sans y toucher.
+
+Stage Summary:
+- Cycle export-notes-bas-page livré : lint 0 erreur, suite 68 fichiers / 1531 tests verts, lignes rouges 0 diff, CA-1.1→1.5 et CA-2.1→2.4 couverts (preuves curl + unzip pour DOCX, lint/tests/apercu pour PDF).
+- Écart préexistant signalé (hors périmètre, Article 4) : titres DOCX sans HeadingLevel (TDM Word peut ne pas les capter) — correction à la demande.
+- La vérification navigateur finale des 3 cycles est faite par l'orchestrateur en fin de session.
