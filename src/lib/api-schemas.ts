@@ -318,6 +318,76 @@ export const updateStorySchema = z.object({
 });
 
 // ═══════════════════════════════════════
+// SOUTENANCE
+// ═══════════════════════════════════════
+
+export const soutenanceTypes = ["slides", "speech", "questions"] as const;
+
+/** Plafonds de normalisation serveur (cohérents avec les prompts IA). */
+export const SOUTENANCE_LIMITS = {
+  maxSlides: 12,
+  maxPointsPerSlide: 6,
+  maxQuestions: 12,
+  maxFamilies: 6,
+} as const;
+
+export const soutenanceSlideSchema = z.object({
+  title: z.string().min(1).max(200),
+  // Le plafond de 6 points est appliqué par normalisation serveur, pas par rejet zod
+  points: z.array(z.string().min(1).max(400)),
+});
+
+export const soutenanceQuestionItemSchema = z.object({
+  question: z.string().min(1).max(500),
+  angle: z.string().max(1000),
+});
+
+export const soutenanceQuestionFamilySchema = z.object({
+  family: z.string().min(1).max(100),
+  items: z.array(soutenanceQuestionItemSchema),
+});
+
+export const updateSoutenanceSchema = z.object({
+  slides: z.array(soutenanceSlideSchema).optional(),
+  speech: z.string().max(100_000).optional(),
+  speechDurationMin: z.union([z.literal(10), z.literal(15), z.literal(20)]).optional(),
+  questions: z.array(soutenanceQuestionFamilySchema).optional(),
+});
+
+export const soutenanceGenerateSchema = z.object({
+  thesisId: z.string().min(1, "L'identifiant de la thèse est requis"),
+  type: z.enum(soutenanceTypes),
+  durationMin: z.union([z.literal(10), z.literal(15), z.literal(20)]).optional(),
+});
+
+/** Cappe les slides : 12 slides max, 6 points max par slide. */
+export function normalizeSoutenanceSlides(slides: SoutenanceSlide[]): SoutenanceSlide[] {
+  return slides
+    .filter((s) => typeof s.title === "string" && s.title.trim().length > 0)
+    .slice(0, SOUTENANCE_LIMITS.maxSlides)
+    .map((s) => ({
+      title: s.title,
+      points: Array.isArray(s.points) ? s.points.slice(0, SOUTENANCE_LIMITS.maxPointsPerSlide) : [],
+    }));
+}
+
+/** Cappe les questions : 12 questions max toutes familles confondues. */
+export function normalizeSoutenanceQuestions(
+  families: SoutenanceQuestionFamily[]
+): SoutenanceQuestionFamily[] {
+  const out: SoutenanceQuestionFamily[] = [];
+  let count = 0;
+  for (const family of families) {
+    if (count >= SOUTENANCE_LIMITS.maxQuestions) break;
+    const items = (family.items ?? []).slice(0, SOUTENANCE_LIMITS.maxQuestions - count);
+    if (items.length === 0) continue;
+    out.push({ family: family.family, items });
+    count += items.length;
+  }
+  return out;
+}
+
+// ═══════════════════════════════════════
 // AI TOOL CONFIG
 // ═══════════════════════════════════════
 
@@ -363,3 +433,9 @@ export type CreateStoryInput = z.infer<typeof createStorySchema>;
 export type CreateAiConfigInput = z.infer<typeof createAiConfigSchema>;
 export type CreatePartInput = z.infer<typeof createPartSchema>;
 export type UpdatePartInput = z.infer<typeof updatePartSchema>;
+export type SoutenanceType = (typeof soutenanceTypes)[number];
+export type SoutenanceSlide = z.infer<typeof soutenanceSlideSchema>;
+export type SoutenanceQuestionItem = z.infer<typeof soutenanceQuestionItemSchema>;
+export type SoutenanceQuestionFamily = z.infer<typeof soutenanceQuestionFamilySchema>;
+export type UpdateSoutenanceInput = z.infer<typeof updateSoutenanceSchema>;
+export type SoutenanceGenerateInput = z.infer<typeof soutenanceGenerateSchema>;
