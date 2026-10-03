@@ -965,3 +965,22 @@ Stage Summary:
 - Cycle SDD ressource-revues-litterature CONVERGÉ : CA-1.1→3.1 couvertes ; Sandelowski retransmis traçé sans duplication ; Snyder 2019 intégré de bout en bout (fiche, carte, socle IA, docs).
 - Écarts documentés : marge core 206 tok (vs ~400 estimés — section réelle ~855 tok) ; panneau préexistant « Livrable du test de production » fermé pendant la recette (données de test hors périmètre).
 - Points ouverts : recette propriétaire ; compaction/dé-injection avant toute future ingestion du noyau ; régénération PDF notice (résidu) ; rotation OpenAlex/APINEX + révocation clés GitHub (attente propriétaire).
+
+---
+Task ID: recette-3-cycles
+Agent: orchestrateur (Z.ai Code)
+Task: Recette propriétaire déléguée (« faites pour le mieux ») des 3 cycles SDD approuvés (pack-soutenance, brouillon-chapitre, export-notes-bas-page) — vérifications en conditions réelles, consignation, clôture.
+
+Work Log:
+- Reconstruction de l'état réel : git log + specs/ existants → les 3 cycles déjà CONVERGÉS (recette en attente) ; écart avec la mémoire de session signalé au propriétaire (Constitution : pas de reconstruction silencieuse).
+- Pack soutenance : navigations réelles ; 502 ponctuel enquêté (réplique exacte du pipeline en bun : 12 slides extraites — variance modèle ponctuelle, comportement 502+relance par design) ; puis 3/3 HTTP 200 ; persistance prouvée (reload + GET API) ; discours 15 min et 10 questions générés ; 0 erreur console ; 3 captures.
+- Brouillon de chapitre : flux complet chap. 7 (400 mots, 2 références) → confirmation → 338 mots insérés → version historisée ; 2 captures ; citations (Bui Khanh Linh Do, 2025) ×2 dans le chapitre.
+- Export notes de bas de page : DOCX ON/OFF prouvé par curl+unzip (note APA complète, 2 renvois / 0 renvoi, citation intacte) ; PDF — écart de convergence comblé (citations réelles) : exposants ["1","1"] + section Notes vérifiés dans l'aperçu.
+- Défaut d'aperçu PDF vide au retour d'onglet : cause racine tracée (iframe démontée/recréée + document.write dépendant d'effets non redéclenchés) → correctif srcDoc (export-pdf-page.tsx, 6+/10-) ; lint 0 erreur ; vitest 68/1531 verts ; preuve navigateur post-correctif.
+- Environnement : OOM killer a tué next-server (2,4 Go RSS sur box 4 Go) pendant les recompiles — redémarrages avec NODE_OPTIONS=--max-old-space-size=1200 ; signalé comme point ouvert.
+- Consignation : sections « Recette » dans les 3 preuves.md, 22/22 cases cochées + verdicts de recette dans les 3 tasks.md, FICHE_SYNTHESE.md, worklog ; lignes rouges 0 diff vérifiées avant commits.
+
+Stage Summary:
+- Les 3 cycles approuvés (comparatif TrustMémoireAI) sont désormais CONVERGÉS + RECETTÉS (délégation propriétaire) : pack-soutenance 12/12, brouillon-chapitre 11/11, export-notes-bas-page 9/9.
+- 1 défaut réel corrigé à l'occasion de la recette (aperçu PDF srcDoc) — preuves navigateur et captures à l'appui.
+- Reste ouvert : mémoire dev box (OOM), voie jsPDF headless, rotation clés (propriétaire).

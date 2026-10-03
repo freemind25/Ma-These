@@ -231,3 +231,18 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Compteurs budget** : full core 20 928 → **21 794 tok / 22 000 (marge ~206 tok)** — signalé dans AGENTS.md comme point d'attention : toute nouvelle ingestion exigera compaction ou dé-injection ; literature-review 2 228 → 3 094 tok ; méthodologie 4 470 toujours max ; mode le plus lourd directeur ~16 302 / 17 000.
 
 **Points ouverts pour la session suivante** : marge full core quasi épuisée (voir ci-dessus) ; recette propriétaire (cases cochées conformément au précédent du cycle 2026-09-28) ; PNG de la notice et PDF non régénérés (résidu déjà signalé) ; rotation OpenAlex/APINEX et révocation des clés GitHub toujours en attente côté propriétaire.
+
+## Session du 2026-10-03 — Recette déléguée des cycles n°8-10 + correction d'aperçu
+
+**Déclencheur** : ordre propriétaire « faites pour le mieux » après restitution de l'état réel (les 3 cycles approuvés du comparatif TrustMémoireAI étaient déjà CONVERGÉS, recette en attente — ma mémoire de session était obsolète ; écart signalé conformément à la Constitution).
+
+**Recette déléguée exécutée en conditions réelles** (serveur dev 3000, thèse « Urbanisme durable ») :
+- `pack-soutenance` : 3 générations IA réelles (slides ×3 HTTP 200 après un 502 ponctuel géré par design, discours 15 min, 10 questions par familles), persistance prouvée (rechargement + GET API : 11 slides / 10 609 car. / 10 questions). 12/12 CA. **ACCEPTÉ**.
+- `brouillon-chapitre` : génération SSE (chap. 7, 400 mots, 2 références) → confirmation de remplacement → **338 mots insérés**, version « 03/10/2026 15:30 — 338 mots » dans l'historique. 11/11 CA. **ACCEPTÉ**.
+- `export-notes-bas-page` : DOCX ON (note unique APA complète + 2 renvois, unzip prouvé) / OFF (0 renvoi, citation intacte) ; PDF — écart de convergence comblé avec citations réelles (2 exposants + section Notes vérifiés navigateur). 9/9 CA. **ACCEPTÉ**.
+
+**Défaut découvert pendant la recette et corrigé** (Groupe C — T6, même groupe) : l'aperçu PDF restait vide au retour sur l'onglet (course iframe/document.write — jamais exercée avant). Correctif : rendu de l'aperçu basculé sur `srcDoc` (déterministe), `src/modules/export-pdf/export-pdf-page.tsx`, 1 fichier 6+/10-. Lint 0 erreur (231 warnings baseline) ; vitest 68 fichiers / 1531 tests verts. 22/22 cases cochées des 3 cycles.
+
+**Livrés** : captures `test-snapshots/recette-*.png` (8) ; commits fix(export) + docs(sdd).
+
+**Points ouverts pour la session suivante** : mémoire serveur dev ~2,4 Go RSS → OOM sur cette box 4 Go lors des recompiles lourdes (redémarrage avec NODE_OPTIONS=--max-old-space-size, à surveiller) ; voie jsPDF « Télécharger PDF » rasterise/duplique en headless (limitation environnement, hors périmètre) ; rotation OpenAlex/APINEX + révocation clés GitHub toujours en attente côté propriétaire.
