@@ -9,8 +9,15 @@
 //   2. Unknown mode returns 400
 //   3. Mode with customEndpoint returns 400
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "./route";
+import { getActiveBookSkills } from "@/lib/ai/book-skills-server";
+
+vi.mock("@/lib/ai/book-skills-server", () => ({
+  getActiveBookSkills: vi.fn(),
+}));
+
+const mockGetActiveBookSkills = vi.mocked(getActiveBookSkills);
 
 function createRequest(body: unknown): Request {
   return new Request("http://localhost:3000/api/ai-writing/stream", {
@@ -166,5 +173,55 @@ describe("POST /api/ai-writing/stream > schema edge cases", () => {
     }) as any);
 
     expect(res.status).toBe(400);
+  });
+});
+
+// ── Injection compétences livres (canal IA) ──────────────────────────────
+vi.mock("@/lib/ai/zai-client", () => ({
+  generateCompletionStream: vi.fn(),
+}));
+
+import { generateCompletionStream } from "@/lib/ai/zai-client";
+
+describe("POST /api/ai-writing/stream > injection compétences livres", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("avec ≥ 1 compétence active : message système dédié (index + contenu + règle)", async () => {
+    mockGetActiveBookSkills.mockResolvedValue([
+      {
+        id: "bs-1",
+        title: "Savoir utilisateur",
+        content: "Contenu du savoir personnel.",
+      },
+    ]);
+    vi.mocked(generateCompletionStream).mockResolvedValue(
+      new Response("data: {\"type\":\"done\"}\n\n", {
+        headers: { "Content-Type": "text/event-stream" },
+      })
+    );
+
+    const res = await POST(
+      createRequest({
+        mode: "paraphrase",
+        prompt: "Un prompt suffisamment long pour passer la validation.",
+      }),
+      { params: Promise.resolve({}) } as never
+    );
+    await res.text();
+
+    const calls = vi.mocked(generateCompletionStream).mock.calls;
+    expect(calls.length).toBeGreaterThan(0);
+    const systemMessages = calls[0][0].messages.filter((m) => m.role === "system");
+    // Le prompt de spécialisation ne contient pas la section…
+    expect(systemMessages[0].content).not.toContain("COMPÉTENCES LIVRES");
+    // …qui arrive en 2e message système dédié
+    expect(systemMessages.length).toBeGreaterThanOrEqual(2);
+    const section = systemMessages[1].content;
+    expect(section).toContain("COMPÉTENCES LIVRES ACTIVES");
+    expect(section).toContain("Savoir utilisateur");
+    expect(section).toContain("Contenu du savoir personnel.");
+    expect(section).toContain("JAMAIS une source de citations");
   });
 });

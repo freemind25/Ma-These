@@ -1,13 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST, GET } from "./route";
 import { generateCompletion } from "@/lib/ai/zai-client";
+import { getActiveBookSkills } from "@/lib/ai/book-skills-server";
 
 // ── Mocks ───────────────────────────────────────────────────────────────
 vi.mock("@/lib/ai/zai-client", () => ({
   generateCompletion: vi.fn(),
 }));
 
+vi.mock("@/lib/ai/book-skills-server", () => ({
+  getActiveBookSkills: vi.fn(),
+}));
+
 const mockGenerateCompletion = vi.mocked(generateCompletion);
+const mockGetActiveBookSkills = vi.mocked(getActiveBookSkills);
 
 // Helper to create a NextRequest-like object
 function createRequest(body: unknown): Request {
@@ -21,6 +27,7 @@ function createRequest(body: unknown): Request {
 describe("POST /api/ai-writing", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetActiveBookSkills.mockResolvedValue([]);
   });
 
   // ── Success cases ─────────────────────────────────────────────────────
@@ -290,5 +297,57 @@ describe("GET /api/ai-writing", () => {
     for (const cat of categories) {
       expect(validCategories).toContain(cat);
     }
+  });
+});
+
+// ── Injection compétences livres (canal IA) ──────────────────────────────
+describe("POST /api/ai-writing > injection compétences livres", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockGetActiveBookSkills.mockResolvedValue([]);
+  });
+
+  it("avec 0 compétence active : un seul message système (prompt inchangé, CA-3.1)", async () => {
+    mockGenerateCompletion.mockResolvedValue({
+      content: "Texte généré.",
+      model: "test-model",
+    });
+
+    await POST(
+      createRequest({ mode: "paraphrase", prompt: "Un prompt suffisamment long pour la validation." }),
+      { params: Promise.resolve({}) } as never
+    );
+
+    const messages = mockGenerateCompletion.mock.calls[0][0].messages;
+    expect(messages.filter((m) => m.role === "system")).toHaveLength(1);
+    expect(messages[0].content).not.toContain("COMPÉTENCES LIVRES");
+  });
+
+  it("avec ≥ 1 compétence active : message système dédié après le prompt de spécialisation (CA-3.2/3.5)", async () => {
+    mockGetActiveBookSkills.mockResolvedValue([
+      {
+        id: "bs-1",
+        title: "Savoir utilisateur",
+        content: "Contenu du savoir personnel.",
+      },
+    ]);
+    mockGenerateCompletion.mockResolvedValue({
+      content: "Texte généré.",
+      model: "test-model",
+    });
+
+    await POST(
+      createRequest({ mode: "paraphrase", prompt: "Un prompt suffisamment long pour la validation." }),
+      { params: Promise.resolve({}) } as never
+    );
+
+    const systemMessages = mockGenerateCompletion.mock.calls[0][0].messages.filter(
+      (m) => m.role === "system"
+    );
+    expect(systemMessages.length).toBe(2);
+    expect(systemMessages[0].content).not.toContain("COMPÉTENCES LIVRES");
+    expect(systemMessages[1].content).toContain("COMPÉTENCES LIVRES ACTIVES");
+    expect(systemMessages[1].content).toContain("Savoir utilisateur");
+    expect(systemMessages[1].content).toContain("JAMAIS une source de citations");
   });
 });

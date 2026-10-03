@@ -3,6 +3,8 @@ import { generateCompletion, type AiMessage } from "@/lib/ai/zai-client";
 import { WRITING_MODES } from "@/data/ai-writing-modes";
 import { SPECIALIZATION_PROMPTS } from "@/lib/ai/specializations";
 import { getLevelCalibration, type DoctoralLevel } from "@/lib/ai/prompt-builder";
+import { getActiveBookSkills } from "@/lib/ai/book-skills-server";
+import { buildBookSkillsSection } from "@/lib/ai/book-skills";
 import { z } from "zod/v4";
 import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 
@@ -45,10 +47,18 @@ export async function POST(request: NextRequest) {
     const levelCalibration = getLevelCalibration(validated.doctoralLevel);
     const systemPrompt = basePrompt + levelCalibration;
 
+    // Canal « compétences livres » : index + contenus des ressources actives
+    // (opt-in). Aucun ajout si 0 ressource active — prompt inchangé.
+    const bookSkillsSection = buildBookSkillsSection(await getActiveBookSkills());
+
     // Build messages
     const messages: AiMessage[] = [
       { role: "system", content: systemPrompt },
     ];
+
+    if (bookSkillsSection) {
+      messages.push({ role: "system", content: bookSkillsSection });
+    }
 
     // Add optional context
     if (validated.context) {
