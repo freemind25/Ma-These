@@ -183,6 +183,29 @@ import { SOCRATIC_QUESTIONER_PROMPT } from "@/lib/ai/shared-prompts"
 
 ---
 
+## 6 bis. Canal « Compétences livres » (2026-10-03)
+
+Canal d'injection **séparé du noyau** (qui est au plafond de budget) : les ressources de la base
+`CustomBookSkill` activées par l'utilisateur (`enabled: true` — opt-in strict) alimentent les
+prompts des flux génératifs.
+
+- **Bibliothèque pure** : `src/lib/ai/book-skills.ts` — `selectBookSkills` (déterministe, récence
+  d'abord, plafond **12 000 caractères** de contenu), `buildBookSkillsIndex` (plafond **1 500
+  caractères**, mention « contenu non injecté (budget) »), `buildBookSkillsSection` (**null si 0
+  ressource active** → prompt byte-identique).
+- **Accès serveur** : `src/lib/ai/book-skills-server.ts` — `getActiveBookSkills()`
+  (`enabled: true`, ordre `updatedAt desc`).
+- **Points d'injection (v1)** : `/api/chapter-draft/stream` (3e paramètre de `buildSystemPrompt`,
+  avant le contexte de thèse ; prompt de continuation inchangé) et `/api/ai-writing` + `/api/ai-writing/stream`
+  (message système dédié après le prompt de spécialisation, avant le contexte).
+- **Règle d'intégrité** : la section instruit l'IA que ces savoirs sont un appui rédactionnel et
+  **JAMAIS une source de citations** — aucune référence bibliographique n'en est tirée.
+- **Coût** : 0 token quand aucune ressource active ; ≤ ~3 400 tokens sinon (plafonds ci-dessus).
+- Champs de la ressource : `description` (quand l'utiliser), `source` (provenance),
+  `enabled` (opt-in IA). Spécification : `specs/competences-livres-vivantes/`.
+
+---
+
 ## 7. Processus de digestion et feedback
 
 Quand un cas limite ou une divergence est identifié, il suit le processus formel documenté dans `feedback.md` :

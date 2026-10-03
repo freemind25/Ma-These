@@ -113,3 +113,24 @@ Critères d'acceptation couverts : CA-1.1, CA-1.2, CA-2.1, CA-2.2, CA-2.3, CA-4.
 Écart au plan : aucun
 Statut proposé : à recetter (délégation)
 ```
+
+## Groupe E — Tests / non-régression
+
+**Tâches : T11, T12.**
+
+- 18:16 — T11 : `bun run test:run` → **69 fichiers / 1548 tests, tous verts** (baseline 68/1531 + 1 nouveau fichier `book-skills.test.ts` + 17 tests : 11 unitaires pures, 3 chapter-draft, 2 ai-writing, 1 stream — **zéro régression**). Durée 16,17 s.
+- 18:18 — T11 : `bun run lint` → **0 erreur / 231 warnings** (= baseline). Lignes rouges : 0 diff.
+- 18:19 — T12 : section « 6 bis. Canal “Compétences livres” » ajoutée à `docs/ARCHITECTURE-CONNAISSANCE.md` (bibliothèque pure, accès serveur, points d'injection, règle d'intégrité, plafonds de budget, renvoi vers la spec du cycle).
+
+**Compte rendu de groupe :**
+
+```
+### Groupe E — Tests / non-régression
+Tâches : T11, T12
+Fichiers modifiés : docs/ARCHITECTURE-CONNAISSANCE.md (section 6 bis)
+Vérifications exécutées : suite complète 69/1548 verts ; lint 0 erreur baseline 231 ; lignes rouges 0 diff
+Sorties : réelles, ci-dessus
+Critères d'acceptation couverts : CA-3.1 (non-régression byte-identique prouvée par tests), couverture transverse
+Écart au plan : aucun
+Statut proposé : à recetter (délégation)
+```
