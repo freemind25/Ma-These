@@ -54,6 +54,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { BOOK_SKILLS_CONTENT_BUDGET_CHARS } from "@/lib/ai/book-skills";
 import { Label } from "@/components/ui/label";
 import {
   Dialog,
@@ -1594,6 +1595,17 @@ function BookSkillsLibrary() {
                 rows={8}
                 className="min-h-[160px]"
               />
+              <p
+                className={`text-[11px] leading-snug ${
+                  form.content.length > BOOK_SKILLS_CONTENT_BUDGET_CHARS
+                    ? "text-amber-600 dark:text-amber-500"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {form.content.length.toLocaleString("fr-FR")} caractères — taille conseillée ≤{" "}
+                {BOOK_SKILLS_CONTENT_BUDGET_CHARS.toLocaleString("fr-FR")} pour une injection intégrale
+                (au-delà, la ressource reste en index « contenu non injecté (budget) »).
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <Switch
