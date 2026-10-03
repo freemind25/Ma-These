@@ -91,3 +91,25 @@ Critères d'acceptation couverts : CA-3.1, CA-3.2, CA-3.3, CA-3.5, CA-3.6 (CA-3.
 Écart au plan : aucun (2 micro-correctifs de tests documentés)
 Statut proposé : à recetter (délégation)
 ```
+
+## Groupe D — Frontend / UI
+
+**Fichier modifié : `src/modules/livres-competences/livres-competences-page.tsx` (composant `BookSkillsLibrary`, +imports Textarea/Switch/Label). Tâches : T9, T10.**
+
+- 18:15 — T9 : bouton « Nouvelle ressource » ; dialog de création/édition (titre*, auteur, provenance, description d'usage, tags, contenu*, interrupteur « Utilisée par l'IA » désactivé par défaut) ; interrupteur par carte avec PUT immédiat ; badges « Injectée » (émeraude) / « Hors IA » (contour) ; description et provenance affichées sur les cartes ; édition = rechargement du contenu intégral avant pré-remplissage.
+- 18:15 — T10 : le `~` bit-a-bit parasite est supprimé — `{Math.round(book.contentLength / 5)} mots` (la correction est incluse dans la réécriture du composant, annoncée au plan).
+- 18:16 — Lint : **0 erreur / 231 warnings** (= baseline) ; aucun test vitest existant sur ce module (vérification fonctionnelle en recette navigateur, Groupe E + recette).
+- Lignes rouges : 0 diff.
+
+**Compte rendu de groupe :**
+
+```
+### Groupe D — Frontend / UI
+Tâches : T9, T10
+Fichiers modifiés : src/modules/livres-competences/livres-competences-page.tsx (composant BookSkillsLibrary réécrit ~200 lignes → ~490 lignes)
+Vérifications exécutées : lint 0 erreur baseline ; recette navigateur prévue (créer, éditer, basculer, recharger — CA-1.1/1.2/2.1/2.2/2.3, CA-4.1)
+Sorties : lint réel ci-dessus ; preuves navigateur en section Recette
+Critères d'acceptation couverts : CA-1.1, CA-1.2, CA-2.1, CA-2.2, CA-2.3, CA-4.1
+Écart au plan : aucun
+Statut proposé : à recetter (délégation)
+```

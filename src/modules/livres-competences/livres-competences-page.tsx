@@ -52,6 +52,9 @@ import { useAiConfig } from "@/hooks/use-ai-config";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -1201,6 +1204,9 @@ En te basant sur ces résultats, propose-moi un plan d\'apprentissage personnali
 
 // ═══════════════════════════════════════════════════════════════
 // Book Skills Library — database-backed book knowledge base
+// Canal IA : chaque ressource est opt-in (interrupteur « utilisée
+// par l'IA ») — seules les ressources activées sont injectées dans
+// les prompts (specs/competences-livres-vivantes).
 // ═══════════════════════════════════════════════════════════════
 
 interface BookSkillItem {
@@ -1208,17 +1214,45 @@ interface BookSkillItem {
   title: string;
   author: string | null;
   tags: string | null;
+  description: string | null;
+  source: string | null;
+  enabled: boolean;
   contentPreview: string;
   contentLength: number;
   createdAt: string;
   updatedAt: string;
 }
 
+interface BookSkillFormState {
+  title: string;
+  author: string;
+  description: string;
+  source: string;
+  tags: string;
+  content: string;
+  enabled: boolean;
+}
+
+const EMPTY_FORM: BookSkillFormState = {
+  title: "",
+  author: "",
+  description: "",
+  source: "",
+  tags: "",
+  content: "",
+  enabled: false, // opt-in strict (CA-2.1)
+};
+
 function BookSkillsLibrary() {
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [fullContent, setFullContent] = useState("");
   const [loadingContent, setLoadingContent] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState<BookSkillFormState>(EMPTY_FORM);
+  const [saving, setSaving] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["book-skills", search],
@@ -1257,6 +1291,83 @@ function BookSkillsLibrary() {
     [refetch, selectedId]
   );
 
+  const openCreate = useCallback(() => {
+    setEditingId(null);
+    setForm(EMPTY_FORM);
+    setFormOpen(true);
+  }, []);
+
+  const openEdit = useCallback((book: BookSkillItem) => {
+    setEditingId(book.id);
+    setForm({
+      title: book.title,
+      author: book.author ?? "",
+      description: book.description ?? "",
+      source: book.source ?? "",
+      tags: book.tags ?? "",
+      content: "",
+      enabled: book.enabled,
+    });
+    setFormOpen(true);
+    // Charge le contenu intégral pour l'édition
+    void fetch(`/api/book-skills/${book.id}`)
+      .then((res) => res.json())
+      .then((json) =>
+        setForm((prev) => ({ ...prev, content: json.data?.content ?? "" }))
+      )
+      .catch(() => setForm((prev) => ({ ...prev, content: "" })));
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    if (form.title.trim().length === 0 || form.content.trim().length < 10) return;
+    setSaving(true);
+    try {
+      const payload = {
+        title: form.title.trim(),
+        author: form.author.trim() || null,
+        description: form.description.trim() || null,
+        source: form.source.trim() || null,
+        tags: form.tags.trim() || null,
+        content: form.content,
+        enabled: form.enabled,
+      };
+      const res = editingId
+        ? await fetch(`/api/book-skills/${editingId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          })
+        : await fetch("/api/book-skills", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+      if (res.ok) {
+        setFormOpen(false);
+        refetch();
+      }
+    } finally {
+      setSaving(false);
+    }
+  }, [form, editingId, refetch]);
+
+  const handleToggleEnabled = useCallback(
+    async (book: BookSkillItem) => {
+      setTogglingId(book.id);
+      try {
+        await fetch(`/api/book-skills/${book.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ enabled: !book.enabled }),
+        });
+        refetch();
+      } finally {
+        setTogglingId(null);
+      }
+    },
+    [refetch]
+  );
+
   const formatChars = (n: number) => {
     if (n > 1_000_000) return `${(n / 1_000_000).toFixed(1)} M`;
     if (n > 1_000) return `${(n / 1_000).toFixed(0)} k`;
@@ -1265,15 +1376,21 @@ function BookSkillsLibrary() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Search bar */}
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Rechercher dans les ressources..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-9"
-        />
+      {/* Search bar + création */}
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Rechercher dans les ressources..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+        <Button size="sm" onClick={openCreate} className="ml-auto shrink-0">
+          <PenTool className="h-3.5 w-3.5 mr-1.5" />
+          Nouvelle ressource
+        </Button>
       </div>
 
       {/* Book list */}
@@ -1306,6 +1423,11 @@ function BookSkillsLibrary() {
                         {book.author}
                       </p>
                     )}
+                    {book.description && (
+                      <p className="text-xs text-muted-foreground/80 mt-1 italic line-clamp-2">
+                        {book.description}
+                      </p>
+                    )}
                   </div>
                   <div className="flex gap-1 shrink-0">
                     <Button
@@ -1313,14 +1435,25 @@ function BookSkillsLibrary() {
                       size="sm"
                       className="h-7 w-7 p-0"
                       onClick={() => handleViewContent(book.id)}
+                      aria-label="Voir le contenu"
                     >
                       <Eye className="h-3.5 w-3.5" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-7 w-7 p-0"
+                      onClick={() => openEdit(book)}
+                      aria-label="Modifier la ressource"
+                    >
+                      <PenTool className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="h-7 w-7 p-0 text-destructive hover:text-destructive"
                       onClick={() => handleDelete(book.id)}
+                      aria-label="Supprimer la ressource"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
@@ -1328,6 +1461,27 @@ function BookSkillsLibrary() {
                 </div>
               </CardHeader>
               <CardContent className="pt-0 pb-3">
+                {/* Canal IA : interrupteur + badge (CA-2.2) */}
+                <div className="flex items-center gap-2 mb-2">
+                  <Switch
+                    checked={book.enabled}
+                    disabled={togglingId === book.id}
+                    onCheckedChange={() => handleToggleEnabled(book)}
+                    aria-label={`Utiliser « ${book.title} » dans l'IA`}
+                  />
+                  <span className="text-[10px] text-muted-foreground">
+                    Utilisée par l'IA
+                  </span>
+                  {book.enabled ? (
+                    <Badge className="text-[10px] px-1.5 py-0 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+                      Injectée
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                      Hors IA
+                    </Badge>
+                  )}
+                </div>
                 {/* Tags */}
                 {book.tags && (
                   <div className="flex flex-wrap gap-1.5 mb-2">
@@ -1353,14 +1507,122 @@ function BookSkillsLibrary() {
                   </span>
                   <span className="flex items-center gap-1">
                     <Hash className="h-3 w-3" />
-                    {~Math.round(book.contentLength / 5)} mots
+                    {Math.round(book.contentLength / 5)} mots
                   </span>
+                  {book.source && (
+                    <span className="flex items-center gap-1 min-w-0">
+                      <BookOpen className="h-3 w-3 shrink-0" />
+                      <span className="truncate">{book.source}</span>
+                    </span>
+                  )}
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
       )}
+
+      {/* Formulaire création / édition */}
+      <Dialog open={formOpen} onOpenChange={setFormOpen}>
+        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
+          <DialogDescription className="sr-only">
+            {editingId
+              ? "Modifier la ressource de la bibliothèque"
+              : "Ajouter une ressource à la bibliothèque"}
+          </DialogDescription>
+          <DialogHeader>
+            <DialogTitle className="text-base">
+              {editingId ? "Modifier la ressource" : "Nouvelle ressource"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 overflow-y-auto pr-1">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="bs-title" className="text-xs">Titre *</Label>
+              <Input
+                id="bs-title"
+                value={form.title}
+                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                placeholder="Titre de la ressource"
+              />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="bs-author" className="text-xs">Auteur</Label>
+                <Input
+                  id="bs-author"
+                  value={form.author}
+                  onChange={(e) => setForm((f) => ({ ...f, author: e.target.value }))}
+                  placeholder="Auteur (optionnel)"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="bs-source" className="text-xs">Provenance</Label>
+                <Input
+                  id="bs-source"
+                  value={form.source}
+                  onChange={(e) => setForm((f) => ({ ...f, source: e.target.value }))}
+                  placeholder="Ouvrage, cours, URL… (optionnel)"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="bs-description" className="text-xs">Description d'usage</Label>
+              <Input
+                id="bs-description"
+                value={form.description}
+                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                placeholder="Quand ce savoir s'applique (ex. « pour la partie SLR ») — utilisée par l'IA"
+                maxLength={500}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="bs-tags" className="text-xs">Tags</Label>
+              <Input
+                id="bs-tags"
+                value={form.tags}
+                onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}
+                placeholder="méthode, rédaction… (séparés par des virgules)"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="bs-content" className="text-xs">Contenu *</Label>
+              <Textarea
+                id="bs-content"
+                value={form.content}
+                onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))}
+                placeholder="Savoir à conserver (au moins 10 caractères)"
+                rows={8}
+                className="min-h-[160px]"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch
+                id="bs-enabled"
+                checked={form.enabled}
+                onCheckedChange={(checked) => setForm((f) => ({ ...f, enabled: checked }))}
+              />
+              <Label htmlFor="bs-enabled" className="text-xs font-normal cursor-pointer">
+                Utilisée par l'IA (injectée dans les générations) — désactivée par défaut
+              </Label>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="outline" size="sm" onClick={() => setFormOpen(false)}>
+              Annuler
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleSave}
+              disabled={saving || form.title.trim().length === 0 || form.content.trim().length < 10}
+            >
+              {saving ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
+              ) : null}
+              {editingId ? "Enregistrer" : "Créer"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Full content dialog */}
       <Dialog
