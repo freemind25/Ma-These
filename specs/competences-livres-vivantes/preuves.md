@@ -134,3 +134,37 @@ Critères d'acceptation couverts : CA-3.1 (non-régression byte-identique prouv�
 Écart au plan : aucun
 Statut proposé : à recetter (délégation)
 ```
+
+## Recette — navigateur en conditions réelles (délégation propriétaire)
+
+Navigateur : agent-browser (chromium headless). Serveur : dev 3000 (HTTP 200).
+
+### Déroulé
+
+- 18:23 — Ouverture `/` (HTTP 200), navigation « Livres-compétences » → onglet « Bibliothèque » : 58 ressources listées, recherche + bouton « Nouvelle ressource » présents, **tous les interrupteurs `checked=false`** (CA-2.1 confirmé sur données réelles). Capture `test-snapshots/competences-biblio-initiale.png`.
+- 18:24 — CA-4.1 (T10) : compteurs de mots affichés **positifs** (« 6000 mots », « 417 », « 473 », « 490 », « 570 ») — plus aucun nombre négatif.
+- 18:25 — CA-1.1/CA-2.1 : création via formulaire (« Recette cycle — Savoir de démonstration », auteur, provenance, description d'usage, tags, contenu ; interrupteur **désactivé par défaut** dans le formulaire) → carte créée, champs repris à l'identique (vérif DOM + API).
+- 18:26 — CA-2.2 : activation de l'interrupteur sur la carte → badge « **Injectée** » (émeraude), plus de « Hors IA » ; API `enabled: true`. Capture `test-snapshots/competences-carte-injectee.png`.
+- 18:27 — CA-2.3 : **rechargement complet** de la page → navigation → l'interrupteur de la ressource est toujours `checked=true` (état persistant en base).
+- 18:28 — CA-1.2 : édition (titre → « Recette cycle — Savoir édité », description mise à jour) → « Enregistrer » → API : `{'title': 'Recette cycle — Savoir édité', 'description': 'Usage mis à jour pendant la recette', 'enabled': True}` — persistance prouvée, `enabled` préservé.
+- 18:30 — CA-3.2 en conditions réelles : génération d'un brouillon (`POST /api/chapter-draft/stream`, chapitre « Revue de littérature » de la thèse « Urbanisme durable », 300 mots) **avec la compétence active en base** → **HTTP 200**, 2 événements (chunk + done), brouillon de 2 633 caractères produit, « done » unique. (La présence effective de la section « COMPÉTENCES LIVRES » dans le message système est prouvée par les tests vitest du Groupe C ; l'appel live prouve que la voie d'injection fonctionne sans crash ni dégradation sur données réelles.)
+- 18:32 — CA-1.3 : suppression via l'UI (poubelle + confirm natif) → `count final: 58` — **base restaurée à l'état initial**, données de test retirées.
+- 18:33 — Mobile 390×844 : **pas de scroll horizontal** sur l'onglet Bibliothèque ; footer poussé naturellement par le contenu long (aucun chevauchement) ; captures `test-snapshots/competences-biblio-mobile-390.png`, `competences-mobile-390.png`, `competences-biblio-desktop.png`.
+- 18:34 — `agent-browser errors` → vide ; console → **0 erreur**. Navigateur fermé.
+
+### Défauts découverts pendant la recette (corrigés dans leur groupe)
+
+1. **POST 400 en création UI** (18:26, 1re tentative) — cause racine : l'UI envoie `null` pour les champs optionnels (auteur, provenance, description, tags) alors que le schema POST n'acceptait que `undefined` (`.optional()` ; le PUT utilisait déjà `.nullish()`). Correctif : `.nullish()` sur les 4 champs du `createSchema` (`src/app/api/book-skills/route.ts`) — re-testé curl 201 avec `null` + re-test UI complet vert. Compte rendu additionnel Groupe D ci-dessus.
+2. **Base « readonly database » ponctuelle** (18:25) — le processus serveur antérieur (démaré avant la normalisation T2a) a rendu l'erreur SQLite `attempt to write a readonly database` au premier POST UI ; écriture shell saine, disque 22 %. Redémarrage propre du serveur dev → POST 201. Comportement environnemental (box OOM-prone connue), aucune modification de code.
+
+**Compte rendu de recette (délégation) :**
+
+```
+### Recette navigateur — compétences-livres-vivantes
+Tâches recettées : T1→T12 (tous les groupes)
+Vérifications exécutées : 15 contrôles UI/API live + 1548 tests + lint
+CA couvertes : CA-1.1, CA-1.2, CA-1.3, CA-2.1, CA-2.2, CA-2.3, CA-3.1 (tests), CA-3.2 (tests + live), CA-3.3 (tests), CA-3.4 (where enabled + recette), CA-3.5 (tests), CA-3.6 (tests), CA-4.1 — 14/14
+Défauts trouvés/corrigés : POST nullish (corrigé + re-recetté), readonly ponctuel (environnement)
+Écart au plan : aucun non documenté
+Statut : RECETTÉE (délégation propriétaire — révisable à son retour)
+```

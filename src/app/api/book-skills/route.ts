@@ -64,17 +64,17 @@ export async function GET(request: NextRequest) {
 // ═══════════════════════════════════════
 const createSchema = z.object({
   title: z.string().min(1, "Le titre est requis"),
-  author: z.string().optional(),
+  author: z.string().nullish(),
   content: z.string().min(10, "Le contenu doit contenir au moins 10 caractères"),
-  tags: z.string().optional(),
+  tags: z.string().nullish(),
   description: z
     .string()
     .max(500, "La description ne doit pas dépasser 500 caractères")
-    .optional(),
+    .nullish(),
   source: z
     .string()
     .max(300, "La source ne doit pas dépasser 300 caractères")
-    .optional(),
+    .nullish(),
   enabled: z.boolean().optional(),
 });
 
