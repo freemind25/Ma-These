@@ -72,4 +72,16 @@ bun run test:run → Test Files 68 passed (68) / Tests 1531 passed (1531)
   2. `docs(ia): digestion Snyder 2019 dans le module literature-review — typologie, 4 phases, qualité, erreurs`
   3. `docs(sdd): cycle ressource-revues-litterature — spec, plan, tasks, preuves + captures`
   4. `docs(sdd): clôture cycle ressource-revues-litterature — worklog + fiche de synthèse`
-- Push : voir § Suivi (à compléter après push).
+- Push : voir § Suivi.
+
+## Suivi (11:22)
+
+```
+GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=/tmp/gh_askpass.sh git push origin HEAD:main
+→ To https://github.com/freemind25/ThesisFrame.git
+   ed495a0..46cc54b  HEAD -> main
+git ls-remote origin main
+→ 46cc54beb781479841d0e943f5a658d8381b1ff0      refs/heads/main
+```
+
+Push vérifié : origin/main = HEAD local `46cc54b`. Script askpass supprimé après usage (rm -f /tmp/gh_askpass.sh ×2). Arbre propre (`git status --short` vide).
