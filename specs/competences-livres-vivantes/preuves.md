@@ -231,3 +231,20 @@ Défauts trouvés : aucun défaut produit — 1 constat d'usage (ressource 30k j
 Écart au plan : aucun
 Statut : RECETTÉE (délégation propriétaire — révisable à son retour)
 ```
+
+## Validation déléguée du cycle (2026-10-03, ~19:30) + micro-changement « taille conseillée »
+
+### Validation propriétaire
+À la question « (a) ajouter l'indication de taille dans l'UI ; (b) considérer le cycle comme validé par votre recette déléguée — Votre avis ? », le propriétaire a répondu **« oui »** (IM, 2026-10-03, 19:30). Les deux points sont pris en charge : le cycle compétences-livres-vivantes est **VALIDÉ par recette déléguée** (choix conservateurs de la spec compris), et l'indication de taille est livrée ci-dessous (voie rapide).
+
+### Micro-changement — voie rapide (assess-taille-conseillee.md)
+Périmètre réel : `src/modules/livres-competences/livres-competences-page.tsx` — **12 insertions, 1 fichier** ; import de la constante `BOOK_SKILLS_CONTENT_BUDGET_CHARS` depuis la librairie pure (pas de valeur codée en dur).
+
+- Lint : `✖ 231 problems (0 errors, 231 warnings)` — **0 erreur, baseline exacte**.
+- Lignes rouges avant commit : `git diff HEAD --stat` sur les 3 fichiers = **vide (0 diff)**.
+- Recette navigateur (19:47-19:50) :
+  - Dialog « Nouvelle ressource » : compteur affiché « **0 caractères — taille conseillée ≤ 12 000 pour une injection intégrale (au-delà, la ressource reste en index « contenu non injecté (budget) »).** »
+  - Saisie de 46 caractères → compteur « **46 caractères** » (comptage live) — via fill Playwright (la manipulation directe `.value` + event ne traverse pas React contrôlé : 2 tentatives eval non probantes, méthode remplacée).
+  - Saisie de 12 050 caractères → compteur « **12 050 caractères** » + classe **ambre** vérifiée (`p.className.includes('amber') → COULEUR AMBRE`).
+  - Escape sans enregistrer → base inchangée : **58 ressources, 0 active** (aucun parasite créé).
+- Capture : `test-snapshots/competences-compteur-dialog.png`.

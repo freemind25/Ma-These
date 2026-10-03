@@ -1025,3 +1025,20 @@ Stage Summary:
 - Recette déléguée 58 ressources RECETTÉE : le canal se comporte exactement comme spécifié sur données réelles (récence d'abord, plafond, index honnête, opt-in, byte-identité à 0 active).
 - Constat d'usage transmis : ressources utiles en contenu intégral à garder ≤ 12 000 car. (la 30k reste index-only) ; amélioration légère possible (taille conseillée dans l'UI) — non planifiée.
 - État restitué : 0/58 active, ordre de récence d'origine, base logiquement identique au HEAD.
+
+---
+Task ID: validation-competences + micro-taille-conseillee
+Agent: Z.ai Code (orchestrateur SDD)
+Task: Suite au rapport de recette des 58 — le propriétaire répond « oui » à (a) l'indication de taille dans l'UI et (b) la validation déléguée du cycle. Livraison du micro-changement (voie rapide) + consignation de la validation.
+
+Work Log:
+- « oui » interprété sur les deux points (a)+(b) ; consignation avec citation exacte et horodatage dans preuves.md.
+- Voie rapide vérifiée (1 fichier, ≤ 20 lignes, 0 impact transverse) → assess-taille-conseillee.md rédigé AVANT le code.
+- Implémentation : compteur live sous le champ Contenu du dialog BookSkillsLibrary ; constante BOOK_SKILLS_CONTENT_BUDGET_CHARS importée de la librairie pure (pas de dur) ; ambre au-delà de 12 000.
+- Lint 0 erreur (231 baseline) ; lignes rouges 0 diff ; recette navigateur : compteur 0→46→12 050 car., ambre vérifié au-delà du seuil, Escape sans sauvegarde, base intacte 58/0 ; capture test-snapshots/competences-compteur-dialog.png.
+- FICHE_SYNTHESE.md : validation consignée, « taille conseillée » retiré des points ouverts (livré).
+
+Stage Summary:
+- Cycle n°11 compétences-livres-vivantes : CONVERGÉ + RECETTÉ (58 ressources) + VALIDÉ par le propriétaire (« oui ») — clos.
+- Micro-changement taille conseillée livré et recetté (voie rapide du protocole, première utilisation documentée).
+- Ouvert (inchangé) : stamp Sceau de vérité ; extension flux d'analyse ; OOM box ; rotation clés côté propriétaire.
