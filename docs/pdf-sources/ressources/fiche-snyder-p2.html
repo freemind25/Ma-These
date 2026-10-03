@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 920px; height: 1190px; overflow: hidden; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #FCFBF8; color: #292524;
+    display: flex; flex-direction: column;
+  }
+  .sheet { flex: 1; display: flex; flex-direction: column; padding: 52px 56px 0; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: #B45309; font-weight: 700; margin-bottom: 10px;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 26px; line-height: 1.2; color: #1C1917; font-weight: 700; margin-bottom: 16px;
+  }
+  h2 {
+    font-size: 15px; letter-spacing: 1.4px; text-transform: uppercase;
+    color: #B45309; font-weight: 700; margin-bottom: 12px;
+  }
+  .sec { margin-bottom: 24px; }
+  .phases { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .phase {
+    background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 10px; padding: 14px 16px;
+  }
+  .phase .n {
+    display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 1px;
+    color: #FFFFFF; background: #B45309; border-radius: 5px; padding: 3px 8px; margin-bottom: 8px;
+  }
+  .phase h3 { font-size: 15.5px; margin-bottom: 6px; color: #1C1917; }
+  .phase p { font-size: 12.6px; line-height: 1.5; color: #44403C; }
+  .phase p b { color: #1C1917; }
+  .crits { display: flex; gap: 10px; }
+  .crit {
+    flex: 1; background: #F5F5F4; border-radius: 9px; padding: 11px 12px;
+    border-top: 3px solid #B45309;
+  }
+  .crit h3 { font-size: 13.5px; color: #1C1917; margin-bottom: 4px; }
+  .crit p { font-size: 11.8px; line-height: 1.45; color: #57534E; }
+  .warn {
+    background: #FFFFFF; border: 1px solid #E7E5E4; border-left: 4px solid #B45309;
+    border-radius: 9px; padding: 14px 18px;
+  }
+  .warn ol { list-style: none; counter-reset: err; }
+  .warn li {
+    counter-increment: err; font-size: 12.8px; line-height: 1.5; color: #44403C;
+    padding: 7px 0 6px 34px; position: relative; border-bottom: 1px solid #F0EFED;
+  }
+  .warn li:last-child { border-bottom: none; }
+  .warn li::before {
+    content: counter(err); position: absolute; left: 0; top: 7px;
+    width: 22px; height: 22px; border-radius: 6px; background: #292524; color: #FAFAF9;
+    font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  }
+  .warn li b { color: #1C1917; }
+  .footer {
+    margin-top: auto; border-top: 1px solid #E7E5E4; padding: 14px 56px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11.5px; color: #78716C; background: #FCFBF8;
+  }
+  .footer b { color: #44403C; }
+  .pagenum { font-weight: 700; color: #B45309; }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="eyebrow">Fiche de lecture · Méthodes de recherche</div>
+    <h1>La revue de littérature : conduire, évaluer, publier</h1>
+
+    <div class="sec">
+      <h2>Le processus en 4 phases</h2>
+      <div class="phases">
+        <div class="phase">
+          <span class="n">PHASE 1</span>
+          <h3>Concevoir</h3>
+          <p>Pourquoi cette revue, pour quel public, quelle contribution ? Balayer le champ : quelles revues existent déjà ? Définir but, question et type. Écrire la <b>stratégie de recherche</b> (termes, bases, critères d'inclusion/exclusion) <b>AVANT de conduire</b> — chaque choix doit avoir une raison logique : les décisions déterminent la qualité, un échantillon biaisé produit des conclusions biaisées.</p>
+        </div>
+        <div class="phase">
+          <span class="n">PHASE 2</span>
+          <h3>Conduire</h3>
+          <p><b>Pilot test</b> des termes et critères sur un petit échantillon, ajuster avant le passage principal. Criblage en étapes (résumés d'abord, plein texte ensuite). Documenter chaque inclusion/exclusion. Scanner les références des articles retenus pour trouver les manquants — <b>sauf en systématique</b>, où le protocole strict l'interdit.</p>
+        </div>
+        <div class="phase">
+          <span class="n">PHASE 3</span>
+          <h3>Analyser</h3>
+          <p>Abstraction <b>standardisée</b> de chaque article (données descriptives, effets, conceptualisations) en concordance avec le but. La méthode d'analyse doit correspondre à la question : méta-analyse pour évaluer un effet ; techniques qualitatives ou intégratives pour construire un modèle théorique — une méta-analyse stricte serait un mauvais choix pour créer un cadre.</p>
+        </div>
+        <div class="phase">
+          <span class="n">PHASE 4</span>
+          <h3>Rédiger</h3>
+          <p>Communiquer clairement la motivation et le besoin de la revue. Suivre le <b>standard de reporting</b> adapté (PRISMA pour la systématique, RAMSES pour la narrative, Torraco pour l'intégrative) et décrire de façon transparente comment la littérature a été identifiée, analysée, synthétisée et rapportée — c'est ce qui permet au lecteur de juger la fiabilité.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>Une revue de qualité : 4 critères d'évaluation</h2>
+      <div class="crits">
+        <div class="crit"><h3>Profondeur</h3><p>Stratégie de sélection appropriée ; va au-delà de la récitation des travaux précédents.</p></div>
+        <div class="crit"><h3>Rigueur</h3><p>Critères d'inclusion et d'exclusion transparents et motivés — prêter attention à ce qui est inclus et pourquoi.</p></div>
+        <div class="crit"><h3>Réplicabilité</h3><p>Méthode décrite assez précisément pour qu'un lecteur externe réplique l'étude et retrouve des résultats similaires.</p></div>
+        <div class="crit"><h3>Utilité</h3><p>Utile aux chercheurs comme aux praticiens ; contribution jugée par rapport au champ visé.</p></div>
+      </div>
+    </div>
+
+    <div class="sec" style="margin-bottom:0;">
+      <h2>Quatre erreurs qui bloquent la publication</h2>
+      <div class="warn">
+        <ol>
+          <li><b>Méthode sous-décrite</b> — stratégie globale, sélection, exclusions, limites de la recherche et analyse absentes : impossible d'évaluer la qualité ni la contribution.</li>
+          <li><b>Échantillon trop limité</b> — quelques revues, une fenêtre d'années étroite, champs voisins ignorés : red flag qui affecte profondeur, rigueur et résultats. Mieux : resserrer la question, et justifier toute limitation.</li>
+          <li><b>Résultats non expliqués</b> — beaucoup de graphiques, tableaux et figures sans commentaire : la méthode est expliquée en long, ce qui a été trouvé en court.</li>
+          <li><b>Aucune vraie contribution</b> — résumé descriptif d'articles publiés, nuages de mots et comptages de citations : sans analyse approfondie ni nouveauté, pas de publication.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span><b>Fiche pédagogique ThesisFrame</b> — contenu d'après H. Snyder, <em>Journal of Business Research</em>, 104, 333–339, 2019 (CC BY-NC-ND)</span>
+    <span class="pagenum">2 / 2</span>
+  </div>
+</body>
+</html>

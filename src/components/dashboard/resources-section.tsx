@@ -90,6 +90,27 @@ const RESOURCES: readonly Resource[] = [
     ],
   },
   {
+    title: "La revue de littérature comme méthodologie",
+    description:
+      "Fiche de lecture en 2 pages : pourquoi la revue est une méthode de recherche à part entière, les trois types de revue (systématique, semi-systématique, intégrative) et comment choisir, le processus en 4 phases, les 4 critères de qualité et les 4 erreurs qui bloquent la publication.",
+    credit:
+      "Fiche de lecture ThesisFrame — d'après H. Snyder, Journal of Business Research, 104, 333-339, 2019",
+    pages: [
+      {
+        src: "/resources/revue-litterature-snyder-fiche-1.jpg",
+        alt: "Fiche de lecture page 1 : la revue de littérature comme méthodologie et les trois types de revue (systématique, semi-systématique, intégrative) avec critères de choix et contributions",
+        width: 1840,
+        height: 2380,
+      },
+      {
+        src: "/resources/revue-litterature-snyder-fiche-2.jpg",
+        alt: "Fiche de lecture page 2 : le processus en 4 phases (concevoir, conduire, analyser, rédiger), les 4 critères d'une revue de qualité et les 4 erreurs qui bloquent la publication",
+        width: 1840,
+        height: 2380,
+      },
+    ],
+  },
+  {
     title: "Les méthodes mixtes : combiner quali et quanti",
     description:
       "Fiche de lecture en 2 pages : les trois niveaux de combinaison (paradigme, méthode, technique), la notation et les 7 gabarits de design, l'échantillonnage combiné, les usages multiples des instruments, lier ou transformer l'analyse (quantifying / qualitizing) et les garde-fous contre le mixte cosmétique.",

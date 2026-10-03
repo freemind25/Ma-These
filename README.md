@@ -91,12 +91,15 @@ Guides, fiches de lecture et infographies sélectionnés, également disponibles
 <p>
   <img src="public/resources/methodes-methodologie-uwa-1.jpg" alt="Guide de survie UWA — Methods and Methodology, page 1" width="300" />
   &nbsp;
+  <img src="public/resources/revue-litterature-snyder-fiche-1.jpg" alt="Fiche de lecture — La revue de littérature comme méthodologie (Snyder 2019), page 1" width="300" />
+</p>
+<p>
   <img src="public/resources/methodes-mixtes-sandelowski-fiche-1.jpg" alt="Fiche de lecture — Les méthodes mixtes (Sandelowski 2000), page 1" width="300" />
 </p>
 
-> Crédits : « Bien choisir son directeur de thèse » — @PhDtoProfMentor · « Article de recherche vs article de revue » — Razia Aliani, Source : Editage Open Academics · « Méthodes & méthodologie — guide de survie » — STUDYSmarter, The University of Western Australia (reproduction conservée dans sa forme originale, en-tête et logo UWA) · « Les méthodes mixtes : combiner quali et quanti » — fiche de lecture ThesisFrame d'après M. Sandelowski, *Research in Nursing & Health*, 23(3), 246-255, 2000.
+> Crédits : « Bien choisir son directeur de thèse » — @PhDtoProfMentor · « Article de recherche vs article de revue » — Razia Aliani, Source : Editage Open Academics · « Méthodes & méthodologie — guide de survie » — STUDYSmarter, The University of Western Australia (reproduction conservée dans sa forme originale, en-tête et logo UWA) · « La revue de littérature comme méthodologie » — fiche de lecture ThesisFrame d'après H. Snyder, *Journal of Business Research*, 104, 333-339, 2019 (CC BY-NC-ND) · « Les méthodes mixtes : combiner quali et quanti » — fiche de lecture ThesisFrame d'après M. Sandelowski, *Research in Nursing & Health*, 23(3), 246-255, 2000.
 >
-> Le savoir de ces ressources est également distillé dans le socle de connaissances IA (module `methodology`, voir `docs/ARCHITECTURE-CONNAISSANCE.md`).
+> Le savoir de ces ressources est également distillé dans le socle de connaissances IA (modules `methodology` et `literature-review`, voir `docs/ARCHITECTURE-CONNAISSANCE.md`).
 
 ## Documentation
 

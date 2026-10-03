@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 920px; height: 1190px; overflow: hidden; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #FCFBF8; color: #292524;
+    display: flex; flex-direction: column;
+  }
+  .sheet { flex: 1; display: flex; flex-direction: column; padding: 52px 56px 0; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: #B45309; font-weight: 700; margin-bottom: 10px;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 34px; line-height: 1.18; color: #1C1917; font-weight: 700;
+  }
+  .subtitle {
+    margin-top: 12px; font-size: 14.5px; line-height: 1.5; color: #57534E;
+  }
+  .subtitle em { font-style: italic; }
+  .rule { height: 3px; background: #B45309; width: 84px; margin: 18px 0 22px; }
+  h2 {
+    font-size: 15px; letter-spacing: 1.4px; text-transform: uppercase;
+    color: #B45309; font-weight: 700; margin-bottom: 12px;
+  }
+  .lead {
+    font-size: 14px; line-height: 1.55; color: #44403C;
+    background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 10px;
+    padding: 15px 18px; margin-bottom: 24px;
+  }
+  .lead b { color: #1C1917; }
+  .types { display: flex; gap: 14px; margin-bottom: 24px; }
+  .type {
+    flex: 1; background: #FFFFFF; border: 1px solid #E7E5E4; border-radius: 10px;
+    padding: 16px 16px 14px; display: flex; flex-direction: column;
+  }
+  .type .n {
+    display: inline-block; align-self: flex-start; font-size: 11px; font-weight: 800; letter-spacing: 1px;
+    color: #FFFFFF; background: #292524; border-radius: 5px; padding: 3px 8px; margin-bottom: 9px;
+  }
+  .type.hot .n { background: #B45309; }
+  .type h3 { font-size: 16px; margin-bottom: 4px; color: #1C1917; }
+  .type .when { font-size: 12px; line-height: 1.45; color: #78716C; margin-bottom: 10px; }
+  .type p { font-size: 12.8px; line-height: 1.5; color: #44403C; margin-bottom: 8px; }
+  .type p b { color: #1C1917; }
+  .type .contrib {
+    margin-top: auto; background: #F5F5F4; border-radius: 7px; padding: 8px 10px;
+    font-size: 12px; line-height: 1.45; color: #57534E;
+  }
+  .type .contrib b { color: #B45309; }
+  .decide {
+    background: #1C1917; color: #FAFAF9; border-radius: 10px;
+    padding: 15px 20px; margin-bottom: 0;
+    display: flex; gap: 20px; align-items: center;
+  }
+  .decide .lbl {
+    font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase;
+    color: #D6D3D1; font-weight: 700; min-width: 150px; line-height: 1.4;
+  }
+  .decide p { font-size: 12.8px; line-height: 1.5; color: #E7E5E4; flex: 1; }
+  .decide b { color: #FCD34D; }
+  .footer {
+    margin-top: auto; border-top: 1px solid #E7E5E4; padding: 14px 56px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11.5px; color: #78716C; background: #FCFBF8;
+  }
+  .footer b { color: #44403C; }
+  .pagenum { font-weight: 700; color: #B45309; }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="eyebrow">Fiche de lecture · Méthodes de recherche</div>
+    <h1>La revue de littérature : une méthodologie de recherche à part entière</h1>
+    <p class="subtitle">D'après <em>Hannah Snyder</em>, « Literature review as a research methodology: An overview and guidelines », <em>Journal of Business Research</em>, 104, 333–339, 2019.</p>
+    <div class="rule"></div>
+
+    <div class="lead">
+      <b>La revue de littérature n'est pas un simple préalable de rédaction</b> : c'est une méthode de recherche qui synthétise des travaux existants avec une puissance qu'aucune étude seule n'atteint — fondement théorique, état des lieux collectif des preuves, détection des zones où la recherche manque. Menée « ad hoc » et sans méthodologie, elle produit des conclusions fragiles bâties sur des suppositions faussées.
+    </div>
+
+    <h2>Trois types de revue — le choix découle de la question</h2>
+    <div class="types">
+      <div class="type">
+        <span class="n">TYPE 1</span>
+        <h3>Systématique</h3>
+        <p class="when"><b>Quand :</b> question étroite et précise (ex. « effet d'un facteur X sur Y »).</p>
+        <p>Protocole strict et transparent : toutes les données pertinentes couvertes, règles et standards élevés. Souvent complétée d'une <b>méta-analyse</b> (taille d'effet commune), possible seulement si les études partagent des mesures comparables.</p>
+        <div class="contrib"><b>Contribution :</b> l'effet est-il constant d'une étude à l'autre ? quels facteurs d'étude, d'échantillon ou de contexte le modèrent ? quelles études futures exigées ?</div>
+      </div>
+      <div class="type hot">
+        <span class="n">TYPE 2</span>
+        <h3>Semi-systématique</h3>
+        <p class="when"><b>Quand :</b> sujet conceptualisé différemment selon les disciplines, corpus trop vaste pour tout couvrir.</p>
+        <p>Stratégie de recherche <b>transparente et documentée</b> (le lecteur doit pouvoir juger les jugements portés). Synthèse par <b>méta-narratives</b> plutôt qu'effets : analyse thématique ou de contenu des traditions de recherche.</p>
+        <div class="contrib"><b>Contribution :</b> cartographier un champ, synthétiser l'état des savoirs, proposer un agenda, dresser l'historique d'un sujet.</div>
+      </div>
+      <div class="type">
+        <span class="n">TYPE 3</span>
+        <h3>Intégrative</h3>
+        <p class="when"><b>Quand :</b> sujet mûr à reconceptualiser, ou sujet émergent à pré-conceptualiser.</p>
+        <p>Collecte plus créative (combiner perspectives et traditions). Pas de standard strict : exige <b>transparence</b> et compétences conceptuelles avancées — la rigueur perçue est moindre, mais la récompense peut être grande.</p>
+        <div class="contrib"><b>Contribution :</b> un nouveau cadre conceptuel ou une théorie — pas un simple descriptif. Attention : beaucoup de revues « intégratives » sont des résumés déguisés.</div>
+      </div>
+    </div>
+
+    <div class="decide">
+      <span class="lbl">Comment choisir</span>
+      <p>Le <b>but de la revue</b> et la question décident : synthétiser l'effet d'un facteur précis → systématique (l'intégrative n'est pas de confiance pour prouver un effet) ; couvrir un domaine large ou interdisciplinaire → narrative ou intégrative. Écrire le but AVANT, et le laisser guider toute la revue.</p>
+    </div>
+  </div>
+  <div class="footer">
+    <span><b>Fiche pédagogique ThesisFrame</b> — contenu d'après H. Snyder, <em>Journal of Business Research</em>, 104, 333–339, 2019 (CC BY-NC-ND)</span>
+    <span class="pagenum">1 / 2</span>
+  </div>
+</body>
+</html>
