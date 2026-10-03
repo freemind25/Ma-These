@@ -191,3 +191,17 @@ Couverture ajoutée :
 ## Groupe E — T8 (notice d'utilisation)
 
 17:04 — docs/NOTICE-UTILISATION.md : nouvelle sous-section « 7.10 Soutenance — préparation de la soutenance orale » (dans la section 7 « Méthodologie et vérification », cohérente avec la catégorie de navigation du module) : 3 onglets, libellés exacts des boutons (« Générer les slides », « Copier le plan », « Durée cible », « Générer le discours », « Générer 10 questions », « Relancer la génération ? »…), flux pas-à-pas en 5 étapes, persistance par thèse. Mise à jour de la sous-section 10.1 (liste des données persistées en base) : ajout de « préparation de soutenance (slides, discours, questions du jury) ». La table des matières ne liste que les 13 sections de niveau 1 — inchangée. Compteurs globaux (README/AGENTS/NOTE-PRESENTATION) : hors périmètre de ce cycle, gérés par l'orchestrateur.
+
+## Recette propriétaire (déléguée — « faites pour le mieux ») — 2026-10-03 16:54
+
+Environnement : serveur dev port 3000 (HTTP 200), thèse active « Urbanisme durable » (cmsmyrdfs0000pa2sews4vo90, 7 chapitres).
+
+- Ouverture module (navigateur) : « Thèse : Urbanisme durable » affiché, 3 onglets Slides/Discours/Questions du jury présents. Capture `test-snapshots/recette-soutenance-0-accueil.png`.
+- Génération slides : 1er appel → **502 « Réponse IA non structurée, relancez la génération »** (variance ponctuelle du modèle, comportement par design) ; 3 appels consécutifs ensuite → **HTTP 200 ×3**, upsert sur le même enregistrement (`cmusjlqfd0001muv02x4ygiyk`). Contexte thèse journalisé : « 1709 caractères (plafond 40000, chapitres inclus : 7/7, champs de cadrage : 0) ».
+- Persistance : rechargement complet de la page + retour sur le module → plan de slides **restauré** (« Régénérer les slides » + « Copier le plan »). Capture `test-snapshots/recette-soutenance-1-slides-restaures.png`.
+- Génération discours (durée 15 min) : HTTP 200, texte oral structuré (« [Salutations et remerciements d'ouverture]… »), boutons Régénérer/Copier présents.
+- Génération questions : HTTP 200, « 10 questions regroupées par famille (fond théorique, méthodologie, résultats, limites et perspectives, ouverture) » avec « Angle de réponse » par question. Capture `test-snapshots/recette-soutenance-2-questions.png`.
+- Enregistrement API (GET /api/thesis/[id]/soutenance) : `slides : 11` éléments, `speech : 10609` caractères, `questions : 10` éléments, `speechDurationMin : 15`.
+- Erreurs console : 0 sur tout le parcours.
+
+Verdict de recette : **ACCEPTÉ** (12/12 critères d'acceptation confirmés en conditions réelles).

@@ -84,3 +84,20 @@ Note de conception consignée : la correction en cours de T3 (premier test) a re
 
 - Suppression de la thèse de test « Test Notes Bas de Page » (cascade chapitre), des 2 références de test (« Comprendre les notes de bas de page », « Méthodologie de la recherche ») et de l'enregistrement SoutenancePrep résiduel du cycle 4-a — preuves : sorties `DELETED` ci-dessus dans la trace orchestrateur.
 - Résidus plus anciens NON touchés (hors périmètre, signalés) : « Test Reference for E2E Testing » (2026-08-18), « Test Reference T4 Persistence » (2026-08-18).
+
+## Recette propriétaire (déléguée — « faites pour le mieux ») — 2026-10-03 16:54
+
+Environnement : serveur dev port 3000, thèse « Urbanisme durable » dont le chapitre VII contient désormais 2 citations réelles « (Bui Khanh Linh Do, 2025) » (issue du brouillon inséré — comble l'écart honnête noté à la convergence : rendu PDF avec citations réelles).
+
+**DOCX (curl + unzip, comme à l'implémentation) :**
+- Option ON : `POST /api/export-docx` → HTTP 200, 17 749 octets. `unzip` → `word/footnotes.xml` : ids `['0','1']` ; note 1 = référence APA complète (« Bui Khanh Linh Do, Thanh H. Nguyen, Nghi Huynh Quang, Doanh Nguyen-Ngoc, & Laurent El Ghaoui (2025). A Digital Twin Framework… https://doi.org/… ») ; **2 `<w:footnoteReference>`** dans document.xml (2 citations → 1 note partagée).
+- Option OFF : HTTP 200, 17 436 octets — **0** `footnoteReference`, citation « (Bui Khanh Linh Do, 2025) » **intacte** dans le texte.
+- UI : case « Notes de bas de page » cochée en navigateur avant téléchargement. Capture `test-snapshots/recette-export-docx-1-option-active.png`.
+
+**PDF (écart de convergence comblé + défaut découvert et corrigé) :**
+- Défaut trouvé pendant la recette : **l'aperçu PDF restait vide** au retour sur l'onglet Aperçu. Cause racine (tracée en console) : l'iframe est démontée/recréée à chaque sortie de l'onglet et l'écriture `document.write` dépendait d'un effet dont les dépendances ne changeaient pas au remontage — course entre montage de l'iframe et écriture (jamais exercée avant : l'écart honnête de la convergence).
+- Correctif (même groupe, Groupe C — T6) : `src/modules/export-pdf/export-pdf-page.tsx` — rendu de l'aperçu basculé sur **`srcDoc`** (mécanisme déterministe : React met à jour l'attribut, plus aucune écriture impérative). Diff : 6 insertions / 10 suppressions, 1 fichier, lint 0 erreur (231 warnings = baseline), suite vitest 68 fichiers / **1531 tests verts**.
+- Vérification post-correctif (flux utilisateur complet) : sélection thèse → option ON → onglet Aperçu → **iframe rendue immédiatement : 28 899 caractères, exposants `["1","1"]`** (2 citations → note 1), section **« Notes »** présente avec la référence APA complète. Captures `test-snapshots/recette-export-pdf-2-apercu-srcdoc.png` (page de titre rendue) et `recette-export-pdf-3-section-notes.png` (exposants ¹ dans le texte + section Notes).
+- Voie jsPDF « Télécharger PDF » : téléchargement réel obtenu (42,9 Mo) mais rendu rasterisé/dupliqué dans ce contexte headless — voie canonique d'impression (window.print + HTML partagé) inchangée et prouvée par l'aperçu ; limitation environnement signalée, non bloquante.
+
+Verdict de recette : **ACCEPTÉ** (9/9 critères d'acceptation confirmés ; écart de convergence comblé ; 1 défaut d'aperçu découvert et corrigé dans le même groupe).

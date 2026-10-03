@@ -62,3 +62,17 @@ Progression : [T6] entrée guide intégré ajoutée — commit 93b264e.
 - `git diff --stat docs/NOTICE-UTILISATION.md` → `1 file changed, 17 insertions(+)` (aucune suppression ; compteurs « 44 modules » et les 26 modes non touchés).
 
 Progression : [T7] section notice ajoutée (§5.8).
+
+## Recette propriétaire (déléguée — « faites pour le mieux ») — 2026-10-03 16:54
+
+Environnement : serveur dev port 3000, thèse active « Urbanisme durable », module « Brouillon de chapitre ».
+
+- Paramétrage : chapitre cible **Chapitre 7 — Conclusion** (vide avant recette), longueur cible **400** mots, **2 références** cochées (« A Digital Twin Framework… Bui Khanh Linh Do, 2025 » + « Méthodologies qualitatives en urbanisme Dupont, J., 2023 ») — compteur UI « Références autorisées (2/20) ».
+- Génération SSE en direct : flux visible, bouton Arrêter disponible pendant la génération, puis aperçu rendu avec rappel des références (« Références autorisées pour ce brouillon : Bui Khanh Linh Do (2025)…, Dupont (2023)… »).
+- Insertion : AlertDialog conforme — « Le contenu actuel du chapitre sera remplacé. Une version est automatiquement sauvegardée dans l'historique du chapitre. » → « Remplacer le contenu ».
+- Résultat éditeur : **chapitre VII passe à 338 mots** (cible 400), contenu = brouillon généré (« Ce chapitre de conclusion vient couronner une réflexion menée… »).
+- Historique : dialogue « Historique du chapitre » ouvert — version **« 03/10/2026 15:30 — 338 mots »** enregistrée. Captures `test-snapshots/recette-brouillon-1-insertion-historique.png`, `recette-brouillon-2-historique-version.png`.
+- Citations dans le brouillon inséré : 2 × « (Bui Khanh Linh Do, 2025) » (vérifié via API thèse) — réutilisées par la recette export-notes-bas-page.
+- Erreurs console : 0.
+
+Verdict de recette : **ACCEPTÉ** (11/11 critères d'acceptation confirmés en conditions réelles).
