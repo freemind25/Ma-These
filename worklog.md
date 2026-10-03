@@ -984,3 +984,26 @@ Stage Summary:
 - Les 3 cycles approuvés (comparatif TrustMémoireAI) sont désormais CONVERGÉS + RECETTÉS (délégation propriétaire) : pack-soutenance 12/12, brouillon-chapitre 11/11, export-notes-bas-page 9/9.
 - 1 défaut réel corrigé à l'occasion de la recette (aperçu PDF srcDoc) — preuves navigateur et captures à l'appui.
 - Reste ouvert : mémoire dev box (OOM), voie jsPDF headless, rotation clés (propriétaire).
+
+---
+Task ID: competences-livres-vivantes
+Agent: Z.ai Code (orchestrateur SDD, exécution directe sous délégation)
+Task: Cycle SDD complet « compétences-livres-vivantes » — injecter la base CustomBookSkill (58 ressources, jamais lue par l'IA) dans les prompts des flux génératifs, avec UI de gestion, opt-in strict et plafonds de contexte. Délégation propriétaire explicite (« terminez toutes les actions avant de revenir pour moi pour avis »).
+
+Work Log:
+- Lecture obligatoire : SKILL.md SDD, CONSTITUTION.md (7 articles), worklog (précédents veille-academique / recette-3-cycles).
+- Exploration sourcée : prisma/schema.prisma l.317-325 ; book-skills routes l.1-155/[id] ; livres-competences-page.tsx l.1202-1401 (aucun create/edit, bug `~Math.round` l.1356) ; prompt-builder ; ai-writing(+stream) routes ; chapter-draft/stream buildSystemPrompt l.101-133 ; tests (mocks db par modèle).
+- Étape 1-4 : spec.md (14 CA, choix conservateurs délégués consignés, révisables), plan.md (état réel + approche canal séparé du noyau — budget core 21 794/22 000 tok), tasks.md (A→E, 12 tâches). Commit artefacts 0298f5c.
+- Groupe A (T1) : schéma +description/+source/+enabled(default false) ; db:push additif ; 58/58 survécues — commit 4d14b24.
+- Groupe B (T2a-T4) : **écart Article 4** — GET complet en P2010 « Conversion failed » PRÉEXISTANT (8 lignes du 2026-08-23 avec dates texte ISO 6 décimales vs entiers epoch-ms attendus par Node ; bissection SQL prouvée) ; plan/tasks amendés avant correctif ; normalisation epoch-ms, 58=58, requêtes ancienne+nouvelle OK. GET/POST/PUT étendus zod+nullish ; preuves curl 201/400/200/404 + persistance — commits 89fd282, 0a4f7e2.
+- Groupe C (T5-T8) : book-skills.ts pure (plafonds 12 000/1 500 car., null si 0 active) 11/11 tests ; book-skills-server.ts ; injection chapter-draft (16/16) + ai-writing (19/19) + stream (14/14) ; lint ramené à baseline 231 (2 warnings auto-introduits corrigés) — commits e6aac40, 1bf64d2, 4a056a6.
+- Groupe D (T9-T10) : BookSkillsLibrary réécrit — création/édition, interrupteur IA + badges Injectée/Hors IA, fix compteur mots négatif ; lint 0 erreur — commit 1603ba5.
+- Groupe E (T11-T12) : suite 69 fichiers/1548 verts (baseline +17, zéro régression) ; note ARCHITECTURE-CONNAISSANCE § 6 bis — commit 48459a7.
+- Recette navigateur (délégation) : 15 contrôles — opt-in par défaut réel, création/édition/suppression UI, badge persistant au reload, génération live HTTP 200 (2 633 car.) avec compétence active, mobile 390 px sans scroll horizontal, 0 erreur console, 5 captures. Défaut trouvé/corrigé : POST 400 sur nulls → .nullish() (16a00d7) + re-recette. Incident environnemental : « readonly database » ponctuel → relance serveur propre.
+- Clôture : cases T1→T12 cochées + verdict CONVERGÉ (recette déléguée, révisable), FICHE_SYNTHESE.md, preuves § Recette.
+
+Stage Summary:
+- Cycle compétences-livres-vivantes CONVERGÉ : 14/14 CA, suite 69/1548 verte, lint 0 erreur (231 baseline), lignes rouges 0 diff à chaque commit.
+- La base « Livres & compétences » est désormais vivante : opt-in strict par ressource, injection budgétée (≤ ~3 400 tokens), règle « jamais source de citations » (intégrité académique), byte-identité préservée à 0 ressource active.
+- Écart majeur documenté : bug préexistant P2010 (dates 6 décimales) corrigé à la racine (données), pas masqué.
+- Ouvert : recette de contrôle propriétaire ; stamp Sceau de vérité (reporté) ; extension flux d'analyse (non planifié) ; OOM box.

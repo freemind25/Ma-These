@@ -246,3 +246,21 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Livrés** : captures `test-snapshots/recette-*.png` (8) ; commits fix(export) + docs(sdd).
 
 **Points ouverts pour la session suivante** : mémoire serveur dev ~2,4 Go RSS → OOM sur cette box 4 Go lors des recompiles lourdes (redémarrage avec NODE_OPTIONS=--max-old-space-size, à surveiller) ; voie jsPDF « Télécharger PDF » rasterise/duplique en headless (limitation environnement, hors périmètre) ; rotation OpenAlex/APINEX + révocation clés GitHub toujours en attente côté propriétaire.
+
+
+## Session du 2026-10-03 (suite) — Cycle n°11 « compétences-livres-vivantes » (cycle complet, CONVERGÉ)
+
+**Déclencheur** : comparaison demandée par le propriétaire entre l'écosystème skills.sh (vercel-labs/find-skills) et notre architecture « compétences ». Constat factuel : la base `CustomBookSkill` (58 ressources) n'atteignait **jamais aucun prompt IA** — une compétence morte, sans UI de création/édition. Délégation complète du propriétaire (« terminez toutes les actions avant de revenir pour moi pour avis ») — exécution SDD intégrale sous délégation, choix conservateurs consignés dans la spec, révisables à son retour.
+
+**Implémentation livrée** (commits `0298f5c`→`16a00d7`) :
+- Schéma (T1) : `CustomBookSkill` + `description String?`, `source String?`, `enabled Boolean @default(false)` — db:push additif, 58/58 lignes survécues, opt-in strict (CA-2.1).
+- Backend (T2a-T4) : GET (colonnes ajoutées), POST/PUT zod étendus (description ≤ 500, source ≤ 300, enabled ; 400/404 préservés). **Écart Article 4** : le GET complet échouait en P2010 pour **bug préexistant** — 8 lignes du 2026-08-23 stockaient des dates en texte ISO 6 décimales (le runtime Node exige des entiers epoch-ms) ; normalisées en epoch-ms, comptes 58=58 prouvés. L'ancienne requête échouait à l'identique — rien introduit par le cycle.
+- IA (T5-T8) : bibliothèque pure `src/lib/ai/book-skills.ts` (`selectBookSkills` déterministe récence-d'abord, plafond **12 000 car.** de contenu ; `buildBookSkillsIndex` plafond **1 500 car.** avec mention « contenu non injecté (budget) » ; `buildBookSkillsSection` **null si 0 active** → prompts byte-identiques) ; accès serveur `getActiveBookSkills()` ; injection dans `chapter-draft/stream` (3e paramètre, continuation inchangée) et `ai-writing`/`stream` (message système dédié) ; règle d'intégrité : les savoirs sont un appui, **JAMAIS une source de citations** (CA-3.5).
+- UI (T9-T10) : onglet Bibliothèque — création/édition complète (dialog : titre, auteur, provenance, description d'usage, tags, contenu, interrupteur « Utilisée par l'IA » désactivé par défaut), interrupteur par carte avec badges « Injectée »/« Hors IA », **fix du `~` parasite** qui affichait des nombres de mots négatifs.
+- Docs (T12) : section « 6 bis. Canal “Compétences livres” » dans `docs/ARCHITECTURE-CONNAISSANCE.md`.
+
+**Vérifications** : suite **69 fichiers / 1548 tests verts** (baseline 68/1531 + 17 nouveaux, zéro régression) ; lint **0 erreur / 231 warnings** (= baseline) ; lignes rouges **0 diff** à chaque commit ; recette navigateur agent-browser (15 contrôles : création/édition/suppression UI, opt-in par défaut, badge Injectée persistant au reload, génération live HTTP 200 avec compétence active, mobile 390 px sans scroll horizontal, 0 erreur console, 5 captures `test-snapshots/competences-*.png`) ; **14/14 CA**, verdict **CONVERGÉ** (recette déléguée).
+
+**Défaut découvert en recette et corrigé** : POST 400 — l'UI envoyait `null` là où le schema POST n'acceptait que `undefined` ; `.nullish()` sur les 4 champs (commit `16a00d7`), re-recetté.
+
+**Points ouverts pour la session suivante** : recette de contrôle du propriétaire sur ce cycle (choix conservateurs révisables — § « Zones floues » de la spec) ; stamp de version des savoirs pour le Sceau de vérité (hors périmètre, reporté) ; extension de l'injection aux flux d'analyse (non planifié) ; mémoire box (OOM) toujours à surveiller ; rotation OpenAlex/APINEX + clés GitHub côté propriétaire.
