@@ -6,6 +6,7 @@
 
 ## Groupe B — Backend / routes API `[DÉPEND DE Groupe A]`
 
+- [ ] T2a — Normaliser en entiers epoch-ms les `createdAt`/`updatedAt` texte (6 décimales) des 8 lignes importées le 2026-08-23 (bug préexistant P2010, cf. plan § Écart) · base de données · preuve : requête complète ancienne + nouvelle OK sous Node, compte 58 inchangé.
 - [ ] T2 — Étendre `GET /api/book-skills` : ajouter `description`, `enabled`, `source` au SELECT brut · `src/app/api/book-skills/route.ts` · preuve : curl GET avec champs présents.
 - [ ] T3 — Étendre la validation zod POST (description ≤ 500, source ≤ 300, enabled) · `src/app/api/book-skills/route.ts` · preuve : curl POST 201 avec nouveaux champs + 400 sur champ invalide.
 - [ ] T4 — Étendre PUT de `/api/book-skills/[id]` (mêmes champs, 400/404 préservés) · `src/app/api/book-skills/[id]/route.ts` · preuve : curl PUT 200 + persistance re-GET.

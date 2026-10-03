@@ -88,3 +88,9 @@ Lignes rouges (aucun commit sans 0 diff) : `src/app/api/theses-en-ligne/search/r
 - Fichier UI de 1 401 lignes : éditions ciblées (composant `BookSkillsLibrary` l.1202-1401 uniquement), lint après chaque tâche UI.
 - `~Math.round` : correction triviale mais dans un fichier déjà touché — annoncée et recettée comme tâche propre (CA-4.1).
 - OOM dev box connue (worklog) : en cas de kill du serveur dev pendant la recette, relance `NODE_OPTIONS=--max-old-space-size=1200` documentée.
+
+## Écart découvert à l'exécution (Article 4 — complément du 2026-10-03, Groupe B)
+
+La preuve T2 (GET) a révélé un **bug préexistant, indépendant des champs ajoutés** : `GET /api/book-skills` échouait en 500 (P2010 « Conversion failed: input contains invalid characters ») pour le jeu complet de 58 lignes. Cause racine prouvée par bissection SQL : **8 lignes** créées le 2026-08-23 stockent `createdAt`/`updatedAt` en **texte ISO à 6 décimales** (ex. `2026-08-23T08:16:35.787667`) là où toutes les autres stockent des **entiers epoch-ms** (ex. `1787386113854`) ; le convertisseur Prisma côté Node rejette ces valeurs. La requête ancienne (sans les colonnes ajoutées) échoue à l'identique — le défaut n'est pas introduit par ce cycle.
+
+Correctif retenu (T2a, ajoutée à `tasks.md` Groupe B) : normalisation des 8 valeurs en entiers epoch-ms (parsing ISO en JS, précision sous-millisecondes perdue — sans effet métier), aucune colonne ni ligne ajoutée/supprimée, comptes prouvés avant/après. Alternative écartée : masquer par `CAST(... AS TEXT)` dans la requête — laisserait des dates invalides en base (mine data integrity).
