@@ -8,6 +8,8 @@ import {
 } from "@/lib/ai/zai-client";
 import type { AiProviderConfig } from "@/lib/ai/ai-types";
 import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
+import { getActiveBookSkills } from "@/lib/ai/book-skills-server";
+import { buildBookSkillsSection } from "@/lib/ai/book-skills";
 
 // ═══════════════════════════════════════
 // POST /api/chapter-draft/stream — Générateur de brouillon de chapitre (SSE)
@@ -98,7 +100,11 @@ function buildThesisContext(
   return lines.join("\n");
 }
 
-function buildSystemPrompt(thesisContext: string, bibliography: string | null): string {
+function buildSystemPrompt(
+  thesisContext: string,
+  bibliography: string | null,
+  bookSkillsSection: string | null = null
+): string {
   const citationRules = bibliography
     ? [
         "- Tu peux citer UNIQUEMENT les références de la BIBLIOGRAPHIE AUTORISÉE ci-dessous, au format « (Auteur, année) » où Auteur est le premier auteur, avant la virgule.",
@@ -126,6 +132,7 @@ function buildSystemPrompt(thesisContext: string, bibliography: string | null): 
     "",
     "STYLE : ton doctoral, français académique soutenu, phrases complètes, transitions soignées.",
     "",
+    ...(bookSkillsSection ? [bookSkillsSection, ""] : []),
     "CONTEXTE DE LA THÈSE :",
     thesisContext,
     bibliographyBlock,
@@ -322,8 +329,10 @@ export async function POST(request: NextRequest) {
         ? buildBibliography(references)
         : null;
 
+    const bookSkillsSection = buildBookSkillsSection(await getActiveBookSkills());
+
     const messages: AiMessage[] = [
-      { role: "system", content: buildSystemPrompt(thesisContext, bibliography) },
+      { role: "system", content: buildSystemPrompt(thesisContext, bibliography, bookSkillsSection) },
       {
         role: "user",
         content: `Rédige le brouillon complet du chapitre « ${chapter.title} » (chapitre ${chapter.number} sur ${thesis.chapters.length}). Longueur cible : environ ${validated.targetWords} mots.`,

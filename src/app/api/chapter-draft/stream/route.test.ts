@@ -22,13 +22,19 @@ vi.mock("@/lib/ai/zai-client", () => ({
   generateCompletion: vi.fn(),
 }));
 
+vi.mock("@/lib/ai/book-skills-server", () => ({
+  getActiveBookSkills: vi.fn(),
+}));
+
 import { db } from "@/lib/db";
 import { generateCompletionStream, generateCompletion } from "@/lib/ai/zai-client";
+import { getActiveBookSkills } from "@/lib/ai/book-skills-server";
 
 const mockChapterFindUnique = vi.mocked(db.chapter.findUnique);
 const mockReferenceFindMany = vi.mocked(db.reference.findMany);
 const mockGenerateCompletionStream = vi.mocked(generateCompletionStream);
 const mockGenerateCompletion = vi.mocked(generateCompletion);
+const mockGetActiveBookSkills = vi.mocked(getActiveBookSkills);
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 const makeRequest = (body: object) =>
@@ -158,6 +164,7 @@ describe("POST /api/chapter-draft/stream > succès SSE (IA mockée)", () => {
     vi.clearAllMocks();
     mockChapterFindUnique.mockResolvedValue(mockChapter as never);
     mockReferenceFindMany.mockResolvedValue([]);
+    mockGetActiveBookSkills.mockResolvedValue([]);
   });
 
   it("renvoie un flux SSE avec les chunks transmis et un seul done", async () => {
@@ -302,5 +309,91 @@ describe("POST /api/chapter-draft/stream > succès SSE (IA mockée)", () => {
     expect(events[0].error).toBe("Tous les fournisseurs IA ont échoué.");
     expect(mockGenerateCompletion).not.toHaveBeenCalled();
     expect(events.filter((e) => e.type === "done")).toHaveLength(1);
+  });
+});
+
+// ── Injection compétences livres (canal IA) ──────────────────────────────
+describe("POST /api/chapter-draft/stream > injection compétences livres", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockChapterFindUnique.mockResolvedValue(mockChapter as never);
+    mockReferenceFindMany.mockResolvedValue([]);
+    mockGenerateCompletionStream.mockResolvedValue(
+      sseResponse([{ type: "chunk", content: "Brouillon." }, { type: "done" }])
+    );
+  });
+
+  it("avec 0 compétence active : aucune section COMPÉTENCES LIVRES (CA-3.1)", async () => {
+    mockGetActiveBookSkills.mockResolvedValue([]);
+
+    await POST(makeRequest({ chapterId: "ch-2", targetWords: 2000 }), {
+      params: Promise.resolve({}) } as never);
+
+    const systemMessage = mockGenerateCompletionStream.mock.calls[0][0].messages.find(
+      (m) => m.role === "system"
+    );
+    expect(systemMessage?.content).not.toContain("COMPÉTENCES LIVRES");
+  });
+
+  it("avec ≥ 1 compétence active : section index + contenu + règle de citation (CA-3.2/3.5)", async () => {
+    mockGetActiveBookSkills.mockResolvedValue([
+      {
+        id: "bs-1",
+        title: "Méthode du commentaire",
+        author: "J. Dupont",
+        description: "Quand rédiger un commentaire",
+        tags: "méthode",
+        source: "Cours 2026",
+        content: "Principes du commentaire académique.",
+      },
+    ]);
+
+    await POST(makeRequest({ chapterId: "ch-2", targetWords: 2000 }), {
+      params: Promise.resolve({}) } as never);
+
+    const systemMessage = mockGenerateCompletionStream.mock.calls[0][0].messages.find(
+      (m) => m.role === "system"
+    );
+    const content = systemMessage?.content ?? "";
+    expect(content).toContain("COMPÉTENCES LIVRES ACTIVES");
+    expect(content).toContain("[L1] Méthode du commentaire");
+    expect(content).toContain("Principes du commentaire académique.");
+    expect(content).toContain("JAMAIS une source de citations");
+    // La section s'insère avant le contexte de thèse
+    expect(content.indexOf("COMPÉTENCES LIVRES")).toBeLessThan(
+      content.indexOf("CONTEXTE DE LA THÈSE")
+    );
+  });
+
+  it("la continuation n'embarque pas les compétences livres (CA-3.6)", async () => {
+    mockGetActiveBookSkills.mockResolvedValue([
+      {
+        id: "bs-1",
+        title: "Méthode du commentaire",
+        content: "x".repeat(50),
+      },
+    ]);
+    mockGenerateCompletionStream.mockResolvedValue(
+      sseResponse([
+        { type: "chunk", content: "Le chapitre s'ouvre sur une analyse urbaine qui" },
+        { type: "done" },
+      ])
+    );
+    mockGenerateCompletion.mockResolvedValue({
+      content: "se poursuit jusqu'à la conclusion finale.",
+      provider: "test",
+      model: "test-model",
+    });
+
+    await POST(makeRequest({ chapterId: "ch-2", targetWords: 4000 }), {
+      params: Promise.resolve({}) } as never);
+
+    // La relance de continuation passe par generateCompletion
+    expect(mockGenerateCompletion).toHaveBeenCalledTimes(1);
+    const continuationSystem = mockGenerateCompletion.mock.calls[0][0].messages.find(
+      (m) => m.role === "system"
+    );
+    expect(continuationSystem?.content).toContain("Reprends EXACTEMENT");
+    expect(continuationSystem?.content).not.toContain("COMPÉTENCES LIVRES");
   });
 });
