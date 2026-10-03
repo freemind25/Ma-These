@@ -13,4 +13,24 @@ Toutes les heures sont en `TZ='Etc/GMT-1'`.
 
 ## Groupe A — Schéma
 
-(en attente d'exécution)
+**Fichiers modifiés : `prisma/schema.prisma` (+3 lignes). Tâche : T1.**
+
+- 18:00 — Diff avant/après : `git diff --stat prisma/schema.prisma` → « 1 file changed, 3 insertions(+) » (champs `description`, `source`, `enabled @default(false)` — additifs purs, aucune colonne retirée).
+- 18:00 — `bun run db:push` → « ✔ Generated Prisma Client (v6.19.2) » (sync réussie, aucune perte signalée).
+- 18:00 — Survie des données (Article 6) :
+  - avant : `CustomBookSkill: 58` ;
+  - après : `APRÈS total: 58 | enabled=false: 58` ; échantillon : `{"title":"The Complete Book of Grant Writing","description":null,"source":null,"enabled":false}` — les lignes existantes passent toutes à `enabled=false` (opt-in strict, CA-2.1 fondamental).
+- Lignes rouges avant commit : 0 diff (vérifié 17:59, inchangé — fichier non concerné).
+
+**Compte rendu de groupe :**
+
+```
+### Groupe A — Schéma
+Tâches : T1
+Fichiers modifiés : prisma/schema.prisma (+3)
+Vérifications exécutées : diff schema ; db:push ; comptes avant/après 58=58 ; champs nouveaux null/false sur lignes existantes
+Sorties : voir ci-dessus (réelles)
+Critères d'acceptation couverts : fondations CA-2.1, CA-3.4
+Écart au plan : aucun
+Statut proposé : à recetter (délégation)
+```

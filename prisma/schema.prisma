@@ -320,6 +320,9 @@ model CustomBookSkill {
   author      String?
   content     String   // Extracted knowledge text
   tags        String?
+  description String?  // Usage triggers — quand ce savoir s'applique (canal IA)
+  source      String?  // Provenance — ouvrage, cours, URL
+  enabled     Boolean  @default(false) // Injection IA opt-in (strict)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
