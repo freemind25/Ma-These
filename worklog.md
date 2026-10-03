@@ -945,3 +945,23 @@ Stage Summary:
 - Cycle export-notes-bas-page livré : lint 0 erreur, suite 68 fichiers / 1531 tests verts, lignes rouges 0 diff, CA-1.1→1.5 et CA-2.1→2.4 couverts (preuves curl + unzip pour DOCX, lint/tests/apercu pour PDF).
 - Écart préexistant signalé (hors périmètre, Article 4) : titres DOCX sans HeadingLevel (TDM Word peut ne pas les capter) — correction à la demande.
 - La vérification navigateur finale des 3 cycles est faite par l'orchestrateur en fin de session.
+
+---
+Task ID: ressource-revues-litterature
+Agent: Z.ai Code (orchestrateur SDD, exécution directe)
+Task: Cycle SDD ressource-revues-litterature — ajout des ressources transmises (Snyder 2019 ; Sandelowski 2000 retransmis) selon le protocole d'ajout + digestion établi (précédent : cycle ressource-methodes-mixtes du 28/09)
+
+Work Log:
+- Lu worklog.md, skills/sdd-thesisframe/SKILL.md, specs/ressource-methodes-mixtes/{spec,plan,tasks}.md pour reconstituer le protocole ; git status bruité par des changements de mode (100644→100755, 0 contenu) → neutralisé via core.fileMode false, arbre propre.
+- P1 — Identité Sandelowski prouvée (pdftotext « upload/Combining Qualitative.pdf » : 9 pages, filigrane « Askpstudyinaustralia », « Res Nurs & Health 23:246-255, 2000 », marqueurs digest) → déjà intégré le 28/09, aucune duplication (CA-3.1 consigné dans preuves.md).
+- Groupe A (T1) — fiche Snyder 2 pages composée en HTML 920×1190 (gabarit fiche-sandelowski réutilisé), capture chromium headless --force-device-scale-factor=2 → public/resources/revue-litterature-snyder-fiche-{1,2}.jpg (1840×2380, ffprobe) + sources versionnées docs/pdf-sources/ressources/fiche-snyder-p{1,2}.html ; contrôle visuel Read.
+- Groupe B (T2-T3) — 5e entrée typée dans resources-section.tsx (après UWA, avant Sandelowski) ; README : vignette + crédit Snyder (CC BY-NC-ND) + mention modules methodology/literature-review.
+- Groupe C (T4-T6) — knowledge-core.ts : ligne source en tête + section « Typologie et conduite des revues (Snyder 2019) » dans LITERATURE_REVIEW_MODULE (style télégraphique maison) ; source brute modules/revue-litterature-snyder.md (7 sections détaillées + DOI) ; sync AGENTS.md (sources, ligne budget) + ARCHITECTURE-CONNAISSANCE.md (date, arbre 10 modules, ligne table, note de mesure).
+- Budget prouvé avant/après : 62 823 → 65 382 chars (20 928 → 21 794 tok / 22 000) ; literature-review 2 228 → 3 094 tok ; méthodologie 4 470 toujours max ; 7/7 capteur vert ; marge résiduelle ~206 tok signalée dans AGENTS.md (prochaine ingestion = compaction ou dé-injection).
+- Groupe D (T7-T10) — lint 0 erreur (231 warnings baseline) ; suite 68 fichiers / 1531 tests verts ; recette agent-browser : 5 cartes, dialogue Snyder pagination 1/2→2/2 et retour, carte Sandelowski intacte (CA-1.3), 0 erreur console/page, mobile 390 px ; 5 captures test-snapshots/ressources-snyder-*.png ; lignes rouges 0 diff avant chaque commit.
+- Commits : 2453717 (feat ressources), 913f085 (docs ia), 50094d2 (docs sdd) ; FICHE_SYNTHESE.md mise à jour.
+
+Stage Summary:
+- Cycle SDD ressource-revues-litterature CONVERGÉ : CA-1.1→3.1 couvertes ; Sandelowski retransmis traçé sans duplication ; Snyder 2019 intégré de bout en bout (fiche, carte, socle IA, docs).
+- Écarts documentés : marge core 206 tok (vs ~400 estimés — section réelle ~855 tok) ; panneau préexistant « Livrable du test de production » fermé pendant la recette (données de test hors périmètre).
+- Points ouverts : recette propriétaire ; compaction/dé-injection avant toute future ingestion du noyau ; régénération PDF notice (résidu) ; rotation OpenAlex/APINEX + révocation clés GitHub (attente propriétaire).

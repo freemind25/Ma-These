@@ -215,3 +215,19 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Résidus signalés (hors périmètre)** : références de test d'août en base (« Test Reference for E2E Testing », « Test Reference T4 Persistence ») ; titres DOCX sans HeadingLevel (TDM Word) ; PDF de la notice non régénéré après l'ajout des sections 5.8/7.10 et des mentions d'options (pipeline docs/pdf-sources disponible).
 
 **Points ouverts** : recette propriétaire des 3 modules (cases tasks.md non cochées — cochées après acceptation) ; rotation OpenAlex et APINEX toujours en attente ; révocation des clés GitHub transités par chat.
+
+---
+
+## Session du 2026-10-03 — Cycle SDD n°11 : ressource-revues-litterature (ajout + digestion)
+
+**Déclencheur** : ordre propriétaire « dans le respect du protocole de rajout des ressources et connaissances établis précédemment, veuillez rajouter les éléments ci-joints » — 2 PDF dans `upload/` (Snyder 2019 JBR 104 ; Sandelowski 2000 RNH 23(3) retransmis).
+
+**État de convergence** : **CONVERGÉ** — CA-1.1→3.1 vérifiées (recette navigateur desktop + mobile 390, capteur budget, lint 0 erreur, 1531/1531).
+
+**Décisions** : Sandelowski 2000 retransmis = **déjà intégré le 28/09** (identité prouvée par pdftotext : 9 pages, filigrane « Askpstudyinaustralia », RNH 23:246-255, marqueurs digest) → **aucune duplication** (CA-3.1) ; Snyder 2019 = nouveau → protocole complet (fiche 2 pages au gabarit Sandelowski + 5e carte + digestion dans `LITERATURE_REVIEW_MODULE`, section « Typologie et conduite des revues (Snyder 2019) » + source brute `modules/revue-litterature-snyder.md`) ; le savoir comble le trou entre Ollhoff (narrative) et Sułkowski (SLR) : typologie systématique/semi-systématique/intégrative, 4 phases, critères qualité (profondeur/rigueur/réplicabilité/utilité), erreurs de publication.
+
+**Livrés** : commits `2453717` (feat ressources), `913f085` (docs ia), `50094d2` (docs sdd + captures) — lignes rouges 0 diff avant chaque commit ; upload/ inchangé.
+
+**Compteurs budget** : full core 20 928 → **21 794 tok / 22 000 (marge ~206 tok)** — signalé dans AGENTS.md comme point d'attention : toute nouvelle ingestion exigera compaction ou dé-injection ; literature-review 2 228 → 3 094 tok ; méthodologie 4 470 toujours max ; mode le plus lourd directeur ~16 302 / 17 000.
+
+**Points ouverts pour la session suivante** : marge full core quasi épuisée (voir ci-dessus) ; recette propriétaire (cases cochées conformément au précédent du cycle 2026-09-28) ; PNG de la notice et PDF non régénérés (résidu déjà signalé) ; rotation OpenAlex/APINEX et révocation des clés GitHub toujours en attente côté propriétaire.
