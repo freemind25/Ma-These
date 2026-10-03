@@ -1,7 +1,7 @@
 # Architecture de la Gestion des Connaissances
 
 > ThesisFrame v1.9.0 — Guide pour contributeurs (humains ou IA)
-> Dernière mise à jour : 28 septembre 2026 (digestion Sandelowski 2000 + STUDYSmarter/UWA)
+> Dernière mise à jour : 3 octobre 2026 (digestion Snyder 2019 — revues de littérature)
 
 ---
 
@@ -35,7 +35,8 @@ src/lib/ai/
 │       ├── methodology-basics.md
 │       ├── data-analysis.md
 │       ├── methods-mixtes-sandelowski.md   ← digestion 2026-09-28
-│       └── methodes-methodologie-uwa.md    ← digestion 2026-09-28
+│       ├── methodes-methodologie-uwa.md    ← digestion 2026-09-28
+│       └── revue-litterature-snyder.md     ← digestion 2026-10-03
 └── specializations/          ← 19 fichiers (1 par mode d'écriture)
     ├── index.ts              ← Registry : SPECIALIZATION_PROMPTS[modeId]
     ├── directeur.ts          ← Mode « directeur de thèse »
@@ -108,12 +109,12 @@ La calibration adapte le **comportement** (ton, granularité, pédagogie) sans m
 | `peer-review` | Existant | ~380 | peer-review, revision-plan |
 | `methodology` | Kumar, Salkind, Sandelowski (2000), STUDYSmarter (UWA) | ~4 470 | directeur, hypothesis, methodology, revue-litterature |
 | `writing-process` | White | ~310 | directeur, scientific-writing, theory, revision-plan |
-| `literature-review` | Ollhoff | ~400 | literature-review, revue-litterature |
+| `literature-review` | Ollhoff, Snyder (2019) | ~3 094 | literature-review, revue-litterature |
 | `data-analysis` | Rae & Wong | ~310 | (disponible, pas encore injecté) |
 | `grant-writing` | Smith & Works | ~340 | (disponible, pas encore injecté) |
 | `publication` | Gastel & Day | ~380 | directeur, abstract, verification-publication |
 
-> **Jetons — note de mesure (2026-09-28) :** la colonne « Tokens » ci-dessus conserve des estimations historiques ; la mesure faisant foi est le capteur `src/lib/ai/knowledge-core.budget.test.ts` (full core ~20 928 tokens mesurés / budget 22 000 ; méthodologie ~4 470 / plafond 5 000).
+> **Jetons — note de mesure (2026-10-03) :** la colonne « Tokens » ci-dessus conserve des estimations historiques ; la mesure faisant foi est le capteur `src/lib/ai/knowledge-core.budget.test.ts` (full core ~21 794 tokens mesurés / budget 22 000 — marge ~206 tok ; méthodologie ~4 470 / plafond 5 000, toujours le plus grand module).
 
 ### Détail du module `coherence` (v1.8.3 — enrichi)
 

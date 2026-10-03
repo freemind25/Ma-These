@@ -34,6 +34,7 @@
 //   Zimmerman (éd.) — Methodological Innovations in Research (Q méthodologie, Giorgi, recherche historique, thèse par articles)
 //   Yin — Case Study Research (étude de cas : composition, explications rivales, multi-cas)
 //   Creswell & Plano Clark — Designing and Conducting Mixed Methods Research (écriture méthodes mixtes)
+//   Snyder — Literature Review as a Research Methodology (typologie des revues, 4 phases, qualité)
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -640,6 +641,17 @@ const LITERATURE_REVIEW_MODULE = `
 - Énoncé de lacune = [LACUNE identifiée] + [JUSTIFICATION de son importance]. Jamais seulement « X n'a pas été étudié »
 - Outils bibliométriques (VOSviewer, Gephi) : identifier les sous-champs silotés (peu de co-citations) = opportunités de revue passerelle
 - SI l'IA assiste le criblage/extraction → marquer avec niveau de confiance et signaler les décisions incertaines pour vérification humaine
+
+### Typologie et conduite des revues (Snyder 2019)
+- La revue de littérature = méthodologie de recherche à part entière, pas un préalable de rédaction. Menée ad hoc → suppositions faussées, conclusions fragiles
+- Trois types — le but et la question décident, écrits AVANT de conduire :
+  · Systématique : question étroite (prouver un effet), protocole strict (PRISMA), toutes données pertinentes couvertes ; méta-analyse si mesures comparables. Contribution : constance de l'effet, modérateurs (étude/échantillon/contexte), études futures requises
+  · Semi-systématique (narrative) : sujet conceptualisé différemment selon les disciplines, corpus trop vaste pour tout couvrir ; stratégie transparente et documentée ; synthèse par méta-narratives, analyse thématique/de contenu. Contribution : cartographie du champ, agenda, historique
+  · Intégrative : sujet mûr à reconceptualiser ou émergent à pré-conceptualiser ; collecte créative multi-traditions ; peu de standards → transparence + conceptualisation avancée exigées. Contribution : nouveau cadre/théorie, jamais un simple descriptif. Attention : beaucoup de revues « intégratives » sont des résumés déguisés
+- SI but = prouver l'effet d'un facteur → systématique (l'intégrative n'est pas de confiance pour cela). SI domaine large ou interdisciplinaire → narrative ou intégrative
+- 4 phases : (1) Concevoir — but, public, question, type ; stratégie écrite : termes, bases, critères inclusion/exclusion, chaque choix motivé (un échantillon biaisé → conclusions biaisées) ; (2) Conduire — pilot test puis ajustement ; criblage résumés puis plein texte ; documenter chaque in/exclusion ; scanner les références des retenus SAUF en systématique ; (3) Analyser — abstraction standardisée alignée au but ; méthode adaptée : méta-analyse = effet, techniques intégratives = modèle théorique ; (4) Rédiger — motivation claire, reporting adapté (PRISMA/RAMSES/Torraco), processus transparent : identifié → analysé → synthétisé → rapporté
+- Qualité d'une revue : profondeur (stratégie de sélection, au-delà de la récitation) + rigueur (critères motivés) + réplicabilité (un lecteur externe peut répliquer et retrouver des résultats similaires) + utilité (chercheurs ET praticiens). Juger surtout ce qui est inclus et pourquoi
+- Erreurs qui bloquent la publication : méthode sous-décrite · échantillon trop limité (revues/années restreints, champs voisins ignorés — mieux : resserrer la question et justifier) · résultats non expliqués (figures sans commentaire) · aucune vraie contribution (résumé descriptif, nuages de mots et comptages de citations)
 
 ### Bibliographie = TOUS les textes consultés (Pearce)
 - La bibliographie finale doit inclure TOUS les textes consultés, pas uniquement ceux cités dans le corps. Omettre des textes consultés mais non cités prive le lecteur d'une preuve de l'étendue du travail bibliographique

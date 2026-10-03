@@ -163,9 +163,9 @@ src/lib/ai/
 
 **Modules de connaissance disponibles (13) :** `style`, `ethics`, `coherence`, `auto-edition`, `peer-review`, `methodology`, `writing-process`, `literature-review`, `data-analysis`, `grant-writing`, `publication`, `visualization`, `presentation`
 
-**Sources distillées :** Kumar (Research Methodology), Salkind (100 Questions), White (Mapping Your Thesis), Ollhoff (Literature Review), Rae & Wong (Applied Data Analysis), Smith & Works (Grant Writing), Gastel & Day (How to Write and Publish a Scientific Paper), Sandelowski (Combining Qualitative and Quantitative…, RNH 2000 — méthodes mixtes), STUDYSmarter/UWA (Methods and Methodology Survival Guide)
+**Sources distillées :** Kumar (Research Methodology), Salkind (100 Questions), White (Mapping Your Thesis), Ollhoff (Literature Review), Snyder (Literature Review as a Research Methodology, JBR 2019 — typologie et conduite des revues), Rae & Wong (Applied Data Analysis), Smith & Works (Grant Writing), Gastel & Day (How to Write and Publish a Scientific Paper), Sandelowski (Combining Qualitative and Quantitative…, RNH 2000 — méthodes mixtes), STUDYSmarter/UWA (Methods and Methodology Survival Guide)
 
-**Token budget (capteur permanent : `src/lib/ai/knowledge-core.budget.test.ts`, CHARS_PER_TOKEN = 3) :** full core ~20 928 tokens mesurés (budget 22 000), mode le plus lourd ~15 300 (budget 17 000), module max 5 000 — méthodologie ~4 470 après digestion 2026-09-28 (Sandelowski + STUDYSmarter). Le tableau ci-dessous conserve des mesures historiques plus anciennes (drift signalé, voir preuves specs/ressource-methodes-mixtes).
+**Token budget (capteur permanent : `src/lib/ai/knowledge-core.budget.test.ts`, CHARS_PER_TOKEN = 3) :** full core ~21 794 tokens mesurés (budget 22 000 — **marge réduite ~206 tok** après digestion Snyder 2026-10-03 ; toute nouvelle ingestion exigera une compaction ou dé-injection), mode le plus lourd ~16 300 (budget 17 000), module max 5 000 — méthodologie ~4 470 toujours max, literature-review ~3 094 après digestion 2026-10-03 (Snyder 2019). Le tableau ci-dessous conserve des mesures historiques plus anciennes (drift signalé, voir preuves specs/ressource-methodes-mixtes).
 
 | Mode | Modules injectés | Tokens ≈ |
 |------|-------------------|----------|
