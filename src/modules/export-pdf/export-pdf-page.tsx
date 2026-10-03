@@ -506,16 +506,11 @@ export function ExportPdfPage() {
     return fullHtml;
   }, [options, metadata, selectedChapters, references]);
 
-  // Update preview
-  useEffect(() => {
-    if (!previewRef.current || selectedChapters.length === 0) return;
-    const html = generatePrintHtml();
-    const doc = previewRef.current.contentDocument || previewRef.current.contentWindow?.document;
-    if (doc) {
-      doc.open();
-      doc.write(html);
-      doc.close();
-    }
+  // Aperçu : HTML d'impression rendu via srcDoc (déterministe — l'iframe est
+  // toujours à jour, sans course entre le montage de l'iframe et l'écriture).
+  const previewHtml = useMemo(() => {
+    if (selectedChapters.length === 0) return "";
+    return generatePrintHtml();
   }, [generatePrintHtml, selectedChapters.length]);
 
   // Print handler
@@ -1144,6 +1139,7 @@ export function ExportPdfPage() {
                     ref={previewRef}
                     title="Aperçu du document"
                     className="w-full border-0"
+                    srcDoc={previewHtml}
                     style={{
                       height: "700px",
                       background: "white",
