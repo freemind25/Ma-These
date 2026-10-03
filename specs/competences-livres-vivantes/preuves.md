@@ -67,3 +67,27 @@ Critères d'acceptation couverts : CA-1.1, CA-2.2 (fondations API), CA-2.3 (fond
 Écart au plan : T2a ajoutée (bug préexistant P2010 — cf. plan § Écart) ; T2-T4 dans un commit unique (même périmètre fichier, preuves séparées par tâche)
 Statut proposé : à recetter (délégation)
 ```
+
+## Groupe C — IA / injection
+
+**Fichiers créés/modifiés : `src/lib/ai/book-skills.ts` (+test), `src/lib/ai/book-skills-server.ts`, `src/app/api/chapter-draft/stream/route.ts` (+test), `src/app/api/ai-writing/route.ts` (+test), `src/app/api/ai-writing/stream/route.ts` (+test). Tâches : T5, T6, T7, T8.**
+
+- 18:06 — T5 : bibliothèque pure (`buildBookSkillsIndex`, `selectBookSkills`, `buildBookSkillsSection` ; plafonds 1 500 / 12 000 car.) ; tests unitaires dédiés → **11/11 verts** (null si vide CA-3.1, section + règle « JAMAIS une source de citations » CA-3.5, budget + mention « contenu non injecté (budget) » CA-3.3, ordre déterministe, troncature d'index).
+- 18:07 — T6 : `getActiveBookSkills()` (`enabled: true`, ordre `updatedAt desc`) — consommée par les 3 routes, mockée dans leurs tests.
+- 18:08 — T7 : `buildSystemPrompt(thesisContext, bibliography, bookSkillsSection = null)` — section insérée avant « CONTEXTE DE LA THÈSE » ; `CONTINUATION_SYSTEM_PROMPT` inchangé. Tests : **16/16 verts** dont 3 nouveaux (0 actif → aucune section CA-3.1 ; 1 actif → index + contenu + règle, position avant contexte CA-3.2/3.5 ; continuation sans compétences CA-3.6 — la relance passe par `generateCompletion`, assertion corrigée en conséquence).
+- 18:10 — T8 : message système dédié inséré entre le prompt de spécialisation et le contexte de thèse dans `ai-writing` et `ai-writing/stream`. Tests : route **19/19** (2 nouveaux : 0 actif → 1 seul message système ; 1 actif → 2 messages système, section en 2e position), stream **14/14** (1 nouveau).
+- 18:12 — Lint global : **0 erreur, 231 warnings** (= baseline — les 2 warnings introduits par le groupe [non-null assertion, arg inutilisé] ont été corrigés). Lignes rouges : 0 diff.
+- Correctifs de tests pendant le groupe : mode d'écriture réel `paraphrase` (l'id supposé `ameliorer-texte` n'existe pas — `src/data/ai-writing-modes.ts` l.60) ; mock `zai-client` top-level pour le test stream.
+
+**Compte rendu de groupe :**
+
+```
+### Groupe C — IA / injection
+Tâches : T5, T6, T7, T8
+Fichiers modifiés : src/lib/ai/book-skills.ts (+test, nouveau), src/lib/ai/book-skills-server.ts (nouveau), chapter-draft/stream route+test, ai-writing route+test, ai-writing/stream route+test
+Vérifications exécutées : 11/11 unitaires pures ; 16/16 chapter-draft ; 19/19 ai-writing ; 14/14 stream ; lint 0 erreur = baseline 231 ; lignes rouges 0 diff
+Sorties : réelles, ci-dessus
+Critères d'acceptation couverts : CA-3.1, CA-3.2, CA-3.3, CA-3.5, CA-3.6 (CA-3.4 par le where enabled:true de T6, recetté en navigateur)
+Écart au plan : aucun (2 micro-correctifs de tests documentés)
+Statut proposé : à recetter (délégation)
+```
