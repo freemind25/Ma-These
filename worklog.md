@@ -1007,3 +1007,21 @@ Stage Summary:
 - La base « Livres & compétences » est désormais vivante : opt-in strict par ressource, injection budgétée (≤ ~3 400 tokens), règle « jamais source de citations » (intégrité académique), byte-identité préservée à 0 ressource active.
 - Écart majeur documenté : bug préexistant P2010 (dates 6 décimales) corrigé à la racine (données), pas masqué.
 - Ouvert : recette de contrôle propriétaire ; stamp Sceau de vérité (reporté) ; extension flux d'analyse (non planifié) ; OOM box.
+
+---
+Task ID: recette-58-recence
+Agent: Z.ai Code (orchestrateur SDD, exécution directe sous délégation)
+Task: Recette déléguée du cycle compétences-livres-vivantes — « faites le teste pour les 58 par ordre de récence » : tester le canal d'injection sur les 58 ressources réelles dans l'ordre de récence (algorithme de sélection), UI + génération live + restauration.
+
+Work Log:
+- Lecture worklog/SKILL.md, reconstruction de l'état (cycle déjà CONVERGÉ ; demande = recette supplémentaire sur données réelles).
+- Script lecture seule (supprimé après) : 58 ressources, 0 active, ordre updatedAt DESC vérifié OUI ; simulation 58 actives via la librairie pure réelle → 6 injectées (11 745/12 000 car.), 52 index-only, mention « contenu non injecté (budget) » + règle « JAMAIS source de citations » présentes ; 0 active → null (CA-3.1). Constat : la plus récente (Guide to Academic…, 30 000 car.) est seule trop volumineuse → jamais injectable en intégral (index-only, CA-3.3).
+- UI (agent-browser) : 58 switches comptés, ordre cartes = ordre récence base ; activation rangs 1-2 → 2 badges « Injectée » / 56 « Hors IA », PUT 200, actives en base 2 ; reload complet + renavigation → persistance (checked=true ×2) ; restauration par les mêmes interrupteurs → 0 UI / 0/58 base.
+- Génération live : thèse « Urbanisme durable » activée via carte éditeur (reload avait réinitialisé activeThesisId à null — état client) ; Brouillon de chapitre, Chapitre 1, 400 mots → aperçu 237 mots réel, POST /api/chapter-draft/stream 200, 0 erreur page, aucune insertion (pas de confirmation).
+- Restauration intégrale : timestamps d'origine des 2 ressources restaurés depuis git HEAD (effet de bord PUT) ; comparaison logique live/HEAD : CustomBookSkill 58/58 identiques (id, enabled, updatedAt, contenu), compteurs autres tables égaux ; diff binaire résiduel = compteurs SQLite (commité, convention dépôt).
+- Mobile 390 px : pas de scroll horizontal ; 2 captures test-snapshots/competences-58-recette-{mobile,desktop}.png ; preuves appandées (§ « Recette déléguée — les 58 ») ; FICHE_SYNTHESE.md à jour.
+
+Stage Summary:
+- Recette déléguée 58 ressources RECETTÉE : le canal se comporte exactement comme spécifié sur données réelles (récence d'abord, plafond, index honnête, opt-in, byte-identité à 0 active).
+- Constat d'usage transmis : ressources utiles en contenu intégral à garder ≤ 12 000 car. (la 30k reste index-only) ; amélioration légère possible (taille conseillée dans l'UI) — non planifiée.
+- État restitué : 0/58 active, ordre de récence d'origine, base logiquement identique au HEAD.

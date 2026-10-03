@@ -168,3 +168,66 @@ Défauts trouvés/corrigés : POST nullish (corrigé + re-recetté), readonly po
 Écart au plan : aucun non documenté
 Statut : RECETTÉE (délégation propriétaire — révisable à son retour)
 ```
+
+## Recette déléguée — les 58 ressources par ordre de récence (2026-10-03, 19:14-19:22)
+
+Demande du propriétaire : « faites le teste pour les 58 par ordre de récence » (IM, 19:0x). Exécution en conditions réelles : données de production (58 ressources), librairie pure réelle (`src/lib/ai/book-skills.ts`), UI, génération live, puis restauration intégrale de l'état initial.
+
+### A. Données réelles + simulation du canal (script lecture seule, supprimé après)
+
+```
+TOTAL ressources: 58
+Actifs actuellement (enabled=true): 0
+Ordre updatedAt DESC respecté: OUI                    ← critère de la sélection « récence d'abord »
+
+12 premières ressources par récence (état actuel):
+ 1. [ 30000 car.] maj=2026-08-23T11:11 ○hors IA Guide to Academic and Scientific Publication…
+ 2. [  2087 car.] maj=2026-08-23T10:46 ○hors IA How to Write and Publish a Scientific Paper (8e ed.)
+ 3. [  2363 car.] … Maitriser la Structure en Entonnoir de la Revue de Litterature
+ 4. [  2449 car.] … 6 Prompts IA pour la Recherche
+ 5. [  2848 car.] … The Research Prompt Handbook
+ 6. [  1491 car.] … A Manual for Writers of Research Papers, Theses, and Dissertations (8e ed.)
+
+SIMULATION « 58 actives »: injectées=6, ignorées(budget)=52, 11745/12000 car.
+  INJ 1. How to Write and Publish a Scientific Paper (2087) … INJ 6. Template_rapport_these (507)
+  SKIP 1. Guide to Academic and Scientific Publication (30000 car.) — trop volumineuse seule
+Section 58 actives: 14292 car. | mention budget: PRÉSENTE | règle intégrité: PRÉSENTE
+INDEX: « [L1] Guide to Academic… — contenu non injecté (budget) »
+Section avec les 0 active(s) actuelle(s): null → prompts byte-identiques (CA-3.1)
+```
+
+**Constat notable** : la ressource la plus récente (Guide to Academic…, 30 000 car., import initiale) dépasse seule le plafond de 12 000 car. — même activée, elle ne peut jamais être injectée en contenu intégral ; elle reste visible en index avec la mention « contenu non injecté (budget) ». Comportement conforme à CA-3.3 (plafond protecteur) — à connaître pour l'usage : les ressources utiles au contenu intégral doivent rester ≤ 12 000 car.
+
+### B. Recette UI (agent-browser, 19:16-19:19)
+
+- Onglet Bibliothèque : **58 switches comptés** ; les cartes suivent le même ordre de récence que la base (rang 1 = Guide 30k, rang 2 = How to Write…).
+- Activation rangs 1 + 2 → **2 badges « Injectée »**, 56 « Hors IA » ; base : `actives: 2` (PUT 200 — réseau : `PUT /api/book-skills/7a4cf5f65db34bfc8015 200`).
+- **Persistance** : reload complet + renavigation → switches `checked=true` (2), badges « Injectée » 2, « Hors IA » 56 (2+56 = 58).
+- Restauration via les mêmes interrupteurs → UI 0 active, base **0/58**.
+
+### C. Génération live avec compétences actives (19:20)
+
+- Thèse « Urbanisme durable » activée via la carte de l'éditeur (store `activeThesisId` — le reload l'avait réinitialisée à `null`, comportement d'état client connu).
+- Brouillon de chapitre : Chapitre 1, cible 400 mots → **« Aperçu du brouillon — 237 mots / cible 400 »** avec contenu structuré réel. **Aucune insertion** (pas de confirmation cliquée — rien persisté).
+- Réseau : `POST /api/chapter-draft/stream → 200` ; `GET /api/book-skills → 200`. **0 erreur page** (agent-browser errors vide).
+- La géante (rang 1) est entrée en index-only + la rang 2 en contenu intégral — les deux chemins exercés en une génération.
+
+### D. Restauration de l'état initial (19:21-19:22)
+
+- Activation/deactivation avait avancé `updatedAt` des 2 ressources testées (effet de bord du PUT) → **timestamps d'origine restaurés** depuis git HEAD (`87d2e8a2…` → 2026-08-23T11:11:40.130Z ; `7a4cf5f65db…` → 2026-08-23T10:46:32.802Z).
+- **Comparaison logique live vs HEAD** : CustomBookSkill 58/58 lignes identiques (id, enabled, updatedAt, longueur contenu) ; compteurs égaux sur thesis/chapter/chapterVersion/cadrage/job/entry/source/sprint/story/documentChunk.
+- Diff binaire résiduel `db/custom.db` = compteurs internes SQLite (donnée logiquement identique, prouvée ci-dessus) — commité avec cette consignation, conforme à la convention du dépôt.
+
+### E. Responsive
+
+- Viewport 390×844 (onglet Bibliothèque) : **pas de scroll horizontal** (scrollWidth ≤ clientWidth+1).
+- Captures : `test-snapshots/competences-58-recette-mobile.png`, `test-snapshots/competences-58-recette-desktop.png`.
+
+```
+### Recette déléguée — 58 ressources (récence)
+Périmètre : données réelles + librairie pure + UI + génération live + restauration
+CA couvertes : CA-3.1 (null à 0 active), CA-3.2 (index + contenu live), CA-3.3 (plafond + mention budget), CA-2.2/2.3 (interrupteurs + persistance badges)
+Défauts trouvés : aucun défaut produit — 1 constat d'usage (ressource 30k jamais injectable en intégral, par design) ; 1 effet de bord test→timestamps, restauré
+Écart au plan : aucun
+Statut : RECETTÉE (délégation propriétaire — révisable à son retour)
+```
