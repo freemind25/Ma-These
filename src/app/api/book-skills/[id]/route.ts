@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
 // GET /api/book-skills/[id] — Get full book skill content
@@ -34,6 +35,25 @@ export async function GET(
 // ═══════════════════════════════════════
 // PUT /api/book-skills/[id] — Update a book skill
 // ═══════════════════════════════════════
+const updateSchema = z.object({
+  title: z.string().min(1, "Le titre ne peut pas être vide").optional(),
+  author: z.string().nullish(),
+  content: z
+    .string()
+    .min(10, "Le contenu doit contenir au moins 10 caractères")
+    .optional(),
+  tags: z.string().nullish(),
+  description: z
+    .string()
+    .max(500, "La description ne doit pas dépasser 500 caractères")
+    .nullish(),
+  source: z
+    .string()
+    .max(300, "La source ne doit pas dépasser 300 caractères")
+    .nullish(),
+  enabled: z.boolean().optional(),
+});
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -50,20 +70,47 @@ export async function PUT(
       );
     }
 
-    const { title, author, content, tags } = body as Record<string, unknown>;
+    let validated: z.infer<typeof updateSchema>;
+    try {
+      validated = updateSchema.parse(body);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return NextResponse.json(
+          { error: "Données invalides", details: error.flatten() },
+          { status: 400 }
+        );
+      }
+      throw error;
+    }
+
+    const { title, author, content, tags, description, source, enabled } =
+      validated;
 
     const skill = await db.customBookSkill.update({
       where: { id },
       data: {
-        ...(title !== undefined && { title: title as string }),
-        ...(author !== undefined && { author: author as string | null }),
-        ...(content !== undefined && { content: content as string }),
-        ...(tags !== undefined && { tags: tags as string | null }),
+        ...(title !== undefined && { title }),
+        ...(author !== undefined && { author }),
+        ...(content !== undefined && { content }),
+        ...(tags !== undefined && { tags }),
+        ...(description !== undefined && { description }),
+        ...(source !== undefined && { source }),
+        ...(enabled !== undefined && { enabled }),
       },
     });
 
     return NextResponse.json({ data: skill });
   } catch (error) {
+    if (
+      error instanceof Error &&
+      "code" in error &&
+      (error as { code: string }).code === "P2025"
+    ) {
+      return NextResponse.json(
+        { error: "Compétence non trouvée" },
+        { status: 404 }
+      );
+    }
     console.error("[PUT /api/book-skills/[id]] Error:", error);
     return NextResponse.json(
       { error: "Erreur lors de la mise à jour" },

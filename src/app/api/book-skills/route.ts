@@ -22,13 +22,16 @@ export async function GET(request: NextRequest) {
         title: string;
         author: string | null;
         tags: string | null;
+        description: string | null;
+        enabled: boolean;
+        source: string | null;
         contentPreview: string;
         contentLength: number | bigint;
         createdAt: string;
         updatedAt: string;
       }>
     >(
-      `SELECT id, title, author, tags,
+      `SELECT id, title, author, tags, description, enabled, source,
               SUBSTR(content, 1, 300) AS "contentPreview",
               LENGTH(content) AS "contentLength",
               "createdAt", "updatedAt"
@@ -64,6 +67,15 @@ const createSchema = z.object({
   author: z.string().optional(),
   content: z.string().min(10, "Le contenu doit contenir au moins 10 caractères"),
   tags: z.string().optional(),
+  description: z
+    .string()
+    .max(500, "La description ne doit pas dépasser 500 caractères")
+    .optional(),
+  source: z
+    .string()
+    .max(300, "La source ne doit pas dépasser 300 caractères")
+    .optional(),
+  enabled: z.boolean().optional(),
 });
 
 export async function POST(request: NextRequest) {
