@@ -46,6 +46,7 @@ model Chapter {
   content         String    @default("") // HTML content from Tiptap
   plainText       String    @default("")
   wordCount       Int       @default(0)
+  stamp           String?   // Provenance des savoirs (JSON : noyau version + compétences livres) — voir specs/sceau-provenance-savoirs
   targetWordCount Int       @default(0)
   status          String    @default("not_started") // not_started | in_progress | draft | review | completed
   directorFeedback String?
@@ -74,6 +75,7 @@ model ChapterVersion {
   plainText String   @default("")
   wordCount Int      @default(0)
   author    String   @default("doctorant") // auteur de la modification
+  stamp     String?  // Provenance des savoirs de CET état (archivée avec lui) — JSON
   createdAt DateTime @default(now())
 
   chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
