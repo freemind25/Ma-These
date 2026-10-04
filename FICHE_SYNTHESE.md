@@ -281,4 +281,6 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 
 **Écart documenté** : la spec initiale du plan supposait des versions = états antérieurs ; vérification réelle (Article 4) → snapshots du nouvel état, design simplifié avant implémentation (plan.md § 4 corrigé). Incident environnement résolu : serveur dev à redémarrer après db:push (client Prisma régénéré) — GET versions en 500 sinon.
 
-**Points ouverts pour la session suivante** : recette de contrôle du propriétaire (révisable) ; extension du stamp aux autres flux (soutenance, deep-research, chat directeur — non planifié) ; le Truthmark reste inchangé ; OOM box à surveiller ; rotation OpenAlex/APINEX + clés GitHub côté propriétaire.
+**Validation propriétaire (2026-10-04)** : « OK » (IM) — recette déléguée 10/10 CA acceptée, aucune réserve, **cycle n°12 clos et validé**.
+
+**Points ouverts pour la session suivante** : extension du stamp aux autres flux (soutenance, deep-research, chat directeur — non planifié) ; le Truthmark reste inchangé ; OOM box à surveiller ; rotation OpenAlex/APINEX + clés GitHub côté propriétaire.

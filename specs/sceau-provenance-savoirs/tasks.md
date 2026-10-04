@@ -29,4 +29,4 @@
 Critères d'acceptation satisfaits : **10/10** (CA-1.1→1.3, CA-2.1→2.3, CA-3.1→3.2, CA-4.1→4.2 — aucune manquante)
 Écarts au plan : 1 — correction de la sémantique des versions (snapshots du nouvel état, pas de l'ancien) documentée dans plan.md § 4 AVANT implémentation (Article 4) ; +1 fichier présentationnel partagé `src/components/knowledge-stamp-block.tsx` (factorisation des 3 surfaces, « même format » garanti).
 Dette introduite : aucune ; données préexistantes à stamp `null` (affichage « saisie manuelle », approximation assumée et documentée au plan).
-Verdict : **CONVERGÉ** (recette navigateur déléguée, révisable à la recette du propriétaire)
+Verdict : **CONVERGÉ** — recette déléguée 10/10 CA (8 contrôles navigateur, mobile 390 px, 0 erreur console) ; **validé par le propriétaire** (« OK », 2026-10-04 17:28) — cycle clos.

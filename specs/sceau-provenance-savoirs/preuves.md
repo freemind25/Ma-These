@@ -54,3 +54,11 @@ Défauts trouvés : 0 produit (1 incident environnement Prisma client résolu pa
 Écart au plan : documenté (sémantique versions + composant partagé)
 Statut : RECETTÉE (délégation) — CONVERGÉ
 ```
+
+### Validation propriétaire (2026-10-04)
+
+Après la recette déléguée (10/10 CA, révisable), le propriétaire a été invité à la recette de contrôle : test guidé dans le Preview Panel (activer une compétence livre → générer un brouillon → sceau sous l'aperçu → insérer → historique) ou accord simple.
+
+Réponse du propriétaire : **« OK »** (IM, 2026-10-04 17:28 TZ 'Etc/GMT-1') — recette déléguée acceptée, aucune réserve, aucune correction demandée.
+
+**Cycle n°12 « sceau-provenance-savoirs » clos et validé.**

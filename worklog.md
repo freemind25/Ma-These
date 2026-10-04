@@ -1064,3 +1064,18 @@ Stage Summary:
 - Cycle sceau-provenance-savoirs CONVERGÉ : chaque état du texte porte sa provenance (noyau versionné + compétences livres, modes intégral/index-only) ; prompt inchangé (byte-identité) ; « saisie manuelle » explicite.
 - État restauré après recette : chapitre 1 à son contenu d'origine (1 957 mots), 0/58 compétence active ; l'historique du chapitre conserve la trace honnête de la recette.
 - Ouvert : recette de contrôle propriétaire ; extension aux autres flux IA (non planifié) ; Truthmark inchangé.
+
+---
+Task ID: sceau-provenance-savoirs-validation
+Agent: Z.ai Code (principal)
+Task: Recette de contrôle du propriétaire du cycle n°12 « sceau-provenance-savoirs » — consignation de la validation et clôture du cycle.
+
+Work Log:
+- Reconstruction d'état (git log : f37570b en tête, arbre propre) + horodatage TZ='Etc/GMT-1' (04/10/2026 17:28).
+- Réponse propriétaire « OK » reçue : validation de la recette déléguée (10/10 CA, 8 contrôles navigateur, 2 captures, mobile 390 px, 0 erreur console).
+- Consignation : tasks.md (verdict « clos et validé »), preuves.md (§ « Validation propriétaire (2026-10-04) »), FICHE_SYNTHESE.md (entrée cycle 12, points ouverts ajustés).
+- Lignes rouges : 0 diff vérifié avant commit.
+
+Stage Summary:
+- Cycle n°12 « sceau-provenance-savoirs » CLÔTURÉ et VALIDÉ par le propriétaire (« OK », 2026-10-04 17:28).
+- Restent ouverts (hors cycle) : extension du stamp aux autres flux IA (non planifié) ; OOM box à surveiller ; rotation OpenAlex/APINEX + révocation clés GitHub (côté propriétaire).
