@@ -268,3 +268,17 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Validation déléguée (2026-10-03)** : le propriétaire a répondu « oui » à la validation du cycle par recette déléguée — cycle n°11 **clos et validé**. Micro-changement livré dans la foulée (voie rapide, `assess-taille-conseillee.md`) : compteur live « N caractères — taille conseillée ≤ 12 000 » dans le dialog de création/édition, vire à l'ambre au-delà du seuil (12 lignes, 1 fichier, lint 0 erreur, recette navigateur).
 
 **Points ouverts pour la session suivante** : stamp de version des savoirs pour le Sceau de vérité (hors périmètre, reporté) ; extension de l'injection aux flux d'analyse (non planifié) ; mémoire box (OOM) toujours à surveiller ; rotation OpenAlex/APINEX + clés GitHub côté propriétaire.
+
+## Session du 2026-10-03 (suite) — Cycle n°12 « sceau-provenance-savoirs » (cycle complet, CONVERGÉ)
+
+**Déclencheur** : « ok pour la prochaine étape » puis « ok » (IM) — ouverture et validation de la spec/plan/tâches (`f4793a6`), puis exécution intégrale. Chantier reporté par le cycle 11 : la trace des savoirs qui nourrissent chaque génération IA.
+
+**Livrable** : chaque état du texte de chapitre porte désormais sa **provenance des savoirs** — version du noyau (`KNOWLEDGE_CORE_VERSION`) + compétences livres actives avec leur mode d'injection (intégral / index seulement). Le stamp est émis en fin de stream **hors prompt** (`chapter-draft/stream`, `ai-writing/stream`), affiché dans un bloc partagé (`src/components/knowledge-stamp-block.tsx` : aperçu du brouillon, résultat de l'assistant d'écriture, historique du chapitre) et **persisté** à l'insertion (colonnes `stamp` JSON sur `Chapter`/`ChapterVersion` ; absent = « saisie manuelle »). Version du noyau consignée dans un tableau de traçabilité (`ARCHITECTURE-CONNAISSANCE.md` § 6 ter).
+
+**Commits** : `7e4528e` (schéma, 7/4/58/1 survécues), `09275ac` (lib pure + 10 tests), `e948c87` (streams + PUT + GET versions), `ada013f` (GET état courant), `15819f6` (UI partagée), `501f12b` (docs).
+
+**Vérifications** : vitest **70 fichiers / 1558 verts** (+10, zéro régression — prompts byte-identiques inclus) ; lint **0 erreur / 231 baseline** ; lignes rouges 0 diff à chaque commit ; recette navigateur (8 contrôles) : bloc provenance dans l'aperçu + détail dépliable, insertion → stamp sur chapitre ET version, historique (« état actuel » + par version + « saisie manuelle »), ai-writing 0 compétence → « aucune compétence livre active », mobile 390 px sans scroll horizontal, 0 erreur console, 2 captures. **10/10 CA — CONVERGÉ** (recette déléguée).
+
+**Écart documenté** : la spec initiale du plan supposait des versions = états antérieurs ; vérification réelle (Article 4) → snapshots du nouvel état, design simplifié avant implémentation (plan.md § 4 corrigé). Incident environnement résolu : serveur dev à redémarrer après db:push (client Prisma régénéré) — GET versions en 500 sinon.
+
+**Points ouverts pour la session suivante** : recette de contrôle du propriétaire (révisable) ; extension du stamp aux autres flux (soutenance, deep-research, chat directeur — non planifié) ; le Truthmark reste inchangé ; OOM box à surveiller ; rotation OpenAlex/APINEX + clés GitHub côté propriétaire.

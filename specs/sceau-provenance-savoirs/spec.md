@@ -45,8 +45,10 @@ En tant que doctorant, je veux que chaque état du texte de chapitre conserve la
 - Hash cryptographique du socle à l'exécution — une version déclarée et tenue à la main suffit.
 - Traçabilité des références bibliographiques autorisées (déjà visibles par chapitre).
 
-## Zones floues — propositions conservatrices (à valider ou corriger)
+## Zones floues — tranchées et validées par le propriétaire (2026-10-03)
 
-1. [À CLARIFIER] **Affichage dans l'historique** : trace en ligne toujours visible, ou résumé dépliable ? → *Proposition : résumé court en ligne, détail dépliable au clic (l'information accessible sans encombrer la liste).*
-2. [À CLARIFIER] **Étiquette des sauvegardes sans IA** : la mention « saisie manuelle » doit-elle apparaître explicitement dans l'historique, ou simplement l'absence de trace ? → *Proposition : mention explicite « saisie manuelle » (plus lisible qu'une absence silencieuse).*
-3. [À CLARIFIER] **Nommage visible** : la trace s'appelle-elle « Provenance des savoirs » dans l'interface ? → *Proposition : oui, avec le sous-titre « quels savoirs ont nourri ce texte » (cohérent avec la promesse d'intégrité, sans surcharger le vocabulaire existant du Sceau).*
+Le propriétaire a validé la spec, le plan et les trois propositions conservatrices (« ok », IM 2026-10-03) :
+
+1. **Affichage dans l'historique** : résumé court en ligne, détail dépliable au clic.
+2. **Sauvegardes sans IA** : mention explicite « saisie manuelle ».
+3. **Nommage visible** : « Provenance des savoirs — quels savoirs ont nourri ce texte ».

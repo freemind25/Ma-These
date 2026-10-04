@@ -1042,3 +1042,25 @@ Stage Summary:
 - Cycle n°11 compétences-livres-vivantes : CONVERGÉ + RECETTÉ (58 ressources) + VALIDÉ par le propriétaire (« oui ») — clos.
 - Micro-changement taille conseillée livré et recetté (voie rapide du protocole, première utilisation documentée).
 - Ouvert (inchangé) : stamp Sceau de vérité ; extension flux d'analyse ; OOM box ; rotation clés côté propriétaire.
+
+---
+Task ID: sceau-provenance-savoirs
+Agent: Z.ai Code (orchestrateur SDD, exécution directe)
+Task: Cycle SDD complet n°12 « sceau-provenance-savoirs » — traçabilité des savoirs (noyau + compétences livres) par génération : spec/plan/tâches validés par le propriétaire (« ok »), puis exécution A→E et recette.
+
+Work Log:
+- Étape 1-4 : exploration sourcée (knowledge-core 949 l., streams l.332-335/l.59, PUT chapters l.25-52, schema l.70-82, history-dialog 228 l.) ; spec 10 CA + 3 [À CLARIFIER] avec propositions ; commit artefacts f4793a6 ; propriétaire valide (« ok ») → zones floues tranchées.
+- Groupe A (T1) : colonnes `stamp` (JSON) sur Chapter + ChapterVersion ; db:push additif, 7/4/58/1 survécues — 7e4528e.
+- Groupe B (T2-T3) : KNOWLEDGE_CORE_VERSION + lib pure knowledge-stamp (buildKnowledgeStamp, résumé, détail) + 10 tests (1 échec initial : import constante depuis le mauvais module — corrigé) — 09275ac.
+- Groupe C (T4-T8) : parsers clients tolérants vérifiés (types inconnus ignorés) ; événement SSE `stamp` en fin de flux des 2 streams (jamais dans le prompt) ; PUT zod .nullish() + « le stamp ne suit que le contenu » ; GET versions renvoie le stamp ; GET léger état courant (T8b) — e948c87, ada013f. Lint : warning `_stamp` corrigé, 231 baseline.
+- **Écart Article 4** : plan supposait versions = états antérieurs ; réel = snapshots du NOUVEL état (update avant create) → plan.md § 4 corrigé AVANT implémentation ; design simplifié (pas d'archivage).
+- Groupe D (T9-T12) : composant partagé knowledge-stamp-block (résumé + détail dépliable, « saisie manuelle ») ; brouillon (état stamp, parse, envoi à l'insertion), historique (état actuel + provenance par version), ai-writing (affichage, non persisté) — 15819f6.
+- Groupe E (T13) : ARCHITECTURE-CONNAISSANCE § 6 ter (tableau de version du noyau + stamp) — 501f12b.
+- Incident : GET versions 500 après db:push (serveur démarré avant régénération client Prisma) → redémarrage → 200.
+- Recette navigateur : 8 contrôles réels (activation rang 2, génération 258 mots, bloc + détail, insertion, historique 3 blocs, restauration 1 957 mots sans stamp, désactivation 0/58, ai-writing « aucune compétence livre active », mobile 390 px, 0 erreur console, 2 captures) ; vitest 70/1558 verts.
+- Consignation : tasks.md 14/14 cochées + verdict CONVERGÉ (10/10 CA), preuves.md § exécution + recette, FICHE_SYNTHESE cycle 12.
+
+Stage Summary:
+- Cycle sceau-provenance-savoirs CONVERGÉ : chaque état du texte porte sa provenance (noyau versionné + compétences livres, modes intégral/index-only) ; prompt inchangé (byte-identité) ; « saisie manuelle » explicite.
+- État restauré après recette : chapitre 1 à son contenu d'origine (1 957 mots), 0/58 compétence active ; l'historique du chapitre conserve la trace honnête de la recette.
+- Ouvert : recette de contrôle propriétaire ; extension aux autres flux IA (non planifié) ; Truthmark inchangé.
