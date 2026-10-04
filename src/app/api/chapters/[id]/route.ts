@@ -12,6 +12,34 @@ import { z } from "zod/v4";
 // ═══════════════════════════════════════
 
 
+// ═══════════════════════════════════════
+// GET /api/chapters/[id] — État courant léger (id + stamp de provenance).
+// Utilisé par l'historique du chapitre pour afficher la provenance des
+// savoirs du contenu ACTUEL (specs/sceau-provenance-savoirs).
+// ═══════════════════════════════════════
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const chapter = await db.chapter.findUnique({
+      where: { id },
+      select: { id: true, stamp: true },
+    });
+    if (!chapter) {
+      return NextResponse.json({ error: "Chapitre introuvable" }, { status: 404 });
+    }
+    return NextResponse.json({ data: chapter });
+  } catch (error) {
+    console.error("[GET /api/chapters/[id]] Error:", error);
+    return NextResponse.json(
+      { error: "Erreur lors de la récupération du chapitre" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
