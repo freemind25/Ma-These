@@ -39,6 +39,14 @@
 // ═══════════════════════════════════════════════════════════════
 
 /**
+ * Version du noyau de connaissance — à incrémenter à chaque évolution du
+ * socle (module ajouté, contenu édité, ingestion, compaction). Consignée à
+ * chaque changement dans docs/ARCHITECTURE-CONNAISSANCE.md. Sert au stamp
+ * « Provenance des savoirs » (specs/sceau-provenance-savoirs).
+ */
+export const KNOWLEDGE_CORE_VERSION = "2026-10-03";
+
+/**
  * Module identifiers that can be selectively injected.
  * Specializations declare which modules they need.
  */
