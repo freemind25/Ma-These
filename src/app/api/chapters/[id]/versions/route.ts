@@ -24,6 +24,7 @@ export async function GET(
         plainText: true,
         wordCount: true,
         author: true,
+        stamp: true, // provenance des savoirs de cet état (specs/sceau-provenance-savoirs)
         createdAt: true,
       },
     });

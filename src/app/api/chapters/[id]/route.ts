@@ -29,9 +29,16 @@ export async function PUT(
         select: { content: true },
       }))?.content !== validated.content;
 
+    // Provenance des savoirs : le stamp ne suit que le contenu.
+    // Présent = génération IA ; absent/null = « saisie manuelle ».
+    // Sans changement de contenu, le stamp courant n'est pas altéré.
+    const nextStamp = validated.stamp ?? null;
+    const chapterData = { ...validated };
+    delete chapterData.stamp;
+
     const chapter = await db.chapter.update({
       where: { id },
-      data: validated,
+      data: contentWillChange ? { ...chapterData, stamp: nextStamp } : chapterData,
     });
 
     let versionId: string | null = null;
@@ -43,6 +50,7 @@ export async function PUT(
           plainText: chapter.plainText,
           wordCount: chapter.wordCount,
           author: "doctorant",
+          stamp: nextStamp, // provenance du contenu snapshoté
         },
       });
       versionId = version.id;

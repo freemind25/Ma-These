@@ -66,6 +66,9 @@ export const updateChapterSchema = z.object({
   sortOrder: z.number().int().min(0).optional(),
   romanNumeral: z.string().optional(),
   partId: z.string().optional(),
+  // Provenance des savoirs du NOUVEAU contenu (JSON KnowledgeStamp).
+  // Absent/null = sauvegarde sans génération IA (« saisie manuelle »).
+  stamp: z.string().max(16_000).nullish(),
 });
 
 // ═══════════════════════════════════════

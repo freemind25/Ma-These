@@ -5,6 +5,8 @@ import { SPECIALIZATION_PROMPTS } from "@/lib/ai/specializations";
 import { getLevelCalibration, type DoctoralLevel } from "@/lib/ai/prompt-builder";
 import { getActiveBookSkills } from "@/lib/ai/book-skills-server";
 import { buildBookSkillsSection } from "@/lib/ai/book-skills";
+import { buildKnowledgeStamp } from "@/lib/ai/knowledge-stamp";
+import { KNOWLEDGE_CORE_VERSION } from "@/lib/ai/knowledge-core";
 import { z } from "zod/v4";
 import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 
@@ -56,7 +58,14 @@ export async function POST(request: NextRequest) {
 
     // Canal « compétences livres » : index + contenus des ressources actives
     // (opt-in). Aucun ajout si 0 ressource active — prompt inchangé.
-    const bookSkillsSection = buildBookSkillsSection(await getActiveBookSkills());
+    // Le stamp (provenance des savoirs) voyage HORS prompt vers le client.
+    const activeBookSkills = await getActiveBookSkills();
+    const bookSkillsSection = buildBookSkillsSection(activeBookSkills);
+    const knowledgeStamp = buildKnowledgeStamp({
+      coreVersion: KNOWLEDGE_CORE_VERSION,
+      skills: activeBookSkills,
+      generatedAt: new Date().toISOString(),
+    });
 
     const messages: AiMessage[] = [
       { role: "system", content: systemPrompt },
@@ -80,11 +89,35 @@ export async function POST(request: NextRequest) {
 
     const providerConfig = resolveAiConfig(request, validated._aiConfig);
 
-    return await generateCompletionStream({
+    const upstream = await generateCompletionStream({
       messages,
       temperature: mode.temperature,
       providerConfig,
     });
+
+    // Relais transparent du flux + événement « stamp » en fin (hors prompt,
+    // ignoré par les clients qui ne le connaissent pas — CA-1.3, CA-3.1).
+    if (!upstream.body) return upstream;
+    const reader = upstream.body.getReader();
+    const encoder = new TextEncoder();
+    const stampSSE = `data: ${JSON.stringify({ type: "stamp", stamp: knowledgeStamp })}\n\n`;
+    return new Response(
+      new ReadableStream<Uint8Array>({
+        async start(controller) {
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              controller.enqueue(value);
+            }
+          } finally {
+            controller.enqueue(encoder.encode(stampSSE));
+            controller.close();
+          }
+        },
+      }),
+      { status: upstream.status, headers: upstream.headers }
+    );
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(

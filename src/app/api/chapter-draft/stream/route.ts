@@ -10,6 +10,11 @@ import type { AiProviderConfig } from "@/lib/ai/ai-types";
 import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 import { getActiveBookSkills } from "@/lib/ai/book-skills-server";
 import { buildBookSkillsSection } from "@/lib/ai/book-skills";
+import {
+  buildKnowledgeStamp,
+  type KnowledgeStamp,
+} from "@/lib/ai/knowledge-stamp";
+import { KNOWLEDGE_CORE_VERSION } from "@/lib/ai/knowledge-core";
 
 // ═══════════════════════════════════════
 // POST /api/chapter-draft/stream — Générateur de brouillon de chapitre (SSE)
@@ -165,7 +170,10 @@ const encodeSSE = (chunk: unknown): Uint8Array =>
  */
 async function streamWithContinuation(
   firstPass: Response,
-  continuationInput: { providerConfig: AiProviderConfig | undefined }
+  continuationInput: {
+    providerConfig: AiProviderConfig | undefined;
+    stamp?: KnowledgeStamp;
+  }
 ): Promise<Response> {
   const reader = firstPass.body?.getReader();
   if (!reader) return firstPass;
@@ -256,6 +264,14 @@ async function streamWithContinuation(
           );
           controller.enqueue(encodeSSE({ type: "done" }));
         } finally {
+          // Stamp « Provenance des savoirs » — pour le doctorant, JAMAIS dans
+          // le prompt (les clients ignorent les types inconnus). Émis en fin de
+          // flux, y compris après une erreur partielle (CA-1.3).
+          if (continuationInput.stamp) {
+            controller.enqueue(
+              encodeSSE({ type: "stamp", stamp: continuationInput.stamp })
+            );
+          }
           controller.close();
         }
       },
@@ -329,7 +345,15 @@ export async function POST(request: NextRequest) {
         ? buildBibliography(references)
         : null;
 
-    const bookSkillsSection = buildBookSkillsSection(await getActiveBookSkills());
+    // Canal « compétences livres » : la section entre dans le prompt, le
+    // stamp (provenance des savoirs) voyage HORS prompt vers le client.
+    const activeBookSkills = await getActiveBookSkills();
+    const bookSkillsSection = buildBookSkillsSection(activeBookSkills);
+    const knowledgeStamp = buildKnowledgeStamp({
+      coreVersion: KNOWLEDGE_CORE_VERSION,
+      skills: activeBookSkills,
+      generatedAt: new Date().toISOString(),
+    });
 
     const messages: AiMessage[] = [
       { role: "system", content: buildSystemPrompt(thesisContext, bibliography, bookSkillsSection) },
@@ -348,7 +372,7 @@ export async function POST(request: NextRequest) {
       providerConfig,
     });
 
-    return await streamWithContinuation(firstPass, { providerConfig });
+    return await streamWithContinuation(firstPass, { providerConfig, stamp: knowledgeStamp });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
