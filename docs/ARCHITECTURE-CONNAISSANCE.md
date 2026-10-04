@@ -204,6 +204,26 @@ prompts des flux génératifs.
 - Champs de la ressource : `description` (quand l'utiliser), `source` (provenance),
   `enabled` (opt-in IA). Spécification : `specs/competences-livres-vivantes/`.
 
+## 6 ter. Version du noyau et « Provenance des savoirs » (2026-10-03)
+
+**Version du noyau** : la constante `KNOWLEDGE_CORE_VERSION` (`src/lib/ai/knowledge-core.ts`,
+tête de fichier) identifie le socle. **À incrémenter à chaque évolution du noyau** (module ajouté,
+contenu édité, ingestion, compaction) et à consigner ici :
+
+| Version | Date | Changement |
+|---|---|---|
+| `2026-10-03` | 2026-10-03 | Valeur initiale — 13 modules, 65 382 car. / ~21 794 tok |
+
+**Stamp « Provenance des savoirs »** (`specs/sceau-provenance-savoirs/`) : chaque génération du
+brouillon de chapitre et de l'assistant d'écriture émet un événement SSE `stamp` **en fin de flux,
+HORS prompt** (`src/lib/ai/knowledge-stamp.ts` — pur : `buildKnowledgeStamp` dérive du noyau et de
+la sélection réelle des compétences livres le mode « integral » / « index-only »). Le bloc UI
+partagé `src/components/knowledge-stamp-block.tsx` l'affiche (résumé + détail dépliable) dans
+l'aperçu du brouillon, sous le résultat de l'assistant d'écriture, et dans l'historique du chapitre
+(état actuel + par version). Persistance : colonne `stamp` (JSON) sur `Chapter` et
+`ChapterVersion` — `PUT /api/chapters/[id]` l'écrit avec le contenu qu'il décrit ; absent =
+« saisie manuelle ». Le stamp n'entre **jamais** dans le prompt (non-régression byte-identique).
+
 ---
 
 ## 7. Processus de digestion et feedback
