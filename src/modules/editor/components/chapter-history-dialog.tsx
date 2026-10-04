@@ -13,6 +13,9 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { History, Loader2, GitCompareArrows } from "lucide-react";
+import type { KnowledgeStamp } from "@/lib/ai/knowledge-stamp";
+import { formatKnowledgeStampSummary } from "@/lib/ai/knowledge-stamp";
+import { KnowledgeStampBlock } from "@/components/knowledge-stamp-block";
 import { wordDiff, diffStats, type DiffSegment } from "@/lib/word-diff";
 
 // ═══════════════════════════════════════════════════════════════
@@ -28,7 +31,17 @@ interface ChapterVersion {
   plainText: string;
   wordCount: number;
   author: string;
+  stamp?: string | null; // provenance des savoirs de cet état (JSON)
   createdAt: string;
+}
+
+function parseStamp(raw: string | null | undefined): KnowledgeStamp | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as KnowledgeStamp;
+  } catch {
+    return null;
+  }
 }
 
 function formatDateTime(iso: string): string {
@@ -80,6 +93,10 @@ export function ChapterHistoryButton({ chapterId }: { chapterId: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [versions, setVersions] = useState<ChapterVersion[]>([]);
+  // Stamp de l'état ACTUEL du chapitre (undefined = pas encore chargé)
+  const [currentStamp, setCurrentStamp] = useState<string | null | undefined>(
+    undefined
+  );
   // Index des versions comparées : par défaut la plus récente (0) vs la précédente (1)
   const [newerIdx, setNewerIdx] = useState(0);
   const [olderIdx, setOlderIdx] = useState(1);
@@ -88,13 +105,22 @@ export function ChapterHistoryButton({ chapterId }: { chapterId: string }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/chapters/${chapterId}/versions`);
+      const [res, resChapter] = await Promise.all([
+        fetch(`/api/chapters/${chapterId}/versions`),
+        fetch(`/api/chapters/${chapterId}`),
+      ]);
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Échec du chargement");
       const list: ChapterVersion[] = json.data || [];
       setVersions(list);
       setNewerIdx(0);
       setOlderIdx(list.length > 1 ? 1 : 0);
+      if (resChapter.ok) {
+        const jsonChapter = await resChapter.json();
+        setCurrentStamp(jsonChapter.data?.stamp ?? null);
+      } else {
+        setCurrentStamp(null);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur inconnue");
     } finally {
@@ -145,6 +171,14 @@ export function ChapterHistoryButton({ chapterId }: { chapterId: string }) {
             dans l&apos;application.
           </DialogDescription>
         </DialogHeader>
+
+        {/* Provenance des savoirs de l'état ACTUEL (CA-2.1) */}
+        <div className="space-y-1">
+          <p className="text-xs font-medium text-muted-foreground">État actuel</p>
+          {currentStamp !== undefined && (
+            <KnowledgeStampBlock stamp={parseStamp(currentStamp)} />
+          )}
+        </div>
 
         {loading ? (
           <div className="flex items-center justify-center gap-2 py-12 text-sm text-muted-foreground">
@@ -220,6 +254,26 @@ export function ChapterHistoryButton({ chapterId }: { chapterId: string }) {
                 <Skeleton className="h-24 w-full" />
               )}
             </ScrollArea>
+
+            {/* Provenance par version (CA-2.2 / CA-2.3) */}
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">
+                Provenance des savoirs par version :
+              </p>
+              <ul className="space-y-1 text-xs text-muted-foreground">
+                {versions.map((v) => {
+                  const parsed = parseStamp(v.stamp);
+                  return (
+                    <li key={v.id}>
+                      {formatDateTime(v.createdAt)} —{" "}
+                      {parsed
+                        ? formatKnowledgeStampSummary(parsed)
+                        : "saisie manuelle"}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </>
         )}
       </DialogContent>

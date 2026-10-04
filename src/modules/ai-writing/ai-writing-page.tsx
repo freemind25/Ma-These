@@ -35,6 +35,8 @@ import { WRITING_MODES, type WritingMode } from "@/data/ai-writing-modes";
 import { useAiConfig } from "@/hooks/use-ai-config";
 import { useAppStore } from "@/lib/stores/app-store";
 import { useThesis } from "@/modules/editor/hooks/use-thesis";
+import type { KnowledgeStamp } from "@/lib/ai/knowledge-stamp";
+import { KnowledgeStampBlock } from "@/components/knowledge-stamp-block";
 
 // ═══ Icon Map ═══
 const ICON_MAP: Record<string, React.ElementType> = {
@@ -104,6 +106,7 @@ function AiWritingPanel() {
   const [sourceMode, setSourceMode] = useState<"web" | "academic">("web");
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState<string>("");
+  const [stamp, setStamp] = useState<KnowledgeStamp | null>(null);
   const [copied, setCopied] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamError, setStreamError] = useState<string | null>(null);
@@ -127,6 +130,7 @@ function AiWritingPanel() {
       setIsStreaming(true);
       setStreamError(null);
       setResult("");
+      setStamp(null);
       try {
         const res = await fetch(activeMode.customEndpoint, {
           method: "POST",
@@ -155,6 +159,7 @@ function AiWritingPanel() {
     setIsStreaming(true);
     setStreamError(null);
     setResult("");
+    setStamp(null);
     const abort = new AbortController();
     abortRef.current = abort;
 
@@ -190,11 +195,13 @@ function AiWritingPanel() {
           if (!trimmed || !trimmed.startsWith("data: ")) continue;
           const data = trimmed.slice(6);
           try {
-            const parsed = JSON.parse(data) as { type?: string; content?: string; error?: string } | null;
+            const parsed = JSON.parse(data) as { type?: string; content?: string; error?: string; stamp?: KnowledgeStamp } | null;
             if (parsed?.type === "chunk" && parsed.content) {
               setResult((prev) => prev + parsed.content);
             } else if (parsed?.type === "error") {
               throw new Error(parsed.error);
+            } else if (parsed?.type === "stamp" && parsed.stamp) {
+              setStamp(parsed.stamp); // Provenance des savoirs (hors prompt)
             }
           } catch {
             // Skip malformed chunks or JSON parse errors
@@ -412,6 +419,12 @@ function AiWritingPanel() {
                   <span className="inline-block w-2 h-4 bg-primary/60 animate-pulse ml-0.5" />
                 )}
               </div>
+
+              {!isStreaming && result && stamp && (
+                <div className="mt-3">
+                  <KnowledgeStampBlock stamp={stamp} />
+                </div>
+              )}
             </CardContent>
           </Card>
         )}

@@ -33,6 +33,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAppStore } from "@/lib/stores/app-store";
 import { useThesis, useUpdateChapter, type ThesisChapter } from "@/modules/editor/hooks/use-thesis";
+import type { KnowledgeStamp } from "@/lib/ai/knowledge-stamp";
+import { KnowledgeStampBlock } from "@/components/knowledge-stamp-block";
 import { useAiConfig } from "@/hooks/use-ai-config";
 import { useToast } from "@/hooks/use-toast";
 import { markdownToHtml, htmlToPlainText } from "@/lib/markdown-to-html";
@@ -94,6 +96,7 @@ export function BrouillonChapitrePage() {
   const [draft, setDraft] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [streamError, setStreamError] = useState<string | null>(null);
+  const [stamp, setStamp] = useState<KnowledgeStamp | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -162,6 +165,7 @@ export function BrouillonChapitrePage() {
     setIsGenerating(true);
     setDraft("");
     setStreamError(null);
+    setStamp(null);
     const abort = new AbortController();
     abortRef.current = abort;
 
@@ -202,7 +206,12 @@ export function BrouillonChapitrePage() {
           const trimmed = line.trim();
           if (!trimmed || !trimmed.startsWith("data: ")) continue;
 
-          let parsed: { type?: string; content?: string; error?: string } | null = null;
+          let parsed: {
+            type?: string;
+            content?: string;
+            error?: string;
+            stamp?: KnowledgeStamp;
+          } | null = null;
           try {
             parsed = JSON.parse(trimmed.slice(6));
           } catch {
@@ -213,6 +222,8 @@ export function BrouillonChapitrePage() {
             setDraft((prev) => prev + parsed.content);
           } else if (parsed?.type === "error") {
             throw new Error(parsed.error || "Le fournisseur IA a renvoyé une erreur.");
+          } else if (parsed?.type === "stamp" && parsed.stamp) {
+            setStamp(parsed.stamp); // Provenance des savoirs (hors prompt)
           }
         }
       }
@@ -253,7 +264,13 @@ export function BrouillonChapitrePage() {
     const wordCount = countWords(plainText);
 
     updateChapter.mutate(
-      { id: selectedChapterId, content: html, plainText, wordCount },
+      {
+        id: selectedChapterId,
+        content: html,
+        plainText,
+        wordCount,
+        stamp: stamp ? JSON.stringify(stamp) : undefined,
+      },
       {
         onSuccess: () => {
           setConfirmOpen(false);
@@ -537,6 +554,8 @@ export function BrouillonChapitrePage() {
                       Insérer dans le chapitre
                     </Button>
                   </div>
+
+                  {stamp && <KnowledgeStampBlock stamp={stamp} />}
 
                   {selectedReferences.length > 0 && (
                     <div className="space-y-1.5">

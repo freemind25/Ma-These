@@ -180,7 +180,7 @@ export function useUpdateChapter() {
     mutationFn: async ({
       id,
       ...data
-    }: { id: string; title?: string; content?: string; plainText?: string; wordCount?: number; status?: string; sortOrder?: number; partId?: string | null }) => {
+    }: { id: string; title?: string; content?: string; plainText?: string; wordCount?: number; status?: string; sortOrder?: number; partId?: string | null; stamp?: string }) => {
       const res = await fetch(`/api/chapters/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
