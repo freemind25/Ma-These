@@ -115,3 +115,26 @@ Défauts trouvés : 1 (repères traduits) — corrigé dans le groupe, re-prouv�
 Écart au plan : aucun (OCR + jobs async différés — consigné à l'ouverture, cycle d'étude dédié exigé)
 Statut : RECETTÉE (délégation) — CONVERGÉ, révisable
 ```
+
+## Recette de contrôle cycles 15/16/17 (2026-10-07, 15:45-15:50 TZ 'Etc/GMT-1')
+
+Déclencheur : instruction propriétaire « engagez toutes les étapes par ordre prioritaire » — les cycles 15/16/17 étant recettés par délégation (statut révisable), un passage de contrôle agent est exécuté avant d'ouvrir le cycle d'étude OCR/async.
+
+```
+Contrôle 1 — Baseline : bun run test:run → Test Files 74 passed (74), Tests 1611 passed (1611), Duration 16.31s
+Contrôle 2 — Lint : 0 errors, 231 warnings (= baseline convergence)
+Contrôle 3 — Lignes rouges : git diff HEAD --stat sur les 3 fichiers protégés → 0 diff
+Contrôle 4 — Points d'entrée : sidebar « Articles scientifiques » (e69) + « Brouillon d'article IA » (e70) présents
+Contrôle 5 — Wizard (cycle 15) : heading « Brouillon d'article scientifique », liste « Étapes », « 1. Choisir les sources » (5 cases sources, thèse inactive → désactivées), « Fichier à importer » + « Importer et extraire », « Continuer vers les consignes »
+Contrôle 6 — Vue multi-articles (cycle 17/C2) : « Vos brouillons d'articles » — article réel « Urbanisation durable et technologies numeriques a Alger (article) » avec badges « empirique · generated · 2 sections · 2 à compléter/vérifier »
+Contrôle 7 — Étape 5 (cycles 15+17) : carte « Traduction (copie distincte) » (sélecteur Anglais, « Traduire l'article entier », boutons par section), repères verbatim visibles (« [À compléter par l'auteur] », « [Information non précisée dans le document source : intervalle de confiance] »), traçabilité « Sources : Document importé — memoire-test.docx (imported) », « Restaurer » / « Enregistrer une version » / « Exporter en DOCX », avertissement « Aucune garantie d'acceptation par une revue »
+Contrôle 8 — Cycle 16 : bouton « Analyser les sources (rapport : volumes, sections, études, manquants) » présent en étape 1
+Contrôle 9 — Mobile 390 px : scrollWidth 390 = viewport 390 (aucun scroll horizontal)
+Contrôle 10 — Console : 0 erreur (1 warning Next/Image préexistant sur logo.png, cosmétique, hors périmètre)
+Contrôle 11 — Cycle 14 : GET /api/legal-refs → HTTP 200, données présentes (Loi n° 90-29 du 1er décembre 1990, JORADP, statut)
+Captures : test-snapshots/controle-cycles-15-17-etape5.png + controle-cycles-15-17-mobile390.png
+Santé : agent-browser close OK ; GET /api → HTTP 200 après recette
+Avertissement : l'article réel en base n'a PAS été modifié ni supprimé (contrôle en lecture seule)
+```
+
+**Verdict : contrôle POSITIF — cycles 15/16/17 et 14 se comportent conformément aux recettes de convergence.** Aucun écart constaté.

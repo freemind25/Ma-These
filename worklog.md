@@ -1226,3 +1226,15 @@ Stage Summary:
 - Cycle n°17 « article-scientifique option C » CONVERGÉ (2/2 CA, recette déléguée, révisable) : traduction distincte (copie, original intact, repères verbatim français) + vue multi-articles — la séquence « étapes A, B et C » du cahier des charges article scientifique est intégralement livrée (cycles 15/16/17).
 - OCR + jobs asynchrones : différés explicitement, cycle d'étude dédié exigé (consigné à l'ouverture, repris en docs).
 - Anomalie d'environnement caractérisée et contournée (OOM box + frontière d'appels outils) — consignée pour les sessions suivantes.
+---
+Task ID: controle-cycles-15-16-17
+Agent: Z.ai Code (principal)
+Task: Recette de contrôle des cycles 15/16/17 (statut révisable) — déclencheur « engagez toutes les étapes par ordre prioritaire » (IM, 2026-10-07).
+
+Work Log:
+- Baseline : vitest 74 fichiers / 1 611 verts (16,3 s), lint 0 erreur / 231 warnings, lignes rouges 0 diff, arbre propre.
+- Recette navigateur agent-browser (11 contrôles, lecture seule) : 2 points d'entrée, wizard étape 1, vue multi-articles avec badges, étape 5 (carte traduction, repères verbatim, traçabilité par section, versions, export DOCX), bouton analyse (cycle 16), mobile 390 px sans scroll horizontal, 0 erreur console, GET /api/legal-refs 200.
+- 2 captures test-snapshots/controle-cycles-15-17-*.png ; navigateur fermé ; GET /api 200 après recette ; article réel de la base intact (lecture seule).
+
+Stage Summary:
+- Contrôle POSITIF consigné dans specs/article-scientifique/preuves-option-a.md (§ Recette de contrôle) — aucun écart aux recettes de convergence ; les cycles 15/16/17 passent du statut « révisable » à « contrôlé une seconde fois, aucun écart ».
