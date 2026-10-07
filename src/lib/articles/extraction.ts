@@ -12,7 +12,7 @@ export const MAX_IMPORT_BYTES = 20 * 1024 * 1024; // 20 Mo
 export type ImportFileType = "docx" | "pdf" | "txt";
 
 export interface ExtractionLimit {
-  kind: "scanned" | "no-headings" | "no-biblio" | "parse-error";
+  kind: "scanned" | "ocr" | "no-headings" | "no-biblio" | "parse-error";
   detail: string;
 }
 
@@ -125,7 +125,7 @@ export function buildLimits(input: {
       detail:
         `PDF probablement scanné : ${input.emptyPages.length} page(s) sans texte extractible ` +
         `(pages ${input.emptyPages.slice(0, 10).join(", ")}${input.emptyPages.length > 10 ? "…" : ""}). ` +
-        "L'OCR n'est pas disponible dans cette itération — ces pages sont ignorées.",
+        "Un OCR est disponible : lancez-le depuis la liste des sources (langue au choix, plafond 30 pages par job, exécution asynchrone) — relecture humaine exigée ensuite.",
     });
   }
   if (input.fileType === "pdf") {

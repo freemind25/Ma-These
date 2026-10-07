@@ -85,18 +85,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (text.trim().length < 20) {
+    if (text.trim().length < 20 && !scanned) {
       return NextResponse.json(
         {
           error:
-            scanned
-              ? "Aucun texte extractible : le PDF est probablement scanné (images). L'OCR n'est pas disponible dans cette itération."
-              : "Extraction vide : le document ne contient pas assez de texte exploitable.",
+            "Extraction vide : le document ne contient pas assez de texte exploitable.",
           scanned,
         },
         { status: 422 }
       );
     }
+    // Un PDF entièrement scanné est désormais ACCEPTÉ (texte quasi vide +
+    // marqueur scanné) : l'OCR asynchrone le rendra exploitable (cycle
+    // article-ocr-async). Le rejet 422 reste valable pour les non-scannés.
 
     const limits = buildLimits({ fileType, scanned, emptyPages, headings, text });
 
@@ -106,6 +107,9 @@ export async function POST(request: NextRequest) {
         filename: file.name,
         fileType,
         sizeBytes: file.size,
+        // Octets conservés pour les PDFs uniquement — l'OCR différé relit le
+        // fichier depuis la base (column data Bytes?, cycle article-ocr-async)
+        data: fileType === "pdf" ? buffer : null,
         text,
         pages,
         scanned,
@@ -146,7 +150,9 @@ export async function GET(request: NextRequest) {
     if (id) {
       const doc = await db.importedDoc.findUnique({ where: { id } });
       if (!doc) return NextResponse.json({ error: "Document non trouvé" }, { status: 404 });
-      return NextResponse.json({ data: { ...doc, preview: truncatePreview(doc.text) } });
+      // Octets exclus de la réponse API (data reste en base, réservé à l'OCR)
+      const { data: _octets, ...docSansOctets } = doc;
+      return NextResponse.json({ data: { ...docSansOctets, preview: truncatePreview(doc.text) } });
     }
     const docs = await db.importedDoc.findMany({
       orderBy: { createdAt: "desc" },

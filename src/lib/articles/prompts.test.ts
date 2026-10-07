@@ -85,7 +85,10 @@ describe("extraction — structure et limites", () => {
     expect(kinds).toContain("scanned");
     expect(kinds).toContain("no-headings");
     expect(kinds).toContain("no-biblio");
-    expect(limits.find((l) => l.kind === "scanned")?.detail).toContain("OCR n'est pas disponible");
+    // cycle article-ocr-async : l'OCR est désormais disponible (asynchrone,
+    // plafonné, langue au choix) — la limite reste honnête sur la relecture
+    expect(limits.find((l) => l.kind === "scanned")?.detail).toContain("Un OCR est disponible");
+    expect(limits.find((l) => l.kind === "scanned")?.detail).toContain("relecture humaine exigée");
   });
 
   it("tronque l'aperçu avec mention explicite", () => {
