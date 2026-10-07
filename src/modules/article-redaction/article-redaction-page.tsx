@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { useAppStore } from "@/lib/stores/app-store";
 import {
-  FileText, FileUp, Loader2, Plus, Trash2, Save, Download,
+  FileText, FileUp, Loader2, Plus, Trash2, Save, Download, Search,
   ChevronRight, ChevronLeft, History, AlertTriangle, Wand2, RefreshCw,
 } from "lucide-react";
 
@@ -138,6 +138,20 @@ export function ArticleRedactionPage() {
   const [sections, setSections] = useState<SectionRow[]>([]);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
 
+  // Option B : analyse + angles
+  interface AnalysisReport {
+    totalChars: number;
+    bySource: { label: string; kind: string; chars: number }[];
+    headings: string[];
+    studies: { label: string; question?: string; verdict?: string }[];
+    missing: string[];
+    quality: string;
+  }
+  const [analysis, setAnalysis] = useState<AnalysisReport | null>(null);
+  const [fragmentation, setFragmentation] = useState<{ risk: boolean; message: string } | null>(null);
+  const [angleProposals, setAngleProposals] = useState<{ angle: string; rationale: string; coverage: string }[]>([]);
+  const [angleChosen, setAngleChosen] = useState(false);
+
   const sourcesPayload = useCallback(
     () => ({
       thesisId: activeThesisId ?? null,
@@ -226,6 +240,49 @@ export function ArticleRedactionPage() {
       /* suppression best-effort */
     }
     setImports((prev) => prev.filter((d) => d.id !== id));
+  };
+
+  // ── Option B : analyse des sources (étape 1) ──
+  const analyzeNow = async () => {
+    setError(null);
+    setBusy("analyze");
+    try {
+      const res = await fetch("/api/articles/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sources: sourcesPayload() }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error ?? "Analyse impossible");
+      setAnalysis(json.data.analysis);
+      setFragmentation(json.data.fragmentation);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur d'analyse");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  // ── Option B : propositions d'angles (étape 2) ──
+  const proposeAngles = async () => {
+    setError(null);
+    setBusy("angles");
+    try {
+      const res = await fetch("/api/articles/angles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ meta: metaPayload(), sources: sourcesPayload() }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error ?? "Angles indisponibles");
+      setAngleProposals(json.data.angles);
+      setFragmentation(json.data.fragmentation);
+      setAngleChosen(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur d'angles");
+    } finally {
+      setBusy(null);
+    }
   };
 
   // ── Étape 2 : créer l'article ──
@@ -343,6 +400,13 @@ export function ArticleRedactionPage() {
 
   const generateSection = async (sectionId: string) => {
     if (!article) return;
+    if (analysis && analysis.studies.length >= 2 && angleProposals.length > 0 && !angleChosen) {
+      setError(
+        "Plusieurs études sont détectées et des angles ont été proposés : choisissez UN angle avant de générer (étape 2) — le fractionnement en plusieurs articles reste une décision explicite."
+      );
+      setStep(1);
+      return;
+    }
     setError(null);
     setGeneratingId(sectionId);
     try {
@@ -612,6 +676,51 @@ export function ArticleRedactionPage() {
               </div>
 
               <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => void analyzeNow()}
+                disabled={busy === "analyze"}
+              >
+                {busy === "analyze" ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" aria-hidden="true" /> : <Search className="h-4 w-4 mr-1.5" aria-hidden="true" />}
+                Analyser les sources (rapport : volumes, sections, études, manquants)
+              </Button>
+              {analysis && (
+                <div className="rounded-md border p-3 space-y-2 text-sm" aria-live="polite">
+                  <p className="font-medium">
+                    Rapport d&apos;analyse — {analysis.totalChars.toLocaleString("fr-FR")} caractères · qualité : {analysis.quality}
+                  </p>
+                  <ul className="text-xs text-muted-foreground space-y-0.5">
+                    {analysis.bySource.map((s, i) => (
+                      <li key={i}>
+                        {s.label} ({s.kind}) — {s.chars.toLocaleString("fr-FR")} car.
+                      </li>
+                    ))}
+                  </ul>
+                  {analysis.headings.length > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      <span className="font-medium">Sections repérées ({analysis.headings.length}) :</span>{" "}
+                      {analysis.headings.slice(0, 8).join(" · ")}
+                      {analysis.headings.length > 8 ? "…" : ""}
+                    </p>
+                  )}
+                  {analysis.studies.length > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      <span className="font-medium">Études détectées :</span> {analysis.studies.length}
+                    </p>
+                  )}
+                  {analysis.missing.map((m, i) => (
+                    <p key={i} className="text-xs text-amber-600 flex gap-1">
+                      <AlertTriangle className="h-3 w-3 mt-0.5 shrink-0" aria-hidden="true" />
+                      {m}
+                    </p>
+                  ))}
+                  {fragmentation?.risk && (
+                    <p className="text-xs text-amber-600 font-medium">{fragmentation.message}</p>
+                  )}
+                </div>
+              )}
+
+              <Button
                 className="w-full"
                 onClick={() => setStep(1)}
                 disabled={!includeChapters && !includeCadrage && !includeReferences && !includeExperiments && !includeNotebook && imports.length === 0}
@@ -696,9 +805,39 @@ export function ArticleRedactionPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="ar-angle">Angle / contribution</Label>
-                  <Input id="ar-angle" value={angle} onChange={(e) => setAngle(e.target.value)} placeholder="Ce que l'article met en avant…" />
+                  <div className="flex gap-2">
+                    <Input id="ar-angle" value={angle} onChange={(e) => { setAngle(e.target.value); setAngleChosen(true); }} placeholder="Ce que l'article met en avant…" />
+                    <Button variant="outline" onClick={() => void proposeAngles()} disabled={busy === "angles"} className="shrink-0">
+                      {busy === "angles" ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" aria-hidden="true" /> : <Wand2 className="h-4 w-4 mr-1.5" aria-hidden="true" />}
+                      Proposer des angles
+                    </Button>
+                  </div>
                 </div>
               </div>
+              {angleProposals.length > 0 && (
+                <div className="space-y-2" role="radiogroup" aria-label="Choix de l'angle">
+                  <p className="text-xs font-medium">Choisissez UN angle (obligatoire avant génération quand plusieurs études sont détectées) :</p>
+                  {angleProposals.map((a, i) => (
+                    <label key={i} className="flex items-start gap-2 rounded-md border p-3 text-sm cursor-pointer">
+                      <input
+                        type="radio"
+                        name="angle-choice"
+                        className="mt-1"
+                        checked={angle === a.angle}
+                        onChange={() => { setAngle(a.angle); setAngleChosen(true); }}
+                      />
+                      <span>
+                        <span className="font-medium">{a.angle}</span>
+                        <span className="block text-xs text-muted-foreground">{a.rationale}</span>
+                        <span className="block text-xs text-muted-foreground">Couvre : {a.coverage}</span>
+                      </span>
+                    </label>
+                  ))}
+                  {fragmentation?.risk && (
+                    <p className="text-xs text-amber-600 font-medium">{fragmentation.message}</p>
+                  )}
+                </div>
+              )}
               <p className="text-xs text-muted-foreground">
                 Si la thèse contient plusieurs études, un seul angle sera retenu pour cet article — le fractionnement en plusieurs articles se fait explicitement, jamais automatiquement.
               </p>
