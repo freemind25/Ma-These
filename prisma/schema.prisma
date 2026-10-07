@@ -400,6 +400,7 @@ model ImportedDoc {
   filename  String
   fileType  String   // docx | pdf | txt
   sizeBytes Int
+  data      Bytes?   // octets d'origine — PDFs uniquement (OCR différé) ; null pour docx/txt
   text      String   // texte extrait (confirmable/éditable par l'utilisateur)
   pages     Int?
   limits    String   @default("[]") // JSON: [{ kind, detail }] — limites de l'extraction
@@ -558,6 +559,8 @@ model Job {
   result     String? // JSON — sortie du handler
   error      String? // erreur d'échec (si failed)
   attempts   Int       @default(0)
+  progress     Int?      // 0-100 — progression d'un job long (OCR par page) ; null = non applicable
+  progressNote String? // ex. « Page 3/12 (confiance moyenne 82 %) » ; null = non applicable
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   startedAt  DateTime?
