@@ -13,3 +13,15 @@
 - `src/lib/ai/post-compaction-digestion.test.ts` l.55-95 : précédent de test de câblage par listes de modes.
 
 **État** : zéro code écrit à l'ouverture — artefacts spec/plan/tasks/preuves uniquement.
+
+## Groupe A — IA / prompts + test dédié (2026-10-07, 10:09-10:11)
+
+### Groupe A — IA / prompts + test dédié
+Tâches : T1, T2, T3
+Fichiers modifiés : `src/lib/ai/specializations/urbanis-dz.ts` (créé, ~75 lignes), `src/lib/ai/specializations/index.ts` (+3 lignes), `src/lib/ai/specializations/urbanis-dz.test.ts` (créé, 97 lignes), `src/lib/ai/specializations/__snapshots__/urbanis-dz.test.ts.snap` (généré)
+Vérifications exécutées : T1 taille prompt mesurée **4 870 car.** (≤ 7 000) ; T2 registre `'expertise-urbaine-dz': URBANIS_DZ_PROMPT` résolu ; T3 vitest `urbanis-dz.test.ts` **9/9 verts** + non-régression `post-compaction-digestion.test.ts` (33/33 avec le nouveau fichier, dont 24 préexistants) ; lint **0 erreur / 231 warnings** (baseline inchangée) ; lignes rouges **0 diff**.
+Sorties : `Test Files 2 passed (2) / Tests 33 passed (33)` ; `PROMPT CAR: 4870` ; `✖ 231 problems (0 errors, 231 warnings)`.
+Critères d'acceptation couverts : CA-2.1, CA-2.2.
+Écart au plan : ordonnancement corrigé — le bloc « câblage mode + registre » du test exigeait l'entrée data (T4) : déplacé de T3 vers T4 (tasks.md ajusté avant commit, aucun fichier hors annonce).
+Statut proposé : à recetter (déléguée)
+

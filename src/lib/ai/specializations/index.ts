@@ -30,6 +30,7 @@ export { ARGUMENTATION_BILATERALE_PROMPT } from './argumentation-bilaterale';
 export { PROBLEMATIQUE_PROMPT } from './problematique';
 export { EMPIRIQUE_PROMPT } from './empirique';
 export { ANALYSE_PROMPT } from './analyse';
+export { URBANIS_DZ_PROMPT } from './urbanis-dz';
 
 // ───────────────────────────────────────
 // Registry: mode id → built prompt
@@ -62,6 +63,7 @@ import { ARGUMENTATION_BILATERALE_PROMPT } from './argumentation-bilaterale';
 import { PROBLEMATIQUE_PROMPT } from './problematique';
 import { EMPIRIQUE_PROMPT } from './empirique';
 import { ANALYSE_PROMPT } from './analyse';
+import { URBANIS_DZ_PROMPT } from './urbanis-dz';
 
 /**
  * Maps WritingMode.id → the built system prompt.
@@ -93,5 +95,6 @@ export const SPECIALIZATION_PROMPTS: Record<string, string> = {
   'problematique': PROBLEMATIQUE_PROMPT,
   'empirique': EMPIRIQUE_PROMPT,
   'analyse': ANALYSE_PROMPT,
+  'expertise-urbaine-dz': URBANIS_DZ_PROMPT,
   // 'deep-research' uses a custom endpoint — no system prompt here
 };
