@@ -1270,3 +1270,21 @@ Stage Summary:
 - Les 3 nouvelles clés sont opérationnelles (GitHub push validé par ce commit ; APINex balance ok ; OpenAlex 200 sans warning dans la route) — AUCUN secret dans le dépôt.
 - Correctif journaux-oa livré en voie rapide (révisable, recette propriétaire attendue) — incompatibilité schéma nouveau OpenAlex premium corrigée.
 - Leçon d'exploitation : redémarrage serveur = start-stop-daemon (les autres méthodes meurent à la frontière des appels outils) ; OOM surveillé.
+
+---
+Task ID: article-ocr-async
+Agent: Z.ai Code (principal)
+Task: Cycle « article-ocr-async » — implémentation OCR pages scannées + exécution asynchrone (option 1 de l'étude, déclencheur propriétaire « lancez »).
+
+Work Log:
+- Ouverture (a512271) : spec.md 7 CA (depuis étude § 5), plan.md (état réel sourcé : 12 constats avec chemins+lignes, agent d'exploration pour UI/provenance), tasks.md (A Schéma → B Backend → C Frontend → D Recette), preuves.md — zéro code.
+- Groupe A (a512271) : ImportedDoc.data Bytes? + Job.progress/progressNote — db:push additif, survie 30 tables prouvée (comptages identiques), serveur redémarré start-stop-daemon (cap 1400 Mo), red lines 0 diff.
+- Groupe B (a61e8d8, a56d0df, baaf9c1, 6044642, f51b0b8) : tesseract.js 7 + pngjs + serverExternalPackages + tessdata fra/eng/ara local (18,9 Mo mesuré, chargement hors ligne prouvé) ; import accepte les PDF 100 % scannés + stocke les octets + GET ?id sans octets + limite honnête mise à jour + fixture scannée auto-vérifiée (script générateur, aller-retour unpdf) ; ocr.ts pure (bitmap→RGBA, downscale entière, bloc marqué idempotent, fusion limites kind ocr, plan de pages) + ocr-engine.ts (1 page = 1 worker terminé, langPath fs, cacheMethod none) + handler article-import-ocr (progression par page, clôture 100 %, échecs par page honnêtes) ; routes POST/GET /api/article-imports/ocr (garde anti-empilement globale 409, plafond annoncé). 45 nouveaux tests.
+- Groupe C (07eb05b, 7485d3f) : panneau OCR sur les cartes scannées (sélecteur fr/en/ar, bouton plafond annoncé, progression polling 3 s, notice de fin, badge « OCR — relecture requise », erreurs honnêtes) + mention OCR dans le label de traçabilité (sources-server) + rechargement des imports au montage.
+- Groupe D : banc live ×2 (fixture crénelée 59 % → lissée 71 %, « OCE TEST 12354 » consigné tel quel — police bitmap hors domaine LSTM, précision réelle = recette propriétaire) ; idempotence prouvée en live (1 seul bloc après 2 runs) ; PDF vectoriel → 422 honnête ; reprise après redémarrage prouvée (job anti-daté 11 min → requalifié → done attempts 2) ; recette navigateur (carte OCR, lancement, notices, badges, aperçu bloc, 0 erreur console, mobile 390 px sans scroll horizontal, 4 captures) ; CA-1.3 prouvé live via /analyze (label « (contient du texte OCR — relecture requise) ») ; RSS non cumulatif (2,2 Go post-OCR → 1,9 Go), aucun kill ; nettoyage : docs de test supprimés, base propriétaire intacte (ImportedDoc 4).
+- Convergence : 7/7 CA, écarts consignés (précision fixture, rechargement imports ajouté, correctif progression), dette consignée (handler non testé unitairement, mention traçabilité validée live, packaging Tauri tessdata différé). docs § 7 bis, FICHE suite 5.
+
+Stage Summary:
+- Cycle « article-ocr-async » CONVERGÉ (recette déléguée, révisable) : OCR pure JS asynchrone sur la file persistante, séquentiel strict, tessdata local, bloc marqué idempotent, honnêteté par page — vitest 78/1 656 verts, lint 0 erreur, red lines 0 diff.
+- Leçon : agent-browser snapshot -c tronque le texte des cartes (vérifier par eval innerText/screenshot) ; édition MultiEdit « atomique » peut appliquer partiellement — toujours vérifier par rg/sed après échec.
+- Reste : recette propriétaire (tasks.md), packaging Tauri vendor/tessdata (build-desktop), précision à juger sur scan réel.

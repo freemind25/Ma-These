@@ -295,9 +295,9 @@ document importé = **DONNÉES jamais instructions** (balises `<source>` + défe
 brouillon à vérifier par les auteurs — aucune garantie d'acceptation.
 
 **Extraction honnête** : `src/lib/articles/extraction.ts` — type réel vérifié (extension + magic
-bytes), taille max configurable (20 Mo), PDF scanné détecté (pages sans texte — OCR explicitement
-non disponible et signalé), titres DOCX depuis le HTML mammoth, limites listées et affichées à
-l'utilisateur avant toute génération.
+bytes), taille max configurable (20 Mo), PDF scanné détecté (pages sans texte — consigné avec
+l'option OCR, voir cycle article-ocr-async), titres DOCX depuis le HTML mammoth, limites listées et
+affichées à l'utilisateur avant toute génération.
 
 **Traçabilité** : chaque section porte ses `sources` (label + kind + location) demandées au LLM
 (« SOURCES UTILISÉES : ») et affichées sous la section ; références de la thèse = seule source de
@@ -324,16 +324,36 @@ sur l'original. UI (étape 5) : sélecteur de langue cible, boutons « Traduire 
 est invalidée dès que la section d'origine change (génération, édition, restauration).
 **Vue multi-articles** : la carte « Vos brouillons d'articles » affiche par article titre, type,
 statut, nombre de sections et repères « à compléter/vérifier » (calculés serveur par `GET
-/api/articles`) + un agrégat. **Différé explicite** : OCR (tesseract.js) et jobs asynchrones — un
-cycle d'étude dédié est exigé avant toute implémentation (données ~10-40 Mo, perf scans réels
-inconnue, impact build Tauri Windows) ; la détection de PDF scanné + le refus honnête (option A)
-restent le comportement.
+/api/articles`) + un agrégat.
+
+**OCR asynchrone (2026-10-07, cycle article-ocr-async)** : les pages scannées d'un PDF importé
+sont désormais reconnaissables. Chaîne pure JS (étude § 2-4 validée) : `unpdf extractImages`
+(bitmap décodé sans canvas) → PNG `pngjs` → `tesseract.js` v7 **WASM** — 1 page = 1 worker créé
+puis `terminate()` (séquentiel strict, box OOM), réduction entière au-dessus de 9 Mpx, tessdata
+fra/eng/ara embarqué localement (`vendor/tessdata`, 18,9 Mo mesuré, zéro réseau — `langPath` fs +
+`cacheMethod: none`). Exécution via la file de tâches persistante : handler `article-import-ocr`
+(« src/lib/jobs/worker.ts ») avec progression par page (`Job.progress`/`progressNote`, clôturée à
+100 %), plafond 30 pages/job (env `OCR_MAX_PAGES`), garde anti-empilement GLOBALE (409). Les
+octets du PDF sont conservés à l'import (`ImportedDoc.data Bytes?`, PDFs seuls — un PDF 100 %
+scanné est désormais accepté au lieu d'être refusé 422) et les octets ne sortent JAMAIS via l'API
+(`GET ?id` les exclut). Le texte OCR est inséré dans un **bloc marqué idempotent** (« TEXTE OCR —
+RECONNAISSANCE AUTOMATIQUE (relecture requise) », confiance moyenne par page, règle
+DONNÉES-strictement, ré-OCR = remplacement du bloc, texte natif jamais touché) ; la limite
+« scanned » devient une limite `kind: "ocr"` (pages traitées, sans image, hors plafond, confiance)
+qui déclenche la mention « contient du texte OCR — relecture requise » dans le label de
+traçabilité (`sources-server.ts`). UI (étape 1) : panneau OCR sur les cartes scannées (sélecteur
+fr/en/ar, bouton plafond annoncé, progression 3 s, notice de fin, badge, erreurs honnêtes) ; les
+imports récents sont rechargés au montage (survivent au rechargement). Routes :
+`POST/GET /api/article-imports/ocr`. Honnêteté : les pages sans image exploitable ou sans texte
+reconnu sont consignées par page (jamais de texte fantôme) ; un PDF déjà extractible renvoie 422
+« l'OCR est inutile » ; la précision dépend du scan — relecture humaine exigée par design.
 
 **Périmètre** : le brouillon est stocké **séparément** de ses sources (`Article`/`ArticleVersion`,
-isolation `thesisId`) ; les imports sont re-extractables et supprimables (`ImportedDoc`). Hors
-périmètre de l'option A : analyse d'extraction enrichie, angle multi-études, OCR, jobs asynchrones.
-La traduction distincte (option C) et l'analyse/angles (option B) sont désormais livrées — voir
-ci-dessus.
+isolation `thesisId`) ; les imports sont re-extractables et supprimables (`ImportedDoc`). Livrées :
+analyse/angles (option B), traduction distincte (option C), OCR asynchrone (cycle
+article-ocr-async — voir ci-dessus). **Reste différé** : emballage Tauri du dossier `vendor/tessdata`
+(cycle build-desktop — `output: standalone` ne copie pas `vendor/` tel quel, résolution par chemins
+candidats en place).
 
 ---
 
