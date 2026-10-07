@@ -325,3 +325,15 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Anomalie d'environnement (consignée pour les prochaines sessions)** : OOM box **confirmée** (2 next-server tués à ~2 Go RSS — dmesg) → contournement `NODE_OPTIONS="--max-old-space-size=1400"` + recette en traites (les processus enfants d'un appel outil sont tués à la frontière — test prouvé) ; un faux négatif de `wait` navigateur et un Fast Refresh pendant fetch (perte d'état) ont été contournés par rechargement propre.
 
 **Points ouverts pour la session suivante** : recette de contrôle propriétaire des cycles 15/16/17 (révisable) ; cycle d'étude OCR/async si demandé ; rotation OpenAlex/APINEX + clés GitHub côté propriétaire ; OOM box à surveiller (contournement documenté dans le worklog).
+
+## Session du 2026-10-07 (suite 3) — Recette de contrôle cycles 15/16/17 + cycle d'étude OCR/async (point d'arrêt)
+
+**Déclencheur** : « engagez toutes les étapes par ordre prioritaire » (IM) — exécution dans l'ordre de la FICHE : contrôle des cycles recettés par délégation, puis le cycle d'étude OCR/async exigé à l'ouverture de l'option C.
+
+**Recette de contrôle (commit `0be5e45`, poussé)** : 11 contrôles positifs consignés (`specs/article-scientifique/preuves-option-a.md` § Recette de contrôle) — baseline (vitest 74/1 611 verts, lint 0 erreur/231, redlines 0 diff), 2 points d'entrée, wizard étape 1, vue multi-articles avec badges, étape 5 (carte traduction, repères verbatim, traçabilité, versions, export DOCX), bouton analyse (cycle 16), mobile 390 px sans scroll horizontal, 0 erreur console, GET /api/legal-refs 200 (cycle 14). Lecture seule : l'article réel de la base intact. **Les cycles 14-17 passent de « révisable » à « contrôlé une seconde fois, aucun écart ».**
+
+**Cycle d'étude OCR/async (commit `f6a6edb`, poussé — zéro code)** : étude livrée (`specs/article-ocr-async/etude.md`, 7 sections). Constats clés : la file async existe déjà et est recettée (queue.ts/worker.ts/API jobs — il ne manque qu'un handler) ; unpdf exporte `extractImages` (bitmaps purs sans canvas → OCR pure JS viable) ; `renderPageAsImage` exige `@napi-rs/canvas` (binaire natif) → écarté. Chaîne retenue : extractImages → PNG pur JS → tesseract.js WASM séquentiel (1 page + terminate, plafond 30, tessdata fra/eng/ara embarqué) → bloc marqué « texte OCR — relecture requise » + limite « scanned » mise à jour. Spec proposée : 7 CA (progression, bloc distinct, traçabilité OCR, anti-injection, séquentiel/plafond, offline, reprise après crash). Risques : cas limites extractImages, OOM (mesure RSS en critère de recette), précision variable (honnêteté), taille installer à chiffrer au plan.
+
+**POINT D'ARRÊT** : décision propriétaire — (1) lancer le cycle d'implémentation OCR/async (~1-2 cycles) ou (2) maintenir en veilleuse.
+
+**Points ouverts pour la session suivante** : décision OCR/async ; rotation OpenAlex/APINEX + révocation clés GitHub (côté propriétaire) ; OOM : next-server 1 888 Mo RSS en fin de session, 1 600 Mo disponibles, aucun kill (surveillance maintenue).
