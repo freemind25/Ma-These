@@ -199,3 +199,44 @@ export function parseUsedSources(raw: string): {
     });
   return { content, usedSources };
 }
+
+// ═══════════════════════════════════════════════════════════════
+// Option B — propositions d'angles (choix utilisateur obligatoire
+// avant génération quand plusieurs études sont détectées).
+// ═══════════════════════════════════════════════════════════════
+
+export interface AngleProposal {
+  angle: string;
+  rationale: string;
+  coverage: string;
+}
+
+export function buildAnglesPrompt(meta: ArticleMeta, blocks: SourceBlock[]): string {
+  return [
+    "Propose 2 à 4 ANGLES possibles pour un article scientifique tiré des sources ci-dessous.",
+    ...metaLines(meta),
+    "Pour chaque angle : ce qu'il met en avant (contribution/résultat), pourquoi il est publiable, ce qu'il couvre de la thèse — et ce qu'il laisse de côté.",
+    "Ne propose JAMAIS un plan complet ni un découpage en plusieurs articles : un seul angle par proposition.",
+    "Réponds en JSON STRICT, sans texte autour, au format exact :",
+    '{"angles":[{"angle":"...","rationale":"...","coverage":"..."}]}',
+    "",
+    "SOURCES :",
+    buildSourcesContext(blocks),
+  ].join("\n");
+}
+
+export function parseAnglesResponse(raw: string): AngleProposal[] {
+  const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start === -1 || end === -1) throw new Error("Réponse des angles non reconnue (pas de JSON).");
+  const parsed = JSON.parse(cleaned.slice(start, end + 1)) as { angles?: AngleProposal[] };
+  if (!Array.isArray(parsed.angles) || parsed.angles.length === 0) {
+    throw new Error("Aucun angle proposé.");
+  }
+  return parsed.angles.slice(0, 4).map((a, i) => ({
+    angle: String(a.angle ?? `Angle ${i + 1}`),
+    rationale: String(a.rationale ?? ""),
+    coverage: String(a.coverage ?? ""),
+  }));
+}
