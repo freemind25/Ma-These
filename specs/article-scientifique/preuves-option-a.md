@@ -59,3 +59,31 @@ Défauts trouvés : 2 produit (crash limits, kind inconnu) — corrigés dans le
 Écart au plan : 3 consignés
 Statut : RECETTÉE (délégation) — CONVERGÉ, révisable à la recette du propriétaire
 ```
+
+## Option B — cycle n°16 (2026-10-07, 13:50-14:05)
+
+### Groupe A — Lib + API
+Tâches : T1, T2
+Fichiers : `src/lib/articles/analysis.ts` (~130 l.), `prompts.ts` (+buildAnglesPrompt/parseAnglesResponse), `analysis.test.ts` (8 tests), `/api/articles/analyze` (pur), `/api/articles/angles` (IA)
+Vérifications : vitest 23/23 article (2 échecs intermédiaires de test corrigés : titres avec point final, casse JAMAIS) ; 1 commit amendé (test avec seuil qualité) ; tsc/lint 0.
+Preuves live : analyze **200** — qualité « insuffisante », 699 car., manquant « Références du projet non sélectionnées » (juste : includeReferences=false dans la requête), fragmentation false ; angles **200 en 9,4 s** — 1 angle argumenté (« Transition numérique et durabilité urbaine… »), études 0, fragmentation false (garde-fou couvert par tests : studiesCount 3 + angles 4 → risk true, message « fragmentation artificielle »).
+
+### Groupe B — UI
+Tâche : T3
+Fichier : `article-redaction-page.tsx` (+130 l. : états analyse/angles, bouton « Analyser les sources » + panneau rapport [volumes, sections repérées, études, manquants ambre, avertissement fragmentation], bouton « Proposer des angles » + cartes radio, blocage génération sans angle si ≥ 2 études et angles proposés)
+Vérifications : lint 0 (défaut icône Search corrigé dans le groupe) ; tsc 0 ; recette navigateur — panneau d'analyse affiché (rapport + qualité), bouton « Proposer des angles » présent en étape 2, champs titre/angle câblés.
+
+### Groupe C — Non-régression / docs
+Tâches : T4, T5
+Suite complète : **74 fichiers / 1 608 verts** (1 601 + 7) ; lint **0 erreur / 231 warnings** ; lignes rouges **0 diff** ; docs § 7 bis enrichi (analyse + angles + anti-fragmentation).
+CA couvertes : 6/6 (CA-B1→B6).
+
+```
+### Compte rendu de recette — article-scientifique (option B)
+Tâches recettées : T1→T5
+Vérifications exécutées : vitest 1 608 verts, lint 0 erreur / 231 baseline, analyze 200 réel, angles IA 200 (9,4 s), UI (panneau + bouton angles + blocage câblé), redlines 0 diff
+CA couvertes : 6/6
+Défauts trouvés : 1 (icône Search manquante) — corrigé dans le groupe
+Écart au plan : 1 consigné (titres DOCX aplatis — détection honnête)
+Statut : RECETTÉE (délégation) — CONVERGÉ, révisable
+```

@@ -304,6 +304,14 @@ l'utilisateur avant toute génération.
 citations autorisée. Export DOCX (`/api/articles/export-docx`) : repères « à compléter / à vérifier »
 conservés et mis en évidence, mention de brouillon en tête.
 
+**Option B (2026-10-07, cycle article-scientifique)** : analyse pure des sources (`analysis.ts` —
+volumes, sections repérées, études via blocs expérimentations, éléments manquants, qualité honnête,
+garde-fou anti-fragmentation « un seul angle, fractionnement = décision explicite ») exposée via
+`/api/articles/analyze` + panneau UI ; propositions d'angles par IA (`/api/articles/angles`,
+2-4 angles argumentés) avec **choix utilisateur obligatoire avant génération** quand ≥ 2 études sont
+détectées — la génération est bloquée avec message explicite sinon. Le résumé structuré ou non suit
+les consignes de revue transmises au prompt (champ `journalGuide`).
+
 **Périmètre** : le brouillon est stocké **séparément** de ses sources (`Article`/`ArticleVersion`,
 isolation `thesisId`) ; les imports sont re-extractables et supprimables (`ImportedDoc`). Hors
 périmètre de l'option A : analyse d'extraction enrichie, angle multi-études, OCR, jobs asynchrones,
