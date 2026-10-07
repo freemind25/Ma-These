@@ -226,6 +226,29 @@ l'aperçu du brouillon, sous le résultat de l'assistant d'écriture, et dans l'
 
 ---
 
+## 6 quater. Mode « Expertise urbaine (URBANIS-DZ) » (2026-10-07)
+
+**Source** : pack URBANIS-DZ v1.1 fourni par le propriétaire (`upload/URBANIS-DZ_Pack_construction_agent.pdf`,
+analyse dans `specs/urbanis-dz-integration/`, cycle dans `specs/urbanis-dz-mode/`). L'instruction
+système du pack (§ 2 : 12 règles dures, cadrage, modes M1-M7, protocole risques, format de sortie,
+style) est retranscrite **verbatim** dans `src/lib/ai/specializations/urbanis-dz.ts` —
+**prompt autoporteur** (`buildStandalonePrompt`) : il n'embarque **pas** le noyau de connaissance
+(~1 300 tok, sans effet sur la marge full core) et porte sa propre doctrine.
+
+**Passerelle d'intégration** (seul ajout hors pack, consigné) : usage thèse, règle d'intégrité
+« les compétences livres sont un appui, jamais une source de citations », langue de la demande.
+
+**Garde-fous** : tests d'invariants + snapshot anti-dérive (`urbanis-dz.test.ts` — 12 règles, M1-M7,
+JORADP, protocole risques, budget ≤ 7 000 car., câblage `SPECIALIZATION_PROMPTS`/`WRITING_MODES`).
+L'UI affiche une note permanente quand le mode est actif : « Avis technique non opposable — toute
+règle juridique doit être vérifiée au JORADP » (règle 8 du pack). Le stamp « Provenance des
+savoirs » (§ 6 ter) continue de s'appliquer à ce mode (canal compétences livres inchangé).
+
+**Hors périmètre acté** : registre juridique structuré (Option B), veille JORADP (Option C),
+référentiels § 3/§ 4 du pack non injectés dans le prompt.
+
+---
+
 ## 7. Processus de digestion et feedback
 
 Quand un cas limite ou une divergence est identifié, il suit le processus formel documenté dans `feedback.md` :

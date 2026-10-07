@@ -36,3 +36,14 @@ Critères d'acceptation couverts : CA-1.1 (câblage), CA-1.4 (note — vérifica
 Écart au plan : aucun.
 Statut proposé : à recetter (déléguée)
 
+## Groupe C — Non-régression / docs (2026-10-07, 10:13-10:17)
+
+### Groupe C — Non-régression / docs
+Tâches : T6, T7
+Fichiers modifiés : `docs/ARCHITECTURE-CONNAISSANCE.md` (+21 lignes, § 6 quater), `src/lib/ai/knowledge-core.budget.test.ts` (1 mot, `allowedStandalone` l.173), `specs/urbanis-dz-mode/plan.md` (écart consigné)
+Vérifications exécutées : suite complète vitest **70→71 fichiers, 1 569/1 569 verts** (baseline 1 558 + 11 nouveaux, zéro régression) ; lint **0 erreur / 231 warnings** ; lignes rouges **0 diff**.
+Sorties : `Tests 1569 passed (1569)` ; échec intermédiaire instructif — le capteur budget préexistant (`measureBudget` l.57-102) identifie les modes par **nom de fichier** et exige l'inscription des autoporteurs dans `allowedStandalone` : première tentative avec l'id de mode (`expertise-urbaine-dz`) corrigée en nom de fichier (`urbanis-dz`) après lecture du mécanisme ; les 2 essais et la sémantique sont consignés ici et au plan (Article 4).
+Critères d'acceptation couverts : CA-2.2 (capteur budget), non-régression générale.
+Écart au plan : 1 fichier non anticipé (`knowledge-core.budget.test.ts`, 1 mot) — inscrit au plan avant modification, justifié par le message du test lui-même.
+Statut proposé : à recetter (déléguée)
+

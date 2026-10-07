@@ -170,7 +170,7 @@ describe('Token Budget Assertions (permanent sensor)', () => {
 
   it('all modes should have at least one module (or be explicitly standalone)', () => {
     const noModules = report.modes.filter(m => m.modules.length === 0)
-    const allowedStandalone = ['deblocage', 'improvement', 'freeform', 'index']
+    const allowedStandalone = ['deblocage', 'improvement', 'freeform', 'index', 'urbanis-dz']
     const unexpected = noModules.filter(m => !allowedStandalone.includes(m.mode))
     expect(
       unexpected.length,

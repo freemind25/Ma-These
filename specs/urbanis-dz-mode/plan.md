@@ -33,6 +33,7 @@
 | src/lib/ai/specializations/index.ts | +2 lignes | registre — test générique de câblage à ne pas casser |
 | src/lib/ai/specializations/urbanis-dz.test.ts | création | vitest, aucun effet runtime |
 | src/data/ai-writing-modes.ts | +11 lignes | 1 entrée — le compteur « N modes » de la page se met à jour seul (l.66) |
+| src/lib/ai/knowledge-core.budget.test.ts | +0/-0 (1 mot) | liste `allowedStandalone` l.173 — inscription du **nom de fichier** `urbanis-dz` (le rapport mesure les spécialisations par fichier, pas par id de mode ; le prompt autoporteur sans clé `modules:` doit y être déclaré). Écart Article 4 : fichier non anticipé au plan, découvert par le test T6 ; première tentative avec l'id de mode corrigée en nom de fichier après lecture du mécanisme (`measureBudget`, l.57-102) |
 | src/modules/ai-writing/ai-writing-page.tsx | ~10 lignes | ICON_MAP + note conditionnelle — rien d'autre |
 | docs/ARCHITECTURE-CONNAISSANCE.md | +section | doc |
 
