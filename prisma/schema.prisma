@@ -355,6 +355,62 @@ model LegalRef {
 }
 
 // ═══════════════════════════════════════
+// ARTICLES SCIENTIFIQUES (brouillons distincts de la thèse)
+// ═══════════════════════════════════════
+
+model Article {
+  id            String   @id @default(cuid())
+  thesisId      String?  // isolation par thèse (app mono-utilisateur locale)
+  title         String
+  articleType   String   @default("empirique") // empirique | qualitatif | quantitatif | theorique | revue | cas
+  discipline    String?
+  targetLang    String   @default("fr")
+  targetWords   Int      @default(6000)
+  biblioStyle   String   @default("APA") // APA | IEEE | Vancouver | Chicago
+  targetJournal String?
+  journalGuide  String?  // consignes de revue / guide auteur collés
+  authors       String?  // auteurs + affiliations
+  angle         String?  // contribution / résultat mis en avant
+  status        String   @default("draft") // draft | plan | generated | revised
+  plan          String?  // JSON: [{ id, heading, brief }]
+  sections      String   @default("[]") // JSON: [{ id, heading, content, sources: [{type,id,label,location}] }]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  versions      ArticleVersion[]
+
+  @@index([thesisId])
+}
+
+model ArticleVersion {
+  id        String   @id @default(cuid())
+  articleId String
+  label     String?
+  sections  String   // JSON snapshot des sections
+  createdAt DateTime @default(now())
+
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+}
+
+model ImportedDoc {
+  id        String   @id @default(cuid())
+  thesisId  String?
+  filename  String
+  fileType  String   // docx | pdf | txt
+  sizeBytes Int
+  text      String   // texte extrait (confirmable/éditable par l'utilisateur)
+  pages     Int?
+  limits    String   @default("[]") // JSON: [{ kind, detail }] — limites de l'extraction
+  scanned   Boolean  @default(false) // PDF probablement scanné (pages sans texte)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([thesisId])
+}
+
+// ═══════════════════════════════════════
 // LICENCE (simplifié)
 // ═══════════════════════════════════════
 
