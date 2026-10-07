@@ -1238,3 +1238,17 @@ Work Log:
 
 Stage Summary:
 - Contrôle POSITIF consigné dans specs/article-scientifique/preuves-option-a.md (§ Recette de contrôle) — aucun écart aux recettes de convergence ; les cycles 15/16/17 passent du statut « révisable » à « contrôlé une seconde fois, aucun écart ».
+---
+Task ID: etude-ocr-async
+Agent: Z.ai Code (principal)
+Task: Cycle d'étude « OCR pages scannées + exécution asynchrone » — exigé à l'ouverture de l'option C (différé explicitement). Zéro code : étude + spec proposée + point d'arrêt.
+
+Work Log:
+- Exploration factuelle : extraction.ts (unpdf texte seul, detectScannedPages, buildLimits l.122-130 = point d'accroche OCR) ; ImportedDoc sans octets fichier (schema l.397-411 ; route import buffer transitoire l.47) ; file async déjà complète (queue.ts verrou optimiste + worker.ts registre HANDLERS + instrumentation.ts + GET/POST /api/jobs) ; handlers existants noop/deep-research/veille-check.
+- Viabilité pure JS prouvée aux sources : unpdf v1.8.1 exporte extractImages (bitmaps sans canvas, README l.239-257) ; renderPageAsImage exige @napi-rs/canvas = binaire natif → écarté ; tesseract.js/pngjs non installés (à installer au cycle d'implémentation).
+- Chaîne retenue : extractImages → PNG (pur JS) → tesseract.js WASM séquentiel 1 page + terminate → ImportedDoc.text bloc marqué + limits mise à jour ; handler article-import-ocr + enfilement + suivi UI ; colonne data Bytes? proposée pour l'OCR différé.
+- Étude livrée : specs/article-ocr-async/etude.md (7 sections : état réel, viabilité, 3 options, schéma, spec 7 CA + hors périmètre, risques mémoire/limites/honnêteté/taille, point d'arrêt).
+
+Stage Summary:
+- Verdict d'étude : OCR pure JS VIABLE sous conditions (séquentiel strict, plafond pages, tessdata embarqué local fr/en/ar) ; async quasi gratuit (infrastructure jobs déjà recettée).
+- POINT D'ARRÊT : décision propriétaire attendue — lancer le cycle d'implémentation (~1-2 cycles) ou maintenir en veilleuse. Aucun code écrit.
