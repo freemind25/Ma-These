@@ -214,4 +214,10 @@ describe("prompts — traduction (option C)", () => {
     expect(p).toContain("UNIQUEMENT avec le texte traduit");
     expect(p).toContain("(tronqué — budget de contexte)");
   });
+
+  it("exige que les repères restent verbatim en français (correctif de recette live)", () => {
+    const p = buildTranslationPrompt({ targetLang: "anglais", title: "T", content: "contenu" });
+    expect(p).toContain("restent EXACTEMENT tels quels, en français");
+    expect(p).toContain("ne les traduis pas");
+  });
 });

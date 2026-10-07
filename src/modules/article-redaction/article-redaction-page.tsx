@@ -28,6 +28,7 @@ import { useAppStore } from "@/lib/stores/app-store";
 import {
   FileText, FileUp, Loader2, Plus, Trash2, Save, Download, Search,
   ChevronRight, ChevronLeft, History, AlertTriangle, Wand2, RefreshCw,
+  Languages, Copy,
 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────
@@ -78,6 +79,8 @@ interface ArticleRow {
   discipline: string | null;
   targetJournal: string | null;
   updatedAt: string;
+  sectionsCount: number;
+  toComplete: number;
 }
 
 interface ArticleFull extends ArticleRow {
@@ -99,6 +102,11 @@ function countToComplete(sections: SectionRow[]): number {
     (acc, s) => (s.content.match(/\[À compléter par l'auteur\]|\[Information non précisée[^\]]*\]|\[[^\]]*à vérifier[^\]]*\]/gi) || []).length + acc,
     0
   );
+}
+
+const LANG_LABELS: Record<string, string> = { fr: "français", en: "anglais", ar: "arabe" };
+function langLabel(code: string): string {
+  return LANG_LABELS[code] ?? code;
 }
 
 // ── Composant ──────────────────────────────────────────────────
@@ -152,6 +160,11 @@ export function ArticleRedactionPage() {
   const [angleProposals, setAngleProposals] = useState<{ angle: string; rationale: string; coverage: string }[]>([]);
   const [angleChosen, setAngleChosen] = useState(false);
 
+  // Option C : traduction distincte (copie — l'original reste intact)
+  const [translateTarget, setTranslateTarget] = useState("en");
+  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [translationNotice, setTranslationNotice] = useState<string | null>(null);
+
   const sourcesPayload = useCallback(
     () => ({
       thesisId: activeThesisId ?? null,
@@ -198,6 +211,9 @@ export function ArticleRedactionPage() {
       setJournalGuide(a.journalGuide ?? "");
       setAuthors(a.authors ?? "");
       setAngle(a.angle ?? "");
+      setTranslateTarget(a.targetLang === "fr" ? "en" : "fr");
+      setTranslations({});
+      setTranslationNotice(null);
       setPlan(a.plan ? JSON.parse(a.plan) : []);
       setSections(JSON.parse(a.sections || "[]"));
       setStep(a.status === "draft" && !a.plan ? 2 : a.status === "plan" ? 3 : 4);
@@ -314,6 +330,9 @@ export function ArticleRedactionPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error ?? "Création refusée");
       setArticle(json.data);
+      setTranslateTarget(targetLang === "fr" ? "en" : "fr");
+      setTranslations({});
+      setTranslationNotice(null);
       await loadArticles();
       setStep(2);
     } catch (e) {
@@ -417,6 +436,12 @@ export function ArticleRedactionPage() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error ?? "Génération impossible");
+      setTranslations((prev) => {
+        if (!(sectionId in prev)) return prev;
+        const { [sectionId]: _stale, ...rest } = prev;
+        void _stale;
+        return rest;
+      });
       const next = sections.map((s) =>
         s.id === sectionId
           ? { ...s, content: json.data.content as string, sources: (json.data.usedSources ?? []) as SectionRow["sources"] }
@@ -433,6 +458,13 @@ export function ArticleRedactionPage() {
 
   const updateSectionContent = (id: string, content: string) => {
     setSections((prev) => prev.map((s) => (s.id === id ? { ...s, content } : s)));
+    // Le contenu d'origine change : la traduction stockée est obsolète, on la retire.
+    setTranslations((prev) => {
+      if (!(id in prev)) return prev;
+      const { [id]: _stale, ...rest } = prev;
+      void _stale;
+      return rest;
+    });
   };
 
   const saveSections = async () => {
@@ -485,6 +517,8 @@ export function ArticleRedactionPage() {
       const rows = JSON.parse(versionSections) as SectionRow[];
       await persistSections(rows);
       setSections(rows);
+      setTranslations({});
+      setTranslationNotice(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Restauration impossible");
     }
@@ -531,8 +565,154 @@ export function ArticleRedactionPage() {
     }
   };
 
+  // ── Option C : traduction distincte (copie — l'original reste intact) ──
+  const translateSection = async (sectionId: string) => {
+    if (!article || busy !== null) return;
+    const section = sections.find((s) => s.id === sectionId);
+    if (!section || !section.content.trim()) return;
+    setError(null);
+    setBusy(`translate-${sectionId}`);
+    try {
+      const res = await fetch("/api/articles/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: article.title, targetLang: translateTarget, content: section.content }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error ?? "Traduction impossible");
+      setTranslations((prev) => ({ ...prev, [sectionId]: json.data.translated as string }));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur de traduction");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const translateWholeArticle = async () => {
+    if (!article || busy !== null) return;
+    const targets = sections.filter((s) => s.content.trim());
+    if (targets.length === 0) return;
+    setError(null);
+    setBusy("translate-all");
+    try {
+      for (const s of targets) {
+        const res = await fetch("/api/articles/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: article.title, targetLang: translateTarget, content: s.content }),
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json?.error ?? "Traduction impossible");
+        const translated = json.data.translated as string;
+        setTranslations((prev) => ({ ...prev, [s.id]: translated }));
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur de traduction (sections déjà traduites conservées)");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const translatedRows = (): SectionRow[] =>
+    sections.map((s) => (translations[s.id]?.trim() ? { ...s, content: translations[s.id] } : s));
+
+  const saveTranslatedCopy = async () => {
+    if (!article || busy !== null) return;
+    if (!sections.some((s) => translations[s.id]?.trim())) return;
+    setError(null);
+    setBusy("save-copy");
+    try {
+      const res = await fetch("/api/articles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          thesisId: article.thesisId,
+          title: `${article.title} (copie ${langLabel(translateTarget)})`,
+          articleType: article.articleType,
+          discipline: article.discipline,
+          targetLang: translateTarget,
+          targetWords: article.targetWords,
+          biblioStyle: article.biblioStyle,
+          targetJournal: article.targetJournal,
+          journalGuide: article.journalGuide,
+          authors: article.authors,
+          angle: article.angle,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error ?? "Création de la copie refusée");
+      const copy = json.data as { id: string };
+      const missing = sections.filter((s) => s.content.trim() && !translations[s.id]?.trim()).length;
+      const put = await fetch(`/api/articles/${copy.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan, sections: translatedRows(), status: "generated" }),
+      });
+      if (!put.ok) {
+        const pj = await put.json().catch(() => null);
+        throw new Error(pj?.error ?? "Enregistrement de la copie refusé");
+      }
+      setTranslationNotice(
+        "Copie traduite enregistrée comme NOUVEL article — l'original reste intact." +
+          (missing > 0
+            ? ` ${missing} section${missing > 1 ? "s" : ""} non traduite${missing > 1 ? "s" : ""} conservée${missing > 1 ? "s" : ""} dans la langue d'origine.`
+            : "")
+      );
+      await loadArticles();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur de sauvegarde de la copie");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const saveTranslatedVersion = async () => {
+    if (!article || busy !== null) return;
+    if (!sections.some((s) => translations[s.id]?.trim())) return;
+    setError(null);
+    setBusy("save-version-tr");
+    try {
+      const res = await fetch(`/api/articles/${article.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sections: translatedRows(),
+          snapshotVersion: true,
+          versionLabel: `Avant traduction (${langLabel(article.targetLang)}) — ${new Date().toLocaleString("fr-FR")}`,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error ?? "Enregistrement refusé");
+      setSections(translatedRows());
+      setArticle((prev) => (prev ? { ...prev, sections: JSON.stringify(translatedRows()) } : prev));
+      await loadArticleVersions(article.id);
+      setTranslationNotice(
+        "Brouillon remplacé par la traduction — le texte d'origine est archivé dans les versions et restaurable."
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur de version");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const copyTranslatedAll = async () => {
+    const parts = sections
+      .filter((s) => translations[s.id]?.trim())
+      .map((s) => `## ${s.heading}\n\n${translations[s.id]}`);
+    if (parts.length === 0) return;
+    try {
+      await navigator.clipboard.writeText(parts.join("\n\n"));
+      setTranslationNotice("Copie traduite copiée dans le presse-papiers.");
+    } catch {
+      setError("Copie presse-papiers indisponible dans ce contexte.");
+    }
+  };
+
   const toComplete = countToComplete(sections);
   const generatedCount = sections.filter((s) => s.content.trim().length > 0).length;
+  const translatedCount = sections.filter((s) => translations[s.id]?.trim()).length;
+  const untranslatedFilled = sections.filter((s) => s.content.trim() && !translations[s.id]?.trim()).length;
 
   // ── Rendu ──────────────────────────────────────────────────────
   return (
@@ -555,17 +735,38 @@ export function ArticleRedactionPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">Vos brouillons d&apos;articles</CardTitle>
+              <p className="text-xs text-muted-foreground">
+                {articles.length} article{articles.length > 1 ? "s" : ""} ·{" "}
+                {articles.reduce((n, a) => n + a.sectionsCount, 0)} section(s) ·{" "}
+                {articles.reduce((n, a) => n + a.toComplete, 0)} repère(s) à compléter ou vérifier
+              </p>
             </CardHeader>
-            <CardContent className="space-y-2 max-h-48 overflow-y-auto">
+            <CardContent className="space-y-2 max-h-64 overflow-y-auto">
               {articles.map((a) => (
-                <div key={a.id} className="flex items-center justify-between gap-2 rounded-md border p-2">
+                <div key={a.id} className="flex items-start justify-between gap-2 rounded-md border p-2">
                   <button
                     className="text-left text-sm font-medium hover:underline min-w-0 flex-1"
                     onClick={() => void openArticle(a.id)}
                   >
                     {a.title}
-                    <span className="ml-2 text-xs text-muted-foreground">
-                      {a.articleType} · {a.status} · {a.biblioStyle}
+                    <span className="mt-1 flex flex-wrap items-center gap-1">
+                      <Badge variant="outline" className="text-[10px] font-normal px-1.5 py-0">
+                        {a.articleType}
+                      </Badge>
+                      <Badge variant="outline" className="text-[10px] font-normal px-1.5 py-0">
+                        {a.status}
+                      </Badge>
+                      <Badge variant="secondary" className="text-[10px] font-normal px-1.5 py-0">
+                        {a.sectionsCount} section{a.sectionsCount > 1 ? "s" : ""}
+                      </Badge>
+                      {a.toComplete > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] font-normal px-1.5 py-0 text-amber-600 border-amber-400"
+                        >
+                          {a.toComplete} à compléter/vérifier
+                        </Badge>
+                      )}
                     </span>
                   </button>
                   <Button variant="ghost" size="icon" onClick={() => void deleteArticle(a.id)} aria-label={`Supprimer ${a.title}`}>
@@ -989,9 +1190,63 @@ export function ArticleRedactionPage() {
                   </p>
                 )}
               </div>
+              <div className="rounded-md border p-3 space-y-2">
+                <p className="text-sm font-medium flex items-center gap-1.5">
+                  <Languages className="h-4 w-4" aria-hidden="true" />
+                  Traduction (copie distincte)
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  La traduction est enregistrée à part : les sections originales restent intactes. Sens,
+                  données, unités et citations préservés — aucun contenu ajouté, repères
+                  « [À compléter par l'auteur] » conservés tels quels.
+                </p>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <Select value={translateTarget} onValueChange={setTranslateTarget}>
+                    <SelectTrigger className="sm:w-44" aria-label="Langue cible de la traduction">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fr">Français</SelectItem>
+                      <SelectItem value="en">Anglais</SelectItem>
+                      <SelectItem value="ar">Arabe</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    variant="outline"
+                    onClick={() => void translateWholeArticle()}
+                    disabled={busy !== null || generatedCount === 0}
+                  >
+                    {busy === "translate-all" ? (
+                      <Loader2 className="h-4 w-4 mr-1.5 animate-spin" aria-hidden="true" />
+                    ) : (
+                      <Languages className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                    )}
+                    {busy === "translate-all"
+                      ? `Traduction… ${translatedCount}/${generatedCount}`
+                      : "Traduire l'article entier"}
+                  </Button>
+                </div>
+              </div>
               {sections.map((s, i) => (
                 <div key={s.id} className="rounded-md border p-3 space-y-2">
-                  <p className="text-sm font-medium">{i + 1}. {s.heading}</p>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-medium min-w-0 truncate">{i + 1}. {s.heading}</p>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="shrink-0"
+                      onClick={() => void translateSection(s.id)}
+                      disabled={busy !== null || !s.content.trim()}
+                      aria-label={`Traduire la section ${s.heading} en ${langLabel(translateTarget)}`}
+                    >
+                      {busy === `translate-${s.id}` ? (
+                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" aria-hidden="true" />
+                      ) : (
+                        <Languages className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
+                      )}
+                      Traduire
+                    </Button>
+                  </div>
                   <Textarea value={s.content} onChange={(e) => updateSectionContent(s.id, e.target.value)} rows={6} aria-label={`Relire la section ${s.heading}`} />
                   {s.sources.length > 0 && (
                     <p className="text-xs text-muted-foreground">
@@ -1000,6 +1255,76 @@ export function ArticleRedactionPage() {
                   )}
                 </div>
               ))}
+              {translatedCount > 0 && (
+                <div className="rounded-md border border-primary/40 p-3 space-y-2" aria-live="polite">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <p className="text-sm font-medium flex items-center gap-1.5">
+                      <Languages className="h-4 w-4" aria-hidden="true" />
+                      Copie traduite ({langLabel(translateTarget)})
+                      <Badge variant="secondary">original intact</Badge>
+                    </p>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" onClick={() => void copyTranslatedAll()} disabled={busy !== null}>
+                        <Copy className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
+                        Copier
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setTranslations({});
+                          setTranslationNotice(null);
+                        }}
+                        disabled={busy !== null}
+                      >
+                        Effacer
+                      </Button>
+                    </div>
+                  </div>
+                  {sections
+                    .filter((s) => translations[s.id]?.trim())
+                    .map((s) => (
+                      <div key={s.id} className="rounded-md border p-2.5 space-y-1.5">
+                        <p className="text-xs font-medium text-muted-foreground">{s.heading}</p>
+                        <Textarea
+                          value={translations[s.id]}
+                          onChange={(e) => setTranslations((prev) => ({ ...prev, [s.id]: e.target.value }))}
+                          rows={5}
+                          aria-label={`Traduction de la section ${s.heading}`}
+                        />
+                      </div>
+                    ))}
+                  {untranslatedFilled > 0 && (
+                    <p className="text-xs text-amber-600">
+                      {untranslatedFilled} section{untranslatedFilled > 1 ? "s" : ""} non traduite{untranslatedFilled > 1 ? "s" : ""} : elle{untranslatedFilled > 1 ? "s" : ""} sera conservée{untranslatedFilled > 1 ? "s" : ""} dans la langue d&apos;origine dans la copie.
+                    </p>
+                  )}
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button onClick={() => void saveTranslatedCopy()} disabled={busy !== null} className="flex-1">
+                      {busy === "save-copy" ? (
+                        <Loader2 className="h-4 w-4 mr-1.5 animate-spin" aria-hidden="true" />
+                      ) : (
+                        <Plus className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                      )}
+                      Enregistrer comme nouvel article (copie traduite)
+                    </Button>
+                    <Button variant="outline" onClick={() => void saveTranslatedVersion()} disabled={busy !== null} className="flex-1">
+                      {busy === "save-version-tr" ? (
+                        <Loader2 className="h-4 w-4 mr-1.5 animate-spin" aria-hidden="true" />
+                      ) : (
+                        <History className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                      )}
+                      Enregistrer comme version
+                    </Button>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    « Version » : le brouillon devient la traduction et le texte d&apos;origine est archivé
+                    dans l&apos;historique (restaurable ci-dessous). « Nouvel article » : l&apos;original n&apos;est
+                    jamais touché.
+                  </p>
+                  {translationNotice && <p className="text-xs text-emerald-600 font-medium">{translationNotice}</p>}
+                </div>
+              )}
               {article && article.versions && article.versions.length > 0 && (
                 <div className="rounded-md border p-3 space-y-1.5">
                   <p className="text-sm font-medium flex items-center gap-1.5">

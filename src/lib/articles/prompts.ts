@@ -269,6 +269,7 @@ export function buildTranslationPrompt(input: {
     "RÈGLES DE TRADUCTION — OBLIGATOIRES :",
     ...ARTICLE_TRANSLATION_RULES.map((r, i) => `${i + 1}. ${r}`),
     "",
+    "IMPORTANT : les repères entre crochets (« [À compléter par l'auteur] », « [Information non précisée dans le document source] », « [référence à vérifier] ») restent EXACTEMENT tels quels, en français — ne les traduis pas, ne les supprime pas, ne les reformule pas.",
     "Réponds UNIQUEMENT avec le texte traduit (markdown léger conservé), sans préambule ni commentaire.",
     "",
     "TEXTE À TRADUIRE :",
