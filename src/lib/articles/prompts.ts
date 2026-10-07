@@ -240,3 +240,40 @@ export function parseAnglesResponse(raw: string): AngleProposal[] {
     coverage: String(a.coverage ?? ""),
   }));
 }
+
+// ═══════════════════════════════════════════════════════════════
+// Option C — traduction linguistique DISTINCTE de la transformation.
+// Cahier des charges : préserver le sens, les données, les nuances
+// et les citations ; ne JAMAIS ajouter de contenu scientifique nouveau.
+// ═══════════════════════════════════════════════════════════════
+
+export const ARTICLE_TRANSLATION_RULES: string[] = [
+  "Traduis le texte vers la langue cible en préservant EXACTEMENT le sens, les données, les nuances et les citations.",
+  "N'ajoute AUCUN contenu scientifique nouveau : aucun résultat, aucune référence, aucune interprétation, aucun chiffre qui n'est pas déjà dans le texte.",
+  "Conserve les unités, dénominateurs, tailles d'échantillon et valeurs tels quels — ne convertis rien.",
+  "Conserve les citations bibliographiques telles quelles (style et contenu) — ne les traduis pas, ne les reformule pas.",
+  "Conserve les repères « [À compléter par l'auteur] », « [Information non précisée dans le document source] » et « [référence à vérifier] » tels quels.",
+  "ne transforme pas une corrélation en causalité et ne renforce aucune conclusion (conserve la portée exacte des résultats).",
+  "Ne traduis PAS le contenu des sources entre balises — uniquement le texte demandé.",
+  "Le résultat est une traduction de brouillon : il reste soumis à vérification par les auteurs.",
+];
+
+export function buildTranslationPrompt(input: {
+  targetLang: string;
+  title: string;
+  content: string;
+}): string {
+  return [
+    `Traduis le texte suivant (section d'un brouillon d'article intitulé « ${input.title} ») en ${input.targetLang}.`,
+    "",
+    "RÈGLES DE TRADUCTION — OBLIGATOIRES :",
+    ...ARTICLE_TRANSLATION_RULES.map((r, i) => `${i + 1}. ${r}`),
+    "",
+    "Réponds UNIQUEMENT avec le texte traduit (markdown léger conservé), sans préambule ni commentaire.",
+    "",
+    "TEXTE À TRADUIRE :",
+    input.content.length > SOURCE_BLOCK_BUDGET_CHARS
+      ? input.content.slice(0, SOURCE_BLOCK_BUDGET_CHARS) + "\n… (tronqué — budget de contexte)"
+      : input.content,
+  ].join("\n");
+}

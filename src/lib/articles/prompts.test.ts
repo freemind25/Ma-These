@@ -192,3 +192,26 @@ describe("prompts — parsing", () => {
     expect(usedSources).toEqual([]);
   });
 });
+
+// ═══ Option C — traduction ═══
+
+import { ARTICLE_TRANSLATION_RULES, buildTranslationPrompt } from "./prompts";
+
+describe("prompts — traduction (option C)", () => {
+  it("porte les règles verbatim de préservation (CA-C1)", () => {
+    const rules = ARTICLE_TRANSLATION_RULES.join("\n");
+    expect(rules).toContain("préservant EXACTEMENT le sens, les données, les nuances et les citations");
+    expect(rules).toContain("AUCUN contenu scientifique nouveau");
+    expect(rules).toContain("ne convertis rien");
+    expect(rules).toContain("ne les traduis pas");
+    expect(rules).toContain("[À compléter par l'auteur]");
+    expect(rules).toContain("ne transforme pas une corrélation en causalité");
+  });
+
+  it("borne le texte et exige une réponse pure", () => {
+    const p = buildTranslationPrompt({ targetLang: "anglais", title: "T", content: "x".repeat(9999) });
+    expect(p).toContain("en anglais");
+    expect(p).toContain("UNIQUEMENT avec le texte traduit");
+    expect(p).toContain("(tronqué — budget de contexte)");
+  });
+});
