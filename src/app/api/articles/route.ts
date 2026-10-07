@@ -15,10 +15,27 @@ export async function GET() {
       select: {
         id: true, thesisId: true, title: true, articleType: true, discipline: true,
         targetLang: true, targetWords: true, biblioStyle: true, targetJournal: true,
-        status: true, createdAt: true, updatedAt: true,
+        status: true, sections: true, createdAt: true, updatedAt: true,
       },
     });
-    return NextResponse.json({ data: rows, meta: { count: rows.length } });
+    const data = rows.map((r) => {
+      let sectionsCount = 0;
+      let toComplete = 0;
+      try {
+        const secs = JSON.parse(r.sections || "[]") as { content?: string }[];
+        sectionsCount = secs.length;
+        toComplete = secs.reduce(
+          (acc, s) => (s.content?.match(/\[À compléter par l'auteur\]|\[[^\]]*à vérifier[^\]]*\]|\[Information non précisée[^\]]*\]/gi) || []).length + acc,
+          0
+        );
+      } catch {
+        /* sections malformées — compteurs à 0 */
+      }
+      const { sections: _s, ...rest } = r;
+      void _s;
+      return { ...rest, sectionsCount, toComplete };
+    });
+    return NextResponse.json({ data, meta: { count: data.length } });
   } catch (error) {
     console.error("[GET /api/articles] Error:", error);
     return NextResponse.json({ error: "Erreur de lecture des articles." }, { status: 500 });
