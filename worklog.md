@@ -1079,3 +1079,18 @@ Work Log:
 Stage Summary:
 - Cycle n°12 « sceau-provenance-savoirs » CLÔTURÉ et VALIDÉ par le propriétaire (« OK », 2026-10-04 17:28).
 - Restent ouverts (hors cycle) : extension du stamp aux autres flux IA (non planifié) ; OOM box à surveiller ; rotation OpenAlex/APINEX + révocation clés GitHub (côté propriétaire).
+
+---
+Task ID: urbanis-dz-analyse-preliminaire
+Agent: Z.ai Code (principal)
+Task: Analyse du pack URBANIS-DZ (PDF 5 pages, v1.1) et étude de faisabilité d'intégration dans ThesisFrame — demande explicite du propriétaire, aucun code.
+
+Work Log:
+- Extraction texte du pack (pdftotext, 18 761 car.) + mesure par section (instruction système §2 = 4 837 car. ; §3 juridique = 2 815 ; §4 risques = 3 535).
+- Vérification code réel : CustomBookSkill (schema.prisma l.319-332), budgets book-skills 12 000/1 500 (book-skills.ts l.11-14), 27 SPECIALIZATION_PROMPTS (specializations/index.ts l.70+), canaux d'injection chapter-draft l.350 + ai-writing l.62.
+- Confrontation : T1 Provenance ≈ cycle 12 (déjà livré) ; C4 ≈ CustomBookSkill ; doctrine/méthodes ≈ mécanique des modes ; gaps = registre juridique structuré, veille JORADP, modes métier, non-complaisance.
+- Rédaction de l'analyse + 3 options chiffrées + recommandation : specs/urbanis-dz-integration/analyse-preliminaire.md.
+
+Stage Summary:
+- Verdict : intégration POSSIBLE et pertinente (usage thèse urbanisme réel du propriétaire) ; recommandation = Option A (mode spécialisé expertise urbaine DZ, ~1 cycle, zéro migration/ligne rouge/noyau) puis Option B (registre LegalRef) si usage justifié ; veille JORADP déconseillée en premier tour.
+- Point d'arrêt respecté : aucune implémentation — attente du choix du propriétaire avant Étape 1 (spécifier).
