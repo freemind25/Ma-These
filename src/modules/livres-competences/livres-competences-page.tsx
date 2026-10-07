@@ -51,6 +51,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAiConfig } from "@/hooks/use-ai-config";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
+import { RegistreJuridiqueTab } from "./registre-juridique-tab";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
@@ -710,6 +711,10 @@ En te basant sur ces résultats, propose-moi un plan d\'apprentissage personnali
             <BookMarked className="h-4 w-4 mr-1.5 hidden sm:inline" />
             Bibliothèque
           </TabsTrigger>
+          <TabsTrigger value="registre" className="text-xs sm:text-sm">
+            <Scale className="h-4 w-4 mr-1.5 hidden sm:inline" />
+            Registre juridique
+          </TabsTrigger>
         </TabsList>
 
         {/* TAB: Auto-evaluation */}
@@ -1197,6 +1202,11 @@ En te basant sur ces résultats, propose-moi un plan d\'apprentissage personnali
         {/* ═══ TAB: Bibliothèque (Book Skills from DB) ═══ */}
         <TabsContent value="bibliotheque" className="mt-4">
           <BookSkillsLibrary />
+        </TabsContent>
+
+        {/* TAB: Registre juridique URBANIS-DZ */}
+        <TabsContent value="registre" className="mt-4">
+          <RegistreJuridiqueTab />
         </TabsContent>
       </Tabs>
     </div>

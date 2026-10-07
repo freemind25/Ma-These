@@ -74,3 +74,4 @@ scripts/*
 !scripts/build-tauri-prep.sh
 *.exe
 *.msi
+!scripts/seed-legal-refs.ts
