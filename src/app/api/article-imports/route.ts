@@ -151,7 +151,8 @@ export async function GET(request: NextRequest) {
       const doc = await db.importedDoc.findUnique({ where: { id } });
       if (!doc) return NextResponse.json({ error: "Document non trouvé" }, { status: 404 });
       // Octets exclus de la réponse API (data reste en base, réservé à l'OCR)
-      const { data: _octets, ...docSansOctets } = doc;
+      // — data: undefined est retiré par JSON.stringify
+      const docSansOctets = { ...doc, data: undefined as unknown };
       return NextResponse.json({ data: { ...docSansOctets, preview: truncatePreview(doc.text) } });
     }
     const docs = await db.importedDoc.findMany({

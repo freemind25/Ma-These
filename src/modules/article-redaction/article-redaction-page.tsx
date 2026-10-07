@@ -165,6 +165,20 @@ export function ArticleRedactionPage() {
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [translationNotice, setTranslationNotice] = useState<string | null>(null);
 
+  // OCR asynchrone (specs/article-ocr-async) — un seul job actif à la fois (serveur)
+  const [ocrLang, setOcrLang] = useState<Record<string, string>>({});
+  interface OcrJobState {
+    docId: string;
+    jobId: string;
+    status: string;
+    progress: number | null;
+    progressNote: string | null;
+    error: string | null;
+    result: { pagesProcessed?: number; avgConfidence?: number | null; remainingPages?: number } | null;
+  }
+  const [ocrJob, setOcrJob] = useState<OcrJobState | null>(null);
+  const [ocrNotice, setOcrNotice] = useState<string | null>(null);
+
   const sourcesPayload = useCallback(
     () => ({
       thesisId: activeThesisId ?? null,
@@ -257,6 +271,102 @@ export function ArticleRedactionPage() {
     }
     setImports((prev) => prev.filter((d) => d.id !== id));
   };
+
+  // ── OCR asynchrone (specs/article-ocr-async — CA-1.1 à 1.5) ──
+  /** Recharge un document importé (texte/limites/aperçu mis à jour après OCR). */
+  const refreshImport = async (id: string) => {
+    try {
+      const res = await fetch(`/api/article-imports?id=${id}`);
+      const json = await res.json();
+      if (!res.ok || !json?.data) return;
+      const d = json.data;
+      setImports((prev) => [
+        ...prev.filter((x) => x.id !== id),
+        {
+          id: d.id,
+          filename: d.filename,
+          fileType: d.fileType,
+          pages: d.pages,
+          scanned: d.scanned,
+          limits: d.limits,
+          textLength: (d.text ?? "").length,
+          preview: d.preview,
+        },
+      ]);
+    } catch {
+      /* rafraîchissement best-effort */
+    }
+  };
+
+  const launchOcr = async (doc: ImportedDocInfo) => {
+    setError(null);
+    setOcrNotice(null);
+    setBusy(`ocr-${doc.id}`);
+    try {
+      const res = await fetch("/api/article-imports/ocr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ importedDocId: doc.id, lang: ocrLang[doc.id] ?? "fra" }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error ?? "Lancement de l'OCR impossible");
+      setOcrJob({
+        docId: doc.id,
+        jobId: json.data.jobId,
+        status: json.data.status,
+        progress: 0,
+        progressNote: json.data.note,
+        error: null,
+        result: null,
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur de lancement OCR");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  // Suivi de progression (polling 3 s tant que le job est pending/running)
+  useEffect(() => {
+    if (!ocrJob || (ocrJob.status !== "pending" && ocrJob.status !== "running")) return;
+    const t = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/article-imports/ocr?importedDocId=${ocrJob.docId}`);
+        const json = await res.json();
+        const job = json?.data;
+        if (!job || job.id !== ocrJob.jobId) return;
+        if (job.status === "done") {
+          setOcrJob(null);
+          setOcrNotice(
+            job.result?.pagesProcessed
+              ? `OCR terminé — ${job.result.pagesProcessed} page(s) traitée(s)` +
+                (typeof job.result.avgConfidence === "number"
+                  ? `, confiance moyenne ${job.result.avgConfidence} %`
+                  : "") +
+                `. Le texte a été ajouté dans le bloc « TEXTE OCR » du document — relecture humaine requise.`
+              : "OCR terminé — texte ajouté dans le bloc « TEXTE OCR » (relecture requise)."
+          );
+          void refreshImport(ocrJob.docId);
+        } else if (job.status === "failed") {
+          setOcrJob({
+            ...ocrJob,
+            status: "failed",
+            error: job.error ?? "Échec de l'OCR (motif non précisé).",
+          });
+        } else {
+          setOcrJob({
+            ...ocrJob,
+            status: job.status,
+            progress: job.progress,
+            progressNote: job.progressNote,
+          });
+        }
+      } catch {
+        /* réseau — retenté au prochain tick */
+      }
+    }, 3000);
+    return () => clearInterval(t);
+  }, [ocrJob]);
 
   // ── Option B : analyse des sources (étape 1) ──
   const analyzeNow = async () => {
@@ -840,7 +950,15 @@ export function ArticleRedactionPage() {
                     Importer et extraire
                   </Button>
                 </div>
-                {imports.map((d) => (
+                {imports.map((d) => {
+                  const hasOcrLimits = parseLimits(d.limits).some((l) => l.kind === "ocr");
+                  const job = ocrJob && ocrJob.docId === d.id ? ocrJob : null;
+                  const ocrActive = job?.status === "pending" || job?.status === "running";
+                  const anotherOcrActive =
+                    ocrJob !== null &&
+                    ocrJob.docId !== d.id &&
+                    (ocrJob.status === "pending" || ocrJob.status === "running");
+                  return (
                   <div key={d.id} className="rounded-md border p-2.5 space-y-1.5 text-sm">
                     <div className="flex items-center justify-between gap-2">
                       <span className="font-medium break-all">
@@ -849,6 +967,11 @@ export function ArticleRedactionPage() {
                         {d.scanned && (
                           <Badge variant="outline" className="ml-1 text-amber-600 border-amber-400">
                             probablement scanné
+                          </Badge>
+                        )}
+                        {hasOcrLimits && (
+                          <Badge variant="outline" className="ml-1 text-emerald-700 border-emerald-400">
+                            OCR — relecture requise
                           </Badge>
                         )}
                       </span>
@@ -861,11 +984,61 @@ export function ArticleRedactionPage() {
                       {d.textLength ?? "—"} caractères extraits
                     </p>
                     {parseLimits(d.limits).map((l, i) => (
-                      <p key={i} className="text-xs text-amber-600 flex gap-1">
+                      <p key={i} className={l.kind === "ocr" ? "text-xs text-emerald-700 flex gap-1" : "text-xs text-amber-600 flex gap-1"}>
                         <AlertTriangle className="h-3 w-3 mt-0.5 shrink-0" aria-hidden="true" />
                         {l.detail}
                       </p>
                     ))}
+                    {d.fileType === "pdf" && d.scanned && !hasOcrLimits && (
+                      <div className="rounded-md border border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/40 p-2 space-y-1.5">
+                        <p className="text-xs font-medium">Pages scannées — OCR disponible (exécution asynchrone, un seul OCR à la fois)</p>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <Select
+                            value={ocrLang[d.id] ?? "fra"}
+                            onValueChange={(v) => setOcrLang((prev) => ({ ...prev, [d.id]: v }))}
+                          >
+                            <SelectTrigger className="w-full sm:w-40 h-8 text-xs" aria-label="Langue de l'OCR">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="fra">Français</SelectItem>
+                              <SelectItem value="eng">Anglais</SelectItem>
+                              <SelectItem value="ara">Arabe</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => void launchOcr(d)}
+                            disabled={busy === `ocr-${d.id}` || anotherOcrActive || ocrActive}
+                          >
+                            {busy === `ocr-${d.id}` || ocrActive ? (
+                              <Loader2 className="h-4 w-4 mr-1.5 animate-spin" aria-hidden="true" />
+                            ) : null}
+                            Lancer l&apos;OCR (plafond 30 pages)
+                          </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Les pages sans texte sont reconnues en arrière-plan et ajoutées dans un bloc « TEXTE OCR » marqué — relecture humaine exigée ensuite.
+                        </p>
+                      </div>
+                    )}
+                    {job && ocrActive && (
+                      <div className="space-y-1" aria-live="polite">
+                        <Progress value={typeof job.progress === "number" ? job.progress : 5} />
+                        <p className="text-xs text-muted-foreground">
+                          {job.progressNote ?? "OCR en cours…"}
+                        </p>
+                      </div>
+                    )}
+                    {job && job.status === "failed" && (
+                      <p className="text-xs text-destructive" role="alert">
+                        Échec de l&apos;OCR : {job.error ?? "motif non précisé"}
+                      </p>
+                    )}
+                    {ocrNotice && !ocrJob && hasOcrLimits && (
+                      <p className="text-xs text-emerald-700" aria-live="polite">{ocrNotice}</p>
+                    )}
                     {d.preview && (
                       <details className="text-xs">
                         <summary className="cursor-pointer text-muted-foreground">Aperçu de l&apos;extraction (confirmez-la)</summary>
@@ -873,7 +1046,8 @@ export function ArticleRedactionPage() {
                       </details>
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
 
               <Button
