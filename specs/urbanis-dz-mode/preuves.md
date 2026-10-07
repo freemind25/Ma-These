@@ -74,3 +74,12 @@ Défauts trouvés : 0 produit ; 1 friction d'automatisation (overlay sur Génér
 Écart au plan : 2 consignés (ordonnancement test câblage T3→T4 ; fichier knowledge-core.budget.test.ts inscrit au plan Article 4)
 Statut : RECETTÉE (délégation) — CONVERGÉ, révisable à la recette du propriétaire
 ```
+
+## Validation propriétaire (2026-10-07, 11:25 TZ 'Etc/GMT-1')
+
+Réponse **« ok et enchainer »** (IM), reçue 3 minutes après le commit de convergence `9076a25` (11:22) :
+
+- « ok » : la recette déléguée (7/7 CA — 8 contrôles navigateur dont banc d'essai T4 live, 3 captures, mobile 390 px, 0 erreur console) est **acceptée sans réserve** ;
+- « et enchainer » : instruction d'enchaîner sur la suite de la séquence documentée dans l'analyse préliminaire (`specs/urbanis-dz-integration/analyse-preliminaire.md` § 5-6) — l'**Option B** (registre juridique structuré `LegalRef`), dont l'usage est avéré (thèse urbanisme/TIC/IA active).
+
+**Cycle n°13 « urbanis-dz-mode » clos et validé.**

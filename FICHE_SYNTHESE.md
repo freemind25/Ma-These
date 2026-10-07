@@ -301,4 +301,6 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 
 **Écarts documentés** : (1) bloc test câblage déplacé T3→T4 (ordonnancement) ; (2) `knowledge-core.budget.test.ts` ajouté au plan Article 4 (le capteur budget identifie les spécialisations par nom de fichier et exige la déclaration des autoporteurs).
 
-**Points ouverts pour la session suivante** : Option B (registre juridique structuré `LegalRef` + injection sélective) et Option C (veille JORADP — pas d'API publique stable) proposées mais non planifiées ; recette de contrôle du propriétaire (révisable) ; rotation OpenAlex/APINEX + clés GitHub côté propriétaire ; OOM box à surveiller.
+**Validation propriétaire (2026-10-07, 11:25)** : « ok et enchainer » (IM) — recette déléguée 7/7 CA acceptée sans réserve, **cycle n°13 clos et validé** ; « enchaîner » = passage à l'Option B (registre juridique structuré `LegalRef`, séquence de l'analyse préliminaire § 5-6).
+
+**Points ouverts pour la session suivante** : Option B (registre juridique structuré `LegalRef` + injection sélective) — enchaînée sur validation ; Option C (veille JORADP — pas d'API publique stable) proposée mais non planifiée, en veilleuse ; rotation OpenAlex/APINEX + clés GitHub côté propriétaire ; OOM box à surveiller.

@@ -1111,3 +1111,18 @@ Work Log:
 Stage Summary:
 - Cycle n°13 « urbanis-dz-mode » CONVERGÉ (recette déléguée, révisable) : le pack URBANIS-DZ est désormais un mode « Expertise urbaine (URBANIS-DZ) » de l'assistant d'écriture, verbatim et protégé contre la dérive (snapshot), sans impact noyau (marge 206 tok préservée) ni ligne rouge.
 - Ouverts : Option B (LegalRef), Option C (veille JORADP), recette de contrôle propriétaire.
+
+---
+Task ID: urbanis-dz-mode-validation
+Agent: Z.ai Code (principal)
+Task: Formalisation de la validation du cycle n°13 « urbanis-dz-mode » par le propriétaire (« ok et enchainer », IM 2026-10-07 11:25 TZ 'Etc/GMT-1).
+
+Work Log:
+- Reconstruction d'état (git log : 9076a25 en tête, arbre propre) + horodatage TZ='Etc/GMT-1' (07/10/2026 11:25-11:29).
+- Interprétation consignée : « ok » = recette déléguée 7/7 CA acceptée sans réserve ; « et enchainer » = enchaîner sur la suite de la séquence de l'analyse préliminaire (§ 5-6) → Option B (registre juridique structuré LegalRef).
+- Consignation : tasks.md (verdict « clos et validé »), preuves.md (§ « Validation propriétaire (2026-10-07) »), FICHE_SYNTHESE.md (validation + points ouverts ajustés).
+- Lignes rouges : 0 diff vérifié avant commit.
+
+Stage Summary:
+- Cycle n°13 « urbanis-dz-mode » CLÔTURÉ et VALIDÉ par le propriétaire (« ok et enchainer », 2026-10-07 11:25).
+- Enchaînement : ouverture du cycle n°14 — Option B « registre juridique structuré LegalRef » (modèle 11 champs §7, UI gestion, alimentation initiale ~36 textes §3-§4, injection sélective mécanique book-skills, extension sceau).

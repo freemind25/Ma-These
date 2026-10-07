@@ -18,4 +18,4 @@
 Critères d'acceptation satisfaits : **7/7** (CA-1.1→1.4, CA-2.1→2.3 — aucune manquante)
 Écarts au plan : 2 consignés — (1) bloc « câblage » du test déplacé de T3 vers T4 (ordonnancement : l'assertion exige l'entrée data) ; (2) `src/lib/ai/knowledge-core.budget.test.ts` inscrit au plan Article 4 (capteur préexistant exigeant la déclaration des autoporteurs par nom de fichier).
 Dette introduite : aucune. Le banc d'essai T1-T7 du pack n'est couvert en vitest que structurellement (invariants du prompt) ; les comportements T4/T7 sont vérifiés live en recette (LLM non déterministe, non automatisable en unitaire) — constaté comme limite, pas comme dette.
-Verdict : **CONVERGÉ** (recette navigateur déléguée, révisable à la recette du propriétaire)
+Verdict : **CONVERGÉ** — recette déléguée 7/7 CA (8 contrôles navigateur, banc d'essai T4 live, mobile 390 px, 0 erreur console) ; **validé par le propriétaire** (« ok et enchainer », 2026-10-07 11:25) — cycle clos.
