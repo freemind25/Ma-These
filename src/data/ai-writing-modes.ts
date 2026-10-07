@@ -277,6 +277,16 @@ export const WRITING_MODES: WritingMode[] = [
     systemPrompt: "",
   },
   {
+    id: "expertise-urbaine-dz",
+    label: "Expertise urbaine (URBANIS-DZ)",
+    description: "Lecture urbaine, diagnostic, conformité, prospective — Algérie. Avis technique non opposable ; vérifier au JORADP",
+    icon: "Building2",
+    category: "analysis",
+    temperature: 0.4,
+    placeholder: "Décrivez le site, la question urbaine ou le livrable souhaité (lecture, diagnostic, note de conformité, prospective)...",
+    systemPrompt: "",
+  },
+  {
     id: "deep-research",
     label: "Recherche approfondie",
     description: "Recherche web multi-sources avec rapport structuré et citations (inspiré de Open Deep Research)",

@@ -25,3 +25,14 @@ Critères d'acceptation couverts : CA-2.1, CA-2.2.
 Écart au plan : ordonnancement corrigé — le bloc « câblage mode + registre » du test exigeait l'entrée data (T4) : déplacé de T3 vers T4 (tasks.md ajusté avant commit, aucun fichier hors annonce).
 Statut proposé : à recetter (déléguée)
 
+## Groupe B — Données / UI (2026-10-07, 10:12)
+
+### Groupe B — Données / UI
+Tâches : T4, T5
+Fichiers modifiés : `src/data/ai-writing-modes.ts` (+11 lignes, entrée `expertise-urbaine-dz` l.280-288), `src/modules/ai-writing/ai-writing-page.tsx` (+11 lignes : import Building2 l.21, ICON_MAP l.55, note conditionnelle l.327-332), `src/lib/ai/specializations/urbanis-dz.test.ts` (+11 lignes, bloc câblage CA-1.1)
+Vérifications exécutées : vitest 3 fichiers (urbanis-dz + routes ai-writing/stream + ai-writing) **44/44 verts** ; lint **0 erreur** (baseline 231 warnings).
+Sorties : `Test Files 3 passed (3) / Tests 44 passed (44)` ; compteur de modes de la page (`WRITING_MODES.length`) s'incrémente seul.
+Critères d'acceptation couverts : CA-1.1 (câblage), CA-1.4 (note — vérification visuelle en recette).
+Écart au plan : aucun.
+Statut proposé : à recetter (déléguée)
+

@@ -18,6 +18,7 @@ import {
   Network,
   FileCheck,
   Presentation,
+  Building2,
   Sparkles,
   Send,
   Loader2,
@@ -51,6 +52,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Network,
   FileCheck,
   Presentation,
+  Building2,
 };
 
 // ═══ AI Writing Tab ═══
@@ -322,6 +324,12 @@ function AiWritingPanel() {
               className="resize-none text-sm"
               disabled={!selectedMode || isStreaming}
             />
+            {selectedMode === "expertise-urbaine-dz" && (
+              <p className="flex items-start gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-xs text-amber-700 dark:text-amber-400">
+                <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                Avis technique non opposable — toute règle juridique doit être vérifiée au JORADP.
+              </p>
+            )}
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground">
                 {prompt.length} caractères

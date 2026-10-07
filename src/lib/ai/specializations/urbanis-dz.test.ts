@@ -5,7 +5,11 @@
 
 import { describe, expect, it } from 'vitest';
 import { getKnowledgeCore } from '../knowledge-core';
+import { SPECIALIZATION_PROMPTS } from './index';
+import { WRITING_MODES } from '@/data/ai-writing-modes';
 import { URBANIS_DZ_PROMPT } from './urbanis-dz';
+
+const MODE_ID = 'expertise-urbaine-dz';
 
 describe('URBANIS-DZ — fidélité au pack v1.1 (CA-2.1)', () => {
   it('contient les 12 règles dures verbatim', () => {
@@ -83,6 +87,22 @@ describe('URBANIS-DZ — passerelle d\'intégration (ajout consigné)', () => {
   it('contient la passerelle ThesisFrame et la règle d\'intégrité citations', () => {
     expect(URBANIS_DZ_PROMPT).toContain("# CONTEXTE D'INTÉGRATION (ThesisFrame)");
     expect(URBANIS_DZ_PROMPT).toContain('jamais une source de citations');
+  });
+});
+
+describe('URBANIS-DZ — câblage mode + registre (CA-1.1)', () => {
+  it('est enregistré dans SPECIALIZATION_PROMPTS avec la valeur exacte', () => {
+    expect(SPECIALIZATION_PROMPTS[MODE_ID]).toBeDefined();
+    expect(SPECIALIZATION_PROMPTS[MODE_ID]).toBe(URBANIS_DZ_PROMPT);
+  });
+
+  it('est déclaré dans WRITING_MODES avec les métadonnées attendues', () => {
+    const mode = WRITING_MODES.find((m) => m.id === MODE_ID);
+    expect(mode).toBeDefined();
+    expect(mode?.label).toContain('URBANIS-DZ');
+    expect(mode?.description).toMatch(/non opposable/i);
+    expect(mode?.icon).toBe('Building2');
+    expect(mode?.temperature).toBe(0.4);
   });
 });
 
