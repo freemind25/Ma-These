@@ -1141,3 +1141,53 @@ Stage Summary:
 - Verdict : la demande est **réalisable et très alignée** avec l'existant (streams, stamp, versions, export-docx) ; gap majeur = import/extraction PDF/DOCX (libs pure-JS à ajouter) + modèle Article + assistant guidé.
 - Recommandation : Option A (socle couvrant les 10 critères d'acceptation, ~2-3 cycles) puis B ; C (OCR) en veilleuse.
 - Point d'arrêt respecté : aucune implémentation — attente du choix du propriétaire. Cycle n°14 « urbanis-dz-registre » (Option B LegalRef) reste ouvert en exploration, en pause derrière cette demande.
+
+---
+Task ID: urbanis-dz-registre
+Agent: Z.ai Code (principal)
+Task: Cycle SDD n°14 « urbanis-dz-registre » — Option B de l'analyse URBANIS-DZ : registre juridique structuré LegalRef (déclencheur « finalisez le cycle urbanis », IM 2026-10-07 11:53).
+
+Work Log:
+- Ouverture (9edab18) : spec 8 CA, plan (mécanique book-skills dupliquée adaptée), tasks A-F, preuves — zéro code.
+- Groupe A (a890fab) : modèle LegalRef (11 champs §7 + opt-in) — db:push additif, survie 58/7/6/0/1 prouvée, serveur redémarré.
+- Groupe B (adcb347) : legal-refs.ts (budgets 8000/1500, sélection déterministe, garde-fous) + legal-refs-server.ts + stamp legalRefs additif + 13 tests.
+- Groupe C (05ad1c8) : routes /api/legal-refs CRUD + injection ai-writing/stream conditionnelle (mode expertise-urbaine-dz uniquement, byte-identique ailleurs, 3 tests).
+- Groupes D+E (195207b, 90e80a8) : onglet Registre juridique (composant autonome + 3 micro-éditions ancrées) + seed 27 entrées verbatim idempotent + .gitignore exception (écart Art. 4).
+- Groupe F (65680da) : docs § 6 quinquies, convergence 8/8 CA, recette déléguée 10 contrôles.
+
+Stage Summary:
+- Cycle n°14 CONVERGÉ (recette déléguée, révisable) : registre juridique 27 entrées nourrissant le mode URBANIS-DZ, sceau de provenance étendu additivement, 1 585 tests verts, lignes rouges 0 diff.
+- Défaut trouvé en recette et corrigé : POST 500 (statut NOT NULL) — correctif prouvé curl 201.
+- URBANIS-DZ intégration : Options A+B livrées et recettées ; Option C (veille JORADP) en veilleuse (cycle dédié si demandé).
+
+---
+Task ID: article-scientifique-option-a
+Agent: Z.ai Code (principal)
+Task: Cycle n°15 « article-scientifique option A (socle) » — les 10 critères d'acceptation du cahier des charges du propriétaire (déclencheur « passez aux étapes A, B et C »).
+
+Work Log:
+- Ouverture (112fa12) : spec 10 CA, plan, tasks A-E, preuves — zéro code.
+- Groupe A (8847715) : Article/ArticleVersion/ImportedDoc + mammoth/unpdf (pure JS) — survie 58/7/6/0/1/27 prouvée.
+- Groupe B (4e9e015) : extraction (types réels, magic bytes, 20 Mo, scanné, limites honnêtes) + prompts intégrité verbatim (anti-injection, [À compléter], corrélation≠causalité) — 16 tests.
+- Groupe C (7189b50) : /api/article-imports (201 réel, 4 titres DOCX) + /api/articles CRUD/plan/section/export-docx — tsc 0 sur le cycle (3 erreurs de FK corrigées : modèles globaux).
+- Groupe D (20f4a61) : wizard 5 étapes + montage module + 2 points d'entrée.
+- Groupe E (ec8a9e8) : docs § 7 bis, convergence 10/10, recette (import UI réel via DataTransfer, étape 5, mobile 390, console) + 2 génération live API (6,3/8,3 s, chiffres conservés, [Information non précisée], kind imported).
+
+Stage Summary:
+- Cycle n°15 CONVERGÉ (recette déléguée + preuves API, révisable) : 1 601 tests verts, lint 0 erreur, lignes rouges 0 diff.
+- Défauts trouvés en recette, corrigés dans le groupe : crash JSON.parse(limits) ; location fusionnée au label (kind inconnu).
+- Frictions consignées : file input non géré par le CLI (DataTransfer), corruption d'affichage navigateur intermittente (preuves API).
+
+---
+Task ID: article-scientifique-option-b
+Agent: Z.ai Code (principal)
+Task: Cycle n°16 « article-scientifique option B (parcours complet) » — analyse des sources, propositions d'angles avec choix obligatoire, anti-fragmentation.
+
+Work Log:
+- Ouverture : spec 6 CA (B1-B6), plan, tasks A-C.
+- Groupe A (5a02907) : analysis.ts pure (volumes, titres, études, manquants, qualité, fragmentationRisk) + buildAnglesPrompt/parse + 8 tests ; routes /analyze (pur) et /angles (IA) — 1 commit amendé (seuil qualité du test).
+- Groupe B (2b0c776) : UI — panneau d'analyse, cartes d'angles radio, blocage génération sans angle (≥ 2 études) — défaut icône Search corrigé dans le groupe.
+- Groupe C : docs § 7 bis enrichi, convergence 6/6 — suite 1 608 verts, lint 0 erreur, redlines 0 diff.
+
+Stage Summary:
+- Cycle n°16 CONVERGÉ (révisable) : analyze 200 réel (rapport honnête), angles IA 200 (9,4 s), UI recettée.
