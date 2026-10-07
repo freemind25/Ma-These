@@ -206,6 +206,33 @@ export function ArticleRedactionPage() {
     void loadArticles();
   }, [loadArticles]);
 
+  // Les imports ne survivaient pas au rechargement (state local) — on
+  // recharge les documents récents au montage (liste sans texte, légère)
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch("/api/article-imports");
+        const json = await res.json();
+        if (!res.ok || !Array.isArray(json?.data)) return;
+        setImports(
+          json.data.map(
+            (d: { id: string; filename: string; fileType: string; pages: number | null; scanned: boolean; limits: string }) => ({
+              id: d.id,
+              filename: d.filename,
+              fileType: d.fileType,
+              pages: d.pages,
+              scanned: d.scanned,
+              limits: d.limits,
+            })
+          )
+        );
+      } catch {
+        /* liste indisponible — non bloquant */
+      }
+    };
+    void load();
+  }, []);
+
   const openArticle = useCallback(async (id: string) => {
     setError(null);
     setBusy("open");
