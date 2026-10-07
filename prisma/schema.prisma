@@ -332,6 +332,29 @@ model CustomBookSkill {
 }
 
 // ═══════════════════════════════════════
+// REGISTRE JURIDIQUE URBANIS-DZ (§7 du pack)
+// ═══════════════════════════════════════
+
+model LegalRef {
+  id                   String    @id @default(cuid())
+  domaine              String    // ex. Urbanisme, Foncier, Risques, Environnement
+  reference            String    // ex. « Loi n° 90-29 du 1er décembre 1990 »
+  joradp               String?   // Référence JORADP (n° + date)
+  statut               String    @default("à vérifier") // tel que formulé (vigilance pack conservée)
+  textesLies           String?   // Textes liés
+  portee               String?   // Portée / usage urbanistique
+  questions            String?   // Questions couvertes (aiguillage d'injection)
+  autorites            String?   // Autorités compétentes
+  derniereVerification DateTime? // Dernière vérification
+  niveauConfiance      String?   // élevé | moyen | faible
+  enabled              Boolean   @default(false) // Injection IA opt-in (strict)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([domaine])
+}
+
+// ═══════════════════════════════════════
 // LICENCE (simplifié)
 // ═══════════════════════════════════════
 
