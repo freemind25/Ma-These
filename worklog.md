@@ -1288,3 +1288,17 @@ Stage Summary:
 - Cycle « article-ocr-async » CONVERGÉ (recette déléguée, révisable) : OCR pure JS asynchrone sur la file persistante, séquentiel strict, tessdata local, bloc marqué idempotent, honnêteté par page — vitest 78/1 656 verts, lint 0 erreur, red lines 0 diff.
 - Leçon : agent-browser snapshot -c tronque le texte des cartes (vérifier par eval innerText/screenshot) ; édition MultiEdit « atomique » peut appliquer partiellement — toujours vérifier par rg/sed après échec.
 - Reste : recette propriétaire (tasks.md), packaging Tauri vendor/tessdata (build-desktop), précision à juger sur scan réel.
+---
+Task ID: biblio-oceanofpdf-refus
+Agent: Z.ai Code (principal)
+Task: Demande propriétaire « ajouter cette bibliothèque : https://oceanofpdf.com » (IM) + reconstruction d'état de session (résumé périmé).
+
+Work Log:
+- Reconstruction d'état : résumé de session PÉRMÉ — le cycle « article-ocr-async » était déjà CONVERGÉ (7/7 CA, recette déléguée, commit f4039dd en tête), tout poussé (origin/main..HEAD = 0), clés GitHub/APINex/OpenAlex opérationnelles (session rotation-cles-journaux-oa-fix). tasks.md OCR : 0/9 cochées — recette propriétaire toujours attendue.
+- Vérification oceanofpdf.com (web_search, résultats bruts consignés) : Authors Guild (22 nov. 2024) « one of the most notorious digital ebook piracy sites » ; article Wikipédia OceanofPDF ; revues 2026 : « OceanofPDF distributes copyrighted books without permission — this is piracy, not a legal grey area ».
+- REFUS motivé consigné : pas d'intégration comme source de documents (distribution d'ouvrages sous droit sans autorisation = contrefaçon ; risque sécurité des fichiers ; incompatible avec l'exigence de traçabilité/citation d'une thèse) — ni intégration, ni récupération de fichiers depuis ce site.
+- Alternatives légales proposées au propriétaire : DOAB, OpenEdition Books, Internet Archive/Open Library, Project Gutenberg, Gallica (BnF). Déjà intégrées : theses.fr, arXiv, CORE, OpenAlex (+ DOAJ côté journaux OA).
+
+Stage Summary:
+- POINT D'ARRÊT : le propriétaire choisit une source légale (ou renonce) — aucun code écrit, aucune spec ouverte tant que le choix n'est pas rendu.
+- État confirmé : cycle OCR/async révisable en attente de recette propriétaire (tasks.md 0/9) ; dettes consignées : packaging Tauri tessdata (build-desktop), précision OCR à juger sur scan réel.
