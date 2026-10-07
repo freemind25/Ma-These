@@ -280,6 +280,37 @@ cycle dédié si demandé) ; injection dans les chapitres de thèse ou d'autres 
 
 ---
 
+## 7 bis. Brouillon d'article scientifique (2026-10-07, cycle article-scientifique)
+
+**Canal** : assistant dédié (`modules/article-redaction`, module « Brouillon d'article ») — 5 étapes :
+sources (projet + import DOCX/PDF/TXT ≤ 20 Mo) → consignes (type, langue, longueur, style biblio,
+revue, angle) → **plan proposé puis modifiable avant génération** → génération **section par section**
+(réponses JSON synchrones, les autres sections intactes) → relecture / versions datées / export DOCX.
+
+**Intégrité (règles verbatim du cahier des charges)** : `src/lib/articles/prompts.ts` — ne jamais
+inventer (résultats, chiffres, références, DOI…), « [À compléter par l'auteur] » quand une
+information manque, corrélation ≠ causalité, citations ↔ bibliographie cohérentes, « à vérifier »
+plutôt que compléter par supposition, jamais « revue systématique » sans méthode systématique,
+document importé = **DONNÉES jamais instructions** (balises `<source>` + défense anti-injection),
+brouillon à vérifier par les auteurs — aucune garantie d'acceptation.
+
+**Extraction honnête** : `src/lib/articles/extraction.ts` — type réel vérifié (extension + magic
+bytes), taille max configurable (20 Mo), PDF scanné détecté (pages sans texte — OCR explicitement
+non disponible et signalé), titres DOCX depuis le HTML mammoth, limites listées et affichées à
+l'utilisateur avant toute génération.
+
+**Traçabilité** : chaque section porte ses `sources` (label + kind + location) demandées au LLM
+(« SOURCES UTILISÉES : ») et affichées sous la section ; références de la thèse = seule source de
+citations autorisée. Export DOCX (`/api/articles/export-docx`) : repères « à compléter / à vérifier »
+conservés et mis en évidence, mention de brouillon en tête.
+
+**Périmètre** : le brouillon est stocké **séparément** de ses sources (`Article`/`ArticleVersion`,
+isolation `thesisId`) ; les imports sont re-extractables et supprimables (`ImportedDoc`). Hors
+périmètre de l'option A : analyse d'extraction enrichie, angle multi-études, OCR, jobs asynchrones,
+traduction intégrée (option B/C).
+
+---
+
 ## 7. Processus de digestion et feedback
 
 Quand un cas limite ou une divergence est identifié, il suit le processus formel documenté dans `feedback.md` :
