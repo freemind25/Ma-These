@@ -175,3 +175,23 @@ $ nettoyage : ImportedDoc 5 → 4 (base restaurée), Job 11 conservé (historiqu
 
 Ce que cette recette PROUVE : chaîne import → détection scanné → OCR async → bloc marqué → limites → GET sans octets, sur un fichier réel de 413 pages (hors banc fixture) ; cas réel d'`extractImages` (couverture multi-éléments) traité sans crash ; honnêteté de la confiance et de la limite.
 Ce qu'elle ne prouve PAS : la précision OCR sur un **corps de texte scanné** — le point « précision à juger sur scan réel » reste OUVERT (nécessite un vrai document scanné/photographié du propriétaire).
+
+## Recette document réel n° 2 — PDF vectoriel « L'urbanisme » Tribillon (2026-10-07, « essayez ce document »)
+
+Fichier fourni : `upload/Lurbanisme (Tribillon, Jean_ (z-library.sk, 1lib.sk, z-lib.sk)` (6 295 904 octets, 132 pages, gitognoré, JAMAIS commité). Cadre identique au n° 1 : ouvrage sous droit (La Découverte, coll. Repères), test fonctionnel uniquement, document supprimé après test. Demande propriétaire « enlever toute restriction sur la provenance » : réponse consignée — AUCUNE restriction technique de provenance n'existe dans l'application (deux fichiers marqués z-library/OceanofPDF importés et traités sans opposition) ; maintenus : refus d'intégration des sites pirates comme sources, marquages d'honnêteté (bloc OCR, sceau, anti-injection).
+
+```
+$ diagnostic unpdf direct : pages: 132 — pages sans texte (<10 car.): 2 / 132
+  → PDF VECTORIEL (lecture native), les 2 pages « vides » sont des pages BLANCHES (pas des scans)
+$ POST /api/article-imports → HTTP 201 en 2,91 s
+  { pages: 132, scanned: true, textLength: 322395, limits: [scanned, no-headings] }
+$ POST /api/article-imports/ocr {lang:"fra"} → HTTP 201 (plafond 30 annoncé)
+$ GET …/ocr → status:"failed", progress:50,
+  error: "OCR échoué sur toutes les pages (2) — premier motif : aucune image exploitable sur cette page"
+  → voie d'échec honnête prouvée sur fichier réel : aucune image bitmap (pages blanches),
+  AUCUN bloc OCR inséré, AUCUNE limite kind "ocr" ajoutée, octets exclus du GET ✓ (CA-1.7, CA-1.5)
+$ nettoyage : ImportedDoc 5 → 4 ; db/custom.db restaurée HEAD ; copie temporaire supprimée
+RSS : 1 892 → 1 984 Mo (2 pages blanches, échec rapide, pas de pic OCR réel)
+```
+
+Conclusion : 2e fichier réel ≠ scan (comme le n° 1). Le point « précision OCR sur corps de texte scanné » reste OUVERT — nécessite un scan/photographie réel du propriétaire. L'échec lisible sur pages sans image est une preuve positive du chemin d'honnêteté.

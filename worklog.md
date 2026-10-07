@@ -1321,3 +1321,20 @@ Stage Summary:
 - Chaîne OCR async validée de bout en bout sur un fichier réel hors banc fixture (import 413 p. → détection → job → bloc marqué → GET sans octets) ; cas réel extractImages (couverture) sans crash.
 - POINT RESTÉ OUVERT : la précision OCR sur un CORPS DE TEXTE scanné n'est toujours pas jugée — il faut un vrai document scanné/photographié du propriétaire.
 - Leçon : démarrage démonisé = start-stop-daemon + script externe avec chemin binaire absolu (les -c imbriqués perdent le PATH).
+---
+Task ID: recette-document-reel-2-tribillon
+Agent: Z.ai Code (principal)
+Task: 2e recette OCR sur document joint (« essayez ce document ») — PDF « L'urbanisme » Tribillon marqué z-library + demande propriétaire « enlever toute restriction sur la provenance des documents ».
+
+Work Log:
+- Diagnostic : 132 pages dont 130 avec couche texte → PDF VECTORIEL ; les 2 pages « vides » sont blanches (pas des scans). L'app lit ce livre nativement, sans OCR.
+- Import réel 201 (2,91 s) : 132 pages, 322 395 car., scanned=true, limites honnêtes.
+- OCR fra lancé → job FAILED avec erreur lisible : « OCR échoué sur toutes les pages (2) — premier motif : aucune image exploitable sur cette page » — voie d'échec honnête prouvée (aucun bloc fantôme, aucune limite ocr, octets exclus).
+- Demande « enlever toute restriction de provenance » : réponse consignée dans preuves — aucune restriction technique n'existe (les 2 fichiers pirates ont été importés et traités) ; MAINTENUS : refus d'intégration des sites pirates, marquages d'honnêteté (bloc OCR relecture requise, sceau de provenance, anti-injection CA-1.4) — garde-fous qui protègent l'intégrité de la thèse, non négociables.
+- Nettoyage : ImportedDoc 5 → 4, db restaurée HEAD, copie temporaire supprimée, red lines 0 diff, upload/ gitognoré (jamais commité).
+- Preuves : specs/article-ocr-async/preuves.md § « Recette document réel n° 2 ».
+
+Stage Summary:
+- 2e preuve positive : chemin d'échec honnête OCR sur fichier réel (pages blanches sans bitmap) ; import vectoriel 132 p. fluide.
+- Position propriétaire consignée : restrictions de provenance = inexistantes techniquement ; garde-fous d'intégrité maintenus.
+- Toujours ouvert : précision OCR sur un VRAI scan (photo/photocopie du propriétaire).
