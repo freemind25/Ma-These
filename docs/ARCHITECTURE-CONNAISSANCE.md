@@ -247,6 +247,37 @@ savoirs » (§ 6 ter) continue de s'appliquer à ce mode (canal compétences liv
 **Hors périmètre acté** : registre juridique structuré (Option B), veille JORADP (Option C),
 référentiels § 3/§ 4 du pack non injectés dans le prompt.
 
+## 6 quinquies. Registre juridique URBANIS-DZ (2026-10-07, cycle urbanis-dz-registre)
+
+**Source** : § 3 (référentiel juridique minimal, 13 entrées) et § 4 (sous-référentiel risques,
+14 entrées) du pack URBANIS-DZ v1.1, structurés selon le format du § 7 (11 champs) — modèle
+Prisma `LegalRef` (`prisma/schema.prisma`), alimentation initiale par `scripts/seed-legal-refs.ts`
+(27 entrées, vigilances conservées **verbatim**, idempotent).
+
+**Canal d'injection** (`src/lib/ai/legal-refs.ts` + `legal-refs-server.ts`) : mécanique calquée
+sur les compétences livres (§ 6 bis) — sélection déterministe (ordre `updatedAt desc`), plafond
+de contenu **8 000 car.** (le registre complet ≈ 6 350 car. y tient), index léger **1 500 car.**
+avec mention « contenu non injecté (budget) ». Le texte injecté d'une entrée est **composé depuis
+ses champs** (pas de contenu libre) et les vigilances du pack ne sont jamais converties en
+affirmation de statut.
+
+**Périmètre d'injection (décision déléguée n°1, révisable)** : le registre nourrit **uniquement**
+le mode `expertise-urbaine-dz` de l'assistant d'écriture (message système dédié après les
+compétences livres) — les autres modes, les chapitres et les autres flux restent **byte-identiques**
+(tests de non-régression). Garde-fous du bloc : appui documentaire, jamais une autorisation,
+jamais une citation bibliographique, rappel permanent « avis non opposable — vérifier au JORADP ».
+
+**Sceau de provenance** : le stamp (§ 6 ter) est étendu **additivement** — champ optionnel
+`legalRefs` (`[{id, reference, mode}]`), résumé « + N entrées du registre juridique », détail
+`[R1]…[Rn]` ; les stamps antérieurs sans `legalRefs` restent valides et affichés.
+
+**UI** : onglet « Registre juridique » dans le module Livres & compétences — CRUD complet
+(11 champs du § 7), interrupteur « Utilisée par l'IA » (opt-in strict, désactivée par défaut),
+recherche, vigilances affichées telles quelles.
+
+**Hors périmètre acté** : veille JORADP / connecteur (Option C — pas d'API publique stable,
+cycle dédié si demandé) ; injection dans les chapitres de thèse ou d'autres modes.
+
 ---
 
 ## 7. Processus de digestion et feedback
