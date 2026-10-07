@@ -1252,3 +1252,21 @@ Work Log:
 Stage Summary:
 - Verdict d'étude : OCR pure JS VIABLE sous conditions (séquentiel strict, plafond pages, tessdata embarqué local fr/en/ar) ; async quasi gratuit (infrastructure jobs déjà recettée).
 - POINT D'ARRÊT : décision propriétaire attendue — lancer le cycle d'implémentation (~1-2 cycles) ou maintenir en veilleuse. Aucun code écrit.
+---
+Task ID: rotation-cles-journaux-oa-fix
+Agent: Z.ai Code (principal)
+Task: Rotation des clés propriétaire (GitHub / APINex / OpenAlex) + correctif voie rapide de la route journaux-oa rendue défaillante par la clé OpenAlex premium.
+
+Work Log:
+- Audit fuite : aucune clé réelle dans les fichiers suivis (les mentions ghp_ sont documentaires) ; .env TRACKÉ (committé avant la règle .env*) → clés écrites dans .env.local (600, gitognoré, non suivi) — jamais dans .env.
+- GitHub : askpass persistant hors dépôt (/home/z/.gh-askpass.sh, 700, token → x-access-token), validé par git ls-remote (HEAD = 628c49d).
+- Serveur dev : 3 crashes consécutifs au redémarrage (OOM dmesg à ~1,96 Go pendant compile de /, puis tués à la frontière des appels outils via setsid/nohup/job shell) — survie obtenue par démonisation start-stop-daemon (PPID 1, RSS 544 Mo, HTTP 200 après frontière).
+- APINex : nouvelle clé validée via GET /api/apinex/balance → ok:true, clé key_c6ca0084…, 0 $ dépensé.
+- OpenAlex : clé valide en direct (200, count 8) MAIS la route /api/journaux-oa renvoyait 400 — cause racine prouvée : `select` contenant publisher/oa_status rejeté par le schéma nouveau premium (« not a valid select field ») ; sans clé → 429 (quota, ce que la clé corrige).
+- Voie rapide (specs/journaux-oa-openalex-key/assess.md) : 1 fichier src/app/api/journaux-oa/route.ts (~8 lignes) — select retiré, type + host_organization_name?, mapping publisher avec fallback. 21/21 tests route, vitest 74/1 611, lint 0 erreur, preuve live (8 résultats, éditeur alimenté, nulls honnêtes vérifiés en direct).
+- DOAJ « fetch failed » : DNS sandbox intermittent (curl exit 6 récurrent, y compris URL antérieurement 200) — environmental préexistant, hors périmètre, consigné.
+
+Stage Summary:
+- Les 3 nouvelles clés sont opérationnelles (GitHub push validé par ce commit ; APINex balance ok ; OpenAlex 200 sans warning dans la route) — AUCUN secret dans le dépôt.
+- Correctif journaux-oa livré en voie rapide (révisable, recette propriétaire attendue) — incompatibilité schéma nouveau OpenAlex premium corrigée.
+- Leçon d'exploitation : redémarrage serveur = start-stop-daemon (les autres méthodes meurent à la frontière des appels outils) ; OOM surveillé.

@@ -24,6 +24,7 @@ interface OpenAlexJournal {
   id: string;
   display_name: string;
   publisher?: string;
+  host_organization_name?: string; // schéma nouveau (clé API premium) — remplace "publisher"
   issn?: string[];
   topics?: { display_name: string; subfield?: { display_name: string } }[];
   country_code?: string;
@@ -132,7 +133,9 @@ async function fetchOpenAlex(query: string, subject?: string): Promise<JournalRe
   const params = new URLSearchParams({
     search: query,
     per_page: "20",
-    select: "id,display_name,publisher,issn,topics,country_code,homepage_url,is_oa,oa_status,apc_prices,works_count,cited_by_count",
+    // Pas de `select` : avec la clé API premium, OpenAlex (schéma nouveau) rejette
+    // les champs `publisher` et `oa_status` (« not a valid select field ») — les
+    // objets complets restent valides dans les deux régimes (avec/sans clé).
   });
   if (subject && subject !== "all") {
     params.set("filter", `topics.subfield.display_name.search:${subject}`);
@@ -154,7 +157,7 @@ async function fetchOpenAlex(query: string, subject?: string): Promise<JournalRe
   return data.results.map((j, idx) => ({
     id: j.id ?? `oa-${idx}`,
     name: j.display_name ?? "Sans titre",
-    publisher: j.publisher ?? "Éditeur inconnu",
+    publisher: j.publisher ?? j.host_organization_name ?? "Éditeur inconnu",
     issn: j.issn?.join(", ") ?? "",
     subjects: j.topics?.map((t) => t.subfield?.display_name ?? t.display_name).slice(0, 3) ?? [],
     oaType: normalizeOaType(j.oa_status ?? (j.is_oa ? "gold" : undefined)),
