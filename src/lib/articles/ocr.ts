@@ -61,7 +61,7 @@ export function computeDownscaleFactor(
 export function downscaleNearest(
   img: OcrBitmap,
   factor: number
-): { data: Uint8ClampedArray; width: number; height: number; channels: 1 | 3 | 4 } {
+): { data: Uint8ClampedArray | Uint8Array; width: number; height: number; channels: 1 | 3 | 4 } {
   const f = Math.max(1, Math.floor(factor));
   if (f === 1) {
     return { data: img.data, width: img.width, height: img.height, channels: img.channels };

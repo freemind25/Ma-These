@@ -21,7 +21,7 @@ import {
   isDueForAutoCheck,
 } from "@/lib/veille/check-core";
 import { runCheckForSavedSearch } from "@/lib/veille/run-check";
-import { detectScannedPages } from "@/lib/articles/extraction";
+import { detectScannedPages, type ExtractionLimit } from "@/lib/articles/extraction";
 import {
   buildOcrBlock,
   isOcrLang,
@@ -201,10 +201,13 @@ const HANDLERS: Record<string, JobHandler> = {
   },
 };
 
-function parseLimitsSafe(limitsJson: string): { kind: string; detail: string }[] {
+function parseLimitsSafe(limitsJson: string): ExtractionLimit[] {
   try {
     const parsed = JSON.parse(limitsJson || "[]");
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((l) => l && typeof l.kind === "string" && typeof l.detail === "string")
+      .map((l) => ({ kind: l.kind as ExtractionLimit["kind"], detail: l.detail as string }));
   } catch {
     return [];
   }
