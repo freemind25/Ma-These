@@ -21,9 +21,23 @@ import {
   isDueForAutoCheck,
 } from "@/lib/veille/check-core";
 import { runCheckForSavedSearch } from "@/lib/veille/run-check";
+import { detectScannedPages } from "@/lib/articles/extraction";
+import {
+  buildOcrBlock,
+  isOcrLang,
+  mergeOcrIntoLimits,
+  mergeOcrIntoText,
+  pickMainImage,
+  planOcrPages,
+  resolveOcrMaxPages,
+  type OcrPageResult,
+} from "@/lib/articles/ocr";
 
 /** Registre des handlers — tout type de job long doit s'y enregistrer. */
-type JobHandler = (payload: Record<string, unknown>) => Promise<unknown>;
+type JobHandler = (
+  payload: Record<string, unknown>,
+  job: { id: string }
+) => Promise<unknown>;
 
 const HANDLERS: Record<string, JobHandler> = {
   // Job technique minimal (preuves de bout en bout de la file)
@@ -51,7 +65,138 @@ const HANDLERS: Record<string, JobHandler> = {
     if (!savedSearchId) throw new Error("savedSearchId manquant");
     return runCheckForSavedSearch(savedSearchId, VEILLE_CHECK_ORIGIN);
   },
+
+  // OCR des pages scannées d'un PDF importé (specs/article-ocr-async) —
+  // séquentiel strict : 1 page à la fois, moteur terminé entre chaque page
+  // (CA-1.5), progression écrite dans le job (CA-1.1), bloc marqué fusionné
+  // au texte sans écraser le natif (CA-1.2), limites mises à jour (CA-1.3).
+  "article-import-ocr": async (payload, job) => {
+    const importedDocId = String(payload.importedDocId ?? "");
+    if (!importedDocId) throw new Error("importedDocId manquant");
+    const lang = isOcrLang(payload.lang) ? payload.lang : "fra";
+    const maxPages = resolveOcrMaxPages(
+      typeof payload.maxPages === "number" ? payload.maxPages : (process.env.OCR_MAX_PAGES ?? null)
+    );
+
+    const doc = await db.importedDoc.findUnique({ where: { id: importedDocId } });
+    if (!doc) throw new Error("Document importé introuvable — il a peut-être été supprimé.");
+    if (doc.fileType !== "pdf")
+      throw new Error("L'OCR ne s'applique qu'aux documents PDF.");
+    if (!doc.data)
+      throw new Error(
+        "Octets du PDF non conservés pour ce document (import antérieur à l'OCR) — réimportez le PDF puis relancez l'OCR."
+      );
+
+    // Pages réellement sans texte, recalculées depuis le fichier conservé
+    const { extractPdf } = await import("@/lib/articles/extraction");
+    const { pages } = await extractPdf(Buffer.from(doc.data));
+    const { emptyPages } = detectScannedPages(pages);
+    if (emptyPages.length === 0)
+      throw new Error(
+        "Aucune page scannée détectée — le texte est déjà extractible, l'OCR est inutile."
+      );
+    const plan = planOcrPages(emptyPages, maxPages);
+
+    const { getDocumentProxy, extractImages } = await import("unpdf");
+    const pdf = await getDocumentProxy(new Uint8Array(Buffer.from(doc.data)));
+    const { bitmapToPng, ocrPage } = await import("@/lib/articles/ocr-engine");
+
+    const results: OcrPageResult[] = [];
+    const total = plan.pagesToOcr.length;
+    for (let i = 0; i < total; i++) {
+      const pageNo = plan.pagesToOcr[i];
+      await db.job.update({
+        where: { id: job.id },
+        data: {
+          progress: Math.round((i / total) * 100),
+          progressNote: `Page ${i + 1}/${total} (page PDF ${pageNo}) en cours…`,
+        },
+      });
+      try {
+        const images = await extractImages(pdf, pageNo);
+        const main = pickMainImage(
+          images.map((img) => ({
+            data: img.data,
+            width: img.width,
+            height: img.height,
+            channels: img.channels,
+          }))
+        );
+        if (!main) {
+          results.push({
+            page: pageNo,
+            text: "",
+            confidence: null,
+            error: "aucune image exploitable sur cette page",
+          });
+          continue;
+        }
+        const png = await bitmapToPng(main);
+        const ocr = await ocrPage(png, lang);
+        results.push({
+          page: pageNo,
+          text: ocr.text,
+          confidence: ocr.confidence,
+          error: ocr.text.length === 0 ? "aucun texte reconnu" : null,
+        });
+      } catch (e) {
+        // Honnêteté par page : l'échec d'une page n'annule pas les autres
+        results.push({
+          page: pageNo,
+          text: "",
+          confidence: null,
+          error: e instanceof Error ? e.message.slice(0, 200) : "erreur inconnue",
+        });
+      }
+    }
+
+    const succeeded = results.filter((r) => r.error === null);
+    if (total > 0 && succeeded.length === 0) {
+      throw new Error(
+        `OCR échoué sur toutes les pages (${total}) — premier motif : ${results[0]?.error ?? "inconnu"}`
+      );
+    }
+
+    const avgConfidence =
+      succeeded.length > 0
+        ? succeeded.reduce((s, r) => s + (r.confidence ?? 0), 0) / succeeded.length
+        : null;
+    const block = buildOcrBlock(results, { lang });
+    const newText = mergeOcrIntoText(doc.text, block);
+    const limits = mergeOcrIntoLimits(parseLimitsSafe(doc.limits), {
+      lang,
+      pagesProcessed: results.length,
+      pagesNoImage: results.filter((r) => r.error === "aucune image exploitable sur cette page").length,
+      pagesNoText: results.filter((r) => r.error === "aucun texte reconnu").length,
+      remaining: plan.remaining,
+      overLimit: plan.remaining.length,
+      avgConfidence,
+    });
+    await db.importedDoc.update({
+      where: { id: importedDocId },
+      data: { text: newText, limits: JSON.stringify(limits) },
+    });
+
+    return {
+      lang,
+      pagesProcessed: results.length,
+      pagesWithText: succeeded.filter((r) => r.text.length > 0).length,
+      pagesFailed: results.filter((r) => r.error !== null).map((r) => r.page),
+      remainingPages: plan.remaining.length,
+      avgConfidence: avgConfidence !== null ? Math.round(avgConfidence) : null,
+      textLength: newText.length,
+    };
+  },
 };
+
+function parseLimitsSafe(limitsJson: string): { kind: string; detail: string }[] {
+  try {
+    const parsed = JSON.parse(limitsJson || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 export function getRegisteredJobTypes(): string[] {
   return Object.keys(HANDLERS);
@@ -120,7 +265,7 @@ async function processOneJob(): Promise<boolean> {
   console.warn(`[job-worker] Exécution du job ${job.id} (${job.type})`);
   try {
     const payload = JSON.parse(job.payload || "{}") as Record<string, unknown>;
-    const result = await handler(payload);
+    const result = await handler(payload, { id: job.id });
     await completeJob(job.id, result);
     console.warn(`[job-worker] Job ${job.id} (${job.type}) terminé`);
   } catch (error) {
