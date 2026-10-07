@@ -312,10 +312,28 @@ garde-fou anti-fragmentation « un seul angle, fractionnement = décision explic
 détectées — la génération est bloquée avec message explicite sinon. Le résumé structuré ou non suit
 les consignes de revue transmises au prompt (champ `journalGuide`).
 
+**Option C (2026-10-07, cycle article-scientifique)** : traduction linguistique **DISTINCTE** de la
+transformation — `ARTICLE_TRANSLATION_RULES` (préserver EXACTEMENT sens, données, nuances,
+citations ; n'ajouter RIEN ; unités/valeurs intacts ; repères « [À compléter par l'auteur] » etc.
+conservés **verbatim en français** — contrainte de sortie explicite, prouvée live) exposée via
+`/api/articles/translate` : le résultat est une **copie** renvoyée au client, jamais une écriture
+sur l'original. UI (étape 5) : sélecteur de langue cible, boutons « Traduire » par section et
+« Traduire l'article entier » (section par section, progression affichée), panneau « Copie traduite »
+(badge « original intact », sections non traduites signalées), enregistrement en **nouvel article**
+(original jamais touché) ou en **version** (original archivé et restaurable). La traduction stockée
+est invalidée dès que la section d'origine change (génération, édition, restauration).
+**Vue multi-articles** : la carte « Vos brouillons d'articles » affiche par article titre, type,
+statut, nombre de sections et repères « à compléter/vérifier » (calculés serveur par `GET
+/api/articles`) + un agrégat. **Différé explicite** : OCR (tesseract.js) et jobs asynchrones — un
+cycle d'étude dédié est exigé avant toute implémentation (données ~10-40 Mo, perf scans réels
+inconnue, impact build Tauri Windows) ; la détection de PDF scanné + le refus honnête (option A)
+restent le comportement.
+
 **Périmètre** : le brouillon est stocké **séparément** de ses sources (`Article`/`ArticleVersion`,
 isolation `thesisId`) ; les imports sont re-extractables et supprimables (`ImportedDoc`). Hors
-périmètre de l'option A : analyse d'extraction enrichie, angle multi-études, OCR, jobs asynchrones,
-traduction intégrée (option B/C).
+périmètre de l'option A : analyse d'extraction enrichie, angle multi-études, OCR, jobs asynchrones.
+La traduction distincte (option C) et l'analyse/angles (option B) sont désormais livrées — voir
+ci-dessus.
 
 ---
 

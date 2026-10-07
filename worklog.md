@@ -1208,3 +1208,21 @@ Work Log:
 Stage Summary:
 - Cycle n°17 : backend C livré et testé (25/25) ; **UI non livrée → verdict NON CONVERGÉ (honnête)** — reste T3 (boutons traduction par section, panneau multi-articles) et recette live de traduction.
 - Anomalie d'environnement récurrente : corruption d'affichage des sorties outils (identifiants déformés, résultats fabriqués) — les commandes s'exécutaient souvent correctement (vérifiées par diff/recoupement git), mais l'automatisation navigateur et les preuves live en fin de session sont devenues invérifiables ; arrêt Art. 1/4 appliqué.
+
+---
+Task ID: article-scientifique-option-c-suite
+Agent: Z.ai Code (principal)
+Task: Achèvement du cycle n°17 « article-scientifique option C » — T3 (UI traduction + multi-articles) et T4 (recette live + convergence), restés NON CONVERGÉS après l'arrêt de la session précédente (corruption d'affichage). Déclencheur : reprise de session ; question propriétaire « qu'est ce qu'il y a à faire maintenant ? » (IM, 2026-10-07).
+
+Work Log:
+- Reconstruction d'état : git log 3cd0616 en tête, arbre propre, tout poussé, lignes rouges 0 diff ; tasks-option-c.md = T3/T4 seules restantes ; backend C confirmé complet (route 58 l., stats serveur GET /api/articles).
+- T3 implémenté (article-redaction-page.tsx, +330 l.) : carte « Traduction (copie distincte) » en étape 5 (sélecteur fr/en/ar défaut = inverse de la langue de rédaction, bouton article entier avec progression), boutons « Traduire » par section, panneau « Copie traduite (original intact) » éditable, enregistrement en NOUVEL article (POST+PUT, original jamais touché) ou en VERSION (snapshot avant remplacement, restaurable), copie presse-papiers ; invalidation de la traduction stockée dès que la section d'origine change (génération/édition/restauration) ; vue multi-articles enrichie (badges type/statut/sections/repères + agrégat).
+- Recette live API ×2 (curl fr→en avec chiffres 42/78 %, citation Benali (2019, p. 12), r = 0,72, repère) : préservation verbatim prouvée ; DÉFAUT trouvé — repère traduit en anglais → correctif buildTranslationPrompt (contrainte de sortie : repères EXACTEMENT tels quels en français) + test non-régression ; 2e live prouve le correctif.
+- Recette navigateur déléguée (8 contrôles) : vue multi-articles (badges + agrégat, article réel intact), ouverture étape 5, traduction de section (panneau anglais, original français inchangé, repère français conservé), enregistrement copie (notice verte + liste : « (copie anglais) · 2 sections · 1 à compléter/vérifier »), mobile 390 px, 2 captures, nettoyage (DELETE 200 ×2, db restaurée HEAD).
+- Diagnostics d'environnement consignés : OOM box CONFIRMÉE (dmesg : 2 next-server tués à ~2 Go RSS) — contournement NODE_OPTIONS=1400 + recette en traites ; faux négatif d'un wait navigateur ; Fast Refresh pendant fetch = perte d'état (recharge propre → OK) ; processus enfants d'un appel outil tués à la frontière (test sleep-300 prouvé).
+- Vérifications finales : vitest 74 fichiers / 1 611 verts ; lint 0 erreur / 231 warnings ; lignes rouges 0 diff ; docs § 7 bis (Option C + différé OCR/async) ; tasks-option-c 4/4 + verdict CONVERGÉ ; preuves complétées.
+
+Stage Summary:
+- Cycle n°17 « article-scientifique option C » CONVERGÉ (2/2 CA, recette déléguée, révisable) : traduction distincte (copie, original intact, repères verbatim français) + vue multi-articles — la séquence « étapes A, B et C » du cahier des charges article scientifique est intégralement livrée (cycles 15/16/17).
+- OCR + jobs asynchrones : différés explicitement, cycle d'étude dédié exigé (consigné à l'ouverture, repris en docs).
+- Anomalie d'environnement caractérisée et contournée (OOM box + frontière d'appels outils) — consignée pour les sessions suivantes.

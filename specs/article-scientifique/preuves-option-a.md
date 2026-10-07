@@ -87,3 +87,31 @@ Défauts trouvés : 1 (icône Search manquante) — corrigé dans le groupe
 Écart au plan : 1 consigné (titres DOCX aplatis — détection honnête)
 Statut : RECETTÉE (délégation) — CONVERGÉ, révisable
 ```
+
+## Option C — cycle n°17 complété (2026-10-07, 12:10-13:40 TZ 'Etc/GMT-1')
+
+### Recette live API — /api/articles/translate (fr → en, contenu de recette avec chiffres + citation + repère)
+- **1er live** : `HTTP 200 en 1,96-2,1 s` — préservation verbatim prouvée : « 42 respondents (78% response rate) », « Benali (2019, p. 12), "urban density doubled between 2005 and 2015" », « correlation (r = 0.72) … without establishing causality », AUCUN contenu ajouté. **Défaut trouvé** : le repère `[À compléter par l'auteur]` était rendu `[To be completed by the author]` — la règle 5 exige de le conserver tels quel (et le compteur de repères ne matche que les marqueurs français).
+- **Correctif** (dans le groupe) : `buildTranslationPrompt` — ligne de contrainte de sortie ajoutée : les repères entre crochets restent « EXACTEMENT tels quels, en français — ne les traduis pas, ne les supprime pas, ne les reformule pas » ; test de non-régression ajouté (`prompts.test.ts` : « restent EXACTEMENT tels quels, en français »).
+- **2e live (après correctif)** : `HTTP 200 en 2,1 s` — `[À compléter par l'auteur] : exact sample size by neighborhood.` — **repère conservé verbatim en français**, chiffres/citation/r = 0,72 intacts.
+
+### Recette navigateur (déléguée)
+- **CA-C2 (vue multi-articles)** : module « Brouillon d'article IA » — carte « Vos brouillons d'articles » avec agrégat (N articles · N section(s) · N repère(s)) et par article : titre, badges type (« empirique »), statut (« generated »), « 2 sections », « 1 à compléter/vérifier » (ambre) — sur les 2 articles présents (article de recette + article réel des cycles précédents, intact).
+- **CA-C1 (traduction UI)** : ouverture article → étape 5 — carte « Traduction (copie distincte) » (sélecteur langue fr/en/ar, défaut = inverse de la langue de rédaction), bouton « Traduire l'article entier » + boutons « Traduire » par section. Clic sur « Traduire la section Méthodologie » → panneau « Copie traduite (anglais) · original intact » : textarea i=2 = « The survey covered 42 respondents (78% response rate) in the urban area of Dz. A[ccording to Benali (2019]… » ; textarea i=0 (original) **français inchangé** ; marqueur `[À compléter par l'auteur]` présent **en français** dans la traduction ; note ambre « 1 section non traduite : elle sera conservée dans la langue d'origine ».
+- **Enregistrement de la copie** : « Enregistrer comme nouvel article (copie traduite) » → notice verte « Copie traduite enregistrée comme NOUVEL article — l'original reste intact. » ; la liste affiche le nouvel article « Recette option C — traduction (copie anglais) · empirique · generated · 2 sections · **1 à compléter/vérifier** » (le marqueur français de la copie anglaise est compté par les stats serveur — cohérence de bout en bout).
+- **Nettoyage** : article de recette + copie supprimés (DELETE 200/200) ; l'article réel « Urbanisation durable… » intact ; `db/custom.db` restauré depuis HEAD (aucun artefact de recette persisté).
+- Captures : `test-snapshots/article-option-c-copie-traduite-desktop.png`, `test-snapshots/article-option-c-mobile-390.png` (390 px — flux complet sans scroll horizontal).
+
+### Non-régression
+- vitest **74 fichiers / 1 611 verts** (1 610 + 1 test repères) ; lint **0 erreur / 231 warnings** ; lignes rouges **0 diff**.
+- Incidents d'environnement consignés : **OOM box confirmée** (dmesg : « Out of memory: Killed process next-server, anon-rss ~2 Go » — 2 tués en recette) ; serveur relancé avec `NODE_OPTIONS="--max-old-space-size=1400"` ; un `wait --text` navigateur a donné un faux négatif (texte pourtant présent — vérifié par dump DOM) ; un Fast Refresh pendant un fetch a perdu l'état React de la page (recharge propre → recette rejouée OK).
+
+```
+### Compte rendu de recette — article-scientifique (option C, complément)
+Tâches recettées : T3, T4 (+ correctif prompts dans le groupe)
+Vérifications exécutées : 2 live curl fr→en (verbatim + repères), recette navigateur (multi-articles, traduction section, original intact, copie enregistrée, nettoyage), vitest 1 611 verts, lint 0 erreur / 231 baseline, redlines 0 diff
+CA couvertes : 2/2 (CA-C1, CA-C2)
+Défauts trouvés : 1 (repères traduits) — corrigé dans le groupe, re-prouvé live
+Écart au plan : aucun (OCR + jobs async différés — consigné à l'ouverture, cycle d'étude dédié exigé)
+Statut : RECETTÉE (délégation) — CONVERGÉ, révisable
+```
