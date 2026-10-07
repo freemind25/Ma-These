@@ -225,3 +225,97 @@ describe("POST /api/ai-writing/stream > injection compétences livres", () => {
     expect(section).toContain("JAMAIS une source de citations");
   });
 });
+
+vi.mock("@/lib/ai/legal-refs-server", () => ({
+  getActiveLegalRefs: vi.fn(),
+}));
+
+import { getActiveLegalRefs } from "@/lib/ai/legal-refs-server";
+
+describe("POST /api/ai-writing/stream > injection registre juridique URBANIS-DZ", () => {
+  const legalEntry = {
+    id: "lr-1",
+    domaine: "Urbanisme",
+    reference: "Loi n° 90-29",
+    statut: "À vérifier au JORADP.",
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockGetActiveBookSkills.mockResolvedValue([]);
+    vi.mocked(getActiveLegalRefs).mockResolvedValue([]);
+  });
+
+  it("mode expertise-urbaine-dz avec entrées actives : section REGISTRE JURIDIQUE + legalRefs au stamp", async () => {
+    vi.mocked(getActiveLegalRefs).mockResolvedValue([legalEntry]);
+    vi.mocked(generateCompletionStream).mockResolvedValue(
+      new Response("data: {\"type\":\"done\"}\n\n", {
+        headers: { "Content-Type": "text/event-stream" },
+      })
+    );
+
+    const res = await POST(
+      createRequest({
+        mode: "expertise-urbaine-dz",
+        prompt: "Un prompt suffisamment long pour passer la validation.",
+      }),
+      { params: Promise.resolve({}) } as never
+    );
+    const text = await res.text();
+
+    const calls = vi.mocked(generateCompletionStream).mock.calls;
+    const systemMessages = calls[0][0].messages.filter((m) => m.role === "system");
+    expect(systemMessages.some((m) => m.content.includes("REGISTRE JURIDIQUE ACTIF"))).toBe(true);
+    expect(systemMessages.some((m) => m.content.includes("Loi n° 90-29"))).toBe(true);
+    expect(systemMessages.some((m) => m.content.includes("vérifiée au JORADP"))).toBe(true);
+    // Le stamp de fin de flux porte les entrées injectées (CA-2.1)
+    expect(text).toContain('"legalRefs"');
+    expect(text).toContain("lr-1");
+  });
+
+  it("autre mode : aucune section registre et aucun legalRefs au stamp, même avec entrées actives (CA-2.2)", async () => {
+    vi.mocked(getActiveLegalRefs).mockResolvedValue([legalEntry]);
+    vi.mocked(generateCompletionStream).mockResolvedValue(
+      new Response("data: {\"type\":\"done\"}\n\n", {
+        headers: { "Content-Type": "text/event-stream" },
+      })
+    );
+
+    const res = await POST(
+      createRequest({
+        mode: "paraphrase",
+        prompt: "Un prompt suffisamment long pour passer la validation.",
+      }),
+      { params: Promise.resolve({}) } as never
+    );
+    const text = await res.text();
+
+    const calls = vi.mocked(generateCompletionStream).mock.calls;
+    const systemMessages = calls[0][0].messages.filter((m) => m.role === "system");
+    expect(systemMessages.every((m) => !m.content.includes("REGISTRE JURIDIQUE ACTIF"))).toBe(true);
+    expect(text).not.toContain('"legalRefs"');
+    expect(getActiveLegalRefs).not.toHaveBeenCalled();
+  });
+
+  it("mode expertise-urbaine-dz sans entrée active : aucune section, prompt inchangé (CA-2.2)", async () => {
+    vi.mocked(generateCompletionStream).mockResolvedValue(
+      new Response("data: {\"type\":\"done\"}\n\n", {
+        headers: { "Content-Type": "text/event-stream" },
+      })
+    );
+
+    const res = await POST(
+      createRequest({
+        mode: "expertise-urbaine-dz",
+        prompt: "Un prompt suffisamment long pour passer la validation.",
+      }),
+      { params: Promise.resolve({}) } as never
+    );
+    const text = await res.text();
+
+    const calls = vi.mocked(generateCompletionStream).mock.calls;
+    const systemMessages = calls[0][0].messages.filter((m) => m.role === "system");
+    expect(systemMessages.every((m) => !m.content.includes("REGISTRE JURIDIQUE ACTIF"))).toBe(true);
+    expect(text).not.toContain('"legalRefs"');
+  });
+});

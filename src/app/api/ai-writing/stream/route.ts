@@ -5,6 +5,8 @@ import { SPECIALIZATION_PROMPTS } from "@/lib/ai/specializations";
 import { getLevelCalibration, type DoctoralLevel } from "@/lib/ai/prompt-builder";
 import { getActiveBookSkills } from "@/lib/ai/book-skills-server";
 import { buildBookSkillsSection } from "@/lib/ai/book-skills";
+import { getActiveLegalRefs } from "@/lib/ai/legal-refs-server";
+import { buildLegalRefsSection } from "@/lib/ai/legal-refs";
 import { buildKnowledgeStamp } from "@/lib/ai/knowledge-stamp";
 import { KNOWLEDGE_CORE_VERSION } from "@/lib/ai/knowledge-core";
 import { z } from "zod/v4";
@@ -61,10 +63,22 @@ export async function POST(request: NextRequest) {
     // Le stamp (provenance des savoirs) voyage HORS prompt vers le client.
     const activeBookSkills = await getActiveBookSkills();
     const bookSkillsSection = buildBookSkillsSection(activeBookSkills);
+
+    // Canal « registre juridique URBANIS-DZ » : couche documentaire du mode
+    // expertise-urbaine-dz uniquement (décision déléguée n°1 de la spec).
+    // Aucun ajout sinon — prompt et stamp inchangés à l'octet près (CA-2.2).
+    let legalRefsSection: string | null = null;
+    let activeLegalRefs: Awaited<ReturnType<typeof getActiveLegalRefs>> = [];
+    if (validated.mode === "expertise-urbaine-dz") {
+      activeLegalRefs = await getActiveLegalRefs();
+      legalRefsSection = buildLegalRefsSection(activeLegalRefs);
+    }
+
     const knowledgeStamp = buildKnowledgeStamp({
       coreVersion: KNOWLEDGE_CORE_VERSION,
       skills: activeBookSkills,
       generatedAt: new Date().toISOString(),
+      ...(activeLegalRefs.length > 0 ? { legalRefs: activeLegalRefs } : {}),
     });
 
     const messages: AiMessage[] = [
@@ -73,6 +87,10 @@ export async function POST(request: NextRequest) {
 
     if (bookSkillsSection) {
       messages.push({ role: "system", content: bookSkillsSection });
+    }
+
+    if (legalRefsSection) {
+      messages.push({ role: "system", content: legalRefsSection });
     }
 
     if (validated.context) {
