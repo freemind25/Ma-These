@@ -38,9 +38,20 @@ interface ImportedDocInfo {
   fileType: string;
   pages: number | null;
   scanned: boolean;
-  limits: string;
+  limits: string | { kind: string; detail: string }[];
   textLength?: number;
   preview?: string;
+}
+
+/** limits : chaîne JSON (db) ou tableau parsé (POST) — robuste aux deux. */
+function parseLimits(limits: string | { kind: string; detail: string }[] | null | undefined): { kind: string; detail: string }[] {
+  if (Array.isArray(limits)) return limits;
+  try {
+    const parsed = JSON.parse(limits || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
 }
 
 interface PlanRow {
@@ -584,7 +595,7 @@ export function ArticleRedactionPage() {
                       {d.pages ? `${d.pages} pages · ` : ""}
                       {d.textLength ?? "—"} caractères extraits
                     </p>
-                    {(JSON.parse(d.limits || "[]") as { kind: string; detail: string }[]).map((l, i) => (
+                    {parseLimits(d.limits).map((l, i) => (
                       <p key={i} className="text-xs text-amber-600 flex gap-1">
                         <AlertTriangle className="h-3 w-3 mt-0.5 shrink-0" aria-hidden="true" />
                         {l.detail}
