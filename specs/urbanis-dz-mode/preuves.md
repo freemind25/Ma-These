@@ -47,3 +47,30 @@ Critères d'acceptation couverts : CA-2.2 (capteur budget), non-régression gén
 Écart au plan : 1 fichier non anticipé (`knowledge-core.budget.test.ts`, 1 mot) — inscrit au plan avant modification, justifié par le message du test lui-même.
 Statut proposé : à recetter (déléguée)
 
+
+## Recette navigateur déléguée (2026-10-07, 10:25-10:40)
+
+1. **CA-1.1** — mode « Expertise urbaine (URBANIS-DZ) » visible dans la liste (`button … [ref=e132]`), description portant « Avis technique non opposable ; vérifier au JORADP », catégorie Analyse ; sélection → placeholder dédié actif (`Décrivez le site, la question urbaine ou le livrable souhaité…`).
+2. **CA-1.4** — note ambre présente dans le DOM quand le mode est actif : `eval → true` sur « Avis technique non opposable — toute règle juridique doit être vérifiée au JORADP. »
+3. **CA-1.3 (banc d'essai T4 live)** — prompt réel : « Peut-on construire ici ? Le terrain est en pente, il n'y a aucun POS ni PDAU disponible… oui ou non. » Réponse générée (SSE, ~50 s) :
+   - « # Cadrage de la demande » — Décision à éclairer / Périmètre / Échelle / Documents disponibles / Contraintes / Horizon temporel (les 6 rubriques du pack) ;
+   - « # Analyse » → « ## FAIT SOURCÉ » (règle TROIS REGISTRES) ;
+   - « Absence de document d'urbanisme : Sans POS ou PDAU… » + études géotechniques requises + « Vérifications : À faire auprès des services de l'urbanisme de la wilaya et de la commune » → **refus de conclure sans documents** ;
+   - « Bloc de traçabilité » avec les 7 champs du pack (Échelle, Millésime, Sources, Hypothèses, Limites, Vérifications, Niveau de confiance : « Élevé pour la réponse non, nécessitant des études complémentaires »).
+4. **CA-1.2** — format de sortie du pack suivi intégralement ; mention « Avis technique non opposable » présente dans la réponse (règle 8).
+5. **CA-2.3** — bloc « Provenance des savoirs » toujours affiché sous le résultat du nouveau mode (`hasProvenance: true`).
+6. **Mobile 390×844** — `scrollW: 390` (pas de scroll horizontal), note visible après re-navigation.
+7. **Console** — 0 erreur page (`agent-browser errors` vide) ; console bénigne (React DevTools, HMR, warning logo préexistant).
+8. **Captures** — `test-snapshots/urbanis-dz-mode-selected.png`, `urbanis-dz-generation-desktop.png`, `urbanis-dz-mobile-390.png`.
+
+Note d'exécution recette : le bouton « Générer » était masqué par un overlay au hit-test agent-browser — déclenché par clic programmatique (gestionnaire React natif) ; le comportement est identique à un clic utilisateur. L'événement de génération est un flux non persistant (ai-writing est écran seul — rien à restaurer).
+
+```
+### Compte rendu de recette — urbanis-dz-mode
+Tâches recettées : T1→T7 (groupes A, B, C — cases cochées après recette déléguée)
+Vérifications exécutées : vitest 71 fichiers / 1 569 verts, lint 0 erreur / 231 baseline, recette navigateur 8 contrôles (dont banc d'essai T4 live), mobile 390 px, 0 erreur console
+CA couvertes : 7/7 (CA-1.1→1.4, CA-2.1→2.3)
+Défauts trouvés : 0 produit ; 1 friction d'automatisation (overlay sur Générer — contournée, non liée au cycle)
+Écart au plan : 2 consignés (ordonnancement test câblage T3→T4 ; fichier knowledge-core.budget.test.ts inscrit au plan Article 4)
+Statut : RECETTÉE (délégation) — CONVERGÉ, révisable à la recette du propriétaire
+```

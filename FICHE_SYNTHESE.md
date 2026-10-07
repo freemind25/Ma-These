@@ -284,3 +284,21 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Validation propriétaire (2026-10-04)** : « OK » (IM) — recette déléguée 10/10 CA acceptée, aucune réserve, **cycle n°12 clos et validé**.
 
 **Points ouverts pour la session suivante** : extension du stamp aux autres flux (soutenance, deep-research, chat directeur — non planifié) ; le Truthmark reste inchangé ; OOM box à surveiller ; rotation OpenAlex/APINEX + clés GitHub côté propriétaire.
+
+
+## Session du 2026-10-07 — Analyse URBANIS-DZ + cycle n°13 « urbanis-dz-mode » (cycle complet, CONVERGÉ)
+
+**Déclencheur** : le propriétaire a fourni son pack « URBANIS-DZ » v1.1 (PDF 5 pages — instruction système spécialisée urbanisme Algérie : 12 règles dures, modes M1-M7, protocole risques, format de sortie avec bloc de traçabilité) et demandé une analyse d'intégration. Analyse préliminaire consignée (`specs/urbanis-dz-integration/analyse-preliminaire.md`, commit `0960639`) : 3 options chiffrées, constat que T1 Provenance ≈ cycle 12 déjà livré et C4 Corpus ≈ compétences livres. Le propriétaire a répondu **« A »** (mode spécialisé).
+
+**Implémentation livrée** (commits `d40ae26` ouverture, `4058cd8` groupe A, `7af3a12` groupe B, `1deea65` groupe C) :
+- `src/lib/ai/specializations/urbanis-dz.ts` : instruction système du pack retranscrite **verbatim** (§ 2, ~4 900 car.) + passerelle d'intégration minimale consignée (usage thèse, intégrité citations compétences livres, langue). **Prompt autoporteur** (`buildStandalonePrompt`) — n'embarque pas le noyau (~1 300 tok, marge full core intacte).
+- Registre `SPECIALIZATION_PROMPTS['expertise-urbaine-dz']` + entrée `WRITING_MODES` (icon `Building2`, temp 0.4) + `ICON_MAP`.
+- UI : note ambre permanente quand le mode est actif — « Avis technique non opposable — toute règle juridique doit être vérifiée au JORADP ».
+- Tests : `urbanis-dz.test.ts` (11 tests : 12 règles dures, M1-M7, protocole risques, autoporteur, budget ≤ 7 000 car., câblage, snapshot anti-dérive) + inscription `urbanis-dz` dans `allowedStandalone` du capteur budget.
+- Docs : § 6 quater dans `docs/ARCHITECTURE-CONNAISSANCE.md`.
+
+**Vérifications** : vitest **71 fichiers / 1 569 verts** (baseline 1 558 + 11) ; lint **0 erreur / 231 warnings** ; lignes rouges **0 diff** à chaque commit ; recette navigateur (8 contrôles) : mode visible/sélectionnable, note DOM, **banc d'essai T4 live** (« Peut-on construire ici ? » → cadrage 6 rubriques, FAIT SOURCÉ, refus de conclure sans POS/PDAU, bloc de traçabilité 7 champs, mention non-opposabilité), bloc « Provenance des savoirs » intact, mobile 390 px sans scroll horizontal, 0 erreur console, 3 captures. **7/7 CA — CONVERGÉ** (recette déléguée).
+
+**Écarts documentés** : (1) bloc test câblage déplacé T3→T4 (ordonnancement) ; (2) `knowledge-core.budget.test.ts` ajouté au plan Article 4 (le capteur budget identifie les spécialisations par nom de fichier et exige la déclaration des autoporteurs).
+
+**Points ouverts pour la session suivante** : Option B (registre juridique structuré `LegalRef` + injection sélective) et Option C (veille JORADP — pas d'API publique stable) proposées mais non planifiées ; recette de contrôle du propriétaire (révisable) ; rotation OpenAlex/APINEX + clés GitHub côté propriétaire ; OOM box à surveiller.

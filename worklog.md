@@ -1094,3 +1094,20 @@ Work Log:
 Stage Summary:
 - Verdict : intégration POSSIBLE et pertinente (usage thèse urbanisme réel du propriétaire) ; recommandation = Option A (mode spécialisé expertise urbaine DZ, ~1 cycle, zéro migration/ligne rouge/noyau) puis Option B (registre LegalRef) si usage justifié ; veille JORADP déconseillée en premier tour.
 - Point d'arrêt respecté : aucune implémentation — attente du choix du propriétaire avant Étape 1 (spécifier).
+
+---
+Task ID: urbanis-dz-mode
+Agent: Z.ai Code (principal)
+Task: Cycle SDD n°13 « urbanis-dz-mode » — intégration du pack URBANIS-DZ du propriétaire comme mode spécialisé de l'assistant d'écriture (Option A validée « A »).
+
+Work Log:
+- Ouverture : spec/plan/tasks/preuves (`d40ae26`) — mécanisme des 27 spécialisations vérifié (index.ts l.8-36/70+, prompt-builder buildStandalonePrompt l.101-104, route ai-writing l.32/49/94, ICON_MAP l.41-56).
+- Groupe A (`4058cd8`) : prompt verbatim §2 du pack + passerelle 3 puces (autoporteur, 4 870 car.), registre, test d'invariants 9 verts.
+- Groupe B (`7af3a12`) : entrée WRITING_MODES + ICON_MAP Building2 + note ambre JORADP ; bloc câblage test ; 44/44 verts.
+- Groupe C (`1deea65`) : § 6 quater ARCHITECTURE-CONNAISSANCE + allowedStandalone capteur budget (écart Article 4 consigné) ; suite complète 1 569/1 569, lint 0 erreur.
+- Recette navigateur déléguée : 8 contrôles, banc d'essai T4 live (cadrage/FAIT SOURCÉ/refus de conclure/bloc traçabilité 7 champs), Provenance des savoirs intacte, mobile 390 px, 0 erreur console, 3 captures.
+- Convergence : 7/7 CA, tasks.md coché après recette déléguée, FICHE mise à jour.
+
+Stage Summary:
+- Cycle n°13 « urbanis-dz-mode » CONVERGÉ (recette déléguée, révisable) : le pack URBANIS-DZ est désormais un mode « Expertise urbaine (URBANIS-DZ) » de l'assistant d'écriture, verbatim et protégé contre la dérive (snapshot), sans impact noyau (marge 206 tok préservée) ni ligne rouge.
+- Ouverts : Option B (LegalRef), Option C (veille JORADP), recette de contrôle propriétaire.
