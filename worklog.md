@@ -1126,3 +1126,18 @@ Work Log:
 Stage Summary:
 - Cycle n°13 « urbanis-dz-mode » CLÔTURÉ et VALIDÉ par le propriétaire (« ok et enchainer », 2026-10-07 11:25).
 - Enchaînement : ouverture du cycle n°14 — Option B « registre juridique structuré LegalRef » (modèle 11 champs §7, UI gestion, alimentation initiale ~36 textes §3-§4, injection sélective mécanique book-skills, extension sceau).
+
+---
+Task ID: article-scientifique-analyse-preliminaire
+Agent: Z.ai Code (principal)
+Task: Analyse du cahier des charges « brouillon d'article scientifique » fourni par le propriétaire (IM 2026-10-07 11:44) — « veuillez voir ceci pour proposition d'améliorations ». Aucun code.
+
+Work Log:
+- Correction consignée : l'« anomalie d'environnement » signalée au tour précédent était une **fausse alerte** — recoupements ultérieurs (git ls-files, test -f, sed) : `src/app/api/route.ts` existe (health check trivial « Hello, world! »), `page.tsx` est un seul gros fichier (60 imports, switch 45+ cas l.65-155), le pack PDF extrait était conforme. Erreur d'interprétation de l'agent, aucun impact produit (zéro code écrit pendant l'arrêt).
+- Exploration vérifiée : module `articles` existant = guide statique (495 l.) ; aucun modèle Article ; `NAVIGATION_ITEMS` dans `app-store.ts` (ajout de module sans toucher app-sidebar, preuve app-sidebar.tsx l.46) ; aucun parseur PDF/DOCX en deps ; `docx` ^9.7.1 + `jspdf` ^4.2.1 (export) ; streams + stamp + versions + Job + traducteur + verification-citations + thesis-rag existants.
+- Rédaction : specs/article-scientifique/analyse-preliminaire.md (correspondances 18 lignes, 5 gaps, contraintes + signalement mono-utilisateur, options A/B/C chiffrées, recommandation A).
+
+Stage Summary:
+- Verdict : la demande est **réalisable et très alignée** avec l'existant (streams, stamp, versions, export-docx) ; gap majeur = import/extraction PDF/DOCX (libs pure-JS à ajouter) + modèle Article + assistant guidé.
+- Recommandation : Option A (socle couvrant les 10 critères d'acceptation, ~2-3 cycles) puis B ; C (OCR) en veilleuse.
+- Point d'arrêt respecté : aucune implémentation — attente du choix du propriétaire. Cycle n°14 « urbanis-dz-registre » (Option B LegalRef) reste ouvert en exploration, en pause derrière cette demande.
