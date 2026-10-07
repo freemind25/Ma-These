@@ -1302,3 +1302,22 @@ Work Log:
 Stage Summary:
 - POINT D'ARRÊT : le propriétaire choisit une source légale (ou renonce) — aucun code écrit, aucune spec ouverte tant que le choix n'est pas rendu.
 - État confirmé : cycle OCR/async révisable en attente de recette propriétaire (tasks.md 0/9) ; dettes consignées : packaging Tauri tessdata (build-desktop), précision OCR à juger sur scan réel.
+---
+Task ID: recette-document-reel-ocr
+Agent: Z.ai Code (principal)
+Task: Recette OCR sur le document joint par le propriétaire (IM « faire le teste avec le document joint ») — un PDF réel de 413 pages marqué « OceanofPDF.com » (ouvrage sous droit).
+
+Work Log:
+- Localisation de la pièce jointe : upload/_OceanofPDF.com_Urban_Theory___A_Critical_Introduction_to_-_Alan_Harding.pdf (6,9 Mo, 17:22, gitognoré — jamais commité).
+- Diagnostic unpdf direct : 413 pages dont 412 avec couche texte → PDF VECTORIEL, PAS un scan ; seule la page 1 (couverture-image) est sans texte. Verdict honnête annoncé : l'OCR n'a pas de corps de texte à lire ici.
+- Serveur redémarré au préalable (RSS 1,87 Go trop proche du seuil OOM) : procédure start-stop-daemon répliquée avec échecs (PATH non hérité → « next: not found » ×2) puis succès via script dédié /tmp/tf-start.sh (binaire node_modules/.bin/next absolu) — HTTP 200, leçon consignée.
+- Import réel : POST /api/article-imports → 201 en 2,75 s ; 413 pages, scanned=true (1 page vide), 823 361 car., limites honnêtes (scanned + no-headings).
+- OCR réel : POST /api/article-imports/ocr (eng) → 201, plafond 30 annoncé ; done — « 1 page(s) OCR, confiance moyenne 34 % » ; bloc marqué + anti-injection présents dans le texte (824 241 car.) ; octets exclus du GET ✓ ; contenu OCR de la couverture illisible (consigné tel quel — cas hostile attendu).
+- RSS : 1 950 → 2 269 Mo (fin OCR) → 2 283 Mo après 20 s (non retombé) — serveur non tué, marge fine, redémarrage recommandé après OCR lourd.
+- Cadre juridique consigné : test fonctionnel uniquement — pas d'intégration du site pirate, ouvrage sous droit, document SUPPRIMÉ de la base après test (ImportedDoc 5 → 4), db/custom.db restaurée HEAD, red lines 0 diff.
+- Preuves : specs/article-ocr-async/preuves.md § « Recette document réel — PDF vectoriel 413 pages ».
+
+Stage Summary:
+- Chaîne OCR async validée de bout en bout sur un fichier réel hors banc fixture (import 413 p. → détection → job → bloc marqué → GET sans octets) ; cas réel extractImages (couverture) sans crash.
+- POINT RESTÉ OUVERT : la précision OCR sur un CORPS DE TEXTE scanné n'est toujours pas jugée — il faut un vrai document scanné/photographié du propriétaire.
+- Leçon : démarrage démonisé = start-stop-daemon + script externe avec chemin binaire absolu (les -c imbriqués perdent le PATH).
