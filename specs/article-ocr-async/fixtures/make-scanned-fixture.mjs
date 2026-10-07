@@ -35,33 +35,51 @@ const FONT = {
 
 const TEXT = "OCR TEST 1234";
 const SCALE = 8; // glyphe 5×7 → 40×56 px
+const SS = 4; // suréchantillonnage : rendu ×4 puis moyenne → lissage « scan réel »
 const W = 1275; // A4 @150 dpi
 const H = 1650;
 
 function rasterize() {
-  const px = Buffer.alloc(W * H * 3, 255); // fond blanc (DeviceRGB)
-  const glyphW = 6 * SCALE; // 5 colonnes + 1 espace inter-glyphe
+  const W4 = W * SS;
+  const H4 = H * SS;
+  const big = new Uint8Array(W4 * H4 * 3).fill(255); // fond blanc (DeviceRGB)
+  const glyphW = 6 * SCALE * SS;
   const totalW = TEXT.length * glyphW;
-  let x0 = Math.floor((W - totalW) / 2);
-  const y0 = Math.floor((H - 7 * SCALE) / 2);
+  let x0 = Math.floor((W4 - totalW) / 2);
+  const y0 = Math.floor((H4 - 7 * SCALE * SS) / 2);
   for (const ch of TEXT) {
     const g = FONT[ch];
     if (g) {
       for (let r = 0; r < 7; r++) {
         for (let c = 0; c < 5; c++) {
           if (g[r][c] !== "#") continue;
-          for (let dy = 0; dy < SCALE; dy++) {
-            for (let dx = 0; dx < SCALE; dx++) {
-              const px_ = x0 + c * SCALE + dx;
-              const py = y0 + r * SCALE + dy;
-              const i = (W * py + px_) * 3;
-              px[i] = px[i + 1] = px[i + 2] = 0;
+          for (let dy = 0; dy < SCALE * SS; dy++) {
+            for (let dx = 0; dx < SCALE * SS; dx++) {
+              const px_ = x0 + c * SCALE * SS + dx;
+              const py = y0 + r * SCALE * SS + dy;
+              const i = (W4 * py + px_) * 3;
+              big[i] = big[i + 1] = big[i + 2] = 0;
             }
           }
         }
       }
     }
     x0 += glyphW;
+  }
+  // Moyenne SS×SS → niveaux de gris lissés (comme un scan à imprimante)
+  const px = Buffer.alloc(W * H * 3);
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      let sum = 0;
+      for (let sy = 0; sy < SS; sy++) {
+        for (let sx = 0; sx < SS; sx++) {
+          sum += big[(W4 * (y * SS + sy) + x * SS + sx) * 3];
+        }
+      }
+      const v = Math.round(sum / (SS * SS));
+      const i = (W * y + x) * 3;
+      px[i] = px[i + 1] = px[i + 2] = v;
+    }
   }
   return px;
 }

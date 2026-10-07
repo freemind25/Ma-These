@@ -177,6 +177,18 @@ const HANDLERS: Record<string, JobHandler> = {
       data: { text: newText, limits: JSON.stringify(limits) },
     });
 
+    // Clôture de la progression (CA-1.1) — le completeJob du worker ne
+    // connaît pas la sémantique OCR de ces colonnes
+    await db.job.update({
+      where: { id: job.id },
+      data: {
+        progress: 100,
+        progressNote: `Terminé — ${results.length} page(s) OCR (${lang}), confiance moyenne ${
+          avgConfidence !== null ? `${Math.round(avgConfidence)} %` : "non calculable"
+        }`,
+      },
+    });
+
     return {
       lang,
       pagesProcessed: results.length,
