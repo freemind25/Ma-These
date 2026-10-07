@@ -128,7 +128,7 @@ export function buildPlanPrompt(meta: ArticleMeta, blocks: SourceBlock[]): strin
 /** Prompt de génération d'une section (étape 5 — section par section). */
 export function buildSectionPrompt(input: {
   meta: ArticleMeta;
-  plan: { id: string; heading: string; brief?: string }[];
+  plan: { id: string; heading: string; brief?: string | null }[];
   sectionId: string;
   blocks: SourceBlock[];
 }): string {
