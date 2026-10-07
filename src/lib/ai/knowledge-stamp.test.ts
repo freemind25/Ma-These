@@ -152,3 +152,56 @@ describe("formatKnowledgeStampDetail", () => {
     ).toEqual([]);
   });
 });
+
+// ═══ Extension registre juridique (cycle urbanis-dz-registre) ═══
+
+const legalRef = (id: string, reference: string) => ({
+  id,
+  domaine: "Urbanisme",
+  reference,
+});
+
+describe("buildKnowledgeStamp — legalRefs (registre URBANIS-DZ)", () => {
+  it("n'ajoute pas legalRefs quand aucune entrée fournie (rétrocompatible)", () => {
+    const stamp = buildKnowledgeStamp({
+      coreVersion: KNOWLEDGE_CORE_VERSION,
+      skills: [],
+      generatedAt: AT,
+    });
+    expect(stamp.legalRefs).toBeUndefined();
+    expect("legalRefs" in JSON.parse(JSON.stringify(stamp))).toBe(false);
+  });
+
+  it("liste les entrées avec leur mode integral/index-only dérivé de la sélection", () => {
+    const stamp = buildKnowledgeStamp({
+      coreVersion: KNOWLEDGE_CORE_VERSION,
+      skills: [],
+      generatedAt: AT,
+      legalRefs: [legalRef("a", "Loi A"), legalRef("b", "Loi B")],
+      legalRefsBudgetChars: 10,
+    });
+    expect(stamp.legalRefs).toEqual([
+      { id: "a", reference: "Loi A", mode: "index-only" },
+      { id: "b", reference: "Loi B", mode: "index-only" },
+    ]);
+  });
+
+  it("résume et détaille le registre dans le rendu lisible", () => {
+    const stamp = buildKnowledgeStamp({
+      coreVersion: KNOWLEDGE_CORE_VERSION,
+      skills: [],
+      generatedAt: AT,
+      legalRefs: [legalRef("a", "Loi n° 90-29")],
+    });
+    expect(formatKnowledgeStampSummary(stamp)).toContain("+ 1 entrée du registre juridique");
+    expect(formatKnowledgeStampDetail(stamp)).toEqual(["[R1] Loi n° 90-29 — injectée en intégral"]);
+  });
+
+  it("lit un ancien stamp sérialisé sans legalRefs (rétrocompatibilité)", () => {
+    const old = JSON.parse(
+      JSON.stringify({ coreVersion: KNOWLEDGE_CORE_VERSION, skills: [], generatedAt: AT })
+    );
+    expect(formatKnowledgeStampSummary(old)).toContain("aucune compétence livre active");
+    expect(formatKnowledgeStampDetail(old)).toEqual([]);
+  });
+});
