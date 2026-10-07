@@ -6,7 +6,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  serverExternalPackages: ["z-ai-web-dev-sdk"],
+  // tesseract.js : paquet externe — son worker (worker_threads) et ses
+  // scripts internes ne doivent pas être bundlés par Next
+  serverExternalPackages: ["z-ai-web-dev-sdk", "tesseract.js"],
   experimental: {
     serverActions: {
       bodySizeLimit: "2mb",
