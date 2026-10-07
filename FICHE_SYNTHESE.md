@@ -337,3 +337,13 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **POINT D'ARRÊT** : décision propriétaire — (1) lancer le cycle d'implémentation OCR/async (~1-2 cycles) ou (2) maintenir en veilleuse.
 
 **Points ouverts pour la session suivante** : décision OCR/async ; rotation OpenAlex/APINEX + révocation clés GitHub (côté propriétaire) ; OOM : next-server 1 888 Mo RSS en fin de session, 1 600 Mo disponibles, aucun kill (surveillance maintenue).
+
+## Session du 2026-10-07 (suite 4) — Rotation des clés + correctif journaux-oa (voie rapide)
+
+**Rotation installée** (commit `ec0ae93`, poussé) : nouvelles clés GitHub (push validé de bout en bout), APINex (solde lu via /api/apinex/balance) et OpenAlex — installées dans `.env.local` (mode 600, gitognoré) **jamais dans le dépôt** ; audit effectué : aucune clé réelle dans les fichiers suivis (`.env` est tracké historiquement → à ne jamais utiliser pour des secrets). Askpass GitHub persistant hors dépôt (`/home/z/.gh-askpass.sh`, 700).
+
+**Correctif voie rapide** : la clé OpenAlex premium déclenchait « OpenAlex erreur 400 » sur la route Journaux OA — le schéma nouveau rejette `select=publisher,oa_status` (« not a valid select field », prouvé en direct) et remplace `publisher` par `host_organization_name`. Correctif 1 fichier (~8 lignes, `src/app/api/journaux-oa/route.ts`) : select retiré + fallback mapping. 21/21 tests route, vitest 1 611 verts, lint 0 erreur, preuve live 8 résultats sans warning (`specs/journaux-oa-openalex-key/`). Sans clé → 429 (quota) : la clé résout le problème de quota documenté depuis plusieurs cycles.
+
+**Exploitation** : redémarrage du serveur dev — seule `start-stop-daemon` survit à la frontière des appels outils (setsid/nohup/job shell tués, 3 crashes consignés dont 1 OOM dmesg ~1,96 Go) ; DOAJ « fetch failed » = DNS sandbox intermittent, préexistant, hors périmètre.
+
+**Points ouverts** : décision OCR/async (étude livrée, point d'arrêt § 7) ; recette propriétaire du correctif journaux-oa ; ancien token GitHub à révoquer côté propriétaire si pas déjà fait.
