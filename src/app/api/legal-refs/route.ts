@@ -85,6 +85,8 @@ export async function POST(request: NextRequest) {
     const validated = createSchema.parse(body);
     const data = {
       ...validated,
+      // `statut` est NOT NULL (défaut « à vérifier ») : null → absent, le défaut s'applique.
+      statut: validated.statut ?? undefined,
       derniereVerification: validated.derniereVerification
         ? new Date(validated.derniereVerification)
         : undefined,

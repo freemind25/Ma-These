@@ -93,7 +93,8 @@ export async function PUT(
         ...(domaine !== undefined && { domaine }),
         ...(reference !== undefined && { reference }),
         ...(joradp !== undefined && { joradp }),
-        ...(statut !== undefined && { statut }),
+        // `statut` est NOT NULL (défaut « à vérifier ») : null → valeur par défaut.
+        ...(statut !== undefined && { statut: statut ?? "à vérifier" }),
         ...(textesLies !== undefined && { textesLies }),
         ...(portee !== undefined && { portee }),
         ...(questions !== undefined && { questions }),
