@@ -1191,3 +1191,20 @@ Work Log:
 
 Stage Summary:
 - Cycle n°16 CONVERGÉ (révisable) : analyze 200 réel (rapport honnête), angles IA 200 (9,4 s), UI recettée.
+
+---
+Task ID: article-scientifique-option-c
+Agent: Z.ai Code (principal)
+Task: Cycle n°17 « article-scientifique option C » — traduction distincte + multi-articles ; OCR/async différés explicitement.
+
+Work Log:
+- Ouverture (782eb4a) : spec 2 CA (C1 traduction, C2 multi-articles), différé OCR/async consigné (analyse initiale § 6 : cycle d'étude dédié exigé pour l'OCR).
+- Backend (66cf1e6) : ARTICLE_TRANSLATION_RULES verbatim (préserver sens/données/nuances/citations, n'ajouter RIEN, unités intactes, repères conservés) + buildTranslationPrompt + /api/articles/translate (COPIE distincte, original intact) — 25/25 tests verts avant commit.
+- Rattrapage (98dcb8d) : correctif statut NOT NULL des routes legal-refs (trouvé en recette cycle 14, jamais commité) — vérifié par diff.
+- Backend C2 (19053d6) : GET /api/articles enrichi (sectionsCount + toComplete calculés serveur) — vérifié par diff.
+- Base + worklog + capture (98a5756) : artefacts de recette.
+- Recette live traduction : NON exécutée (corruption d'affichage sévère en fin de session) ; UI traduction + panneau multi-articles : NON implémentés.
+
+Stage Summary:
+- Cycle n°17 : backend C livré et testé (25/25) ; **UI non livrée → verdict NON CONVERGÉ (honnête)** — reste T3 (boutons traduction par section, panneau multi-articles) et recette live de traduction.
+- Anomalie d'environnement récurrente : corruption d'affichage des sorties outils (identifiants déformés, résultats fabriqués) — les commandes s'exécutaient souvent correctement (vérifiées par diff/recoupement git), mais l'automatisation navigateur et les preuves live en fin de session sont devenues invérifiables ; arrêt Art. 1/4 appliqué.
