@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useAppStore } from "@/lib/stores/app-store";
+import { Button } from "@/components/ui/button";
 import { Newspaper, FileText, PenTool, BarChart3, ClipboardCheck, ListChecks, Lightbulb, Target, BookOpen, ArrowRight, CheckCircle2, Beaker, MessageSquare, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -284,6 +286,7 @@ const CHECKLIST_CATEGORIES: ChecklistCategory[] = [
 // ─── Component ───────────────────────────────────────────────────────
 
 export function ArticlesPage() {
+  const setCurrentView = useAppStore((s) => s.setCurrentView);
   // Checklist state: Record<categoryId, Record<itemIndex, boolean>>
   const [checked, setChecked] = useState<Record<string, Record<number, boolean>>>({});
 
@@ -321,6 +324,12 @@ export function ArticlesPage() {
           <Newspaper className="h-6 w-6 text-primary" />
           Articles scientifiques
         </h1>
+        <div className="mt-3">
+          <Button onClick={() => setCurrentView("article-redaction")}>
+            <FileText className="h-4 w-4 mr-1.5" aria-hidden="true" />
+            Créer un article scientifique
+          </Button>
+        </div>
         <p className="text-sm text-muted-foreground mt-1">
           Guide IMRaD, rédaction et soumission
         </p>

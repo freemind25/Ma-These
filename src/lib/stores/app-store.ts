@@ -12,6 +12,7 @@ export type ViewId =
   | "ai-writing"
   | "methodology"
   | "articles"
+  | "article-redaction"
   | "references"
   | "thesis-plan"
   | "ai-tools"
@@ -206,6 +207,14 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Articles scientifiques",
     icon: "Newspaper",
     description: "Rédaction et publication d'articles",
+    category: "recherche",
+  },
+  {
+    id: "article-redaction",
+    label: "Brouillon d'article",
+    icon: "FileText",
+    description: "Transformer la thèse ou un mémoire importé en brouillon d'article scientifique",
+    badge: "IA",
     category: "recherche",
   },
   {

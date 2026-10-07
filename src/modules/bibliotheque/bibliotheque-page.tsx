@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useAppStore } from "@/lib/stores/app-store";
 import {
   BookOpen, Search, ExternalLink, Download, Globe, BookMarked,
   FileText, Library, Loader2, BookCopy,
@@ -153,6 +154,7 @@ interface ApiBook {
 // ── Component ──
 
 export function BibliothequePage() {
+  const setCurrentView = useAppStore((s) => s.setCurrentView);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Record<string, ApiBook[]>>({});
   const [totalResults, setTotalResults] = useState(0);
@@ -216,6 +218,13 @@ export function BibliothequePage() {
 
   return (
     <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto">
+      {/* Entrée : transformer un mémoire/thèse en article */}
+      <div className="flex justify-end">
+        <Button variant="outline" onClick={() => setCurrentView("article-redaction")}>
+          <FileText className="h-4 w-4 mr-1.5" aria-hidden="true" />
+          Transformer un mémoire ou une thèse en article
+        </Button>
+      </div>
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-violet-100 dark:bg-violet-900/40">

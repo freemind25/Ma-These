@@ -12,6 +12,7 @@ import { EditorPage } from "@/modules/editor/editor-page";
 import { CadragePage } from "@/modules/cadrage/cadrage-page";
 import { ReferencesPage } from "@/modules/references/references-page";
 import { AiWritingPage } from "@/modules/ai-writing/ai-writing-page";
+import { ArticleRedactionPage } from "@/modules/article-redaction/article-redaction-page";
 import { BrouillonChapitrePage } from "@/modules/brouillon-chapitre/brouillon-chapitre-page";
 import { MethodologyPage } from "@/modules/methodology/methodology-page";
 import { ArticlesPage } from "@/modules/articles/articles-page";
@@ -78,6 +79,8 @@ function CurrentView() {
       return <MethodologyPage />;
     case "articles":
       return <ArticlesPage />;
+    case "article-redaction":
+      return <ArticleRedactionPage />;
     case "thesis-plan":
       return <ThesisPlanPage />;
     case "ai-tools":
