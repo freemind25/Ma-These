@@ -1518,3 +1518,26 @@ Stage Summary:
 - Rotation PAT EFFECTUÉE et validée en deux temps (ls-remote = lecture, push du présent commit = écriture) ; ancien jeton révocable côté propriétaire.
 - Branche remise en conformité : HEAD = origin/main = 5b75ee8, le commit db 170 Mo n'est jamais parti sur GitHub ; la db corpus reste un état local (git status « M db/custom.db » attendu).
 - Restes ouverts inchangés : check-in quotidien APINex (clé validée 402 « Daily check-in required »), dette packaging vendor/tessdata.
+---
+Task ID: import-rar-ressources
+Agent: Z.ai Code (principal)
+Task: IM propriétaire « expliquez moi votre réponse: (reste ouverts: inchangés) puis ajoutez ces ressources » — explication des restes ouverts + ajout au corpus des 2 archives RAR déposées dans upload/ (doc.rar 40,9 Mo, Doc-3.rar 36,3 Mo, horodatées 17:45).
+
+Work Log:
+- Explication consignée (IM de réponse) : « restes ouverts » = ① check-in quotidien APINex (402 « Daily check-in required » tant que le propriétaire n'a pas validé sa présence sur apinex.bond/airdrop?tab=quests — action compte, impossible pour l'agent) ; ② dette packaging vendor/tessdata (données de langue OCR lues localement depuis vendor/tessdata, zéro réseau — à embarquer dans le paquet Tauri au jour du packaging desktop ; non bloquant aujourd'hui).
+- T1 : état des lieux (HTTP 200, RSS 2,04 Go, base = 7 imports dont aucun des 9 PDF) ; unrar l : 9 PDF (2 + 7) ; extraction 9/9 vers /tmp/staging-import-rar, tailles = inventaire octet-octet ; doublon apparent Harding (vrac upload/ jamais importé) résolu → 1 seul import.
+- T2 : POST /api/article-imports ×9 séquentiels → 9/9 en 201 (max 25,8 Mo, plafond 50 Mo conforté) ; détection honnête : 8/9 avec couche texte native complète (300 k–1,68 M car.), Canadian Architect 100 % image (70 car./36 p.) ; ids consignés (cmuzu8kql…cmuzu953s).
+- T3 : OCR des pages sans texte (planOcrPages cible exactement ces pages, fusion sans écraser le natif) : 8/9 done — Canadian Architect 36/36 conf. 66 % (70 → 109 334 car.), Smart Cities 4/4 conf. 81 %, Cities of Tomorrow 6/6 conf. 43 %, Green Wedge 13/13 conf. 34 %, Landscape 25/25 conf. 26 %, Post-pandemic 31/31 conf. 32 %, Thinking 1/1, Urban Theory 1/1 ; 1 failed honnête : L'urbanisme face aux villes anciennes (10/10 « aucune image exploitable » = intercalaires vides, natif complet 624 295 car. inchangé — même diagnostic que Myers).
+- Re-validation passive ocr-rss-purge : 127 pages OCR enchaînées sur 9 jobs → RSS après 2,66 Go, aucun OOM, aucun redémarrage requis.
+- T4 : red lines 0 diff, aucune modification code ; db corpus = état LOCAL jamais commité ni poussé (git status « M db/custom.db » attendu) ; staging /tmp hors dépôt.
+- Incident outillage (sans impact) : script séquentiel setsid tué par le bac à sable en fin d'appel mais les jobs serveur survivent → boucle synchrone idempotente (jobs done capturés, jamais relancés).
+- T5 : preuves.md § 1-6 (tables imports + OCR, ids, confiances, textes avant/après), cochage 5/5 adossé aux preuves, commit specs+worklog uniquement, push (re-validation rotation PAT).
+
+Stage Summary:
+- Les 2 archives sont intégrées : 9 documents dans le corpus, 5 772 962 caractères exploitables au total ; Canadian Architect (magazine 100 % image) récupéré par OCR intégral 36 pages à 66 % de confiance ; limites honnêtes consignées dans chaque document (champ limits) et dans preuves.md.
+- Restes ouverts : inchangés — check-in quotidien APINex (action compte propriétaire), dette packaging vendor/tessdata ; s'ajoute côté propriétaire : révocation de l'ANCIEN PAT GitHub (rotation livrée et validée au cycle rotation-pat).
+
+## Addendum rotation/import-rar — récidive du commit instantané et contre-mesure
+- Récidive : commit instantané externe `fae4564` (message UUID, 17:47:38) a de nouveau committé db/custom.db (170,7 Mo) → push specs rejeté par pre-receive (blob > 100 Mo). Ce commit n'a jamais atteint origin.
+- Contre-mesure : sauvegarde de la db corpus (/tmp), `git rebase --onto origin/main fae4564 main` (écarte le snapshot, rejoue le commit specs), restauration de la db en working tree, puis verrou `git update-index --skip-worktree db/custom.db` — les futures prises de vue instantanées n'incluront plus la db (le bit skip-worktree est respecté par git add/commit ; l'état corpus reste purement local).
+- Effet attendu sur git status : « M db/custom.db » disparaît (fichier supposé identique à l'index) — la db corpus reste inchangée sur disque et hors GitHub.

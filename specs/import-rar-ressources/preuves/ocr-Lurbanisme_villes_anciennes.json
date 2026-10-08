@@ -1,0 +1,15 @@
+{
+  "data": {
+    "id": "cmuzupuyc000dknzhe9v13n9d",
+    "type": "article-import-ocr",
+    "status": "failed",
+    "progress": 90,
+    "progressNote": "Page 10/10 (page PDF 348) en cours…",
+    "error": "OCR échoué sur toutes les pages (10) — premier motif : aucune image exploitable sur cette page",
+    "attempts": 1,
+    "createdAt": "2026-10-08T18:09:51.348Z",
+    "startedAt": "2026-10-08T18:09:51.511Z",
+    "finishedAt": "2026-10-08T18:09:53.616Z",
+    "result": null
+  }
+}

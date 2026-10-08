@@ -1,0 +1,23 @@
+{
+  "data": {
+    "id": "cmuzuqngy000gknzh7cfqhzmk",
+    "type": "article-import-ocr",
+    "status": "done",
+    "progress": 100,
+    "progressNote": "Terminé — 1 page(s) OCR (eng), confiance moyenne 36 %",
+    "error": null,
+    "attempts": 1,
+    "createdAt": "2026-10-08T18:10:28.307Z",
+    "startedAt": "2026-10-08T18:10:30.542Z",
+    "finishedAt": "2026-10-08T18:10:33.441Z",
+    "result": {
+      "lang": "eng",
+      "pagesProcessed": 1,
+      "pagesWithText": 1,
+      "pagesFailed": [],
+      "remainingPages": 0,
+      "avgConfidence": 36,
+      "textLength": 831932
+    }
+  }
+}
