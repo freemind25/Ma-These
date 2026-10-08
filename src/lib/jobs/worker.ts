@@ -147,6 +147,22 @@ const HANDLERS: Record<string, JobHandler> = {
           confidence: null,
           error: e instanceof Error ? e.message.slice(0, 200) : "erreur inconnue",
         });
+      } finally {
+        // ── Correctif cycle ocr-rss-purge (T3) ──
+        // Le proxy pdf.js (créé UNE fois par job) retient les données de
+        // pages décodées au fil des extractImages — mémoire ATTEIGNABLE,
+        // donc jamais collectée (mesuré 2026-10-08 : croissance monotone
+        // +36 Mo/page, OOM kernel à la page 28/30 d'un job de 30 ; specs/
+        // ocr-rss-purge/preuves.md). cleanup() libère les caches de page
+        // entre deux pages → courbe RSS plate (2,2-2,4 Go constants sur
+        // 30 pages, confiance inchangée). Garde `typeof` + tolérance
+        // d'erreur : la suite du job ne dépend jamais du cleanup.
+        try {
+          const doc = pdf as unknown as { cleanup?: () => Promise<void> };
+          if (typeof doc.cleanup === "function") await doc.cleanup();
+        } catch {
+          /* la suite du job ne dépend pas du cleanup */
+        }
       }
     }
 

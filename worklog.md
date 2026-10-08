@@ -1446,3 +1446,21 @@ Work Log:
 Stage Summary:
 - Cycle ② OUVERT (zéro code) — prochaine session : Groupes A/B (banc + mesures), puis correctif.
 - Priorité propriétaire en cours de traitement : ① CORRIGÉ (5e052db), ② ouvert, ③ livres OA = point d'arrêt propriétaire, ④ cochage tasks.md = main propriétaire.
+---
+Task ID: ocr-rss-purge-convergence
+Agent: Z.ai Code (principal)
+Task: Cycle « ocr-rss-purge » (défaut ②) — banc T1, départage T2, correctif T3, banc final T4, convergence T5. Suite de « commencez le traitement par ordre prioritaire ».
+
+Work Log:
+- T1 (CA-1) : échantillonneur externe commité (specs/ocr-rss-purge/banc/echantillonneur.mjs, aligné sur progressNote écrit par page — zéro instrumentation du code pour la mesure) ; baseline sur scan réel Dupuy 44,2 Mo réimporté live (201 en 4,6 s — confirme au passage le correctif import-size-limit) ; courbe monotone +36 Mo/page ; **OOM kernel capturé à la page 28/30 (RSS 3,25 Go, dmesg)** — gravité du défaut réévaluée : un job de 30 pages peut mourir et perdre son travail.
+- Leçons de banc : l'échantillonneur doit filtrer par --job-id (anciens jobs « done » des recettes du propriétaire en base) ; nohup & ne survit pas au shell appelant — start-stop-daemon obligatoire ; le worker charge ses handlers au démarrage — redémarrage requis après patch (HMR ne rafraîchit pas la closure du timer).
+- T2 : h1 (gc() par page, --expose-gc) → croissance 36→21 Mo/page, plus d'OOM à 30 pages mais monotone résiduelle → h1 partielle ; h2-bis (pdf.cleanup() par page) → plancher PLAT → le rétenteur dominant est le cache de pages pdf.js (mémoire atteignable, non collectable) ; h3 = pic intra-page seulement, p2 non nécessaire.
+- T3 : correctif retenu = pdf.cleanup() SEUL dans un finally par page (garde typeof + try) — bloc gc() révert ; code applicatif pur, aucun réglage prod (CA-4 immédiate, pas de --expose-gc côté sidecar Tauri).
+- T4 : banc final serveur normal — plancher plat 2,2-2,36 Go sur 30 pages (pic 2,36 vs 3,25 baseline), 30/30 done, confiance 82 % = 82 % (CA-3), post-job 2,35 Go stable — plus de redémarrage systématique requis (CA-2).
+- Non-régression : vitest 78 fichiers / 1 658 tests verts ; eslint 0 erreur sur worker.ts ; tsc : seules erreurs préexistantes (ai-writing route.test.ts, fichiers non touchés) ; red lines 0 diff.
+- Convergence : preuves complètes (6 runs consignés), db restaurée HEAD (import/jobs de test non commités — hygiène), serveur redémarré propre.
+
+Stage Summary:
+- Défaut ② CORRIGÉ : le job OCR de 30 pages tourne à RSS borné (pic 2,36 Go, courbe plate) — fini l'OOM kernel et le redémarrage systématique après gros job ; cause racine = cache de pages pdf.js jamais libéré.
+- Cycle CONVERGÉ côté implémentation ; cochage T1-T5 = main propriétaire (recette : relancer un OCR 30 pages sur son scan, observer la progression sans redémarrage ensuite).
+- Restes ouverts : point d'arrêt livres OA (DOAB/OpenEdition), clé APINex non re-fournie, rotation PAT, dette packaging vendor/tessdata ; optionnel : p2 (réduction copies bitmap→RGBA→PNG) pour raboter le pic intra-page si CA-2 voulue encore plus serrée.
