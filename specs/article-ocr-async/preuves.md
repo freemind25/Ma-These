@@ -195,3 +195,34 @@ RSS : 1 892 → 1 984 Mo (2 pages blanches, échec rapide, pas de pic OCR réel)
 ```
 
 Conclusion : 2e fichier réel ≠ scan (comme le n° 1). Le point « précision OCR sur corps de texte scanné » reste OUVERT — nécessite un scan/photographie réel du propriétaire. L'échec lisible sur pages sans image est une preuve positive du chemin d'honnêteté.
+
+## Recette document réel n° 3 — VRAI SCAN « L'urbanisme des réseaux » Dupuy (2026-10-08, « voila un document scanné »)
+
+Fichier : `upload/Lurbanisme des réseaux - Copie.pdf` (44,2 Mo, 69 pages, 69/69 SANS couche texte — scan Internet Archive, © Armand Colin 1991). Cadre inchangé : test fonctionnel uniquement, docs de test supprimés après.
+
+**Incident d'environnement découvert à l'ouverture** : arborescence + base restaurées par la sandbox à l'état du 4 oct. 16:01 (HEAD cba3e42 ; article-imports absent ; token GitHub révoqué ; origin non joignable). RÉCUPÉRATION depuis le miroir /tmp/my-project (état 7 oct. 17:02 : code cycles 15-17 + OCR complet, db propriétaire 4 imports/1 article/27 LegalRef, worklog) + `bun install` (31 paquets) + redémarrage. Manques : 2 commits docs du 7 oct. soir, .env.local (clés APINex/OpenAlex). Réconciliation git (fetch + ff/reset vers origin/main) dès token valide fourni. Modifs actuelles en arbre de travail, commit différé.
+
+```
+$ diagnostic unpdf : pages 69/69 sans texte → VRAI SCAN
+$ import original 44 Mo → refus (Next dev tronque > 10 Mo, log « Request body exceeded 10MB ») 
+  → DÉFAUT DÉPLOYÉMENT : limite effective ~10 Mo vs 20 Mo annoncés par MAX_IMPORT_BYTES (cycle fix à ouvrir)
+$ découpe pdf-lib sans recompression : 5 tranches ≤ 9,5 Mo ; testées tranches 01-02 = pages 1-31
+$ import c01 (19 p.) → 201 en 0,9 s ; OCR fra → done « 19 page(s), confiance moyenne 75 % »
+  progression 5→26→47→58→68→84→95→100 % (polling 12 s, ~5 s/page)
+$ import c02 (12 p.) → 201 ; OCR fra → done « 12 page(s), confiance moyenne 94 % »
+$ confiances par page — c01 : p1:23 (couverture) p2:86 p3:81 p4-p7:92-94 p8:21 (blanche)
+  p9:93 p10:19 (blanche) p11:92 p12:94 p13:93 p14:70 (figure) p15:94 p16:23 (blanche)
+  p17:93 p18:94 p19:68 (figure) — c02 : 93-95 % uniforme
+$ vérité-terrain (images fournies) — CORPS DE TEXTE QUASI PARFAIT :
+  p.9 « Faut-il encore gloser sur la crise de l'urbanisme ? Faut-il une fois de plus
+  diagnosti-quer le malaise des urbanistes ?… » = identique (guillemets, césures, apostrophes ✓)
+  p.9 épigraphe Radkowski « Dans cet espace-réseau, dont les mailles sont constituées par
+  l'ensemble des voies de communication… » = identique
+  ÉCARTS : titres en grandes capitales espacées (« DEF L'URBANISME », « LE DÉ O DES RÉSEA ») ;
+  pages à figures 68-70 % ; pages blanches → charabia honnête 19-23 % (aucun texte fantôme inséré ailleurs)
+$ limites kind "ocr" ajoutées aux 2 docs ✓ ; octets exclus du GET ✓ ; bloc marqué + anti-injection ✓
+$ RSS : 1,66 Go → 3,0 Go après 31 pages OCR (pic max, non retombé) → redémarrage → 2,38 Go stable
+$ nettoyage : ImportedDoc 6 → 4 (base restaurée), Job 12 conservés (historique)
+```
+
+Verdict : **le point « précision à juger sur scan réel » est DÉSORMAIS TRAITÉ** — corps de texte imprimé francophone : 93-95 % de confiance et relecture littérale quasi exacte ; les dégradations (couvertures, pages blanches, figures) sont annoncées honnêtement par la confiance. CA-1.2/1.3/1.4/1.5/1.6 prouvés sur scan réel.

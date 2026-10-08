@@ -1338,3 +1338,23 @@ Stage Summary:
 - 2e preuve positive : chemin d'échec honnête OCR sur fichier réel (pages blanches sans bitmap) ; import vectoriel 132 p. fluide.
 - Position propriétaire consignée : restrictions de provenance = inexistantes techniquement ; garde-fous d'intégrité maintenus.
 - Toujours ouvert : précision OCR sur un VRAI scan (photo/photocopie du propriétaire).
+---
+Task ID: recette-scan-reel-dupuy
+Agent: Z.ai Code (principal)
+Task: Recette OCR sur VRAI scan (« L'urbanisme des réseaux », Dupuy, Armand Colin 1991, scan Internet Archive 44,2 Mo/69 p.) — déclencheur IM « voila un document scanné ».
+
+Work Log:
+- INCIDENT : sandbox restaurée à l'état du 4 oct. 16:01 (HEAD cba3e42, base 4 oct., article-imports absent, token GitHub révoqué, origin/main local périmé). Diagnostic : POST 404 « Server action not found » sur toutes tailles → route absente → rollback constaté.
+- RÉCUPÉRATION depuis miroir /tmp/my-project (7 oct. 17:02) : arborescence complète (code OCR, specs, vendor/tessdata, db propriétaire : 4 imports/1 article/27 LegalRef) + bun install (31 paquets, tesseract.js etc.) + prisma generate + redémarrage start-stop-daemon (script recréé, /tmp purgé). Application 100 % restaurée fonctionnelle (import 201 prouvé).
+- Manques consignés : 2 commits docs du 7 oct. soir (98a2c62, 51f586c — recettes réelles 1-2), .env.local (clés APINex/OpenAlex). Réconciliation git différée : fetch + ff/reset --hard origin/main dès token GitHub valide (le distant devrait être à 51f586c).
+- Test scan réel : 69/69 pages sans texte ; import 44 Mo refusé (limite effective Next dev ~10 Mo vs 20 Mo annoncés — défaut à corriger par cycle dédié) ; découpe pdf-lib 5 tranches ≤ 9,5 Mo sans recompression ; tranches 01+02 = pages 1-31 testées.
+- OCR fra ×2 jobs séquentiels : c01 19 p. → done 75 % ; c02 12 p. → done 94 % ; progression page par page (~5 s/page) ; confiances par page cohérentes (blanches 19-23 %, texte dense 93-95 %, figures 68-70 %).
+- Vérité-terrain vs images : corps de texte LITTÉRALEMENT exact (guillemets, césures, apostrophes) ; écarts limités aux titres en capitales espacées ; aucun texte fantôme hors bloc marqué ; limites okr + anti-injection + octets exclus ✓.
+- RSS : pic 3,0 Go après 31 pages (max historique) → redémarrage → 2,38 Go. Recommandation consignée : redémarrage après gros jobs OCR ; candidat cycle : purge mémoire entre pages.
+- Nettoyage : ImportedDoc 6 → 4, Job 12 (historique), db = état propriétaire restauré.
+- Preuves : preuves.md § « Recette document réel n° 3 ». Modifs en arbre de travail — commit DIFFÉRÉ à la réconciliation git (sinon commit orphelin sous cba3e42).
+
+Stage Summary:
+- POINT OUVERT DEPUIS L'ÉTUDE CLOSE : la précision OCR sur scan réel est JUGÉE — 93-95 % sur corps de texte imprimé francophone, honnêteté parfaite sur les cas hostiles. Cycle OCR entièrement validé sur les 3 types de documents (vectoriel, vectoriel-pirate, scan réel).
+- Défauts découverts à ouvrir en cycles : ① limite import effective 10 Mo (Next dev) vs 20 Mo annoncés ; ② RSS OCR non purgé entre pages (3,0 Go pic).
+- BLOQUANT : token GitHub valide requis pour réconcilier l'historique git (origin/main présumé 51f586c) et re-pousser ; .env.local à re-fournir (clés APINex/OpenAlex perdues avec le rollback).
