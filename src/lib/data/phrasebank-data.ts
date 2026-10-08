@@ -73,6 +73,22 @@ export const FUNCTION_COLORS: Record<PhraseFunction, string> = {
 // PHRASES
 // ══════════════════════════════════════════════════════════════════════════════════
 
+// ══════════════════════════════════════════════════════════════════════════════════
+// PROVENANCE — lot enrichi d'après la source réelle (sceau-provenance-savoirs)
+// ══════════════════════════════════════════════════════════════════════════════════
+// Les phrases d'identifiant "man-*" sont des adaptations françaises de structures
+// génériques relevées sur l'Academic Phrasebank de l'Université de Manchester
+// (12 pages réelles lues le 2026-10-08 — voir specs/ressource-phrasebank-manchester/).
+// Cadre de réutilisation de la source (Davis & Morley 2013, cité par la source) :
+// constructions génériques non originales, mots de contenu substitués ({X}/{Y}).
+export const MANCHESTER_SOURCE = {
+  name: "Academic Phrasebank",
+  publisher: "The University of Manchester",
+  url: "https://www.phrasebank.manchester.ac.uk/",
+  note:
+    "Phrases récoltées dans un corpus authentique (100 mémoires de Manchester + articles multidisciplinaires), organisées par « moves » (Swales 1981/1990). Adaptations françaises : formules génériques, mots de contenu à substituer.",
+} as const;
+
 export const PHRASES: Phrase[] = [
   // ────────────────────────────────────────────────────────────────────────
   // INTRODUCTION
@@ -809,6 +825,286 @@ export const PHRASES: Phrase[] = [
     section: "conclusion",
     functions: ["comparer"],
     variant: "formel",
+  },
+
+  // ────────────────────────────────────────────────────────────────────────
+  // LOT « MANCHESTER » — adaptations françaises de l'Academic Phrasebank
+  // (Univ. de Manchester) — structures génériques, voir MANCHESTER_SOURCE
+  // ────────────────────────────────────────────────────────────────────────
+
+  // Introducing work — établir le contexte, la controverse, le but
+  {
+    id: "man-int-ouvrir-1",
+    text: "Au cours des dernières décennies, {X} a fait l'objet d'une attention croissante dans la littérature.",
+    section: "introduction",
+    functions: ["ouvrir"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-int-argumenter-1",
+    text: "La question de savoir {proposition} demeure une controverse au sein du champ de {X}.",
+    section: "introduction",
+    functions: ["argumenter"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-int-structurer-1",
+    text: "Ce chapitre présente d'abord {A}, puis {B}, avant d'examiner {C}.",
+    section: "introduction",
+    functions: ["structurer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-int-definir-1",
+    text: "Il convient ici de préciser ce que l'on entend exactement par {X}.",
+    section: "introduction",
+    functions: ["definir", "ouvrir"],
+    variant: "Manchester",
+  },
+
+  // Referring to sources — commentaires généraux sur la littérature
+  {
+    id: "man-rev-citer-1",
+    text: "La littérature sur {X} a mis en lumière plusieurs {aspects}.",
+    section: "revue-litterature",
+    functions: ["citer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-rev-citer-2",
+    text: "De multiples théories coexistent dans la littérature concernant {X}.",
+    section: "revue-litterature",
+    functions: ["citer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-rev-citer-3",
+    text: "Les travaux plus récents se sont concentrés sur {aspect}.",
+    section: "revue-litterature",
+    functions: ["citer", "transitionner"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-rev-citer-4",
+    text: "Les études historiques restent relativement rares dans le domaine de {X}.",
+    section: "revue-litterature",
+    functions: ["citer", "nuancer"],
+    variant: "Manchester",
+  },
+
+  // Describing methods — méthodes utilisées antérieurement
+  {
+    id: "man-meth-ouvrir-1",
+    text: "De nombreux chercheurs ont recours à {X} pour mesurer {Y}.",
+    section: "methodologie",
+    functions: ["ouvrir", "citer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-meth-ouvrir-2",
+    text: "Traditionnellement, {X} est évalué en mesurant {Y}.",
+    section: "methodologie",
+    functions: ["ouvrir"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-meth-argumenter-1",
+    text: "Différentes méthodes ont été proposées pour classer {X}.",
+    section: "methodologie",
+    functions: ["argumenter"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-meth-argumenter-2",
+    text: "Plusieurs techniques ont été développées afin de {objectif}.",
+    section: "methodologie",
+    functions: ["argumenter"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-meth-ouvrir-3",
+    text: "Il existe actuellement trois principaux types de dispositifs d'enquête utilisés pour identifier {X}.",
+    section: "methodologie",
+    functions: ["ouvrir", "structurer"],
+    variant: "Manchester",
+  },
+
+  // Reporting results — renvoi aux objectifs, outils d'analyse
+  {
+    id: "man-res-ouvrir-1",
+    text: "La première série d'analyses visait à examiner l'effet de {X} sur {Y}.",
+    section: "resultats",
+    functions: ["ouvrir"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-res-argumenter-1",
+    text: "Une analyse de régression a été utilisée pour prédire {X}.",
+    section: "resultats",
+    functions: ["argumenter"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-res-argumenter-2",
+    text: "Les scores moyens de {X} et de {Y} ont été comparés afin de {objectif}.",
+    section: "resultats",
+    functions: ["argumenter"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-res-ouvrir-2",
+    text: "Les variations de {X} et de {Y} ont été comparées à l'aide de {outil}.",
+    section: "resultats",
+    functions: ["ouvrir"],
+    variant: "Manchester",
+  },
+
+  // Discussing findings — littérature, questions de recherche
+  {
+    id: "man-dis-citer-1",
+    text: "Plusieurs rapports ont montré que {constat}.",
+    section: "discussion",
+    functions: ["citer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-dis-argumenter-1",
+    text: "Les études antérieures évaluant {X} ont abouti à des résultats contradictoires quant à {Y}.",
+    section: "discussion",
+    functions: ["argumenter", "nuancer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-dis-ouvrir-1",
+    text: "S'agissant de la première question de recherche, il a été établi que {constat}.",
+    section: "discussion",
+    functions: ["ouvrir"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-dis-nuancer-1",
+    text: "La revue de littérature n'a identifié aucune donnée sur l'association entre {X} et {Y}.",
+    section: "discussion",
+    functions: ["nuancer"],
+    variant: "Manchester",
+  },
+
+  // Being cautious — langage prudent (hedges)
+  {
+    id: "man-nua-nuancer-1",
+    text: "Il a été rapporté que {proposition}.",
+    section: "revue-litterature",
+    functions: ["nuancer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-nua-nuancer-2",
+    text: "Il est largement admis que {proposition}.",
+    section: "discussion",
+    functions: ["nuancer", "citer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-nua-nuancer-3",
+    text: "Des recherches récentes suggèrent que {proposition}.",
+    section: "discussion",
+    functions: ["nuancer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-nua-nuancer-4",
+    text: "Il existe certains éléments probants à l'appui de l'idée que {proposition}.",
+    section: "discussion",
+    functions: ["nuancer", "argumenter"],
+    variant: "Manchester",
+  },
+
+  // Writing conclusions — rappel des objectifs, portée
+  {
+    id: "man-conc-conclure-1",
+    text: "Cette étude avait pour objectif de {objectif}.",
+    section: "conclusion",
+    functions: ["conclure"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-conc-conclure-2",
+    text: "Ce travail a montré que {constat principal}.",
+    section: "conclusion",
+    functions: ["conclure", "argumenter"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-conc-argumenter-1",
+    text: "La présente recherche a permis d'examiner {X} sous l'angle de {Y}.",
+    section: "conclusion",
+    functions: ["argumenter"],
+    variant: "Manchester",
+  },
+
+  // Giving examples / Compare and contrast / Defining terms / Signalling transition
+  {
+    id: "man-exe-exemplifier-1",
+    text: "Un exemple bien connu de ce phénomène est {X}.",
+    section: "discussion",
+    functions: ["exemplifier"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-exe-exemplifier-2",
+    text: "Ce que l'on entend par {X} se reflète dans le cas de {exemple}.",
+    section: "revue-litterature",
+    functions: ["exemplifier", "definir"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-cmp-comparer-1",
+    text: "{X} se distingue de {Y} à plusieurs égards importants.",
+    section: "discussion",
+    functions: ["comparer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-cmp-comparer-2",
+    text: "Contrairement aux résultats antérieurs, aucune trace de {X} n'a été détectée.",
+    section: "discussion",
+    functions: ["comparer", "nuancer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-def-definir-1",
+    text: "Le terme « {X} » a été introduit par {auteur} en {année}.",
+    section: "revue-litterature",
+    functions: ["definir", "citer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-def-definir-2",
+    text: "Historiquement, le terme « {X} » a servi à désigner {acception}.",
+    section: "revue-litterature",
+    functions: ["definir"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-tra-transitionner-1",
+    text: "La section qui suit décrit {contenu}.",
+    section: "introduction",
+    functions: ["transitionner", "structurer"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-tra-transitionner-2",
+    text: "Ce qui suit présente un aperçu de {contenu}.",
+    section: "introduction",
+    functions: ["transitionner"],
+    variant: "Manchester",
+  },
+  {
+    id: "man-tra-transitionner-3",
+    text: "Le problème de {X} est abordé dans la section suivante.",
+    section: "introduction",
+    functions: ["transitionner"],
+    variant: "Manchester",
   },
 ];
 

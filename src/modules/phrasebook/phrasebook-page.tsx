@@ -10,6 +10,7 @@ import {
   Layers,
   Lightbulb,
   ChevronRight,
+  ExternalLink,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -28,6 +29,7 @@ import {
   type Phrase,
   type ThesisSection,
   type PhraseFunction,
+  MANCHESTER_SOURCE,
   PHRASES,
   SECTION_LABELS,
   FUNCTION_LABELS,
@@ -108,6 +110,15 @@ export function PhrasebookPage() {
             <p className="text-sm text-muted-foreground">
               Phrases prêtes à l'emploi pour chaque section de votre thèse
             </p>
+            <a
+              href={MANCHESTER_SOURCE.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-0.5 inline-flex items-center gap-1 text-xs text-muted-foreground/80 hover:text-foreground transition-colors"
+            >
+              Enrichi d'après {MANCHESTER_SOURCE.name} — {MANCHESTER_SOURCE.publisher}
+              <ExternalLink className="w-3 h-3" />
+            </a>
           </div>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

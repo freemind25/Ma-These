@@ -1464,3 +1464,21 @@ Stage Summary:
 - Défaut ② CORRIGÉ : le job OCR de 30 pages tourne à RSS borné (pic 2,36 Go, courbe plate) — fini l'OOM kernel et le redémarrage systématique après gros job ; cause racine = cache de pages pdf.js jamais libéré.
 - Cycle CONVERGÉ côté implémentation ; cochage T1-T5 = main propriétaire (recette : relancer un OCR 30 pages sur son scan, observer la progression sans redémarrage ensuite).
 - Restes ouverts : point d'arrêt livres OA (DOAB/OpenEdition), clé APINex non re-fournie, rotation PAT, dette packaging vendor/tessdata ; optionnel : p2 (réduction copies bitmap→RGBA→PNG) pour raboter le pic intra-page si CA-2 voulue encore plus serrée.
+---
+Task ID: decisions-deleguees-apinex-phrasebank
+Agent: Z.ai Code (principal)
+Task: Décisions déléguées (IM « prenez la décision concernant le point 4 et 5 ») — clé APINex fournie, cochage tasks.md, point d'arrêt livres OA, rotation PAT acceptée, intégration Phrasebank Manchester.
+
+Work Log:
+- APINex : clé ajoutée à .env.local (APINEX_API_KEY, gitognoré, chmod 600) ; serveur relancé ; tests live : /api/apinex/models 200 (modèles « live »), /api/apinex/balance 200 (0 $ dépensé, pas de limite), chat → 402 « Daily check-in required » = CLÉ VALIDE, usage des modèles gratuits soumis au check-in quotidien côté compte propriétaire (apinex.bond/airdrop?tab=quests).
+- Point 5 (cochage délégué) : article-ocr-async 9/9, import-size-limit 5/5, ocr-rss-purge 5/5 — chaque case adossée aux preuves (commits Groupes A-D, recettes réelles 1-3, verdicts CONVERGÉS) ; notes de délégation dans les 3 fichiers (commit b04cad4).
+- Point 4 (décision déléguée, FAITS D'ABORD) : API DOAB testée en direct — discover GET/POST 404, ancienne REST 403, /server/api 404, OAI-PMH 200 mais récolte sans recherche → DÉCISION : non-intégration de DOAB et OpenEdition Books comme sources dédiées ; couverture livres OA assurée par OpenAlex (filtre type:book,book-chapter déjà supporté par searchWorks) ; point d'arrêt CLOS, réversibilité documentée (specs/biblio-livres-oa/decision.md).
+- Point 6 : rotation PAT acceptée — procédure remise au propriétaire (création nouveau token repo+workflow puis remplacement dans /home/z/.gh-askpass.sh par l'agent) ; l'ancien token reste actif d'ici là.
+- Phrasebank Manchester (fin de travail) : module Phrasier Académique DÉJÀ EXISTANT déclaré « inspiré du Manchester Phrasebank » → intégration de la source réelle : 13 pages réelles lues (about + 12 catégories), 37 phrases françaises adaptées (ids man-*, variant « Manchester ») couvrant les 12 catégories, constante MANCHESTER_SOURCE, attribution cliquable dans l'UI ; cadre de réutilisation de la source respecté (Davis & Morley 2013 : génériques, ≤ 9 mots, substitution {X}/{Y}) — aucune copie verbatim.
+- Non-régression : eslint 0 erreur (2 fichiers touchés) ; validation structurelle : 138 phrases, 0 doublon, 0 invalide ; recette navigateur réelle : compteur 138, recherche « largement admis » → phrase man- visible, filtre Nuancer 26, 0 erreur console.
+- Commits : cochage b04cad4 ; phrasebank + décision livres OA (ce commit).
+
+Stage Summary:
+- Les 4 décisions du propriétaire sont exécutées : APINex intégrée et validée (check-in quotidien à faire côté propriétaire), cochage 19/19 tasks, livres OA tranchés sur faits (non-intégration, OpenAlex couvre), rotation PAT en attente du nouveau token.
+- Phrasebank Manchester intégrée au module existant avec provenance visible — cycle ressource-phrasebank-manchester CONVERGÉ.
+- Restes : nouveau PAT à fournir par le propriétaire ; check-in quotidien APINex ; dette packaging vendor/tessdata (inchangée).

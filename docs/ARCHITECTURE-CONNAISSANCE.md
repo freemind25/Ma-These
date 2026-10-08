@@ -352,9 +352,23 @@ reconnu sont consignées par page (jamais de texte fantôme) ; un PDF déjà ext
 **Périmètre** : le brouillon est stocké **séparément** de ses sources (`Article`/`ArticleVersion`,
 isolation `thesisId`) ; les imports sont re-extractables et supprimables (`ImportedDoc`). Livrées :
 analyse/angles (option B), traduction distincte (option C), OCR asynchrone (cycle
-article-ocr-async — voir ci-dessus). **Reste différé** : emballage Tauri du dossier `vendor/tessdata`
+article-ocr-async — voir ci-dessus ; correction mémoire 2026-10-08, cycle
+ocr-rss-purge : libération du cache de pages pdf.js à chaque page, RSS OCR borné
+— pic 2,36 Go sur 30 pages, fin de l'OOM kernel et du redémarrage systématique). **Reste différé** : emballage Tauri du dossier `vendor/tessdata`
 (cycle build-desktop — `output: standalone` ne copie pas `vendor/` tel quel, résolution par chemins
 candidats en place).
+
+## 7 ter. Phrasier Académique enrichi de la source réelle (2026-10-08, cycle ressource-phrasebank-manchester)
+
+**Source intégrée** : Academic Phrasebank, The University of Manchester
+(phrasebank.manchester.ac.uk) — 13 pages réelles lues le 2026-10-08. Le module
+« Phrasier Académique » (101 phrases françaises d'origine) est enrichi de **37
+phrases `man-*`** adaptées des structures génériques réelles (12 catégories :
+introducing work → signalling transition), avec **attribution cliquable dans
+l'UI** (constante `MANCHESTER_SOURCE`) — sceau-provenance-savoirs : traçabilité
++ attribution. Cadre de réutilisation respecté (Davis & Morley 2013, cité par
+la source) : constructions génériques non originales, mots de contenu
+substitués ({X}/{Y}) ; aucune copie verbatim des listes anglaises.
 
 ---
 
