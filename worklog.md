@@ -1500,3 +1500,21 @@ Stage Summary:
 - Les 3 ressources demandées sont dans le corpus et exploitables : Myers et New Yorker via couche texte native (560 k / 339 k caractères), Cullen via OCR intégral 100 pages (62,6 k caractères, confiance 34 % — relecture humaine exigée, consignée dans les limites).
 - Leçon : l'échec OCR « aucune image exploitable » sur les pages vides d'un livre est un diagnostic utile (intercalaires blancs), pas une perte de contenu — le motif honnête du job suffit à le documenter.
 - Restes ouverts inchangés : nouveau PAT à fournir par le propriétaire (rotation), check-in quotidien APINex, dette packaging vendor/tessdata.
+---
+Task ID: rotation-pat
+Agent: Z.ai Code (principal)
+Task: Point 6 — rotation du PAT GitHub (nouveau jeton fourni par le propriétaire en IM) ; remplacement dans /home/z/.gh-askpass.sh, validation live, remise en conformité de la branche.
+
+Work Log:
+- Ancien état : /home/z/.gh-askpass.sh (chmod 700) portait l'ancien PAT ; procédure remise au propriétaire lors de « decisions-deleguees » (création token repo+workflow puis remplacement par l'agent).
+- Nouveau PAT fourni par le propriétaire (IM 2026-10-08) : remplacé dans /home/z/.gh-askpass.sh (chmod 700 conservé, structure Username/Password inchangée) ; le jeton vit hors du dépôt, rien à commité côté credentials.
+- Validation lecture : GIT_ASKPASS=/home/z/.gh-askpass.sh git ls-remote origin HEAD → 5b75ee8… (le jeton authentifie la lecture).
+- Incident détecté et corrigé AVANT push : un commit instantané externe 12a74e0 (message UUID, auteur Z User) avait committé db/custom.db (37,6 → 170,7 Mo — blob > limite GitHub 100 Mo) ; contredit la décision consignée du cycle import-corpus-ressources (la db corpus = état LOCAL jamais commité ni poussé). Ce commit n'était PAS poussé (seul commit en avance sur origin/main) → git reset --mixed 5b75ee8 : la branche redevient identique à origin/main, db/custom.db conservé en modification locale non committée (état durable attendu, documents toujours présents dans l'app).
+- Preuve qu'aucun cron/hook local n'a produit ce commit : crontab vide, .git/hooks sans hook actif — mécanisme instantané externe (prise de vue de session) ; vigilance : vérifier l'absence de commit en avance sur origin/main avant tout push (git log origin/main..HEAD) et le rejeter au besoin.
+- Validation écriture (push réel) : commit présent worklog + push GIT_ASKPASS → si cette ligne est visible sur origin, le nouveau jeton a Contents: write (push = la preuve de rotation aboutie).
+- Ancien jeton : à révoquer par le propriétaire sur GitHub (Settings → Developer settings → Personal access tokens) — le remplacement local ne l'invalide pas.
+
+Stage Summary:
+- Rotation PAT EFFECTUÉE et validée en deux temps (ls-remote = lecture, push du présent commit = écriture) ; ancien jeton révocable côté propriétaire.
+- Branche remise en conformité : HEAD = origin/main = 5b75ee8, le commit db 170 Mo n'est jamais parti sur GitHub ; la db corpus reste un état local (git status « M db/custom.db » attendu).
+- Restes ouverts inchangés : check-in quotidien APINex (clé validée 402 « Daily check-in required »), dette packaging vendor/tessdata.
