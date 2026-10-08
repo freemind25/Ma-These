@@ -1403,3 +1403,17 @@ Work Log:
 Stage Summary:
 - Cycle « biblio-academictorrents » CLOS (analyse + décision A, zéro code).
 - Restes ouverts consignés : point d'arrêt livres OA (DOAB/OpenEdition), .env.local (APINex/OpenAlex), cochage propriétaire tasks.md OCR (T1-T9), 2 défauts à ouvrir en cycles (limite import ~10 Mo, RSS OCR non purgé).
+---
+Task ID: restauration-openalex-post-rollback
+Agent: Z.ai Code (principal)
+Task: Restauration partielle de .env.local (perdue au rollback du 8 oct.) — clé OpenAlex fournie par le propriétaire (IM « clé openalex: … », 2026-10-08) ; démarrage du « traitement par ordre prioritaire ».
+
+Work Log:
+- Clé validée en direct : GET api.openalex.org/works?search=urbanisme&per-page=1&api_key=… → 200.
+- .env.local recréé (chmod 600, gitognoré .env* l.34, non suivi) : OPENALEX_API_KEY — jamais dans .env (règle de la session rotation-cles).
+- Serveur redémarré proprement : kill explicite next dev + next-server (leçon : --stop ne termine pas le pipeline), relance start-stop-daemon → HTTP 200.
+- Recette live : GET /api/journaux-oa?q=urbanisme → 200, résultats avec éditeur alimenté ou fallback honnête, AUCUN warning (le 429 de quota sans clé est corrigé) — preuves : specs/journaux-oa-openalex-key/preuves.md § « Restauration post-rollback ».
+
+Stage Summary:
+- OpenAlex premium de nouveau opérationnel (clé = quota) ; reste : clé APINex non re-fournie.
+- Secret tronqué dans toute consignation ; rotation conseillée (clé passée en clair dans l'IM).

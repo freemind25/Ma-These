@@ -19,3 +19,15 @@ GET /api/journaux-oa?q=urbanisme → total: 8 | warnings: ["DOAJ: fetch failed" 
 Valeurs brutes OpenAlex vérifiées : null/nnull/"Grupo de Investigación en Urbanismo" → mapping honnête
 vitest complet : 74 fichiers / 1 611 verts (re-run final)
 ```
+
+## Restauration post-rollback (2026-10-08 — clé OpenAlex re-fournie par le propriétaire)
+
+```
+clé validée en direct : GET api.openalex.org/works?search=urbanisme&per-page=1&api_key=… → 200
+.env.local recréé (600, gitognoré .env* l.34, non suivi) : OPENALEX_API_KEY=qs…WLr (tronqué ici — jamais en clair dans le dépôt)
+serveur redémarré (kill complet next dev/next-server, relance start-stop-daemon) → HTTP 200
+GET /api/journaux-oa?q=urbanisme → 200, résultats (Quaderns d'arquitectura i urbanisme…),
+  éditeur alimenté ou fallback « Éditeur inconnu » honnête, AUCUN warning (le 429 quota sans clé est corrigé)
+```
+
+Reste : clé APINex non re-fournie (solde inaccessible jusqu'à restitution). Rotation conseillée (clé passée en clair dans l'IM).
