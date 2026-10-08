@@ -1389,3 +1389,17 @@ Work Log:
 Stage Summary:
 - POINT D'ARRÊT rendu au propriétaire : A (recommandée — non-intégration, besoins couverts par theses.fr/arXiv/CORE/OpenAlex/DOAJ + DOAB/OpenEdition pour les livres OA), B (métadonnées+lien — sans objet, pas d'API de recherche), C (usage manuel at-python hors app) — aucune spec ni code tant que la décision n'est pas rendue.
 - Cohérence maintenue : aucune restriction technique sur les documents détenus ; l'intégration d'une source reste un choix d'ingénierie documenté (position recette n° 2).
+---
+Task ID: biblio-academictorrents-validation
+Agent: Z.ai Code (principal)
+Task: Clôture du point d'arrêt academictorrents — décision propriétaire « alors ça sera l'option A » (IM, 2026-10-08).
+
+Work Log:
+- Décision consignée : option A — non-intégration d'academictorrents.com comme source de documents ; besoins couverts par les sources intégrées (theses.fr, arXiv, CORE, OpenAlex, DOAJ).
+- specs/biblio-academictorrents/analyse-preliminaire.md § 6 : point d'arrêt marqué CLOS (décision datée ; réversibilité seulement par nouveau cycle d'étude).
+- Rappel consigné au propriétaire : flux manuel possible sans développement (client BitTorrent type qBittorrent sur sa machine + import PDF/OCR existant) — usage hors périmètre de l'application.
+- Aucun code modifié — docs uniquement, red lines 0 diff.
+
+Stage Summary:
+- Cycle « biblio-academictorrents » CLOS (analyse + décision A, zéro code).
+- Restes ouverts consignés : point d'arrêt livres OA (DOAB/OpenEdition), .env.local (APINex/OpenAlex), cochage propriétaire tasks.md OCR (T1-T9), 2 défauts à ouvrir en cycles (limite import ~10 Mo, RSS OCR non purgé).

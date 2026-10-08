@@ -52,6 +52,10 @@ Trois motifs indépendants, chacun suffisant :
 - **B — Intégration « métadonnées + lien sortant »** : sans objet en l'état (pas d'API de recherche) et pointerait vers des magnets de légalité mixte → non recommandée.
 - **C — Usage manuel hors application** (si le besoin réel est un grand dataset de recherche, pas un document de thèse) : `at-python`/aria2c sur la machine du propriétaire — hors périmètre de ThesisFrame, non développé.
 
-## 6. Point d'arrêt
+## 6. Point d'arrêt — CLOS
 
-Décision propriétaire attendue : **A** (recommandée), B, C, ou instruction contraire. Aucun code, aucune spec d'implémentation tant que la décision n'est pas rendue.
+**Décision propriétaire : option A** (« alors ça sera l'option A », IM, 2026-10-08) — non-intégration d'academictorrents.com consignée ; les besoins correspondants sont couverts par les sources intégrées (theses.fr, arXiv, CORE, OpenAlex, DOAJ — DOAB/OpenEdition pour les livres OA, point d'arrêt séparé toujours en cours).
+
+- Zéro code, zéro spec d'implémentation — le cycle s'arrête ici.
+- L'usage manuel d'un client BitTorrent sur la machine du propriétaire (p. ex. qBittorrent) suivi de l'import PDF dans l'application reste possible sans aucun développement — flux existant (import + OCR fr/en/ar), documenté dans la réponse du 2026-10-08.
+- Décision réversible : toute réouverture passera par un nouveau cycle d'étude.
