@@ -1374,3 +1374,18 @@ Stage Summary:
 - BLOQUANT LEVÉ : historique réconcilié, tout poussé — le cycle OCR est intégralement visible sur origin (recettes réelles 1-3 comprises), commit-orphelin 2a58102 retiré de la ligne principale (contenu préservé dans 5105b5c).
 - Leçon consignée : GIT_ASKPASS doit répondre UNE valeur par prompt (case Username/Password), jamais deux lignes ; un API 200 ne prouve pas la chaîne git (Basic auth) — toujours tester par `git ls-remote`.
 - Restes non bloquants : .env.local à re-fournir (APINex/OpenAlex), cochage propriétaire de tasks.md désormais soutenable par les preuves réelles 1-3, 2 défauts à ouvrir en cycles (limite d'import effective ~10 Mo vs 20 Mo annoncés ; RSS OCR non purgé entre pages, pic 3,0 Go), rotation conseillée du PAT GitHub (il a transité en clair dans l'IM).
+---
+Task ID: biblio-academictorrents-analyse
+Agent: Z.ai Code (principal)
+Task: Demande propriétaire « ajouter cette bibliothèque : https://academictorrents.com » (IM) — vérification factuelle, analyse de faisabilité, point d'arrêt. Zéro code.
+
+Work Log:
+- Vérification factuelle (web_search ×5 + docs officielles, résultats bruts conservés en session) : plateforme LÉGITIME — fondée nov. 2013, papier pair-évalué Cohen & Lo XSEDE '14 (ACM, cité 48×), papier arXiv 1603, ~419 To de données de recherche ; DISTINCTION EXPLICITE d'avec oceanofpdf (site de piraterie).
+- Mixité du catalogue consignée : datasets légitimes MAIS aussi « Sci-Hub SQL Database (2020-05-30) » hébergée sur academictorrents.com (details/4b132445…, résultat brut), collections LibGen/Anna's Archive (~119 To), corpus Bibliotik ~200 000 livres contrefaits cités (SAGE 06/2026) ; licence déclarée par l'uploader, non vérifiable.
+- Faisabilité technique : docs api.html = endpoints apiv2/entry (upload) + apiv2/test SEULEMENT — aucun endpoint de recherche ; récupération de contenu = .torrent + aria2c (BitTorrent obligatoire, leur propre doc) ; client officiel at-python = téléchargement torrent.
+- Verdict : intégration NON RETENUE en l'état — 3 motifs indépendants : transport BitTorrent incompatible avec l'app HTTP/sandbox ; provenance non traçable (exigence du sceau validé 2026-10-04) ; pas d'API de recherche consommable.
+- Consignation : specs/biblio-academictorrents/analyse-preliminaire.md (faits sourcés, verdict, distinction oceanofpdf, options A/B/C, point d'arrêt).
+
+Stage Summary:
+- POINT D'ARRÊT rendu au propriétaire : A (recommandée — non-intégration, besoins couverts par theses.fr/arXiv/CORE/OpenAlex/DOAJ + DOAB/OpenEdition pour les livres OA), B (métadonnées+lien — sans objet, pas d'API de recherche), C (usage manuel at-python hors app) — aucune spec ni code tant que la décision n'est pas rendue.
+- Cohérence maintenue : aucune restriction technique sur les documents détenus ; l'intégration d'une source reste un choix d'ingénierie documenté (position recette n° 2).
