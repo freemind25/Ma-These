@@ -1432,3 +1432,17 @@ Work Log:
 Stage Summary:
 - Défaut ① CORRIGÉ : les documents de 10-50 Mo s'importent directement (fin de la découpe manuelle) — le scan Dupuy de 44,2 Mo passerait désormais en un seul import ; > 50 Mo = refus 413 lisible.
 - Leçon : tester AUSSI le cas au-delà du plafond de transport — le 500 générique n'a été visible qu'en recette réelle.
+---
+Task ID: ocr-rss-purge-ouverture
+Agent: Z.ai Code (principal)
+Task: Ouverture du cycle « ocr-rss-purge » (défaut ② : RSS OCR non purgé entre pages, pic 3,0 Go) — analyse, spec 4 CA, plan, tasks. Zéro code.
+
+Work Log:
+- Constat repris de la recette n° 3 : 1,66 → 3,0 Go après 31 pages, non retombé ; kill box ~2 Go (dmesg) ; redémarrage systématique requis.
+- État sourcé : worker tesseract déjà terminate() par page (ocr-engine.ts correct) ; copies multiples bitmap→RGBA→PNG (ocr.ts) ; unpdf.extractImages.
+- 3 hypothèses à départager PAR MESURE (h1 pression GC, h2 rétention WASM/native malgré terminate, h3 copies redondantes) ; 4 pistes (GC explicite inter-pages avec équivalent prod Tauri, réduction des copies, instrumentation RSS par page, sous-traitance enfant en dernier recours).
+- Méthode imposée par la spec : baseline mesurée AVANT tout correctif (CA-1), correctif ensuite, non-régression précision (CA-3).
+
+Stage Summary:
+- Cycle ② OUVERT (zéro code) — prochaine session : Groupes A/B (banc + mesures), puis correctif.
+- Priorité propriétaire en cours de traitement : ① CORRIGÉ (5e052db), ② ouvert, ③ livres OA = point d'arrêt propriétaire, ④ cochage tasks.md = main propriétaire.
