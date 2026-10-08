@@ -1417,3 +1417,18 @@ Work Log:
 Stage Summary:
 - OpenAlex premium de nouveau opérationnel (clé = quota) ; reste : clé APINex non re-fournie.
 - Secret tronqué dans toute consignation ; rotation conseillée (clé passée en clair dans l'IM).
+---
+Task ID: import-size-limit-convergence
+Agent: Z.ai Code (principal)
+Task: Cycle « import-size-limit » (défaut ①) — implémentation, recette live, convergence. Déclencheur propriétaire « commencez le traitement par ordre prioritaire ».
+
+Work Log:
+- Cause racine sourcée (à l'ouverture, commit d1990df) : DEFAULT_BODY_CLONE_SIZE_LIMIT = 10 Mo dans next/server/body-streams.js, consommé via experimental.proxyClientMaxBodySize (next-server.js:1305) ; middlewareClientMaxBodySize dépréciée ; message présent aussi en runtime prod.
+- Implémentation : proxyClientMaxBodySize 64 Mo (next.config.ts commenté) ; MAX_IMPORT_BYTES 20→50 Mo (couvre le scan réel 44,2 Mo) ; label UI « 50 Mo max » ; docs § 7 bis ; pré-contrôle content-length → 413 lisible AVANT parsing (ajouté en cours de recette : le cas 75 Mo renvoyait un 500 générique, non conforme CA-2) ; 2 nouveaux tests route.
+- Recette live (fixtures make-big-pdfs.mjs — PDF bruité incompressible, commité) : 21,37 Mo → 201 (2 p., scanned, limites honnêtes) ; 53,43 Mo → 413 lisible ; 74,80 Mo → 500 puis 413 lisible après durcissement ; GET ?id = 789 octets (octets exclus) ; dev.log : aucun « exceeded 10MB », « exceeded 64MB » uniquement sur 75 Mo (pathologique, clos par le pré-contrôle).
+- Non-régression : vitest 78/1 658 verts ; lint 0 erreur (236 warnings = dérive PRÉEXISTANTE des commits intermédiaires — les 5 fichiers du cycle : 0 warning en eslint direct) ; red lines 0 diff ; RSS avant 2,09 Go / après 2,52 Go → redémarrage post-recette ; db restaurée HEAD.
+- Preuves : specs/import-size-limit/preuves.md — verdict CONVERGÉ (révisable, recette propriétaire attendue) ; tasks.md laissé 0/5 (cochage propriétaire).
+
+Stage Summary:
+- Défaut ① CORRIGÉ : les documents de 10-50 Mo s'importent directement (fin de la découpe manuelle) — le scan Dupuy de 44,2 Mo passerait désormais en un seul import ; > 50 Mo = refus 413 lisible.
+- Leçon : tester AUSSI le cas au-delà du plafond de transport — le 500 générique n'a été visible qu'en recette réelle.

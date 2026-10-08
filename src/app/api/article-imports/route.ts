@@ -10,6 +10,7 @@ import {
   detectScannedPages,
   buildLimits,
   truncatePreview,
+  MAX_IMPORT_BYTES,
 } from "@/lib/articles/extraction";
 
 export const runtime = "nodejs";
@@ -23,6 +24,22 @@ export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
+    // Pré-contrôle par en-tête (cycle import-size-limit, CA-2) : refuse
+    // lisiblement tout upload manifestement > MAX_IMPORT_BYTES AVANT le
+    // parsing multipart — sinon un body dépassant le plafond de transport
+    // (proxyClientMaxBodySize, 64 Mo) arrive tronqué et échoue en 500
+    // générique. Marge 1 Mo pour les en-têtes multipart ; les cas limites
+    // (≤ marge) tombent sur le contrôle précis par file.size, plus bas.
+    const contentLength = Number(request.headers.get("content-length") ?? 0);
+    if (contentLength > MAX_IMPORT_BYTES + 1024 * 1024) {
+      return NextResponse.json(
+        {
+          error: `Fichier trop volumineux : ${(contentLength / 1024 / 1024).toFixed(1)} Mo reçus (maximum ${MAX_IMPORT_BYTES / 1024 / 1024} Mo).`,
+        },
+        { status: 413 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get("file");
     const thesisId = (formData.get("thesisId") as string | null) || null;

@@ -968,7 +968,7 @@ export function ArticleRedactionPage() {
               <div className="rounded-md border p-3 space-y-2">
                 <p className="text-sm font-medium flex items-center gap-1.5">
                   <FileUp className="h-4 w-4" aria-hidden="true" />
-                  Importer un mémoire ou une thèse (DOCX, PDF, TXT/MD — 20 Mo max)
+                  Importer un mémoire ou une thèse (DOCX, PDF, TXT/MD — 50 Mo max)
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Input ref={fileRef} type="file" accept=".docx,.pdf,.txt,.md" className="flex-1" aria-label="Fichier à importer" />

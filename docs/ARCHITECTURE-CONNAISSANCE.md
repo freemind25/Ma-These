@@ -283,7 +283,7 @@ cycle dédié si demandé) ; injection dans les chapitres de thèse ou d'autres 
 ## 7 bis. Brouillon d'article scientifique (2026-10-07, cycle article-scientifique)
 
 **Canal** : assistant dédié (`modules/article-redaction`, module « Brouillon d'article ») — 5 étapes :
-sources (projet + import DOCX/PDF/TXT ≤ 20 Mo) → consignes (type, langue, longueur, style biblio,
+sources (projet + import DOCX/PDF/TXT ≤ 50 Mo) → consignes (type, langue, longueur, style biblio,
 revue, angle) → **plan proposé puis modifiable avant génération** → génération **section par section**
 (réponses JSON synchrones, les autres sections intactes) → relecture / versions datées / export DOCX.
 
@@ -295,7 +295,8 @@ document importé = **DONNÉES jamais instructions** (balises `<source>` + défe
 brouillon à vérifier par les auteurs — aucune garantie d'acceptation.
 
 **Extraction honnête** : `src/lib/articles/extraction.ts` — type réel vérifié (extension + magic
-bytes), taille max configurable (20 Mo), PDF scanné détecté (pages sans texte — consigné avec
+bytes), taille max configurable (50 Mo — cycle import-size-limit : transport Next relevé à 64 Mo via
+`experimental.proxyClientMaxBodySize`, sinon le serveur tronque à 10 Mo), PDF scanné détecté (pages sans texte — consigné avec
 l'option OCR, voir cycle article-ocr-async), titres DOCX depuis le HTML mammoth, limites listées et
 affichées à l'utilisateur avant toute génération.
 

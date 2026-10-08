@@ -182,3 +182,54 @@ describe("GET /api/article-imports?id= — octets exclus", () => {
     expect(json.data.preview).toBeDefined();
   });
 });
+
+// ── POST — pré-contrôle content-length (cycle import-size-limit, CA-2) ──
+describe("POST /api/article-imports — pré-contrôle content-length", () => {
+  it("413 lisible AVANT parsing quand l'en-tête dépasse manifestement le plafond (formData jamais appelé)", async () => {
+    const formDataSpy = vi.fn();
+    const fakeReq = {
+      url: "http://localhost/api/article-imports",
+      headers: new Headers({ "content-length": String(60 * 1024 * 1024) }),
+      formData: formDataSpy,
+    } as unknown as NextRequest;
+
+    const res = await POST(fakeReq);
+    const json = await res.json();
+
+    expect(res.status).toBe(413);
+    expect(json.error).toContain("trop volumineux");
+    expect(json.error).toContain("maximum 50 Mo");
+    expect(formDataSpy).not.toHaveBeenCalled();
+  });
+
+  it("laisse passer un content-length sous la marge multipart (contrôle précis par file.size prend le relais)", async () => {
+    const bytes = fs.readFileSync(FIXTURE_PATH);
+    const actual = await vi.importActual<typeof import("@/lib/articles/extraction")>(
+      "@/lib/articles/extraction"
+    );
+    mockExtractPdf.mockImplementation(actual.extractPdf);
+    mockCreate.mockResolvedValue({
+      id: "doc-scan-cl",
+      thesisId: null,
+      filename: "scan-fixture.pdf",
+      fileType: "pdf",
+      sizeBytes: bytes.length,
+      text: "",
+      pages: 1,
+      scanned: true,
+      limits: "[]",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as never);
+
+    const fd = new FormData();
+    fd.append("file", new File([bytes], "scan-fixture.pdf", { type: "application/pdf" }));
+    const req = new NextRequest("http://localhost/api/article-imports", {
+      method: "POST",
+      body: fd,
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(201);
+  });
+});

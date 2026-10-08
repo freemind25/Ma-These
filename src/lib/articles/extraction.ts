@@ -7,7 +7,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 /** Taille maximale d'un fichier importé (constante configurable). */
-export const MAX_IMPORT_BYTES = 20 * 1024 * 1024; // 20 Mo
+export const MAX_IMPORT_BYTES = 50 * 1024 * 1024; // 50 Mo — couvre les scans réels (44,2 Mo constatés)
 
 export type ImportFileType = "docx" | "pdf" | "txt";
 

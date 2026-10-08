@@ -39,7 +39,7 @@ describe("extraction — validation fichiers", () => {
     expect(validateFileSize(0).ok).toBe(false);
     expect(validateFileSize(MAX_IMPORT_BYTES + 1).ok).toBe(false);
     expect(validateFileSize(1024).ok).toBe(true);
-    expect(MAX_IMPORT_BYTES).toBe(20 * 1024 * 1024);
+    expect(MAX_IMPORT_BYTES).toBe(50 * 1024 * 1024);
   });
 
   it("vérifie les signatures binaires (anti-renommage)", () => {
