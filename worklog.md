@@ -1358,3 +1358,19 @@ Stage Summary:
 - POINT OUVERT DEPUIS L'ÉTUDE CLOSE : la précision OCR sur scan réel est JUGÉE — 93-95 % sur corps de texte imprimé francophone, honnêteté parfaite sur les cas hostiles. Cycle OCR entièrement validé sur les 3 types de documents (vectoriel, vectoriel-pirate, scan réel).
 - Défauts découverts à ouvrir en cycles : ① limite import effective 10 Mo (Next dev) vs 20 Mo annoncés ; ② RSS OCR non purgé entre pages (3,0 Go pic).
 - BLOQUANT : token GitHub valide requis pour réconcilier l'historique git (origin/main présumé 51f586c) et re-pousser ; .env.local à re-fournir (clés APINex/OpenAlex perdues avec le rollback).
+---
+Task ID: reconciliation-git-token-askpass
+Agent: Z.ai Code (principal)
+Task: Levée du BLOQUANT « token GitHub valide requis » (IM propriétaire : envoi du token PAT) — diagnostic chaîne d'authentification, réconciliation de l'historique, push ; contrôle de l'état serveur.
+
+Work Log:
+- Token reçu testé contre l'API GitHub : 200, x-oauth-scopes repo+workflow, login freemind25 — IDENTIQUE à celui déjà présent dans /home/z/.gh-askpass.sh (aucun nouveau secret à stocker).
+- Cause racine du push en échec trouvée : script askpass malformé — il écho deux lignes (« username=… » puis « password=… ») à CHAQUE prompt git, d'où identifiants invalides côté serveur (« Invalid username or token ») alors que l'API répondait 200. Réécrit en case Username/Password (une seule valeur par appel, chmod 700) — ls-remote et fetch immédiatement verts.
+- Reconstruction d'état : HEAD local 2a58102 (commit-harness à message UUID, parent cba3e42, contenu = récupération miroir du 7 oct. + recette n° 3) ; distant réel 51f586c (fetch cba3e42..51f586c) ; divergence 1 en avance / 53 en retard.
+- Réconciliation selon le plan consigné par le prédécesseur : reset --soft origin/main → delta stagé EXACTEMENT 4 fichiers (db/custom.db — état propriétaire vérifié par API : 4 imports baseline ; specs/article-ocr-async/preuves.md — recette n° 3 ; worklog.md — entrée recette-scan-reel-dupuy ; public/logo.svg) ; red lines 0 diff ; commit 5105b5c « docs(ocr): recette réelle n° 3 … + réconciliation après rollback sandbox » ; PUSH RÉUSSI 51f586c..5105b5c, ls-remote = 5105b5c, main synchronisé (0/0).
+- Serveur : HTTP 200 mais RSS 2,10 Go (seuil kill box ~2 Go, dmesg antérieur) — redémarrage préventif start-stop-daemon (script /tmp/tf-start.sh présent) après ce commit.
+
+Stage Summary:
+- BLOQUANT LEVÉ : historique réconcilié, tout poussé — le cycle OCR est intégralement visible sur origin (recettes réelles 1-3 comprises), commit-orphelin 2a58102 retiré de la ligne principale (contenu préservé dans 5105b5c).
+- Leçon consignée : GIT_ASKPASS doit répondre UNE valeur par prompt (case Username/Password), jamais deux lignes ; un API 200 ne prouve pas la chaîne git (Basic auth) — toujours tester par `git ls-remote`.
+- Restes non bloquants : .env.local à re-fournir (APINex/OpenAlex), cochage propriétaire de tasks.md désormais soutenable par les preuves réelles 1-3, 2 défauts à ouvrir en cycles (limite d'import effective ~10 Mo vs 20 Mo annoncés ; RSS OCR non purgé entre pages, pic 3,0 Go), rotation conseillée du PAT GitHub (il a transité en clair dans l'IM).
