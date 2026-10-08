@@ -1482,3 +1482,21 @@ Stage Summary:
 - Les 4 décisions du propriétaire sont exécutées : APINex intégrée et validée (check-in quotidien à faire côté propriétaire), cochage 19/19 tasks, livres OA tranchés sur faits (non-intégration, OpenAlex couvre), rotation PAT en attente du nouveau token.
 - Phrasebank Manchester intégrée au module existant avec provenance visible — cycle ressource-phrasebank-manchester CONVERGÉ.
 - Restes : nouveau PAT à fournir par le propriétaire ; check-in quotidien APINex ; dette packaging vendor/tessdata (inchangée).
+---
+Task ID: import-corpus-ressources
+Agent: Z.ai Code (principal)
+Task: Demande propriétaire « ajouter conformément au protocole les ressources ci-jointes » (IM, 2026-10-08) — 3 PDF déposés dans upload/ (Myers « Rethinking Urbanism » 37,0 Mo ; Cullen « The Concise Townscape » 42,8 Mo ; The New Yorker du 5 oct. 2026, 36,8 Mo) ; cycle opérationnel import + OCR, zéro code.
+
+Work Log:
+- T1 état des lieux : décisions déléguées de la session précédente déjà exécutées (APINex, cochage 19/19, livres OA, Phrasebank) — le cycle restant est bien l'import des ressources ; baseline serveur HTTP 200, RSS 2,17 Go ; spec specs/import-corpus-ressources (4 CA, 5 tâches).
+- T2 imports réels : POST /api/article-imports ×3 → 3/3 en 201 (5,12 / 4,29 / 5,45 s) ; aucun 413 (le 42,8 Mo passe en direct — le plafond 50 Mo du cycle import-size-limit est conforté) ; détection scanned honnête (Myers 10 p. vides, Cullen 100/100, New Yorker 2 couvertures) ; ids cmuzs6vv9…h20tpg / cmuzs9wvx…xjru5p / cmuzsaxpz…nhx5wn.
+- T3 OCR : Myers 10/10 failed avec motif honnête « aucune image exploitable » → pages réellement vides (intercalaires/versos blancs), aucun contenu manquant, texte natif complet (560 418 car.) ; Cullen 100/100 done conf. moyenne 34 % (scan ancien médiocre vs référence Dupuy 82 %) → limite « ocr » + relecture humaine exigée, textLength après fusion 62 598 ; New Yorker 2/2 done conf. 39 %, textLength 339 024 ; garde anti-empilement respectée (aucun 409).
+- Re-validation réelle du correctif ocr-rss-purge (05a1a80) : job OCR de 100 pages échantillonné (échantillonneur du banc, --job-id, 181 échantillons) → RSS plat départ 2,39 / max 2,58 / fin 2,28 Go, aucun OOM, aucun redémarrage requis pendant le job (préuve commitée : preuves/rss-ocr-cullen-100p.csv).
+- T4 : 3/3 documents exploitables avec limites consignées ; aucun diff code, red lines 0 diff ; RSS serveur post-jobs 2,98 Go → redémarrage préventif (HTTP 200, RSS 2,36 Go).
+- Incident de push consigné et tranché : premier push refusé (GH001 — blob db/custom.db 162,8 Mo > limite GitHub 100 Mo, les PDF sont embarqués en base) → DÉCISION : la base avec le corpus est un état LOCAL propriétaire jamais commité ni poussé (les documents ne quittent pas la machine) ; le push ne porte que specs/ + worklog ; la db locale est conservée telle quelle (documents présents dans l'app), git status affichera durablement « M db/custom.db » — état attendu.
+- T5 : preuves.md § 1-6, cochage T1-T5 adossé aux preuves (précédent b04cad4), lint 0 erreur, commit (specs + worklog uniquement) + push.
+
+Stage Summary:
+- Les 3 ressources demandées sont dans le corpus et exploitables : Myers et New Yorker via couche texte native (560 k / 339 k caractères), Cullen via OCR intégral 100 pages (62,6 k caractères, confiance 34 % — relecture humaine exigée, consignée dans les limites).
+- Leçon : l'échec OCR « aucune image exploitable » sur les pages vides d'un livre est un diagnostic utile (intercalaires blancs), pas une perte de contenu — le motif honnête du job suffit à le documenter.
+- Restes ouverts inchangés : nouveau PAT à fournir par le propriétaire (rotation), check-in quotidien APINex, dette packaging vendor/tessdata.
