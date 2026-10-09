@@ -1,15 +1,15 @@
 {
   "data": {
-    "id": "cmuzupuyc000dknzhe9v13n9d",
+    "id": "cmv0umr8t000im0ynh4esygm5",
     "type": "article-import-ocr",
     "status": "failed",
     "progress": 90,
     "progressNote": "Page 10/10 (page PDF 348) en cours…",
     "error": "OCR échoué sur toutes les pages (10) — premier motif : aucune image exploitable sur cette page",
     "attempts": 1,
-    "createdAt": "2026-10-08T18:09:51.348Z",
-    "startedAt": "2026-10-08T18:09:51.511Z",
-    "finishedAt": "2026-10-08T18:09:53.616Z",
+    "createdAt": "2026-10-09T10:55:12.749Z",
+    "startedAt": "2026-10-09T10:55:15.391Z",
+    "finishedAt": "2026-10-09T10:55:17.246Z",
     "result": null
   }
 }

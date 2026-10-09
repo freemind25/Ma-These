@@ -1,15 +1,15 @@
 {
   "data": {
-    "id": "cmuzupy5x000eknzhvhv7s2df",
+    "id": "cmv0ukyoh000em0yn33zkbh89",
     "type": "article-import-ocr",
     "status": "done",
     "progress": 100,
     "progressNote": "Terminé — 31 page(s) OCR (eng), confiance moyenne 32 %",
     "error": null,
     "attempts": 1,
-    "createdAt": "2026-10-08T18:09:55.509Z",
-    "startedAt": "2026-10-08T18:09:57.514Z",
-    "finishedAt": "2026-10-08T18:10:20.025Z",
+    "createdAt": "2026-10-09T10:53:49.074Z",
+    "startedAt": "2026-10-09T10:53:51.066Z",
+    "finishedAt": "2026-10-09T10:54:13.353Z",
     "result": {
       "lang": "eng",
       "pagesProcessed": 31,
