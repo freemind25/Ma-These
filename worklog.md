@@ -1557,3 +1557,67 @@ Stage Summary:
 - Décision moteur OCR tranchée sur faits et poussée ; veille active avec 4 déclencheurs réversibles — si le poste du propriétaire a un GPU NVIDIA ≥ 8 Go, l'option « moteur OCR premium local » devient réaliste.
 - Environnement restauré à l'identique après rollback : git via origin, corpus via re-import+OCR déterministe, verrou db reposé, serveur 200 — zéro perte nette de travail consigné.
 - Restes ouverts inchangés : check-in quotidien APINex, dette packaging vendor/tessdata, révocation de l'ancien PAT côté propriétaire.
+---
+Task ID: 3
+Agent: architecture-audit
+Task: Phase 3 audit architecture & code (lecture seule)
+
+Work Log:
+- Contexte lu (worklog 200 dernières lignes + baseline 00_SCOPE_AND_BASELINE.md) ; état git vérifié : HEAD 2156a8f = commit audité, arbre propre (seul .zscripts/dev.pid + audit/ non suivi).
+- Mesures exécutées : bun run lint → 0 erreur / 244 warnings (top : no-explicit-any 129, no-unused-vars 39, no-non-null-assertion 35, no-console 31) ; bun run test:run → 78 fichiers / 1 658 tests VERTS en 18,24 s.
+- Routes API : 55 entrées sous src/app/api (53 groupes + route.ts racine « Hello, world! » + son test) = 98 fichiers route.ts ; 52 route.test.ts colocalisés ; couverture par groupe 29/53 (24 sans test, surtout proxys externes).
+- Poids des fichiers : src = 106 840 lignes ; top = auto-edition-page 1 939, api-schemas.test 1 845, verification-carto 1 836, osm-infra 1 678.
+- Greps : dangerouslySetInnerHTML = 1 (shadcn chart.tsx:83) ; any word-boundary src/lib = 8 (dette typage réelle = 129 warnings lint, concentrés dans les pages modules) ; console.* non-test = 191.
+- Architecture tracée : page.tsx 182 l. / 47 imports statiques / 47 cases ; Zustand 491 l. ; worker démaré par instrumentation.ts:8-13, singleton globalThis.__tfJobWorker (anti-HMR), requeueStaleJobs au boot + sweep 60 s, claim atomique updateMany (queue.ts:44-67), 4 handlers câblés.
+- 4 routes échantillonnées (references, ai-writing, jobs, article-imports) : zod partagé/inline borné, 413/415/422 différenciés, magic bytes ; mesure transversale : 58/98 fichiers avec zod, 5/29 findMany paginés, codes HTTP 400×152 / 500×150 / 404×45…
+- DB : 30 modèles, 15 onDelete, 41 @@index ; prisma/migrations ABSENT (workflow db:push --accept-data-loss assumé, documenté .env.example) ; prisma/seed.ts absent (db:seed cassé) ; AUCUNE procédure de sauvegarde documentée (perte réelle au rollback 8 oct. consignée au worklog).
+- Deps : bun.lock présent (320 Ko), 985 paquets ; Next ^16.1.1 / React ^19 / zod ^4.0.2 / Prisma ^6.11.1 / Tauri ^2 — majeures actuelles ; README §Installation complète (l.166-234).
+- Env : 37 vars lues vs 32 déclarées dans .env.example (+4 runtime documentées en commentaires) — seules OCR_MAX_PAGES et TESSDATA_PATH réellement absentes.
+- Livrable écrit : audit/baseline/03_ARCHITECTURE_AND_CODE_AUDIT.md (schéma texte, mesures, 5 forces/5 faiblesses fichier:ligne, 4 contrats API, DB, deps, tableau 18 verdicts). Zéro modification de code — lecture seule respectée.
+
+Stage Summary:
+- Aucun item ❌ CASSÉ sur 18 verdicts : 11 ✅ CONFORME (lint 0 erreur, 1 658 tests verts, worker file de jobs, OCR, 26 providers env-only + cookie httpOnly, XSS = 1 hit shadcn, schéma Prisma, env.example, reproductibilité), 7 ⚠️ DÉGRADÉ documentés par preuve.
+- ⚠️ principaux : migrations absentes + db push --accept-data-loss (risque contenu en local) ; aucune sauvegarde db documentée (seul point où une perte RÉELLE a eu lieu) ; couverture tests API 29/53 groupes ; pagination absente des listes (5/29) ; 40/98 routes sans schéma déclaré ; timeouts absents dans osm-infra.ts (Overpass) ; hygiène légère (/api « Hello, world! » mort, Prisma log:['query'] inconditionnel).
+- Impact réel évalué, dette non surclassée : les ⚠️ sont cohérents avec la cible desktop local mono-utilisateur ; aucun bloquant pour l'usage actuel — 3 chantiers à prioriser en phase remédiation : sauvegarde/migrations DB, pagination, timeouts osm-infra.
+---
+Task ID: 4
+Agent: architecture-audit
+Task: Phase 4 audit sécurité en lecture seule (version condensée avec preuves, 8 contrôles prioritaires)
+
+Work Log:
+- Contexte vérifié : pas d'entrée « Task ID: 4 » préexistante au worklog (4-a/4-b/4-c = cycles SDD dev, sans rapport) ; 04_SECURITY_AUDIT.md inexistant → produit intégralement ; HEAD toujours 2156a8f.
+- C1 Secrets : grep regex sk-/ghp_/AKIA/xox sur src+src-tauri → 0 clé littérale ; hardcoded-keys.ts 100 % process.env (9 refs, `|| undefined`) ; mentions ghp_ de HEAD = 4, toutes documentaires (longueur mesurée 4 car., préfixe seul).
+- C1 suite (finding) : `git ls-files --error-unmatch .env` → .env TRACKÉ (committé avant la règle .gitignore .env*) ; extraction de TOUTES les versions historiques de .env → une clé réelle APINEX_API_KEY (sk-…, 53 car.) dans l'historique (commits-snapshots UUID 04dc5ab/b25f426/763ee5d/7260947), poussée sur origin ; rotation documentée ensuite (ec0ae93). Valeur jamais imprimée (masquée à chaque étape).
+- C2 Upload article-imports : liste blanche 415 + magic bytes 415 (route.ts:51-70), pré-contrôle content-length 413 avant parsing (l.33-41) + MAX_IMPORT_BYTES 50 Mo (extraction.ts:10) ; 0 écriture FS dans api/lib (grep) → PAS de surface path traversal ; stockage = blob SQLite (ImportedDoc.data, PDFs uniquement, l.124-133).
+- C3 XSS : 1 seul dangerouslySetInnerHTML (chart.tsx:83, CSS de thème depuis config développeur statique) ; 0 rehype-raw/allowDangerousHtml ; react-markdown ×4 échappé par défaut ; markdown-to-html = liste blanche + échappement (18 tests) ; Tiptap = self-XSS only.
+- C4 Tests HTTP réels non destructifs (serveur local 200) : POST /api/ai-test {} → 200 {"ok":true,"response":"[object Object]"} (pas de stack leak, mais validation absente) ; GET /api/references → 200 count 4 ; GET /api/references?search=' OR 1=1-- → 200 count 0 = payload traité en LITTÉRAL Prisma contains (pas d'injection SQL ; param `q=` exclu car non lu par la route, test refait sur `search`).
+- C5 SSRF : 0 route ne lit une URL depuis la requête (grep) ; tous les hôtes fetch sont constants ou env-serveur (APINEX_BASE_URL, CORE_BASE, theses.fr avec encodeURIComponent, nominatim…) ; seul hôte variable = baseUrl de config IA (cookie/env), pas requête arbitraire.
+- C6 Injection prompt : RAG = chunks délimités `--- Extrait N [Source] ---` + system prompt « UNIQUEMENT sur les extraits » (rag-service.ts) ; book-skills = en-têtes ──── + consignes « JAMAIS une source de citations » (book-skills.ts:90-120) ; ⚠️ ai-writing `context` inséré brut (route.ts:64-69) = self-injection locale seulement.
+- C7 Tauri : capabilities/default.json = core:default + shell:allow-open + shell:allow-execute ; grep @tauri-apps/plugin-shell dans src → 0 usage (sur-permission inutilisée) ; tauri.conf.json csp: null (l.27) ; Rust powershell Expand-Archive = chemins app-contrôlés, -NonInteractive (lib.rs:96-110).
+- Livrable écrit : audit/baseline/04_SECURITY_AUDIT.md — registre AUD-SEC-001 à 008 avec gravité pondérée mono-utilisateur local + N/A explicites (auth/sessions/CSRF/multi-user). Zéro modification de code, aucune donnée propriétaire exposée (secrets masqués à chaque impression).
+
+Stage Summary:
+- 0 vulnérabilité Critique/Élevée pondérée ; 2 Moyennes : AUD-SEC-001 (shell:allow-execute sur-permis + CSP null côté Tauri — chaîne XSS→exécution théorique, front n'utilise jamais le plugin) et AUD-SEC-002 (clé APINEX sk-…53 car. dans l'historique git de .env poussé sur GitHub — rotatée depuis mais purgable).
+- 5 Basses : .env tracké (003), 40/98 routes sans schéma/ai-test accepte {} (004), CSP null (005), context prompt brut (006), error.message brut (007) ; 1 Info (blobs PDF en SQLite, couvert remédiation sauvegarde 03).
+- Contrôles RÉUSSIS avec preuve : 0 secret en code, upload magic bytes+taille+413 pré-contrôle, Prisma paramétré PROUVÉ en live (SQLi payload → count 0, pas d'erreur), zéro SSRF (aucune URL utilisateur fetchée), délimitation corpus dans prompts RAG/book-skills, échappement markdown, 0 écriture FS (pas de traversal), auth/sessions/CSRF = N/A par conception.
+- Recommandations avant packaging : retirer shell:allow-execute, définir une CSP, `git rm --cached .env` + purge historique BFG, encadrer le champ context.
+
+---
+
+Task ID: 13 (audit-baseline-v1)
+Agent: auditeur principal (session principale)
+Task: Baseline Audit v1.0 complet (prompt maître 978 lignes) — constat sans correction, soumission pour avis du propriétaire
+
+Work Log:
+- Phase 0 : baseline commit 2156a8f (v1.10.8), invariants vérifiés (lignes rouges 0 diff, db skip-worktree, clés env-only)
+- Phase 1 (UI réelle agent-browser) : 18 captures evidence/ui-*.png ; parcours dashboard/éditeur/références CRUD/IA générative/RAG/thèses en ligne/export DOCX/mobile ; vérification persistance triple (UI + DB + reload) sur objet AUDIT- ; tests négatifs HTTP
+- Anomalies découvertes en live : « \n » littéral (editor-page.tsx:204) ; CTA « Créer une thèse » ré-ouvre la thèse active (parcours multi-thèses CASSÉ, cause racine chaîne complète) ; suppression référence sans confirmation (reproduite involontairement, preuve DB) ; hydratation div>p ; version footer v1.2.0 ≠ 1.10.8 ; POST 400→201 suspect
+- Phases 3/4 déléguées à 2 agents auditeurs (Task ID 3 architecture : 11✅/7⚠️/0❌ ; Task ID 4 sécurité : 0 Critique/Élevée, 2 Moyennes Tauri+historique .env)
+- Phases 5-7 : mesures perf réelles (RSS 2 560 Mo, temps API), résilience (preuves cycles antérieurs), gouvernance, UX exploratoire
+- Phases 8-12 : matrice 47 vues (14 testées), registre 17 fiches (1 ❌ AUD-FUNC-002, 15 ⚠️), roadmap C-1..C-20 (P1 : sauvegarde DB, multi-thèses, confirmation suppression, Tauri), revalidation VIDE (étape 1/3), rapport principal BASELINE_AUDIT_REPORT.md
+- Verdict : GO SOUS CONDITIONS (C-1..C-4 avant ouverture) ; aucune correction appliquée (respect du processus propriétaire)
+
+Stage Summary:
+- 14 livrables dans audit/baseline/ (00→11 + README + BASELINE_AUDIT_REPORT + diagrams + 18 preuves)
+- 17 anomalies : 1 ❌ / 15 ⚠️ / 0 vulnérabilité critique ; 4 conditions P1 avant production
+- Rapport soumis au propriétaire pour avis (étape 2 = validation avant toute correction)
