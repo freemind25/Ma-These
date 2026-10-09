@@ -1713,3 +1713,18 @@ Stage Summary:
 - Inventaire exhaustif consigné : 16 actions corrigées via 1 composant partagé (ConfirmDeleteDialog), 2 déjà conformes, ~20 non persistantes (état local) et 2 régénérations serveur documentées sans sur-traitement.
 - TNR verts sans adaptation de test (1 658), lint 0 erreur, rouges 0 diff, données propriétaire intactes.
 ---
+Task ID: F-1 (audit-final-v1.2 / T1)
+Agent: Z.ai Code (principal)
+Task: Réponse aux instructions définitives du propriétaire (IM 2026-10-10) — plan d'exécution séquencé pour la clôture v1.1 et la préparation du GO final, séparant (1) déjà autorisé, (2) proposition migration références, (3) validations propriétaire, (4) preuves attendues.
+
+Work Log:
+- Prise d'acte des instructions : verdict maintenu GO SOUS CONDITIONS ; décision produit « références rattachées à chaque thèse » (proposition technique requise AVANT toute migration — autorisation distincte) ; 33 vues à tester obligatoirement (pas de risque résiduel accepté) ; builds web/Windows obligatoires ; purge git exigée avec preuves ; 13 actions destructives à tester en UI ; restauration upload/ à prouver ; golden paths 6→7 à réconcilier ; registre P2/P3 à actualiser (AUD-UX-002 réévaluée) ; v1.2 attendue avec tableau de conformité 11 critères.
+- Reconnaissance vérifiée : HEAD == origin/main == 9705038, arbre propre ; v1.1 relue (réserves §5/§6 confirmées) ; c3-revalidation.json relu → liste exacte des 13 actions code-seulement (ai-tools ×2, expérimentations ×2, carto, plan, onglet-recherche ×2, article-redaction ×2, registre juridique, agile ×2) ; 08_TEST_MATRIX : 8 ✅ / 6 ⚠️ / 33 ◻️ (2 bloquées externes Overpass+APInex) ; incohérence golden paths localisée (v1.0 §L.2 « 6 » vs v1.1 GP-1..GP-7, GP-7 export DOCX ajouté TNR v1.1) ; C-1 : DB prouvée / upload/ copiée (244 Mo) mais restauration fichiers NON prouvée.
+- Rédigé audit/baseline/12_PLAN_EXECUTION_CYCLE_FINAL.md : Lot A (A1 vues 33, A2 13 actions — liste exacte, A3 upload/ SHA-256 + cohérence, A4 golden paths = 7 canonique, A5 audit git non destructif + plan BFG, A6 registre + AUD-UX-002 correction proposée retirable, A7 traçabilité) ; Lot B (proposition technique thesisId Reference — schéma, contraintes, API, migration réversible, ambiguïtés, tests isolation — SANS exécution) ; Lot C (C1 build web, C2 build Windows, C3 purge BFG coordonnée — procédures/gabarits préparés, exécution propriétaire ; contraintes environnement documentées : build production interdit ici, pas de Windows/cargo) ; Lot D (tableau de conformité 11 critères → lots/preuves/responsables) ; vagues 1-4 + règles d'exécution.
+- Ouvert cycle SDD specs/audit-final-v1.2/ (spec.md 9 CA + invariants, tasks.md T1-T15 vagues 1-4) ; dossier specs/ref-thesis-scoping/ créé (vide — rempli en T5, jamais exécuté sans autorisation).
+
+Stage Summary:
+- Plan d'exécution séquencé produit et poussé : répond point par point aux instructions (4 lots séparés, 11 critères mappés avec preuves et responsables) ; aucune migration références, aucun build, aucune réécriture git exécutés à ce stade — seuls les travaux déjà autorisés démarrent (vague 1 : documentaire/lecture seule + démarrage pass vues).
+- Décisions soumises au propriétaire dans le plan : correction ciblée AUD-UX-002 incluse au Lot A (qualifiée bloquante GP-4, retirable) ; onDelete Cascade proposé pour Reference.thesisId (alternative SetNull chiffrée) ; CI possible pour le build web si préféré.
+- Invariants respectés : aucun fichier rouge touché, db skip-worktree intacte, aucune clé/secret reproduit dans les documents (clé APINex référencée sans valeur), commit docs seul.
+
