@@ -60,6 +60,9 @@ server.log
 /upload/
 /download/
 
+# Sauvegardes locales de la base (C-1/AUD-GOV-001 — hors git par conception)
+/backups/
+
 # Tool results & generated files
 tool-results/
 pdf-gen/
@@ -69,9 +72,13 @@ agent-ctx/
 # Tauri build artifacts
 src-tauri/target/
 src-tauri/gen/
-# Contenu de scripts/ ignoré sauf le build script CI
+# Contenu de scripts/ ignoré sauf les outils versionnés
 scripts/*
 !scripts/build-tauri-prep.sh
+!scripts/seed-legal-refs.ts
+# C-1/AUD-GOV-001 : outils de sauvegarde/restauration versionnés
+!scripts/backup-db.ts
+!scripts/restore-db.ts
+!scripts/db-snapshot-stats.ts
 *.exe
 *.msi
-!scripts/seed-legal-refs.ts

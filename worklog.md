@@ -1621,3 +1621,19 @@ Stage Summary:
 - 14 livrables dans audit/baseline/ (00→11 + README + BASELINE_AUDIT_REPORT + diagrams + 18 preuves)
 - 17 anomalies : 1 ❌ / 15 ⚠️ / 0 vulnérabilité critique ; 4 conditions P1 avant production
 - Rapport soumis au propriétaire pour avis (étape 2 = validation avant toute correction)
+---
+Task ID: R-1 (audit-remediation-p1 / C-1)
+Agent: Z.ai Code (principal)
+Task: Avis propriétaire reçu (GO SOUS CONDITIONS validé, étape 3 autorisée C-1→C-4 uniquement) — exécution de C-1 (AUD-GOV-001 sauvegarde/restauration DB), exigence propriétaire : sauvegarde AVANT toute modification + preuve de restauration obligatoire.
+
+Work Log:
+- Cycle SDD ouvert : specs/audit-remediation-p1/spec.md (contrat propriétaire 8 exigences, CA-1..CA-6, rouges) + tasks.md T1-T10.
+- T1 Sauvegarde initiale AVANT toute modification : SQLite VACUUM INTO (snapshot cohérent à chaud, compacté ; sqlite3 CLI absent de la sandbox) → backups/custom-20261009-164202.db (213 Mo) + copie hors arbre /home/z/backups/thesisframe/ + copie intégrale upload/ (244 Mo, documents sources). Vérification : integrity_check=ok, fkViolations=0, compteurs identiques live↔backup (Thesis 1 « Urbanisme durable », Chapter 7 / 2 295 mots, ImportedDoc 16 / 6 737 798 car. / 12 blobs / 205 551 633 o, Reference 4, Job 24, ChapterVersion 6, ElementAnalyse 1) — preuve evidence/c1-backup-initial.json.
+- T2 Mécanisme auto : src/lib/backup.ts (ensureDailyBackup = VACUUM INTO vers tmp + rename atomique, 1×/jour au boot via instrumentation.ts + re-check 6 h, rotation 7 j regex custom-YYYY-MM-DD.db, miroir TF_BACKUP_MIRROR_DIR, anti-HMR __tfBackupStarted, jamais bloquant) ; scripts versionnés backup-db.ts / restore-db.ts / db-snapshot-stats.ts (exceptions .gitignore scripts/*) ; /backups/ gitigné.
+- T2 test réel : startDailyBackup exécuté → backups/custom-2026-10-09.db créé (213 Mo) + miroir + log [backup] ; VACUUM INTO à chaud sans incident serveur.
+- T3 Restauration réelle : scripts/restore-db.ts (copie de sécurité .pre-restore-<ts> AVANT écrasement, jamais aveugle) → restauration vers /tmp/restore-test/custom.db : integrity ok, 16 docs, 1 thèse ; diff stats live↔restaurée VIDE = complétude prouvée (preuve evidence/c1-restore-test.json) ; doc docs/SAUVEGARDE-RESTAURATION.md (procédures, limites : live = arrêt serveur ; boot 2ᵉ serveur impossible 4 Go RAM → vérif niveau ORM Prisma).
+- Invariants : lint 0 erreur (247 warnings, +3 sur scripts outillage) ; HTTP 200 ; lignes rouges 0 diff ; db skip-worktree intacte ; bun run build non exécuté.
+
+Stage Summary:
+- AUD-GOV-001 CORRIGÉE avec preuve de restauration : la perte de la thèse/corpus n'est plus « un incident à un clic de db:push près » — backup quotidien auto + miroir hors arbre + restore outillé vérifié octet/logiquement identique.
+- Statut registre : corrigée, revalidée (restauration réelle en env de test, diff complet vide). Le statut final « revalidée » sera consigné au registre 09 en fin de cycle (T10).

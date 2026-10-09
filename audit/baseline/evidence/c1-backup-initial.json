@@ -1,0 +1,128 @@
+{
+  "cycle": "audit-remediation-p1",
+  "correction": "C-1 / AUD-GOV-001",
+  "date": "2026-10-09T16:44:18.399Z",
+  "phase": "sauvegarde initiale AVANT toute modification (exigence propriétaire)",
+  "backupFiles": [
+    "backups/custom-20261009-164202.db (213 Mo compacté, intra-projet, à gitignorer)",
+    "/home/z/backups/thesisframe/custom-20261009-164202.db (213 Mo, hors arbre git)"
+  ],
+  "uploadBackup": "backups/upload-20261009-164202 (244 Mo, documents sources)",
+  "method": "SQLite VACUUM INTO (snapshot cohérent à chaud, compacté, serveur en marche)",
+  "live": {
+    "target": "file:/home/z/my-project/db/custom.db",
+    "integrity": "ok",
+    "fkViolations": 0,
+    "counts": [
+      {
+        "tbl": "Thesis",
+        "n": 1
+      },
+      {
+        "tbl": "Chapter",
+        "n": 7
+      },
+      {
+        "tbl": "Part",
+        "n": 0
+      },
+      {
+        "tbl": "ImportedDoc",
+        "n": 16
+      },
+      {
+        "tbl": "Reference",
+        "n": 4
+      },
+      {
+        "tbl": "Job",
+        "n": 24
+      },
+      {
+        "tbl": "ElementAnalyse",
+        "n": 1
+      },
+      {
+        "tbl": "SavedSearch",
+        "n": 0
+      },
+      {
+        "tbl": "ResearchTab",
+        "n": 0
+      },
+      {
+        "tbl": "ChapterVersion",
+        "n": 6
+      }
+    ],
+    "corpus": {
+      "docs": 16,
+      "chars": 6737798,
+      "blobs": 12,
+      "bytes": 205551633
+    },
+    "thesisWords": 2295,
+    "thesisTitles": [
+      "Urbanisme durable"
+    ]
+  },
+  "backup": {
+    "target": "file:/home/z/my-project/backups/custom-20261009-164202.db",
+    "integrity": "ok",
+    "fkViolations": 0,
+    "counts": [
+      {
+        "tbl": "Thesis",
+        "n": 1
+      },
+      {
+        "tbl": "Chapter",
+        "n": 7
+      },
+      {
+        "tbl": "Part",
+        "n": 0
+      },
+      {
+        "tbl": "ImportedDoc",
+        "n": 16
+      },
+      {
+        "tbl": "Reference",
+        "n": 4
+      },
+      {
+        "tbl": "Job",
+        "n": 24
+      },
+      {
+        "tbl": "ElementAnalyse",
+        "n": 1
+      },
+      {
+        "tbl": "SavedSearch",
+        "n": 0
+      },
+      {
+        "tbl": "ResearchTab",
+        "n": 0
+      },
+      {
+        "tbl": "ChapterVersion",
+        "n": 6
+      }
+    ],
+    "corpus": {
+      "docs": 16,
+      "chars": 6737798,
+      "blobs": 12,
+      "bytes": 205551633
+    },
+    "thesisWords": 2295,
+    "thesisTitles": [
+      "Urbanisme durable"
+    ]
+  },
+  "comparison": "compteurs + corpus + integrity_check + fkViolations identiques (diff vide après exclusion du champ target)",
+  "verdict": "SAUVEGARDE_INITIALE_VERIFIEE"
+}

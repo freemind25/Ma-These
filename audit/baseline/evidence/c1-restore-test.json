@@ -1,0 +1,53 @@
+{
+  "cycle": "audit-remediation-p1",
+  "correction": "C-1 / AUD-GOV-001",
+  "date": "2026-10-09T16:46:30.009Z",
+  "phase": "restauration réelle en environnement de test + mécanisme automatique",
+  "tests": {
+    "A_mecanisme_auto": {
+      "commande": "startDailyBackup() via instrumentation (simulé par import direct)",
+      "resultat": "backups/custom-2026-10-09.db créé (213 Mo compacté) + miroir TF_BACKUP_MIRROR_DIR vers /home/z/backups/thesisframe/ + log [backup] — VACUUM INTO à chaud, non bloquant",
+      "rotation": "7 jours implémentée (regex custom-YYYY-MM-DD.db, mtime)"
+    },
+    "B_restauration_reelle": {
+      "commande": "bun scripts/restore-db.ts backups/custom-20261009-164202.db --target file:/tmp/restore-test/custom.db",
+      "resultat": {
+        "integrity": "ok",
+        "importedDocs": 16,
+        "theses": 1,
+        "safetyCopy": "null (cible inexistante — comportement attendu)"
+      }
+    },
+    "C_completude": {
+      "methode": "db-snapshot-stats.ts sur live vs restaurée, diff après exclusion du champ target",
+      "resultat": "DIFF VIDE = restaurée identique à la live",
+      "live": {
+        "integrity": "ok",
+        "fkViolations": 0,
+        "thesisWords": 2295,
+        "corpus": {
+          "docs": 16,
+          "chars": 6737798,
+          "blobs": 12,
+          "bytes": 205551633
+        }
+      },
+      "restored": {
+        "integrity": "ok",
+        "fkViolations": 0,
+        "thesisWords": 2295,
+        "corpus": {
+          "docs": 16,
+          "chars": 6737798,
+          "blobs": 12,
+          "bytes": 205551633
+        }
+      }
+    }
+  },
+  "limites_documentees": [
+    "restauration base LIVE = arrêt serveur requis (SQLite fichier unique)",
+    "boot second serveur sur copie restaurée impossible (4 Go RAM, next-server 2,5 Go — OOM) → vérification au niveau ORM Prisma (même moteur que l app)"
+  ],
+  "verdict": "C-1_SATISFAIT_AVEC_PREUVE_DE_RESTAURATION"
+}
