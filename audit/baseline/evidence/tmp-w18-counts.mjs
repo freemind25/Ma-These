@@ -1,3 +1,5 @@
+/* Script de preuve (reproductibilité comptages) — console volontaire : sortie du rapport de comptage */
+/* eslint-disable no-console */
 // W1-8 (A2 lot 1) — comptages DB LECTURE SEULE (état propriétaire)
 // Usage : node audit/baseline/evidence/tmp-w18-counts.mjs > a2-lot1-db-<avant|apres>.json
 import { PrismaClient } from "@prisma/client";

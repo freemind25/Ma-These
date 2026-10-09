@@ -1,0 +1,227 @@
+{
+  "task": "A2 lot 2",
+  "task_id": "W1-8b",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "agent": "agent-execution-UI (Z.ai Code, session dédiée W1-8b)",
+  "baseline_git": "bc71223 (A1 lot 1 complet + A2 lot 1 + A3 poussés)",
+  "source_inventaire": "audit/baseline/evidence/c3-revalidation.json (phase2 → a_corrige_confirme_persistantes) — lot 2 = 7 dernières actions code-seulement (onglet-recherche ×2, article-redaction ×2, registre-juridique ×1, feuille-route-agile ×2)",
+  "methode": "UI réelle agent-browser (headless, http://localhost:3000) ; création d'objets de test préfixés AUDIT-A2b- DANS L'UI ; protocole par action : déclencheur (X/Effacer/poubelle) → ConfirmDeleteDialog → capture → contrôle ① (0 requête destructive à l'ouverture) → Annuler → contrôle ② (réseau + UI + DB) → ré-ouverture → Confirmer → contrôles ③④⑤ ; audit réseau complet de la session (agent-browser network requests, 149 entrées) ; erreurs console/page vérifiées (0) ; comptages DB lecture seule via script node @prisma/client one-shot (audit/baseline/evidence/tmp-w18b-counts.mjs)",
+  "controles_exiges": [
+    "① aucune suppression avant confirmation (0 requête destructive à l'ouverture du dialogue)",
+    "② Annuler = 0 requête + 0 modification persistée (DB + UI inchangés)",
+    "③ Confirmer déclenche UNIQUEMENT la requête prévue (endpoint+méthode, 1 seule destructive)",
+    "④ cascades conformes à l'attendu / au message du dialogue",
+    "⑤ l'interface reflète le résultat",
+    "⑥ erreurs gérées sans perte silencieuse"
+  ],
+  "anomalie_environnement_demarrage": "Serveur dev Next.js ARRÊTÉ au début de la session (aucun listener sur 3000 ; seul le process enfant geo-mcp-service survivait sur 3005 — même signature que l'OOM consigné en C-2) ; redémarré hors bande (bun run dev double-detach via node child_process.spawn detached, technique C-2) → 200 OK ; dépôt intact, dev.log gitignoré, aucune donnée touchée.",
+  "actions": [
+    {
+      "n": 2,
+      "action": "Onglet Recherche — bouton « Effacer » (efface notes/liens/citations/tâches de l'onglet actif, sauvegarde PUT) — exécutée AVANT l'action 1 sur le MÊME onglet de test (l'action 1 supprime l'onglet, l'ordre 2→1 permet les deux sur le même objet)",
+      "vue": "Onglet Recherche (vue 25, id onglet-recherche) — onglet de test actif",
+      "endpoint_attendu": "PUT /api/research-tabs/{id} (sauvegarde complète de l'onglet : notes '', links/quotes/todos '[]')",
+      "endpoint_observe": "PUT http://localhost:3000/api/research-tabs/cmv1eckaa0003jj6yoe465l8g 200 — déclenché ~1,5-2 s après confirmation (debounce scheduleSave 1500 ms), + 1 GET /api/thesis/{id}/research-tabs de re-fetch (invalidation React Query, non destructif)",
+      "objet_test": "onglet « AUDIT-A2b-Onglet jetable » (id cmv1eckaa0003jj6yoe465l8g, créé via UI : bouton Nouvel onglet → Renommer, POST /api/thesis/{thesisId}/research-tabs 201) rempli dans l'UI : notes « Notes de test AUDIT-A2b — à effacer via le bouton Effacer. » (54 car., PUT debounced 200) + 1 lien « Lien test AUDIT-A2b » → https://example.org/audit-a2b (dialogue Ajouter un lien)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — clic Effacer → ConfirmDeleteDialog « Effacer tout le contenu de l'onglet ? » (description « Les notes, liens, citations et tâches de cet onglet seront définitivement effacés. Cette action est irréversible. », boutons [Annuler, Effacer]) ; 0 requête émise à l'ouverture (dernières entrées réseau = PUT/GET de sauvegarde PRÉALABLES au clic)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (total réseau 13 → 13), dialogue fermé, notes et lien INTACTS en UI (textbox 54 car. + carte lien) et en DB (notes + links JSON présents sur cmv1eckaa...)",
+        "c3_confirmer_requete_prevue_seule": "OK — après confirmation (« Effacer ») : exactement 1 PUT /api/research-tabs/cmv1eckaa0003jj6yoe465l8g 200 (la sauvegarde debounced) + 1 GET re-fetch ; AUCUNE autre requête destructive ; aucun DELETE sur ce flux (l'onglet lui-même est conservé)",
+        "c4_cascades": "conforme — aucune cascade attendue : l'onglet est conservé, seul son CONTENU est vidé ; DB vérifiée après : {title: « AUDIT-A2b-Onglet jetable », notes: \"\", links: \"[]\", quotes: \"[]\", todos: \"[]\"}",
+        "c5_ui_refletere": "OK — Notes « 0 car. », « Aucun lien ajouté pour le moment. », citations/tâches vides, titre de l'onglet toujours présent dans la barre d'onglets",
+        "c6_erreurs": "aucune erreur rencontrée (PUT 200, aucun toast d'erreur, 0 erreur console/page)"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot2-2-effacer-rempli.png",
+        "audit/baseline/evidence/a2-lot2-2-effacer-dialogue.png",
+        "audit/baseline/evidence/a2-lot2-2-effacer-annule.png",
+        "audit/baseline/evidence/a2-lot2-2-effacer-confirme.png"
+      ]
+    },
+    {
+      "n": 1,
+      "action": "Onglet Recherche — fermeture d'un onglet (bouton X aria « Fermer l'onglet », DELETE persisté)",
+      "vue": "Onglet Recherche (vue 25, id onglet-recherche) — barre d'onglets",
+      "endpoint_attendu": "DELETE /api/research-tabs/{id}",
+      "endpoint_observe": "DELETE http://localhost:3000/api/research-tabs/cmv1eckaa0003jj6yoe465l8g 200",
+      "objet_test": "le même onglet « AUDIT-A2b-Onglet jetable » (cmv1eckaa0003jj6yoe465l8g, déjà vidé par l'action 2)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — clic X (aria-label « Fermer l'onglet ») → ConfirmDeleteDialog « Supprimer cet onglet de recherche ? » (description « « AUDIT-A2b-Onglet jetable » et tout son contenu (notes, liens, citations, tâches) seront définitivement supprimés. Cette action est irréversible. », boutons [Annuler, Supprimer]) ; 0 requête émise à l'ouverture (total réseau stable)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (15 → 15), dialogue fermé, onglet toujours en UI (2 occurrences DOM) et en DB (ResearchTab 2)",
+        "c3_confirmer_suppression_prevue_seule": "OK — après re-clic X puis confirmation : exactement 1 requête destructive de la session sur ce flux : DELETE /api/research-tabs/cmv1eckaa0003jj6yoe465l8g 200 + 1 GET re-fetch (non destructif) ; aucun autre DELETE parasite",
+        "c4_cascades": "conforme — ResearchTab est terminal (aucune table enfant) ; seul l'onglet ciblé supprimé ; l'autre onglet (« Recherche principale », auto-créé par l'app à la première visite) restait en DB jusqu'au cleanup",
+        "c5_ui_refletere": "OK — onglet disparu de la barre (0 occurrence DOM du titre), contenu de l'onglet actif basculé",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200, 0 erreur console/page)"
+      },
+      "note_comportement_produit": "À la PREMIÈRE visite de la vue avec 0 onglet, l'app AUTO-CRÉE un onglet « Recherche principale » (POST 201, effet useEffect documenté dans le code) — comportement produit normal consigné ; cet onglet auto-créé (cmv1ec5es0001jj6ywskrtq18) a été nettoyé EN FIN DE SESSION via le MÊME flux testé (X → Confirmer → DELETE 200), restaurant ResearchTab = 0.",
+      "cleanup_session": "DELETE /api/research-tabs/cmv1ec5es0001jj6ywskrtq18 200 (flux identique : dialogue → Supprimer)",
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot2-1-onglet-dialogue.png",
+        "audit/baseline/evidence/a2-lot2-1-onglet-annule.png",
+        "audit/baseline/evidence/a2-lot2-1-onglet-confirme.png"
+      ]
+    },
+    {
+      "n": 4,
+      "action": "Article scientifique — suppression d'un document source importé (poubelle ligne import → ConfirmDeleteDialog « Retirer ce document source ? »)",
+      "vue": "Brouillon d'article (vue 17, id article-redaction) — étape 1 « Choisir les sources », liste des documents importés",
+      "endpoint_attendu": "DELETE /api/article-imports?id={id}",
+      "endpoint_observe": "DELETE http://localhost:3000/api/article-imports?id=cmv1ehhva0004jj6ywb7spemp 200",
+      "objet_test": "ImportedDoc « AUDIT-A2b-source.txt » (id cmv1ehhva0004jj6ywb7spemp, créé via UI : input fichier + « Importer et extraire », POST /api/article-imports 201, FormData, thesisId = thèse active cmsmyrdfs0000pa2sews4vo90) ; fichier test 1,4 ko créé hors dépôt (/tmp/AUDIT-A2b-source.txt)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — clic poubelle (aria « Retirer AUDIT-A2b-source.txt ») → ConfirmDeleteDialog « Retirer ce document source ? » (description « « AUDIT-A2b-source.txt » et son texte extrait seront définitivement supprimés du corpus de cet article. Cette action est irréversible. », boutons [Annuler, Retirer]) ; 0 requête émise à l'ouverture (dernières entrées = GET page)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (total réseau 120 → 120), doc toujours en UI (2 occurrences) et en DB (ImportedDoc 17)",
+        "c3_confirmer_suppression_prevue_seule": "OK — après confirmation (« Retirer ») : exactement 1 requête destructive : DELETE /api/article-imports?id=cmv1ehhva0004jj6ywb7spemp 200 ; aucune autre requête destructive ; aucun refetch parasite",
+        "c4_cascades": "conforme — l'ARTICLE survit : Article 2 en DB après suppression (article test cmv1ei0350005jj6yiqou0r1k + article propriétaire), article test toujours affiché dans « Vos brouillons d'articles » ; ImportedDoc 17 → 16 ; aucun autre ImportedDoc touché (les 16 docs propriétaires — dont 12 blobs PDF — intacts)",
+        "c5_ui_refletere": "OK — ligne du doc disparue de la liste des imports (0 occurrence DOM du filename)",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200) ; observation STATIQUE consignée (cas d'échec non sollicité) : removeImport n'examine pas res.ok (fetch sans throw en 4xx/5xx) et filtre le doc de l'état local SANS refetch — en cas d'échec serveur l'UI pourrait diverger de la DB jusqu'au rechargement (perte silencieuse possible côté UI uniquement) ; non déclenché ici (DELETE 200), aucune donnée perdue"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot2-4-import-dialogue.png",
+        "audit/baseline/evidence/a2-lot2-4-import-annule.png",
+        "audit/baseline/evidence/a2-lot2-4-import-confirme.png"
+      ]
+    },
+    {
+      "n": 3,
+      "action": "Article scientifique — suppression d'un article (poubelle liste → ConfirmDeleteDialog « Supprimer cet article ? »)",
+      "vue": "Brouillon d'article (vue 17, id article-redaction) — carte « Vos brouillons d'articles »",
+      "endpoint_attendu": "DELETE /api/articles/{id}",
+      "endpoint_observe": "DELETE http://localhost:3000/api/articles/cmv1ei0350005jj6yiqou0r1k 200",
+      "objet_test": "article « AUDIT-A2b-Article jetable » (id cmv1ei0350005jj6yiqou0r1k, créé via UI : Continuer vers les consignes → titre → « Créer l'article (enregistré séparément de sa source) », POST /api/articles 201, thesisId = thèse active, 0 section, 0 version)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — clic poubelle (aria « Supprimer AUDIT-A2b-Article jetable ») → ConfirmDeleteDialog « Supprimer cet article ? » (description « « AUDIT-A2b-Article jetable » (sections, versions et historique) sera définitivement supprimé. Cette action est irréversible. », boutons [Annuler, Supprimer]) ; 0 requête à l'ouverture",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (121 → 121), article toujours en UI (3 occurrences) et en DB (Article 2)",
+        "c3_confirmer_suppression_prevue_seule": "OK — après confirmation : exactement 1 requête destructive : DELETE /api/articles/cmv1ei0350005jj6yiqou0r1k 200 + 1 GET /api/articles de rechargement de la liste (loadArticles, non destructif)",
+        "c4_cascades": "conforme — Article 2 → 1 ; l'article test n'avait ni section ni version (aucune cascade à observer sur ArticleVersion : total resté 1 = version de l'article PROPRIÉTAIRE « Urbanisation durable et technologies numeriques a Alger (article) », cmuy1jxe10005j8iie7ozgnq0, INTACT) ; cascade versions prévue onDelete: Cascade (schéma), non exercée faute de version sur l'objet test",
+        "c5_ui_refletere": "OK — article disparu de la liste (0 occurrence DOM), compteur « 1 article »",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200) ; observation statique : deleteArticle n'examine pas res.ok mais recharge loadArticles() dans tous les cas → l'UI reflète la DB (pas de perte silencieuse possible) ; non sollicité (200)"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot2-3-article-dialogue.png",
+        "audit/baseline/evidence/a2-lot2-3-article-annule.png",
+        "audit/baseline/evidence/a2-lot2-3-article-confirme.png"
+      ]
+    },
+    {
+      "n": 5,
+      "action": "Registre juridique — suppression d'une entrée (poubelle ligne → ConfirmDeleteDialog « Supprimer cette entrée juridique ? »)",
+      "vue": "Livres-compétences (id livres-competences) — onglet « Registre juridique » (la vue porte le registre URBANIS-DZ, PAS Méthodologie/Vérification)",
+      "endpoint_attendu": "DELETE /api/legal-refs/{id}",
+      "endpoint_observe": "DELETE http://localhost:3000/api/legal-refs/cmv1eksn70006jj6yl2dvtfe6 200",
+      "objet_test": "entrée « AUDIT-A2b-Entrée juridique jetable » (id cmv1eksn70006jj6yl2dvtfe6, créée via UI : bouton « Nouvelle entrée » → dialogue → Domaine « AUDIT » + Référence « AUDIT-A2b-Entrée juridique jetable » → « Créer l'entrée », POST /api/legal-refs 201)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — clic poubelle (aria « Supprimer AUDIT-A2b-Entrée juridique jetable ») → ConfirmDeleteDialog « Supprimer cette entrée juridique ? » (description « « AUDIT-A2b-Entrée juridique jetable » sera définitivement retirée du registre juridique. Cette action est irréversible. », boutons [Annuler, Supprimer]) ; 0 requête à l'ouverture (total réseau 130 stable)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (130 → 130), entrée toujours en UI (4 occurrences) et en DB (LegalRef 28)",
+        "c3_confirmer_suppression_prevue_seule": "OK — après confirmation : exactement 1 requête destructive : DELETE /api/legal-refs/cmv1eksn70006jj6yl2dvtfe6 200 + 1 GET /api/legal-refs (rechargement load(), non destructif)",
+        "c4_cascades": "conforme — LegalRef est terminal (aucune FK enfant) ; LegalRef 28 → 27 ; les 27 entrées propriétaires du registre (Loi n° 90-29, etc.) intacts et affichés",
+        "c5_ui_refletere": "OK — carte de l'entrée disparue de la liste (0 occurrence DOM)",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200) ; le handler prévoit setError(« Suppression impossible. ») si !res.ok (affiché en bannière, pas de perte silencieuse) — non sollicité"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot2-5-legalref-dialogue.png",
+        "audit/baseline/evidence/a2-lot2-5-legalref-annule.png",
+        "audit/baseline/evidence/a2-lot2-5-legalref-confirme.png"
+      ]
+    },
+    {
+      "n": 6,
+      "action": "Feuille de Route Agile — suppression d'une story (poubelle carte Kanban → ConfirmDeleteDialog « Supprimer cette story ? »)",
+      "vue": "Feuille de Route Agile (vue 13, id feuille-route-agile) — tableau Kanban du sprint actif",
+      "endpoint_attendu": "DELETE /api/stories/{id}",
+      "endpoint_observe": "DELETE http://localhost:3000/api/stories/cmv1em4yh0009jj6y7jr7m1g7 200 (+ toast succès « Story supprimée », invalidations GET sprints non destructives)",
+      "objet_test": "sprint porteur « AUDIT-A2b-Sprint jetable » (id cmv1elscs0007jj6ye9cgkns2, POST /api/sprints 201, phase Rédaction) + story « AUDIT-A2b-Story jetable » (id cmv1em4yh0009jj6y7jr7m1g7, POST /api/sprints/{id}/stories 201, colonne À faire, priorité Moyenne)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — clic poubelle carte (icon-only, Trash2) → ConfirmDeleteDialog « Supprimer cette story ? » (description « « AUDIT-A2b-Story jetable » sera définitivement supprimée du tableau Kanban. Cette action est irréversible. », boutons [Annuler, Supprimer]) ; 0 requête à l'ouverture (total réseau 141 stable)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (141 → 141), story toujours en UI (carte « À faire ») et en DB (AgileStory 1)",
+        "c3_confirmer_suppression_prevue_seule": "OK — après confirmation : exactement 1 requête destructive : DELETE /api/stories/cmv1em4yh0009jj6y7jr7m1g7 200 ; suivie des invalidations React Query (GET sprints, non destructives)",
+        "c4_cascades": "conforme — cascade NON attendue et NON observée : AgileStory 1 → 0, AgileSprint inchangé (1) ; le sprint porteur survit en DB et en UI (seul l'objet ciblé est supprimé)",
+        "c5_ui_refletere": "OK — carte disparue du Kanban, colonne « À faire — Aucune story », compteur Backlog 0",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200, toast succès) ; handler prévoit toast.error(« Impossible de supprimer la story ») si échec — non sollicité"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot2-6-story-dialogue.png",
+        "audit/baseline/evidence/a2-lot2-6-story-annule.png",
+        "audit/baseline/evidence/a2-lot2-6-story-confirme.png"
+      ]
+    },
+    {
+      "n": 7,
+      "action": "Feuille de Route Agile — suppression d'un sprint AVEC cascade sur ses stories (bouton « Supprimer ce sprint » → ConfirmDeleteDialog « Supprimer ce sprint ? »)",
+      "vue": "Feuille de Route Agile (vue 13, id feuille-route-agile) — sélecteur « Sprint actif » (le bouton supprime le sprint SÉLECTIONNÉ)",
+      "endpoint_attendu": "DELETE /api/sprints/{id} (cascade stories via Prisma onDelete: Cascade sur AgileStory.sprintId)",
+      "endpoint_observe": "DELETE http://localhost:3000/api/sprints/cmv1elscs0007jj6ye9cgkns2 200 (+ GET /api/sprints invalidations non destructives)",
+      "objet_test": "sprint « AUDIT-A2b-Sprint jetable » (cmv1elscs0007jj6ye9cgkns2, sélectionné comme sprint actif) + story témoin « AUDIT-A2b-Story cascade » (id cmv1en65i000bjj6yy9xehetp, POST .../stories 201, créée exprès pour vérifier la cascade)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — clic « Supprimer ce sprint » → ConfirmDeleteDialog « Supprimer ce sprint ? » (description « « AUDIT-A2b-Sprint jetable » et toutes ses stories seront définitivement supprimés. Cette action est irréversible. », boutons [Annuler, Supprimer]) ; 0 requête à l'ouverture (total réseau 147 stable)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (147 → 147), sprint en UI (3 occurrences) et en DB (AgileSprint 1, AgileStory 1)",
+        "c3_confirmer_suppression_prevue_seule": "OK — après confirmation : exactement 1 requête destructive : DELETE /api/sprints/cmv1elscs0007jj6ye9cgkns2 200 ; aucune suppression story séparée (cascade côté serveur en 1 requête)",
+        "c4_cascades": "CONFORME AU MESSAGE DU DIALOGUE — comportement OBSERVÉ : les stories sont SUPPRIMÉES (pas détachées) : DB AgileSprint 1 → 0 ET AgileStory 1 → 0 ; la story témoin cmv1en65i000bjj6yy9xehetp n'existe plus (AUCUN orphelin, sprintId null impossible par schéma — FK non nullable + Cascade) ; conforme à la description du dialogue « ... et toutes ses stories seront définitivement supprimés » et au commentaire de la route DELETE (« Cascade deletes stories via Prisma schema »)",
+        "c5_ui_refletere": "OK — sprint disparu du sélecteur, story disparue du Kanban, retour à l'état vide « Aucun sprint créé » avec CTA « Créer un sprint »",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200, toast succès « Sprint supprimé ») ; handler prévoit toast.error si échec — non sollicité"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot2-7-sprint-dialogue.png",
+        "audit/baseline/evidence/a2-lot2-7-sprint-annule.png",
+        "audit/baseline/evidence/a2-lot2-7-sprint-confirme.png"
+      ]
+    }
+  ],
+  "audit_reseau_session": {
+    "note": "suivi réseau agent-browser cumulé sur la session (149 entrées) ; méthodes DELETE observées = exactement 7 (6 pour les actions auditées + 1 cleanup de l'onglet auto-créé, MÊME flux testé), toutes 200, toutes sur les endpoints attendus ; aucune autre requête destructive ; POST = créations d'objets de test + 1 POST /api/text-prediction (fonction interne de prédiction de saisie de l'app, déclenchée par fill du titre d'article, non destructif) ; erreurs console/page : 0",
+    "delete_requests": [
+      "DELETE /api/research-tabs/cmv1eckaa0003jj6yoe465l8g → 200 (action 1)",
+      "DELETE /api/research-tabs/cmv1ec5es0001jj6ywskrtq18 → 200 (cleanup onglet auto-créé « Recherche principale », même flux)",
+      "DELETE /api/article-imports?id=cmv1ehhva0004jj6ywb7spemp → 200 (action 4)",
+      "DELETE /api/articles/cmv1ei0350005jj6yiqou0r1k → 200 (action 3)",
+      "DELETE /api/legal-refs/cmv1eksn70006jj6yl2dvtfe6 → 200 (action 5)",
+      "DELETE /api/stories/cmv1em4yh0009jj6y7jr7m1g7 → 200 (action 6)",
+      "DELETE /api/sprints/cmv1elscs0007jj6ye9cgkns2 → 200 (action 7, cascade story témoin)"
+    ]
+  },
+  "etat_proprietaire": {
+    "avant": {
+      "source": "audit/baseline/evidence/a2-lot2-db-before.json (2026-10-09T20:01:03Z)",
+      "counts": { "Thesis": 1, "Chapter": 7, "ChapterVersion": 6, "Reference": 4, "ImportedDoc": 16, "Job": 24, "ResearchSource": 0, "NotebookEntry": 1, "Experiment": 1, "ExperimentRun": 1, "ElementAnalyse": 1, "TypeAnalyse": 1, "Article": 1, "ArticleVersion": 1, "ResearchTab": 0, "AgileSprint": 0, "AgileStory": 0, "LegalRef": 27 },
+      "thesisWords": 2295,
+      "thesisTitles": ["Urbanisme durable"]
+    },
+    "apres": {
+      "source": "audit/baseline/evidence/a2-lot2-db-after.json (2026-10-09T20:16:11Z)",
+      "counts": { "Thesis": 1, "Chapter": 7, "ChapterVersion": 6, "Reference": 4, "ImportedDoc": 16, "Job": 24, "ResearchSource": 0, "NotebookEntry": 1, "Experiment": 1, "ExperimentRun": 1, "ElementAnalyse": 1, "TypeAnalyse": 1, "Article": 1, "ArticleVersion": 1, "ResearchTab": 0, "AgileSprint": 0, "AgileStory": 0, "LegalRef": 27 },
+      "thesisWords": 2295,
+      "thesisTitles": ["Urbanisme durable"]
+    },
+    "identique": true,
+    "verifications_fines": {
+      "thesis_Urbanisme_durable": { "id": "cmsmyrdfs0000pa2sews4vo90", "updatedAt": "2026-08-10T08:22:35.464Z (inchangée)", "chapters": 7, "words": 2295, "versions": 6 },
+      "article_proprietaire": { "id": "cmuy1jxe10005j8iie7ozgnq0", "title": "Urbanisation durable et technologies numeriques a Alger (article)", "versions": 1, "intact": true },
+      "legal_refs_proprietaires": 27,
+      "imported_docs_proprietaires": { "count": 16, "note": "12 blobs PDF intacts" }
+    },
+    "note": "Tous les objets de test AUDIT-A2b- (1 onglet + son contenu, 1 ImportedDoc, 1 article, 1 entrée juridique, 1 sprint, 2 stories) ont été supprimés VIA LE FLUX DE CONFIRMATION TESTÉ (aucun cleanup DB direct) ; l'onglet « Recherche principale » auto-créé par l'app à la première visite a également été supprimé via ce flux. Diff before/after = VIDE sur les 18 tables + titres de thèses + mots."
+  },
+  "avancement_registre": "16/16 vérifiées en UI réelle (3 lors de C-3 : référence, thèse, chapitre ; 5 lors de W1-8 lot 1 : source IA, note IA, expérimentation, run, élément carto ; 1 lors de W1-7c lot 1c : partie de plan ; 7 lors de W1-8b lot 2 : fermeture onglet recherche, effacer onglet, article, doc source importé, entrée registre juridique, story, sprint) — le registre AUD-FUNC-003 est COMPLET",
+  "anomalies_et_regressions_rencontrees": [
+    "Environnement (pas produit) : serveur dev Next.js arrêté au démarrage de la session (port 3000 muet, seul geo-mcp-service survivait sur 3005 — signature OOM déjà vue en C-2) ; redémarré hors bande (bun run dev double-detach via node spawn) ; aucun impact données/preuves",
+    "Environnement (pas produit) : reload de la page → vue courante réinitialisée vers dashboard (état de vue non persisté, déjà consigné en A1) — re-navigation effectuée, protocole repris à l'identique",
+    "Comportement produit (consigné, non anomalie bloquante) : première visite de la vue Onglet Recherche avec 0 onglet → auto-création persistante d'un onglet « Recherche principale » (POST 201 automatique) — behavior voulu du produit, nettoyé via le flux testé",
+    "Observation STATIQUE P3 (cas d'échec non sollicité, aucune donnée perdue) : article-redaction removeImport n'examine pas res.ok et filtre l'état local sans refetch → en cas d'échec serveur du DELETE, l'UI retirerait le doc alors que la DB le conserverait (divergence UI/DB jusqu'au reload) ; deleteArticle, elle, recharge toujours la liste (pas de divergence). Hors périmètre (aucun code modifié)"
+  ],
+  "invariants_respectes": {
+    "code_modifie": 0,
+    "git_status": "0 fichier suivi modifié (seuls ajouts : captures PNG + JSON preuves + script comptage, non committés — AUCUN commit)",
+    "fichiers_rouges": "0 diff (theses-en-ligne/search, arxiv/search, app-sidebar jamais ouverts en écriture)",
+    "db_push_build_commit": "aucun (pas de db:push, pas de build, pas de commit)",
+    "db_skip_worktree": "intact",
+    "objets_test": "préfixés AUDIT-A2b-, créés dans l'UI, supprimés via le flux de confirmation testé ; fichier upload /tmp/AUDIT-A2b-source.txt créé hors dépôt"
+  }
+}

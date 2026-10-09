@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-10-09T20:01:03.778Z",
+  "counts": {
+    "Thesis": 1,
+    "Chapter": 7,
+    "ChapterVersion": 6,
+    "Reference": 4,
+    "ImportedDoc": 16,
+    "Job": 24,
+    "ResearchSource": 0,
+    "NotebookEntry": 1,
+    "Experiment": 1,
+    "ExperimentRun": 1,
+    "ElementAnalyse": 1,
+    "TypeAnalyse": 1,
+    "Article": 1,
+    "ArticleVersion": 1,
+    "ResearchTab": 0,
+    "AgileSprint": 0,
+    "AgileStory": 0,
+    "LegalRef": 27
+  },
+  "theses": [
+    {
+      "id": "cmsmyrdfs0000pa2sews4vo90",
+      "title": "Urbanisme durable"
+    }
+  ],
+  "thesisWords": 2295,
+  "objetsAuditA2b": {
+    "tabs": [],
+    "articles": [],
+    "sprints": [],
+    "stories": [],
+    "legalRefs": [],
+    "legalRefsParDomaine": [],
+    "importedDocs": []
+  }
+}

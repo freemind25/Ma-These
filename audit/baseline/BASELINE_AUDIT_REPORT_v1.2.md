@@ -30,13 +30,26 @@ Verdict en vigueur : **GO SOUS CONDITIONS** — ni mise en production, ni ouvert
 ### B — Proposition technique références (SANS exécution)
 - `specs/ref-thesis-scoping/proposition-technique.md` : schéma (`thesisId` nullable + Cascade + index), règles API d'isolation, migration réversible (répétition sur copie, attribution univoque, cas non attribuables, rollback testé), 12-16 tests d'isolation, risques, effort 2-3 j, positionnement recommandé (après vague 2, avant builds). **Soumise à autorisation distincte — rien d'exécuté.**
 
+### A2 — 13 actions destructives restantes : testées en UI réelle → registre 16/16 (critère #2 SATISFAIT)
+- Lot 1 (5 actions : source IA, note IA, expérimentation, run, élément carto) + lot 2 (7 actions : onglet recherche fermeture DELETE + effacement PUT, article, doc source importé, entrée registre juridique [portée par Livres-compétences], story, sprint avec cascade conforme au message) + partie de plan (testée au lot 1c) : **toutes conformes aux 6 contrôles** — ① 0 suppression avant confirmation ; ② Annuler = 0 requête + 0 modification (comptages DB) ; ③ Confirmer = exactement la requête prévue (audit réseau de session : DELETE/PUT attendus uniquement, tous 200) ; ④ cascades conformes (sprint → stories supprimées conformément au dialogue ; doc importé → article survit ; run → exp survit) ; ⑤ UI à jour ; ⑥ aucune perte silencieuse (1 observation P3 consignée : removeImport sans vérif res.ok — cas d'échec non rencontré en test).
+- Preuves : `evidence/a2-lot1.json` + `evidence/a2-lot2.json` + 37 captures `a2-lot*.png` + comptages DB avant/après. État propriétaire préservé exactement (diff 18 tables vide).
+
+### A3 — Restauration des fichiers `upload/` démontrée (critère #3 SATISFAIT)
+- Sauvegarde C-1 intacte : 20 fichiers / 255 273 238 octets, SHA-256 100 % conformes. **Restauration réelle** vers `/tmp/restore-files-test` (isolé) : 100 % identique. Jeu de test contrôlé AUDIT-A3 (perte simulée → restauration → SHA-256 OK). **Cohérence DB↔fichiers : 16/16 ImportedDoc localisés** (4 dépôts directs taille conforme + 9 dérivés de RAR présents dans upload/ + 3 résidus docx de test classés AUD-DATA-001), 0 référence cassée, 0 document manquant.
+- Outillage versionné `scripts/verify-upload-backup.ts` ; procédure documentée `docs/SAUVEGARDE-RESTAURATION.md` §6. Preuve : `evidence/a3-upload-restore.json`. **Aucun essai sur l'unique copie réelle.**
+
+### A1 — Pass UI des 33 vues : lot 1 complet (8/8 validées), 25 restantes (critère #1 en cours)
+- 8 vues Rédaction/Structure validées en UI réelle (Brouillon de chapitre, Harper, Grammaire, Phrasier Académique, Déblocage écriture, Auto-édition 8C, Cadrage de thèse [DB-persistée prouvée], Plan de thèse) — `evidence/a1-lot1.json` + 60+ captures.
+- **Découverte : AUD-FUNC-007 (P2)** — GET /api/thesis sans partId : chapitres rattachés jamais affichés dans la vue Plan (attachement persiste, détachement inatteignable en UI ; contournement éditeur). + 9 observations P3 (outils à état local non persisté — cohérents avec l'inventaire C-3).
+- Reste 25 vues (lots 2-9) dont les 2 à dépendances externes (Overpass/APInex) en traitement individuel.
+
 ## 2. Tableau de conformité — 11 critères de sortie vers le GO final
 
 | # | Critère | Statut | Preuve | Commit | Limite / décision |
 |---|---|---|---|---|---|
-| 1 | 33 vues testées ; 47 statuts + preuves | ⬜ en cours (vague 2) | matrice v1.2 + JSON + captures (à venir) | — | vues externes traitées individuellement |
-| 2 | 13 actions destructives testées UI | ⬜ en cours (vague 2) | registre 16/16 (à venir) | — | — |
-| 3 | Restauration `upload/` démontrée | ⬜ en cours (vague 2) | JSON SHA-256 (à venir) | — | jamais d'essai sur l'unique copie |
+| 1 | 33 vues testées ; 47 statuts + preuves | 🟡 8/33 (lot 1 complet) | `evidence/a1-lot1.json` + captures | `bc71223` | 25 vues restantes (lots 2-9) |
+| 2 | 13 actions destructives testées UI | ✅ **16/16** | `evidence/a2-lot1.json` + `a2-lot2.json` + 37 captures | `bc71223` + commit lot 2 | — |
+| 3 | Restauration `upload/` démontrée | ✅ | `evidence/a3-upload-restore.json` + doc §6 | `bc71223` | copie manuelle statique (limite documentée) |
 | 4 | Références par thèse mise en œuvre + revalidée, ou report formel | 🟡 proposition soumise | `specs/ref-thesis-scoping/proposition-technique.md` | — | **autorisation distincte requise** |
 | 5 | Build web production + parcours critiques | ⬜ procédure livrée | `14_PROCEDURE_BUILD_WEB.md` (gabarit) | — | exécution propriétaire sur commit final |
 | 6 | Build Windows + smoke CSP durcie | ⬜ procédure livrée | `15_PROCEDURE_BUILD_WINDOWS.md` (gabarit) | — | exécution propriétaire ; résultats rapportés séparément |
