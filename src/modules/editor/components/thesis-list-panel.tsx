@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,14 +12,18 @@ import {
   GraduationCap,
 } from "lucide-react";
 import { useTheses, useDeleteThesis } from "@/modules/editor/hooks/use-thesis";
+import type { Thesis } from "@/modules/editor/hooks/use-thesis";
 import { useAppStore } from "@/lib/stores/app-store";
 import { CreateThesisDialog } from "./create-thesis-dialog";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 import { formatDistanceToNow } from "date-fns";
 
 export function ThesisListPanel() {
   const { data: theses, isLoading } = useTheses();
   const deleteThesis = useDeleteThesis();
   const { activeThesisId, setActiveThesisId, setActiveChapterId, setCurrentView } = useAppStore();
+  // C-3 (AUD-FUNC-003) : suppression de thèse uniquement après confirmation
+  const [deleteTarget, setDeleteTarget] = useState<Thesis | null>(null);
 
   if (isLoading) {
     return (
@@ -135,7 +140,7 @@ export function ThesisListPanel() {
                         className="h-8 w-8"
                         onClick={(e) => {
                           e.stopPropagation();
-                          deleteThesis.mutate(thesis.id);
+                          setDeleteTarget(thesis);
                         }}
                       >
                         <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
@@ -157,6 +162,25 @@ export function ThesisListPanel() {
       ) : (
         <EmptyState />
       )}
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression */}
+      <ConfirmDeleteDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title="Supprimer cette thèse ?"
+        description={
+          deleteTarget
+            ? `« ${deleteTarget.title} » et ses ${deleteTarget.chapters.length} chapitre(s) seront définitivement supprimés. Cette action est irréversible.`
+            : undefined
+        }
+        isPending={deleteThesis.isPending}
+        onConfirm={() => {
+          if (!deleteTarget) return;
+          deleteThesis.mutate(deleteTarget.id, {
+            onSettled: () => setDeleteTarget(null),
+          });
+        }}
+      />
     </div>
   );
 }

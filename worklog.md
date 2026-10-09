@@ -1659,3 +1659,24 @@ Stage Summary:
 - Observation consignée pour arbitrage propriétaire : références = bibliothèque globale par conception (pas d'isolation par thèse possible sans évolution de schéma — hors périmètre C-2).
 - Anomalies annexes rencontrées (hors périmètre, consignées) : OOM kernel du serveur dev (RSS 2,5 Go) ; POST /api/references 400 si année vide (AUD-FUNC-005).
 ---
+---
+Task ID: R-3 (audit-remediation-p1 / C-3)
+Agent: full-stack-developer
+Task: C-3 AUD-FUNC-003 — confirmation avant toute suppression + inventaire des actions destructives.
+
+Work Log:
+- Contexte chargé (worklog, spec cycle, CA-3) ; baseline 6436ed7, arbre propre ; snapshot DB lecture seule : 1 thèse « Urbanisme durable », 7 chapitres / 2 295 mots, 4 réf, 16 ImportedDoc ; serveur 200.
+- Phase 1 (preuve AVANT correction, agent-browser) : création réf test « AUDIT-C3 — à supprimer » (POST 201) ; clic poubelle ligne → suppression IMMÉDIATE : 0 alertdialog, ligne disparue, DELETE /api/references/{id} 200 dans le réseau. Captures c3-before-*.png. Les 4 réf propriétaires jamais touchées (comptage DB identique avant/après session).
+- Phase 2 (inventaire exhaustif, lecture seule) : greps Trash2/method DELETE/onDelete/.mutate/Supprimer-Réinitialiser-Effacer-Clear/deleteMany sur src. Verdict : 16 actions destructives persistantes sans confirmation (references, thesis-list-panel, chapitre via editor-page, ai-tools source+note, expérimentations exp+run, verification-carto, thesis-plan partie, onglet-recherche fermer-onglet+effacer-contenu, article-redaction article+import, registre-juridique, feuille-route-agile story+sprint) ; 2 déjà conformes (veille-academique AlertDialog ; livres-competences confirm() natif) non touchés ; ~20 actions d'état local non persisté consignées sans traitement ; 2 deleteMany serveur (rag re-chunking, veille) consignés sans UI inventée.
+- Phase 3 (correction) : nouveau composant partagé src/components/common/confirm-delete-dialog.tsx (AlertDialog shadcn, props {open, onOpenChange, onConfirm, title?, description?, confirmLabel?, isPending?}, bouton destructive, preventDefault + isPending) appliqué aux 16 actions dans 11 fichiers : le clic n'ouvre QUE la confirmation, la mutation/fetch n'est déclenchée QUE par onConfirm ; stopPropagation conservés (thesis-list-panel) ; handleDeleteChapter rewire (editor-page, ligne « \n » C-13 intacte) ; onglet X « Fermer » révélé destructif (DELETE persisté) et confirmé.
+- Phase 4 (UI réelle, sessions courtes) : réf test → dialogue ; Annuler = 0 requête (diff réseau vide, 0 DELETE) + ligne en UI + DB (5 réf) ; re-clic → Confirmer = DELETE 200 + ligne disparue (4 réf). Thèse jetable AUDIT-C3 (POST 201, 7 chapitres template) → poubelle ThesisListPanel → dialogue, Annuler (2 thèses en DB), Confirmer = DELETE 200 + cascade. Chapitre 8 ajouté sur la thèse jetable → poubelle chapter-header → dialogue « Supprimer ce chapitre ? », Annuler (15 chapitres en DB), Confirmer = DELETE 200 (14 chapitres). Captures c3-cancel/c3-confirm*/c3-chapter*/c3-thesis-*.png. 13 autres actions persistantes vérifiées par code (handler ne mute qu'après confirm) — statuts consignés dans le JSON.
+- TNR : bun run lint → 0 erreur / 247 warnings (= baseline) ; bun run test:run → 78 fichiers, 1 658/1 658 verts ; AUCUNE adaptation de test nécessaire (aucun test ne cliquait un bouton delete — grep 0 occurrence) ; tsc : 0 erreur sur fichiers modifiés (154 lignes d'erreurs préexistantes route.test.ts hors périmètre, identiques avant/après).
+- Cleanup : thèse jetable + chapitre + 2 réf test supprimés via le NOUVEAU flux de confirmation ; DB finale = état propriétaire EXACT (1 thèse, 7 chapitres / 2 295 mots, 4 réf, 16 docs, corpus 6 737 798 car., ElementAnalyse 1, Job 24, ChapterVersion 6).
+- Invariants : lignes rouges 0 diff (theses-en-ligne/search, arxiv/search, app-sidebar) ; db skip-worktree intacte ; pas de db push, pas de build, pas de commit ; AUD-FUNC-005 et C-13 non touchés.
+- Preuves : audit/baseline/evidence/c3-revalidation.json (inventaire complet 16+2+~20+2 entrées, avant/après, annulations/confirmations, statuts de vérification) + 11 captures c3-*.png.
+
+Stage Summary:
+- AUD-FUNC-003 CORRIGÉE et revalidée : toute suppression destructive persistante exige désormais une confirmation explicite ; Annuler = 0 requête / 0 modification (prouvé réseau + DB), suppression uniquement après confirmation (prouvé DELETE 200 + disparition UI/DB) sur les 3 parcours complets (référence, thèse, chapitre).
+- Inventaire exhaustif consigné : 16 actions corrigées via 1 composant partagé (ConfirmDeleteDialog), 2 déjà conformes, ~20 non persistantes (état local) et 2 régénérations serveur documentées sans sur-traitement.
+- TNR verts sans adaptation de test (1 658), lint 0 erreur, rouges 0 diff, données propriétaire intactes.
+---

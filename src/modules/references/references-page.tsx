@@ -46,6 +46,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef, useCallback } from "react";
 import { toast } from "sonner";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 
 interface Reference {
   id: string;
@@ -152,6 +153,8 @@ export function ReferencesPage() {
   const [sourceFilter, setSourceFilter] = useState("all");
   const [createOpen, setCreateOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  // C-3 (AUD-FUNC-003) : suppression de référence uniquement après confirmation
+  const [deleteTarget, setDeleteTarget] = useState<Reference | null>(null);
 
   const { data: references, isLoading } = useQuery({
     queryKey: ["references", { type: typeFilter, search, source: sourceFilter }],
@@ -347,7 +350,7 @@ export function ReferencesPage() {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7"
-                        onClick={() => deleteRef.mutate(ref.id)}
+                        onClick={() => setDeleteTarget(ref)}
                       >
                         <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
                       </Button>
@@ -413,6 +416,25 @@ export function ReferencesPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression */}
+      <ConfirmDeleteDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title="Supprimer cette référence ?"
+        description={
+          deleteTarget
+            ? `« ${deleteTarget.title} » sera définitivement supprimée de votre bibliographie. Cette action est irréversible.`
+            : undefined
+        }
+        isPending={deleteRef.isPending}
+        onConfirm={() => {
+          if (!deleteTarget) return;
+          deleteRef.mutate(deleteTarget.id, {
+            onSettled: () => setDeleteTarget(null),
+          });
+        }}
+      />
     </div>
   );
 }

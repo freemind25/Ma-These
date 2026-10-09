@@ -51,6 +51,7 @@ import {
 } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { useAiConfig } from "@/hooks/use-ai-config";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 
 // ═══════════════════════════════════════
 // Types
@@ -150,9 +151,11 @@ export function FeuilleRouteAgilePage() {
 
   // ─── Track which column each story is visually in (for "in_review" which has no DB status) ───
   const [storyColumnMap, setStoryColumnMap] = useState<Record<string, ColumnId>>({});
-
   // ─── Active tab ───
   const [activeTab, setActiveTab] = useState("kanban");
+  // C-3 (AUD-FUNC-003) : suppressions destructives uniquement après confirmation
+  const [storyToDelete, setStoryToDelete] = useState<AgileStory | null>(null);
+  const [sprintToDelete, setSprintToDelete] = useState<AgileSprint | null>(null);
 
   // ═══════════════════════════════════════
   // Queries
@@ -417,7 +420,7 @@ export function FeuilleRouteAgilePage() {
             variant="ghost"
             size="icon"
             className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-            onClick={() => deleteStoryMutation.mutate(story.id)}
+            onClick={() => setStoryToDelete(story)}
           >
             <Trash2 className="h-3 w-3 text-muted-foreground" />
           </Button>
@@ -628,7 +631,7 @@ export function FeuilleRouteAgilePage() {
             variant="ghost"
             size="sm"
             className="text-muted-foreground hover:text-destructive"
-            onClick={() => deleteSprintMutation.mutate(activeSprint.id)}
+            onClick={() => setSprintToDelete(activeSprint)}
           >
             <Trash2 className="h-3.5 w-3.5 mr-1.5" />
             Supprimer ce sprint
@@ -907,6 +910,44 @@ export function FeuilleRouteAgilePage() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression d'une story */}
+      <ConfirmDeleteDialog
+        open={!!storyToDelete}
+        onOpenChange={(open) => !open && setStoryToDelete(null)}
+        title="Supprimer cette story ?"
+        description={
+          storyToDelete
+            ? `« ${storyToDelete.title} » sera définitivement supprimée du tableau Kanban. Cette action est irréversible.`
+            : undefined
+        }
+        isPending={deleteStoryMutation.isPending}
+        onConfirm={() => {
+          if (!storyToDelete) return;
+          deleteStoryMutation.mutate(storyToDelete.id, {
+            onSettled: () => setStoryToDelete(null),
+          });
+        }}
+      />
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression du sprint */}
+      <ConfirmDeleteDialog
+        open={!!sprintToDelete}
+        onOpenChange={(open) => !open && setSprintToDelete(null)}
+        title="Supprimer ce sprint ?"
+        description={
+          sprintToDelete
+            ? `« ${sprintToDelete.title} » et toutes ses stories seront définitivement supprimés. Cette action est irréversible.`
+            : undefined
+        }
+        isPending={deleteSprintMutation.isPending}
+        onConfirm={() => {
+          if (!sprintToDelete) return;
+          deleteSprintMutation.mutate(sprintToDelete.id, {
+            onSettled: () => setSprintToDelete(null),
+          });
+        }}
+      />
     </div>
   );
 

@@ -40,6 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 
 // ═══════════════════════════════════════════════════════════
 // Types
@@ -369,13 +370,17 @@ function ExperimentDetail({
 }: {
   experiment: Experiment;
   onPatch: (patch: Partial<Experiment>) => Promise<unknown>;
-  onDelete: () => void;
+  onDelete: () => void | Promise<void>;
 }) {
   const { toast } = useToast();
   const [conclusion, setConclusion] = useState(experiment.conclusion ?? "");
   const [runDialogOpen, setRunDialogOpen] = useState(false);
   const [editingRun, setEditingRun] = useState<ExpRun | null>(null);
   const [savingConclusion, setSavingConclusion] = useState(false);
+  // C-3 (AUD-FUNC-003) : suppressions uniquement après confirmation
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [runDeleteTarget, setRunDeleteTarget] = useState<ExpRun | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const stats = useMemo(() => {
     const runs = experiment.runs ?? [];
@@ -433,6 +438,28 @@ function ExperimentDetail({
     [experiment.id, onPatch, toast]
   );
 
+  // C-3 (AUD-FUNC-003) : handlers de confirmation de suppression
+  const handleConfirmDeleteExperiment = useCallback(async () => {
+    setIsDeleting(true);
+    try {
+      await onDelete();
+    } finally {
+      setIsDeleting(false);
+      setDeleteConfirmOpen(false);
+    }
+  }, [onDelete]);
+
+  const handleConfirmDeleteRun = useCallback(async () => {
+    if (!runDeleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await deleteRun(runDeleteTarget);
+    } finally {
+      setIsDeleting(false);
+      setRunDeleteTarget(null);
+    }
+  }, [runDeleteTarget, deleteRun]);
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -442,7 +469,7 @@ function ExperimentDetail({
             variant="ghost"
             size="icon"
             className="h-8 w-8 text-muted-foreground hover:text-destructive"
-            onClick={onDelete}
+            onClick={() => setDeleteConfirmOpen(true)}
             title="Supprimer l'expérimentation"
           >
             <Trash2 className="h-4 w-4" />
@@ -601,7 +628,7 @@ function ExperimentDetail({
                           variant="ghost"
                           size="icon"
                           className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                          onClick={() => deleteRun(run)}
+                          onClick={() => setRunDeleteTarget(run)}
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
@@ -692,6 +719,30 @@ function ExperimentDetail({
           setRunDialogOpen(false);
           await onPatch({});
         }}
+      />
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression de l'expérimentation */}
+      <ConfirmDeleteDialog
+        open={deleteConfirmOpen}
+        onOpenChange={setDeleteConfirmOpen}
+        title="Supprimer cette expérimentation ?"
+        description={`« ${experiment.title} » et tous ses runs seront définitivement supprimés. Cette action est irréversible.`}
+        isPending={isDeleting}
+        onConfirm={handleConfirmDeleteExperiment}
+      />
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression d'un run */}
+      <ConfirmDeleteDialog
+        open={!!runDeleteTarget}
+        onOpenChange={(open) => !open && setRunDeleteTarget(null)}
+        title="Supprimer ce run ?"
+        description={
+          runDeleteTarget
+            ? `Le run « ${runDeleteTarget.label || runDeleteTarget.variant || runDeleteTarget.id} » sera définitivement supprimé. Cette action est irréversible.`
+            : undefined
+        }
+        isPending={isDeleting}
+        onConfirm={handleConfirmDeleteRun}
       />
     </Card>
   );

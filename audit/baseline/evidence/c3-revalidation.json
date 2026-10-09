@@ -1,0 +1,329 @@
+{
+  "task_id": "R-3",
+  "cycle": "audit-remediation-p1",
+  "correction": "C-3",
+  "anomaly": "AUD-FUNC-003 — suppression destructive sans confirmation explicite",
+  "date": "2026-10-09",
+  "agent": "full-stack-developer",
+  "baseline_git": "6436ed7 (C-2 poussé)",
+  "exigences_proprietaire": [
+    "confirmation explicite AVANT suppression",
+    "Annuler = aucune requête émise et aucune donnée modifiée",
+    "suppression uniquement après confirmation",
+    "inventaire de TOUTES les actions destructives avec traitement",
+    "régressions documentées"
+  ],
+
+  "phase1_preuve_defaut_avant_correction": {
+    "methode": "UI réelle agent-browser (session courte) + réseau + DB lecture seule",
+    "objet_test": "référence « AUDIT-C3 — à supprimer » (id cmv18cbz80009jjivlf2aukg8, POST /api/references 201)",
+    "reproduit": {
+      "clic_poubelle_ligne_AUDIT-C3": "suppression IMMÉDIATE",
+      "dialogue_affiche": 0,
+      "alertdialog_count": 0,
+      "dialog_content_count": 0,
+      "reseau": "DELETE http://localhost:3000/api/references/cmv18cbz80009jjivlf2aukg8 200",
+      "ui_apres_clic": "ligne disparue (rowsLeft 4, auditStillThere false)",
+      "captures": [
+        "audit/baseline/evidence/c3-before-list.png",
+        "audit/baseline/evidence/c3-before-no-confirm.png",
+        "audit/baseline/evidence/c3-before-no-confirm-after-click.png"
+      ]
+    },
+    "donnees_reelles": "intactes — les 4 références du corpus (identiques à c2-revalidation.json) n'ont pas été touchées ; l'inventaire réseau daemon contenait un DELETE antérieur à la session (session audit baseline), vérifié sans impact (comptage DB 4 avant et après)"
+  },
+
+  "phase2_inventaire_exhaustif_actions_destructives": {
+    "methode": "grep systématique : Trash2/Trash, method DELETE, onDelete/handleDelete/deleteMutation, .mutate( delete*, Supprimer/Réinitialiser/Vider/Effacer/Clear/reset/purge, deleteMany",
+    "a_corrige_confirme_persistantes": [
+      {
+        "fichier": "src/modules/references/references-page.tsx",
+        "ligne_avant": 350,
+        "ligne_apres": 353,
+        "action": "poubelle ligne → deleteRef.mutate → DELETE /api/references/{id}",
+        "donnees": "référence bibliographique (bibliothèque globale)",
+        "statut_avant": "suppression immédiate sans dialogue (reproduit en Phase 1)",
+        "traitement": "onClick → setDeleteTarget(ref) ; ConfirmDeleteDialog ; mutation uniquement dans onConfirm (onSettled ferme)",
+        "verification": "vérifiée en UI — Annuler 0 requête / Confirmer DELETE 200"
+      },
+      {
+        "fichier": "src/modules/editor/components/thesis-list-panel.tsx",
+        "ligne_avant": "136-139",
+        "ligne_apres": "141-144",
+        "action": "poubelle carte thèse → deleteThesis.mutate → DELETE /api/thesis/{id} (cascade 7 chapitres)",
+        "donnees": "thèse + chapitres + versions en cascade",
+        "statut_avant": "suppression immédiate sans dialogue (déjà utilisée en C-2 sur objet test)",
+        "traitement": "onClick → e.stopPropagation() conservé + setDeleteTarget(thesis) ; ConfirmDeleteDialog ; mutate uniquement dans onConfirm",
+        "verification": "vérifiée en UI — thèse jetable AUDIT-C3 : Annuler (0 DELETE, thèse présente UI+DB) puis Confirmer (DELETE 200, cascade)"
+      },
+      {
+        "fichier": "src/modules/editor/editor-page.tsx (via chapter-header.tsx:191 onDelete)",
+        "ligne_avant": "143-147",
+        "ligne_apres": "147-158",
+        "action": "poubelle chapter-header → handleDeleteChapter → deleteChapter.mutate → DELETE /api/chapters/{id}",
+        "donnees": "chapitre + versions (Cascade)",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "handleDeleteChapter → setDeleteChapterTarget(activeChapterId) ; ConfirmDeleteDialog rendu sous ChapterHeader ; mutate uniquement dans handleConfirmDeleteChapter ; ligne C-13 « \\n » l.221 (ex-204) NON touchée",
+        "verification": "vérifiée en UI — chapitre 8 de la thèse jetable : Annuler (0 DELETE, chapitre en DB) puis Confirmer (DELETE 200, tab disparu)"
+      },
+      {
+        "fichier": "src/modules/ai-tools/ai-tools-page.tsx",
+        "ligne_avant": 363,
+        "ligne_apres": 367,
+        "action": "poubelle source → deleteSource.mutate → DELETE /api/sources/{id}",
+        "donnees": "source de recherche du carnet",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "ConfirmDeleteDialog « Supprimer cette source ? » ; mutate uniquement dans onConfirm",
+        "verification": "vérifiée par code — onClick ne mute plus (setDeleteSourceTarget)"
+      },
+      {
+        "fichier": "src/modules/ai-tools/ai-tools-page.tsx",
+        "ligne_avant": 499,
+        "ligne_apres": 503,
+        "action": "poubelle note → deleteEntry.mutate → DELETE /api/entries/{id}",
+        "donnees": "note/entrée du carnet de recherche",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "ConfirmDeleteDialog « Supprimer cette note ? » ; mutate uniquement dans onConfirm",
+        "verification": "vérifiée par code — onClick ne mute plus (setDeleteEntryTarget)"
+      },
+      {
+        "fichier": "src/modules/experimentations/experimentations-page.tsx",
+        "ligne_avant": "333/445",
+        "ligne_apres": 472,
+        "action": "poubelle détail → onDelete → deleteExperiment → DELETE /api/experiments/{id}",
+        "donnees": "expérimentation + tous ses runs",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "ConfirmDeleteDialog « Supprimer cette expérimentation ? » ; await onDelete() uniquement dans onConfirm (isDeleting local)",
+        "verification": "vérifiée par code — bouton n'appelle plus onDelete directement"
+      },
+      {
+        "fichier": "src/modules/experimentations/experimentations-page.tsx",
+        "ligne_avant": 604,
+        "ligne_apres": 631,
+        "action": "poubelle run → deleteRun → DELETE /api/experiments/{id}/runs/{runId}",
+        "donnees": "run d'expérimentation (mesures, verdict)",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "ConfirmDeleteDialog « Supprimer ce run ? » ; deleteRun uniquement dans handleConfirmDeleteRun",
+        "verification": "vérifiée par code — bouton n'appelle plus deleteRun directement"
+      },
+      {
+        "fichier": "src/modules/verification-carto/verification-carto-page.tsx",
+        "ligne_avant": 980,
+        "ligne_apres": 983,
+        "action": "poubelle élément → handleDeleteElement → DELETE /api/elements-analyse/{id}",
+        "donnees": "élément d'analyse cartographique",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "ConfirmDeleteDialog « Supprimer cet élément d'analyse ? » ; handleDeleteElement uniquement dans onConfirm",
+        "verification": "vérifiée par code — (ElementAnalyse propriétaire n=1 jamais touché)"
+      },
+      {
+        "fichier": "src/modules/thesis-plan/thesis-plan-page.tsx",
+        "ligne_avant": "439/564-572",
+        "ligne_apres": "440 (onDelete conservé) / 567-573 (handler) / 953-971 (dialog)",
+        "action": "poubelle partie → handleDeletePart → deletePart.mutate → DELETE /api/parts/{id}",
+        "donnees": "partie du plan (chapitres rattachés détachés, pas supprimés)",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "handleDeletePart → setDeletePartId(id) ; ConfirmDeleteDialog ; mutate uniquement dans onConfirm",
+        "verification": "vérifiée par code"
+      },
+      {
+        "fichier": "src/modules/onglet-recherche/onglet-recherche-page.tsx",
+        "ligne_avant": 970,
+        "ligne_apres": 975,
+        "action": "bouton X onglet (aria « Fermer l'onglet ») → closeTab → deleteMutation → DELETE /api/research-tabs/{id}",
+        "donnees": "onglet de recherche + tout son contenu persisté (notes, liens, citations, tâches)",
+        "statut_avant": "DELETE immédiat sans dialogue (libellé « fermer » trompeur : destruction persistée)",
+        "traitement": "X → setTabToDeleteId(tab.id) ; ConfirmDeleteDialog « Supprimer cet onglet de recherche ? » ; closeTab uniquement dans onConfirm",
+        "verification": "vérifiée par code"
+      },
+      {
+        "fichier": "src/modules/onglet-recherche/onglet-recherche-page.tsx",
+        "ligne_avant": 1048,
+        "ligne_apres": 1053,
+        "action": "bouton « Effacer » → clearTab → PUT save (notes:'', links:[], quotes:[], todos:[])",
+        "donnees": "contenu ENTIER persisté de l'onglet actif",
+        "statut_avant": "effacement persisté immédiat sans dialogue",
+        "traitement": "ConfirmDeleteDialog « Effacer tout le contenu de l'onglet ? » (confirmLabel Effacer) ; clearTab uniquement dans onConfirm",
+        "verification": "vérifiée par code"
+      },
+      {
+        "fichier": "src/modules/article-redaction/article-redaction-page.tsx",
+        "ligne_avant": 909,
+        "ligne_apres": 914,
+        "action": "poubelle article → deleteArticle → DELETE /api/articles/{id}",
+        "donnees": "article + sections + versions",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "ConfirmDeleteDialog « Supprimer cet article ? » ; deleteArticle uniquement dans onConfirm",
+        "verification": "vérifiée par code"
+      },
+      {
+        "fichier": "src/modules/article-redaction/article-redaction-page.tsx",
+        "ligne_avant": 1005,
+        "ligne_apres": 1010,
+        "action": "poubelle doc source → removeImport → DELETE /api/article-imports?id={id}",
+        "donnees": "ImportedDoc (PDF blob + texte OCR)",
+        "statut_avant": "suppression immédiate sans dialogue — les 16 ImportedDoc propriétaires étaient à un clic",
+        "traitement": "ConfirmDeleteDialog « Retirer ce document source ? » ; removeImport uniquement dans onConfirm",
+        "verification": "vérifiée par code — 16 ImportedDoc intacts (205 551 633 o, 12 blobs)"
+      },
+      {
+        "fichier": "src/modules/livres-competences/registre-juridique-tab.tsx",
+        "ligne_avant": 315,
+        "ligne_apres": 318,
+        "action": "poubelle entrée → remove → DELETE /api/legal-refs/{id}",
+        "donnees": "entrée du registre juridique URBANIS-DZ",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "ConfirmDeleteDialog « Supprimer cette entrée juridique ? » ; remove uniquement dans onConfirm",
+        "verification": "vérifiée par code"
+      },
+      {
+        "fichier": "src/modules/feuille-route-agile/feuille-route-agile-page.tsx",
+        "ligne_avant": 420,
+        "ligne_apres": 423,
+        "action": "poubelle story → deleteStoryMutation → DELETE /api/stories/{id}",
+        "donnees": "story Kanban",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "ConfirmDeleteDialog « Supprimer cette story ? » ; mutate uniquement dans onConfirm",
+        "verification": "vérifiée par code"
+      },
+      {
+        "fichier": "src/modules/feuille-route-agile/feuille-route-agile-page.tsx",
+        "ligne_avant": 631,
+        "ligne_apres": 634,
+        "action": "bouton « Supprimer ce sprint » → deleteSprintMutation → DELETE /api/sprints/{id} (cascade stories)",
+        "donnees": "sprint + toutes ses stories",
+        "statut_avant": "suppression immédiate sans dialogue",
+        "traitement": "ConfirmDeleteDialog « Supprimer ce sprint ? » ; mutate uniquement dans onConfirm",
+        "verification": "vérifiée par code"
+      }
+    ],
+    "deja_conformes_non_touches": [
+      {
+        "fichier": "src/modules/veille-academique/veille-academique-page.tsx",
+        "ligne": "341-363 (bouton l.450-451)",
+        "action": "poubelle veille → DELETE /api/veille/{id}",
+        "confirmation_existante": "AlertDialog « Supprimer cette veille ? » + Annuler + Supprimer (bg-red-600) + pending",
+        "decision": "déjà conforme — non touché"
+      },
+      {
+        "fichier": "src/modules/livres-competences/livres-competences-page.tsx",
+        "ligne": "1295-1298 (bouton l.1466)",
+        "action": "poubelle ressource → confirm() natif « Supprimer cette ressource ? » → DELETE /api/book-skills/{id}",
+        "confirmation_existante": "confirm() natif bloquant — confirmation explicite avant suppression",
+        "decision": "déjà conforme — non touché (consigne propriétaire : ne pas retoucher les endroits déjà conformes)"
+      }
+    ],
+    "non_persistants_etat_local_consignes_sans_traitement": [
+      { "fichier": "src/modules/diagrammes/diagrammes-page.tsx", "lignes": "681-693/718-721/756-760 (poubelles l.1178/1237/1284 + l.445 décorative sans onClick)", "action": "removeNode/removeColumn/removeRow", "raison": "diagramme en édition = useState local, AUCUN fetch DELETE ni persistance — aucune donnée DB détruite" },
+      { "fichier": "src/modules/outils-slr/outils-slr-page.tsx", "lignes": "395, 742, 772", "action": "removeCriterion", "raison": "useState local (INITIAL_CRITERIA), non persisté" },
+      { "fichier": "src/modules/apinex/apinex-page.tsx", "lignes": "480-482, 614-619", "action": "« Effacer » conversation (clearConversation)", "raison": "setMessages([]) — conversation non persistée" },
+      { "fichier": "src/modules/apa-composer/apa-composer-page.tsx", "lignes": "830-836, 984-986, 1157-1163, 1098", "action": "handleDeleteRef (liste session) + Effacer formulaire + Effacer import", "raison": "références APA en état React local (aucune API), non persistées" },
+      { "fichier": "src/modules/article-redaction/article-redaction-page.tsx", "lignes": "1289, 1472-1482", "action": "retrait section plan (local) + Effacer traductions", "raison": "plan/traductions en état local avant sauvegarde explicite" },
+      { "fichier": "src/modules/onglet-recherche/onglet-recherche-page.tsx", "lignes": "573-581, 599-607, 635-643 (l.1178/1269/1359)", "action": "removeLink/removeQuote/removeTodo", "raison": "retrait granulaire d'items d'une liste éditable de l'onglet (acte d'édition inverse à l'ajout, sauvegarde debounced de l'ensemble) — non traité, consigné" },
+      { "fichier": "src/modules/routesme/routesme-page.tsx", "lignes": "429-439, 747-757", "action": "resetComparison + Effacer historique", "raison": "setHistory([])/setCurrentResults([]) — état session" },
+      { "fichier": "src/modules/harper/harper-page.tsx", "lignes": "344-347, 366-369, 669-670, 793-794", "action": "Effacer (input/résultat) + Effacer historique", "raison": "état local de session" },
+      { "fichier": "src/modules/traducteur/traducteur-page.tsx", "lignes": "220", "action": "Effacer (handleClear)", "raison": "textarea/résultat état local" },
+      { "fichier": "src/modules/grammaire/grammaire-page.tsx", "lignes": "235-236", "action": "Effacer (handleClear)", "raison": "état local" },
+      { "fichier": "src/modules/analyse-champ-recherche/analyse-champ-recherche-page.tsx", "lignes": "294-306, 950, 972", "action": "removeNode/removeChildNode (× nœuds)", "raison": "knowledgeMap useState local, non persisté" },
+      { "fichier": "src/modules/boite-doctorale/boite-doctorale-page.tsx", "lignes": "635-637, 1035", "action": "removeContact", "raison": "contacts useState local, non persisté" },
+      { "fichier": "src/modules/livres-competences/livres-competences-page.tsx", "lignes": "582-590, 728-731", "action": "Réinitialiser auto-évaluation (handleResetAll)", "raison": "reset des niveaux locaux AVANT sauvegarde explicite (handleSaveAssessment)" },
+      { "fichier": "src/modules/auto-edition/auto-edition-page.tsx", "lignes": "766-775", "action": "Réinitialiser", "raison": "reset état local de la session d'analyse" },
+      { "fichier": "src/modules/verification-methodo/verification-methodo-page.tsx", "lignes": "908-917, 1102-1111", "action": "Réinitialiser (×2)", "raison": "reset formulaires locaux" },
+      { "fichier": "src/modules/phrasebook/phrasebook-page.tsx", "lignes": "258-264", "action": "Réinitialiser les filtres", "raison": "filtres locaux" },
+      { "fichier": "src/modules/theses-en-ligne/theses-en-ligne-page.tsx", "lignes": "298-301", "action": "Réinitialiser", "raison": "filtres locaux" },
+      { "fichier": "src/modules/explorateur-theses/explorateur-theses-page.tsx", "lignes": "481-487", "action": "Réinitialiser", "raison": "filtres locaux" },
+      { "fichier": "src/modules/recherche-plein-texte/recherche-plein-texte-page.tsx", "lignes": "333, 374-377", "action": "Effacer la recherche / Réinitialiser", "raison": "filtres locaux" }
+    ],
+    "destructions_serveur_sans_bouton_utilisateur": [
+      { "fichier": "src/lib/rag/rag-service.ts", "ligne": 271, "action": "db.documentChunk.deleteMany (re-chunking lors d'une indexation)", "traitement": "programmation serveur — déclenchée par une action de régénération, pas de suppression utilisateur ; consigné sans UI inventée (cas §3.3 mission)" },
+      { "fichier": "src/lib/veille/run-check.ts", "ligne": 272, "action": "db.savedSearchResult.deleteMany (remplacement des résultats d'un check de veille)", "traitement": "programmation serveur — régénération ; consigné sans UI inventée" }
+    ]
+  },
+
+  "phase3_correction": {
+    "composant_partage": "src/components/common/confirm-delete-dialog.tsx (NOUVEAU)",
+    "pattern": "AlertDialog shadcn — props {open, onOpenChange, onConfirm, title?, description?, confirmLabel?, cancelLabel?, isPending?} ; bouton confirmation = buttonVariants({variant:'destructive'}) ; e.preventDefault() pour garder le dialogue ouvert pendant isPending ; Annuler/Esc/overlay = onOpenChange(false) SANS aucune requête",
+    "fichiers_modifies": 11,
+    "actions_confirmees_traitees": 16,
+    "invariants_respectes": [
+      "src/app/api/theses-en-ligne/search/route.ts : 0 diff",
+      "src/app/api/arxiv/search/route.ts : 0 diff",
+      "src/components/layout/app-sidebar.tsx : 0 diff",
+      "editor-page.tsx ligne « \\n » (C-13) : NON touchée (présente, ex-204 → désormais l.221 après décalage)",
+      "double POST références (AUD-FUNC-005) : non traité (hors périmètre)",
+      "dashboard-page.tsx / create-thesis-dialog.tsx (C-2) : non touchés (aucune action destructive)",
+      "pas de modification schema/DB, pas de dépendance ajoutée, pas de git commit/push",
+      "db/custom.db skip-worktree intact"
+    ]
+  },
+
+  "phase4_verification_ui_reelle": {
+    "references_parcours_complet": {
+      "objet": "référence test « AUDIT-C3 — à supprimer » (id cmv18ovog000ajjiv2rhum0q5, POST 201)",
+      "clic_poubelle": "ConfirmDeleteDialog affiché : titre « Supprimer cette référence ? », boutons [Annuler, Supprimer]",
+      "annuler": {
+        "action": "clic Annuler",
+        "alertdialog_restant": 0,
+        "requete_emise": 0,
+        "preuve_reseau": "diff network requests avant/après Annuler = vide ; 0 DELETE total",
+        "ligne_en_ui": true,
+        "ligne_en_db": true,
+        "db_reference_count": 5,
+        "captures": ["audit/baseline/evidence/c3-cancel.png"]
+      },
+      "confirmer": {
+        "action": "re-clic poubelle puis clic Supprimer",
+        "alertdialog_restant": 0,
+        "reseau": "DELETE /api/references/cmv18ovog000ajjiv2rhum0q5 200",
+        "ligne_en_ui": false,
+        "db_reference_count": 4,
+        "captures": ["audit/baseline/evidence/c3-confirm-dialog.png", "audit/baseline/evidence/c3-confirm.png"]
+      }
+    },
+    "these_jetable": {
+      "objet": "« AUDIT-C3 — Thèse jetable » (id cmv18rko1000bjjiv54vu1ixw, POST 201, 7 chapitres template auto)",
+      "clic_poubelle_thesis_list_panel": "ConfirmDeleteDialog « Supprimer cette thèse ? » — « et ses 7 chapitre(s) seront définitivement supprimés »",
+      "annuler": { "requete": 0, "thèse_en_ui": true, "thèse_en_db": true, "db_thesis_count": 2 },
+      "confirmer": { "reseau": "DELETE /api/thesis/cmv18rko1000bjjiv54vu1ixw 200", "thèse_en_ui": false, "cascade_chapitres": "Chapter 14 → (puis 7)" },
+      "captures": ["audit/baseline/evidence/c3-thesis-dialog.png", "audit/baseline/evidence/c3-thesis-confirm.png"]
+    },
+    "chapitre_jetable": {
+      "contexte": "thèse jetable ouverte, chapitre VIII « Chapitre 8 » ajouté via + (POST, comportement existant)",
+      "clic_poubelle_chapter_header": "ConfirmDeleteDialog « Supprimer ce chapitre ? » — « « Chapitre 8 » (0 mots) et son historique de versions seront définitivement supprimés »",
+      "annuler": { "requete": 0, "chapitre_en_db": true, "db_chapter_count": 15 },
+      "confirmer": { "reseau": "DELETE /api/chapters/cmv18tomm000kjjivydnceyhv 200", "tab_disparu": true, "db_chapter_count": 14 },
+      "captures": ["audit/baseline/evidence/c3-chapter-dialog.png", "audit/baseline/evidence/c3-chapter-dialog-open.png", "audit/baseline/evidence/c3-chapter-confirm.png"]
+    },
+    "verification_par_code_autres_actions": "voir phase2_inventaire (champ verification de chaque entrée) — 13 actions persistantes vérifiées par code (le handler ne mute qu'après confirm), 3 parcours complets vérifiés en UI (référence, thèse, chapitre)"
+  },
+
+  "tnr": {
+    "lint": { "commande": "bun run lint", "resultat": "0 erreur, 247 warnings (= baseline C-2, aucun nouveau warning)" },
+    "tests": { "commande": "bun run test:run", "resultat": "78 fichiers, 1658/1658 verts (19,01 s)", "attende": "~1658", "conforme": true },
+    "adaptations_de_tests": [],
+    "adaptations_note": "AUCUNE adaptation nécessaire : aucun test existant ne cliquait directement un bouton de suppression (grep Trash2/deleteRef/deleteThesis/deleteChapter/Supprimer dans *.test.* = 0 occurrence)",
+    "typescript": "bunx tsc --noEmit : 0 erreur sur les fichiers modifiés ; total erreurs préexistantes (route.test.ts, hors périmètre) identique avant/après (154 lignes)"
+  },
+
+  "regressions_et_anomalies_rencontrees": [
+    "Agent-browser : premier « find text Supprimer » a cliqué sans action effective (élément texte ≠ bouton) — repris par ref directe (@e102) ; sans impact produit",
+    "tsc : 154 lignes d'erreurs PRÉ-EXISTANTES dans les *.test.ts (mocks vi), hors périmètre, comptage identique avant/après"
+  ],
+
+  "etat_proprietaire_apres_mission": {
+    "Thesis": 1,
+    "Chapter": 7,
+    "Reference": 4,
+    "ImportedDoc": 16,
+    "Part": 0,
+    "SavedSearch": 0,
+    "ResearchTab": 0,
+    "ChapterVersion": 6,
+    "Job": 24,
+    "ElementAnalyse": 1,
+    "corpus": { "docs": 16, "chars": 6737798, "blobs": 12, "bytes": 205551633 },
+    "thesisWords": 2295,
+    "thesisTitles": ["Urbanisme durable"],
+    "conforme": true
+  }
+}

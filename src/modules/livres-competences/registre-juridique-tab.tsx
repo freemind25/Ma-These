@@ -30,6 +30,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Scale, Plus, Pencil, Trash2, Search, Loader2 } from "lucide-react";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 
 interface LegalRefRow {
   id: string;
@@ -103,6 +104,8 @@ export function RegistreJuridiqueTab() {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // C-3 (AUD-FUNC-003) : suppression d'entrée juridique uniquement après confirmation
+  const [rowToRemove, setRowToRemove] = useState<LegalRefRow | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -312,7 +315,7 @@ export function RegistreJuridiqueTab() {
                       <Button variant="ghost" size="icon" onClick={() => openEdit(row)} aria-label={`Modifier ${row.reference}`}>
                         <Pencil className="h-4 w-4" aria-hidden="true" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => void remove(row)} aria-label={`Supprimer ${row.reference}`}>
+                      <Button variant="ghost" size="icon" onClick={() => setRowToRemove(row)} aria-label={`Supprimer ${row.reference}`}>
                         <Trash2 className="h-4 w-4 text-destructive" aria-hidden="true" />
                       </Button>
                     </div>
@@ -468,6 +471,23 @@ export function RegistreJuridiqueTab() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression d'une entrée du registre */}
+      <ConfirmDeleteDialog
+        open={!!rowToRemove}
+        onOpenChange={(open) => !open && setRowToRemove(null)}
+        title="Supprimer cette entrée juridique ?"
+        description={
+          rowToRemove
+            ? `« ${rowToRemove.reference} » sera définitivement retirée du registre juridique. Cette action est irréversible.`
+            : undefined
+        }
+        onConfirm={() => {
+          if (!rowToRemove) return;
+          void remove(rowToRemove);
+          setRowToRemove(null);
+        }}
+      />
     </div>
   );
 }

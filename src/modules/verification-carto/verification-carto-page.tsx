@@ -54,6 +54,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useAiConfig } from "@/hooks/use-ai-config";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 import { cn } from "@/lib/utils";
 
 /* ═══════════════════════════════════════════════════════════════
@@ -185,6 +186,8 @@ export function VerificationCartoPage() {
 
   // ─── Elements state ───
   const [elements, setElements] = useState<ElementAnalyse[]>([]);
+  // C-3 (AUD-FUNC-003) : suppression d'élément uniquement après confirmation
+  const [deleteElementTarget, setDeleteElementTarget] = useState<ElementAnalyse | null>(null);
 
   // ─── Form state ───
   const [formNom, setFormNom] = useState("");
@@ -977,7 +980,7 @@ export function VerificationCartoPage() {
                                     variant="ghost"
                                     size="sm"
                                     className="shrink-0 text-muted-foreground hover:text-destructive"
-                                    onClick={() => handleDeleteElement(el.id)}
+                                    onClick={() => setDeleteElementTarget(el)}
                                     aria-label={`Supprimer ${el.nom}`}
                                   >
                                     <Trash2 className="size-4" />
@@ -1541,6 +1544,23 @@ export function VerificationCartoPage() {
           <InfraExplorer />
         </TabsContent>
       </Tabs>
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression d'un élément */}
+      <ConfirmDeleteDialog
+        open={!!deleteElementTarget}
+        onOpenChange={(open) => !open && setDeleteElementTarget(null)}
+        title="Supprimer cet élément d'analyse ?"
+        description={
+          deleteElementTarget
+            ? `« ${deleteElementTarget.nom} » sera définitivement retiré de votre analyse cartographique. Cette action est irréversible.`
+            : undefined
+        }
+        onConfirm={() => {
+          if (!deleteElementTarget) return;
+          void handleDeleteElement(deleteElementTarget.id);
+          setDeleteElementTarget(null);
+        }}
+      />
     </div>
   );
 }

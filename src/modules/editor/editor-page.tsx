@@ -9,6 +9,7 @@ import { ChapterHeader } from "@/modules/editor/components/chapter-header";
 import { ThesisListPanel } from "@/modules/editor/components/thesis-list-panel";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 import { ArrowLeft, FolderOpen } from "lucide-react";
 import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 
@@ -140,11 +141,21 @@ export function EditorPage() {
     });
   }, [activeThesisId, thesis?.chapters.length, createChapter]);
 
+  // C-3 (AUD-FUNC-003) : suppression de chapitre uniquement après confirmation
+  const [deleteChapterTarget, setDeleteChapterTarget] = useState<string | null>(null);
+
   const handleDeleteChapter = useCallback(() => {
     if (!activeChapterId) return;
-    deleteChapter.mutate(activeChapterId);
+    setDeleteChapterTarget(activeChapterId);
+  }, [activeChapterId]);
+
+  const handleConfirmDeleteChapter = useCallback(() => {
+    if (!deleteChapterTarget) return;
+    deleteChapter.mutate(deleteChapterTarget, {
+      onSettled: () => setDeleteChapterTarget(null),
+    });
     setActiveChapterId(null);
-  }, [activeChapterId, deleteChapter, setActiveChapterId]);
+  }, [deleteChapterTarget, deleteChapter, setActiveChapterId]);
 
   // C-2 (AUD-FUNC-002) : revenir à la liste des thèses (création / changement de thèse)
   const handleChangeThesis = useCallback(() => {
@@ -248,6 +259,20 @@ export function EditorPage() {
         canMoveUp={selectedChapterIndex > 0}
         canMoveDown={selectedChapterIndex >= 0 && selectedChapterIndex < sortedChapters.length - 1}
         isUpdating={updateChapter.isPending}
+      />
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression du chapitre */}
+      <ConfirmDeleteDialog
+        open={!!deleteChapterTarget}
+        onOpenChange={(open) => !open && setDeleteChapterTarget(null)}
+        title="Supprimer ce chapitre ?"
+        description={
+          selectedChapter
+            ? `« ${selectedChapter.title} » (${selectedChapter.wordCount.toLocaleString("fr-FR")} mots) et son historique de versions seront définitivement supprimés. Cette action est irréversible.`
+            : undefined
+        }
+        isPending={deleteChapter.isPending}
+        onConfirm={handleConfirmDeleteChapter}
       />
 
       {/* Editor */}

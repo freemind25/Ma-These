@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAppStore } from "@/lib/stores/app-store";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 import {
   FileText, FileUp, Loader2, Plus, Trash2, Save, Download, Search,
   ChevronRight, ChevronLeft, History, AlertTriangle, Wand2, RefreshCw,
@@ -178,6 +179,10 @@ export function ArticleRedactionPage() {
   }
   const [ocrJob, setOcrJob] = useState<OcrJobState | null>(null);
   const [ocrNotice, setOcrNotice] = useState<string | null>(null);
+
+  // C-3 (AUD-FUNC-003) : suppressions destructives uniquement après confirmation
+  const [articleToDelete, setArticleToDelete] = useState<ArticleRow | null>(null);
+  const [importToRemove, setImportToRemove] = useState<ImportedDocInfo | null>(null);
 
   const sourcesPayload = useCallback(
     () => ({
@@ -906,7 +911,7 @@ export function ArticleRedactionPage() {
                       )}
                     </span>
                   </button>
-                  <Button variant="ghost" size="icon" onClick={() => void deleteArticle(a.id)} aria-label={`Supprimer ${a.title}`}>
+                  <Button variant="ghost" size="icon" onClick={() => setArticleToDelete(a)} aria-label={`Supprimer ${a.title}`}>
                     <Trash2 className="h-4 w-4 text-destructive" aria-hidden="true" />
                   </Button>
                 </div>
@@ -1002,7 +1007,7 @@ export function ArticleRedactionPage() {
                           </Badge>
                         )}
                       </span>
-                      <Button variant="ghost" size="icon" onClick={() => void removeImport(d.id)} aria-label={`Retirer ${d.filename}`}>
+                      <Button variant="ghost" size="icon" onClick={() => setImportToRemove(d)} aria-label={`Retirer ${d.filename}`}>
                         <Trash2 className="h-4 w-4 text-destructive" aria-hidden="true" />
                       </Button>
                     </div>
@@ -1564,6 +1569,41 @@ export function ArticleRedactionPage() {
           </Card>
         )}
       </div>
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression d'un article */}
+      <ConfirmDeleteDialog
+        open={!!articleToDelete}
+        onOpenChange={(open) => !open && setArticleToDelete(null)}
+        title="Supprimer cet article ?"
+        description={
+          articleToDelete
+            ? `« ${articleToDelete.title} » (sections, versions et historique) sera définitivement supprimé. Cette action est irréversible.`
+            : undefined
+        }
+        onConfirm={() => {
+          if (!articleToDelete) return;
+          void deleteArticle(articleToDelete.id);
+          setArticleToDelete(null);
+        }}
+      />
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant retrait d'un document importé (PDF + texte OCR) */}
+      <ConfirmDeleteDialog
+        open={!!importToRemove}
+        onOpenChange={(open) => !open && setImportToRemove(null)}
+        title="Retirer ce document source ?"
+        description={
+          importToRemove
+            ? `« ${importToRemove.filename} » et son texte extrait seront définitivement supprimés du corpus de cet article. Cette action est irréversible.`
+            : undefined
+        }
+        confirmLabel="Retirer"
+        onConfirm={() => {
+          if (!importToRemove) return;
+          void removeImport(importToRemove.id);
+          setImportToRemove(null);
+        }}
+      />
     </div>
   );
 }

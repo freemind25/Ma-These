@@ -47,6 +47,7 @@ import {
   PanelLeftOpen,
 } from "lucide-react";
 import { toast } from "sonner";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 
 // ── Types ───────────────────────────────────────────────
 
@@ -430,6 +431,10 @@ export function OngletRecherchePage() {
   const [quoteAuthor, setQuoteAuthor] = useState("");
 
   const [todoInput, setTodoInput] = useState("");
+
+  // C-3 (AUD-FUNC-003) : suppressions destructives uniquement après confirmation
+  const [tabToDeleteId, setTabToDeleteId] = useState<string | null>(null);
+  const [clearTabConfirmOpen, setClearTabConfirmOpen] = useState(false);
 
   // Derived
   const activeTab = tabs.find((t) => t.id === activeTabId);
@@ -967,7 +972,7 @@ export function OngletRecherchePage() {
               }
               onClick={(e) => {
                 e.stopPropagation();
-                closeTab(tab.id);
+                setTabToDeleteId(tab.id);
               }}
               aria-label="Fermer l'onglet"
             >
@@ -1045,7 +1050,7 @@ export function OngletRecherchePage() {
                 variant="outline"
                 size="sm"
                 className="text-xs h-8 text-destructive hover:text-destructive"
-                onClick={() => clearTab(activeTab.id)}
+                onClick={() => setClearTabConfirmOpen(true)}
               >
                 <RotateCcw className="mr-1 h-3 w-3" />
                 Effacer
@@ -1371,6 +1376,38 @@ export function OngletRecherchePage() {
           </div>
         </div>
       ) : null}
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression d'un onglet de recherche */}
+      <ConfirmDeleteDialog
+        open={!!tabToDeleteId}
+        onOpenChange={(open) => !open && setTabToDeleteId(null)}
+        title="Supprimer cet onglet de recherche ?"
+        description={
+          tabToDeleteId
+            ? `« ${tabs.find((t) => t.id === tabToDeleteId)?.title ?? "Cet onglet"} » et tout son contenu (notes, liens, citations, tâches) seront définitivement supprimés. Cette action est irréversible.`
+            : undefined
+        }
+        isPending={deleteMutation.isPending}
+        onConfirm={() => {
+          if (!tabToDeleteId) return;
+          closeTab(tabToDeleteId);
+          setTabToDeleteId(null);
+        }}
+      />
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant effacement du contenu de l'onglet */}
+      <ConfirmDeleteDialog
+        open={clearTabConfirmOpen}
+        onOpenChange={setClearTabConfirmOpen}
+        title="Effacer tout le contenu de l'onglet ?"
+        description="Les notes, liens, citations et tâches de cet onglet seront définitivement effacés. Cette action est irréversible."
+        confirmLabel="Effacer"
+        onConfirm={() => {
+          if (!activeTab) return;
+          clearTab(activeTab.id);
+          setClearTabConfirmOpen(false);
+        }}
+      />
     </div>
   );
 }

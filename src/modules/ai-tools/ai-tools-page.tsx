@@ -51,6 +51,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAiConfig } from "@/hooks/use-ai-config";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 
 // ═══════════════════════════════════════
 // Types
@@ -176,6 +177,9 @@ function ResearchNotebookTab() {
   const queryClient = useQueryClient();
   const [addSourceOpen, setAddSourceOpen] = useState(false);
   const [addEntryOpen, setAddEntryOpen] = useState(false);
+  // C-3 (AUD-FUNC-003) : suppressions uniquement après confirmation
+  const [deleteSourceTarget, setDeleteSourceTarget] = useState<ResearchSource | null>(null);
+  const [deleteEntryTarget, setDeleteEntryTarget] = useState<NotebookEntry | null>(null);
 
   // ─── Fetch Sources ───
   const { data: sources, isLoading: sourcesLoading } = useQuery({
@@ -360,7 +364,7 @@ function ResearchNotebookTab() {
                       variant="ghost"
                       size="icon"
                       className="h-7 w-7 shrink-0"
-                      onClick={() => deleteSource.mutate(source.id)}
+                      onClick={() => setDeleteSourceTarget(source)}
                     >
                       <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
                     </Button>
@@ -496,7 +500,7 @@ function ResearchNotebookTab() {
                       variant="ghost"
                       size="icon"
                       className="h-7 w-7 shrink-0"
-                      onClick={() => deleteEntry.mutate(entry.id)}
+                      onClick={() => setDeleteEntryTarget(entry)}
                     >
                       <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
                     </Button>
@@ -517,6 +521,44 @@ function ResearchNotebookTab() {
           </Card>
         )}
       </div>
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression d'une source */}
+      <ConfirmDeleteDialog
+        open={!!deleteSourceTarget}
+        onOpenChange={(open) => !open && setDeleteSourceTarget(null)}
+        title="Supprimer cette source ?"
+        description={
+          deleteSourceTarget
+            ? `« ${deleteSourceTarget.title} » sera définitivement supprimée. Cette action est irréversible.`
+            : undefined
+        }
+        isPending={deleteSource.isPending}
+        onConfirm={() => {
+          if (!deleteSourceTarget) return;
+          deleteSource.mutate(deleteSourceTarget.id, {
+            onSettled: () => setDeleteSourceTarget(null),
+          });
+        }}
+      />
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression d'une note */}
+      <ConfirmDeleteDialog
+        open={!!deleteEntryTarget}
+        onOpenChange={(open) => !open && setDeleteEntryTarget(null)}
+        title="Supprimer cette note ?"
+        description={
+          deleteEntryTarget
+            ? `« ${deleteEntryTarget.question} » sera définitivement supprimée. Cette action est irréversible.`
+            : undefined
+        }
+        isPending={deleteEntry.isPending}
+        onConfirm={() => {
+          if (!deleteEntryTarget) return;
+          deleteEntry.mutate(deleteEntryTarget.id, {
+            onSettled: () => setDeleteEntryTarget(null),
+          });
+        }}
+      />
     </div>
   );
 }

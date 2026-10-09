@@ -41,6 +41,7 @@ import {
   type ThesisPart,
 } from "@/modules/editor/hooks/use-thesis";
 import { useAppStore } from "@/lib/stores/app-store";
+import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
 import { toast } from "sonner";
 
 // ═══════════════════════════════════════
@@ -521,6 +522,8 @@ export function ThesisPlanPage() {
   const [generatedTemplate, setGeneratedTemplate] = useState("");
   const [copied, setCopied] = useState(false);
   const [newPartTitle, setNewPartTitle] = useState("");
+  // C-3 (AUD-FUNC-003) : suppression de partie uniquement après confirmation
+  const [deletePartId, setDeletePartId] = useState<string | null>(null);
 
   const isPartsMode = activeThesis?.structureMode === "parts";
 
@@ -563,12 +566,10 @@ export function ThesisPlanPage() {
 
   const handleDeletePart = useCallback(
     (id: string) => {
-      deletePart.mutate(id, {
-        onSuccess: () => toast.success("Partie supprimée"),
-        onError: () => toast.error("Erreur lors de la suppression"),
-      });
+      // C-3 (AUD-FUNC-003) : ouvre la confirmation — la mutation n'est déclenchée qu'à la confirmation
+      setDeletePartId(id);
     },
-    [deletePart]
+    []
   );
 
   const handleMovePart = useCallback(
@@ -945,6 +946,27 @@ export function ThesisPlanPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* C-3 (AUD-FUNC-003) : confirmation avant suppression d'une partie */}
+      <ConfirmDeleteDialog
+        open={!!deletePartId}
+        onOpenChange={(open) => !open && setDeletePartId(null)}
+        title="Supprimer cette partie ?"
+        description={
+          deletePartId
+            ? `La partie « ${parts?.find((p) => p.id === deletePartId)?.title ?? ""} » sera définitivement supprimée. Les chapitres rattachés seront détachés (pas supprimés). Cette action est irréversible.`
+            : undefined
+        }
+        isPending={deletePart.isPending}
+        onConfirm={() => {
+          if (!deletePartId) return;
+          deletePart.mutate(deletePartId, {
+            onSuccess: () => toast.success("Partie supprimée"),
+            onError: () => toast.error("Erreur lors de la suppression"),
+            onSettled: () => setDeletePartId(null),
+          });
+        }}
+      />
     </div>
   );
 }
