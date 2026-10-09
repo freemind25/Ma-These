@@ -9,7 +9,7 @@ import { ChapterHeader } from "@/modules/editor/components/chapter-header";
 import { ThesisListPanel } from "@/modules/editor/components/thesis-list-panel";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, FolderOpen } from "lucide-react";
 import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 
 type AutoSaveData = {
@@ -20,7 +20,7 @@ type AutoSaveData = {
 };
 
 export function EditorPage() {
-  const { activeThesisId, activeChapterId, setActiveChapterId, setCurrentView } =
+  const { activeThesisId, activeChapterId, setActiveChapterId, setActiveThesisId, setCurrentView } =
     useAppStore();
 
   const { data: thesis, isLoading } = useThesis(activeThesisId);
@@ -146,6 +146,12 @@ export function EditorPage() {
     setActiveChapterId(null);
   }, [activeChapterId, deleteChapter, setActiveChapterId]);
 
+  // C-2 (AUD-FUNC-002) : revenir à la liste des thèses (création / changement de thèse)
+  const handleChangeThesis = useCallback(() => {
+    setActiveChapterId(null);
+    setActiveThesisId(null);
+  }, [setActiveChapterId, setActiveThesisId]);
+
   // Chapter reorder
   const sortedChapters = useMemo(
     () => [...(thesis?.chapters ?? [])].sort((a, b) => a.sortOrder - b.sortOrder),
@@ -210,6 +216,19 @@ export function EditorPage() {
 
   return (
     <div className="flex flex-col h-full">
+      {/* C-2 : rangée discrète au-dessus des onglets — changer de thèse */}
+      <div className="flex items-center px-3 pt-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 gap-1.5 px-2 text-xs text-muted-foreground hover:text-foreground"
+          onClick={handleChangeThesis}
+        >
+          <FolderOpen className="h-3.5 w-3.5" />
+          Changer de thèse
+        </Button>
+      </div>
+
       {/* Chapter tabs */}
       <ChapterTabs
         chapters={thesis.chapters}

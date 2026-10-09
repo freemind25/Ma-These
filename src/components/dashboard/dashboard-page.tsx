@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAppStore } from "@/lib/stores/app-store";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import Image from "next/image";
 import {
   FileText,
@@ -39,6 +40,7 @@ import {
 } from "lucide-react";
 
 import { ResourcesSection } from "./resources-section";
+import { CreateThesisDialog } from "@/modules/editor/components/create-thesis-dialog";
 
 // ═══ Stats types ═══
 interface DashboardStats {
@@ -86,6 +88,9 @@ const MODULE_ICONS: Record<string, React.ElementType> = {
 export function DashboardPage() {
   const { setCurrentView } = useAppStore();
   const { data: stats, isLoading } = useDashboardStats();
+  // C-2 (AUD-FUNC-002) : le CTA « Créer une thèse » ouvre le dialogue de création
+  // (et ne bascule plus vers l'éditeur qui ré-ouvrait l'ancienne thèse active).
+  const [createOpen, setCreateOpen] = useState(false);
 
   // Determine completed steps
   const stepsCompleted = [
@@ -191,7 +196,7 @@ export function DashboardPage() {
               icon={Plus}
               label="Créer une thèse"
               description="Nouveau projet de thèse"
-              onClick={() => setCurrentView("editor")}
+              onClick={() => setCreateOpen(true)}
               primary
             />
             <ActionButton
@@ -366,6 +371,9 @@ export function DashboardPage() {
 
       {/* Ressources pédagogiques */}
       <ResourcesSection />
+
+      {/* C-2 : dialogue de création de thèse (contrôlé par le dashboard) */}
+      <CreateThesisDialog open={createOpen} onOpenChange={setCreateOpen} />
     </div>
   );
 }

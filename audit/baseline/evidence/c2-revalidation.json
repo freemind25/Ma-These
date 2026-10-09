@@ -1,0 +1,100 @@
+{
+  "task": "R-2 / C-2 — AUD-FUNC-002 (parcours créer/changer de thèse)",
+  "date": "2026-10-09",
+  "baseline_commit": "1682dcd",
+  "avant": {
+    "defaut_reproduit": true,
+    "preconditions": "activeThesisId persisté (localStorage thesisframe-app-store) = cmsmyrdfs0000pa2sews4vo90 « Urbanisme durable » (7 chapitres, 2 295 mots, 4 références — vérifié DB lecture seule)",
+    "etapes": "dashboard → clic « Créer une thèse »",
+    "observe": "AUCUN dialogue — navigation vers l'éditeur qui ré-ouvre l'ANCIENNE thèse active (7 chapitres « Introduction générale et problématique » … « Conclusion » affichés)",
+    "preuves": [
+      "audit/baseline/evidence/c2-before-dashboard.png",
+      "audit/baseline/evidence/c2-before-dashboard-cta.png"
+    ],
+    "cause_racine_confirmee": "dashboard-page.tsx onClick={() => setCurrentView(\"editor\")} ; CreateThesisDialog rendu uniquement par ThesisListPanel (lui-même rendu si !activeThesisId)"
+  },
+  "apres": {
+    "correction_fichiers": [
+      "src/modules/editor/components/create-thesis-dialog.tsx — props optionnelles {open, onOpenChange} ; mode contrôlé prime sur l'état interne, DialogTrigger interne masqué si contrôlé ; logique formulaire inchangée ; setOpen(false) après création appelle aussi onOpenChange (fermeture depuis le dashboard vérifiée)",
+      "src/components/dashboard/dashboard-page.tsx — état local createOpen ; CTA « Créer une thèse » fait setCreateOpen(true) (ne change plus de vue) ; <CreateThesisDialog open={createOpen} onOpenChange={setCreateOpen} /> rendu",
+      "src/modules/editor/editor-page.tsx — bouton « Changer de thèse » (ghost, sm, icône FolderOpen) au-dessus des ChapterTabs ; onClick = setActiveChapterId(null) + setActiveThesisId(null) → ThesisListPanel ; setActiveThesisId ajouté au destructuring useAppStore"
+    ],
+    "creation_2e_these": {
+      "ok": true,
+      "etapes": "dashboard → « Créer une thèse » → DIALOGUE OUVERT → titre « AUDIT-C2 — Thèse de test », auteur « Agent Audit » → « Créer la thèse »",
+      "dialogue_ouvert": true,
+      "dialogue_ferme_apres_creation": true,
+      "db": "2 thèses : cmsmyrdfs0000pa2sews4vo90 « Urbanisme durable » + cmv17sl0s0000jjivmfqq6l6b « AUDIT-C2 — Thèse de test » (POST /api/thesis via useCreateThesis ; onSuccess setActiveThesisId(nouvelle))",
+      "etat_editeur_these_test": "ouverte dans l'éditeur — l'app auto-crée 7 chapitres template (0 mots), comportement existant de création automatique du plan initial (pas d'écran « Aucun chapitre disponible »)",
+      "preuves": [
+        "audit/baseline/evidence/c2-after-dialog.png",
+        "audit/baseline/evidence/c2-after-created.png"
+      ]
+    },
+    "changement_de_these": {
+      "ok": true,
+      "etapes": "éditeur (thèse test) → « Changer de thèse » → liste « Mes thèses » (2 cartes) → clic « Urbanisme durable »",
+      "liste_affichee": ["AUDIT-C2 — Thèse de test", "Urbanisme durable"],
+      "reouverture_reelle": "« Urbanisme durable » réouverte avec SES 7 chapitres et SES contenus (I. Introduction générale et problématique — 1 957 mots ; VII. Conclusion — 338) INTACTS",
+      "preuves": [
+        "audit/baseline/evidence/c2-after-thesis-list.png",
+        "audit/baseline/evidence/c2-back-to-real-thesis.png"
+      ]
+    }
+  },
+  "isolation": {
+    "chapitres_these_scope": "PROUVÉ — Chapter.thesisId (FK, onDelete: Cascade) : thèse test = 7 chapitres 0 mots ; Urbanisme durable = 7 chapitres 2 295 mots ; aucun mélange (groupBy DB avant/après)",
+    "references": {
+      "fait_mesure": "les références sont une bibliothèque GLOBALE par conception : modèle Reference SANS thesisId (prisma/schema.prisma l.212-237), GET /api/references sans filtre thèse, references-page.tsx ne lit jamais activeThesisId",
+      "test_execute": "référence « Réf test AUDIT-C2 » (type article, auteur Agent Audit, année 2026, POST 201) créée depuis le contexte thèse test",
+      "observe": "la réf test est visible depuis LES DEUX contextes (thèse test ET Urbanisme durable) — l'isolation des références par thèse est IMPOSSIBLE sans évolution de schéma (rouge : aucune modification de schema autorisée ce cycle)",
+      "integrite": "les 4 références originales restent présentes et inchangées dans les deux contextes ; aucune corruption croisée ; la réf test a été supprimée en fin de test (retour à 4)",
+      "preuves": [
+        "audit/baseline/evidence/c2-isolation-refs-A.png",
+        "audit/baseline/evidence/c2-isolation-refs-B.png"
+      ],
+      "note_proprietaire": "décision produit à arbitrer (bibliothèque globale type Mendeley vs références par thèse) — hors périmètre C-2, à traiter séparément si souhaité"
+    }
+  },
+  "cleanup": {
+    "reference_test_supprimee": true,
+    "these_test_supprimee": "via poubelle ThesisListPanel (comportement actuel SANS confirmation — traité par C-3)",
+    "db_finale": {
+      "theses": [{ "id": "cmsmyrdfs0000pa2sews4vo90", "title": "Urbanisme durable" }],
+      "chapters": "7 chapitres / 2 295 mots — IDENTIQUES au début de session",
+      "references": 4,
+      "titres_references": ["Méthodologies qualitatives en urbanisme", "Test Reference for E2E Testing", "Test Reference T4 Persistence", "A Digital Twin Framework for Decision-Support and Optimization of EV Charging Infrastructure in Localized Urban Systems"],
+      "cascades": "suppression en cascade des 7 chapitres template de la thèse test vérifiée (aucun orphelin)"
+    },
+    "etat_final_app": "activeThesisId = Urbanisme durable, vue tableau de bord — ÉTAT INITIAL DU PROPRIÉTAIRE RESTAURÉ",
+    "preuves": [
+      "audit/baseline/evidence/c2-cleanup.png",
+      "audit/baseline/evidence/c2-final-state-dashboard.png"
+    ]
+  },
+  "tnr": {
+    "reouverture_these_active": "OK — F5 → dashboard → « Éditeur de thèse » réouvre « Urbanisme durable » (1 957 mots chap. I) — inchangé",
+    "thesis_list_panel_non_controle": "OK — sans thèse active (activeThesisId=null), la liste « Mes thèses » s'affiche avec le bouton interne « Nouvelle thèse » : le DialogueTrigger interne ouvre bien le dialogue (fermé via Annuler)",
+    "ligne_204_newline_litteral": "INTACTE (anomalie distincte C-13/P3, hors périmètre)"
+  },
+  "lint": { "errors": 0, "warnings": 247, "baseline_warnings": 247 },
+  "tests": { "commande": "bun run test:run", "fichiers": 78, "passes": 1658, "echecs": 0 },
+  "rouges": {
+    "fichiers_verifies": [
+      "src/app/api/theses-en-ligne/search/route.ts",
+      "src/app/api/arxiv/search/route.ts",
+      "src/components/layout/app-sidebar.tsx"
+    ],
+    "git_status_porcelain_ne_les_liste_pas": true,
+    "db_skip_worktree": "intact (git ls-files -v → S db/custom.db)",
+    "prisma_db_push": "non exécuté",
+    "build": "non exécuté",
+    "commit": "aucun (réservé au propriétaire)"
+  },
+  "anomalies_rencontrees_pendant_le_cycle": [
+    "Serveur dev système tué par OOM kernel (dmesg : next-server RSS 2,5 Go, box 4 Go) — redémarré hors bande par l'agent (bun run dev détaché), sans toucher au dépôt",
+    "POST /api/references 400 quand le champ année est laissé vide (formulaire envoie year:\"\" contre z.number().optional()) → 201 avec année renseignée — lié AUD-FUNC-005, hors périmètre C-2",
+    "agent-browser : hit-test « covered » sur les boutons de l'en-tête ThesisListPanel (contournement par eval JS) — artifact d'outil, clics réels fonctionnels (cf. audit ui-05)",
+    "Création de thèse : l'app auto-crée 7 chapitres template (0 mots) — comportement existant documenté à la place de l'hypothèse « Aucun chapitre disponible »"
+  ]
+}

@@ -16,9 +16,22 @@ import { useCreateThesis } from "../hooks/use-thesis";
 import { useState } from "react";
 import { Plus, GraduationCap } from "lucide-react";
 
-export function CreateThesisDialog() {
+interface CreateThesisDialogProps {
+  /** Mode contrôlé : si fourni, prime sur l'état interne (le DialogTrigger interne est masqué). */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function CreateThesisDialog({ open: controlledOpen, onOpenChange }: CreateThesisDialogProps = {}) {
   const createThesis = useCreateThesis();
-  const [open, setOpen] = useState(false);
+  // Mode interne par défaut (ThesisListPanel) ; mode contrôlé si `open` est fourni (dashboard).
+  const isControlled = controlledOpen !== undefined;
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = isControlled ? controlledOpen : internalOpen;
+  const setOpen = (next: boolean) => {
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [subtitle, setSubtitle] = useState("");
@@ -56,12 +69,14 @@ export function CreateThesisDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Nouvelle thèse
-        </Button>
-      </DialogTrigger>
+      {!isControlled && (
+        <DialogTrigger asChild>
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />
+            Nouvelle thèse
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

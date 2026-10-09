@@ -1637,3 +1637,25 @@ Work Log:
 Stage Summary:
 - AUD-GOV-001 CORRIGÉE avec preuve de restauration : la perte de la thèse/corpus n'est plus « un incident à un clic de db:push près » — backup quotidien auto + miroir hors arbre + restore outillé vérifié octet/logiquement identique.
 - Statut registre : corrigée, revalidée (restauration réelle en env de test, diff complet vide). Le statut final « revalidée » sera consigné au registre 09 en fin de cycle (T10).
+---
+Task ID: R-2 (audit-remediation-p1 / C-2)
+Agent: full-stack-developer
+Task: C-2 AUD-FUNC-002 — réparer créer/changer de thèse + isolation multi-thèses.
+
+Work Log:
+- Contexte chargé (worklog, spec cycle, fiche AUD-FUNC-002, roadmap C-2) ; baseline git 1682dcd, arbre propre ; snapshot DB lecture seule AVANT modification : 1 thèse « Urbanisme durable » (cmsmyrdfs0000pa2sews4vo90, 7 chapitres, 2 295 mots), 4 références.
+- Anomalie environnement : serveur dev système tué par OOM kernel (dmesg : next-server RSS 2,5 Go sur box 4 Go) → redémarré hors bande (bun run dev détaché via Bun.spawn, dépôt intact).
+- Phase 1 (preuve AVANT correction, agent-browser) : thèse active seedée en localStorage (précondition AUD-FUNC-002) → dashboard → « Créer une thèse » → AUCUN dialogue, navigation éditeur + ré-ouverture de l'ANCIENNE thèse. Captures c2-before-dashboard.png / c2-before-dashboard-cta.png.
+- Phase 2 (correction ciblée, 3 fichiers, 53+/11-) : ① create-thesis-dialog.tsx — props optionnelles {open, onOpenChange}, mode contrôlé prime sur l'état interne, DialogTrigger interne masqué en mode contrôlé, formulaire inchangé, setOpen(false) post-création appelle aussi onOpenChange ; ② dashboard-page.tsx — état createOpen, CTA « Créer une thèse » → setCreateOpen(true) (ne change plus de vue), dialogue contrôlé rendu ; ③ editor-page.tsx — bouton « Changer de thèse » (ghost sm, FolderOpen) au-dessus des ChapterTabs, onClick setActiveChapterId(null)+setActiveThesisId(null), setActiveThesisId ajouté au destructuring. Ligne 204 « \n » littéral NON touchée (C-13).
+- Phase 3 (vérification UI réelle + isolation + cleanup) : dialogue s'ouvre depuis le dashboard (c2-after-dialog.png) ; création « AUDIT-C2 — Thèse de test » / « Agent Audit » OK — DB : 2 thèses (l'app auto-crée 7 chapitres template 0 mots, comportement existant) ; thèse test ouverte dans l'éditeur (c2-after-created.png) ; « Changer de thèse » → « Mes thèses » avec LES DEUX thèses (c2-after-thesis-list.png) ; réouverture « Urbanisme durable » → 7 chapitres / 2 295 mots INTACTS (c2-back-to-real-thesis.png).
+- Isolation : chapitres thèse-scopés PROUVÉS (FK Chapter.thesisId + Cascade, groupBy DB 7/2 295 vs 7/0, zéro mélange). FAIT MESURÉ : les références sont GLOBALES par conception (modèle Reference SANS thesisId, API sans filtre thèse) — la réf test « Réf test AUDIT-C2 » (POST 201) est visible depuis les deux contextes (captures A/B) ; les 4 réf originales restent intactes partout ; décision produit à arbitrer par le propriétaire (hors périmètre, pas de modification de schéma — rouge).
+- Cleanup : réf test supprimée via UI (4 réf en DB), thèse test supprimée via poubelle ThesisListPanel (sans confirmation — comportement actuel, C-3), cascade chapitres vérifiée (aucun orphelin) ; DB finale = état initial EXACT (1 thèse, 7 chapitres / 2 295 mots, 4 réf) ; activeThesisId = « Urbanisme durable », vue dashboard (c2-cleanup.png, c2-final-state-dashboard.png).
+- TNR : F5 → « Éditeur de thèse » réouvre « Urbanisme durable » (inchangé) ; ThesisListPanel non contrôlé : bouton interne « Nouvelle thèse » ouvre toujours le dialogue (fermé via Annuler).
+- Qualité : lint 0 erreur (247 warnings = baseline) ; bun run test:run → 78 fichiers, 1 658/1 658 verts ; lignes rouges absentes de git status --porcelain (0 diff) ; db skip-worktree intact ; pas de db push, pas de build, pas de commit.
+- Preuves : audit/baseline/evidence/c2-revalidation.json (avant/après/isolation/cleanup/TNR/lint/tests) + 10 captures c2-*.png.
+
+Stage Summary:
+- AUD-FUNC-002 CORRIGÉE et revalidée en UI réelle : créer une 2ᵉ thèse depuis le CTA dashboard (dialogue), changer de thèse depuis l'éditeur (liste), ré-ouvrir la 1ʳᵉ — données thèse-scopées intactes et isolées, cleanup complet, état propriétaire restauré, TNR verts (1 658 tests), lint 0 erreur, rouges 0 diff.
+- Observation consignée pour arbitrage propriétaire : références = bibliothèque globale par conception (pas d'isolation par thèse possible sans évolution de schéma — hors périmètre C-2).
+- Anomalies annexes rencontrées (hors périmètre, consignées) : OOM kernel du serveur dev (RSS 2,5 Go) ; POST /api/references 400 si année vide (AUD-FUNC-005).
+---
