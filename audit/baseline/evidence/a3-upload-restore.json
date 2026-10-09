@@ -1,0 +1,44 @@
+{
+  "task": "A3 — preuve de restauration des fichiers sources upload/ + cohérence avec la base (exigence propriétaire point 6.2)",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "outillage": "scripts/verify-upload-backup.ts (versionné, réutilisable — inventaire noms/tailles/SHA-256, lecture seule)",
+  "perimetre_donnees": {
+    "upload/": "20 fichiers, 255 273 238 octets (dépôts originaux : 3 RAR, PDFs, prompts, vignettes)",
+    "sauvegarde_C1_existante": "backups/upload-20261009-164202/ (copie manuelle initiale du cycle C-1)",
+    "base": "db/custom.db — ImportedDoc 16 (12 blobs PDF 205,5 Mo dans la DB, couverts par le backup DB quotidien VACUUM INTO)"
+  },
+  "etape_1_sauvegarde_intacte": {
+    "methode": "comparaison upload/ ↔ backups/upload-20261009-164202/",
+    "resultat": "IDENTIQUE 100 % — 20 fichiers, noms + tailles + SHA-256 tous conformes",
+    "preuve": "evidence/a3-step1-backup-intact.json (checksums complets des 20+20 fichiers)"
+  },
+  "etape_2_3_restauration_reelle": {
+    "environnement": "/tmp/restore-files-test (répertoire de test ISOLÉ — aucun essai sur l'unique copie réelle)",
+    "procedure": "cp -a backups/upload-20261009-164202/. → /tmp/restore-files-test puis comparaison complète",
+    "resultat": "IDENTIQUE 100 % — 20 fichiers restaurés, noms + tailles + SHA-256 = originaux",
+    "preuve": "evidence/a3-step3-restored-match.json"
+  },
+  "etape_4_jeu_controle": {
+    "jeu": "3 fichiers AUDIT-A3 (txt, bin 1 Mo aléatoire, json) — staging → sauvegarde → SIMULATION DE PERTE (staging supprimé) → restauration → comparaison",
+    "resultat": "IDENTIQUE 100 % après perte + restauration (procédure validée aussi pour des fichiers nouveaux)",
+    "preuve": "evidence/a3-step4-controlled-set.json"
+  },
+  "etape_5_coherence_base_fichiers": {
+    "methode": "mapping ImportedDoc.filename ↔ upload/ (tailles vérifiées) + localisation des originaux",
+    "resultat": {
+      "totalDocs": 16,
+      "depot_direct": 4, "toutes_tailles_conformes": true,
+      "derives_RAR": 9, "originaux_RAR": "Doc-3.rar, doc.rar, LR.rar — présents dans upload/ ET dans la sauvegarde ; blobs OCR dans la DB (backup DB)",
+      "residus_test": 3, "detail": "faux.docx + memoire-test.docx ×2 — docx de test anciens (data=null par conception : texte extrait en DB) ; originaux de test absents de upload/ — classé AUD-DATA-001 (résidus à nettoyer avant diffusion), AUCUNE perte de contenu réel (texte intégral en DB)",
+      "references_cassees": 0, "documents_manquants": 0
+    },
+    "chaine_complete": "restauration conjointe DB (VACUUM INTO, preuve c1-restore-test.json) + fichiers (présente preuve) = base + corpus + dépôts originaux sans référence cassée"
+  },
+  "procedure_documentee": "docs/SAUVEGARDE-RESTAURATION.md §6 (nouvelle section : restauration des fichiers upload/)",
+  "limites": [
+    "la copie upload/ est manuelle/statique (un nouveau dépôt utilisateur exige une nouvelle copie) — l'automatisation éventuelle est une amélioration possible à soumettre",
+    "les 3 docx de test résiduels n'ont pas d'original binaire (par conception docx : texte en DB) — nettoyage AUD-DATA-001 recommandé avant diffusion"
+  ],
+  "regle_respectee": "aucun essai destructif sur l'unique copie réelle ; restauration exclusivement en répertoire de test isolé"
+}

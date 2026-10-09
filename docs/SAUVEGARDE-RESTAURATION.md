@@ -69,3 +69,37 @@ ChapterVersion 6 · ElementAnalyse 1.
   fait au niveau ORM Prisma (même moteur que l'application) + SQLite intégrité + compteurs.
 - `backups/` est volontairement **hors git** (254 Mo > limite GitHub 100 Mo) ; le miroir
   `TF_BACKUP_MIRROR_DIR` fournit la seconde localisation.
+
+## 6. Restauration des fichiers sources `upload/` (A3 — cycle audit-final-v1.2)
+
+**Ce que couvre quoi** : la base (blobs OCR des PDF importés, métadonnées) est couverte par le
+backup DB quotidien ; les **dépôts originaux** (`upload/` : RAR, PDFs sources, documents divers)
+sont couverts par la copie `backups/upload-<timestamp>/`. Les deux ensemble = restauration
+complète sans référence cassée.
+
+**Vérification / restauration outillée** (lecture seule, réutilisable) :
+
+```bash
+# 1) Vérifier l'intégrité de la copie de sauvegarde (noms, tailles, SHA-256) :
+bun scripts/verify-upload-backup.ts upload/ backups/upload-<ts>/
+
+# 2) Restaurer vers un répertoire de test isolé (JAMAIS d'essai destructif sur l'unique copie) :
+mkdir -p /tmp/restore-files-test && cp -a backups/upload-<ts>/. /tmp/restore-files-test/
+
+# 3) Comparer restauré ↔ originaux :
+bun scripts/verify-upload-backup.ts upload/ /tmp/restore-files-test/
+#   → « identique : OUI — 100 % (noms, tailles, SHA-256) » attendu
+
+# 4) Cochérence avec la base : chaque ImportedDoc correspond soit à un dépôt direct de
+#    upload/ (taille vérifiée), soit à un original présent dans un RAR de upload/
+#    (blobs OCR en DB). Script de mapping : voir evidence/a3-upload-restore.json §étape 5.
+```
+
+**Preuve d'exécution réelle (2026-10-10)** : sauvegarde intacte 100 % · restauration réelle vers
+`/tmp/restore-files-test` 100 % identique (20 fichiers, 255 273 238 octets) · jeu de test
+contrôlé AUDIT-A3 (perte simulée → restauration → SHA-256 OK) · cohérence DB↔fichiers :
+16/16 ImportedDoc localisés (4 dépôts directs + 9 dérivés de RAR + 3 résidus de test docx —
+AUD-DATA-001), 0 référence cassée. Détail : `audit/baseline/evidence/a3-upload-restore.json`.
+
+**Limite** : la copie `upload/` est manuelle et statique — après tout nouveau dépôt
+utilisateur, refaire la copie (ou automatiser, amélioration à soumettre).

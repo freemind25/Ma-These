@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-10-09T19:08:38.445Z",
+  "counts": {
+    "Thesis": 1,
+    "Chapter": 7,
+    "ChapterVersion": 6,
+    "Reference": 4,
+    "ImportedDoc": 16,
+    "Job": 24,
+    "ResearchSource": 0,
+    "NotebookEntry": 1,
+    "Experiment": 1,
+    "ExperimentRun": 1,
+    "ElementAnalyse": 1,
+    "TypeAnalyse": 1
+  },
+  "thesis": {
+    "id": "cmsmyrdfs0000pa2sews4vo90",
+    "title": "Urbanisme durable"
+  },
+  "thesisWords": 2295,
+  "objetsAuditA2": {
+    "sources": [],
+    "entries": [],
+    "experiments": [],
+    "elements": []
+  }
+}

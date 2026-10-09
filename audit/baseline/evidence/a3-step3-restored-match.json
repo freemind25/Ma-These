@@ -1,0 +1,183 @@
+{
+  "generatedAt": "2026-10-09T19:56:56.665Z",
+  "reference": {
+    "dir": "upload/",
+    "files": 20,
+    "totalBytes": 255273238
+  },
+  "compared": {
+    "dir": "/tmp/restore-files-test/",
+    "files": 20
+  },
+  "result": {
+    "identical": true,
+    "missing": [],
+    "extra": [],
+    "sizeMismatch": [],
+    "hashMismatch": []
+  },
+  "checksums_reference": {
+    "Agent-Urbaniste-DZ.pdf": {
+      "size": 931353,
+      "sha256": "2badca4a6e50bf2c5c97a676c94e3ebdf30a53b4ae1fd6fa9ee1fffce3ed4842"
+    },
+    "Combining Qualitative.pdf": {
+      "size": 99661,
+      "sha256": "c7d1d630f3e68c285b9b88bb2ce4f8f6b692fcc8ee96f34385034c6d02cfeecf"
+    },
+    "Doc-3.rar": {
+      "size": 40912615,
+      "sha256": "ed1eda109d348054dfb9627a5ec4adcbafdce9b70c274e68c580443e9c54440a"
+    },
+    "LR.rar": {
+      "size": 2039935,
+      "sha256": "cfa37c4487e2814d52e6e81b4e718e8e52c6f4c5cbae5cfffc41c1a184ada8c6"
+    },
+    "Literature review as a research methodology_An overview _guidelines.pdf": {
+      "size": 122854,
+      "sha256": "9c2dc51abdd2c64e6b9808484f72f6e4aa7e0ed68c816b53c8391591ebb214f9"
+    },
+    "Lurbanisme (Tribillon, Jean_ (z-library.sk, 1lib.sk, z-lib.sk)": {
+      "size": 6295904,
+      "sha256": "1a99ca80fe4c6080f66675b5a5e50dfed4ab9f581d4df015333fb10e50e83ab7"
+    },
+    "Lurbanisme des réseaux - Copie.pdf": {
+      "size": 44231436,
+      "sha256": "56021a7f8f28beb6cdb77b39eff9d58b32b71e601e568ff74684f9f262dfe77b"
+    },
+    "SKILL(2).md": {
+      "size": 11308,
+      "sha256": "82ae0b6d3f2ca36cd8ef995bb87c87a005da72555c2b6ed4b82d06288962ddd9"
+    },
+    "URBANIS-DZ_Pack_construction_agent.pdf": {
+      "size": 64558,
+      "sha256": "b9dc7f82f752299aaf79aa49dddbe146c0f687e9cbbc63c65af93da302770fe4"
+    },
+    "_OceanofPDF.com_Rethinking_Urbanism_Lessons_from_Postcolonialism_and_the_Global_South_-_Garth_Myers.pdf": {
+      "size": 37073164,
+      "sha256": "87acfacf4dbfaba3ace200af1caff15c6f184cba7df62d48a54e563245044b91"
+    },
+    "_OceanofPDF.com_The_Concise_Townscape_-_Gordon_Cullen.pdf": {
+      "size": 42828818,
+      "sha256": "df014569528d1cda2dd128cfeb5ac13fa98db97b9a7155fec2eafe759d1e7e1d"
+    },
+    "_OceanofPDF.com_The_New_Yorker_-_October_5_2026_-_The_New_Yorker.pdf": {
+      "size": 36810993,
+      "sha256": "bdee11ff6bb845e8cdd936c8b4a562ef29e0c1c6a316f02ebf57db92c2ea80f0"
+    },
+    "_OceanofPDF.com_Urban_Theory___A_Critical_Introduction_to_-_Alan_Harding.pdf": {
+      "size": 6879572,
+      "sha256": "2c2fd4caffbdd9f18a2c2679c20cf43a14b9e38adf8b6e2094aa65e5b80a135d"
+    },
+    "audit_Ma Thèse_octobre.2026.txt": {
+      "size": 50291,
+      "sha256": "9b1804d7ce4d38022dfdf83ecbfef9e0ea873b3b3cd4a73d42f54530a921af46"
+    },
+    "doc.rar": {
+      "size": 36345927,
+      "sha256": "711315b5bee7fd6620b8d0c91520e0c926478b18c6821632b9a12398b3e7667e"
+    },
+    "prompt-corrections-annexe-thesisframe.md": {
+      "size": 9086,
+      "sha256": "0b42d389c1883be77f01e38c02851eedc9e5da533b2f105bf7ae9369798ad143"
+    },
+    "prompt-production-these-urbanisme-tic-ia.md": {
+      "size": 4668,
+      "sha256": "9bd74a626fddec64f658b44ef0e189c8c05b0c389e659b34bce13d7478db7fd7"
+    },
+    "res.pdf": {
+      "size": 411259,
+      "sha256": "56df3b4216696b7d1136a58eb46985f4692ed23fa6a9d86f23c7fc5bd10cb36a"
+    },
+    "thumbnail.jpg": {
+      "size": 58644,
+      "sha256": "67aea0eb325ab656a1e16a13eabc6629d2c1141cafbc06d292b34eab8af0fce3"
+    },
+    "thumbnail2.jpg": {
+      "size": 91192,
+      "sha256": "977bdc68d8487aa82e3edd43ce97539f1c0d24fc32e7138a802de3ef22791305"
+    }
+  },
+  "checksums_compared": {
+    "Lurbanisme (Tribillon, Jean_ (z-library.sk, 1lib.sk, z-lib.sk)": {
+      "size": 6295904,
+      "sha256": "1a99ca80fe4c6080f66675b5a5e50dfed4ab9f581d4df015333fb10e50e83ab7"
+    },
+    "_OceanofPDF.com_The_New_Yorker_-_October_5_2026_-_The_New_Yorker.pdf": {
+      "size": 36810993,
+      "sha256": "bdee11ff6bb845e8cdd936c8b4a562ef29e0c1c6a316f02ebf57db92c2ea80f0"
+    },
+    "thumbnail2.jpg": {
+      "size": 91192,
+      "sha256": "977bdc68d8487aa82e3edd43ce97539f1c0d24fc32e7138a802de3ef22791305"
+    },
+    "prompt-corrections-annexe-thesisframe.md": {
+      "size": 9086,
+      "sha256": "0b42d389c1883be77f01e38c02851eedc9e5da533b2f105bf7ae9369798ad143"
+    },
+    "prompt-production-these-urbanisme-tic-ia.md": {
+      "size": 4668,
+      "sha256": "9bd74a626fddec64f658b44ef0e189c8c05b0c389e659b34bce13d7478db7fd7"
+    },
+    "Literature review as a research methodology_An overview _guidelines.pdf": {
+      "size": 122854,
+      "sha256": "9c2dc51abdd2c64e6b9808484f72f6e4aa7e0ed68c816b53c8391591ebb214f9"
+    },
+    "doc.rar": {
+      "size": 36345927,
+      "sha256": "711315b5bee7fd6620b8d0c91520e0c926478b18c6821632b9a12398b3e7667e"
+    },
+    "Doc-3.rar": {
+      "size": 40912615,
+      "sha256": "ed1eda109d348054dfb9627a5ec4adcbafdce9b70c274e68c580443e9c54440a"
+    },
+    "URBANIS-DZ_Pack_construction_agent.pdf": {
+      "size": 64558,
+      "sha256": "b9dc7f82f752299aaf79aa49dddbe146c0f687e9cbbc63c65af93da302770fe4"
+    },
+    "LR.rar": {
+      "size": 2039935,
+      "sha256": "cfa37c4487e2814d52e6e81b4e718e8e52c6f4c5cbae5cfffc41c1a184ada8c6"
+    },
+    "_OceanofPDF.com_Rethinking_Urbanism_Lessons_from_Postcolonialism_and_the_Global_South_-_Garth_Myers.pdf": {
+      "size": 37073164,
+      "sha256": "87acfacf4dbfaba3ace200af1caff15c6f184cba7df62d48a54e563245044b91"
+    },
+    "_OceanofPDF.com_The_Concise_Townscape_-_Gordon_Cullen.pdf": {
+      "size": 42828818,
+      "sha256": "df014569528d1cda2dd128cfeb5ac13fa98db97b9a7155fec2eafe759d1e7e1d"
+    },
+    "thumbnail.jpg": {
+      "size": 58644,
+      "sha256": "67aea0eb325ab656a1e16a13eabc6629d2c1141cafbc06d292b34eab8af0fce3"
+    },
+    "Combining Qualitative.pdf": {
+      "size": 99661,
+      "sha256": "c7d1d630f3e68c285b9b88bb2ce4f8f6b692fcc8ee96f34385034c6d02cfeecf"
+    },
+    "_OceanofPDF.com_Urban_Theory___A_Critical_Introduction_to_-_Alan_Harding.pdf": {
+      "size": 6879572,
+      "sha256": "2c2fd4caffbdd9f18a2c2679c20cf43a14b9e38adf8b6e2094aa65e5b80a135d"
+    },
+    "res.pdf": {
+      "size": 411259,
+      "sha256": "56df3b4216696b7d1136a58eb46985f4692ed23fa6a9d86f23c7fc5bd10cb36a"
+    },
+    "audit_Ma Thèse_octobre.2026.txt": {
+      "size": 50291,
+      "sha256": "9b1804d7ce4d38022dfdf83ecbfef9e0ea873b3b3cd4a73d42f54530a921af46"
+    },
+    "Lurbanisme des réseaux - Copie.pdf": {
+      "size": 44231436,
+      "sha256": "56021a7f8f28beb6cdb77b39eff9d58b32b71e601e568ff74684f9f262dfe77b"
+    },
+    "SKILL(2).md": {
+      "size": 11308,
+      "sha256": "82ae0b6d3f2ca36cd8ef995bb87c87a005da72555c2b6ed4b82d06288962ddd9"
+    },
+    "Agent-Urbaniste-DZ.pdf": {
+      "size": 931353,
+      "sha256": "2badca4a6e50bf2c5c97a676c94e3ebdf30a53b4ae1fd6fa9ee1fffce3ed4842"
+    }
+  }
+}

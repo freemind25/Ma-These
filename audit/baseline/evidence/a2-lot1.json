@@ -1,0 +1,176 @@
+{
+  "task": "A2 lot 1",
+  "task_id": "W1-8",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "agent": "agent-execution-UI (Z.ai Code, session dédiée W1-8)",
+  "baseline_git": "6d93dd4378f380eba5da9c10175cb887f2e2bd2e",
+  "source_inventaire": "audit/baseline/evidence/c3-revalidation.json (phase2 → a_corrige_confirme_persistantes) — actions marquées « vérifiée par code » (13) ; lot 1 = 5 actions (ai-tools ×2, expérimentations ×2, verification-carto ×1)",
+  "methode": "UI réelle agent-browser (headless, http://localhost:3000) ; création d'objets de test préfixés AUDIT-A2- DANS L'UI ; protocole par action : poubelle → ConfirmDeleteDialog → capture dialogue → contrôle ① (0 requête destructive à l'ouverture) → Annuler → contrôle ② (réseau + UI + DB) → ré-ouverture → Confirmer → contrôles ③④⑤ ; audit réseau complet de la session (agent-browser network requests) ; comptages DB lecture seule via script node @prisma/client one-shot (audit/baseline/evidence/tmp-w18-counts.mjs)",
+  "controles_exiges": [
+    "① aucune suppression avant confirmation (0 requête destructive à l'ouverture du dialogue)",
+    "② Annuler = 0 requête destructive + 0 modification persistée (DB + UI inchangés)",
+    "③ Confirmer déclenche UNIQUEMENT la suppression prévue (exactly 1 requête, bon endpoint/méthode, pas d'autre requête destructive)",
+    "④ cascades conformes au comportement attendu",
+    "⑤ l'interface reflète le résultat (élément disparu)",
+    "⑥ erreurs gérées sans perte silencieuse"
+  ],
+  "actions": [
+    {
+      "n": 1,
+      "action": "Outils IA — suppression d'une source IA (poubelle carte source → ConfirmDeleteDialog « Supprimer cette source ? »)",
+      "vue": "Outils IA (ai-tools) — onglet Carnet de recherche, section Sources de recherche",
+      "endpoint_attendu": "DELETE /api/sources/{id}",
+      "objet_test": "source « AUDIT-A2-Source jetable » (id cmv1cajr70019jjivxvspmj2h, créée via UI : POST /api/sources 201)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — dialogue affiché (titre « Supprimer cette source ? », description « « AUDIT-A2-Source jetable » sera définitivement supprimée... », boutons Annuler/Supprimer) ; 0 requête destructive capturée à l'ouverture (filtre DELETE du suivi réseau : vide)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (filtre DELETE vide, aucune nouvelle entrée réseau), alertdialog fermé (0), carte source toujours en UI (badge « Sources de recherche 1 », texte AUDIT-A2-Source jetable présent), DB inchangée (ResearchSource=1, objet cmv1cajr70019jjivxvspmj2h présent)",
+        "c3_confirmer_suppression_prevue_seule": "OK — exactement 1 requête destructive observée : DELETE http://localhost:3000/api/sources/cmv1cajr70019jjivxvspmj2h 200 ; aucune autre requête destructive dans toute la session ; seules requêtes suivantes = GET /api/sources (re-fetch React Query, non destructif)",
+        "c4_cascades": "conforme — source de test sans entrée liée : aucune donnée liée concernée ; NotebookEntry inchangé (1, sourceId null) ; le modèle prévoit SetNull sur NotebookEntry.sourceId (aucune suppression d'entrée attendue ni observée)",
+        "c5_ui_refletere": "OK — carte disparue, badge « Sources de recherche 0 », texte AUDIT-A2-Source jetable absent du DOM",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200, aucun toast d'erreur, aucune entrée console d'erreur produit)"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot1-1-source-dialogue.png",
+        "audit/baseline/evidence/a2-lot1-1-source-annule.png",
+        "audit/baseline/evidence/a2-lot1-1-source-confirme.png"
+      ]
+    },
+    {
+      "n": 2,
+      "action": "Outils IA — suppression d'une note IA (poubelle carte note → ConfirmDeleteDialog « Supprimer cette note ? »)",
+      "vue": "Outils IA (ai-tools) — onglet Carnet de recherche, section Notes et questions",
+      "endpoint_attendu": "DELETE /api/entries/{id}",
+      "objet_test": "note « AUDIT-A2-Note jetable — question de test » (id cmv1ccxqh001ajjivq0078bdx, créée via UI : POST /api/entries 201)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — dialogue affiché ciblant exactement la note test (description « « AUDIT-A2-Note jetable — question de test » sera définitivement supprimée... ») ; 0 requête destructive à l'ouverture (dernières requêtes réseau = GET /api/entries 200)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête émise (aucune nouvelle entrée réseau, comptage réseau stable), alertdialog fermé, note toujours en UI (badge « Notes et questions 2 »), DB inchangée (NotebookEntry=2, note cmv1ccxqh001ajjivq0078bdx présente)",
+        "c3_confirmer_suppression_prevue_seule": "OK — exactement 1 requête destructive : DELETE http://localhost:3000/api/entries/cmv1ccxqh001ajjivq0078bdx 200 ; aucune autre requête destructive ; suivies de 2 GET (re-fetch entries + sources, non destructifs)",
+        "c4_cascades": "conforme — NotebookEntry est une entité terminale (pas d'enfant) ; note sans source liée (sourceId null) ; après suppression : NotebookEntry=1, reste uniquement la note préexistante « Question de test T4 » (intacte)",
+        "c5_ui_refletere": "OK — note disparue (texte AUDIT-A2-Note jetable absent du DOM), badge « Notes et questions 1 »",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200)"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot1-2-note-dialogue.png",
+        "audit/baseline/evidence/a2-lot1-2-note-annule.png",
+        "audit/baseline/evidence/a2-lot1-2-note-confirme.png"
+      ]
+    },
+    {
+      "n": 3,
+      "action": "Expérimentations — suppression d'une expérimentation (poubelle détail → ConfirmDeleteDialog « Supprimer cette expérimentation ? »)",
+      "vue": "Expérimentations (experimentations) — panneau détail",
+      "endpoint_attendu": "DELETE /api/experiments/{id}",
+      "objet_test": "expérimentation « AUDIT-A2-Expérimentation jetable » (id cmv1cihgd001jjjivo792dwox, créée via UI : POST /api/experiments 201) + 2 runs créés via UI (POST /api/experiments/{id}/runs 201 ×2)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — dialogue affiché : « « AUDIT-A2-Expérimentation jetable » et tous ses runs seront définitivement supprimés... » ; comptage réseau stable à l'ouverture (203 requêtes avant et après capture, aucune destructive)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (203 → 203), alertdialog fermé, exp toujours en UI (détail + « Runs (1) » après l'action 4), DB inchangée (Experiment=2, ExperimentRun=2)",
+        "c3_confirmer_suppression_prevue_seule": "OK — exactement 1 requête destructive : DELETE http://localhost:3000/api/experiments/cmv1cihgd001jjjivo792dwox 200 ; aucune autre requête destructive (aucun refetch émis par ce flux)",
+        "c4_cascades": "conforme — cascade runs vérifiée en DB : après suppression, Experiment=1 et ExperimentRun=1 ; l'exp test ET son run restant (cmv1cioqz001ljjivbgtivl0q « AUDIT-A2-run-baseline ») sont supprimés ; l'expérimentation propriétaire « Jumelage numérique du corridor UEMOA » et son run « baseline seuil fixe » restent intacts",
+        "c5_ui_refletere": "OK — exp disparue de la liste (« 1 expérimentation » = la propriétaire), détail vidée",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200)"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot1-3-exp-dialogue.png",
+        "audit/baseline/evidence/a2-lot1-3-exp-annule.png",
+        "audit/baseline/evidence/a2-lot1-3-exp-confirme.png"
+      ]
+    },
+    {
+      "n": 4,
+      "action": "Expérimentations — suppression d'UN run (poubelle carte run → ConfirmDeleteDialog « Supprimer ce run ? ») — cascade NON attendue sur l'exp ni sur l'autre run",
+      "vue": "Expérimentations (experimentations) — panneau détail, carte run",
+      "endpoint_attendu": "DELETE /api/experiments/{id}/runs/{runId}",
+      "objet_test": "run « AUDIT-A2-run-variant-A » (id cmv1cj0y1001njjivug4g2jbw) de l'exp test cmv1cihgd001jjjivo792dwox ; run témoin « AUDIT-A2-run-baseline » (id cmv1cioqz001ljjivbgtivl0q)",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — dialogue affiché ciblant exactement le run test (« Le run « AUDIT-A2-run-variant-A » sera définitivement supprimé... ») ; 0 requête émise entre l'ouverture du dialogue et l'annulation (comptage réseau stable)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (comptage réseau identique), run toujours en UI (« Runs (2) »), DB inchangée (2 runs pour l'exp test : cmv1cioqz001ljjivbgtivl0q + cmv1cj0y1001njjivug4g2jbw)",
+        "c3_confirmer_suppression_prevue_seule": "OK — exactement 1 requête destructive : DELETE http://localhost:3000/api/experiments/cmv1cihgd001jjjivo792dwox/runs/cmv1cj0y1001njjivug4g2jbw 200 ; la seule autre requête émise est 1 PATCH /api/experiments/{id} 200 = rafraîchissement du détail de l'exp après suppression (comportement préexistant deleteRun → onPatch({}), lecture de l'exp — non destructif, pas de modification de contenu)",
+        "c4_cascades": "conforme — cascade NON attendue et NON observée : l'expérimentation cmv1cihgd001jjjivo792dwox reste en DB et en UI, le run témoin cmv1cioqz001ljjivbgtivl0q « AUDIT-A2-run-baseline » reste en DB et en UI (« Runs (1) ») ; seul le run ciblé est supprimé",
+        "c5_ui_refletere": "OK — carte du run variant disparue, compteur « Runs (1) », dialogue refermé après isPending",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200)"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot1-4-run-dialogue.png",
+        "audit/baseline/evidence/a2-lot1-4-run-annule.png",
+        "audit/baseline/evidence/a2-lot1-4-run-confirme.png"
+      ]
+    },
+    {
+      "n": 5,
+      "action": "Vérification cartographique — suppression d'un élément d'analyse (poubelle ligne → ConfirmDeleteDialog « Supprimer cet élément d'analyse ? »)",
+      "vue": "Vérification cartographique (verification-carto) — onglet Éléments, liste « Éléments renseignés » (groupe « Non assignés »)",
+      "endpoint_attendu": "DELETE /api/elements-analyse/{id}",
+      "objet_test": "élément « AUDIT-A2-Élément carto jetable » (id cmv1cltpf001qjjivr1peocgn, créé via UI : POST /api/elements-analyse 201 — formulaire « Ajouter un élément » : type « Périmètre d'étude retenu », nature Spatial, source AUDIT-A2-test)",
+      "dependance_externe": "AUCUNE pour ce flux — la création/suppression d'élément est un CRUD interne (form + POST/DELETE /api/elements-analyse) ; Overpass n'est pas requis. Service geo-mcp interrogé par la page : /api/geo-mcp?action=health → 200 {status:ok, tools_count:9} (Nominatim/OSM) — service disponible au moment du test ; consigne AUD-REL-001 : le flux CRUD testé ne dépend pas d'Overpass, action testable et testée",
+      "controles": {
+        "c1_pas_de_suppression_avant_confirmation": "OK — dialogue affiché : « « AUDIT-A2-Élément carto jetable » sera définitivement retiré de votre analyse cartographique... » ; 0 requête destructive à l'ouverture (dernières requêtes = GET geo-mcp health + POST création)",
+        "c2_annuler_0_requete_0_modification": "OK — après clic Annuler : 0 requête (comptage réseau 216 → 216), alertdialog fermé, élément toujours en UI (groupe « Non assignés »), DB inchangée (ElementAnalyse=2, objet cmv1cltpf001qjjivr1peocgn présent)",
+        "c3_confirmer_suppression_prevue_seule": "OK — exactement 1 requête destructive : DELETE http://localhost:3000/api/elements-analyse/cmv1cltpf001qjjivr1peocgn 200 ; aucune autre requête destructive",
+        "c4_cascades": "conforme — ElementAnalyse est une entité sans relation enfant (schéma : aucune FK pointant vers elle) ; après suppression : ElementAnalyse=1, seul l'élément propriétaire « Quartier de la Gare, Montpellier » (cmsyjn2p40005u19de77j4puj) reste, intouché, toujours visible en UI",
+        "c5_ui_refletere": "OK — élément test disparu (texte AUDIT-A2-Élément carto jetable absent du DOM), élément propriétaire toujours affiché",
+        "c6_erreurs": "aucune erreur rencontrée (DELETE 200) ; note : handleDeleteElement n'affiche pas de toast en cas d'échec (échec = l'élément resterait visible en UI, pas de perte silencieuse possible) — non sollicité ici car aucune erreur"
+      },
+      "statut": "conforme",
+      "captures": [
+        "audit/baseline/evidence/a2-lot1-5-element-cree.png",
+        "audit/baseline/evidence/a2-lot1-5-element-dialogue.png",
+        "audit/baseline/evidence/a2-lot1-5-element-annule.png",
+        "audit/baseline/evidence/a2-lot1-5-element-confirme.png"
+      ]
+    }
+  ],
+  "audit_reseau_session": {
+    "note": "suivi réseau agent-browser cumulé sur la session (217 entrées) ; méthodes DELETE observées = exactement 5, une par action testée, aucune autre",
+    "delete_requests": [
+      "DELETE /api/sources/cmv1cajr70019jjivxvspmj2h → 200 (action 1)",
+      "DELETE /api/entries/cmv1ccxqh001ajjivq0078bdx → 200 (action 2)",
+      "DELETE /api/experiments/cmv1cihgd001jjjivo792dwox/runs/cmv1cj0y1001njjivug4g2jbw → 200 (action 4)",
+      "DELETE /api/experiments/cmv1cihgd001jjjivo792dwox → 200 (action 3)",
+      "DELETE /api/elements-analyse/cmv1cltpf001qjjivr1peocgn → 200 (action 5)"
+    ]
+  },
+  "etat_proprietaire": {
+    "avant": {
+      "source": "audit/baseline/evidence/a2-lot1-db-before.json (2026-10-09T19:08:38Z)",
+      "counts": { "Thesis": 1, "Chapter": 7, "ChapterVersion": 6, "Reference": 4, "ImportedDoc": 16, "Job": 24, "ResearchSource": 0, "NotebookEntry": 1, "Experiment": 1, "ExperimentRun": 1, "ElementAnalyse": 1, "TypeAnalyse": 1 },
+      "thesisWords": 2295,
+      "thesisTitles": ["Urbanisme durable"]
+    },
+    "apres": {
+      "source": "audit/baseline/evidence/a2-lot1-db-after.json (2026-10-09T19:19:32Z)",
+      "counts": { "Thesis": 2, "Chapter": 14, "ChapterVersion": 7, "Reference": 4, "ImportedDoc": 16, "Job": 24, "ResearchSource": 0, "NotebookEntry": 1, "Experiment": 1, "ExperimentRun": 1, "ElementAnalyse": 1, "TypeAnalyse": 1 },
+      "thesisWords": 2487,
+      "thesisTitles": ["Urbanisme durable", "AUDIT-A1 — Thèse de test lot 1 (objet ÉTRANGER, cf. session_concurrente)"]
+    },
+    "effet_net_de_cette_session": {
+      "explication": "Les deltas (Thesis +1, Chapter +7, ChapterVersion +1, words +192) appartiennent à une thèse « AUDIT-A1 — Thèse de test lot 1 » (id cmv1ceqd3001bjjiv86wpubso, auteur « Agent Audit A1 », POST /api/thesis 201 à 19:12:51) créée par une session d'audit A1 CONCURRENTE — aucun lien avec W1-8 (aucun objet AUDIT-A2- n'est une thèse, aucun POST /api/thesis émis par cette session).",
+      "comptages_excluant_objet_A1_etranger": { "Thesis": 1, "Chapter": 7, "ChapterVersion": 6, "Reference": 4, "ImportedDoc": 16, "Job": 24, "ResearchSource": 0, "NotebookEntry": 1, "Experiment": 1, "ExperimentRun": 1, "ElementAnalyse": 1, "TypeAnalyse": 1, "thesisWords": 2295 },
+      "verifications_fines_proprietaire": {
+        "thesis_Urbanisme_durable": { "id": "cmsmyrdfs0000pa2sews4vo90", "updatedAt": "2026-08-10T08:22:35.464Z (inchangée)", "chapters": 7, "words": 2295, "versions": 6 }
+      },
+      "identique": true,
+      "note": "Tous les objets de test AUDIT-A2- (1 source, 1 note, 1 expérimentation, 2 runs, 1 élément) ont été supprimés VIA LE FLUX DE CONFIRMATION TESTÉ (aucun nettoyage direct DB). La thèse AUDIT-A1 étrangère n'a PAS été touchée (objet d'un autre agent, hors périmètre W1-8)."
+    }
+  },
+  "session_concurrente": {
+    "detectee": true,
+    "description": "Une session d'audit A1 (pass 33 vues, lot 1) tournait en parallèle dans le même environnement : captures audit/baseline/evidence/a1-lot1-*.png présentes, POST /api/thesis 201 « AUDIT-A1 — Thèse de test lot 1 » à 19:12:51, POST /api/chapter-draft/stream 200, requêtes GET /api/thesis/{a1Id}. Conséquences observées côté W1-8 : recompilations Fast Refresh du serveur dev et réinitialisations occasionnelles de la vue courante (SPA, état de vue non persisté) — gérées en re-naviguant avant chaque contrôle ; AUCUN impact sur les 5 protocoles (chaque dialogue re-vérifié : contenu ciblant exactement l'objet AUDIT-A2- attendu).",
+    "impact_sur_preuves": "aucun — les 5 DELETE observés correspondent univoquement aux 5 confirmations de cette session (ids AUDIT-A2-)"
+  },
+  "anomalies_et_regressions_rencontrees": [
+    "Environnement (pas produit) : refs agent-browser invalidées par re-rendus (Fast Refresh du serveur dev + session A1 concurrente) — un clic sur ref périmé a échoué (Unknown ref) sans effet de bord ; reprise systématique par re-snapshot / clic DOM ciblé sur le texte de l'objet test",
+    "Environnement (pas produit) : reset occasionnel de la vue courante vers dashboard/éditeur pendant la session (état de vue en mémoire, non persisté) — re-navigations effectuées, protocoles jamais interrompus en cours de dialogue"
+  ],
+  "invariants_respectes": {
+    "code_modifie": 0,
+    "fichiers_rouges": "0 diff (theses-en-ligne/search, arxiv/search, app-sidebar jamais ouverts en écriture)",
+    "db_push_build_commit": "aucun (pas de db:push, pas de build, pas de commit)",
+    "db_skip_worktree": "intact (db/custom.db inchangée côté git)",
+    "objets_test": "préfixés AUDIT-A2-, créés dans l'UI, supprimés via le flux de confirmation testé"
+  }
+}

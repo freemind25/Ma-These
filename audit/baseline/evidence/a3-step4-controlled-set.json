@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-10-09T19:57:08.922Z",
+  "reference": {
+    "dir": "/tmp/a3-backup/",
+    "files": 3,
+    "totalBytes": 1048649
+  },
+  "compared": {
+    "dir": "/tmp/a3-restore/",
+    "files": 3
+  },
+  "result": {
+    "identical": true,
+    "missing": [],
+    "extra": [],
+    "sizeMismatch": [],
+    "hashMismatch": []
+  },
+  "checksums_reference": {
+    "AUDIT-A3-test1.txt": {
+      "size": 49,
+      "sha256": "75f1fe56a4e65f8db19e13a9a3a8b5c9c036f92038a895eccd536ba9c8aaaf9f"
+    },
+    "AUDIT-A3-test2-random.bin": {
+      "size": 1048576,
+      "sha256": "7d2b9044f4a3c741d4a7c3bca8e6d28d9b9b110699632ad5ce1641bd7204aac0"
+    },
+    "AUDIT-A3-test3.json": {
+      "size": 24,
+      "sha256": "5057fa138c4ce5521745c5302094be81b3ced1164cbcd35c077509551c09fb31"
+    }
+  },
+  "checksums_compared": {
+    "AUDIT-A3-test1.txt": {
+      "size": 49,
+      "sha256": "75f1fe56a4e65f8db19e13a9a3a8b5c9c036f92038a895eccd536ba9c8aaaf9f"
+    },
+    "AUDIT-A3-test2-random.bin": {
+      "size": 1048576,
+      "sha256": "7d2b9044f4a3c741d4a7c3bca8e6d28d9b9b110699632ad5ce1641bd7204aac0"
+    },
+    "AUDIT-A3-test3.json": {
+      "size": 24,
+      "sha256": "5057fa138c4ce5521745c5302094be81b3ced1164cbcd35c077509551c09fb31"
+    }
+  }
+}

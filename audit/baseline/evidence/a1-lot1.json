@@ -1,0 +1,401 @@
+{
+  "task": "A1 lot 1 (vues Rédaction + Structure) — CONSOLIDÉ 8 vues",
+  "task_id": "W1-7b (lots 1a+1b) + W1-7c (lot 1c : cadrage + plan, clôture)",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "date_execution_lot1b_utc": "2026-10-09T19:05-19:45",
+  "date_execution_lot1c_utc": "2026-10-09T19:44-20:05",
+  "agent": "agent-exécution UI (Z.ai Code, sessions dédiées W1-7b lot 1b puis W1-7c lot 1c)",
+  "agent_lot1c": "agent-exécution UI (Z.ai Code, session dédiée W1-7c)",
+  "baseline_git": "6d93dd4378f380eba5da9c10175cb887f2e2bd2e",
+  "lots": "1 — COMPLET : 8 vues validées (3 par session initiale + 3 par lot 1b + 2 par lot 1c)",
+  "methode": "UI réelle agent-browser (headless, http://localhost:3000, serveur untouched). Lot 1b : identification par code source (lecture seule) puis exécution des parcours : navigation sidebar, saisies, filtres, copie presse-papiers, génération IA (1 soumission par vue max.), états vides/erreurs, persistance par reload, audit réseau (network requests --filter api), comptages DB PrismaClient lecture seule avant/après. Les 3 vues du lot 1b n'écrivent NI dans les chapitres NI en base (outils d'aide locale) : le protocole conditionnel « thèse de test AUDIT-A1b » n'a PAS été déclenché (condition non remplie) — aucune thèse de test créée, aucune suppression à faire. Lot 1c : les 2 vues écrivent en DB sur des données thèse-scopées (ThesisCadrage/Part/Chapter) — protocole « thèse de test AUDIT-A1c — Thèse de test » déclenché : créée via UI (POST /api/thesis 201), tous les parcours exécutés dessus, puis supprimée via l'UI (poubelle carte → ConfirmDeleteDialog → Supprimer, DELETE /api/thesis/{id} 200), cascade vérifiée en DB (chapters/parts/cadrages/fields/versions = 0).",
+  "vues": [
+    {
+      "id": "08",
+      "nom": "Cadrage de thèse",
+      "module": "src/modules/cadrage/cadrage-page.tsx (1 051 l.) + API src/app/api/cadrages/** (thesis/{id}/cadrages, [id]/versions, fields/[fieldId])",
+      "fonctionnalites": [
+        "Cadrage préliminaire de thèse PERSISTÉ EN DB (ThesisCadrage + 12 ThesisCadrageField + ThesisCadrageVersion, tout onDelete: Cascade vers la thèse)",
+        "Sélecteur de thèse affiché si ≥ 2 thèses (défaut = theses[0], tri updatedAt desc) ; état vide « Aucun cadrage pour cette thèse » + création du cadrage avec les 12 champs standards (thématique, problématique, questions, objectifs, hypothèses, type de recherche, méthodologie, revue de littérature, cadre théorique, mots-clés, contribution, type de thèse)",
+        "Barre de progression « x/12 champs remplis » + badge % ; onglets Cadrage / Vérification / Historique",
+        "Édition par champ : textarea + badge « Non sauvegardé » (dirty) + bouton Sauvegarder (désactivé si non modifié) → PUT /api/cadrages/fields/{id} {value} ; verrouillage par champ (isLocked persisté, textarea disabled)",
+        "« Générer un premier jet IA » : 1 POST /api/ai-writing (mode methodology, réponse JSON attendue) → jusqu'à 12 suggestions stockées en DB (aiSuggestion par champ, badges ambre « Suggestion IA — à valider »), Accepter (value=suggestion, aiSuggestion=null) ou Ignorer (aiSuggestion=null) par champ",
+        "Onglet Vérification : vérification de cohérence IA (POST /api/ai-writing mode peer-review), désactivée si < 3 champs remplis (« Minimum 3 champs remplis requis »)",
+        "« Valider ce cadrage » (désactivé si complétion < 25 %) : crée un instantané version (POST /api/cadrages/{id}/versions) listé dans l'onglet Historique (dépliable, snapshot JSON par champ)",
+        "Écriture thèse-scopée UNIQUEMENT : testée sur la thèse jetable AUDIT-A1c — jamais sur la thèse propriétaire"
+      ],
+      "parcours_executes": [
+        "Ouverture sur thèse propriétaire (1 thèse) → état vide « Aucun cadrage pour cette thèse » (capture) — aucun clic sur Créer (évité sur le propriétaire)",
+        "Après création de la thèse test AUDIT-A1c : sélecteur 2 thèses visible, test sélectionnée par défaut (theses[0]) ; « Créer le cadrage » → 12 champs, progression 0/12 (0 %), POST 201",
+        "Contrôles d'état vide : « Valider ce cadrage » désactivé (< 25 %) + hint « Remplissez au moins 25% des champs pour valider » ; onglet Vérification → « Lancer la vérification de cohérence » désactivé à 0/12 + « Minimum 3 champs remplis requis » (captures)",
+        "Saisie Thématique générale (UI) → badge « Non sauvegardé » + bouton Sauvegarder activé → PUT fields 200 + toast « Champ sauvegardé » ; 2 autres champs (Problématique, Objectifs) remplis+sauvegardés (3/12 = 25 %)",
+        "« Valider ce cadrage » → POST versions 201 + toast « Cadrage validé — version sauvegardée » ; onglet Historique → « Version du 09/10/2026 » dépliable avec le snapshot des champs (valeurs visibles)",
+        "« Générer un premier jet IA » (1 seul appel IA de la session lot 1c) → spinner « Génération en cours... » → POST /api/ai-writing 200 → 12 PUT (1 suggestion/champ) 200 + toast « 12 suggestion(s) IA générée(s) » + 12 badges ambre",
+        "« Accepter » sur le champ 1 → toast « Suggestion IA acceptée », badges 12→11, valeur du champ remplacée par la suggestion",
+        "Reload → re-navigation → 3/12 champs remplis, valeur acceptée et 11 suggestions INTACTES (persistance DB prouvée)"
+      ],
+      "etats_erreurs_testes": [
+        "« Valider ce cadrage » désactivé sous 25 % de complétion (état vide protégé)",
+        "« Lancer la vérification de cohérence » désactivé sous 3 champs remplis (message inline affiché) — 2ᵉ génération IA non déclenchée (budget 1 IA/vue) ; garde testée à l'état désactivé",
+        "Toasts d'erreur (création/sauvegarde/IA) défensifs présents dans le code, inatteignables hors panne réseau (toutes les requêtes 200/201)"
+      ],
+      "persistance": "PERSISTÉ EN DB (prouvé par reload) : valeurs de champs, suggestion acceptée, 11 suggestions restantes, progression recalculée 3/12, version d'instantané — contrairement aux outils locaux du lot 1b",
+      "multi_theses": "Sélecteur de thèse fonctionnel (2 thèses affichées) ; cadrage thèse-scopé ; testé exclusivement sur AUDIT-A1c (supprimée ensuite) ; thèse propriétaire jamais écrite (0 cadrage avant/après)",
+      "destructives": "Aucune (pas de suppression de cadrage, de champ ni de version dans l'UI)",
+      "anomalies": [
+        {
+          "desc": "« Valider ce cadrage » : le commentaire de code annonce « Run coherence check first » mais la fonction ne lance JAMAIS la vérification de cohérence — seule la création d'instantané est exécutée (comportement trompeur vs commentaire, aucune erreur utilisateur constatée)",
+          "gravite": "P3"
+        },
+        {
+          "desc": "« Générer un premier jet IA » = 1 appel IA + jusqu'à 12 PUT séquentiels (1/champ) pour stocker les suggestions — coût d'écriture élevé mais conforme (observation d'économie, même nature que l'auto-édition 8C)",
+          "gravite": "P3"
+        }
+      ],
+      "statut": "validée",
+      "captures": [
+        "a1-lot1-08-cadrage-vide-proprietaire.png (état vide sur thèse propriétaire, avant création thèse test)",
+        "a1-lot1-08-cadrage-selecteur.png (sélecteur 2 thèses, AUDIT-A1c par défaut)",
+        "a1-lot1-08-cadrage-cree.png (12 champs 0/12, Valider désactivé < 25 %)",
+        "a1-lot1-08-cadrage-verification-vide.png (Vérification : bouton désactivé < 3 champs)",
+        "a1-lot1-08-cadrage-non-sauvegarde.png (badge « Non sauvegardé » + Sauvegarder activé)",
+        "a1-lot1-08-cadrage-3-champs.png (3/12 = 25 %)",
+        "a1-lot1-08-cadrage-historique.png (version « Version du 09/10/2026 »)",
+        "a1-lot1-08-cadrage-version-detail.png (snapshot déplié)",
+        "a1-lot1-08-cadrage-ia-suggestions.png (12 badges « Suggestion IA — à valider »)",
+        "a1-lot1-08-cadrage-suggestion-acceptee.png (suggestion acceptée)",
+        "a1-lot1-08-cadrage-apres-reload.png (persistance : 3/12 + 11 suggestions)"
+      ],
+      "note": "Vue DB-persistée testée en intégralité sur la thèse jetable AUDIT-A1c (cadrage cmv1dmfnh0020jjivomdgvh9l, 12 champs cmv1dmfnh0021..002c, 1 version) puis nettoyée par la suppression de la thèse via l'UI (cascade DB vérifiée : cadrages/fields/versions = 0). 1 génération IA (budget respecté). ~8 actions."
+    },
+    {
+      "id": "09",
+      "nom": "Plan de thèse",
+      "module": "src/modules/thesis-plan/thesis-plan-page.tsx (972 l.) + hooks src/modules/editor/hooks/use-thesis.ts (react-query) + API /api/thesis, /api/thesis/{id}/parts, /api/chapters",
+      "fonctionnalites": [
+        "Panneau « Structure actuelle » : thèse affichée = theses[0] (GET /api/thesis, tri updatedAt desc) — PAS la thèse active du store ; badges chapitres/mots/parties/terminés + liste des chapitres (numéro romain, statut, progression mots)",
+        "Mode de structure « Par chapitres » / « Par parties » (Select → PUT /api/thesis/{id} structureMode, persisté) ; en mode parties : ajout de partie (titre, bouton Ajouter désactivé si vide), blocs de partie (renommage inline, monter/descendre, suppression ConfirmDeleteDialog, « Ajouter un chapitre ») — chapitres rattachés listés sous la partie avec bouton détacher (poubelle = updateChapter partId null, non destructif)",
+        "Générateur de template LaTeX 100 % client : discipline (8 choix), nombre de chapitres (1-15, clampé), mode Classique/Par parties → template ~4 000 caractères (\\documentclass, chapitres ou \\part) + Copier presse-papiers (toast + état « Copié »)",
+        "Suppression de partie protégée (C-3) : ConfirmDeleteDialog « Supprimer cette partie ? … Les chapitres rattachés seront détachés (pas supprimés)… » ; la mutation n'est déclenchée qu'à la confirmation"
+      ],
+      "parcours_executes": [
+        "Ouverture sur thèse propriétaire (avant création thèse test) → mode « Par chapitres », Urbanisme durable, 7 chapitres / 2 295 mots, 7 lignes chapitre (I→VII) — lecture seule, aucune écriture (capture)",
+        "Après création AUDIT-A1c : la vue affiche la thèse TEST (theses[0]) avec ses 7 chapitres template 0 mots (capture) — comportement theses[0] documenté en anomalie",
+        "Bascule « Par parties » → PUT thesis 200 + toast « Mode de structure : par parties », panneau parties avec état vide « Aucune partie créée »",
+        "Contrôle d'état vide : bouton « Ajouter » désactivé titre vide (vérifié is-enabled)",
+        "Création partie « AUDIT-A1c Partie jetable » → POST parts 201 + toast « Partie créée », bloc « 0 chap. / 0 mots »",
+        "« Ajouter un chapitre » → POST chapters 201 (Chapitre VIII) + PUT chapters/{id} 200 (attach partId) + toast « Chapitre ajouté à la partie »",
+        "Suppression : poubelle partie → ConfirmDeleteDialog (texte exact vérifié, capture) → Annuler = 0 requête DELETE dans le réseau + partie intacte en UI et DB (parts=1) ; re-clic → Supprimer = DELETE /api/parts/{id} 200 + toast « Partie supprimée » → « 8 chapitres / 0 partie » ; DB : parts=0, Chapitre VIII toujours présent avec partId=null (détaché, PAS supprimé — conforme au message)",
+        "Générateur : Discipline=Informatique, Nombre de chapitres=3, Mode=Par parties → Générer le template → 4 076 caractères LaTeX (\\documentclass, \\part{Fondements Théoriques}, chapitres) → Copier → toast « Template copié dans le presse-papiers » + bouton « Copié »",
+        "Reload → re-navigation → « Par parties » persisté (8 chapitres / 1 partie au moment du test), Chapitre VIII toujours en DB"
+      ],
+      "etats_erreurs_testes": [
+        "Ajout de partie à titre vide : bouton « Ajouter » désactivé (état vide protégé)",
+        "Suppression de partie : Annuler = 0 requête destructive (audit réseau : aucun DELETE avant confirmation) + 0 modification DB",
+        "Nombre de chapitres du template clampé 1-15 (onChange garde-fou) — non poussé au-delà (guard vérifié par code, hors budget)"
+      ],
+      "persistance": "PERSISTÉ EN DB (prouvé par reload) : structureMode « parts », chapitre ajouté ; suppression de partie persistée (parts=0) avec détachement SetNull du chapitre. Le template LaTeX généré est état local (sans objet après reload)",
+      "multi_theses": "ANOMALIE documentée : la vue lie theses[0] (updatedAt desc) et non la thèse active du store/localStorage — avec ≥ 2 thèses, toutes les écritures (structureMode, parties, chapitres) vont à la thèse la plus récemment modifiée, pas forcément celle travaillée par l'utilisateur. Test rendu sûr par le protocole thèse jetable (AUDIT-A1c = theses[0] pendant la session) ; thèse propriétaire jamais écrite",
+      "destructives": "Suppression de partie : ConfirmDeleteDialog EXIGÉ ET VÉRIFIÉ en UI réelle (Annuler = 0 requête/0 modification, Confirmer = 1 DELETE 200, chapitres détachés pas supprimés) — action n° 9 du registre C-3 passée de « code-seulement » à « vérifiée UI réelle » ; le détachement de chapitre (poubelle sur ligne rattachée) est une mise à jour non destructive (partId null), inatteignable en UI (cf. anomalie P2)",
+      "anomalies": [
+        {
+          "desc": "P2 — GET /api/thesis sélectionne les chapitres SANS partId (ni sortOrder/targetWordCount/romanNumeral) : les chapitres rattachés à une partie ne s'affichent JAMAIS dans les blocs de partie (badge « 0 chap. » persistant même après reload alors que le chapitre est bien attaché en DB avec partId renseigné, badge « rattaché » et mots/partie inatteignables, bouton détacher impossible à atteindre en UI). L'attachement persiste correctement en DB et la suppression de partie le détache bien — c'est l'affichage qui est cassé. GET /api/thesis/[id] (éditeur) retourne lui les chapitres complets, d'où l'incohérence non vue avant. Réparation hors périmètre (aucune modification de code)",
+          "gravite": "P2"
+        },
+        {
+          "desc": "« Ajouter un chapitre » ne rafraîchit pas les badges de partie sans reload (invalidation manquante de la query theses après createChapter/updateChapter) — l'effet est masqué/agi par l'anomalie P2 ci-dessus",
+          "gravite": "P3"
+        },
+        {
+          "desc": "La vue affiche theses[0] (tri updatedAt desc) et non la thèse active de l'utilisateur (localStorage) — risque d'écrire (structureMode/parties) sur la mauvaise thèse quand plusieurs existent",
+          "gravite": "P3"
+        },
+        {
+          "desc": "Icône poubelle (Trash2) utilisée pour le DÉTACHEMENT d'un chapitre rattaché (action non destructive) — confusion possible avec la suppression de partie ; inatteignable en l'état (P2) donc non observable en UI",
+          "gravite": "P3"
+        }
+      ],
+      "statut": "validée",
+      "captures": [
+        "a1-lot1-09-plan-rendu-proprietaire.png (vue sur thèse propriétaire, mode chapitres, 2 295 mots — lecture seule)",
+        "a1-lot1-09-plan-these-test.png (vue liée à theses[0] = AUDIT-A1c)",
+        "a1-lot1-09-plan-partie-creee.png (partie créée, mode parties)",
+        "a1-lot1-09-plan-delete-dialog.png (ConfirmDeleteDialog suppression de partie)",
+        "a1-lot1-09-plan-partie-supprimee.png (8 chapitres / 0 partie après confirmation)",
+        "a1-lot1-09-plan-template.png (template LaTeX généré, 3 chapitres par parties)",
+        "a1-lot1-09-plan-template-copie.png (copie presse-papiers + « Copié »)"
+      ],
+      "note": "Vue DB-persistée testée sur la thèse jetable AUDIT-A1c uniquement (structureMode, 1 partie, 1 chapitre) puis nettoyée (partie supprimée via le flux ConfirmDeleteDialog testé, thèse supprimée via l'UI, cascade vérifiée). 0 appel IA (générateur 100 % client). ~9 actions (dont Annuler+Confirmer du flux delete). Anomalie P2 consignée sans correction (contrainte aucun code modifié)."
+    },
+    {
+      "id": "04",
+      "nom": "Phrasier Académique",
+      "module": "src/modules/phrasebook/phrasebook-page.tsx (460 l.) + src/lib/data/phrasebank-data.ts",
+      "fonctionnalites": [
+        "Banque de 138 phrases académiques prêtes à l'emploi (7 sections : Introduction 19, Revue de littérature 30, Problématique 9, Méthodologie 19, Résultats 19, Discussion 26, Conclusion 16 ; 10 fonctions : Ouvrir, Argumenter, Citer, Nuancer, Transitionner, Conclure, Comparer, Définir, Exemplifier, Structurer), enrichie d'après Academic Phrasebank (University of Manchester, lien source affiché)",
+        "Recherche plein texte côté client (searchPhrases) avec bouton d'effacement (X) du champ",
+        "Filtres par section et par fonction avec compteurs, bouton « Réinitialiser les filtres »",
+        "Copie de la phrase dans le presse-papiers (clic carte ou bouton dédié) + toast sonner de confirmation",
+        "Détail dépliable par phrase (exemple d'utilisation, registre formel/classique/neutre), placeholders {X} surlignés",
+        "État vide « Aucune phrase trouvée » si 0 résultat"
+      ],
+      "parcours_executes": [
+        "Ouverture depuis sidebar → rendu complet : stats 138 phrases / 7 sections / 10 fonctions, bannière d'usage, cartes",
+        "Recherche « ces résultats » → 11 cartes filtrées (compteur visible seulement avec filtres section/fonction actifs)",
+        "Copie d'une phrase (bouton carte) → toast « Phrase copiée dans le presse-papiers » vérifié dans le DOM",
+        "Filtre section « Revue de littérature » (recherche vidée) → 30 résultats, première carte de la section présente",
+        "Réinitialiser les filtres → compteur disparaît, 138 cartes restaurées"
+      ],
+      "etats_erreurs_testes": [
+        "Recherche sans résultat « zxqwv nonexistant » → état vide « Aucune phrase trouvée » (capture)",
+        "Recherche sans résultat + filtre section cumulés → 0 résultat cohérent (cumul des critères correct)",
+        "Soumission vide : sans objet (vue sans formulaire à soumettre — recherche/filtres inoffensifs à vide)"
+      ],
+      "persistance": "Sans objet (vue 100 % locale, données statiques embarquées ; rien à re-vérifier après reload)",
+      "multi_theses": "Sans objet (aucune donnée thèse-scopée consommée ; comportement identique quel que soit le contexte)",
+      "destructives": "Aucune (réinitialisation des filtres et effacement de recherche = état local non persisté, pas de données serveur supprimées, pas de ConfirmDeleteDialog requis)",
+      "anomalies": [
+        {
+          "desc": "Le compteur « X résultats » ne s'affiche que si un filtre section/fonction est actif — une recherche seule n'affiche pas de compteur (choix de conception, mineur)",
+          "gravite": "P3"
+        }
+      ],
+      "statut": "validée",
+      "captures": [
+        "a1-lot1-05-phrasier-rendu.png (lot 1b, vue complète)",
+        "a1-lot1-05-phrasier-recherche.png (lot 1b, recherche « ces résultats »)",
+        "a1-lot1-05-phrasier-copie.png (lot 1b, copie + toast)",
+        "a1-lot1-05-phrasier-vide.png (lot 1b, état vide)",
+        "a1-lot1-05-phrasier-filtre.png (lot 1b, filtre section)",
+        "a1-lot1-04-phrasier-rendu.png (session initiale)",
+        "a1-lot1-04-phrasier-recherche.png (session initiale)"
+      ],
+      "note": "Session initiale (lot 1a) : captures rendu + recherche 19:22-19:23. Consolidée par lot 1b : parcours complets re-exécutés en UI réelle (recherche, filtres, copie, état vide, reset), zéro appel API propre à la vue (purement client), aucune écriture DB."
+    },
+    {
+      "id": "05",
+      "nom": "Déblocage écriture",
+      "module": "src/modules/deblocage-ecriture/deblocage-ecriture-page.tsx (1 341 l.)",
+      "fonctionnalites": [
+        "Bannière de citation motivationnelle aléatoire (10 citations)",
+        "Onglet Diagnostic : 8 blocages sélectionnables (page blanche, imposteur, perfectionnisme, motivation, surcharge, procrastination, doute, fatigue) → bouton « Obtenir des stratégies IA » (désactivé si 0 bloc) → 1 requête POST /api/ai-writing par bloc sélectionné (mode « deblocage ») → stratégies affichées par bloc",
+        "Onglet Exercices : écriture libre avec minuteur/durées (5/10/15 min), phrases d'amorce IA (POST /api/ai-writing), carte mentale",
+        "Onglet Suivi : objectif et mots rédigés du jour, « Enregistrer la journée », progression, statistiques (mots totaux, jours complétés, série/streak)",
+        "Onglet Pomodoro : minuteur circulaire 25 min travail / 5 min pause, Démarrer/Pause, Reset, bascule Pause (café), sessions terminées et minutes de travail"
+      ],
+      "parcours_executes": [
+        "Ouverture → rendu 4 onglets + citation ; état initial Diagnostic : bouton IA désactivé à 0 bloc sélectionné (contrôle vérifié via is-enabled)",
+        "Diagnostic : sélection « Page blanche » → bouton activé → génération IA → 5 stratégies markdown affichées (POST /api/ai-writing 200)",
+        "Exercices : rendu écriture libre + amorces (capture)",
+        "Suivi : objectif 300 / réalisé 120 → « Enregistrer la journée » → « Dernier enregistrement : 120 / 300 mots » + stats mises à jour (120 mots totaux)",
+        "Pomodoro : Démarrer → décompte 25:00 → 24:57 après ~3 s ; Pause → icône Play restaurée ; Reset présent (cliqué, no-op attendu à 25:00)"
+      ],
+      "etats_erreurs_testes": [
+        "Soumission vide : bouton « Obtenir des stratégies IA » désactivé avec 0 bloc sélectionné (état vide protégé, message « Sélectionnez au moins un bloc… » affiché) — aucun appel réseau possible"
+      ],
+      "persistance": "NON PERSISTÉ (prouvé en UI) : entrée Suivi 120/300 perdue après reload (Mots totaux revenus à 0, « Dernier enregistrement » disparu) ; compteur Pomodoro non persisté (état React local, aucune trace localStorage ni API dans le module)",
+      "multi_theses": "Sans objet (aucune donnée thèse-scopée ; outil transversal)",
+      "destructives": "Aucune (Reset Pomodoro = état local)",
+      "anomalies": [
+        {
+          "desc": "Onglet Suivi : « Enregistrer la journée » ne persiste rien (état React local uniquement) — progression quotidienne et stats (mots totaux, série) perdues au rechargement, alors que l'intitulé laisse croire à un enregistrement",
+          "gravite": "P3"
+        },
+        {
+          "desc": "Statistiques Pomodoro (sessions terminées, minutes) également non persistées (même nature que Suivi)",
+          "gravite": "P3"
+        }
+      ],
+      "statut": "validée",
+      "captures": [
+        "a1-lot1-06-deblocage-rendu.png (lot 1b, vue complète + bouton IA désactivé à vide)",
+        "a1-lot1-06-deblocage-strategies.png (lot 1b, stratégies IA « Page blanche »)",
+        "a1-lot1-06-deblocage-exercices.png (lot 1b, onglet Exercices)",
+        "a1-lot1-06-deblocage-suivi.png (lot 1b, enregistrement 120/300)",
+        "a1-lot1-06-deblocage-suivi-apres-reload.png (lot 1b, preuve non-persistance)",
+        "a1-lot1-06-deblocage-pomodoro-run.png (lot 1b, décompte en cours)",
+        "a1-lot1-05-deblocage-rendu.png / -strategies.png / -pomodoro.png / -pomodoro-run.png (session initiale)"
+      ],
+      "note": "Session initiale (lot 1a) : captures rendu, stratégies, pomodoro 19:24-19:26. Consolidée par lot 1b : 4 onglets exécutés, 1 génération IA validée (POST /api/ai-writing 200), contrôle d'état vide vérifié, non-persistance du Suivi prouvée par reload (anomalie P3 consignée), zéro écriture DB."
+    },
+    {
+      "id": "06",
+      "nom": "Auto-édition 8C",
+      "module": "src/modules/auto-edition/auto-edition-page.tsx (1 940 l.)",
+      "fonctionnalites": [
+        "Onglet Analyse IA : texte à analyser (compteur caractères/mots, max 50 000) → « Analyser les 8C » évalue 8 critères de Gastel & Day (Conformité, Exhaustivité, Composition, Exactitude, Clarté, Cohérence, Concision, Courtoisie) via 8 POST /api/ai-writing parallèles → score global /100 + verdict (Critique/À améliorer/…) + grille par critère + historique (5 dernières analyses, restaurables)",
+        "Accordéon « Vérifications publication » (3 outils IA via POST /api/verification-publication) : cohérence introduction/discussion, qualité d'un tableau, redondance texte/tableau — champs requis, boutons désactivés à vide",
+        "Onglet Checklist 8C : 27 sous-items manuels groupés par critère avec progression (x/27)",
+        "Onglet Checklist article : 7 questions diagnostiques manuelles (titre, résumé, introduction, méthode, résultats, discussion, auteurs)",
+        "Onglet Langue seconde : checks fond/forme + analyse de paragraphes IA (minimum 50 caractères)"
+      ],
+      "parcours_executes": [
+        "Ouverture → rendu 4 onglets ; bouton « Analyser les 8C » désactivé à 0 caractère (contrôle vérifié)",
+        "Analyse IA : texte court (12 car.) → bouton toujours désactivé ; texte académique (266 car. / 38 mots) → analyse lancée → score global 43/100 « Critique » + 8 critères notés (ex. Conformité 50, Exhaustivité 25…) avec questions et verdicts par critère",
+        "Checklist 8C : 3 items cochés → compteur 3/27 mis à jour (capture)",
+        "Vérifications publication : accordéon ouvert, 3 outils visibles ; dialogue « Cohérence introduction / discussion » ouvert à vide → bouton « Vérifier » désactivé (contrôle vérifié dans le DOM)",
+        "Checklist article : 7 questions rendues (capture)",
+        "Langue seconde : rendu checks fond/forme (capture)"
+      ],
+      "etats_erreurs_testes": [
+        "Soumission vide Analyse IA : bouton désactivé sous 20 caractères (protection UI vérifiée ; message d'erreur inline défensif présent dans le code mais inatteignable via le bouton)",
+        "Soumission vide Vérifications publication : bouton « Vérifier » désactivé dans le dialogue (toast « Champs requis » défensif inatteignable via le bouton)"
+      ],
+      "persistance": "NON PERSISTÉ (prouvé en UI) : après reload, texte d'analyse vidé (0 caractère), retour onglet par défaut, Checklist 8C revenue à 0/27 (les 3 items cochés perdus) — tout l'état est React local (aucune trace localStorage ni API dans le module)",
+      "multi_theses": "Sans objet (aucune donnée thèse-scopée ; le texte est saisi manuellement)",
+      "destructives": "Aucune (« Réinitialiser » = état local)",
+      "anomalies": [
+        {
+          "desc": "Analyses IA, checklist 8C et historique non persistés (état React local uniquement) — travail utilisateur perdu au rechargement",
+          "gravite": "P3"
+        },
+        {
+          "desc": "« Analyser les 8C » déclenche 8 appels IA parallèles par clic (1 par critère) — coût de génération élevé par action utilisateur (fonctionnement conforme, observation d'économie)",
+          "gravite": "P3"
+        }
+      ],
+      "statut": "validée",
+      "captures": [
+        "a1-lot1-07-autoedition-rendu.png (lot 1b, vue complète)",
+        "a1-lot1-07-autoedition-texte-court.png (lot 1b, bouton désactivé texte < 20 car.)",
+        "a1-lot1-07-autoedition-resultat.png (lot 1b, score global 43/100 + 8 critères)",
+        "a1-lot1-07-autoedition-checklist.png (lot 1b, 3/27 cochés)",
+        "a1-lot1-07-autoedition-checklist-apres-reload.png (lot 1b, preuve non-persistance 0/27)",
+        "a1-lot1-07-autoedition-verif-pub.png + -vide.png (lot 1b, 3 outils + dialogue « Vérifier » désactivé à vide)",
+        "a1-lot1-07-autoedition-langue-seconde.png (lot 1b)",
+        "a1-lot1-06-autoedition-rendu.png / -resultat.png / -verif-pub.png (session initiale)"
+      ],
+      "note": "Session initiale (lot 1a) : captures rendu, résultat, vérif-pub 19:26-19:27. Consolidée par lot 1b : analyse IA complète validée (8 × POST /api/ai-writing 200), contrôles d'état vide vérifiés (boutons désactivés), checklists manuelles exécutées, non-persistance prouvée par reload, zéro écriture DB."
+    },
+    {
+      "id": "01",
+      "nom": "Brouillon de chapitre",
+      "module": "src/modules/brouillon-chapitre/",
+      "fonctionnalites": [
+        "Génération d'un brouillon de chapitre par IA (état de génération visible), rendu du brouillon, insertion dans le contenu de chapitre via dialogue de confirmation d'insertion, arrêt de génération (stop)",
+        "Testée par la session initiale sur la thèse jetable « AUDIT-A1 — Thèse de test lot 1 » (créée via UI, 7 chapitres template auto), pas sur la thèse propriétaire"
+      ],
+      "parcours_executes": [
+        "Session initiale (lot 1a) : génération (captures generating/draft/rendu), insertion via dialogue (dialog-insert, insere), stop de génération (stop, stop2)"
+      ],
+      "etats_erreurs_testes": [
+        "Stop pendant génération (captures a1-lot1-01-brouillon-stop.png / -stop2.png) — détail complet du parcours par la session initiale"
+      ],
+      "persistance": "Insertion dans le contenu de chapitre (persistance via API chapitres) — testée par la session initiale sur la thèse jetable",
+      "multi_theses": "Testée sur thèse jetable dédiée ; thèse propriétaire jamais écrite (intacte : 7 chapitres, updatedAt 2026-08-10)",
+      "destructives": "Aucune action destructive propre (l'insertion écrase/ajoute du contenu de chapitre sur la thèse jetable uniquement)",
+      "anomalies": [],
+      "statut": "validée",
+      "captures": [
+        "a1-lot1-01-brouillon-rendu.png",
+        "a1-lot1-01-brouillon-generating.png",
+        "a1-lot1-01-brouillon-draft.png",
+        "a1-lot1-01-brouillon-dialog-insert.png",
+        "a1-lot1-01-brouillon-insere.png",
+        "a1-lot1-01-brouillon-stop.png",
+        "a1-lot1-01-brouillon-stop2.png"
+      ],
+      "note": "Session initiale, captures probantes, consolidée par lot 1b. La session initiale a épuisé ses tours avant consolidation JSON ; les 7 captures nommées (rendu/generating/draft/dialog-insert/insere/stop/stop2, 19:16-19:18) documentent le parcours complet génération → insertion → stop sur la thèse jetable AUDIT-A1 (supprimée via UI à 19:30, cf. cleanup-audit-a1-dialogue.png ; cascade vérifiée : 1 seule thèse restante en DB)."
+    },
+    {
+      "id": "02",
+      "nom": "Harper",
+      "module": "src/modules/harper/",
+      "fonctionnalites": [
+        "Réécriture/paraphrase IA de textes académiques : rendu du traitement, résumé, paraphrase, effacement du champ"
+      ],
+      "parcours_executes": [
+        "Session initiale (lot 1a) : rendu initial (harper-rendu), traitement résumé (harper-resume), paraphrase (harper-paraphrase), effacement (harper-effacer)"
+      ],
+      "etats_erreurs_testes": [
+        "Effacement du champ (capture a1-lot1-02-harper-effacer.png) — détail complet du parcours par la session initiale"
+      ],
+      "persistance": "Sans objet côté DB (traitement de texte à la volée ; rien de persisté)",
+      "multi_theses": "Sans objet",
+      "destructives": "Aucune (effacement = champ local)",
+      "anomalies": [],
+      "statut": "validée",
+      "captures": [
+        "a1-lot1-02-harper-rendu.png",
+        "a1-lot1-02-harper-resume.png",
+        "a1-lot1-02-harper-paraphrase.png",
+        "a1-lot1-02-harper-effacer.png"
+      ],
+      "note": "Session initiale, captures probantes, consolidée par lot 1b. 4 captures (19:20-19:21) documentant rendu → résumé → paraphrase → effacer."
+    },
+    {
+      "id": "03",
+      "nom": "Grammaire",
+      "module": "src/modules/grammaire/",
+      "fonctionnalites": [
+        "Correction grammaticale IA de textes : rendu du traitement, résultat de correction, effacement du champ"
+      ],
+      "parcours_executes": [
+        "Session initiale (lot 1a) : rendu initial (grammaire-rendu), correction (grammaire-resultat), effacement (grammaire-effacer)"
+      ],
+      "etats_erreurs_testes": [
+        "Effacement du champ (capture a1-lot1-03-grammaire-effacer.png) — détail complet du parcours par la session initiale"
+      ],
+      "persistance": "Sans objet côté DB (traitement de texte à la volée ; rien de persisté)",
+      "multi_theses": "Sans objet",
+      "destructives": "Aucune (effacement = champ local)",
+      "anomalies": [],
+      "statut": "validée",
+      "captures": [
+        "a1-lot1-03-grammaire-rendu.png",
+        "a1-lot1-03-grammaire-resultat.png",
+        "a1-lot1-03-grammaire-effacer.png"
+      ],
+      "note": "Session initiale, captures probantes, consolidée par lot 1b. 3 captures (19:21-19:22) documentant rendu → résultat → effacer."
+    }
+  ],
+  "audit_reseau_lot1b": {
+    "appels_propres_aux_3_vues": [
+      "POST /api/ai-writing ×1 (Déblocage/Diagnostic — stratégies « Page blanche ») 200",
+      "POST /api/ai-writing ×8 (Auto-édition — 1 par critère 8C, parallèles) 200",
+      "Aucun appel API pour Phrasier (100 % client)"
+    ],
+    "appels_globaux_app": ["GET /api/ai-config, /api/ai-keys, /api/stats (chargement app, hors vues)"]
+  },
+  "audit_reseau_lot1c": {
+    "cadrage_de_these": [
+      "POST /api/thesis/cmv1dlwdt001rjjivgv8cqfa8/cadrages 201 (création + 12 champs)",
+      "PUT /api/cadrages/fields/{id} ×15 200 (3 valeurs + 12 suggestions IA)",
+      "POST /api/ai-writing ×1 200 (premier jet, 1 seule génération IA de la session)",
+      "POST /api/cadrages/cmv1dmfnh0020jjivomdgvh9l/versions 201 (validation → instantané)"
+    ],
+    "plan_de_these": [
+      "PUT /api/thesis/cmv1dlwdt001rjjivgv8cqfa8 200 (structureMode parts)",
+      "POST /api/thesis/{id}/parts 201 puis DELETE /api/parts/cmv1dpklv002gjjivxufxmhm7 200 (Annuler préalable = 0 DELETE)",
+      "POST /api/thesis/{id}/chapters 201 + PUT /api/chapters/cmv1dpsmn002ijjiv8jiwj54j 200 (création + attach partId)",
+      "0 appel IA (générateur LaTeX 100 % client)"
+    ],
+    "cleanup_these_test": [
+      "POST /api/thesis 201 (création AUDIT-A1c) puis DELETE /api/thesis/cmv1dlwdt001rjjivgv8cqfa8 200 (via ConfirmDeleteDialog)"
+    ],
+    "bilan": "1 seul POST /api/ai-writing sur toute la session lot 1c ; DELETE uniquement après confirmations (partie ×1, thèse test ×1)"
+  },
+  "etat_proprietaire": {
+    "avant": { "thesis": 1, "chapters": 7, "refs": 4, "docs": 16 },
+    "apres": { "thesis": 1, "chapters": 7, "refs": 4, "docs": 16 },
+    "identique": true,
+    "detail": {
+      "thesis_titre": "Urbanisme durable (cmsmyrdfs0000pa2sews4vo90, Marie Dupont)",
+      "thesis_updatedAt_inchange": "2026-08-10T08:22:35.464Z",
+      "structureMode": "chapters",
+      "chapterVersions": 6,
+      "jobs": 24,
+      "elementAnalyses": 1,
+      "notebookEntries": 1,
+      "experiments": 1,
+      "researchSources": 0,
+      "parts": 0,
+      "theses_AUDIT_en_db": 0,
+      "cadrages_cadrageFields_cadrageVersions": "0/0/0 (cascade complète vérifiée après suppression thèse test)"
+    },
+    "note": "Comptages PrismaClient lecture seule avant et après session lot 1c, IDENTIQUES (diff a1-lot1c-db-before.json vs a1-lot1c-db-after.json vide) — et identiques à la clôture du lot 1b. Protocole thèse de test DÉCLENCHÉ pour le lot 1c (les 2 vues écrivent en DB thèse-scopé) : « AUDIT-A1c — Thèse de test » (cmv1dlwdt001rjjivgv8cqfa8, auteur Agent Audit A1c) créée via l'UI (POST 201, 7 chapitres template), tous les parcours cadrage/plan exécutés dessus, puis supprimée via l'UI (poubelle carte thèse → ConfirmDeleteDialog « …et ses 8 chapitre(s) seront définitivement supprimés » → Supprimer, DELETE 200) ; cascade vérifiée en DB : chapters 7→8→7, parts 0→1→0, cadrages/fields/versions 0→1/12/1→0, aucune ligne orpheline. La thèse propriétaire n'a JAMAIS été écrite (updatedAt inchangé, 7 chapitres / 2 295 mots / structureMode chapters / 0 cadrage / 0 partie).",
+    "git": "0 fichier suivi modifié hors worklog.md (append autorisé) ; fichiers rouges (theses-en-ligne/search, arxiv/search, app-sidebar) jamais touchés ; db/custom.db skip-worktree intact ; pas de db:push, pas de build, pas de commit ; a1-lot1.json (ce fichier) mis à jour par lot 1c avec les 2 entrées + lots 8 vues + état propriétaire.",
+    "outillage": "Quirks agent-browser consignés (lot 1b) : fill vide = no-op, refs parfois invalidées par re-rendus — chaque contrôle re-vérifié ; un find text a cliqué le bouton sidebar « Vérification méthodologique » au lieu de l'onglet « Vérification » (re-navigation immédiate, aucune écriture). Sans impact sur les preuves."
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "theses": [
+    {
+      "id": "cmsmyrdfs0000pa2sews4vo90",
+      "title": "Urbanisme durable",
+      "author": "Marie Dupont",
+      "structureMode": "chapters",
+      "updatedAt": "2026-08-10T08:22:35.464Z",
+      "_count": {
+        "chapters": 7,
+        "parts": 0,
+        "cadrages": 0
+      }
+    }
+  ],
+  "chapterAgg": {
+    "_count": 7,
+    "_sum": {
+      "wordCount": 2295
+    }
+  },
+  "refs": 4,
+  "docs": 16,
+  "versions": 0,
+  "jobs": 24,
+  "elements": 1,
+  "entries": 1,
+  "experiments": 1,
+  "sources": 0,
+  "parts": 0,
+  "cadrages": 0,
+  "cadrageFields": 0,
+  "cadrageVersions": 0,
+  "chapterVersions": 6
+}
