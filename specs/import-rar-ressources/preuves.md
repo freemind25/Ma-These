@@ -71,3 +71,12 @@ Jobs asynchrones `POST /api/article-imports/ocr`, séquentiels (garde anti-empil
 - Chaque document porte déjà ses limites d'import honnêtes (pages sans texte listées, structure de titres non garantie, bibliographie absente pour Canadian Architect / Smart Cities / Post-pandemic / L'urbanisme face aux villes anciennes).
 - Canadian Architect : magazine 100 % image — contenu issu d'OCR à 66 % de confiance, relecture humaine recommandée avant citation.
 - L'urbanisme face aux villes anciennes : 10 pages vides non OCR-ables (aucune image exploitable) — diagnostic consigné par le motif du job.
+
+## § 7 — Addendum récupération (2026-10-08, soir) — rollback d'environnement et reconstruction
+
+- **Incident** : l'environnement de travail a été restauré à un point antérieur (base locale revenue à `cba3e42`, du 2026-10-04) entre deux tours de session — effets : askpass purgé, /tmp purgé (backups db perdus), db corpus revenue à son état antérieur (16 docs → 4 tests), `vendor/tessdata` absent du disque local.
+- **Récupération git** : tout le travail poussé était sain sur origin (bde1485) → `git reset --hard origin/main` : specs, preuves, worklog, tessdata restaurés.
+- **Reconstruction corpus** : les PDF sources ont survécu dans `upload/` (non suivi git) → ré-extraction des 2 RAR (9/9) + ré-import des 12 documents (3 vrac + 9 RAR) : **12/12 → 201** (nouveaux ids `cmv0u9fz4…` à `cmv0uak6z…` — les ids `cmuzu8…` du premier passage sont caducs).
+- **Reproductibilité prouvée** : OCR relancé sur les 229 pages — **confiances et longueurs de texte identiques à l'octet près** au premier passage (Canadian Architect 66 % / 109 334 car. ; Cities 43 % ; Cullen 34 % / 62 598 ; Green Wedge 34 % ; Landscape 26 % ; New Yorker 39 % ; Post-pandemic 32 % ; Smart Cities 81 % ; Thinking 36 % ; Urban Theory 34 %) ; les 2 échecs honnêtes se reproduisent au même endroit (Myers p. 251, L'urbanisme p. 348 — intercalaires vides). Le pipeline import+OCR est déterministe.
+- **État final** : 16 documents en base, 6 737 798 caractères exploitables, thèse propriétaire intacte (1 thèse), verrou `skip-worktree` reposé sur db/custom.db.
+- **Correctifs d'infrastructure au passage** : verrou `.next/dev/lock` retenu par un next-server zombie → kill + suppression du verrou + redémarrage (HTTP 200) ; client Prisma régénéré (`bunx prisma generate`) après rollback (le client généré du point de restauration ignorait ImportedDoc).

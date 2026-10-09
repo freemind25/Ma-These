@@ -1541,3 +1541,19 @@ Stage Summary:
 - Récidive : commit instantané externe `fae4564` (message UUID, 17:47:38) a de nouveau committé db/custom.db (170,7 Mo) → push specs rejeté par pre-receive (blob > 100 Mo). Ce commit n'a jamais atteint origin.
 - Contre-mesure : sauvegarde de la db corpus (/tmp), `git rebase --onto origin/main fae4564 main` (écarte le snapshot, rejoue le commit specs), restauration de la db en working tree, puis verrou `git update-index --skip-worktree db/custom.db` — les futures prises de vue instantanées n'incluront plus la db (le bit skip-worktree est respecté par git add/commit ; l'état corpus reste purement local).
 - Effet attendu sur git status : « M db/custom.db » disparaît (fichier supposé identique à l'index) — la db corpus reste inchangée sur disque et hors GitHub.
+---
+Task ID: ocr-moteur-unlimited-ocr-et-recuperation
+Agent: Z.ai Code (principal)
+Task: IM propriétaire « voir le lien pour cet outil d'OCR très performant : https://github.com/baidu/Unlimited-OCR » — analyse au protocole + décision moteur ; puis récupération complète d'un rollback d'environnement (workspace restauré à un point antérieur en cours de session).
+
+Work Log:
+- Faits Unlimited-OCR vérifiés en direct : README (CUDA 12.9/13.0 + torch 2.10 ; vLLM Docker ; SGLang ; PDF→PNG 300 dpi ; pas de variante CPU/ONNX) ; GitHub API (MIT, 26 798 étoiles) ; HuggingFace (1,29 M téléchargements, poids 6,67 Go bf16 ≈ 3,3 Md paramètres) ; arXiv 2606.23050 (R-SWA, KV cache constant).
+- DÉCISION consignée (specs/ocr-moteur-unlimited-ocr/decision.md) : veille active, non-intégration aujourd'hui — l'outil est exactement notre limite (confiances 26-43 %) MAIS GPU NVIDIA obligatoire + 6,67 Go incompatibles avec la machine vérifiée (aucun GPU, 3 Go RAM) et l'architecture offline Tauri ; voie cloud = contredit « les documents ne quittent pas la machine ». Déclencheurs T-a (GPU ≥ 8-10 Go au poste → serveur local OpenAI-compatible moteur premium + repli Tesseract), T-b (variante CPU/ONNX), T-c (validation cloud explicite), T-d (tessdata d'abord si packaging).
+- ROLLBACK D'ENVIRONNEMENT détecté au push : base locale revenue à cba3e42 (2026-10-04) — askpass purgé (recréé avec le même jeton), /tmp purgé (backups db perdus), tessdata absent, db corpus revenue à 4 tests. Git sauf : tout le travail poussé était sain sur origin (bde1485) → reset --hard origin/main (specs/preuves/worklog/tessdata restaurés).
+- Reconstruction corpus : PDF sources survivants dans upload/ → 12/12 ré-imports 201 (ids cmv0u9fz4…cmv0uak6z) ; OCR 229 pages relancées : 10/12 done, 2 failed honnêtes identiques (Myers p. 251, L'urbanisme p. 348) — **confiances et longueurs de texte identiques à l'octet près au premier passage : pipeline déterministe prouvé** ; état final 16 docs / 6 737 798 car. ; thèse propriétaire intacte.
+- Infrastructure : verrou .next/dev/lock retenu par un next-server zombie → kill -9 + rm lock + redémarrage (HTTP 200) ; bunx prisma generate après rollback (client régénéré) ; skip-worktree reposé sur db/custom.db (protection snapshots maintenue).
+
+Stage Summary:
+- Décision moteur OCR tranchée sur faits et poussée ; veille active avec 4 déclencheurs réversibles — si le poste du propriétaire a un GPU NVIDIA ≥ 8 Go, l'option « moteur OCR premium local » devient réaliste.
+- Environnement restauré à l'identique après rollback : git via origin, corpus via re-import+OCR déterministe, verrou db reposé, serveur 200 — zéro perte nette de travail consigné.
+- Restes ouverts inchangés : check-in quotidien APINex, dette packaging vendor/tessdata, révocation de l'ancien PAT côté propriétaire.
