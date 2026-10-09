@@ -1,0 +1,33 @@
+{
+  "cycle": "audit-remediation-p1",
+  "correction": "C-4 / AUD-SEC-001 + AUD-SEC-005",
+  "date": "2026-10-09",
+  "phase": "durcissement Tauri — capabilities minimales + CSP explicite",
+  "avant": {
+    "capabilities": ["core:default", "shell:allow-open", "shell:allow-execute"],
+    "csp": null,
+    "usage_plugin_shell_front": "0 occurrence (@tauri-apps/plugin-shell jamais importé ; les invoke trouvés = z-ai functions SDK côté serveur, hors Tauri IPC)"
+  },
+  "apres": {
+    "capabilities": ["core:default"],
+    "fichier": "src-tauri/capabilities/default.json",
+    "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+    "devCsp": "identique + ws://localhost:3000 (HMR dev uniquement)",
+    "fichier_conf": "src-tauri/tauri.conf.json app.security"
+  },
+  "justification_csp": {
+    "topologie_runtime_desktop": "lib.rs spawn le serveur Next standalone (node.exe, 127.0.0.1:<PORT>) puis window.navigate('http://127.0.0.1:PORT') → l'ORIGINE de la webview EST le serveur : tous les appels API sont same-origin ('self') ; les intégrations externes (LLM, OpenAlex, CrossRef, HAL, theses.fr, Overpass, APINex) sont appelées côté Node, jamais depuis la webview",
+    "unsafe-inline_script": "nécessaire pour les scripts inline de flight data Next.js App Router (static export) ; la CSP conserve la protection structurante : origine unique, object-src none, frame-ancestors none, base-uri self — les injections d'origine externe restent bloquées",
+    "worker": "pdf.js cité uniquement dans le worker Node serveur (src/lib/jobs/worker.ts) — aucun Worker client → pas de worker-src requis",
+    "images": "0 champ d'image distante dans src (vérifié : thumbnail/coverImage/imageUrl/avatarUrl = 0 hit ; src=\"http = 0 hit) → img-src strict 'self' data: blob:"
+  },
+  "verifications": {
+    "web": "HTTP 200 inchangé (la conf Tauri n'affecte pas le mode web) ; lint 0 erreur ; JSON des 2 fichiers valides (parse OK)",
+    "rust": "tauri_plugin_shell::init() conservé dans lib.rs (plugin enregistré mais SANS permission accordée = aucune commande shell autorisée) — aucune modification Rust (non compilable ici)"
+  },
+  "limites_documentees": {
+    "build_desktop": "le build Tauri Windows est impossible dans cet environnement (pas de cargo/Windows) — test sur build cible à réaliser par le propriétaire AVANT toute distribution de l'installeur (exigence explicite du propriétaire)",
+    "statut": "corrigée, non revalidée côté desktop (revalidation = build Windows + smoke test app par le propriétaire)"
+  },
+  "verdict": "C-4_CORRIGE_AVEC_PREUVE_CONFIG ; validation desktop reportée propriétaire"
+}

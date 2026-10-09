@@ -1638,6 +1638,21 @@ Stage Summary:
 - AUD-GOV-001 CORRIGÉE avec preuve de restauration : la perte de la thèse/corpus n'est plus « un incident à un clic de db:push près » — backup quotidien auto + miroir hors arbre + restore outillé vérifié octet/logiquement identique.
 - Statut registre : corrigée, revalidée (restauration réelle en env de test, diff complet vide). Le statut final « revalidée » sera consigné au registre 09 en fin de cycle (T10).
 ---
+Task ID: R-4 (audit-remediation-p1 / C-4)
+Agent: Z.ai Code (principal)
+Task: C-4 durcissement Tauri (AUD-SEC-001 + 005) — capabilities minimales + CSP explicite, avant toute distribution.
+
+Work Log:
+- Vérification préalable : plugin shell JAMAIS utilisé par le front (0 import @tauri-apps/plugin-shell ; les invoke = z-ai SDK serveur) ; tauri_plugin_shell::init() conservé côté Rust (plugin enregistré sans permission = aucune commande autorisée, zéro modif Rust non compilable ici).
+- capabilities/default.json : retrait shell:allow-open + shell:allow-execute → permissions = [core:default] uniquement.
+- tauri.conf.json : csp null → CSP explicite (default-src 'self'; script-src 'self' 'unsafe-inline' [flight data Next App Router] ; style-src 'self' 'unsafe-inline' ; img-src 'self' data: blob: ; connect-src 'self' ipc: http://ipc.localhost ; object-src 'none' ; base-uri 'self' ; form-action 'self' ; frame-ancestors 'none') + devCsp (identique + ws://localhost:3000 HMR).
+- Analyse topologie (justifie la CSP) : lib.rs navigue la webview vers http://127.0.0.1:<PORT> = serveur Next standalone → tous les appels API same-origin ; intégrations externes côté Node uniquement ; 0 image distante ; pdf.js = worker Node serveur.
+- Vérifications : JSON valides (parse), web HTTP 200 inchangé, lint 0 erreur ; preuve evidence/c4-tauri-hardening.json.
+- Limite documentée : build Tauri Windows impossible ici (pas de cargo) → statut « corrigée, NON revalidée côté desktop » ; revalidation = build + smoke test par le propriétaire AVANT distribution (exigence propriétaire reprise telle quelle).
+
+Stage Summary:
+- Chaîne XSS→shell fermée côté configuration : sur-permissions shell retirées, CSP structurante en place ; la revalidation desktop reste une action propriétaire (build Windows).
+---
 Task ID: R-2 (audit-remediation-p1 / C-2)
 Agent: full-stack-developer
 Task: C-2 AUD-FUNC-002 — réparer créer/changer de thèse + isolation multi-thèses.

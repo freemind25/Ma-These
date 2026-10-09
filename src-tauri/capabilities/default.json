@@ -1,10 +1,8 @@
 {
   "identifier": "default",
-  "description": "Default capability for Ma Thèse",
+  "description": "Default capability for Ma Thèse — durcie (C-4 / AUD-SEC-001+005) : permissions minimales, le plugin shell n'est jamais utilisé par le front (0 usage vérifié au cycle audit-remediation-p1).",
   "windows": ["main"],
   "permissions": [
-    "core:default",
-    "shell:allow-open",
-    "shell:allow-execute"
+    "core:default"
   ]
 }
