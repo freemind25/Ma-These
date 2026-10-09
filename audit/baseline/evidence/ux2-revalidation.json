@@ -1,0 +1,35 @@
+{
+  "anomalie": "AUD-UX-002 — panneau flottant « Livrable du test de production » (P2, réévaluée bloquante parcours GP-4)",
+  "cycle": "audit-final-v1.2",
+  "autorisation": "propriétaire IM 2026-10-10 point 6 : « vous pouvez préparer et réaliser le correctif UI ciblé proposé… sans élargissement du périmètre. Documenter le changement et revalider intégralement GP-4 ainsi que les tests de non-régression »",
+  "date": "2026-10-10",
+  "avant": {
+    "composant": "src/components/layout/test-deliverable-card.tsx",
+    "defaut": "carte fixe 320 px (fixed bottom-16 right-4 z-50) affichée par défaut sur TOUTES les vues ; recouvre des éléments interactifs en flux normal — bouton « Générer » de la vue IA bloqué en hit-test (observé TNR GP-4 v1.1, contournement JS requis)"
+  },
+  "correctif": {
+    "portee": "1 fichier, aucun changement de fonctionnalité ni de données, aucune autre vue touchée",
+    "changement": "état replié PAR DÉFAUT : pastille 8 px de haut (bouton « Livrables », pointer-events-auto confiné, conteneur pointer-events-none) ; panneau 320 px dépliable UNIQUEMENT sur clic explicite (aria-expanded/aria-controls) ; bouton X inchangé (dismiss + localStorage v2) ; position identique coin bas-droit"
+  },
+  "verification_ui_reelle": {
+    "outil": "agent-browser (clics réels, aucun dispatch JS pour l'action validée)",
+    "etapes": [
+      {"etape": "pastille repliée par défaut au chargement (dashboard)", "resultat": "OK", "preuve": "evidence/ux2-pill-collapsed-dashboard.png"},
+      {"etape": "hit-test coin bas-droit (elementsFromPoint) : seul élément = pastille elle-même", "resultat": "OK"},
+      {"etape": "vue Assistant IA → mode « Rédaction de résumé » → prompt rempli → hit-test du bouton Générer (elementFromPoint au centre) = « Générer »", "resultat": "OK — plus aucun recouvrement", "preuve": "evidence/ux2-gp4-before-direct-click.png"},
+      {"etape": "CLIC DIRECT sur Générer (souris réelle, scénario pire cas v1.1)", "resultat": "OK — POST /api/ai-writing/stream 200, génération démarrée", "preuve": "evidence/ux2-gp4-direct-click-generating.png"},
+      {"etape": "fin de stream", "resultat": "OK — zone Résultat + Copier affichées avec résumé généré", "preuve": "evidence/ux2-gp4-direct-click-resultat.png"},
+      {"etape": "pastille → clic → panneau déplié (3 liens livrables, aria-controls id=test-deliverable-panel)", "resultat": "OK", "preuve": "evidence/ux2-panel-expanded.png"},
+      {"etape": "bouton X → panneau+pastille disparus, localStorage v2=1", "resultat": "OK"},
+      {"etape": "reload → toujours masqué (persistance dismissal) puis localStorage restauré au comportement par défaut", "resultat": "OK"}
+    ]
+  },
+  "tnr": {
+    "lint": "0 erreur / 247 warnings (= baseline exacte)",
+    "suite": "78 fichiers, 1658/1658 verts (17,95 s)",
+    "lignes_rouges": "0 diff (aucun fichier rouge modifié)",
+    "regression": "aucune"
+  },
+  "statut_registre": "corrigée, revalidée",
+  "limite": "aucune — surface flottante réduite de ~320×~150 px replié vers ~64×32 px ; le panneau déplié reste un overlay volontairement déclenché par l'utilisateur et refermable"
+}

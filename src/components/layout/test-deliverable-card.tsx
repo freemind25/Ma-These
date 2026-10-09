@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { FileDown, FileText, FileCheck, X, GraduationCap } from "lucide-react";
 
 const STORAGE_KEY = "test-deliverable-card-dismissed-v2";
+const PANEL_ID = "test-deliverable-panel";
 
 const DELIVERABLES = [
   {
@@ -29,8 +30,18 @@ const DELIVERABLES = [
   },
 ] as const;
 
+/**
+ * AUD-UX-002 — correctif ciblé (cycle audit-final-v1.2) :
+ * la carte flottante (320 px, z-50, bas-droit) recouvrait des éléments
+ * interactifs en flux normal (bouton « Générer » de la vue IA — hit-test
+ * bloqué, observé au TNR GP-4). Désormais : pastille repliée PAR DÉFAUT
+ * (surface minimale, pointer-events confinés), panneau dépliable
+ * uniquement sur action explicite de l'utilisateur, fermeture X inchangée
+ * (localStorage). Aucun changement de fonctionnalité ni de données.
+ */
 export function TestDeliverableCard() {
   const [visible, setVisible] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -47,6 +58,7 @@ export function TestDeliverableCard() {
 
   const dismiss = () => {
     setVisible(false);
+    setExpanded(false);
     try {
       window.localStorage.setItem(STORAGE_KEY, "1");
     } catch {
@@ -56,13 +68,34 @@ export function TestDeliverableCard() {
 
   if (!visible) return null;
 
+  if (!expanded) {
+    // Pastille repliée : surface minimale, cliquable uniquement sur elle-même
+    return (
+      <div className="pointer-events-none fixed bottom-4 right-4 z-50">
+        <Button
+          size="sm"
+          variant="outline"
+          className="pointer-events-auto h-8 gap-1.5 border-amber-500/40 bg-background/95 px-2.5 text-xs shadow-lg"
+          aria-expanded={false}
+          aria-controls={PANEL_ID}
+          aria-label="Afficher les livrables du test de production"
+          onClick={() => setExpanded(true)}
+        >
+          <GraduationCap className="h-3.5 w-3.5 text-amber-600" aria-hidden="true" />
+          Livrables
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div
-      className="fixed bottom-16 right-4 z-50 w-[min(20rem,calc(100vw-2rem))]"
+      id={PANEL_ID}
+      className="pointer-events-none fixed bottom-4 right-4 z-50 w-[min(20rem,calc(100vw-2rem))]"
       role="complementary"
       aria-label="Livrable du test de production"
     >
-      <Card className="border-amber-500/40 shadow-lg">
+      <Card className="pointer-events-auto border-amber-500/40 shadow-lg">
         <CardHeader className="p-4 pb-2">
           <div className="flex items-start justify-between gap-2">
             <CardTitle className="flex items-center gap-2 text-sm">

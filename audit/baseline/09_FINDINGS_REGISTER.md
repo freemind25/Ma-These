@@ -120,6 +120,7 @@ Statuts de preuve : **confirmée** (reproduite/preuves suffisantes) · probable 
 ## AUD-UX-002 — Panneau flottant « Livrable du test de production » permanent
 - **Verdict** : ⚠️ DÉGRADÉ · confirmée (visible sur toutes les vues, recouvre du contenu desktop/mobile) · **Priorité** : P2 (avant diffusion)
 - **Correction** : conditionner l'affichage (flag) ou le retirer du shell principal.
+- **Mise à jour v1.2 (cycle audit-final-v1.2, autorisation propriétaire point 6)** : 🟡→✅ **corrigée, revalidée**. Réévaluation préalable : qualifiée **bloquante parcours GP-4** (hit-test sur le bouton Générer observé en v1.1) — non rétrogradable en risque résiduel. Correctif ciblé 1 fichier : pastille repliée par défaut (surface minimale, pointer-events confinés), panneau dépliable sur clic explicite, dismissal X inchangé. Revalidation UI réelle (agent-browser, clics réels) : hit-test du bouton Générer = lui-même (plus aucun recouvrement), **clic direct → POST /api/ai-writing/stream 200 → Résultat affiché** ; déplier/plier/masquer/persistance OK. Preuve : `evidence/ux2-revalidation.json` + 4 captures `ux2-*.png`. TNR : 1 658/1 658 verts, lint 0 erreur, rouges 0 diff.
 
 ## AUD-FUNC-006 (observation) — « Recherche plein texte » = chapitres seulement (étiqueté « MeiliSearch (simulation) »)
 - **Verdict** : ⚠️ DÉGRADÉ · confirmée · **Priorité** : P3 (périmètre à annoncer clairement ou intégrer le corpus).
