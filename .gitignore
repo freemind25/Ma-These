@@ -82,3 +82,6 @@ scripts/*
 !scripts/db-snapshot-stats.ts
 *.exe
 *.msi
+
+# helper authentification git local (PAT, jamais commite)
+.gh-askpass.sh
