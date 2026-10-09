@@ -1727,6 +1727,30 @@ Stage Summary:
 - Plan d'exécution séquencé produit et poussé : répond point par point aux instructions (4 lots séparés, 11 critères mappés avec preuves et responsables) ; aucune migration références, aucun build, aucune réécriture git exécutés à ce stade — seuls les travaux déjà autorisés démarrent (vague 1 : documentaire/lecture seule + démarrage pass vues).
 - Décisions soumises au propriétaire dans le plan : correction ciblée AUD-UX-002 incluse au Lot A (qualifiée bloquante GP-4, retirable) ; onDelete Cascade proposé pour Reference.thesisId (alternative SetNull chiffrée) ; CI possible pour le build web si préféré.
 - Invariants respectés : aucun fichier rouge touché, db skip-worktree intacte, aucune clé/secret reproduit dans les documents (clé APINex référencée sans valeur), commit docs seul.
+---
+Task ID: F-2 (audit-final-v1.2 / vague 1 exécutée + vague 2 amorcée)
+Agent: Z.ai Code (maître d'œuvre ; délégations W1-7/7b/7c A1-vues, W1-8/8b A2-actions destructives)
+Task: Exécuter la vague 1 validée par le propriétaire (IM 2026-10-10) : AUD-UX-002, A4, A5, A6, B, A7 + amorcer la vague 2 (A1 lots 1, A2 lots 1-2, A3).
+
+Work Log:
+- AUD-UX-002 (autorisée point 6) : correctif ciblé test-deliverable-card.tsx — pastille repliée par défaut (pointer-events confinés), panneau dépliable sur clic explicite, dismissal X inchangé ; revalidation UI réelle agent-browser : hit-test bouton Générer propre (elementFromPoint), CLIC DIRECT → POST /api/ai-writing/stream 200 → Résultat affiché, déplier/plier/masquer/persistance OK ; TNR 1 658 verts ; commit 03037e2.
+- A4 : incohérence 6 vs 7 localisée (v1.0 §L.2 vs v1.1 GP-1..GP-7) ; liste canonique 7 (GP-1..6 initiaux + GP-7 export DOCX ajouté TNR v1.1) ; annotation evidence/tnr-golden-paths.json bloc reconciliation_A4 ; v1.0/v1.1 non modifiées [6abb3e8].
+- A5 (lecture seule) : sauvegarde vérifiée (bundle 78 Mo complete-history + miroir 155 Mo) ; inventaire main/origin/main + tags v1.10.7/8 ; CONSTAT : .env suivi depuis commit initial (contenu HEAD = DATABASE_URL seul) → désuit 6158f4e ; scan historique -G : clé APINex réelle dans .env aux porteurs 04dc5ab/763ee5d (retraits b25f426/7260947), 0 PAT GitHub, clé IM jamais commitée (pickaxe préfixe masqué 14c = 0) ; plan BFG prêt 13_PURGE_GIT_PLAN.md (exécution vague 3 : révocation confirmée + coordination) [6abb3e8].
+- A6 : tableau de gestion v1.2 du registre (13 fiches ouvertes après ajout AUD-FUNC-007) ; AUD-UX-002 → corrigée, revalidée.
+- B : specs/ref-thesis-scoping/proposition-technique.md (thesisId nullable + Cascade + index, API isolation stricte, migration réversible avec répétition sur copie, cas non attribuables, 12-16 tests, effort 2-3 j, positionnement après vague 2/avant builds) — AUCUNE exécution [6d93dd4].
+- A7 : BASELINE_AUDIT_REPORT_v1.2.md squelette + tableau conformité 11 critères (itératif) ; 14_PROCEDURE_BUILD_WEB.md + 15_PROCEDURE_BUILD_WINDOWS.md (procédures + gabarits de preuve propriétaire) [6d93dd4].
+- A1 (délégations) : lot 1 COMPLET 8/8 vues validées (Brouillon chapitre, Harper, Grammaire [session W1-7 partiellement consolidée], Phrasier, Déblocage, Auto-édition 8C [W1-7b], Cadrage, Plan [W1-7c]) ; evidence/a1-lot1.json + 60+ captures ; NOUVELLE anomalie AUD-FUNC-007 (P2 : GET /api/thesis sans partId — chapitres rattachés jamais affichés) + 9×P3 (état local non persisté) ; thèses jetables AUDIT-A1/A1b/A1c supprimées via UI (cascade vérifiée) ; reste 25 vues.
+- A2 (délégations) : lot 1 5/5 conformes (source IA, note IA, exp, run, élément carto — W1-8) ; lot 2 7/7 conformes (onglet fermer DELETE + effacer PUT [debounce documenté], article, doc importé [article survit], registre juridique [porté par Livres-compétences], story [sprint survit], sprint [cascade stories conforme au message] — W1-8b) + partie de plan (lot 1c) → REGISTRE CLÔTURÉ 16/16 vérifiées en UI réelle ; audit réseau sessions : exactement les DELETE/PUT attendus, Annuler = 0 requête partout ; 1 P3 consignée (removeImport sans vérif res.ok) ; evidence/a2-lot1.json + a2-lot2.json + 37 captures.
+- A3 (principal) : outillage versionné scripts/verify-upload-backup.ts ; sauvegarde C-1 intacte 100 % (20 fichiers / 255 273 238 o, SHA-256) ; restauration réelle /tmp/restore-files-test 100 % identique ; jeu contrôlé AUDIT-A3 (perte simulée → restauration OK) ; cohérence DB↔fichiers 16/16 (4 dépôts directs taille OK + 9 RAR + 3 résidus docx AUD-DATA-001), 0 référence cassée ; doc §6 SAUVEGARDE-RESTAURATION ; evidence/a3-upload-restore.json.
+- TNR vague : 1 658/1 658 verts ; lint 0 erreur ; écart warnings 247→249 investigué par diff eslint JSON entre worktrees (03037e2 vs courant) → cause : 2 scripts de preuve tmp-w18*.mjs (console volontaire) → justification eslint-disable no-console, baseline 247 restaurée [e504b35].
+- Incidents consignés : serveur dev arrêté (signature OOM C-2) au démarrage W1-8b → redémarré hors bande par l'agent, 200 OK ; session A1 initiale dépassée (200 tours) → relots 1b/1c plus courts (leçon : max 3 vues/agent).
+- Invariants permanents : rouges 0 diff, db skip-worktree S, aucune valeur secrète dans preuves/logs, état propriétaire restauré exact après chaque session (diffs 18 tables vides).
+
+Stage Summary:
+- Vague 1 TERMINÉE (T1-T6) + vague 2 à 60 % (A2 CLÔTURÉ 16/16 → critère #2 SATISFAIT ; A3 TERMINÉE → critère #3 SATISFAIT ; A1 8/33 lots 1). Critères GO : #2 ✅, #3 ✅, #4 proposition soumise, #7 audit+plan prêts, #8/#9/#10 ✅ à date, #1 en cours (25 vues), #5/#6 procédures livrées (exécution propriétaire), #11 v1.2 itérative.
+- Découvertes : AUD-FUNC-007 (P2, partId) ; .env suivi depuis l'origine (désuit) ; clé APINex historique localisée précisément pour la purge ; 12 fiches P3 état-local documentées au fil des vues.
+- Commits : 03037e2, 6158f4e, 6abb3e8, 6d93dd4, bc71223, e504b35 (+ preuves a2-lot2) — push vérifié ensuite.
+
 
 ---
 Task ID: W1-8 (audit-final-v1.2 / A2 lot 1)
