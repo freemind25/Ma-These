@@ -131,3 +131,29 @@ Statuts de preuve : **confirmée** (reproduite/preuves suffisantes) · probable 
 **17 fiches** : 1 ❌ CASSÉ (AUD-FUNC-002) · 15 ⚠️ DÉGRADÉ · 0 autre ❌. P1 : AUD-FUNC-002, AUD-FUNC-003, AUD-GOV-001, AUD-SEC-001(+005). P2 : AUD-FUNC-004/005, AUD-HYD-001, AUD-EXPORT-001, AUD-REL-001, AUD-SEC-002, AUD-UX-001/002. P3 : reste.
 
 **Mise à jour v1.1 (cycle audit-remediation-p1)** : les 4 fiches P1 sont traitées — 3 **corrigées, revalidées** (AUD-FUNC-002, AUD-FUNC-003, AUD-GOV-001) + 1 **corrigée, non revalidée côté desktop** (AUD-SEC-001, build Windows propriétaire requis). Les 13 autres fiches restent ouvertes (P2/P3, hors périmètre de l'autorisation propriétaire).
+
+---
+
+## Tableau de gestion v1.2 (cycle audit-final-v1.2 — exigences propriétaire point 6.4)
+
+Chaque fiche ouverte : priorité · impact · reproducibilité · contournement · responsable · décision de correction. Fiches traitées rappelées en tête. Aucun défaut compromettant sécurité, intégrité des données ou parcours critique ne restera ouvert au GO final.
+
+| Fiche | Prio | Impact | Reproductibilité | Contournement | Responsable | Décision de correction |
+|---|---|---|---|---|---|---|
+| AUD-UX-002 | P2 | **corrigée, revalidée ce cycle** (`03037e2`) : pastille repliée, hit-test propre, GP-4 revalidé clic direct | — | — | développeur | close (preuve `ux2-revalidation.json`) |
+| AUD-FUNC-004 (persistance de vue au rechargement) | P2 | Faible : la vue active n'est pas toujours restaurée après F5 — l'utilisateur re-clique ; aucune perte de données | Oui (F5 sur vue secondaire) | Re-clic sur la vue | Développeur (cycle P2 distinct) | Correction en cycle autorisé dédié ; non bloquante GO (aucune perte d'intégrité) |
+| AUD-FUNC-005 (400 si année vide / double POST suspecté) | P2 | Confusion utilisateur à la création de référence sans année ; double POST suspecté à instruire | Oui (formulaire sans année) | Saisir l'année | Développeur (cycle P2) | Instruction + correction cycle P2 ; à instruire avant GO (qualité perçue du parcours références) |
+| AUD-HYD-001 (`<div>` dans `<p>` — hydratation) | P2 | Warning console au chargement de certaines vues ; aucun dysfonctionnement fonctionnel observé | Oui (console au boot) | Aucun nécessaire | Développeur (cycle P2) | Correction triviale (imbrication balises) en cycle P2 ; non bloquante |
+| AUD-EXPORT-001 (DOCX sans TOC/styles réels) | P2 | Qualité du livrable thèse : export valide mais sans TOC/styles Word natifs | Oui (export + ouverture Word) | Post-traitement manuel Word | Développeur (cycle fonctionnel dédié) | Correction proposée en cycle distinct avant diffusion large ; non bloquante sécurité/intégrité — décision à expliciter au GO |
+| AUD-REL-001 (Overpass sans timeout) | P2 | Vue carto peut rester en attente si service externe indisponible | Oui (service hors ligne) | Recharger la vue | Développeur (cycle P2) | Ajout timeout + message d'état en cycle P2 ; vue 30 traitée individuellement au pass A1 |
+| AUD-SEC-002/003 (purge historique git) | P2 | Secret APINex dans l'historique publié (`.env`, commits porteurs localisés) | N/A (historique) | Aucun — purge requise | Développeur + Propriétaire | Plan prêt (`13_PURGE_GIT_PLAN.md`) ; exécution vague 3 coordonnée ; révocation confirmée par le propriétaire = prérequis ; **critère de sortie n° 7 avant toute diffusion à des tiers** |
+| AUD-UX-001 (corpus OCR 16 docs non découvrable) | P2 | Fonctionnalité attendue absente : les ImportedDoc sont accessibles seulement indirectement | Oui (parcours recherche/bibliothèque) | Navigation indirecte | Développeur (proposition v1.2) | Conception d'une entrée « Corpus » proposée dans v1.2 ; arbitrage propriétaire ; non bloquant si explicitement reporté |
+| AUD-FUNC-001 (`\n` littéral — éditeur, ligne 204) | P3 | Cosmétique : `\n` affiché au lieu du saut de ligne | Oui (rendu éditeur) | Saisie sans \n littéral | Développeur (cycle P3) | Correction triviale au prochain cycle touchant l'éditeur ; non bloquant |
+| AUD-DOC-001/002 (versions/cohérence docs) | P3 | Documentation incohérente (versions, comptage modèles) | Oui (lecture docs) | — | Développeur | Correction documentaire portée par la v1.2 (clôture du cycle) |
+| AUD-DATA-001 (données de test résiduelles) | P3 | Propreté des données avant diffusion | Oui (inventaire DB) | — | Développeur | Nettoyage contrôlé (avec sauvegarde vérifiée préalable) avant diffusion ; consigné en vague 4 |
+| AUD-SEC-004 (40 routes sans schéma zod) | P3 | Durcissement défensif des entrées API ; app mono-utilisateur en local : pas d'exploitabilité démontrée | Oui (audit statique) | — | Développeur (cycle P3) | **À traiter ou à justifier explicitement avant GO** (règle point 6.4 : aucun défaut sécurité laissé ouvert) — plan de schématisation progressive en v1.2 |
+| AUD-SEC-006 (injection de contexte prompt) | P3 | Robustesse des prompts IA ; usage mono-utilisateur | Oui (audit statique) | — | Développeur (cycle P3) | Traitement P3 ; justifié explicitement au GO si reporté |
+| AUD-SEC-007 (messages d'erreur nus) | P3 | Fuites d'information potentielles en verbose ; usage local | Oui (audit statique) | — | Développeur (cycle P3) | Traitement P3 ; non bloquant usage local |
+
+**Compte v1.2** : 17 fiches — 4 P1 traitées (3 revalidées + 1 en attente build Windows) · 1 P2 corrigée/revalidée ce cycle (AUD-UX-002) · **12 ouvertes** (7 P2, 5 P3) dont 2 à traitement partagé propriétaire (purge, révocation). Aucune fiche bloquante parcours critique ouverte.
+

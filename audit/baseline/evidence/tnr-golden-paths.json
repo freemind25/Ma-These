@@ -14,14 +14,70 @@
     "serveur": "HTTP 200"
   },
   "golden_paths_ui_reelle": [
-    {"id": "GP-1", "parcours": "Consulter/rédiger sa thèse", "resultat": "OK — éditeur ouvre « Urbanisme durable », contenu réel éditable, 7 chapitres ; bouton C-2 « Changer de thèse » présent", "preuve": "evidence/tnr-gp1-editor-chapters.png"},
-    {"id": "GP-2", "parcours": "Créer une NOUVELLE thèse (ex-❌ AUD-FUNC-002)", "resultat": "OK CORRIGÉ — le CTA dashboard ouvre le dialogue de création (champs + bouton désactivé tant que requis manquent) ; création/changement/cleanup déjà prouvés au cycle C-2", "preuve": "evidence/tnr-gp2-create-dialog.png + c2-*.png"},
-    {"id": "GP-3", "parcours": "Références CRUD", "resultat": "OK — liste intacte (4 réf) ; création + suppression-confirmée prouvées au cycle C-3 (Annuler = 0 requête, Confirmer = DELETE 200)", "preuve": "evidence/tnr-gp3-references.png + c3-*.png"},
-    {"id": "GP-4", "parcours": "Génération IA (mode Rédaction de résumé)", "resultat": "OK — POST /api/ai-writing/stream 200, zone Résultat + Copier affichées", "preuve": "evidence/tnr-gp4-ia-resultat.png", "note": "le panneau flottant « Livrable du test » (AUD-UX-002, P2) recouvre le bouton Générer → clic bloqué en hit-test, contourné par activation JS ; anomalie connue, non liée aux corrections"},
-    {"id": "GP-5", "parcours": "RAG thèse (indexer → question → réponse citée)", "resultat": "OK — indexation, réponse « D'après les extraits de votre thèse… » avec ancrage « [Chapitre 1 - Introduction générale et problématique] »", "preuve": "evidence/tnr-gp5-rag-reponse.png"},
-    {"id": "GP-6", "parcours": "Recherche thèses en ligne", "resultat": "OK — GET /api/theses-en-ligne/search?q=urbanisme+durable → 200 (route LIGNE ROUGE intacts), thèses HAL réelles affichées", "preuve": "evidence/tnr-gp6-theses-en-ligne.png"},
-    {"id": "GP-7", "parcours": "Export DOCX", "resultat": "OK — POST /api/export-docx → 200, 17 514 o, magic bytes ZIP (P K) = fichier Word valide ; carte de téléchargement UI affichée", "preuve": "evidence/tnr-gp7-export-docx.png"}
+    {
+      "id": "GP-1",
+      "parcours": "Consulter/rédiger sa thèse",
+      "resultat": "OK — éditeur ouvre « Urbanisme durable », contenu réel éditable, 7 chapitres ; bouton C-2 « Changer de thèse » présent",
+      "preuve": "evidence/tnr-gp1-editor-chapters.png"
+    },
+    {
+      "id": "GP-2",
+      "parcours": "Créer une NOUVELLE thèse (ex-❌ AUD-FUNC-002)",
+      "resultat": "OK CORRIGÉ — le CTA dashboard ouvre le dialogue de création (champs + bouton désactivé tant que requis manquent) ; création/changement/cleanup déjà prouvés au cycle C-2",
+      "preuve": "evidence/tnr-gp2-create-dialog.png + c2-*.png"
+    },
+    {
+      "id": "GP-3",
+      "parcours": "Références CRUD",
+      "resultat": "OK — liste intacte (4 réf) ; création + suppression-confirmée prouvées au cycle C-3 (Annuler = 0 requête, Confirmer = DELETE 200)",
+      "preuve": "evidence/tnr-gp3-references.png + c3-*.png"
+    },
+    {
+      "id": "GP-4",
+      "parcours": "Génération IA (mode Rédaction de résumé)",
+      "resultat": "OK — POST /api/ai-writing/stream 200, zone Résultat + Copier affichées",
+      "preuve": "evidence/tnr-gp4-ia-resultat.png",
+      "note": "le panneau flottant « Livrable du test » (AUD-UX-002, P2) recouvre le bouton Générer → clic bloqué en hit-test, contourné par activation JS ; anomalie connue, non liée aux corrections"
+    },
+    {
+      "id": "GP-5",
+      "parcours": "RAG thèse (indexer → question → réponse citée)",
+      "resultat": "OK — indexation, réponse « D'après les extraits de votre thèse… » avec ancrage « [Chapitre 1 - Introduction générale et problématique] »",
+      "preuve": "evidence/tnr-gp5-rag-reponse.png"
+    },
+    {
+      "id": "GP-6",
+      "parcours": "Recherche thèses en ligne",
+      "resultat": "OK — GET /api/theses-en-ligne/search?q=urbanisme+durable → 200 (route LIGNE ROUGE intacts), thèses HAL réelles affichées",
+      "preuve": "evidence/tnr-gp6-theses-en-ligne.png"
+    },
+    {
+      "id": "GP-7",
+      "parcours": "Export DOCX",
+      "resultat": "OK — POST /api/export-docx → 200, 17 514 o, magic bytes ZIP (P K) = fichier Word valide ; carte de téléchargement UI affichée",
+      "preuve": "evidence/tnr-gp7-export-docx.png"
+    }
   ],
   "regressions": "aucune",
-  "verdict": "TNR_GLOBAL_VERT"
+  "verdict": "TNR_GLOBAL_VERT",
+  "reconciliation_A4": {
+    "date": "2026-10-10",
+    "cycle": "audit-final-v1.2",
+    "incoherence_constatee": "v1.0 §L.2 annonce « 6 golden paths » ; la v1.1 §3 reprend « Six » mais énumère 7 items (GP-1..GP-7) ; 11_REVALIDATION_REPORT.md identique (6 annoncés, 7 listés)",
+    "liste_canonique": {
+      "total": 7,
+      "perimetre_initial_v1_0": [
+        "GP-1 Consulter/rédiger sa thèse",
+        "GP-2 Créer une nouvelle thèse",
+        "GP-3 Références CRUD",
+        "GP-4 Génération IA",
+        "GP-5 RAG thèse cité",
+        "GP-6 Recherche thèses en ligne"
+      ],
+      "ajoute_TNR_v1_1": [
+        "GP-7 Export DOCX (couvert en v1.0 comme vue 47, numéroté GP-7 lors du re-parcours TNR)"
+      ]
+    },
+    "regle": "total canonique = 7 partout (synthèse v1.2, tests, captures, critères de sortie) ; AUCUN parcours supprimé ; la v1.0 et la v1.1 ne sont pas modifiées rétroactivement — la correction est portée par la v1.2 et la présente annotation de preuve"
+  }
 }

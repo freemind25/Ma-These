@@ -1,0 +1,51 @@
+{
+  "task": "A5 — audit non destructif de l'historique git + préparation purge (AUD-SEC-002/003)",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "autorisation": "instructions propriétaire point 8 : audit lecture seule + sauvegarde vérifiée + préparation plan BFG ; AUCUNE réécriture/force-push avant plan final soumis + confirmation rotation/révocation + coordination",
+  "1_sauvegarde_verifiee": {
+    "bundle": "/tmp/tf-repo-backup-20261010.bundle (78 Mo) — « The bundle records a complete history » (git bundle verify OK)",
+    "miroir": "/tmp/tf-repo-mirror.git (155 Mo, clone --mirror vérifié, HEAD à la date de l'audit)",
+    "reste_a_faire_a_execution": "refaire bundle+miroir frais juste avant la réécriture"
+  },
+  "2_inventaire_refs": {
+    "branches": ["main (locale)", "origin/main"],
+    "tags": ["v1.10.7", "v1.10.8"],
+    "remotes": {"origin": "https://github.com/freemind25/ThesisFrame.git (fetch+push)"},
+    "clones_concernes": ["sandbox développeur (ce dépôt)", "clone(s) propriétaire à coordonner"]
+  },
+  "3_env_et_fichiers_suivis": {
+    "avant_audit": ".env ÉTAIT suivi depuis le commit initial eda4dac (violation d'hygiène confirmée) — contenu à HEAD limité à DATABASE_URL (chemin SQLite local), AUCUNE clé API",
+    "correctif_applique": "git rm --cached .env + commit 6158f4e (fichier conservé sur disque ; .gitignore couvrait déjà .env* mais le suivi antérieur primait)",
+    "fichiers_suivis_contenant_references": {
+      "src/lib/apinex/apinex-client.ts": "référence masquée « sk-apx… » dans un commentaire (aucune clé réelle, vérifié par analyse de longueur)",
+      "worklog.md / FICHE_SYNTHESE.md / audit/baseline/04_SECURITY_AUDIT.md / specs/build-desktop-pipeline/preuves.md": "références nues ghp_/sk-apx (masquées, aucune valeur longue — vérifié par analyse de longueur : 0 correspondance ≥ 20 caractères)"
+    }
+  },
+  "4_scan_historique_secrets": {
+    "methode": "git log --all -G (regex longueur) + pickaxe ; aucune valeur reproduite ci-dessous",
+    "cles_APINex_reelles": {
+      "commits_porteurs": ["04dc5ab", "763ee5d"],
+      "commits_de_retrait": ["b25f426", "7260947"],
+      "fichier": ".env uniquement (variable APINEX_API_KEY — nom seul consigné)",
+      "exposition": "présente dans l'historique entre ajout et retrait ; publiée sur origin (history publique)"
+    },
+    "PAT_github": "0 correspondance réelle dans tout l'historique (ghp_ à haute longueur) — les tokens n'ont jamais été commités",
+    "cle_APINex_fournie_IM": {
+      "verification": "pickaxe sur préfixe masqué de 14 caractères (convention d'affichage fournisseur) : 0 occurrence dans tout l'historique",
+      "conclusion": "la clé IM n'a JAMAIS été commitée — distincte de la clé exposée ; utilisable pour les essais locaux conformément au point 7 (restera en .env.local, jamais commitée)"
+    },
+    "autres_secrets": "ancien .env limité à APINEX_API_KEY / APINEX_BASE_URL / DATABASE_URL — aucune autre clé détectée"
+  },
+  "5_statut_revocation": {
+    "cle_exposee_historique": "statut auprès du fournisseur APINex = confirmation propriétaire requise (action C3, exigée avant toute exécution BFG)",
+    "cle_IM": "renouvelée par construction (jamais exposée au dépôt) ; sa révocation éventuelle reste à la discrétion du propriétaire"
+  },
+  "6_perimetre_purge": {
+    "a_purger": ".env de toute l'historique (10 commits touchés : eda4dac → c9a05e8)",
+    "refs_a_recrire": "main + tags v1.10.7 et v1.10.8 (ancêtres communs aux commits .env) → force-push requis",
+    "impact_hashes": "tous les commits après eda4dac changeront de hash ; table de correspondance pré/post à produire à l'exécution ; les rapports d'audit citant les hashes pré-purge restent des références historiques valides"
+  },
+  "plan_bfg": "voir audit/baseline/13_PURGE_GIT_PLAN.md (exécution = vague 3, fenêtre coordonnée propriétaire)",
+  "invariants": "aucune valeur de secret reproduite dans ce dossier ; sauvegarde vérifiée avant toute opération ; aucune réécriture exécutée à ce stade"
+}
