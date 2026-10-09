@@ -1653,6 +1653,24 @@ Work Log:
 Stage Summary:
 - Chaîne XSS→shell fermée côté configuration : sur-permissions shell retirées, CSP structurante en place ; la revalidation desktop reste une action propriétaire (build Windows).
 ---
+Task ID: R-5 (audit-remediation-p1 / T9+T10)
+Agent: Z.ai Code (principal, + 2 délégations full-stack-developer pour C-2/C-3)
+Task: TNR globaux (suite + golden paths) après C-1..C-4, mise à jour registre/Phase 11, rapport distinct Baseline Audit v1.1, soumission au propriétaire.
+
+Work Log:
+- Délégations : C-2 exécuté par full-stack-developer (Task R-2 : correction 3 fichiers, vérifications UI réelles complètes, isolation, cleanup, 1 658 verts) ; C-3 exécuté par full-stack-developer (Task R-3 : inventaire exhaustif des actions destructives, ConfirmDeleteDialog partagé, 16 applications, TNR sans adaptation).
+- Contrôle de maîtrise d'œuvre sur chaque délégation : revue diff (rouges, ciblage, qualité shadcn), vérification serveur/DB, commits+pousses distincts (6436ed7, f1b5ec5).
+- T9 : suite vitest finale 78 fichiers / 1 658 verts ; lint 0 erreur ; rouges 0 diff vs origin/main ; skip-worktree S ; 6 golden paths re-parcourus en UI réelle (agent-browser) : rédaction (éditeur 7 chap. contenu réel), création thèse (dialogue), références (liste), IA (stream 200 + résultat), RAG (réponse citée « [Chapitre 1 - …] »), thèses en ligne (200, HAL), export DOCX (200, 17 514 o, ZIP PK valide) — preuve tnr-golden-paths.json + 8 captures.
+- Incident consigné au TNR : panneau flottant AUD-UX-002 (P2) recouvre le bouton Générer (hit-test) → contournement JS ; anomalie déjà au registre, à corriger avant diffusion.
+- T10 : registre 09 — 4 fiches P1 passées à « corrigée, revalidée » (×3) et « corrigée, non revalidée côté desktop » (×1) ; Phase 11 remplie (tableau protocole complet) ; BASELINE_AUDIT_REPORT_v1.1.md écrit (avant/après, preuves, tests, anomalies restantes, régressions, réserves) ; tasks.md 10/10.
+- Fait produit soumis au propriétaire : Reference est GLOBALE par conception (sans thesisId) — l'isolation références/thèse n'existe pas architecturalement ; décision produit requise (statu quo partagé vs scoping par thèse).
+- Pousses séquentielles vérifiées (aucun commit-snapshot) : 978a3cc→1682dcd (C-1) →6436ed7 (C-2) →f1b5ec5 (C-3) →93d8d08 (C-4) →commit présent.
+
+Stage Summary:
+- Les 4 conditions P1 du GO SOUS CONDITIONS sont exécutées : 3 revalidées avec preuve (sauvegarde/restauration réelle, multi-thèses, confirmations destructives), 1 corrigée dont la revalidation exige le build Windows propriétaire.
+- TNR global vert : 1 658 tests, lint 0 err, rouges 0 diff, 6 golden paths OK, 0 régression applicative ; 1 incident environnemental OOM documenté (sans perte).
+- Rapport v1.1 soumis au propriétaire avec 5 réserves explicites avant GO final (33 vues C-19, builds web/desktop, décision produit références, purge historique .env, risques résiduels) — AUCUNE mise en production tant que non validé.
+---
 Task ID: R-2 (audit-remediation-p1 / C-2)
 Agent: full-stack-developer
 Task: C-2 AUD-FUNC-002 — réparer créer/changer de thèse + isolation multi-thèses.

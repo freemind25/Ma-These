@@ -15,6 +15,7 @@ Statuts de preuve : **confirmée** (reproduite/preuves suffisantes) · probable 
 - **Correction** : supprimer le `\n` littéral (1 ligne). **Critères** : plus de « \n » visible. **TNR** : rendu liste inchangé.
 
 ## AUD-FUNC-002 — Parcours « créer une nouvelle thèse » impossible une fois une thèse active
+- **Statut v1.1 (2026-10-09)** : ✅ **CORRIGÉE, REVALIDÉE** (commit `6436ed7`) — CTA → `CreateThesisDialog` (mode contrôlé) + bouton « Changer de thèse » dans l'éditeur ; vérifié en UI réelle (création 2ᵉ thèse 201, changement, isolation chapitres, cleanup en cascade sans orphelin) ; preuves `evidence/c2-*.png` + `c2-revalidation.json`. **Fait produit soumis au propriétaire** : `Reference` est globale par conception (sans `thesisId`) — l'isolation références/thèse relève d'un arbitrage produit, non d'un bug.
 - **Domaine** : Fonctionnel · **Fonctionnalité** : gestion multi-thèses / CTA « Créer une thèse »
 - **Verdict** : ❌ CASSÉ · **Preuve** : confirmée
 - **Gravité** : Élevée (fonction annoncée inopérante) · **Priorité** : **P1**
@@ -27,6 +28,7 @@ Statuts de preuve : **confirmée** (reproduite/preuves suffisantes) · probable 
 - **Correction** : le CTA ouvre `CreateThesisDialog` (ou désélectionne puis liste) ; ajouter un bouton « Changer de thèse » dans l'éditeur. **Critères** : créer une 2e thèse via l'UI puis revenir à la liste. **TNR** : réouverture de la thèse active inchangée.
 
 ## AUD-FUNC-003 — Suppression de référence sans confirmation ni annulation
+- **Statut v1.1 (2026-10-09)** : ✅ **CORRIGÉE, REVALIDÉE** (commit `f1b5ec5`) — composant partagé `ConfirmDeleteDialog` appliqué à 16 actions destructives (références, thèses, chapitres, sources, notes, expérimentations, analyses, plan, onglets, articles, ImportedDoc, registre juridique, stories/sprints) ; vérifié en UI réelle : **Annuler = 0 requête + 0 modification DB, Confirmer = DELETE 200** ; inventaire complet dans `evidence/c3-revalidation.json` (2 déjà conformes, ~20 actions d'état local non persistant documentées sans traitement).
 - **Domaine** : Fonctionnel/UX · **Fonctionnalité** : Références
 - **Verdict** : ⚠️ DÉGRADÉ · **Preuve** : confirmée (reproduite involontairement pendant l'audit)
 - **Gravité** : Moyenne (perte de données unitaire, irréversible) · **Priorité** : **P1**
@@ -78,6 +80,7 @@ Statuts de preuve : **confirmée** (reproduite/preuves suffisantes) · probable 
 - **Correction** : timeouts + retry borné (A.7 recommandation récurrente). **Critères** : une indisponibilité Overpass échoue en < 15 s avec message clair.
 
 ## AUD-GOV-001 — Aucune sauvegarde outillée de la base de données
+- **Statut v1.1 (2026-10-09)** : ✅ **CORRIGÉE, REVALIDÉE** (commit `1682dcd`) — sauvegarde initiale pré-modification vérifiée (VACUUM INTO 213 Mo ×2 emplacements + upload 244 Mo) ; backup quotidien auto au boot (+ re-check 6 h) avec rotation 7 j et miroir hors arbre ; script restore avec copie de sécurité ; **restauration réelle en environnement de test prouvée complète** (integrity ok, diff stats live↔restaurée VIDE) ; procédure documentée `docs/SAUVEGARDE-RESTAURATION.md` ; preuves `evidence/c1-*.json`.
 - **Domaine** : Gouvernance/Données · **Fonctionnalité** : persistance globale
 - **Verdict** : ⚠️ DÉGRADÉ · **Preuve** : confirmée (audit 03 + historique)
 - **Gravité** : **Élevée** (risque de perte totale : unique copie locale de la thèse + corpus 248 Mo) · **Priorité** : **P1**
@@ -85,6 +88,7 @@ Statuts de preuve : **confirmée** (reproduite/preuves suffisantes) · probable 
 - **Correction** : procédure de sauvegarde automatique (copie datée au démarrage du serveur, rotation 7j) + export manuel dans l'UI. **Critères** : démonstration restore complète depuis un backup daté.
 
 ## AUD-SEC-001 — Sur-permissions Tauri (`shell:allow-execute`/`allow-open`, CSP null)
+- **Statut v1.1 (2026-10-09)** : 🟡 **CORRIGÉE, NON REVALIDÉE CÔTÉ DESKTOP** (commit `93d8d08`) — capabilities minimales (`core:default` seul, plugin shell jamais utilisé par le front) + CSP explicite (+ devCsp HMR) justifiée par la topologie runtime (webview = origine serveur Next standalone) ; web inchangé (200, lint 0 err) ; **revalidation = build Windows + smoke test par le propriétaire AVANT toute distribution** (test impossible dans l'environnement, documenté `evidence/c4-tauri-hardening.json`).
 - **Domaine** : Sécurité · **Verdict** : ⚠️ DÉGRADÉ · **Preuve** : confirmée (capabilities lues) · **Gravité** : Moyenne (chaîne XSS→exécution théorique ; front n'utilise pas le plugin) · **Priorité** : **P1 avant packaging/distribution**
 - **Correction** : retirer les permissions shell inutilisées, définir une CSP explicite. **Critères** : capabilities minimales ; CSP définie ; l'app fonctionne.
 
@@ -124,3 +128,5 @@ Statuts de preuve : **confirmée** (reproduite/preuves suffisantes) · probable 
 
 ## Compte du registre
 **17 fiches** : 1 ❌ CASSÉ (AUD-FUNC-002) · 15 ⚠️ DÉGRADÉ · 0 autre ❌. P1 : AUD-FUNC-002, AUD-FUNC-003, AUD-GOV-001, AUD-SEC-001(+005). P2 : AUD-FUNC-004/005, AUD-HYD-001, AUD-EXPORT-001, AUD-REL-001, AUD-SEC-002, AUD-UX-001/002. P3 : reste.
+
+**Mise à jour v1.1 (cycle audit-remediation-p1)** : les 4 fiches P1 sont traitées — 3 **corrigées, revalidées** (AUD-FUNC-002, AUD-FUNC-003, AUD-GOV-001) + 1 **corrigée, non revalidée côté desktop** (AUD-SEC-001, build Windows propriétaire requis). Les 13 autres fiches restent ouvertes (P2/P3, hors périmètre de l'autorisation propriétaire).
