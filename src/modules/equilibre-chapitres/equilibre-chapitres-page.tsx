@@ -330,7 +330,7 @@ Propose dans les sections suivantes :
       </div>
 
       {/* Thesis Selector */}
-      {theses.length > 1 && (
+      {theses && theses.length > 1 && (
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium">Thèse :</span>
           {theses.map((t) => (

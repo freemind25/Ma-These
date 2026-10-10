@@ -768,7 +768,7 @@ export function BoiteDoctoralePage() {
       </div>
 
       {/* ── Thesis Selector ── */}
-      {theses.length > 1 && (
+      {theses && theses.length > 1 && (
         <div className="flex items-center gap-3 flex-wrap">
           <span className="text-sm font-medium">Thèse :</span>
           {theses.map((t) => (
