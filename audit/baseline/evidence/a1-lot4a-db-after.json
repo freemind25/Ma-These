@@ -1,0 +1,44 @@
+{
+  "thesis": 1,
+  "chapter": 7,
+  "chapterVersion": 6,
+  "part": 0,
+  "thesisCadrage": 0,
+  "thesisCadrageField": 0,
+  "thesisCadrageVersion": 0,
+  "doctoralToolbox": 1,
+  "soutenancePrep": 1,
+  "researchTab": 0,
+  "reference": 4,
+  "researchSource": 0,
+  "notebookEntry": 1,
+  "agileSprint": 0,
+  "agileStory": 0,
+  "customBookSkill": 58,
+  "legalRef": 27,
+  "article": 1,
+  "articleVersion": 1,
+  "importedDoc": 16,
+  "licenseKey": 0,
+  "elementAnalyse": 1,
+  "typeAnalyseMethodologique": 1,
+  "sessionVerification": 2,
+  "documentChunk": 12,
+  "experiment": 1,
+  "experimentRun": 1,
+  "job": 24,
+  "savedSearch": 0,
+  "savedSearchResult": 0,
+  "_theses": [
+    {
+      "id": "cmsmyrdfs0000pa2sews4vo90",
+      "title": "Urbanisme durable",
+      "structureMode": "chapters",
+      "updatedAt": "2026-08-10T08:22:35.464Z",
+      "_count": {
+        "chapters": 7
+      }
+    }
+  ],
+  "_diff": {}
+}

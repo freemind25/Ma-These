@@ -1,0 +1,280 @@
+{
+  "task": "A1 lot 4a (5 vues recherche/traduction : Bases de données, Journaux OA, Explorateur Thèses, RoutesMe, Traducteur) — pass UI réel agent-browser avec preuve réseau, comptages DB avant/après, net nul. AUCUNE modification de code.",
+  "task_id": "W2-5a",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "baseline_git": "6f00b97",
+  "lots": "4a — 5 vues (19, 20, 23, 39, 44)",
+  "methode": "HONNÊTETÉ DE LA PREUVE : parcours UI réels agent-browser (headless Chromium) avec captures séquentielles a1-lot4a-*.png ; audit réseau par agent-browser network requests (journal CDP du daemon, refs 26829.*) ; persistance testée par reload ; comptages DB node @prisma/client LECTURE SEULE avant et après ; distinction explicite VÉRIFIÉ UI RÉEL vs REVUE DE CODE dans chaque vue ; revues de code lecture seule préalables (modules + routes API, y compris les 2 fichiers rouges /api/theses-en-ligne/search et /api/arxiv/search = LECTURE SEULE, jamais édités) ; budget IA 1 génération/vue RESPECTÉ (19:0, 20:1, 23:0, 39:1 = 1 action comparaison => 2 requêtes LLM parallèles consignées, 44:0 — LibreTranslate = service externe non-LLM) ; écritures DB limitées aux objets AUDIT-L4- (1 Reference GLOBALE + 1 SavedSearch) créés puis supprimés VIA LES FLUX UI CONFIRMÉS.",
+  "vues": [
+    {
+      "id": 19,
+      "nav_id": "academic-db",
+      "nom": "Bases de données (OpenAlex…)",
+      "module": "src/modules/academic-db/academic-db-page.tsx (429 l., catalogue STATIQUE de 27 bases — 0 fetch, 0 DB) + src/modules/academic-db/arxiv-search.tsx (458 l., recherche arXiv en direct) + GET /api/arxiv/search (route rouge 259 l. — LECTURE SEULE absolue respectée : appel serveur réel export.arxiv.org, cache 10 min, throttle 1,2 s, timeout 25 s) + POST /api/references (création référence GLOBALE) + POST /api/veille (création SavedSearch)",
+      "revue_de_code": [
+        "Catalogue statique : 27 bases en 5 catégories (Archives ouvertes/Moteurs/Éditeurs/Bibliothèques/Outils) avec badges Gratuit/Open Access/Abonnement + liens externes « Visiter » — 100 % local (const DATABASES), filtre client",
+        "Recherche arXiv : GET /api/arxiv/search?q&start&max&sort → parse flux Atom, BibTeX généré, pagination « Charger plus » (offset), garde client q<2 → bouton disabled",
+        "« Ajouter aux références » → POST /api/references (type article, journal « arXiv preprint arXiv:ID », source arxiv) → référence GLOBALE par conception (AUD-ISO-006, table Reference sans thesisId — revue route.ts : GET/POST sans scoping thèse)",
+        "« suivre cette recherche » → dialog → POST /api/veille (label prérempli « Veille : <query> ») → SavedSearch (veille-academique)",
+        "Toasts use-toast shadcn (arxiv-search l.28) → INVISIBLES (A1L2B-02) ; catalogue sans toast (aucun besoin)"
+      ],
+      "fonctionnalites": [
+        "Annuaire de 27 bases de données académiques filtrable (texte + catégorie) avec liens externes",
+        "Recherche arXiv en direct : résultats avec total, tri Pertinence/Plus récents, pagination, abstract dépliable, BibTeX copiable, lien PDF, ajout aux références, suivi de recherche (veille)",
+        "Création de veille arXiv depuis la recherche courante"
+      ],
+      "parcours_executes": [
+        "11:20 — visite : titre « Bases de données académiques », carte « Recherche arXiv en direct », « 27 bases de données affichées » en 5 sections, bouton Rechercher arXiv DISABLED à 0 caractère (garde propre) (capture -19-visit-catalogue)",
+        "11:22 — filtre catalogue « openalex » → « 1 base de données affichée » (HAL masqué, vérifié DOM) ; filtre absurde « zzzxqpanier » → état vide propre « Aucun résultat / Aucune base de données ne correspond à votre recherche » (capture -19-catalogue-etat-vide)",
+        "11:24 — recherche arXiv RÉELLE « smart city machine learning » → 1 GET /api/arxiv/search 200 [26829.1168] → « 482 résultats sur arXiv — affichage 1–15 », titres/auteurs/dates/catégories réels (LearningCity, Data distribution shift…) (capture -19-arxiv-resultats)",
+        "11:25 — abstract dépliable (« Réduire » affiché) + lien PDF externe vérifié https://arxiv.org/pdf/2104.05286v1 (capture -19-arxiv-abstract-expand)",
+        "11:27 — « Charger plus » → 1 GET start=15 200 [26829.1169] → « affichage 16–45 » (30 entrées retournées par arXiv malgré max=15 — pagination fonctionnelle, page irrégulière consignée) (capture -19-arxiv-pagination)",
+        "11:29 — « Ajouter aux références » (1ʳᵉ entrée) → 1 POST /api/references 201 [26829.1170] → bouton passe à « Ajoutée » ; toast « Référence ajoutée » ABSENT DU DOM (A1L2B-02 re-confirmée sur ce module) (capture -19-arxiv-reference-ajoutee)",
+        "11:31 — « suivre cette recherche » → dialog avec label prérempli → renommé « AUDIT-L4-Veille arXiv (test audit) » → Suivre → 1 POST /api/veille 201 [26829.1171], dialog fermé, toast invisible (A1L2B-02) (capture -19-arxiv-veille-apres-creation)",
+        "11:34 — requête absurde arXiv « zzqqxxyypanier » → 1 GET 200 → état vide propre « Aucun résultat arXiv pour cette requête. » (capture -19-arxiv-requete-absurde-vide)",
+        "11:38 — CLEANUP réf : Références → recherche « LearningCity » → 1 ligne → poubelle → ConfirmDeleteDialog « …sera définitivement supprimée… irréversible » (capture -19-cleanup-reference-confirm-dialog) → DELETE /api/references/cmv29lmn50028q7vhagq17xkq 200 [26829.1181] → retour « Aucune référence » puis 4/4 réf propriétaire re-comptées (captures vérifiées DOM)",
+        "11:41 — CLEANUP veille : Veille académique → carte « AUDIT-L4-Veille arXiv (test audit) » (Jamais vérifiée · 0 résultat suivi) → poubelle → AlertDialog « …et ses 0 résultat(s) suivis seront définitivement supprimés » (capture -19-cleanup-veille-confirm-dialog) → DELETE /api/veille/cmv29lziw0029q7vho4n6024n 200 [26829.1185] → carte disparue"
+      ],
+      "etats_erreurs": [
+        "Garde arXiv : bouton Rechercher disabled < 2 caractères (UI réelle) — propre",
+        "Requête absurde → 0 résultat affiché proprement (pas d'erreur, message dédié)",
+        "Filtre catalogue sans correspondance → « Aucun résultat » propre",
+        "Toast de succès/échec INVISIBLES sur toute la section arXiv (use-toast sans Toaster — A1L2B-02) : l'ajout à la bibliothèque ne donne AUCUN feedback visible hormis le changement d'état du bouton"
+      ],
+      "persistance": "2 écritures DB possibles, TOUTES testées puis nettoyées : (1) Reference GLOBALE via POST /api/references (201→DELETE 200) ; (2) SavedSearch via POST /api/veille (201→DELETE 200) ; le reste est 100 % local (résultats arXiv, filtres)",
+      "isolation_multitheses": "Catalogue + arXiv : non applicable (aucune donnée thèse). Références : GLOBALES par conception (AUD-ISO-006) — l'ajout ne touche PAS la thèse propriétaire (pas de thesisId, pas d'écriture sur la thèse) ; veille : SavedSearch global — testé sur objet AUDIT-L4- puis supprimé ; propriétaire JAMAIS écrit",
+      "actions_destructives_statut": "2 suppressions VIA FLUX CONFIRMÉS, toutes deux sur des objets AUDIT-L4- créés par la session (référence arXiv + veille) — net nul vérifié DOM (4 réf propriétaire intactes)",
+      "statut_externe": "arXiv (export.arxiv.org) RÉELLEMENT JOIGNABLE : 2 appels 200, 482 résultats réels sur « smart city machine learning » ; requête absurde → 0 résultat propre ; NOTA la vue ne fait PAS d'appel OpenAlex en direct — OpenAlex n'y figure que comme carte statique du catalogue (la recherche OpenAlex réelle est dans Journaux OA, vue 20)",
+      "statut": "VALIDÉE (recherche arXiv réelle + pagination + écritures globales testées et nettoyées via flux confirmés ; A1L2B-02 matérialisée : toasts invisibles)",
+      "captures": [
+        "a1-lot4a-19-visit-catalogue.png",
+        "a1-lot4a-19-catalogue-etat-vide.png",
+        "a1-lot4a-19-arxiv-resultats.png",
+        "a1-lot4a-19-arxiv-abstract-expand.png",
+        "a1-lot4a-19-arxiv-pagination.png",
+        "a1-lot4a-19-arxiv-reference-ajoutee.png",
+        "a1-lot4a-19-arxiv-veille-apres-creation.png",
+        "a1-lot4a-19-arxiv-requete-absurde-vide.png",
+        "a1-lot4a-19-cleanup-reference-confirm-dialog.png",
+        "a1-lot4a-19-cleanup-veille-confirm-dialog.png"
+      ]
+    },
+    {
+      "id": 20,
+      "nav_id": "journaux-oa",
+      "nom": "Journaux OA",
+      "module": "src/modules/journaux-oa/journaux-oa-page.tsx (887 l., react-query + sonner) + GET /api/journaux-oa (277 l. : fetch EXTERNES api.openalex.org/journals + api.doaj.org/api/v1/search/journals, timeout 15 s, cache serveur Next revalidate 300 s, clé optionnelle process.env.OPENALEX_API_KEY côté serveur) + POST /api/ai-writing mode peer-review (classement IA optionnel)",
+      "revue_de_code": [
+        "Recherche proxy : source both/openalex/doaj (toggle), filtre domaine → param serveur OpenAlex (topics.subfield.display_name.search:X) + filtre CLIENT parallèle sur subjects",
+        "Clé premium OpenAlex : route lit process.env.OPENALEX_API_KEY l.144-145 et l'ajoute en api_key — présence NON observable côté client par conception ; NE PAS lire .env (invariant) → statut consigné via comportement réseau uniquement ; commentaire code l.136-138 : avec clé premium, le schéma OpenAlex change (host_organization_name remplace publisher) et les champs select sont rejetés",
+        "Classement IA : bouton « Classer par IA » → POST /api/ai-writing (mode peer-review, withAiConfig) → réordonnancement client + toast sonner",
+        "Détection revue prédatrice : 5 signaux d'alerte + 3 signaux de légitimité → verdict local vert/ambre/rouge (aucun réseau)",
+        "Export CSV local (Blob BOM UTF-8) + toasts sonner (VISIBLES — montés au layout)",
+        "0 écriture DB : la route ne touche aucun modèle Prisma (grep), react-query cache client uniquement"
+      ],
+      "fonctionnalites": [
+        "Recherche multi-sources de revues OA (OpenAlex + DOAJ) avec ISSN, éditeur, disciplines, type OA, pays, APC, lien homepage",
+        "Classement IA par pertinence (top 10 soumis au LLM)",
+        "Export CSV des résultats filtrés",
+        "Grille d'évaluation de légitimité de revue (prédatrice) avec verdict dynamique",
+        "Encart DORA (anti facteur d'impact unique)"
+      ],
+      "parcours_executes": [
+        "11:52 — visite : encart DORA, barre recherche, toggle source Toutes/OpenAlex/DOAJ, select 24 disciplines, bouton Rechercher DISABLED < 2 car. (capture -20-visit-vide)",
+        "11:54 — recherche RÉELLE « urban planning » (source both) → 1 GET /api/journaux-oa 200 [26829.1190] → « 20 journals trouvés » : Landscape and Urban Planning (Elsevier BV, ISSN 0169-2046/1872-6062, Pays-Bas, APC 3120 USD), Journal of Urban Planning and Development (ASCE)… ; AVERTISSEMENT AFFICHÉ « DOAJ: fetch failed » — échec partiel DOAJ géré proprement (capture -20-recherche-resultats-doaj-echec)",
+        "11:57 — filtre domaine « Environnement » → 1 GET subject=Environnement 200 [26829.1191] mais meta.total=0 avec warnings « OpenAlex: OpenAlex erreur 400 » + « DOAJ: fetch failed » → état vide « Aucun journal ne correspond à votre recherche » + avertissements visibles (capture -20-filtre-domaine-environnement) → ANOMALIE A1L4A-01 (voir anomalies)",
+        "12:01 — retour « Toutes les disciplines » → « 20 journals trouvés » servis par le cache react-query (AUCUN nouvel appel réseau — dernière entrée réseau inchangée)",
+        "12:03 — « Classer par IA » → 1 POST /api/ai-writing 200 [26829.1192] (UNIQUE IA de la vue) → réordonnancement RÉEL : #1 passe de « Landscape and Urban Planning » à « Environment and Planning B Urban Analytics and City Science » (capture -20-classement-ia-applique) ; toast sonner succès « Classement IA appliqué avec succès » NON CAPTURÉ (expiré ~4 s avant vérification DOM — sonner monté, constats lots 2b/3b)",
+        "12:06 — « Exporter CSV » → /home/z/Downloads/journaux-oa-urban_planning.csv 4 363 o, en-têtes + données réelles vérifiées (copie /tmp, rien dans le dépôt) ; toast « 20 journaux exportés » expiré avant check (capture -20-export-csv)",
+        "12:09 — détection prédatrice : collapsible ouvert, 2 signaux cochés (« Promesses irréalistes », « Site web douteux ») → verdict AMBRE dynamique « Des signaux nécessitent une vérification approfondie … Beall's list, Think. Check. Submit. » (capture -20-detection-predatrice-amber)",
+        "12:12 — toggle source « OpenAlex » seul → 1 GET source=openalex 200 [26829.1193] → « 20 journals », SANS warning DOAJ (cartes badge OpenAlex uniquement) (capture -20-source-openalex-only-20)",
+        "12:15 — requête absurde « zzqqxxyypanier » → 0 résultat SANS avertissement, état vide propre (capture -20-requete-absurde)"
+      ],
+      "etats_erreurs": [
+        "Garde recherche : bouton disabled < 2 caractères — propre",
+        "Échec partiel source : encart « Avertissements » affiché (DOAJ fetch failed) sans casser les résultats OpenAlex — bon pattern",
+        "Filtre domaine : les DEUX sources échouent (OpenAlex 400 + DOAJ fetch failed) → 0 résultat + avertissements visibles (fonction dégradée, A1L4A-01)",
+        "Requête absurde → 0 résultat propre sans faux avertissement"
+      ],
+      "persistance": "AUCUNE (0 prisma sur la route ; résultats = cache client react-query + cache serveur fetch 300 s) ; CSV = téléchargement local",
+      "isolation_multitheses": "NON APPLICABLE : aucune donnée de thèse lue ou écrite ; le classement IA opère sur les titres des journaux uniquement",
+      "actions_destructives_statut": "Aucune",
+      "statut_externe": "OpenAlex RÉELLEMENT JOIGNABLE côté serveur (20 journaux réels, APC/ISSN/éditeurs corrects ; répétitions servies par cache Next 300 s) ; DOAJ INDISPONIBLE depuis cet environnement (fetch failed — re-confirmé, même constat que lot 3a citation-check) ; filtre domaine → OpenAlex 400 ; diagnostic direct curl api.openalex.org APRÈS la session de tests : HTTP 429 « Insufficient budget… resets at midnight UTC » (quota gratuit de l'IP épuisé — le 429 n'a PAS été observé via l'app, servie par son cache) ; CLÉ PREMIUM : indéterminable côté client par conception (aucune clé exposée dans le DOM, aucune lecture .env effectuée) — les résultats « publisher = Elsevier BV » correspondent au schéma standard, observation compatible avec un usage sans clé ; IA classement : POST 200 = pipeline IA FONCTIONNEL",
+      "statut": "VALIDÉE AVEC ANOMALIE (recherche OpenAlex réelle + échec partiel géré + IA classement OK + CSV + verdict prédateur ; A1L4A-01 filtre domaine dégradé)",
+      "anomalies": [
+        {
+          "id": "A1L4A-01",
+          "priorite_proposee": "P3",
+          "titre": "Le filtre « Domaine » casse la recherche : OpenAlex répond 400 dès qu'une discipline est sélectionnée (et DOAJ ne filtre pas) → 0 résultat systématique avec avertissements",
+          "preuves": "capture a1-lot4a-20-filtre-domaine-environnement.png ; GET [26829.1191] 200 avec meta.warnings=[OpenAlex erreur 400, DOAJ fetch failed], meta.total=0 ; route l.140-142 (params.set('filter', `topics.subfield.display_name.search:${subject}`)) — URLSearchParams encode le « : » en %3A, syntaxe filter OpenAlex vraisemblablement rejetée",
+          "note": "cause exacte du 400 non tranchable par test externe direct (curl api.openalex.org = 429 budget IP épuisé au moment du diagnostic) ; en l'état, la fonction filtre-domaine est INUTILISABLE de bout en bout"
+        }
+      ],
+      "captures": [
+        "a1-lot4a-20-visit-vide.png",
+        "a1-lot4a-20-recherche-resultats-doaj-echec.png",
+        "a1-lot4a-20-filtre-domaine-environnement.png",
+        "a1-lot4a-20-classement-ia-applique.png",
+        "a1-lot4a-20-export-csv.png",
+        "a1-lot4a-20-detection-predatrice-amber.png",
+        "a1-lot4a-20-source-openalex-only-20.png",
+        "a1-lot4a-20-requete-absurde.png",
+        "a1-lot4a-20-source-openalex-erreur-429.png"
+      ]
+    },
+    {
+      "id": 23,
+      "nav_id": "explorateur-theses",
+      "nom": "Explorateur Thèses",
+      "module": "src/modules/explorateur-theses/explorateur-theses-page.tsx (1 294 l., sonner) + 4 routes proxy LECTURE SEULE vers l'API officielle theses.fr (ABES) : GET /api/theses/search, /api/theses/detail, /api/theses/persons, /api/theses/stats (src/lib/theses-fr/types.ts : THESES_FR_BASE=https://theses.fr) — 0 prisma, 0 écriture, thèse propriétaire NON concernée (service externe dédié, pas /api/theses-en-ligne)",
+      "revue_de_code": [
+        "3 onglets : Recherche (recherche + filtres avancés disciplines/langue/statut/années/tri + pagination 10/20/50), Statistiques (compteurs nationaux + disciplines tendance), Chercheurs (recherche de personnes)",
+        "Recherche : q, debut, nombre, tri (dateDesc/dateAsc/authorAsc/authorDesc/disciplineAsc/…), statut (soutenue/enCours), langue, années → filtres assemblés en param filtres=[status=\"…\"] côté route",
+        "Détail : bouton « Détails » par carte → GET /api/theses/detail (2 fetchs parallèles detail + buttons theses.fr) → rendu inline (écoles doctorales, partenaires, rapporteurs, examinateurs, DOI, NNT, accès)",
+        "Liens externes « Voir sur theses.fr » = https://theses.fr/<NNT> (target _blank)",
+        "Toasts sonner pour erreurs réseau ; état vide « Aucun résultat » ; compteur totalHits + pagination Serveur (debut/nombre)"
+      ],
+      "fonctionnalites": [
+        "Recherche nationale de thèses (soutenues et en cours) via theses.fr",
+        "Statistiques nationales (total thèses recensées) + recherche rapide par discipline",
+        "Recherche de chercheurs/directeurs",
+        "Fiche détaillée par thèse (jury, DOI, NNT, accès documents)",
+        "Liens externes vers theses.fr"
+      ],
+      "parcours_executes": [
+        "12:22 — visite : encart « Explorez les thèses françaises — Source officielle theses.fr (ABES) », 3 onglets, recherche vide (capture -23-visit-stats-nationales) ; GET /api/theses/stats 200 au montage [26829.1195/1196]",
+        "12:24 — onglet Statistiques (clic natif ref) : « Total des thèses 486 905 — thèses recensées dans la base theses.fr », encart « À propos de theses.fr » (ABES, depuis 1985), 5 disciplines tendance cliquables (capture -23-stats-nationales-486905)",
+        "12:27 — recherche RÉELLE « urbanisme durable » → 1 GET /api/theses/search?q=urbanisme+durable 200 [26829.1197] → « 605 thèses trouvées », cartes réelles (titre FR/EN, auteur, directeur, discipline, statut, établissement, mots-clés) (capture -23-recherche-urbanisme-durable)",
+        "12:31 — filtres avancés ouverts (Disciplines/Langue/Statut/Années/Tri) ; Statut = Soutenue → « Rechercher » → 1 GET …&statut=soutenue 200 [26829.1198] → 605 résultats TOUJOURS (badges « En cours » encore présents sur les cartes) → ANOMALIE A1L4A-02 (capture -23-filtre-soutenues)",
+        "12:35 — pagination « Suivant » → 1 GET debut=10 200 [26829.1199] → « Résultats 11 à 20 sur 605 » (capture -23-pagination-page2)",
+        "12:38 — « Détails » (1ʳᵉ carte page 2) → 1 GET /api/theses/detail 200 [26829.1200] → panneau déplié : Rapporteur(s) (Thai Huyen Nguyen), DOI 10.70675/…, NNT 2025TLSEJ103, Accès au document (Dépôt national / accès réservé / reproductions) (capture -23-detail-these-rapporteur-nnt) ; 11 liens externes réels https://theses.fr/2025TLSEJ103… (href vérifiés DOM, non suivis)",
+        "12:42 — onglet Chercheurs : recherche « Laurent Bordereaux » → 1 GET /api/theses/persons 200 [26829.1201] → « 1 chercheur trouvé — Laurent Bordereaux — Voir sur theses.fr » (capture -23-chercheurs-resultat)",
+        "12:45 — requête absurde « zzqqxxyypanier » → « Aucun résultat » propre (capture -23-requete-absurde)"
+      ],
+      "etats_erreurs": [
+        "Requête absurde → « Aucun résultat » propre",
+        "Erreurs API → toast sonner + message (revue de code l.101-114 — non déclenchées : tous les appels 200)",
+        "Garde : bouton Rechercher actif même à vide → toast sonner « Veuillez entrer un terme de recherche » (revue de code l.72 — non testé, budget)"
+      ],
+      "persistance": "AUCUNE (4 routes = proxys stateless sans prisma ; état React local) — reload réinitialise",
+      "isolation_multitheses": "NON APPLICABLE : le module n'appelle JAMAIS /api/thesis ni aucune donnée locale — 100 % service externe theses.fr ; propriétaire jamais lu ni écrit",
+      "actions_destructives_statut": "Aucune (toutes les routes en lecture seule, 0 prisma)",
+      "statut_externe": "theses.fr (ABES) RÉELLEMENT JOIGNABLE : 4 types d'appels 200 (search 605 résultats réels, stats 486 905 thèses, detail NNT 2025TLSEJ103 avec DOI/rapporteurs réels, persons 1 résultat réel) ; liens externes valides https://theses.fr/<NNT> ; aucun échec réseau observé",
+      "statut": "VALIDÉE AVEC ANOMALIE (service externe réel complet ; A1L4A-02 filtre statut non effectif côté résultats)",
+      "anomalies": [
+        {
+          "id": "A1L4A-02",
+          "priorite_proposee": "P3",
+          "titre": "Filtre « Statut = Soutenue » non effectif : la requête part avec statut=soutenue mais les résultats incluent toujours des thèses « En cours » et totalHits reste identique (605)",
+          "preuves": "captures a1-lot4a-23-filtre-soutenues.png (+recherche non filtrée -23-recherche-urbanisme-durable.png) ; GET [26829.1198] …&statut=soutenue 200 ; DOM post-filtre : badges « En cours » encore présents (12 occurrences cartes vs 5 « Soutenue ») ; route search l.51-54 pousse status=\"soutenue\" dans filtres=[…]",
+          "note": "cause probable : syntaxe du param filtres de theses.fr (crochets/& encodés) non appliquée par l'API distante, ou mapping statut erroné — effet utilisateur : le filtre n'apporte rien, tri/plausibilité des comptes faussée"
+        }
+      ],
+      "captures": [
+        "a1-lot4a-23-visit-stats-nationales.png",
+        "a1-lot4a-23-stats-nationales-486905.png",
+        "a1-lot4a-23-recherche-urbanisme-durable.png",
+        "a1-lot4a-23-filtre-soutenues.png",
+        "a1-lot4a-23-pagination-page2.png",
+        "a1-lot4a-23-detail-these-rapporteur-nnt.png",
+        "a1-lot4a-23-chercheurs-resultat.png",
+        "a1-lot4a-23-requete-absurde.png"
+      ]
+    },
+    {
+      "id": 39,
+      "nav_id": "routesme",
+      "nom": "RoutesMe",
+      "module": "src/modules/routesme/routesme-page.tsx (838 l., useToast shadcn) + POST /api/ai-writing (1 requête PAR modèle sélectionné, en parallèle, mode WRITING_MODES + withAiConfig) — identification : PAS une vue de routage/cartographie de recherche ; c'est une comparaison multi-modèles IA (« Comparez les réponses de plusieurs modèles d'IA simultanément… », badge nav IA, icône GitCompareArrows) ; les 4 « modèles » (GPT-4/Claude/Mistral/Llama) sont des étiquettes locales AVAILABLE_MODELS : chaque carte appelle le MÊME backend IA configuré (aucun routage réel vers des fournisseurs distincts) — le nom « RoutesMe » et le provider externe routesme.online (config dans app-header) sont sans lien avec cette vue",
+      "revue_de_code": [
+        "Sélection 2–4 modèles, 8 templates de prompts doctoraux (revue de littérature, méthodologie, abstract, hypothèses…), select mode = WRITING_MODES (défaut « Revue de littérature » — mode EXISTANT, contrairement à A1L3A-03)",
+        "Garde : bouton « Lancer la comparaison » disabled si prompt vide (l.595) ; toast use-toast « Prompt requis »/« Modèles insuffisants »/« Sélection minimale/maximale » → TOUS INVISIBLES (A1L2B-02)",
+        "Résultats : temps de réponse (performance.now), tokens estimés, « Élire » (vote) → ring ambre sur le vainqueur, Copier par carte",
+        "Historique : useState UNIQUEMENT (l.216 — aucune localStorage/persist) + restauration + Effacer ; vote et favoris non persistés non plus",
+        "0 prisma, 0 lecture thèse"
+      ],
+      "fonctionnalites": [
+        "Comparaison parallèle de 2–4 réponses IA pour un même prompt doctoral (templates + mode d'écriture)",
+        "Métriques par carte : temps de réponse et tokens estimés, vote du vainqueur",
+        "Historique des comparaisons (session) avec restauration et effacement"
+      ],
+      "parcours_executes": [
+        "12:52 — visite : 2 onglets (Comparaison/Historique), GPT-4 + Claude pré-sélectionnés (2–4), template « Choisir un modèle prédéfini… », mode « Revue de littérature », Lancer DISABLED à prompt vide (capture -39-visit)",
+        "12:55 — template « Génération d'hypothèses » appliqué (textarea remplie automatiquement) + ajout marqueur « [AUDIT-L4-Prompt jetable — comparaison test audit : mobilité douce et urbanisme durable] » → bouton ACTIVÉ (capture -39-prompt-template-modeles)",
+        "12:58 — « Lancer la comparaison » → 1 GÉNÉRATION (1 action utilisateur) = 2 POST /api/ai-writing 200 EN PARALLÈLE [26829.1205, 26829.1206] (budget IA : 1 génération/vue respectée, 2 requêtes consécutives consignées) → 2 cartes de résultats avec contenu RÉEL structuré (H1, VI densité d'aménagements cyclables, VD fréquence d'usage — fidèle au prompt AUDIT-L4), temps 9,8 s/10,0 s, ~914/~867 tokens estimés (capture -39-comparaison-resultats)",
+        "13:02 — vote « Élire » sur GPT-4 → carte encadrée ring-2 ring-amber-500 vérifiée DOM (vainqueur) ; toast « Vote enregistré » ABSENT (A1L2B-02) (capture -39-vote-gpt4)",
+        "13:04 — onglet Historique : 1 entrée « Génération d'hypothèses — 10 oct. 10:55 » avec prompt AUDIT-L4 + modèles GPT-4|Claude + vainqueur GPT-4, bouton Effacer (capture -39-historique-1-entree)",
+        "13:07 — RELOAD → re-navigation → onglet Historique : « Aucune comparaison dans l'historique. Lancez votre première comparaison… » → NON PERSISTÉ (prouvé, capture -39-reload-historique-vide)"
+      ],
+      "etats_erreurs": [
+        "Garde prompt vide : bouton disabled (UI réelle) — propre",
+        "Garde <2 modèles : toast use-toast INVISIBLE (revue de code l.282 — non déclenchée, 2 modèles pré-sélectionnés)",
+        "Échec d'un modèle : carte avec erreur individuelle sans casser les autres (revue de code l.328-336 — non déclenché, 200/200)"
+      ],
+      "persistance": "AUCUNE par conception : historique/vote/résultats = état React, PERDUS au reload (prouvé) ; 0 écriture DB",
+      "isolation_multitheses": "NON APPLICABLE : saisie 100 % manuelle, aucune donnée thèse lue",
+      "actions_destructives_statut": "Aucune (Effacer l'historique = état local uniquement)",
+      "statut_externe": "sans objet (backend IA interne via /api/ai-writing — 200/200) ; NOTA : les étiquettes GPT-4/Claude/Mistral/Llama ne reflètent PAS des fournisseurs distincts — toutes les cartes interrogent le même modèle configuré (limite de conception consignée, non comptée comme anomalie bloquante)",
+      "statut": "VALIDÉE (comparaison IA réelle avec métriques, vote fonctionnel, historique de session ; toasts invisibles A1L2B-02 ; « modèles » = étiquettes cosmétiques)",
+      "captures": [
+        "a1-lot4a-39-visit.png",
+        "a1-lot4a-39-prompt-template-modeles.png",
+        "a1-lot4a-39-comparaison-resultats.png",
+        "a1-lot4a-39-vote-gpt4.png",
+        "a1-lot4a-39-historique-1-entree.png",
+        "a1-lot4a-39-reload-historique-vide.png"
+      ]
+    },
+    {
+      "id": 44,
+      "nav_id": "traducteur",
+      "nom": "Traducteur",
+      "module": "src/modules/traducteur/traducteur-page.tsx (371 l., useToast shadcn) + POST /api/translate (121 l., bascule sur 3 instances publiques LibreTranslate : libretranslate.de, libretranslate.com, translate.argosopentech.com, timeout 30 s/instance, 503 « Aucune instance disponible » si toutes échouent) — service externe de traduction, NON un LLM (0 ai-writing)",
+      "revue_de_code": [
+        "27 langues académiques + auto-détection, 6 paires rapides (FR→EN…), compteur de caractères, Ctrl+Entrée",
+        "Garde : bouton Traduire disabled si texte vide (l.316) ; garde JS « Veuillez saisir du texte à traduire. » (l.72-75) — inatteignable car bouton disabled",
+        "Erreur affichée en BANNIÈRE INLINE (l.305-310) — indépendante des toasts ; toasts use-toast uniquement pour Copier/Coller (INVISIBLES — A1L2B-02)",
+        "Inverser : swap langues + textes (disabled si source=auto ou rien) ; Effacer : reset complet ; Copier disabled sans résultat ; abort du précédent appel (AbortController)",
+        "0 persistance, 0 prisma, 0 lecture thèse"
+      ],
+      "fonctionnalites": [
+        "Traduction de texte libre FR↔EN↔DE↔… via LibreTranslate (open source, sans clé selon l'encart)",
+        "Paires rapides, auto-détection (badge « Détecté : … »), inversement, copie du résultat",
+        "Encart « À propos de LibreTranslate » (AGPL-3.0, Argos Translate)"
+      ],
+      "parcours_executes": [
+        "13:15 — visite : paires rapides, 0 caractère, « La traduction apparaîtra ici… », bouton Traduire DISABLED (garde UI réelle), Inverser/Coller actifs (capture -44-visit-vide)",
+        "13:17 — saisie 88 caractères « L'urbanisme durable repose sur la mobilité douce et la participation citoyenne. AUDIT-L4 » (FR→EN) → compteur « 88 caractères », bouton ACTIVÉ (capture -44-garde-texte-saisi)",
+        "13:19 — Traduire → 1 POST /api/translate → HTTP 503 [26829.1392] → bannière d'erreur INLINE « Instance indisponible » affichée proprement, résultat vide, pas de crash (capture -44-erreur-503-instance-indisponible) — TRADUCTION RÉELLE NON TESTABLE POUR CAUSE EXTÉRIEURE (voir statut_externe)",
+        "13:24 — diagnostic direct curl des 3 instances (hors app, lecture seule) : libretranslate.de → HTTP 301 Moved Permanently (Cloudflare) ; translate.argosopentech.com → connexion échouée (000, timeout réseau) ; libretranslate.com → HTTP 400 {\"error\":\"Visit https://portal.libretranslate.com to get an API key\"} → les 3 instances publiques sont redirigées/hors ligne/à clé — la route n'envoie aucune api_key et ne suit pas la redirection → échec DÉTERMINISTE indépendant de l'app",
+        "13:27 — Inverser (clic natif) → langues permutées EN→FR, texte français déplacé à droite, panneau gauche vide (comportement conforme au code l.118-124) (capture -44-inverser-swap)",
+        "13:29 — Effacer → reset complet (0 caractère, état vide, erreur effacée) (capture -44-effacer-reset)"
+      ],
+      "etats_erreurs": [
+        "Garde texte vide : bouton disabled (UI réelle) — propre",
+        "Échec des 3 instances : 503 + bannière inline « Instance indisponible » gérée sans casser l'UI — bon pattern de fallback multi-instances, mais AUCUNE instance joignable en l'état",
+        "Copie du résultat : NON TESTABLE (aucune traduction obtenue — cause extérieure) ; le bouton Copier reste disabled sans résultat (conforme)"
+      ],
+      "persistance": "AUCUNE par conception (état React local) ; Effacer/reload réinitialisent",
+      "isolation_multitheses": "NON APPLICABLE : saisie manuelle, aucune donnée thèse",
+      "actions_destructives_statut": "Aucune",
+      "statut_externe": "LibreTranslate : NON TESTABLE POUR CAUSE EXTÉRIEURE — les 3 instances publiques configurées sont inaccessibles depuis cet environnement (diagnostic curl direct : 301 Cloudflare sur libretranslate.de, connexion échouée sur translate.argosopentech.com, 400 « API key required » sur libretranslate.com) ; l'app répond honnêtement 503 avec message inline ; NOTA l'encart UI « Aucune clé API requise » est DÉSORORMAIS INEXACT pour libretranslate.com (clé requise publiquement) — consigné, non compté comme anomalie de code (cause extérieure)",
+      "statut": "VALIDÉE AVEC RÉSERVE EXTERNE (UI/gardes/états d'erreur/inverser/effacer validés en UI réelle ; la fonction de traduction elle-même est NON TESTABLE pour cause extérieure — échec déterministe des 3 instances publiques)",
+      "captures": [
+        "a1-lot4a-44-visit-vide.png",
+        "a1-lot4a-44-garde-texte-saisi.png",
+        "a1-lot4a-44-erreur-503-instance-indisponible.png",
+        "a1-lot4a-44-inverser-swap.png",
+        "a1-lot4a-44-effacer-reset.png"
+      ]
+    }
+  ],
+  "audit_reseau": "Journal CDP agent-browser (refs 26829.* de la session ; le journal persistant contient aussi des requêtes des sessions antérieures — rattachement par URL/postData, pas par ordre de refs) — 19 → 2 GET /api/arxiv/search 200 [1168 start=0, 1169 start=15] (arXiv externe réel, 482 résultats) + POST /api/references 201 [1170] + 3 PUT /api/references/[id] 200 [1175/1177/1179] (toggles favoris involontaires puis corrigés sur la SEULE réf AUDIT-L4 créée par la session) + DELETE /api/references/[id] 200 [1181] + POST /api/veille 201 [1171] + DELETE /api/veille/[id] 200 [1185] ; 20 → 3 GET /api/journaux-oa 200 [1190 both, 1191 subject=Environnement → warnings OpenAlex 400 + DOAJ fetch failed, 1193 openalex] + 1 POST /api/ai-writing 200 [1192] (classement IA — UNIQUE IA de la vue) ; 23 → 2 GET /api/theses/stats 200 [1195/1196] + 3 GET /api/theses/search 200 [1197, 1198 &statut=soutenue, 1199 &debut=10] + GET /api/theses/detail 200 [1200] + GET /api/theses/persons 200 [1201] (theses.fr réel) ; 39 → 2 POST /api/ai-writing 200 EN PARALLÈLE [1205/1206] (1 génération = 2 requêtes pour 2 modèles étiquettes) ; 44 → 1 POST /api/translate 503 [1392] (3 instances LibreTranslate injoignables — cause extérieure documentée par curl direct : 301/000/400-clé) ; plus GET de montage (ai-config, ai-keys, ai-probe, stats). ÉCRITURES DB DE LA SESSION : 1 POST reference + 3 PUT (même objet) + 1 POST savedSearch, TOUTES compensées par DELETE via flux UI confirmés → net nul ; 0 requête sur /api/thesis/*, 0 écriture propriétaire, 0 parasite, 0 4xx/5xx non rattachés (503 translate = cause extérieure documentée).",
+  "etat_proprietaire": {
+    "before": "a1-lot4a-db-before.json — conforme à l'attendu : 1 thèse « Urbanisme durable » (cmsmyrdfs0000pa2sews4vo90, 7 chap, structureMode chapters, updatedAt 2026-08-10T08:22:35.464Z), 4 réf, 16 ImportedDoc, 1 Article + 1v, 0 ResearchTab/Sprint/Story, 1 Experiment + 1 run, 27 LegalRef, 24 Job, 1 ElementAnalyse, 1 NotebookEntry, 1 DoctoralToolbox (résidu documenté, non touché), 0 SavedSearch",
+    "after": "a1-lot4a-db-after.json — DIFF AVANT/APRÈS VIDE sur les 30 tables (champ _diff = {}) ; updatedAt thèse inchangé (2026-08-10T08:22:35.464Z, 7 chapitres) ; les 2 écritures de session (1 Reference GLOBALE + 1 SavedSearch AUDIT-L4-) ont été supprimées VIA LES FLUX UI CONFIRMÉS (ConfirmDeleteDialog/AlertDialog) avant le comptage final",
+    "identique": true,
+    "ecarts": "AUCUN — résidu DoctoralToolbox inchangé, témoin NotebookEntry intact, 4 références propriétaire re-comptées visuellement en UI après cleanup (A Digital Twin Framework…, Test Reference T4 Persistence, Test Reference for E2E Testing, Méthodologies qualitatives en urbanisme) ; 0 thèse jetable (aucune vue thèse-scopée en écriture — les 2 écritures étaient des objets GLOBAUX créés puis supprimés)"
+  }
+}
