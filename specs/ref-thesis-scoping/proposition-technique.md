@@ -77,6 +77,16 @@ model Reference {
 - **Positionnement recommandé** : après la vague 2 du cycle courant (A1/A2/A3) et **avant les builds propriétaire C1/C2** — afin que les builds de distribution portent le schéma final validé.
 - **Critères de validation avant « revalidée »** : tests d'isolation verts + TNR global vert (suite étendue) + re-pass UI réel (références, export DOCX, brouillon) + 0 orphelin + preuves consignées (`preuves.md`) + registre et v1.2 mis à jour.
 
+## 6-bis. Enseignements intégrés de la vague 2 (audit-final-v1.2, 2026-10-10) — amendement v1.1 de la proposition
+
+La vague 2 (pass UI des 33 vues + audit isolation) apporte des faits qui renforcent et précisent cette proposition — sans en changer le schéma :
+
+1. **Condition de cohérence avec l'isolation** : la vue références (et les 8 consommateurs §0) devront se lier à `activeThesisId` (store), **jamais à `theses[0]`** — la vague 2 a prouvé que le binding `theses[0]` provoque des écritures cross-thèse (AUD-ISO-001 P1 sur la vue Plan ; famille AUD-ISO-002/003 sur Cadrage/Boîte doctorale/Équilibre). **Nouveau test d'isolation exigé** : la vue références affiche/crée/supprime uniquement dans le contexte de la thèse active, vérifié avec 2 thèses présentes (protocole `isolation-multitheses.json`).
+2. **Le fait produit « global » est matérialisé 3×** : la vague 2 a re-confirmé que les références sont visibles de tous les contextes (C-2, W2-2, W2-5a) — la décision produit du propriétaire (rattachement par thèse) résout aussi ces constats.
+3. **Fenêtre d'exécution actualisée** : la vague 2 (A1 33/33 vues, A2 16/16, A3) est **clôturée** — le positionnement recommandé §6 devient : « immédiatement après autorisation, avant les builds propriétaire C1/C2 ».
+4. **État de référence pour le rollback** : le diff DB propriétaire est vide à chaque session de la vague 2 (preuves `*-db-before/after.json`, 30 tables) ; l'unique résidu documenté (1 DoctoralToolbox template INITIAL_* auto-créée, non supprimable via UI — AUD-ISO-003) devra être traité avant ou pendant la migration (il dépend de la thèse propriétaire → cascade avec elle en cas de suppression, mais le propriétaire ne supprime pas sa thèse).
+5. **Budget de validation inchangé** : 12-16 tests d'isolation + TNR global (1 658 verts actuels, référence `e504b35`) + re-pass UI réelle (références, brouillon, export DOCX GP-7, export PDF) sous le protocole A1 (objets `AUDIT-`, diff DB vide).
+
 ## 7. Décisions attendues du propriétaire (autorisation distincte)
 
 1. GO / non-GO sur la proposition (schéma Cascade, nullable, règles API §2, migration §3).

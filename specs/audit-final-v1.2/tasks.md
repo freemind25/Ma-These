@@ -17,12 +17,12 @@ Légende : [ ] à faire · [~] en cours · [x] fait (chaque case adossée à une
 
 ## Vague 2-bis — poursuite validée par le propriétaire (IM 2026-10-10, 6 priorités)
 - [x] W2-1 — Inventaire exhaustif vues restantes : 26 nommées (NAVIGATION_ITEMS + matrice v1.0), répartition lots 2-4, réconciliation du compte « 25 » documentée. [evidence/a1-inventory-restantes.json]
-- [~] W2-2 — Audit isolation multi-thèses PRIORITAIRE (priorité #2 propriétaire) : AUD-FUNC-007 (GET /api/thesis sans partId), usage theses[0] (vue Plan, sélecteurs), risques d'affichage/écriture cross-thèse par vue — revue code + UI ciblée thèse jetable AUDIT-ISO. Aucune migration de schéma. [evidence/isolation-multitheses.json]
-- [ ] W2-3 — A1 lot 2 : 9 vues (13 agile, 14 boîte doctorale, 15 équilibre, 25 onglet recherche, 26 méthodologie, 27 analyse champ, 28 SLR, 35 outils IA, 37 expérimentations). [evidence/a1-lot2.json]
-- [ ] W2-4 — A1 lot 3 : 9 vues (29 vérif méthodo, 31 citations, 32 hypothèses, 33 cohérence, 34 preuves, 38 soutenance, 40 article→code, 41 diagrammes, 42 APA). [evidence/a1-lot3.json]
-- [ ] W2-5 — A1 lot 4 : 8 vues dont 2 externes individuelles (19 OpenAlex, 20 Journaux OA, 23 explorateur, 39 routesme, 44 traducteur, 46 export PDF, 30 Overpass, 36 APInex — clé nouvelle requise). [evidence/a1-lot4.json]
-- [ ] W2-6 — Proposition migration références relue au regard des 6 priorités (attribution existantes, risques, sauvegarde, tests isolation, rollback) + synthèse de décision propriétaire.
-- [ ] W2-7 — TNR fin de vague + RAPPORT DE FIN DE LOT (checkpoint : vues testées/restantes, anomalies, preuves/commits, état risque multi-thèses, statut plan BFG, prochaines validations).
+- [x] W2-2 — Audit isolation multi-thèses PRIORITAIRE (priorité #2 propriétaire) : **AUD-ISO-001 P1 PROUVÉE** (vue Plan PUT sur theses[0] ≠ thèse active — test décisif), AUD-FUNC-007 consolidée (cause racine route.ts:16 + repro UI), 7 fiches, cartographie modèles. [evidence/isolation-multitheses.json + 23 captures] [6e79e6e]
+- [x] W2-3 — A1 lot 2 : **9/9 vues** (13 agile VALIDÉE, 14 boîte doctorale réserves, 15 équilibre réserves, 25 onglet VALIDÉE, 26/27/28 VALIDÉES, 35 outils IA VALIDÉE). 12 anomalies A1L2A/B. [evidence/a1-lot2a.json + a1-lot2b.json + 70 captures] [8161a70, bc0d2d7]
+- [x] W2-4 — A1 lot 3 : **9/9 vues** (29 VALIDÉE, 31 VALIDÉE registres réels, 32 IA cassée A1L3A-03 P2, 33 VALIDÉE 0 anomalie, 34 VALIDÉE, 38 VALIDÉE contre-exemple binding correct, 40 inutilisable A1L3B-01 P2, 41 VALIDÉE, 42 VALIDÉE). [evidence/a1-lot3a.json + a1-lot3b.json + 50 captures] [39e44a6, 6f00b97]
+- [x] W2-5 — A1 lot 4 : **8/8 vues dont 2 externes** (19 arXiv réel 482, 20 OpenAlex réel, 23 theses.fr réel 486 905, 39 routesme, 44 NON TESTABLE extérieur, 46 export PDF réel vérifié, 30 Overpass réel failover, 36 NON TESTABLE extérieur clé requise). [evidence/a1-lot4a.json + a1-lot4b.json + 63 captures] [3fd0f2f, 476862c] — **REGISTRE A1 33/33 CLÔTURÉ**
+- [x] W2-6 — Proposition migration références amendée §6-bis (binding activeThesisId exigé, test isolation 2 thèses, fenêtre avant C1/C2, résidu AUD-ISO-003) — synthèse de décision dans le rapport de fin de lot.
+- [~] W2-7 — TNR fin de vague 1 658/1 658 verts + lint 0 erreur [11:30] ; registre +31 fiches ; v1.2 §1-bis + tableau actualisé ; RAPPORT DE FIN DE LOT `17_RAPPORT_FIN_DE_LOT_2026-10-10.md` livré au propriétaire.
 
 ## Vague 3 — propriétaire
 - [ ] T10 — C1 build web production sur commit final (propriétaire, gabarit rempli archivé).

@@ -2007,3 +2007,19 @@ Stage Summary:
 - INCIDENT INFRA : OOM noyau du next-server dev (RSS 2,6 Go) à 11:08 pendant les régénérations PDF — serveur relancé à l'identique (double-fork daemon), 200 rétabli, session poursuivie sous nouvelles refs réseau, 0 impact code/DB.
 - État propriétaire STRICTEMENT préservé : diff DB before/after VIDE (30 tables + _theses, updatedAt 2026-08-10 inchangé), élément carto préexistant affiché jamais modifié, 2 SessionVerification préexistantes intactes, résidu DoctoralToolbox inchangé, témoin NotebookEntry intact ; net nul de l'objet AUDIT-L4b- (1 ElementAnalyse supprimée VIA FLUX UI CONFIRMÉ) ; lectures du propriétaire limitées à l'export PDF (2 GET) et à l'affichage carto.
 - REGISTRE A1 CLÔTURÉ : 33/33 vues validées (8 lot 1 + 5 lot 2a + 4 lot 2b + 5 lot 3a + 4 lot 3b + 5 lot 4a + 3 lot 4b, dont 2 vues externes avec statut « non testable pour cause extérieure » documenté : traducteur lot 4a, apinex lot 4b).
+
+---
+Task ID: W2-7 (audit-final-v1.2 / clôture vague 2-bis + checkpoint)
+Agent: Z.ai Code (orchestrateur)
+Task: TNR fin de vague, consolidation documentaire (v1.2, registre, tasks), rapport de fin de lot, commit/push.
+
+Work Log:
+- Relecture proposition-technique.md (§0-§7) vs les 5 exigences propriétaire (attribution/risques/sauvegarde/tests/rollback) : couvertes ; amendement §6-bis (binding activeThesisId exigé, test isolation 2 thèses, fenêtre avant C1/C2, résidu AUD-ISO-003, état de référence rollback).
+- TNR fin de vague : bun run test 1 658/1 658 verts (18,70 s) + lint 0 erreur — invariants maintenus après 6 sessions agents sans modification de code.
+- Registre 09 : section « Vague 2-bis » ajoutée (31 fiches consolidées : 1 P1 AUD-ISO-001, 6 P2, 24 P3/P4) + compte mis à jour.
+- v1.2 : §1-bis vague 2-bis (W2-2, W2-3→W2-5, W2-6) + tableau conformité (critère 1 → 33/33 traitées ; critère 9 → 1 P1 ouverte + 6 P2) + §3 arbitrages/vagues actualisés + §4 incidents.
+- 17_RAPPORT_FIN_DE_LOT_2026-10-10.md : checkpoint propriétaire (vues, isolation, anomalies, preuves/commits, BFG, validations requises + 5 arbitrages).
+- tasks.md : W2-1..W2-6 cochés, W2-7 en cours.
+
+Stage Summary:
+- Vague 2-bis CLÔTURÉE : A1 33/33 vues du périmètre traitées (24 validées UI réelle + 2 non testables extérieur), isolation auditée (1 P1 prouvée, correctifs prêts non exécutés), registre +31 fiches, TNR verts, état propriétaire intact à chaque session, 9 commits poussés (0a424ae→476862c). Rapport de fin de lot livré au propriétaire avec 5 arbitrages demandés.
