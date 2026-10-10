@@ -1,0 +1,70 @@
+{
+  "task": "A1 — inventaire exhaustif des vues restantes après lot 1 (consolidation v1.2)",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "baseline_git": "7e22841",
+  "source_inventaire": [
+    "src/lib/stores/app-store.ts NAVIGATION_ITEMS (47 vues, ordre sidebar)",
+    "audit/baseline/08_TEST_MATRIX.md (statuts v1.0 : 8 OK / 6 partielles / 33 non testées, 2 externes)",
+    "audit/baseline/evidence/a1-lot1.json (8 vues validées lot 1)"
+  ],
+  "reconciliation_comptage": {
+    "constat": "Le compte « reste 25 vues » consigné à la clôture du lot 1 résultait de l'énumération interne du lot (ids 01-09 avec 07 non couvert). L'inventaire exhaustif ci-dessous, établi depuis NAVIGATION_ITEMS + matrice v1.0, identifie 26 vues restantes nommées.",
+    "decision": "Aucune vue exclue — les 26 sont toutes traitées (24 testables + 2 dépendances externes). Le critère #1 (47/47 statuts + preuves) est évalué sur cet inventaire, pas sur le compte approximatif.",
+    "vues_deja_statuees_hors_A1": [
+      {"id": 1, "vue": "Tableau de bord", "statut_v1": "v1.0 validée"},
+      {"id": 2, "vue": "Éditeur de thèse", "statut_v1": "v1.0 validée + TNR v1.1 GP-1"},
+      {"id": 3, "vue": "Assistant IA", "statut_v1": "v1.0 validée + TNR v1.1 GP-4"},
+      {"id": 5, "vue": "Mon IA de thèse (RAG)", "statut_v1": "v1.0 validée + TNR v1.1 GP-5"},
+      {"id": 16, "vue": "Références", "statut_v1": "v1.0 CRUD complet + TNR v1.1 GP-3"},
+      {"id": 17, "vue": "Articles scientifiques (IMRaD)", "statut_v1": "v1.0 rendu validé"},
+      {"id": 18, "vue": "Brouillon d'article", "statut_v1": "v1.0 validée + A2 lot 2 (destructives)"},
+      {"id": 21, "vue": "Recherche plein texte", "statut_v1": "v1.0 périmètre constaté (⚠️)"},
+      {"id": 22, "vue": "Thèses en ligne", "statut_v1": "v1.0 recherche réelle 135 résultats + TNR v1.1 GP-6"},
+      {"id": 24, "vue": "Veille académique", "statut_v1": "v1.0 partiellement validée (worker auto-check prouvé en log)"},
+      {"id": 43, "vue": "Livres-compétences", "statut_v1": "v1.0 intégration prouvée + A2 lot 2 (registre juridique)"},
+      {"id": 45, "vue": "Bibliothèque", "statut_v1": "v1.0 rendu + 7 sources (⚠️ recherche non exécutée)"},
+      {"id": 47, "vue": "Export DOCX", "statut_v1": "v1.0 export réel + TNR v1.1 GP-7"}
+    ]
+  },
+  "vues_restantes_26": [
+    {"id": 13, "nav_id": "feuille-route-agile", "nom": "Feuille de Route Agile", "lot": 2, "note": "destructives story+sprint déjà testées A2 lot 2"},
+    {"id": 14, "nav_id": "boite-doctorale", "nom": "Boîte doctorale", "lot": 2},
+    {"id": 15, "nav_id": "equilibre-chapitres", "nom": "Équilibre chapitres", "lot": 2},
+    {"id": 25, "nav_id": "onglet-recherche", "nom": "Onglet Recherche", "lot": 2, "note": "destructives déjà testées A2 lot 2"},
+    {"id": 26, "nav_id": "methodology", "nom": "Méthodologie", "lot": 2},
+    {"id": 27, "nav_id": "analyse-champ-recherche", "nom": "Analyse du champ", "lot": 2},
+    {"id": 28, "nav_id": "outils-slr", "nom": "Outils SLR", "lot": 2},
+    {"id": 35, "nav_id": "ai-tools", "nom": "Outils IA", "lot": 2, "note": "destructives déjà testées A2 lot 1"},
+    {"id": 37, "nav_id": "experimentations", "nom": "Expérimentations", "lot": 2, "note": "destructives déjà testées A2 lot 1"},
+    {"id": 29, "nav_id": "verification-methodo", "nom": "Vérification méthodologique", "lot": 3},
+    {"id": 31, "nav_id": "verification-citations", "nom": "Vérification Citations", "lot": 3},
+    {"id": 32, "nav_id": "generation-hypotheses", "nom": "Génération Hypothèses", "lot": 3},
+    {"id": 33, "nav_id": "verification-coherence", "nom": "Vérification Cohérence", "lot": 3},
+    {"id": 34, "nav_id": "alignement-preuves", "nom": "Alignement Preuves", "lot": 3},
+    {"id": 38, "nav_id": "soutenance", "nom": "Soutenance", "lot": 3},
+    {"id": 40, "nav_id": "paper2code", "nom": "Article → Code", "lot": 3},
+    {"id": 41, "nav_id": "diagrammes", "nom": "Diagrammes", "lot": 3},
+    {"id": 42, "nav_id": "apa-composer", "nom": "APA Composer", "lot": 3},
+    {"id": 19, "nav_id": "academic-db", "nom": "Bases de données (OpenAlex…)", "lot": 4, "note": "quota externe — tenter conditions réelles, sinon non testable pour cause extérieure"},
+    {"id": 20, "nav_id": "journaux-oa", "nom": "Journaux OA", "lot": 4, "note": "clé premium — tenter conditions réelles, sinon non testable pour cause extérieure"},
+    {"id": 23, "nav_id": "explorateur-theses", "nom": "Explorateur Thèses", "lot": 4},
+    {"id": 39, "nav_id": "routesme", "nom": "RoutesMe", "lot": 4},
+    {"id": 44, "nav_id": "traducteur", "nom": "Traducteur", "lot": 4},
+    {"id": 46, "nav_id": "export-pdf", "nom": "Export PDF", "lot": 4},
+    {"id": 30, "nav_id": "verification-carto", "nom": "Vérification cartographique (Overpass)", "lot": 4, "externe": "Overpass — HTTP 000 en v1.0 ; retenter en conditions réelles, statut honnête sinon", "note": "destructive élément carto déjà testée A2 lot 1"},
+    {"id": 36, "nav_id": "apinex", "nom": "APInex Playground", "lot": 4, "externe": "APInex — clé nouvelle requise (ancienne clé interdite de réutilisation) ; sinon non testable pour cause extérieure", "note": "402 en v1.0 (check-in propriétaire requis)"}
+  ],
+  "lots": {
+    "lot2": {"taille": 9, "vues": [13, 14, 15, 25, 26, 27, 28, 35, 37], "preuve": "evidence/a1-lot2.json"},
+    "lot3": {"taille": 9, "vues": [29, 31, 32, 33, 34, 38, 40, 41, 42], "preuve": "evidence/a1-lot3.json"},
+    "lot4": {"taille": 8, "vues": [19, 20, 23, 39, 44, 46, 30, 36], "preuve": "evidence/a1-lot4.json", "specifique": "2 vues externes traitées individuellement (30 Overpass, 36 APInex) — statut distingué test réel / non testable extérieur"}
+  },
+  "regles": [
+    "UI réelle (agent-browser) pour chaque vue testable — la revue de code ne remplace jamais le test UI et n'est consignée que comme complément",
+    "isolation multi-thèses contrôlée sur chaque vue avec données thèse-scopées (thèse jetable AUDIT-ISO)",
+    "objets de test préfixés AUDIT- ; cleanup complet ; état propriétaire restauré (diff DB vide) après chaque lot",
+    "aucune modification de code — anomalies consignées au registre, corrections autorisées séparément",
+    "1 génération IA maximum par vue (budget) ; secrets jamais reproduits dans les preuves"
+  ]
+}
