@@ -1,0 +1,232 @@
+{
+  "task": "A1 lot 3b (4 vues outils de production : Soutenance, Article → Code, Diagrammes, APA Composer) — pass UI réel agent-browser avec preuve réseau, comptages DB avant/après, net nul. AUCUNE modification de code.",
+  "task_id": "W2-4b",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "baseline_git": "39e44a6",
+  "lots": "3b — 4 vues (38, 40, 41, 42)",
+  "methode": "HONNÊTETÉ DE LA PREUVE : parcours UI réels agent-browser (headless Chromium) avec captures séquentielles a1-lot3b-*.png ; audit réseau par agent-browser network requests (journal CDP du daemon, rattachement par postData/URL) ; persistance testée par reload ; comptages DB PrismaClient/bun LECTURE SEULE avant et après (script temporaire supprimé) ; distinction explicite VÉRIFIÉ UI RÉEL vs REVUE DE CODE dans chaque vue ; revues de code lecture seule préalables (modules + routes API) pour mécanisme de sélection de thèse et sources de données ; budget IA 1 génération/vue (38:1 slides, 40:1 stream paper2code, 41:1 ai-writing diagrammes, 42:1 ai-writing APA) ; thèse jetable « AUDIT-ISO-L3b » créée via UI UNIQUEMENT pour la vue 38 (seule vue thèse-scopée EN ÉCRITURE), supprimée via flux confirmé avec cascade vérifiée ; téléchargements sauvegardés hors arbre (/tmp) ; AUCUNE écriture sur la thèse propriétaire (cmsmyrdfs0000pa2sews4vo90) — affichage lecture seule de ses artefacts SoutenancePrep préexistants (2026-10-03) sans jamais cliquer Régénérer.",
+  "vues": [
+    {
+      "id": 38,
+      "nav_id": "soutenance",
+      "nom": "Soutenance",
+      "module": "src/modules/soutenance/soutenance-page.tsx (570 l.) + GET/PUT /api/thesis/[id]/soutenance (route.ts 102 l. : GET = findUnique LECTURE SEULE renvoyant {data:null} si absent, sans auto-création ; PUT = upsert) + POST /api/soutenance/generate (route.ts 327 l. : lecture thèse+cadrages actifs+chapitres → contexte borné 40 000 car. → generateCompletion IA → upsert SoutenancePrep) + src/lib/ai/prompts/soutenance-prompts.ts",
+      "revue_de_code": [
+        "3 onglets : Slides (plan de présentation JSON), Discours (texte oral calibré + durée cible 10/15/20 min), Questions du jury (10 questions par famille avec angle de réponse)",
+        "MÉCANISME DE SÉLECTION DE THÈSE : activeThesisId du store zustand (l.102, NOT theses[0]) — GET /api/thesis/{activeThesisId}/soutenance (query enabled !!activeThesisId l.124) ; POST /api/soutenance/generate body {thesisId: activeThesisId, type, durationMin?} (l.133-137) — BINDING CORRECT contrairement à la famille AUD-ISO-002 : la vue suit la thèse ACTIVE (prouvé UI : jetable puis propriétaire → contenus différents affichés)",
+        "Écriture : upsert db.soutenancePrep par thèse (un seul enregistrement par thèse, FK+Cascade sur Thesis.delete) — la génération d'un artefact persiste immédiatement ; relance d'un artefact existant précédée d'un AlertDialog « Un plan de slides est déjà enregistré pour cette thèse. La nouvelle génération remplacera… » (l.506-530) — NON déclenché sur le propriétaire (prudence : JAMAIS d'écriture propriétaire)",
+        "Copies presse-papiers : Copier le plan / le discours / les questions (navigator.clipboard) avec toast use-toast — INVISIBLE (famille A1L2B-02, revue de code l.35, 149-161, 191-198)",
+        "États sans thèse active : carte « Aucune thèse active — Choisissez une thèse dans l'éditeur » (l.207-222)",
+        "Contexte IA : titre/sous-titre/auteur/discipline/directeur + champs du cadrage ACTIF + chapitres tronqués à 1 200 car. (plafond total 40 000, l.33-108) — la génération slides sur la jetable a reflété SES métadonnées (titre/auteur/discipline de la jetable dans la Diapositive 1)"
+      ],
+      "fonctionnalites": [
+        "Génération IA d'un plan de slides (titres + points par diapositive)",
+        "Génération IA d'un discours de soutenance calibré à une durée cible (10/15/20 min)",
+        "Génération IA d'une simulation de 10 questions du jury par familles avec angles de réponse",
+        "Copie presse-papiers des 3 artefacts ; relance avec confirmation explicite de remplacement",
+        "Persistance par thèse (SoutenancePrep, upsert) — rechargée depuis la DB"
+      ],
+      "parcours_executes": [
+        "11:07 — visite SANS thèse active (activeThesisId=null, navigateur neuf) : carte « Aucune thèse active » affichée, AUCUN GET soutenance (query disabled — prouvé réseau : seuls ai-config/ai-keys/stats du montage) (capture -38-soutenance-sans-these-active)",
+        "11:09 — thèse jetable « AUDIT-ISO-L3b — Thèse jetable lot 3b » créée via dialogue UI (POST /api/thesis 201 [26829.196], 7 chapitres template, id cmv28ojko001yq7vha0q4k0c0) et auto-activée (capture -38-these-jetable-creee)",
+        "11:10 — vue avec jetable active : GET /api/thesis/cmv28ojko…/soutenance 200 → {data:null} ; header « Thèse : AUDIT-ISO-L3b — Thèse jetable lot 3b » ; 3 états vides capturés (captures -38-onglet-slides-vide, -38-onglet-discours-vide, -38-onglet-questions-vide)",
+        "11:12 — GÉNÉRATION IA slides (UNIQUE IA de la vue) : « Générer les slides » → 1 POST /api/soutenance/generate 200 [26829.201] → plan structuré rendu (Diapositive 1 « Titre, auteur et contexte » reprenant titre/auteur/discipline DE LA JETABLE, suivi Contexte/Problématique/Cadre théorique/Méthodologie…) + boutons « Régénérer les slides » + « Copier le plan » (capture -38-slides-generees)",
+        "11:14 — PERSISTANCE PROUVÉE : reload → re-navigation → slides TOUJOURS PRÉSENTS (GET 200 retourne l'enregistrement upserté ; SoutenancePrep 1→2 en DB pendant le test) (capture -38-reload-persiste)",
+        "11:16 — affichage LECTURE SEULE du propriétaire : bascule active=Urbanisme durable via liste « Changer de thèse » (0 écriture DB, localStorage seulement) → la vue affiche les artefacts PRÉEXISTANTS du propriétaire (SoutenancePrep cmusjlqfd… créé 2026-10-03 : plan de slides « Urbanisme durable / Marie Dupont », discours 15 min 10 609 car., 10 questions par familles) — « Régénérer » JAMAIS cliqué sur le propriétaire (captures -38-proprietaire-slides-existants, -38-proprietaire-discours-existant, -38-proprietaire-questions-existantes)",
+        "11:19 — CLEANUP via flux confirmé : liste thèses → poubelle sur la carte AUDIT-ISO-L3b (poubelle[0] identifiée par carte, propriétaire intouchée) → ConfirmDeleteDialog « « AUDIT-ISO-L3b — Thèse jetable lot 3b » et ses 7 chapitre(s) seront définitivement supprimés… » (capture -38-cleanup-dialog-suppression) → Supprimer → DELETE /api/thesis/cmv28ojko001yq7vha0q4k0c0 200 [26829.395] ; cascade vérifiée DB (Thesis 2→1, Chapter 14→7, SoutenancePrep 2→1 — ne reste que l'enregistrement préexistant du propriétaire, createdAt 2026-10-03 inchangé) ; activeThesisId=null"
+      ],
+      "etats_erreurs": [
+        "Sans thèse active : carte dédiée propre (UI réelle)",
+        "Artefact absent : EmptyArtefact par onglet (UI réelle ×3)",
+        "Échec génération : toast destructive « Échec de la génération » (revue de code l.156-162 — non déclenché, 200) mais INVISIBLE (A1L2B-02)",
+        "Relance sur artefact existant : AlertDialog de confirmation AVANT remplacement (revue de code l.506-530 — non déclenché sur le propriétaire par prudence ; passage réel sur la jetable non nécessaire : artefacts vides)"
+      ],
+      "persistance": "PERSISTANCE DB PROUVÉE (la plus complète du lot) : SoutenancePrep upsert par thèse, reload → artefacts rechargés (prouvé sur la jetable) ; FK+Cascade vérifiée à la suppression de la thèse jetable (SoutenancePrep 2→1 sans orphelin)",
+      "isolation_multitheses": "BINDING CORRECT activeThesisId (pas de theses[0]) — PROUVÉ UI RÉEL : la même vue a affiché successivement les artefacts de la jetable puis du propriétaire selon la thèse active ; l'écriture POST /api/soutenance/generate cible thesisId=activeThesisId (l.134) ; aucune écriture cross-thèse possible par ce chemin ; revue de code : le PUT /api/thesis/[id]/soutenance valide l'existence de la thèse (404 sinon)",
+      "actions_destructives_statut": "DELETE de la thèse jetable via flux confirmé (cascade vérifiée DB) ; sur le propriétaire : AUCUNE action destructive (aucun clic sur Régénérer — remplacerait les artefacts préexistants après confirmation)",
+      "anomalies": [],
+      "statut": "VALIDÉE (IA 200, persistance DB prouvée par reload, binding activeThesisId correct, états vides propres, cascade de suppression conforme)",
+      "captures": [
+        "a1-lot3b-38-soutenance-sans-these-active.png",
+        "a1-lot3b-38-these-jetable-creee.png",
+        "a1-lot3b-38-onglet-slides-vide.png",
+        "a1-lot3b-38-onglet-discours-vide.png",
+        "a1-lot3b-38-onglet-questions-vide.png",
+        "a1-lot3b-38-slides-generees.png",
+        "a1-lot3b-38-reload-persiste.png",
+        "a1-lot3b-38-proprietaire-slides-existants.png",
+        "a1-lot3b-38-proprietaire-discours-existant.png",
+        "a1-lot3b-38-proprietaire-questions-existantes.png",
+        "a1-lot3b-38-cleanup-dialog-suppression.png"
+      ]
+    },
+    {
+      "id": 40,
+      "nav_id": "paper2code",
+      "nom": "Article → Code",
+      "module": "src/modules/paper2code/paper2code-page.tsx (431 l.) + POST /api/paper2code/generate (route.ts 410 l. : stream NDJSON 3 étages Planning → Analyzing → Coding, N appels LLM = 1 planning + 1/fichier analyse + 1/fichier code ; 0 prisma — stateless)",
+      "revue_de_code": [
+        "Saisie : textarea « Collez ici le texte complet de l'article scientifique... » (compteur de caractères en direct, garde bouton disabled < 200 car. côté client l.268 + garde serveur 400 l.229-234) — PAS d'upload de fichier",
+        "Sélecteur Fournisseur IA : 5 FAST_PROVIDERS (groq, google, openrouter, github, openai — l.77), défaut groq/llama-3.3-70b-versatile ; modèle lié au fournisseur (PROVIDER_MODELS)",
+        "CLÉ API : getApiKey(provider, userKey?) l.136-141 — appelée l.235 SANS userKey et HORS du ReadableStream, résout uniquement getHardcodedKey(provider) = process.env.{GROQ,GOOGLE,OPENAI,ANTHROPIC,OPENROUTER,ROUTESME,KIRA,OMNIROUTE}_API_KEY (hardcoded-keys.ts) ; le module n'utilise PAS useAiConfig/withAiConfig (payload client {paperText, provider, model} l.140) → aucune voie utilisateur pour fournir une clé à ce module",
+        "PROUVE RUNTIME : GET /api/ai-keys (montage de chaque page, lu en direct pendant la session) → {providers: [], total: 0} = AUCUNE clé codée dans le serveur en cours d'exécution ; .env : 0 occurrence GROQ_API_KEY",
+        "Résultats : 3 onglets Planification (overview, file_list, diagramme Mermaid, config.yaml, dépendances) / Analyse / Code (par fichier, copy par fichier) + bouton Télécharger (Blob paper2code_output.txt, l.176-189) — toast sonner « Code genere avec succes » l.120 (VISIBLE, sonner monté)",
+        "Persistance : AUCUNE (état React local) — 0 prisma, 0 fetch thèse",
+        "CAUSE DE L'ÉCHEC IA (revue de code) : getApiKey l.235 jeté hors stream sans try/catch → Next.js renvoie 500 avec CORPS VIDE ; le client (l.143-146) fait res.json() sur un corps vide → « Failed to execute 'json' on 'Response': Unexpected end of JSON input » — le message réel (« Aucune clé API pour groq. Configurez un fournisseur avec clé. ») n'atteint jamais l'utilisateur"
+      ],
+      "fonctionnalites": [
+        "Pipeline Paper2Code (ICLR 2026) : plan de reproduction → analyse par fichier → code Python par fichier, streaming avec barre de progression et étapes",
+        "Sélection fournisseur/modèle IA (5 fournisseurs rapides)",
+        "Téléchargement du livrable en .txt (requirements + config.yaml + fichiers) et copie par fichier",
+        "Annulation pendant génération (bouton Annuler, AbortController)"
+      ],
+      "parcours_executes": [
+        "11:22 — état vide : compteur « 0 caracteres », bouton « Generer le code » DISABLED (garde <200 car., UI réelle), fournisseur défaut Groq (capture -40-visite-vide)",
+        "11:24 — saisie article factice AUDIT-L3b- (877 car., injecté via textarea) → compteur 877, bouton ACTIVÉ (capture -40-texte-saisi)",
+        "11:25 — GÉNÉRATION IA (UNIQUE tentative de la vue) : clic → 1 POST /api/paper2code/generate → HTTP 500 [26829.397] → carte erreur rouge « Failed to execute 'json' on 'Response': Unexpected end of JSON input » (capture -40-erreur-500-corps-vide) ; PAS de retry : cause déterministe prouvée (aucune clé API configurée serveur — /api/ai-keys=0 + revue de code) ; diagnostic complémentaire hors UI : curl POST → HTTP 500 corps vide confirmé (le message « Aucune clé API pour groq… » est perdu)",
+        "11:27 — RELOAD → RESET complet (textarea vide prouvé) (capture -40-reload-reset) ; téléchargement NON testable (aucun code généré, bouton Télécharger absent sans résultats)"
+      ],
+      "etats_erreurs": [
+        "Garde <200 car. : bouton disabled (UI réelle) — propre",
+        "Échec IA : HTTP 500 corps vide → erreur de parsing JSON générique affichée, message d'origine masqué (double défaut : aucune clé des 5 fournisseurs + getApiKey hors stream sans try/catch)",
+        "Toast sonner error visible en théorie (l.168) — expiré avant vérification DOM (sonner est monté, constat lot 2b)"
+      ],
+      "persistance": "AUCUNE par conception : résultats = état local, perdus au reload (prouvé) ; 0 écriture DB (route stateless, échec AVANT tout appel LLM — 0 génération IA réelle consommée)",
+      "isolation_multitheses": "NON APPLICABLE : saisie 100 % manuelle, aucune lecture/écriture thèse, aucune donnée propriétaire approchée",
+      "actions_destructives_statut": "Aucune (0 écriture DB sur toute la vue)",
+      "anomalies": [
+        {
+          "id": "A1L3B-01",
+          "priorite_proposee": "P2",
+          "titre": "Article → Code inutilisable en l'état : aucune clé API configurée pour les 5 fournisseurs proposés ET erreur réelle masquée (500 corps vide → « Unexpected end of JSON input »)",
+          "preuves": "réseau POST /api/paper2code/generate → 500 [26829.397] + capture a1-lot3b-40-erreur-500-corps-vide.png ; /api/ai-keys = {providers:[],total:0} (runtime) ; route.ts l.235 (getApiKey hors stream, sans try/catch, sans userKey) + l.136-141 + hardcoded-keys.ts (env uniquement) ; curl diagnostic 500 corps vide",
+          "note": "deux défauts cumulés : (a) configuration déploiement — aucun des 5 FAST_PROVIDERS n'a de clé (alors que l'IA principale zai de l'app fonctionne) ; (b) robustesse code — l'erreur authentique « Aucune clé API pour groq… » est remplacée par une erreur de parsing JSON cryptique ; le module n'exploite pas withAiConfig (aucune voie utilisateur pour injecter une clé)"
+        }
+      ],
+      "statut": "VALIDÉE AVEC ANOMALIE MAJEURE (parcours de saisie + gardes OK ; pipeline IA 100 % inutilisable dans ce déploiement — échec déterministe documenté honnêtement, 0 appel LLM consommé)",
+      "captures": [
+        "a1-lot3b-40-visite-vide.png",
+        "a1-lot3b-40-texte-saisi.png",
+        "a1-lot3b-40-erreur-500-corps-vide.png",
+        "a1-lot3b-40-reload-reset.png"
+      ]
+    },
+    {
+      "id": 41,
+      "nav_id": "diagrammes",
+      "nom": "Diagrammes",
+      "module": "src/modules/diagrammes/diagrammes-page.tsx (1 665 l.) + POST /api/ai-writing (mode freeform, prompt utilisateur + context=system prompt JSON l.820-843) — 0 prisma, 0 fetch thèse ; rendu HTML/CSS natif par type (5 renderers), export PNG via html2canvas-pro (l.917-933), copie Markdown (exportDiagramAsMarkdown)",
+      "revue_de_code": [
+        "5 types : organigramme (hiérarchie parentId), chronologie (dates), tableau comparatif (colonnes/lignes), carte conceptuelle (parentId), processus (steps + connexions) — DIAGRAM_TYPES l.120-151",
+        "5 modèles préétablis (Structure de thèse 12 nœuds, Flux méthodologique 6 nœuds/5 connexions, Calendrier doctoral, Comparaison quali/quanti, Carte conceptuelle IA) — TEMPLATES l.161-278",
+        "Éditeur : ajout/suppression/édition de nœuds (dialogue label/description/date), connexions (dialogue from/to/label), colonnes/lignes pour comparatif — tout en état React local",
+        "IA : 1 POST /api/ai-writing mode freeform → JSON {nodes, connections, columns, rows} extrait par regex \\{…\\} (l.854) et injecté dans le diagramme (l.861-892) ; titre conservé si déjà défini (l.863)",
+        "Persistance : AUCUNE (aucun localStorage, aucun modèle DB) — reload = perte totale (par conception) ; export PNG = téléchargement navigateur ; copie = presse-papiers",
+        "Toasts sonner (VISIBLES) : « Modèle … chargé » l.803, « Diagramme généré avec succès » l.896, « Diagramme copié… » l.913, « Diagramme exporté en PNG » l.929"
+      ],
+      "fonctionnalites": [
+        "Constructeur : 2 onglets (Constructeur / Modèles), sélecteur de type, titre, liste de nœuds avec parenté, panneau de rendu live",
+        "Génération IA d'une structure de diagramme depuis une description libre",
+        "Export PNG (html2canvas scale 2) + copie Markdown du diagramme",
+        "5 modèles académiques pré-remplis"
+      ],
+      "parcours_executes": [
+        "11:30 — état initial : Constructeur, type Organigramme, 1 nœud « Nouveau nœud », « Diagramme sans titre » (capture -41-visite-initiale) ; 0 appel API propre à la vue (seul montage)",
+        "11:31 — onglet Modèles : 5 cartes listées (capture -41-modeles) ; clic carte « Structure de thèse » → 12 nœuds hiérarchiques rendus (Thèse → Partie liminaire → Introduction/Problématique, Corps du mémoire → 4 chapitres, Conclusion, Bibliographie, Annexes) + toast sonner VISIBLE « Modèle « Structure de thèse » chargé » (capture -41-template-charge)",
+        "11:34 — GÉNÉRATION IA (UNIQUE IA de la vue) : dialogue « Créer un diagramme par IA » → description AUDIT-L3b (comité d'audit : Comité → Rapporteur/Vérificateur/Observateur ; Vérificateur → Contrôle A/Contrôle B) → 1 POST /api/ai-writing 200 [26829.583] → diagramme remplacé : 6 nœuds EXACTEMENT conformes à la description (hiérarchie parentId correcte), rendu live mis à jour (capture -41-ia-resultat-6noeuds)",
+        "11:37 — « Télécharger PNG » → téléchargement navigateur OK : /home/z/Downloads/diagramme-1791627946333.png = PNG valide 1186×634, 68 272 octets (vérifié signature + dimensions, copie d'analyse /tmp/w24b-diagramme-export.png) — AUCUN fichier écrit dans l'arbre du dépôt ; toast « Diagramme exporté en PNG » (revue de code)",
+        "11:38 — « Exporter » → toast sonner VISIBLE « Diagramme copié dans le presse-papiers » (DOM vérifié)",
+        "11:39 — RELOAD → RESET complet : retour 1 nœud « Nouveau nœud », « Diagramme sans titre » (capture -41-reload-reset) — 0 persistance par conception"
+      ],
+      "etats_erreurs": [
+        "Garde IA : bouton Générer du dialogue désactivé si description vide (l.816 return précoce + ref e321 disabled à l'ouverture — UI réelle)",
+        "Erreur IA : toast sonner error (l.897-901, VISIBLE) — non déclenché (200)",
+        "Export sans diagramme : toast error « Aucun diagramme à exporter » (l.919-921 — non déclenché)"
+      ],
+      "persistance": "AUCUNE par conception : état 100 % local, perdu au reload (prouvé) ; seuls artefacts = PNG téléchargé (vérifié hors arbre) et presse-papiers ; 0 écriture DB",
+      "isolation_multitheses": "NON APPLICABLE : aucune donnée de thèse (ni theses[0] ni activeThesisId ni fetch thèse) — vue 100 % autonome ; propriétaire jamais approché",
+      "actions_destructives_statut": "Aucune (suppression de nœuds = état local uniquement)",
+      "anomalies": [],
+      "statut": "VALIDÉE (IA 200 avec structure conforme au prompt, modèles, rendu multi-types, export PNG vérifié, copies avec toasts sonner visibles ; 0 persistance par conception)",
+      "captures": [
+        "a1-lot3b-41-visite-initiale.png",
+        "a1-lot3b-41-modeles.png",
+        "a1-lot3b-41-template-charge.png",
+        "a1-lot3b-41-ia-resultat-6noeuds.png",
+        "a1-lot3b-41-reload-reset.png"
+      ]
+    },
+    {
+      "id": 42,
+      "nav_id": "apa-composer",
+      "nom": "APA Composer",
+      "module": "src/modules/apa-composer/apa-composer-page.tsx (1 425 l.) + POST /api/ai-writing (mode academic-reformulation, Assistant IA) — 0 prisma, AUCUN fetch /api/reference (pas d'interaction avec les références globales de la DB — les 4 réf du propriétaire ne sont ni lues ni affichées ni modifiables ici)",
+      "revue_de_code": [
+        "5 onglets : Composer (formulaire par type de référence), Liste de références, Import groupé (BibTeX), Exporter (APA + BibTeX), Assistant IA",
+        "5 types de référence : Article de revue / Livre / Chapitre de livre / Site web / Thèse-Mémoire ; champs conditionnels par type ; auteurs séparés par « ; »",
+        "Formatage APA 7e édition DÉTERMINISTE côté client : formatAuthorsAPA (initiales, & avant le dernier auteur), generateCitationAPA (journal/book/chapter/website/dissertation, DOI normalisé), prévisualisation EN DIRECT (référence complète + citation entre parenthèses + citation narrative)",
+        "generateInTextCitation l.252-262 : lastName = authorsFormatted.split(\",\")[0] → TOUJOURS le premier auteur seul, quel que soit le nombre d'auteurs (bug APA 7 : 2 auteurs → « (A & B, année) », 3+ → « (A et al., année) »)",
+        "parseBibTeXEntries l.672-728 : regex d'entrée @type{key, …\\n} EXIGE un retour ligne avant l'accolade fermante → toute entrée BibTeX sur une ligne est rejetée (y compris le format de l'exemple placeholder du module lui-même) ; champ author pris VERBATIM → séparateur BibTeX « and » NON traité ; l'export BibTeX réutilise le séparateur « ; » maison",
+        "Persistance : AUCUNE (useState local) — liste perdue au reload ; export = Blob references.bib / presse-papiers",
+        "Toasts : CopyButton inline (« Copié ! ») + importResult inline — pas de sonner/use-toast dans ce module (feedback inline)"
+      ],
+      "fonctionnalites": [
+        "Composition de références APA 7e par type avec prévisualisation temps réel (référence complète, citation parenthétique, citation narrative)",
+        "Gestion d'une liste locale : ajout/édition/suppression, tri alphabétique par auteur, copie de la liste APA",
+        "Import groupé BibTeX + Export BibTeX (.bib téléchargeable, compatible Zotero/Mendeley/EndNote)",
+        "Assistant IA : formatage d'une référence brute en APA 7e (mode academic-reformulation)"
+      ],
+      "parcours_executes": [
+        "11:42 — état vide : formulaire « Nouvelle référence », boutons « Ajouter à la liste » et « Copier » DISABLED (UI réelle, refs e352/e355), 0 référence en liste (capture -42-visite-vide)",
+        "11:44 — saisie journal AUDIT-L3b (Dupont, Marie ; Martin, Paul — 2024 — titre jetable — revue/volume 12/numéro 3/pages 45-58/DOI 10.9999) → prévisualisation EN DIRECT correcte : « Dupont, M., & Martin, P. (2024). AUDIT-L3b — Référence jetable… *Revue factice d'urbanisme*, *12*(3), 45-58. https://doi.org/10.9999/audit-l3b » ; MAIS « CITATION ENTRE PARENTHÈSES : (Dupont, 2024) » et « narrative : Dupont (2024) » = premier auteur SEUL malgré 2 auteurs (capture -42-formulaire-rempli-apa) → ANOMALIE A1L3B-02",
+        "11:46 — « Ajouter à la liste » → formulaire réinitialisé, badge onglet « Liste de références 1 » → liste = 1 réf avec badge type + citation in-text (capture -42-liste-1ref)",
+        "11:48 — Import groupé BibTeX : entrée @article sur UNE ligne → « Aucune entrée BibTeX valide détectée. Vérifiez le format. » (feedback inline, 0 référence) ; même entrée avec retour ligne avant « } » → « 1 référence(s) importée(s) avec succès » (capture -42-import-bibtex-ok) → ANOMALIE A1L3B-03 (fragilité du parseur) ; liste = 2",
+        "11:50 — Exporter : Liste APA 7e triée (2 réf) ; l'entrée BibTeX importée s'affiche « Durand, C. A. P. (2024) » (auteurs « Durand, Claire and Petit, Léa » fusionnés en un seul auteur — « and » non traité, initiales aberrantes) → A1L3B-03 confirmé sur l'affichage ; « Copier toute la liste APA (2 réf.) » cliqué (feedback « Copié ! » éphémère) ; « .bib » → téléchargement navigateur OK : /home/z/Downloads/references.bib = 501 octets, 2 entrées (vérifié, copie /tmp/w24b-references.bib) — rien écrit dans le dépôt (capture -42-export-apa-bibtex)",
+        "11:53 — Assistant IA (UNIQUE IA de la vue) : saisie référence brute AUDIT-L3b → 1 POST /api/ai-writing 200 [26829.800] → « Résultat : Test, J., & Exemple, M. (2024). Étude factice de mobilité urbaine. Revue de Test, 5, 10-20. » — formatage APA correct depuis texte libre + bouton Copier (capture -42-ia-resultat-apa)",
+        "11:55 — RELOAD → RESET complet : liste vide prouvée (0 référence) (capture -42-reload-reset)"
+      ],
+      "etats_erreurs": [
+        "Garde titre vide : « Ajouter à la liste » disabled (l.810 return + UI réelle)",
+        "Import BibTeX invalide : message inline « Aucune entrée BibTeX valide détectée » (UI réelle) — géré sans crash",
+        "Erreur IA : onError de useMutation ne fait qu'ignorer (aiResult inchangé, l.798-800 : pas d'affichage d'erreur dédié) — revue de code, non déclenché (200)"
+      ],
+      "persistance": "AUCUNE par conception : liste = état local, perdue au reload (prouvé) ; seuls artefacts = references.bib téléchargé (vérifié hors arbre) et presse-papiers ; 0 écriture DB",
+      "isolation_multitheses": "NON APPLICABLE + INTERACTION RÉFÉRENCES GLOBALES : AUCUNE — la vue ne fait AUCUN fetch vers /api/reference ou /api/thesis (grep : seul /api/ai-writing) ; les 4 références du propriétaire ne sont ni lues ni affichées ici — composeur 100 % autonome ; aucune écriture possible sur les données globales",
+      "actions_destructives_statut": "Aucune (suppression de références = état local uniquement)",
+      "anomalies": [
+        {
+          "id": "A1L3B-02",
+          "priorite_proposee": "P3",
+          "titre": "Citations in-text APA tronquées au premier auteur : 2 auteurs affichent « (Dupont, 2024) » au lieu de « (Dupont & Martin, 2024) » ; 3+ ne donnent jamais « et al. »",
+          "preuves": "capture a1-lot3b-42-formulaire-rempli-apa.png (« CITATION ENTRE PARENTHÈSES : (Dupont, 2024) » pour des auteurs « Dupont, Marie; Martin, Paul ») ; code generateInTextCitation l.252-262 (split(\",\")[0])",
+          "note": "la référence complète est correcte (« Dupont, M., & Martin, P. ») — seul l'in-text est faux ; risque de citations incorrectes collées dans le manuscrit"
+        },
+        {
+          "id": "A1L3B-03",
+          "priorite_proposee": "P3",
+          "titre": "Import BibTeX fragile : (a) entrées sur une ligne rejetées (le regex exige \\n avant l'accolade fermante — l'exemple placeholder du module lui-même serait rejeté) ; (b) séparateur d'auteurs BibTeX « and » non traité → auteurs fusionnés avec initiales aberrantes (« Durand, Claire and Petit, Léa » → « Durand, C. A. P. ») ; (c) export .bib réutilise le séparateur « ; » maison",
+          "preuves": "UI réelle : « Aucune entrée BibTeX valide détectée » pour une entrée mono-ligne valide, puis succès après ajout de \\n (capture -42-import-bibtex-ok) ; affichage export « Durand, C. A. P. (2024) » ; code parseBibTeXEntries l.672-728 (regex /@\\w+\\{([^,]+),\\s*([\\s\\S]*?)\\n\\}/g, author verbatim) + formatAuthorsAPA (split « ; » uniquement)",
+          "note": "les imports BibTeX standards (multi-lignes avec « and ») se retrouveraient avec des auteurs mal formatés dans la liste APA"
+        }
+      ],
+      "statut": "VALIDÉE AVEC ANOMALIES (formatage APA complet déterministe OK + assistant IA 200 correct ; citations in-text fausses pour 2+ auteurs P3 + import BibTeX fragile P3 ; 0 interaction avec les références globales — conformément à la mission, aucune écriture)",
+      "captures": [
+        "a1-lot3b-42-visite-vide.png",
+        "a1-lot3b-42-formulaire-rempli-apa.png",
+        "a1-lot3b-42-liste-1ref.png",
+        "a1-lot3b-42-import-bibtex-ok.png",
+        "a1-lot3b-42-export-apa-bibtex.png",
+        "a1-lot3b-42-ia-resultat-apa.png",
+        "a1-lot3b-42-reload-reset.png"
+      ]
+    }
+  ],
+  "audit_reseau": "Journal CDP agent-browser (daemon, refs 26829.*) + 1 diagnostic curl hors navigateur — rattachement par URL/postData. 38 → GET /api/thesis (montage éditeur), POST /api/thesis 201 [26829.196] (création jetable cmv28ojko001yq7vha0q4k0c0, 7 chapitres template), GET /api/thesis/cmv28ojko…/soutenance 200 [26829.198] ({data:null} puis artefact après génération), POST /api/soutenance/generate 200 [26829.201] (UNIQUE IA de la vue, upsert SoutenancePrep sur la jetable), DELETE /api/thesis/cmv28ojko… 200 [26829.395] (cleanup, cascade vérifiée DB) ; 40 → POST /api/paper2code/generate 500 [26829.397] (échec déterministe AVANT tout appel LLM — anomalie A1L3B-01 ; + 1 curl diagnostic hors UI : 500 corps vide, 0 génération IA réelle consommée) ; 41 → POST /api/ai-writing 200 [26829.583] (mode freeform, structure 6 nœuds conforme) ; 42 → POST /api/ai-writing 200 [26829.800] (mode academic-reformulation, APA correcte) ; plus GET /api/ai-config, /api/ai-keys, /api/stats de montage des pages (ai-keys lu EN DIRECT = {providers:[], total:0} — preuve runtime qu'aucune clé codée n'existe, fondement de A1L3B-01). ÉCRITURES DB de la session : 3, TOUTES rattachées au cycle de vie de la thèse jetable (POST création, POST generate → upsert SoutenancePrep jetable, DELETE cascade) — AUCUNE écriture sur la thèse propriétaire (aucun POST/PUT/DELETE sur /api/thesis/cmsmyrdfs… ; la vue 38 n'y a accédé qu'en GET lecture seule pour AFFICHAGE, jamais de clic sur Régénérer). 0 requête parasite ; 0 4xx/5xx parasite (le seul 500 = anomalie documentée). Budget IA RESPECTÉ (≤1 génération/vue) : 38:1 (200), 40:1 (500 échec, 0 LLM), 41:1 (200), 42:1 (200). Téléchargements hors arbre vérifiés : /home/z/Downloads/diagramme-1791627946333.png (PNG 1186×634, 68 272 o) et /home/z/Downloads/references.bib (501 o, 2 entrées) — copies d'analyse en /tmp, AUCUN fichier écrit dans le dépôt.",
+  "etat_proprietaire": {
+    "before": "a1-lot3b-db-before.json (11:05) — conforme à l'attendu : 1 thèse « Urbanisme durable » (cmsmyrdfs0000pa2sews4vo90, 7 chap, structureMode chapters, updatedAt 2026-08-10T08:22:35.464Z), 6 ChapterVersion, 4 réf, 16 ImportedDoc, 1 Article + 1v, 0 ResearchTab/Sprint/Story, 1 Experiment + 1 run, 27 LegalRef, 24 Job, 1 ElementAnalyse, 1 NotebookEntry, 1 DoctoralToolbox (résidu documenté lot 2a, non touché), 1 SoutenancePrep (PRÉEXISTANT au propriétaire, créé 2026-10-03T15:24:19Z — slides+discours 15 min+10 questions, contenu d'origine : affiché en LECTURE SEULE à la vue 38, jamais régénéré ni modifié)",
+    "after": "a1-lot3b-db-after.json (12:00) — DIFF AVANT/APRÈS VIDE sur les 30 tables + _theses : updatedAt thèse inchangé (2026-08-10T08:22:35.464Z), SoutenancePrep=1 (l'enregistrement préexistant du propriétaire, createdAt inchangé), DoctoralToolbox=1 (résidu inchangé), NotebookEntry/Reference/Article/Experiment/Job/ElementAnalyse intacts",
+    "identique": true,
+    "ecarts": "AUCUN — la thèse propriétaire n'a été JAMAIS écrite : la seule écriture de la session (génération slides vue 38) a ciblé la thèse jetable AUDIT-ISO-L3b (activeThesisId), dont la suppression via flux confirmé a restauré l'état exact (Thesis 2→1, Chapter 14→7, SoutenancePrep 2→1, cascade vérifiée sans orphelin) ; les 3 autres vues (40/41/42) sont stateless et n'approchent aucune donnée thèse"
+  }
+}

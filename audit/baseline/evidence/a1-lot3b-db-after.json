@@ -1,0 +1,61 @@
+{
+  "thesis": 1,
+  "chapter": 7,
+  "chapterVersion": 6,
+  "part": 0,
+  "thesisCadrage": 0,
+  "thesisCadrageField": 0,
+  "thesisCadrageVersion": 0,
+  "doctoralToolbox": 1,
+  "soutenancePrep": 1,
+  "researchTab": 0,
+  "reference": 4,
+  "researchSource": 0,
+  "notebookEntry": 1,
+  "agileSprint": 0,
+  "agileStory": 0,
+  "customBookSkill": 58,
+  "legalRef": 27,
+  "article": 1,
+  "articleVersion": 1,
+  "importedDoc": 16,
+  "licenseKey": 0,
+  "elementAnalyse": 1,
+  "typeAnalyseMethodologique": 1,
+  "sessionVerification": 2,
+  "documentChunk": 12,
+  "experiment": 1,
+  "experimentRun": 1,
+  "job": 24,
+  "savedSearch": 0,
+  "savedSearchResult": 0,
+  "_theses": [
+    {
+      "id": "cmsmyrdfs0000pa2sews4vo90",
+      "title": "Urbanisme durable",
+      "structureMode": "chapters",
+      "updatedAt": "2026-08-10T08:22:35.464Z",
+      "_count": {
+        "chapters": 7
+      }
+    }
+  ],
+  "_soutenancePrepDetail": [
+    {
+      "id": "cmusjlqfd0001muv02x4ygiyk",
+      "thesisId": "cmsmyrdfs0000pa2sews4vo90",
+      "speechDurationMin": 15,
+      "speech": "[Salutations et remerciements d'ouverture]\n\nMesdames et messieurs les membres du jury, chère présidente, cher président, mesdames et messieurs les membres du jury, chère directrice de thèse, cher directeur de thèse, mesdames et messieurs, bonjour. C'est avec une grande émotion et une profonde gratitude que je me trouve aujourd'hui devant vous pour présenter les résultats de mes recherches doctorales menées sur l'urbanisme durable. Je tiens tout d'abord à remercier chaleureusement mon directeur de thèse, [à compléter : nom du directeur], pour son accompagnement scientifique et humain tout au long de ces années. Ma reconnaissance va également à ma directrice de thèse, [à compléter : nom de la directrice], pour ses précieux conseils et sa confiance. Mes remerciements s'adressent également à l'ensemble des membres du jury qui ont accepté d'évaluer mon travail et de contribuer à cette étape importante de mon parcours scientifique. Enfin, je remercie toutes les personnes qui ont participé à cette recherche, notamment les acteurs urbains qui ont accepté de me recevoir et de partager leur expérience.\n\n[Contexte de la recherche et problématique]\n\nL'urbanisme durable représente l'une des réponses les plus pertinentes aux défis contemporains posés par la croissance urbaine accélérée et la crise écologique mondiale. Dans un contexte où plus de la moitié de la population mondiale vit désormais dans des zones urbaines, et où cette proportion devrait continuer d'augmenter, les villes sont à la fois des centres d'innovation économique et culturelle, mais aussi des sources majeures de consommation d'énergie, d'émissions de gaz à effet de serre et d'épuisement des ressources naturelles. La nécessité de repenser les modes de conception, de planification et de gestion des espaces urbains s'impose donc comme une urgence pour assurer la viabilité à long terme des sociétés humaines.\n\nCette thèse s'inscrit dans un champ de recherche multidisciplinaire croisant l'urbanisme, l'écologie, la sociologie et l'économie, avec pour ambition d'analyser les tensions et synergies entre les dimensions environnementales, sociales et économiques de la ville durable. Notre problématique centrale interroge les modalités concrètes de mise en œuvre d'un urbanisme durable capable de concilier exigences environnementales, justice sociale et efficacité économique. Comment, dans un contexte de contraintes multiples, les acteurs urbains peuvent-ils transformer les principes théoriques de l'urbanisme durable en pratiques effectives et pérennes ?\n\n[Cadre théorique]\n\nPour répondre à cette question, notre travail s'appuie sur un cadre théorique qui articule plusieurs approches complémentaires. Nous avons d'abord mobilisé les théories de la durabilité environnementale, notamment le concept de \"ville écologique\" développé par [à compléter : auteur clé], qui met l'accent sur la réduction de l'empreinte écologique des villes et la préservation des écosystèmes urbains. En parallèle, nous avons intégré les perspectives de la justice environnementale, initiées par [à compléter : auteur clé], pour analyser les dimensions spatiales des inégalités sociales et environnementales. \n\nSur le plan économique, notre référentiel théorique s'inspire des travaux sur l'économie circulaire appliquée aux territoires urbains, notamment ceux de [à compléter : auteur clé], qui proposent des modèles de production et de consommation moins dépendants des ressources non renouvelables. Enfin, nous avons mobilisé les approches en planification participative et gouvernance multi-niveaux, développées par [à compléter : auteur clé], pour comprendre comment les différentes échelles de décision et les acteurs multiples peuvent co-construire des stratégies urbaines durables.\n\n[Méthodologie]\n\nPour répondre à notre problématique, nous avons adopté une méthodologie mixte combinant approches quantitative et qualitative. Notre recherche s'est déroulée sur une période de [à compléter : durée] et a concerné trois métropoles européennes de tailles différentes mais confrontées à des défis urbains similaires : [à compléter : noms des villes].\n\nSur le plan quantitatif, nous avons mené une analyse comparative des indicateurs de durabilité urbaine (empreinte carbone, consommation d'énergie, accessibilité aux services, etc.) pour évaluer l'efficacité des politiques mises en œuvre dans chaque territoire. Ces données ont été collectées auprès d'organismes statistiques publics et d'observatoires urbains spécialisés.\n\nSur le plan qualitatif, nous avons conduit une série d'entretiens semi-directifs avec [à compléter : nombre] acteurs clés : décideurs publics, urbanistes, promoteurs immobiliers, associations citoyennes et représentants d'entreprises du secteur de la construction. Ces entretiens ont permis d'explorer les représentations, stratégies et obstacles à la mise en œuvre de l'urbanisme durable.\n\nEn complément, nous avons mené des observations participantes dans plusieurs projets urbains exemplaires identifiés dans chaque métropole, afin d'analyser concrètement les processus de conception, de planification et de gestion des espaces durables.\n\n[Résultats principaux]\n\nL'analyse de nos données révèle plusieurs résultats majeurs qui éclairent notre compréhension des conditions de mise en œuvre de l'urbanisme durable.\n\nPremièrement, notre recherche montre que l'intégration réussie des dimensions environnementales, sociales et économiques dépend fortement de la gouvernance urbaine. Les villes où les politiques durables sont les plus efficaces sont celles qui ont développé des mécanismes de coordination entre les différents échelles de décision (nationale, régionale, locale) et entre les secteurs public et privé. Ces mécanismes de gouvernance multi-niveaux permettent de dépasser les logiques sectorielles et de favoriser des approches intégrées.\n\nDeuxièmement, nous avons identifié un facteur clé de succès : la participation citoyenne effective dès les premières phases de conception des projets urbains. Les projets qui intègrent véritablement les habitants et les usagers dans le processus décisionnel obtiennent des taux d'acceptation sociale plus élevés et des résultats environnementaux et sociaux plus satisfaisants. Cette participation n'est cependant pas sans défis, notamment en termes de représentativité et de gestion des conflits d'intérêts.\n\nTroisièmement, notre recherche met en évidence l'importance cruciale des instruments économiques dans la transition vers l'urbanisme durable. Les mécanismes incitatifs, qu'ils soient réglementaires (normes environnementales), financiers (subventions, fiscalité écologique) ou contractuels (marchés publics durables), jouent un rôle déterminant dans la modification des comportements des acteurs urbains. Cependant, ces instruments doivent être accompagnés de dispositifs de formation et d'accompagnement pour être efficaces.\n\nEnfin, quatrièmement, nous avons observé que la durabilité des projets urbains dépend fortement de leur capacité à s'adapter aux changements climatiques et aux évolutions sociales. Les projets les plus résilients sont ceux qui intègrent une approche systémique, anticipant les impacts à long terme et prévoyant des marges de manœuvre pour les ajustements futurs.\n\n[Limites de la recherche]\n\nSi nos résultats apportent un éclairage précieux sur les modalités de mise en œuvre de l'urbanisme durable, notre présente recherche présente certaines limites qu'il convient de reconnaître.\n\nPremièrement, notre étude se concentre sur un échantillon limité de trois métropoles européennes. Bien que ces cas soient riches d'enseignements, il serait pertinent d'étendre la recherche à d'autres contextes géographiques et culturels, notamment aux villes du Sud global où les défis de la durabilité urbaine se posent avec des contraintes différentes.\n\nDeuxièmement, notre méthodologie, bien que mixte, repose principalement sur des données qualitatives et des indicateurs quantitatifs standardisés. Une approche plus participative, intégrant davantage de méthodes ethnographiques ou d'auto-évaluation par les acteurs eux-mêmes, pourrait enrichir notre compréhension des dynamiques de changement.\n\nTroisièmement, notre recherche s'est focalisée sur les processus de mise en œuvre plutôt que sur l'évaluation à long terme des impacts des projets urbains durables. Une étude longitudinale permettant d'évaluer la pérennité des résultats obtenus sur une période plus longue serait nécessaire pour affiner nos conclusions.\n\n[Conclusion et perspectives]\n\nAu terme de cette recherche, plusieurs conclusions majeures s'imposent. Premièrement, l'urbanisme durable ne peut se résumer à une simple application de techniques ou de technologies vertes ; il représente une transformation profonde des modes de conception, de planification et de gestion des villes. Cette transformation implique une redéfinition des relations entre les acteurs urbains et entre les différentes échelles de décision.\n\nDeuxièmement, nos résultats confirment que la durabilité urbaine ne peut être atteinte sans une intégration réussie des dimensions environnementales, sociales et économiques. Ces trois piliers sont interdépendants et doivent être traités de manière systémique plutôt que sectorielle.\n\nTroisièmement, la gouvernance urbaine émergent comme le facteur déterminant de la réussite des stratégies durables. Les mécanismes de coordination multi-niveaux et la participation citoyenne ne sont pas des accessoires mais des conditions préalables à la mise en œuvre effective de l'urbanisme durable.\n\nSur le plan des perspectives, cette ouvre plusieurs pistes pour la recherche future. Il conviendrait tout d'abord d'approfondir l'étude des instruments économiques et réglementaires les plus efficaces pour accélérer la transition vers les villes durables. Une seconde piste de recherche consisterait à explorer les innovations sociales et technologiques émergentes qui pourraient contribuer à repenser les modèles urbains. Enfin, une troisième perspective serait d'étudier les transferts de politiques publiques entre contextes urbains différents pour identifier les facteurs de succès et d'échec des approches durables.\n\n[Remerciements de clôture et ouverture aux questions]\n\nJe tiens à remercier une nouvelle fois l'ensemble des membres du jury pour leur attention et leur évaluation. Je remercie également toutes les personnes et institutions qui ont soutenu ce travail de recherche, notamment [à compléter : institutions de recherche, financeurs, etc.].\n\nJe suis maintenant prête à répondre à vos questions et à discuter avec vous des résultats de cette thèse.",
+      "createdAt": "2026-10-03T15:24:19.849Z",
+      "updatedAt": "2026-10-03T15:26:59.354Z"
+    }
+  ],
+  "_soutenancePrepSlidesLen": 2105,
+  "_soutenancePrepQuestionsLen": 3397,
+  "_doctoralToolboxOwner": [
+    {
+      "id": "cmv26kryu001oq7vhdotgwrc1",
+      "thesisId": "cmsmyrdfs0000pa2sews4vo90"
+    }
+  ]
+}
