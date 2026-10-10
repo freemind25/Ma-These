@@ -1,0 +1,308 @@
+{
+  "task": "W2-2 — AUDIT isolation multi-thèses (Phase 1 : revue de code lecture seule ; Phase 2 : vérification UI réelle agent-browser + test décisif d'écriture cross-thèse + cleanup intégral)",
+  "task_id": "W2-2",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "date_execution_utc": "2026-10-10T07:55-08:35",
+  "agent": "agent-audit-isolation (Z.ai Code)",
+  "baseline_git": "0a424aeeb1da0bcb022bede30d15bff4ffe41bbb",
+  "methode": "Phase 1 : grep + lecture seule du schéma Prisma et des modules (AUCUNE modification de code). Phase 2 : UI réelle agent-browser headless (http://localhost:3000, serveur 200 untouched) ; thèse jetable « AUDIT-ISO — Thèse isolation » créée via le dialogue du dashboard (POST /api/thesis 201, 7 chapitres template auto) ; toutes les écritures de session ciblées sur elle ou sur des objets préfixés AUDIT-ISO- ; comptages DB PrismaClient lecture seule avant/à chaque étape/après (scripts one-shot temporaires supprimés) ; audit réseau complet par agent-browser (filtre api) ; cleanup 100 % via l'UI (flux ConfirmDeleteDialog testés). AUCUN commit, aucun db:push, aucun build.",
+  "ordre_reel_theses_pendant_session": {
+    "theses_api_order": "GET /api/thesis orderBy updatedAt desc (src/app/api/thesis/route.ts:12) → theses[0] = la thèse la plus RÉCEMMENT MODIFIÉE, pas la thèse active",
+    "theses[0]": "cmv24arxh0000q7vho2sn64kq — « AUDIT-ISO — Thèse isolation » (créée 2026-10-10T08:13:36Z)",
+    "theses[1]": "cmsmyrdfs0000pa2sews4vo90 — « Urbanisme durable » (propriétaire, updatedAt 2026-08-10T08:22:35.464Z)",
+    "activeThesisId": "variable au fil de la session (store zustand persisté localStorage « thesisframe-app-store », src/lib/stores/app-store.ts:451,472-474,486-492) — délibérément mise en désaccord avec theses[0] pour les tests",
+    "effet": "pendant la quasi-totalité de la session, theses[0] (AUDIT-ISO) ≠ activeThesisId (propriétaire) : configuration qui expose le binding theses[0]"
+  },
+
+  "phase1_cartographie_modeles": {
+    "source": "prisma/schema.prisma (lecture seule, hash de session 0a424ae)",
+    "these_scope_strict": [
+      { "modele": "Thesis", "schema": "l.17-38", "note": "racine" },
+      { "modele": "Chapter", "schema": "l.40-64", "fk": "thesisId onDelete: Cascade ; partId nullable onDelete: SetNull (chapitre→partie)" },
+      { "modele": "Part", "schema": "l.86-98", "fk": "thesisId onDelete: Cascade" },
+      { "modele": "ChapterVersion", "schema": "l.71-84", "fk": "chapterId Cascade → thèse-scopé indirect" },
+      { "modele": "ThesisCadrage", "schema": "l.104-117", "fk": "thesisId onDelete: Cascade" },
+      { "modele": "ThesisCadrageField", "schema": "l.119-133", "fk": "cadrageId Cascade → indirect" },
+      { "modele": "ThesisCadrageVersion", "schema": "l.135-145", "fk": "cadrageId Cascade → indirect" },
+      { "modele": "DoctoralToolbox", "schema": "l.151-165", "fk": "thesisId @unique onDelete: Cascade (1:1)" },
+      { "modele": "SoutenancePrep", "schema": "l.171-184", "fk": "thesisId @unique onDelete: Cascade (1:1)" },
+      { "modele": "ResearchTab", "schema": "l.190-206", "fk": "thesisId onDelete: Cascade" }
+    ],
+    "these_scope_partiel_thesisId_nullable": [
+      { "modele": "Article", "schema": "l.361-383", "fk": "thesisId String? (nullable, pas de relation Prisma déclarée) — commentaire « isolation par thèse » ; ArticleVersion via articleId Cascade (indirect, nullable)" },
+      { "modele": "ImportedDoc", "schema": "l.397-412", "fk": "thesisId String? (nullable)" },
+      { "modele": "DocumentChunk", "schema": "l.481-498", "fk": "thesisId String? (nullable) — commentaire : « chapter/cadrage chunks (references/notebooks are global) » ; isolation RAG partielle par conception" }
+    ],
+    "global_par_conception_sans_thesisId": [
+      { "modele": "Reference", "schema": "l.212-239", "statut": "FAIT PRODUIT déjà consigné (C-2, worklog R-2 ; v1.1 réserve ; décision propriétaire en attente — specs/ref-thesis-scoping/proposition-technique.md). Re-confirmé UI W2-2 (4 refs identiques depuis les 2 contextes)" },
+      { "modele": "ResearchSource", "schema": "l.245-259", "statut": "global par conception (carnet de recherche)" },
+      { "modele": "NotebookEntry", "schema": "l.261-273", "fk": "sourceId SetNull → global (sourceId global indirect)" },
+      { "modele": "AgileSprint", "schema": "l.279-295", "statut": "global par conception — AUCUN thesisId : la Feuille de Route Agile est partagée par toutes les thèses" },
+      { "modele": "AgileStory", "schema": "l.297-313", "fk": "sprintId Cascade → global indirect" },
+      { "modele": "Experiment", "schema": "l.505-521", "statut": "global par conception — AUCUN thesisId (POST /api/experiments n'envoie aucun thesisId, prouvé réseau W2-2)" },
+      { "modele": "ExperimentRun", "schema": "l.523-543", "fk": "experimentId Cascade → global indirect" },
+      { "modele": "ElementAnalyse", "schema": "l.434-450", "statut": "global par conception ; chapitreId String? l.444 = chaîne Libre SANS relation Prisma ni index (pas de FK, pas de cascade, pas de contrainte — référence purement indicative)" },
+      { "modele": "TypeAnalyseMethodologique", "schema": "l.452-462", "statut": "global (référentiel discipline)" },
+      { "modele": "SessionVerification", "schema": "l.464-475", "statut": "global ; siteEtudeId/typeAnalyseId = chaînes sans relation" },
+      { "modele": "CustomBookSkill", "schema": "l.319-332", "statut": "global par conception (compétences livres, injection IA opt-in)" },
+      { "modele": "LegalRef", "schema": "l.338-355", "statut": "global par conception (registre URBANIS-DZ, porté par Livres-compétences)" },
+      { "modele": "Job", "schema": "l.554-571", "statut": "global par conception (file de tâches système)" },
+      { "modele": "SavedSearch / SavedSearchResult", "schema": "l.581-616", "statut": "global par conception (veille académique)" },
+      { "modele": "LicenseKey", "schema": "l.418-428", "statut": "global (licence)" }
+    ],
+    "conclusion_cartographie": "Isolation structurelle RÉELLE uniquement pour : chapitres/parties/cadrages/boîte doctorale/soutenance/onglets recherche (+ RAG/Articles/Imports en scoping nullable). Huit familles de données (Références, Carnet sources+notes, Agile, Expérimentations, Vérification méthodologique, Compétences livres, Registre juridique, Veille, Jobs) sont GLOBALES PAR CONCEPTION — fait produit, pas un bug individuel, mais l'utilisateur n'a AUCUNE indication d'interface sur ce partage (voir anomalie AUD-ISO-006)."
+  },
+
+  "phase1_inventaire_theses0_et_mecanismes_selection": {
+    "api_ordre": "src/app/api/thesis/route.ts:12 — orderBy: { updatedAt: \"desc\" }",
+    "occurrences_theses0": [
+      {
+        "fichier": "src/modules/thesis-plan/thesis-plan-page.tsx:501-503",
+        "code": "const { data: theses } = useTheses(); const activeThesis = theses?.[0] ?? null; const thesisId = activeThesis?.id ?? null;",
+        "mecanisme": "lien DIRECT theses[0] — la vue n'utilise JAMAIS useAppStore().activeThesisId (grep actifThesisId = 0 occurrence dans le module)",
+        "ecritures": "structureMode PUT /api/thesis/{theses0.id} (l.533-543), createPart POST /api/thesis/{theses0.id}/parts (l.547-558), createChapter + attach PUT /api/chapters/{id} partId (l.591-611)",
+        "consequence_utilisateur": "affiche ET écrit sur la thèse la plus récemment modifiée, même si l'utilisateur travaille sur une autre dans l'éditeur",
+        "risque_cross_these": "OUI — GRAVE (écritures réelles prouvées, voir test_decisif)"
+      },
+      {
+        "fichier": "src/modules/cadrage/cadrage-page.tsx:184,198-199",
+        "code": "const [selectedThesisId, setSelectedThesisId] = useState<string | null>(null); const id = selectedThesisId || theses[0].id;",
+        "mecanisme": "sélecteur LOCAL (useState) non synchronisé avec le store ; défaut = theses[0] ; l'affichage du sélecteur boutons ne montre pas quelle thèse est « active » ailleurs",
+        "ecritures": "POST /api/thesis/{id}/cadrages (l.247-271), saveField PUT, versions POST, IA 12 PUT suggestions (l.429-438,496-524) — tout vers le thesisId du SÉLECTEUR",
+        "consequence_utilisateur": "le cadrage est créé sur theses[0] (pas la thèse active) si l'utilisateur ne touche pas au sélecteur",
+        "risque_cross_these": "OUI — ÉLEVÉ (écritures cadrage + IA sur thèse non active)"
+      },
+      {
+        "fichier": "src/modules/boite-doctorale/boite-doctorale-page.tsx:443-444",
+        "code": "const id = selectedThesisId || theses[0].id;",
+        "mecanisme": "sélecteur LOCAL même mécanique que cadrage, défaut = theses[0]",
+        "ecritures": "GET/POST/PUT /api/thesis/{id}/doctoral-toolbox (l.454-546) ; POST auto-création de la toolbox constaté à la simple OUVERTURE de la vue",
+        "consequence_utilisateur": "une visite de la vue crée la toolbox sur theses[0] sans action utilisateur (prouvé réseau W2-2 : POST 201 sur AUDIT-ISO alors que activeThesisId=propriétaire)",
+        "risque_cross_these": "OUI — ÉLEVÉ (écriture automatique sur thèse non active)"
+      },
+      {
+        "fichier": "src/modules/onglet-recherche/onglet-recherche-page.tsx:151,157-158,760-777",
+        "code": "const storeThesisId = useAppStore((s) => s.activeThesisId); const id = storeThesisId || theses[0].id;",
+        "mecanisme": "suit activeThesisId SI défini, retombe sur theses[0] sinon ; sélecteur in-view de boutons qui change le STORE GLOBAL (setStoreThesisId = setActiveThesisId) → effet de bord sur l'éditeur",
+        "ecritures": "POST /api/thesis/{id}/research-tabs (+ auto-création « Recherche principale » si 0 onglet, l.291-301), PUT debounced (l.225-278)",
+        "consequence_utilisateur": "isolation affichage OK par contexte ; auto-création par contexte (écriture automatique) ; bascule de contexte in-view mute la thèse active globale",
+        "risque_cross_these": "PARTIEL — écritures vers thèse cohérente avec l'affichage ; dérive theses[0] uniquement si activeThesisId=null"
+      },
+      {
+        "fichier": "src/modules/equilibre-chapitres/equilibre-chapitres-page.tsx:140-141",
+        "code": "const id = selectedThesisId || theses[0].id;",
+        "mecanisme": "sélecteur LOCAL, défaut theses[0] ; module LECTURE + /api/ai-writing uniquement (0 PUT chapitre trouvé)",
+        "consequence_utilisateur": "l'analyse d'équilibre peut porter sur theses[0] et non la thèse active (mauvaise cible d'analyse, pas d'écriture DB)",
+        "risque_cross_these": "AFFICHAGE seulement (P3)"
+      }
+    ],
+    "pages_stores_activesThesisId_saines": [
+      { "fichier": "src/modules/editor/editor-page.tsx:24-27,134-142", "note": "chapters CRUD vers activeThesisId ; « Changer de thèse » (C-2) setActiveThesisId(null) + liste" },
+      { "fichier": "src/modules/article-redaction/article-redaction-page.tsx:116,189,285,459", "note": "thesisId: activeThesisId ?? null (article + imports) — isolation OK si thèse active, article global sinon (nullable)" },
+      { "fichier": "src/modules/soutenance/soutenance-page.tsx:102-147", "note": "thesisId: activeThesisId (1:1 SoutenancePrep) ; garde !activeThesisId l.207" },
+      { "fichier": "src/modules/brouillon-chapitre/brouillon-chapitre-page.tsx:84-87,294", "note": "useThesis(activeThesisId) + garde" },
+      { "fichier": "src/modules/thesis-rag/thesis-rag-page.tsx:86-158,222", "note": "indexation/requête avec thesisId: activeThesisId + garde (DocumentChunk thèse-scopé pour chapitres/cadrages)" },
+      { "fichier": "src/modules/ai-writing/ai-writing-page.tsx:447-448", "note": "contexte chapitre depuis activeThesisId" }
+    ]
+  },
+
+  "phase1_aud_func_007_cause_racine": {
+    "endpoint_defaut": "GET /api/thesis (liste, sans id) — src/app/api/thesis/route.ts:11-19",
+    "select_en_cause": "l.16 : chapters.select = { id, number, title, wordCount, status } — SANS partId, sortOrder, targetWordCount, romanNumeral",
+    "consommateur": "src/modules/thesis-plan/thesis-plan-page.tsx:501 (useTheses → GET /api/thesis) ; blocs PartCard l.392 : attachedChapters = chapters.filter(ch => ch.partId === part.id) → toujours [] car partId absent du payload ; tri l.449 : attachedChapters.sort((a,b)=>a.sortOrder-b.sortOrder) dépend aussi de sortOrder ; compteur global l.652 : allChapters.filter(ch=>ch.partId).length → toujours 0",
+    "endpoint_correct": "GET /api/thesis/[id] — src/app/api/thesis/[id]/route.ts:15-25 : include { chapters: { orderBy sortOrder }, parts, cadrages } COMPLET (l'éditeur voit les partId) — d'où l'incohérence invisible jusqu'à W1-7c",
+    "reproduction_ui_w22": {
+      "parcours": "thèse AUDIT-ISO (8 chapitres) → Plan (theses[0]) → « Ajouter un chapitre » → POST /api/thesis/cmv24arxh…/chapters 201 + PUT /api/chapters/cmv24fp33000bq7vhumtkazmz 200 (partId attaché) → UI « 0 chap. » immédiat → RELOAD complet (SPA retombée dashboard, re-navigation Plan) → badge partie TOUJOURS « 0 chap. » / « 0 mots » alors que la DB contient chapter.partId NON NULL (chaptersAvecPartId=1)",
+      "detache": "bouton détacher (poubelle du chip) inatteignable : aucun chip rendu (attachedChapters vide) — le chapitre VIII n'apparaît NULLE PART dans la vue après reload",
+      "capture": "audit/baseline/evidence/iso-06-audfunc007-badge-0chap-apres-reload.png",
+      "db": "Chapitre cmv24fp33000bq7vhumtkazmz partId renseigné (comptage Prisma lecture seule) — l'attachement persiste, c'est l'affichage qui est cassé"
+    },
+    "correctif_minimal_propose_NON_IMPLANTE": {
+      "fichier_unique": "src/app/api/thesis/route.ts",
+      "changement": "l.16 — ajouter partId: true, sortOrder: true au select des chapitres (option complémentaire non bloquante : targetWordCount/romanNumeral si l'UI doit afficher mots cibles et numérotation romaine dans la vue Plan)",
+      "impact_ui": "aucun changement de composant nécessaire : PartCard filtre déjà ch.partId (l.392) et trie sur sortOrder (l.449) → badges « N chap. » et mots/partie s'affichent, chips + détachement deviennent accessibles ; le badge global « N chapitres rattachés » (l.652, 812-814) devient correct",
+      "impact_api": "payload légèrement plus volumineux sur la liste (2-4 champs scalaires/chapitre) ; aucun changement de schéma, aucune migration",
+      "risque": "faible — ajout en lecture dans un select ; les consommateurs actuels de GET /api/thesis (dashboard, éditeur-liste, sélecteurs) ignorent les champs additionnels",
+      "statut": "PROPOSÉ — NON implémenté (contrainte audit : aucune modification de code)"
+    }
+  },
+
+  "phase1_risque_ecriture_cross_these_par_vue": {
+    "resume": "chaque page qui ÉCRIT avec un thesisId — origine du thesisId envoyé à l'API",
+    "chemins_risques": [
+      { "vue": "Plan de thèse", "thesisId_envoye": "theses[0] (dur)", "ecrit": "structureMode, parties, chapitres+attach", "atterrit_mauvaise_these": "OUI dès que thèse active ≠ dernière modifiée — PROUVÉ W2-2 (réseau+DB)" },
+      { "vue": "Cadrage de thèse", "thesisId_envoye": "sélecteur local || theses[0]", "ecrit": "cadrage 12 champs, champs, versions, suggestions IA", "atterrit_mauvaise_these": "OUI si l'utilisateur ne remarque pas le sélecteur (défaut = theses[0]) — mécanique prouvée (POST cadrages sur theses[0])" },
+      { "vue": "Boîte doctorale", "thesisId_envoye": "sélecteur local || theses[0]", "ecrit": "toolbox (auto-création à la visite + saves)", "atterrit_mauvaise_these": "OUI — PROUVÉ W2-2 (POST toolbox auto sur theses[0] alors que active=propriétaire)" },
+      { "vue": "Onglet Recherche", "thesisId_envoye": "activeThesisId || theses[0]", "ecrit": "onglets (auto-création, notes, liens…)", "atterrit_mauvaise_these": "seulement si activeThesisId=null (retombe theses[0]) ; sinon cohérent" },
+      { "vue": "Équilibre chapitres", "thesisId_envoye": "sélecteur local || theses[0]", "ecrit": "rien en DB (analyse + IA)", "atterrit_mauvaise_these": "N/A écriture ; analyse potentiellement sur mauvaise thèse" },
+      { "vue": "Éditeur / Soutenance / RAG / Brouillon / Article-redaction", "thesisId_envoye": "activeThesisId (store)", "ecrit": "chapters, soutenance, chunks, articles, imports", "atterrit_mauvaise_these": "NON (isolation store saine) — article/imports nullable→global si aucune thèse active" },
+      { "vue": "Expérimentations / Agile / Outils IA / Références / Vérifications / Registre juridique / Veille", "thesisId_envoye": "AUCUN (modèles globaux)", "ecrit": "données partagées toutes thèses", "atterrit_mauvaise_these": "sans objet — pas d'isolation possible sans évolution de schéma (décision produit)" }
+    ]
+  },
+
+  "phase2_tests_ui_reels": {
+    "creation_these_jetable": { "titre": "AUDIT-ISO — Thèse isolation", "auteur": "Agent Audit ISO", "id": "cmv24arxh0000q7vho2sn64kq", "endpoint": "POST /api/thesis → 201", "chapters_auto": 7, "capture": "iso-01-thesis-created.png" },
+
+    "1_vue_plan": {
+      "config_a": { "activeThesisId": "cmsmyrdfs…(propriétaire, ouverte dans l'éditeur + localStorage)", "theses0": "cmv24arxh…(AUDIT-ISO)" },
+      "constat_affichage": "la vue Plan affiche « AUDIT-ISO — Thèse isolation / 7 chapitres / 0 mots » alors que la thèse ACTIVE (propriétaire) = « Urbanisme durable / 7 chapitres / 2 295 mots » — le badge ne reflète JAMAIS la thèse active (capture iso-04-plan-active-proprietaire.png)",
+      "constat_config_b": "activeThesisId=AUDIT-ISO → Plan affiche bien AUDIT-ISO (coïncidence theses[0]=active) — capture iso-05",
+      "verdict": "la vue Plan SUIT theses[0] (updatedAt desc) et NON activeThesisId — confirme et aggrave W1-7c",
+      "test_decisif_ecriture": {
+        "action": "combobox « Structure actuelle » → « Par parties » (bascule UI, activeThesisId RESTÉ sur le propriétaire pendant tout le clic)",
+        "reseau": "PUT http://localhost:3000/api/thesis/cmv24arxh0000q7vho2sn64kq → 200 (id ≠ activeThesisId)",
+        "db_apres": { "cmv24arxh…(AUDIT-ISO)": "structureMode = parts, updatedAt 2026-10-10T08:16:19Z", "cmsmyrdfs…(PROPRIÉTAIRE)": "structureMode = chapters INCHANGÉ, updatedAt 2026-08-10T08:22:35.464Z INCHANGÉ" },
+        "conclusion": "L'ÉCRITURE CROSS-THÈSE EST RÉELLE : la bascule est partie sur theses[0] (AUDIT-ISO) et pas sur la thèse active (propriétaire). Dans cette exécution la victime était la thèse jetable (scénario sûr) ; si l'utilisateur avait modifié la propriétaire en dernier (theses[0]=propriétaire), l'écriture serait tombée sur la propriétaire pendant qu'il travaille sur une autre thèse dans l'éditeur.",
+        "captures": ["iso-04-plan-active-proprietaire.png", "iso-05-plan-apres-bascule-parts.png"]
+      }
+    },
+
+    "2_aud_func_007_reproduction": "voir phase1_aud_func_007_cause_racine.reproduction_ui_w22 — badge « 0 chap. » persistant après reload malgré partId non null en DB ; détachement inatteignable en UI ; 0 perte de données (suppression de partie = SetNull vérifié W1-7c)",
+
+    "3_selecteur_cadrage": {
+      "config": "activeThesisId=propriétaire, theses[0]=AUDIT-ISO",
+      "constat": "le sélecteur « Thèse : » du Cadrage pointe par défaut sur « AUDIT-ISO — Thèse isolation » (theses[0]) et NON sur la thèse active — captures iso-07-cadrage-active-proprietaire.png + iso-07-cadrage-selecteur-defaut-theses0.png (dropdown ouvert, les 2 thèses listées)",
+      "risque": "un utilisateur actif sur le propriétaire qui clique « Créer le cadrage » sans vérifier le sélecteur crée le cadrage sur AUDIT-ISO — AUCUN clic Créer effectué dans cette configuration (invariant)",
+      "suite_sure": "activeThesisId basculée sur AUDIT-ISO (Changer de thèse) → défaut sélecteur = AUDIT-ISO (coïncide) → cadrage créé volontairement : POST /api/thesis/cmv24arxh…/cadrages 201 (12 champs) — preuve du chemin d'écriture vers le thesisId du sélecteur (captures iso-08, iso-09) ; propriétaire = 0 cadrage avant/après (comptages DB)"
+    },
+
+    "4_echantillon_vues": [
+      { "vue": "Onglet Recherche (thesis-scopé)", "isolation_affichage": "OK", "constat": "onglet « AUDIT-ISO-Onglet jetable » (POST 201 + renommage PUT 200, capture iso-10) NON affiché après bascule de contexte vers le propriétaire (iso-11) ; MAIS : (a) auto-création « Recherche principale » par contexte — déclenchée AUSSI sur le propriétaire lors de la bascule in-view (POST 201 sur cmsmyrdfs…), supprimée immédiatement via le flux confirmé (DELETE /api/research-tabs/cmv24mgip… 200) → net nul ; (b) le sélecteur in-view mute le STORE GLOBAL (setActiveThesisId) : effet de bord sur l'éditeur" },
+      { "vue": "Expérimentations (global par conception)", "isolation_affichage": "NOK PAR CONCEPTION", "constat": "« AUDIT-ISO-Expérimentation jetable » (POST /api/experiments 201 SANS thesisId) visible depuis le contexte AUDIT-ISO (iso-16) ET depuis le contexte propriétaire (iso-17) — liste « 2 expérimentations » mélangeant l'exp de test et l'exp propriétaire ; suppression via flux confirmé (dialogue iso-18, DELETE /api/experiments/cmv24ppn3… 200, DB retournée à 1)" },
+      { "vue": "Références (global par conception)", "isolation_affichage": "NOK PAR CONCEPTION (fait produit déjà consigné C-2)", "constat": "4 références identiques depuis le contexte propriétaire (iso-13) et AUDIT-ISO (iso-19) — re-confirmation rapide, PAS de correction (hors périmètre)" },
+      { "vue": "Feuille de Route Agile (global par conception)", "isolation_affichage": "N/A (0 sprint, même état vide dans les 2 contextes)", "constat": "AgileSprint SANS thesisId (schema l.279) — toute roadmap agile serait partagée par toutes les thèses" },
+      { "vue": "Articles scientifiques (thesisId nullable)", "isolation_affichage": "partielle par conception", "constat": "vue liste sans sélecteur ; l'article propriétaire (thesisId renseigné par article-redaction via activeThesisId) coexiste avec des articles globaux possibles (thesisId null)" },
+      { "vue": "Boîte doctorale (thesis-scopé 1:1)", "isolation_affichage": "sous le sélecteur seulement", "constat": "visite avec active=propriétaire → la vue a sélectionné theses[0]=AUDIT-ISO et AUTO-CRÉÉ la DoctoralToolbox dessus (POST /api/thesis/cmv24arxh…/doctoral-toolbox 201 à l'ouverture, sans action utilisateur — réseau + DB DoctoralToolbox 0→1) — 2e démonstration LIVE du binding theses[0] avec écriture automatique ; capture iso-14 ; nettoyé par cascade à la suppression de la thèse" },
+      { "vue": "Outils IA (sources + notes, global par conception)", "isolation_affichage": "NOK PAR CONCEPTION", "constat": "note « Question de test T4 » (NotebookEntry globale) visible depuis le contexte propriétaire (iso-15) — sources/notes sans thesisId" }
+    ],
+
+    "5_audit_reseau_session": {
+      "total_fetch": 94,
+      "toutes_ecritures": [
+        "POST /api/thesis 201 — création AUDIT-ISO",
+        "PUT /api/thesis/cmv24arxh0000q7vho2sn64kq 200 — TEST DÉCISIF structureMode=parts (activeThesisId était le propriétaire)",
+        "POST /api/thesis/cmv24arxh…/parts 201 — partie AUDIT-ISO",
+        "POST /api/thesis/cmv24arxh…/chapters 201 + PUT /api/chapters/cmv24fp33000bq7vhumtkazmz 200 — chapitre VIII + attach partId (AUD-FUNC-007)",
+        "POST /api/thesis/cmv24arxh…/cadrages 201 — cadrage AUDIT-ISO (12 champs)",
+        "POST /api/thesis/cmv24arxh…/research-tabs 201 ×2 — auto « Recherche principale » + « AUDIT-ISO-Onglet jetable » (après renommé PUT /api/research-tabs/cmv24lcnl0… 200)",
+        "POST /api/thesis/cmsmyrdfs…/research-tabs 201 — auto-création sur le PROPRIÉTAIRE lors de la bascule de contexte in-view (compensée immédiatement par DELETE /api/research-tabs/cmv24mgip0… 200)",
+        "POST /api/thesis/cmv24arxh…/doctoral-toolbox 201 — auto-création toolbox sur theses[0] à la visite",
+        "POST /api/experiments 201 (SANS thesisId — global) + DELETE /api/experiments/cmv24ppn30… 200",
+        "DELETE /api/research-tabs/cmv24lcnl00… 200 — onglet jetable (flux confirmé)",
+        "DELETE /api/thesis/cmv24arxh0000q7vho2sn64kq 200 — suppression thèse jetable (flux confirmé)"
+      ],
+      "conclusion": "chaque écriture de session a ciblé cmv24arxh… (AUDIT-ISO) ou des objets globaux jetables préfixés AUDIT-ISO- ; UNIQUE dérogation = auto-création applicative de l'onglet sur le propriétaire lors de la bascule de contexte in-view (comportement produit W1-8b), compensée par le flux de suppression confirmé testé — aucune écriture manuelle sur le propriétaire",
+      "aucune_requete_parasite": "Annulation du 1er dialogue onglet (mauvais X cliqué, quirk session) = 0 requête ; suppression du mauvais onglet JAMAIS confirmée"
+    }
+  },
+
+  "cleanup": {
+    "flux": "éditeur → Changer de thèse → poubelle carte AUDIT-ISO → ConfirmDeleteDialog « Supprimer cette thèse ? « AUDIT-ISO — Thèse isolation » et ses 8 chapitre(s)… » → Supprimer → DELETE /api/thesis/cmv24arxh0000q7vho2sn64kq 200",
+    "captures": ["iso-20-cleanup-dialogue-suppression-thesis.png", "iso-21-cleanup-final-dashboard.png"],
+    "cascade_verifiee": {
+      "Chapter": "15 → 7 (8 AUDIT-ISO supprimés, 7 propriétaire intacts)",
+      "Part": "1 → 0",
+      "ThesisCadrage": "1 → 0 (ThesisCadrageField 12 → 0)",
+      "DoctoralToolbox": "1 → 0 (auto-créée)",
+      "ResearchTab": "2 → 0 (auto + jetable)",
+      "orphelins": "AUCUN (toutes les lignes AUDIT-ISO parties par Cascade)"
+    },
+    "objet_supprimes_via_flux_confirme": ["expérimentation jetable (DELETE 200)", "onglet jetable (DELETE 200)", "onglet auto-créé propriétaire (DELETE 200)", "thèse AUDIT-ISO (DELETE 200)"]
+  },
+
+  "etat_proprietaire": {
+    "avant": { "source": "audit/baseline/evidence/iso-db-before.json", "theses": ["Urbanisme durable (cmsmyrdfs0000pa2sews4vo90) — structureMode chapters, createdAt=updatedAt 2026-08-10T08:22:35.464Z"], "detail": "7 chapitres / 2 295 mots / 6 ChapterVersion / 0 Part / 0 Cadrage / 0 DoctoralToolbox / SoutenancePrep 1 / 4 Reference / 16 ImportedDoc / 27 LegalRef / 1 ElementAnalyse / 1 NotebookEntry / 0 ResearchSource / 1 Experiment (+1 run) / 24 Job / 1 Article (+1 version) / 12 DocumentChunk / 2 SessionVerification / 1 TypeAnalyse / 58 CustomBookSkill / 0 Agile / 0 SavedSearch" },
+    "apres": { "source": "audit/baseline/evidence/iso-db-after.json", "identique": true },
+    "diff": "VIDE sur les 30 tables comptées — thèse propriétaire intacte : 7 chap / 2 295 mots / 6 versions / structureMode chapters / updatedAt 2026-08-10T08:22:35.464Z inchangé / 4 réf / 16 docs / 27 LegalRef / etc."
+  },
+
+  "anomalies_nouvelles_proposees_registre": [
+    {
+      "id_propose": "AUD-ISO-001",
+      "titre": "La vue Plan de thèse lit et écrit sur theses[0] (updatedAt desc) au lieu de la thèse active — écriture cross-thèse prouvée",
+      "gravite_proposee": "P1 (requalification de la partie « theses[0] » consignée P3 en W1-7c : le test W2-2 prouve une ÉCRITURE réelle, pas seulement un risque d'affichage)",
+      "preuves": "PUT /api/thesis/cmv24arxh… 200 avec activeThesisId=cmsmyrdfs… (localStorage + éditeur) ; DB : AUDIT-ISO structureMode=parts, propriétaire inchangé ; captures iso-04/iso-05",
+      "fichiers": "src/modules/thesis-plan/thesis-plan-page.tsx:501-503,533-543,547-558,591-611",
+      "correctif_propose": "remplacer theses?.[0] par useThesis(activeThesisId) du store (+ garde « aucune thèse active » comme dans soutenance/brouillon) — 1 fichier",
+      "note": "non implémenté (audit lecture seule)"
+    },
+    {
+      "id_propose": "AUD-ISO-002",
+      "titre": "Sélecteurs locaux non synchronisés avec activeThesisId, défaut theses[0] (Cadrage, Boîte doctorale, Équilibre chapitres)",
+      "gravite_proposee": "P2",
+      "preuves": "cadrage-page.tsx:184,198-199 ; boite-doctorale-page.tsx:443-444 ; equilibre-chapitres-page.tsx:140-141 ; défaut sélecteur = AUDIT-ISO alors qu'active=propriétaire (captures iso-07) ; mécanique d'écriture cadrage prouvée sur theses[0]",
+      "correctif_propose": "initialiser selectedThesisId depuis activeThesisId (ou remplacer par le store) + distinguer visuellement la thèse active"
+    },
+    {
+      "id_propose": "AUD-ISO-003",
+      "titre": "Boîte doctorale : auto-création de la DoctoralToolbox sur theses[0] à la simple ouverture de la vue (écriture automatique sans action utilisateur)",
+      "gravite_proposee": "P2 (couplée à AUD-ISO-002 ; devient écriture sur thèse non active)",
+      "preuves": "POST /api/thesis/cmv24arxh…/doctoral-toolbox 201 à la visite avec activeThesisId=propriétaire (réseau) ; DoctoralToolbox 0→1 (DB)",
+      "correctif_propose": "ne créer qu'à la première modification explicite (ou scoper sur la thèse active)"
+    },
+    {
+      "id_propose": "AUD-ISO-004",
+      "titre": "AUD-FUNC-007 consolidée : cause racine confirmée (select réduit GET /api/thesis sans partId/sortOrder) + reproduction UI + correctif minimal proposé",
+      "gravite_proposee": "P2 (inchangée — affichage cassé + détachement inatteignable, sans perte de données)",
+      "preuves": "voir phase1_aud_func_007 ; capture iso-06 ; correctif minimal 1 ligne PROPOSÉ non implémenté"
+    },
+    {
+      "id_propose": "AUD-ISO-005",
+      "titre": "Onglet Recherche : le sélecteur in-view mute le store GLOBAL (setActiveThesisId) + auto-création d'onglet par contexte à la visite",
+      "gravite_proposee": "P3",
+      "preuves": "onglet-recherche-page.tsx:157-158 (storeThesisId), 760-777 (sélecteur → setStoreThesisId), 291-301 (auto-création) ; POST 201 auto observé sur LES DEUX contextes (dont propriétaire, compensé)"
+    },
+    {
+      "id_propose": "AUD-ISO-006",
+      "titre": "Données globales par conception sans indication d'interface : Expérimentations, Agile, Références, Outils IA (sources/notes), Vérification méthodologique, Registre juridique, Veille, Équilibre — aucun marquage « partagé entre thèses » ni sélecteur",
+      "gravite_proposee": "P3 (fait produit — à arbitrer avec la décision références/thèse-scoping ; l'audit ne juge pas, il documente l'absence de signal utilisateur)",
+      "preuves": "cartographie schema + iso-16/iso-17 (exp visible des 2 contextes), iso-13/iso-19 (4 refs identiques), iso-15 (note globale)"
+    },
+    {
+      "id_propose": "AUD-ISO-007",
+      "titre": "Statistiques dashboard agrégées toutes thèses (à 2 thèses : « 15 chapitres / 2 295 mots » mélangent les 2 thèses) — trompeur en multi-thèses",
+      "gravite_proposee": "P3 (observation — cohérent avec /api/stats global, mais sans mention du périmètre)",
+      "preuves": "constat reload SPA pendant la session à 2 thèses (texte main capturé)"
+    }
+  ],
+
+  "quirks_session": [
+    "reload SPA → retour dashboard (état de vue non persisté) — re-navigations systématiques avant chaque contrôle",
+    "2 boutons « Fermer l'onglet » (1 par onglet du bandeau) : un premier clic a ouvert le dialogue du mauvais onglet (« Recherche principale » au lieu du jetable actif) → ANNULÉ (0 requête) puis X du bon onglet cliqué — pas un bug produit (X par onglet), quirk de manipulation consigné",
+    "agent-browser find text inopérant sur certains boutons (glyphes) → fallback eval JS ciblé ; refs invalidées par re-rendus → re-snapshots"
+  ],
+
+  "invariants_verifies": {
+    "fichiers_rouges": "0 diff — jamais ouverts en écriture (git status : 0 fichier suivi modifié sur toute la session)",
+    "code": "AUCUNE modification (aucun commit/push/db:push/build) — 1 génération IA : 0 (budget non consommé, aucune soumission IA dans cette session)",
+    "db": "skip-worktree intact ; accès lecture seule par scripts Prisma one-shot temporaires (supprimés) ; écritures UNIQUEMENT via l'UI sur AUDIT-ISO/objets AUDIT-ISO-",
+    "secrets": "aucun secret dans les preuves"
+  },
+
+  "captures_index": {
+    "iso-00-dashboard-initial.png": "dashboard avant session",
+    "iso-01-thesis-created.png": "POST /api/thesis 201 — AUDIT-ISO créée",
+    "iso-02-editeur-auditiso.png": "éditeur ouvert sur AUDIT-ISO (7 chapitres template)",
+    "iso-03-liste-2theses.png": "liste Changer de thèse — 2 thèses (AUDIT-ISO 0 mots / propriétaire 2 295 mots)",
+    "iso-04-plan-active-proprietaire.png": "CLÉ — Plan affiche AUDIT-ISO (7 chap/0 mots) alors que l'active = propriétaire (7/2 295)",
+    "iso-05-plan-apres-bascule-parts.png": "après test décisif — mode « Par parties » sur AUDIT-ISO (theses[0])",
+    "iso-06-audfunc007-badge-0chap-apres-reload.png": "CLÉ — AUD-FUNC-007 : badge « 0 chap. » après reload malgré partId non null en DB",
+    "iso-07-cadrage-active-proprietaire.png": "Cadrage avec active=propriétaire (défaut sélecteur AUDIT-ISO)",
+    "iso-07-cadrage-selecteur-defaut-theses0.png": "dropdown sélecteur ouvert — les 2 thèses",
+    "iso-08-cadrage-auditiso-vide.png": "cadrage vide sur AUDIT-ISO (active coïncide)",
+    "iso-09-cadrage-cree-auditiso.png": "cadrage créé sur AUDIT-ISO (POST 201, 0/12)",
+    "iso-10-onglet-recherche-auditiso.png": "onglets AUDIT-ISO (auto + jetable renommé)",
+    "iso-11-onglet-proprietaire-isolation.png": "CLÉ — contexte propriétaire : onglet AUDIT-ISO absent (isolation affichage OK)",
+    "iso-12-experimentations-proprietaire.png": "expériences sous propriétaire (1, avant création test)",
+    "iso-13-references-proprietaire-4refs.png": "4 références (contexte propriétaire) — global par conception",
+    "iso-14-boite-doctorale-selecteur-theses0.png": "Boîte doctorale — toolbox auto-créée sur theses[0] à la visite",
+    "iso-15-outils-ia-global-note.png": "note globale « Question de test T4 » visible (contexte propriétaire)",
+    "iso-16-experimentations-auditiso-creee.png": "exp jetable créée sous AUDIT-ISO (2 expérimentations listées)",
+    "iso-17-experimentations-proprietaire-voit-auditiso.png": "CLÉ — exp AUDIT-ISO visible depuis le contexte propriétaire (isolation NOK par conception)",
+    "iso-18-exp-dialogue-suppression.png": "ConfirmDeleteDialog expérimentation",
+    "iso-19-references-auditiso-memes4.png": "mêmes 4 références depuis AUDIT-ISO",
+    "iso-20-cleanup-dialogue-suppression-thesis.png": "CLÉ — dialogue « …et ses 8 chapitre(s)… »",
+    "iso-21-cleanup-final-dashboard.png": "état final après cleanup (diff DB vide)"
+  }
+}
