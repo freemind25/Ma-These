@@ -4,6 +4,11 @@
 Références : instructions définitives du propriétaire (IM 2026-10-10) · validation de la vague 1 (IM 2026-10-10) · plan `12_PLAN_EXECUTION_CYCLE_FINAL.md`.
 Verdict en vigueur : **GO SOUS CONDITIONS** — ni mise en production, ni ouverture aux premiers utilisateurs, ni diffusion.
 
+> **Repères de commits (exigence point 6 de la décision propriétaire — distinction explicite)**
+> - **Commit applicatif candidat (code testé)** : `fb60ae1` — fix A1C1-01 (null-safety sélecteurs thèse, 3 lignes, build web SUCCÈS, TNR 1 658/1 658). Toute validation C1/C2/GP/TNR doit porter sur ce commit figé.
+> - **Commit documentaire (docs/preuves, 0 diff code)** : `f4ca696` (précédé de `78812c6` — clôture T6/T7/T8 : vues réservées, dry-run, doc 21) — rapports 21/22, preuves `reserved-views-revalidation.json` + `resv-db-final-state.json`.
+> - Les deux repères sont **à actualiser au commit de clôture** de la v1.2 — le candidat applicatif ne doit jamais être décrit par un hash documentaire, ni inversement.
+
 ## 1. Résultats de la vague 1 (2026-10-10)
 
 ### AUD-UX-002 — corrigée, revalidée (autorisation point 6)
@@ -66,7 +71,7 @@ Verdict en vigueur : **GO SOUS CONDITIONS** — ni mise en production, ni ouvert
 
 | # | Critère | Statut | Preuve | Commit | Limite / décision |
 |---|---|---|---|---|---|
-| 1 | 47 vues : statuts + preuves | ✅ **47/47 statués** — 34/34 vues de lots traitées (32 validées UI réelle + 2 non testables extérieur) + 7 validées v1.0 + 6 réservées ⚠️ v1.0 (39 validées UI réelle au total) ; compte « 33 » corrigé en « 34 » (erreur d'addition documentée) | `a1-inventory-restantes.json` + `isolation-multitheses.json` + `a1-lot*.json` + `isolation-fix.json` + ~265 captures | `bc71223`→`476862c` | 2 vues extérieures : 44 (LibreTranslate mort) + 36 (clé APInex nouvelle requise) ; 6 réservées ⚠️ : re-pass optionnel au cycle final |
+| 1 | 47 vues : statuts + preuves | ✅ **47/47 statuées** — **44 validées UI réelle + 3 pour cause extérieure (36, 44, 45)**. Détail : 7 validées v1.0 + 34/34 vues de lots traitées (32 validées UI réelle + 2 non testables extérieur : 44 LibreTranslate, 36 APInex) + **6 vues réservées revalidées en UI réelle au cycle final : 16/21/24/43/47 VALIDÉES + 45 VALIDÉE AVEC LIMITATION EXTERNE (recherche exécutée ; 3 sources inatteignables depuis le sandbox, diagnostic direct prouvé)** ; compte « 33 » corrigé en « 34 » (erreur d'addition documentée) | `a1-inventory-restantes.json` + `isolation-multitheses.json` + `a1-lot*.json` + `isolation-fix.json` + `reserved-views-revalidation.json` + `resv-db-final-state.json` (état DB final intact ligne-à-ligne) + ~300 captures | `bc71223`→`476862c` (lots) ; vues réservées `78812c6` | 3 vues extérieures closes avec réserve documentée : 44 (LibreTranslate publics morts) + 36 (clé APInex nouvelle requise — arbitrage propriétaire) + 45 (limitation externe) |
 | 2 | 13 actions destructives testées UI | ✅ **16/16** | `evidence/a2-lot1.json` + `a2-lot2.json` + 37 captures | `bc71223` + commit lot 2 | — |
 | 3 | Restauration `upload/` démontrée | ✅ | `evidence/a3-upload-restore.json` + doc §6 | `bc71223` | copie manuelle statique (limite documentée) |
 | 4 | Références par thèse mise en œuvre + revalidée, ou report formel | 🟡 **GO CONDITIONNEL — répétition générale exécutée sur copie** (isolation 16/16, rollback double prouvé, export réversible, plan d'exécution final 10 étapes) — migration base réelle EN ATTENTE de validation explicite propriétaire | `18_REPETITION_GENERALE_MIGRATION_REFS.md` + `evidence/rehearsal-refs.json` + `specs/ref-thesis-scoping/proposition-technique.md` | correctifs `6f853ac` (binding activeThesisId prérequis livré) | exécution réelle = décision propriétaire |
@@ -74,7 +79,7 @@ Verdict en vigueur : **GO SOUS CONDITIONS** — ni mise en production, ni ouvert
 | 6 | Build Windows + smoke CSP durcie | ⬜ procédure livrée | `15_PROCEDURE_BUILD_WINDOWS.md` (gabarit) | — | exécution propriétaire ; résultats rapportés séparément |
 | 7 | Purge git + secrets sécurisés | 🟡 **plan version exécutable prête** (§7 doc 13) | `evidence/a5-git-audit.json` + `13_PURGE_GIT_PLAN.md` §7 | `6158f4e` (désuivre .env) | révocation + validation plan + fenêtre de coordination = prérequis propriétaire ; 0 exécution |
 | 8 | Suite + TNR verts | ✅ à chaque contrôle | 1 658/1 658 + lint 0 err (2026-10-10) | `03037e2` | référence v1.1 maintenue |
-| 9 | Anomalies recensées, risques justifiés | 🟡 **P1 close + 8 P2 corrigées/validées** (commit `6f853ac`, preuves `isolation-fix.json`) ; 0 P1/P2 ouverte ; reste P3/P4 (~20 fiches, aucune bloquante) | registre §Vague 2-bis + §Vague 3 | `6f853ac` | P3/P4 = cycle à planifier ; résidu INITIAL_* = arbitrage propriétaire (doc 19) |
+| 9 | Anomalies recensées, risques justifiés | 🟡 **P1 close + 8 P2 corrigées/validées** (commit `6f853ac`, preuves `isolation-fix.json`) ; 0 P1/P2 ouverte ; reste P3/P4 (~20 fiches, aucune bloquante) — **AUD-SEC-004 : justification livrée (doc `23_AUD_SEC_004_DOSSIER_JUSTIFICATION.md` : recompte 41/99 routes sans schéma dont 10 mutantes avec écriture DB ; risque résiduel Basse argumenté) — décision propriétaire requise (options A/B/C, §6 du dossier) ; traitement progressif planifié si option B/C** | registre §Vague 2-bis + §Vague 3 + doc 23 | `6f853ac` | P3/P4 = cycle à planifier ; résidu INITIAL_* = arbitrage propriétaire (doc 19) ; AUD-SEC-004 = arbitrage propriétaire (doc 23) |
 | 10 | Incohérences corrigées ; preuves → commit | ✅ A4 + traçabilité | `reconciliation_A4` (7 canoniques) | `6abb3e8` | v1.0/v1.1 non modifiées |
 | 11 | Rapport v1.2 avec tableau de conformité | 🟡 présent document (itératif) | ce fichier | — | finalisé en vague 4 |
 

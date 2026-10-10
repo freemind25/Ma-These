@@ -1,0 +1,147 @@
+$ prisma generate && next build
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+┌─────────────────────────────────────────────────────────┐
+│  Update available 6.19.2 -> 8.0.0-rc.22                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 220ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+▲ Next.js 16.1.3 (Turbopack)
+- Environments: .env
+- Experiments (use with caution):
+  · proxyClientMaxBodySize: 67108864
+  · serverActions
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 30.9s
+  Running TypeScript ...
+  Collecting page data using 1 worker ...
+  Generating static pages using 1 worker (0/64) ...
+  Generating static pages using 1 worker (16/64) 
+  Generating static pages using 1 worker (32/64) 
+  Generating static pages using 1 worker (48/64) 
+✓ Generating static pages using 1 worker (64/64) in 415.2ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api
+├ ƒ /api/ai-config
+├ ƒ /api/ai-keys
+├ ƒ /api/ai-models
+├ ƒ /api/ai-probe
+├ ƒ /api/ai-test
+├ ƒ /api/ai-writing
+├ ƒ /api/ai-writing/stream
+├ ƒ /api/alignement-preuves
+├ ƒ /api/apinex/balance
+├ ƒ /api/apinex/chat
+├ ƒ /api/apinex/models
+├ ƒ /api/apinex/web-search
+├ ƒ /api/article-imports
+├ ƒ /api/article-imports/ocr
+├ ƒ /api/articles
+├ ƒ /api/articles/[id]
+├ ƒ /api/articles/analyze
+├ ƒ /api/articles/angles
+├ ƒ /api/articles/export-docx
+├ ƒ /api/articles/plan
+├ ƒ /api/articles/section
+├ ƒ /api/articles/translate
+├ ƒ /api/arxiv/search
+├ ƒ /api/book-skills
+├ ƒ /api/book-skills/[id]
+├ ƒ /api/books
+├ ƒ /api/cadrages/[id]
+├ ƒ /api/cadrages/[id]/fields
+├ ƒ /api/cadrages/[id]/versions
+├ ƒ /api/cadrages/fields/[fieldId]
+├ ƒ /api/chapter-draft/stream
+├ ƒ /api/chapters/[id]
+├ ƒ /api/chapters/[id]/versions
+├ ƒ /api/citation-check
+├ ƒ /api/coherence-check
+├ ƒ /api/core/search
+├ ƒ /api/corpus-publication
+├ ƒ /api/deep-research
+├ ƒ /api/directeur-chat
+├ ƒ /api/document-chunks
+├ ƒ /api/elements-analyse
+├ ƒ /api/elements-analyse/[id]
+├ ƒ /api/entries
+├ ƒ /api/entries/[id]
+├ ƒ /api/experiments
+├ ƒ /api/experiments/[id]
+├ ƒ /api/experiments/[id]/runs
+├ ƒ /api/experiments/[id]/runs/[runId]
+├ ƒ /api/export-docx
+├ ƒ /api/geo-mcp
+├ ƒ /api/jobs
+├ ƒ /api/jobs/[id]
+├ ƒ /api/journaux-oa
+├ ƒ /api/legal-refs
+├ ƒ /api/legal-refs/[id]
+├ ƒ /api/osm-infra
+├ ƒ /api/paper2code/generate
+├ ƒ /api/parts/[id]
+├ ƒ /api/references
+├ ƒ /api/references/[id]
+├ ƒ /api/references/bibtex
+├ ƒ /api/references/import
+├ ƒ /api/research-tabs/[id]
+├ ƒ /api/search
+├ ƒ /api/sources
+├ ƒ /api/sources/[id]
+├ ƒ /api/sources/[id]/entries
+├ ƒ /api/soutenance/generate
+├ ƒ /api/sprints
+├ ƒ /api/sprints/[id]
+├ ƒ /api/sprints/[id]/stories
+├ ƒ /api/stats
+├ ƒ /api/stats-recompute
+├ ƒ /api/stories/[id]
+├ ƒ /api/text-prediction
+├ ƒ /api/theses-en-ligne/search
+├ ƒ /api/theses/detail
+├ ƒ /api/theses/persons
+├ ƒ /api/theses/search
+├ ƒ /api/theses/stats
+├ ƒ /api/thesis
+├ ƒ /api/thesis-rag
+├ ƒ /api/thesis/[id]
+├ ƒ /api/thesis/[id]/cadrages
+├ ƒ /api/thesis/[id]/chapters
+├ ƒ /api/thesis/[id]/doctoral-toolbox
+├ ƒ /api/thesis/[id]/parts
+├ ƒ /api/thesis/[id]/research-tabs
+├ ƒ /api/thesis/[id]/soutenance
+├ ƒ /api/translate
+├ ƒ /api/types-analyse
+├ ƒ /api/types-analyse/seed
+├ ƒ /api/veille
+├ ƒ /api/veille/[id]
+├ ƒ /api/veille/[id]/check
+├ ƒ /api/veille/[id]/results
+├ ƒ /api/verification-carto
+└ ƒ /api/verification-publication
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

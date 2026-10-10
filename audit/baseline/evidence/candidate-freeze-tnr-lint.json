@@ -1,0 +1,129 @@
+{
+  "task_id": "T10-b",
+  "agent": "freeze-tnr-lint (Z.ai Code)",
+  "cycle": "audit-final-v1.2",
+  "objet": "Gel du commit candidat + TNR complète + lint sur candidat — preuve machine",
+  "date_consignation_utc": "2026-10-10T18:18:13Z",
+  "date_consignation_locale": "2026-10-10 18:18:13 UTC (heure conteneur)",
+  "red_lines_respectees": {
+    "modification_code": false,
+    "git_commit_push": false,
+    "ecriture_db_custom": false,
+    "db_custom_sha256_avant_tnr": "e73fb81f23628a06917049754e9e792e937482a6504b7c633acc012a51301613",
+    "db_custom_sha256_apres_tnr": "e73fb81f23628a06917049754e9e792e937482a6504b7c633acc012a51301613",
+    "db_custom_inviolee": true,
+    "skip_worktree": "S db/custom.db"
+  },
+  "gel_candidat": {
+    "commit_applicatif": {
+      "ref": "fb60ae1",
+      "hash": "fb60ae13dd99312979789b15875d68dd7d4081d8",
+      "attendu": "fb60ae13dd99312979789b15875d68dd7d4081d8",
+      "conforme": true,
+      "sujet": "fix(audit-final-v1.2): A1C1-01 P2 null-safety sélecteurs thèse (boîte doctorale, cadrage, équilibre)"
+    },
+    "commit_documentaire_attendu": {
+      "ref": "f4ca696",
+      "hash": "f4ca6966672dbda6f9c9bd9a78782054c44e8098",
+      "role": "doc 22 rapport pour le développeur (dernier commit poussé sur origin/main)",
+      "est_origin_main": true
+    },
+    "head_actuel": {
+      "hash": "315bf995182a05c6e4052f506ac7bb7bc98fecf7",
+      "attendu": "f4ca6966672dbda6f9c9bd9a78782054c44e8098",
+      "conforme_strict": false,
+      "explication": "HEAD = f4ca696 + 1 commit marqueur d'environnement LOCAL NON POUSSÉ (branche main « ahead 1 » de origin/main), sujet = UUID 4e95fcaa-77c8-4e91-805a-aa8d9a03a3bd, contenu = worklog.md uniquement (+16 lignes, entrée T9 du worklog). Pattern de marqueur établi dans ce dépôt (cf. ff51d39 = marqueur .zscripts/dev.pid, 500c6f6 = marqueur dev.log archive). Le contenu candidat f4ca696 est intact = parent immédiat de HEAD. Aucun fichier src/ ou prisma/ concerné.",
+      "origin_main": "f4ca6966672dbda6f9c9bd9a78782054c44e8098"
+    },
+    "hashes_archive": {
+      "archive_head_sha256": "17c5ef58644091f74d8d6ac4b60c07e0e80fbf987b76d4ec54871b4958de69d6",
+      "archive_head_commande": "git -C /home/z/my-project archive HEAD | sha256sum",
+      "archive_fb60ae1_sha256": "f79e38f425043b7e6ef0603c6a20bf8d6bf2c156fbbcfcdf70d6da8b8c2bccb4",
+      "archive_fb60ae1_commande": "git -C /home/z/my-project archive fb60ae1 | sha256sum"
+    },
+    "diff_fb60ae1_head": {
+      "commande": "git -C /home/z/my-project diff --stat fb60ae1..HEAD",
+      "resume": "43 fichiers changés, 554 insertions(+), 0 suppression",
+      "fichiers_par_categorie": {
+        "docs_audit_baseline_md": [
+          "audit/baseline/09_FINDINGS_REGISTER.md",
+          "audit/baseline/21_PLAN_EXECUTION_FINAL_MIGRATION_REELLE.md",
+          "audit/baseline/22_RAPPORT_POUR_DEV_2026-10-10.md"
+        ],
+        "evidence_audit_baseline": "39 fichiers (JSON preuves machine c1-prebuild-web.json, reserved-views-revalidation.json, resv-db-final-state.json ; txt residu-dryrun ; resv-16-export-bibtex.bib ; resv-47-export-t6b.docx ; 35 captures PNG resv-*)",
+        "marqueurs_environnement": [
+          "dev.log.archive-2026-10-10-t6b (512396 octets, binaire, archivage log dev)"
+        ],
+        "worklog": [
+          "worklog.md (+62 lignes : entrées T6-b/T7/T8 + T9)"
+        ]
+      },
+      "fichiers_src": 0,
+      "fichiers_prisma": 0,
+      "conforme": true,
+      "conclusion": "AUCUN fichier src/ ou prisma/ dans le diff — candidat applicatif inchangé depuis fb60ae1"
+    },
+    "arbre_de_travail": "propre (git status --porcelain vide hors skip-worktree db/custom.db)"
+  },
+  "tnr": {
+    "commande": "cd /home/z/my-project && bun run test:run",
+    "date_execution_utc_debut": "2026-10-10T18:18:39Z",
+    "fichiers_de_test": {
+      "passees": 78,
+      "total": 78,
+      "echoues": 0,
+      "ligne_exacte": " Test Files  78 passed (78)"
+    },
+    "tests": {
+      "passees": 1658,
+      "total": 1658,
+      "echecs": 0,
+      "ligne_exacte": "      Tests  1658 passed (1658)"
+    },
+    "attendu": "1658 tests passés, 0 échec",
+    "conforme": true,
+    "duree": {
+      "ligne_exacte": " Duration  18.00s (transform 1.32s, setup 0ms, import 6.26s, tests 2.35s, environment 6ms)",
+      "secondes": 18.0
+    }
+  },
+  "lint": {
+    "commande": "cd /home/z/my-project && bun run lint",
+    "erreurs": 0,
+    "warnings": 247,
+    "ligne_exacte": "✖ 247 problems (0 errors, 247 warnings)",
+    "code_sortie": 0,
+    "baseline_attendue": "0 erreur / 247 warnings",
+    "derive": false,
+    "conforme": true
+  },
+  "commandes_exactes": [
+    "git -C /home/z/my-project rev-parse HEAD",
+    "git -C /home/z/my-project rev-parse fb60ae1",
+    "git -C /home/z/my-project archive HEAD | sha256sum",
+    "git -C /home/z/my-project archive fb60ae1 | sha256sum",
+    "git -C /home/z/my-project diff --stat fb60ae1..HEAD",
+    "git -C /home/z/my-project status --porcelain",
+    "git -C /home/z/my-project ls-files -v | grep '^S '",
+    "sha256sum /home/z/my-project/db/custom.db (avant TNR, lecture seule)",
+    "cd /home/z/my-project && bun run test:run",
+    "sha256sum /home/z/my-project/db/custom.db (après TNR, lecture seule)",
+    "cd /home/z/my-project && bun run lint"
+  ],
+  "resultats_rapides": {
+    "tests": { "fichiers": 78, "tests_passees": 1658, "echecs": 0, "duree": "18.00s" },
+    "lint": { "erreurs": 0, "warnings": 247 }
+  },
+  "ecarts": [
+    {
+      "id": "T10b-EC-1",
+      "type": "HEAD_vs_attendu",
+      "constat": "HEAD = 315bf995182a05c6e4052f506ac7bb7bc98fecf7 au lieu de l'attendu f4ca6966672dbda6f9c9bd9a78782054c44e8098",
+      "analyse": "f4ca696 est bien le dernier commit POUSSÉ (origin/main) et le parent immédiat de HEAD ; HEAD ajoute un unique commit marqueur d'environnement local non poussé (sujet UUID 4e95fcaa-77c8-4e91-805a-aa8d9a03a3bd) ne contenant que worklog.md +16 lignes (entrée T9)",
+      "impact": "NUL sur le candidat : 0 fichier src/ ou prisma/ (prouvé par diff --stat fb60ae1..HEAD), commit applicatif fb60ae1 inchangé, TNR et lint exécutés sur cet arbre = code candidat à l'identique",
+      "action": "AUCUNE (red line : pas de commit/push pour cet agent) — consigné pour traçabilité ; le propriétaire décidera du traitement du marqueur (push normal ultérieur ou ignore)"
+    }
+  ],
+  "verdict": "CANDIDAT_GELÉ_TNR_LINT_VERTS",
+  "verdict_note": "Candidat applicatif fb60ae13dd99312979789b15875d68dd7d4081d8 gelé et vérifié par empreinte archive ; TNR 1658/1658 (78 fichiers) ; lint baseline exacte 0 erreur / 247 warnings ; db/custom.db inviolée (SHA identique avant/après) ; un seul écart documenté T10b-EC-1 (marqueur environnement local sur HEAD, sans impact code)."
+}
