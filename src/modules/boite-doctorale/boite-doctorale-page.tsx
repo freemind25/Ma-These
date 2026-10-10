@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useAppStore } from "@/lib/stores/app-store";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -437,12 +438,20 @@ export function BoiteDoctoralePage() {
 
   // ── Thesis selection ──
   const [selectedThesisId, setSelectedThesisId] = useState<string | null>(null);
+  // AUD-ISO-002 : défaut = thèse ACTIVE du store (jamais theses[0]) ;
+  // une sélection explicite dans la vue prime jusqu’au prochain changement de thèse active.
+  const activeThesisId = useAppStore((s) => s.activeThesisId);
+  useEffect(() => {
+    // la thèse active globale a changé → le sélecteur local redevient passif
+    setSelectedThesisId(null);
+  }, [activeThesisId]);
 
   const selectedThesis = useMemo(() => {
     if (!theses || theses.length === 0) return null;
-    const id = selectedThesisId || theses[0].id;
-    return theses.find((t) => t.id === id) || theses[0];
-  }, [theses, selectedThesisId]);
+    const id = selectedThesisId ?? activeThesisId;
+    if (!id) return null;
+    return theses.find((t) => t.id === id) ?? null;
+  }, [theses, selectedThesisId, activeThesisId]);
 
   const thesisId = selectedThesis?.id ?? null;
 
@@ -487,12 +496,32 @@ export function BoiteDoctoralePage() {
         setDocuments(safeParse<RequiredDocument[]>(toolboxData.documents, INITIAL_DOCUMENTS));
         setContacts(safeParse<Contact[]>(toolboxData.contacts, INITIAL_CONTACTS));
         setNotes(toolboxData.notes || "");
+        // AUD-ISO-003 : l’état fraîchement chargé est la baseline « déjà sauvegardée » →
+        // le débounce ne re-PUT pas à la simple visite (updatedAt intact).
+        lastSavedRef.current = JSON.stringify({
+          checklist: serializeChecklist(deserializeChecklist(toolboxData.checklist)),
+          milestones: JSON.stringify(safeParse<Milestone[]>(toolboxData.milestones, INITIAL_MILESTONES)),
+          documents: JSON.stringify(safeParse<RequiredDocument[]>(toolboxData.documents, INITIAL_DOCUMENTS)),
+          contacts: JSON.stringify(safeParse<Contact[]>(toolboxData.contacts, INITIAL_CONTACTS)),
+          notes: toolboxData.notes || "",
+        });
       } else {
         setPhases(INITIAL_PHASES);
         setMilestones(INITIAL_MILESTONES);
         setDocuments(INITIAL_DOCUMENTS);
         setContacts(INITIAL_CONTACTS);
         setNotes("");
+        // AUD-ISO-003 : PAS d’auto-création à la simple ouverture de la vue —
+        // le payload template initial est marqué « déjà sauvegardé » ; la 1ʳᵉ
+        // modification utilisateur réelle (case cochée, note…) déclenchera le POST,
+        // toujours sur la thèse active (thesisId = thèse affichée).
+        lastSavedRef.current = JSON.stringify({
+          checklist: serializeChecklist(INITIAL_PHASES),
+          milestones: JSON.stringify(INITIAL_MILESTONES),
+          documents: JSON.stringify(INITIAL_DOCUMENTS),
+          contacts: JSON.stringify(INITIAL_CONTACTS),
+          notes: "",
+        });
       }
     }
   }, [thesisId, toolboxData, toolboxLoading]);
@@ -667,18 +696,49 @@ export function BoiteDoctoralePage() {
 
   if (thesesLoading) return <LoadingSkeleton />;
 
-  if (!theses || theses.length === 0) {
+  if (!selectedThesis) {
+    // AUD-ISO-002 : thèse active manquante (ou aucune thèse) — état vide explicite
+    // avec sélecteur de secours ; aucune requête d’écriture n’est émise
+    // (la query toolbox et l’auto-save sont désactivés sans thesisId).
     return (
       <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+        {/* ── Header ── */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-rose-500 to-orange-500 text-white">
+              <Briefcase className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">Boîte doctorale</h1>
+              <p className="text-sm text-muted-foreground">
+                Votre boîte à outils complète pour le parcours doctoral
+              </p>
+            </div>
+          </div>
+        </div>
+        {theses && theses.length > 0 && (
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="text-sm font-medium">Thèse :</span>
+            {theses.map((t) => (
+              <Button key={t.id} variant="outline" size="sm" onClick={() => setSelectedThesisId(t.id)}>
+                {t.title}
+              </Button>
+            ))}
+          </div>
+        )}
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
             <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
               <FileText className="h-8 w-8 text-muted-foreground" />
             </div>
             <div className="text-center">
-              <h3 className="text-lg font-semibold">Aucune thèse disponible</h3>
+              <h3 className="text-lg font-semibold">
+                {!theses || theses.length === 0 ? "Aucune thèse disponible" : "Aucune thèse active"}
+              </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Créez d&apos;abord une thèse dans l&apos;éditeur pour utiliser la boîte doctorale.
+                {!theses || theses.length === 0
+                  ? "Créez d’abord une thèse dans l’éditeur pour utiliser la boîte doctorale."
+                  : "Ouvrez une thèse dans l’éditeur, ou sélectionnez-la ci-dessus, pour utiliser la boîte doctorale."}
               </p>
             </div>
           </CardContent>

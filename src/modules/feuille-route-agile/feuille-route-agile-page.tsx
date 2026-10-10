@@ -286,8 +286,10 @@ export function FeuilleRouteAgilePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(withAiConfig({
-          mode: "sprint_planning",
-          input: `Phase de thèse: ${PHASE_LABELS[activeSprint?.phase ?? "phase_2"] ?? "Rédaction"}. Sprint actuel: ${activeSprint?.title ?? ""}. Stories existantes: ${stories.map((s) => s.title).join(", ") || "aucune"}. Génère un plan de sprint avec 4-6 stories utilisateur pour la thèse.`,
+          // A1L2A-01 : contrat aligné sur /api/ai-writing ({mode, prompt}) avec un
+          // mode existant dans WRITING_MODES — sprint_planning/input provoquaient un 400.
+          mode: "freeform",
+          prompt: `Phase de thèse: ${PHASE_LABELS[activeSprint?.phase ?? "phase_2"] ?? "Rédaction"}. Sprint actuel: ${activeSprint?.title ?? ""}. Stories existantes: ${stories.map((s) => s.title).join(", ") || "aucune"}. Génère un plan de sprint avec 4-6 stories utilisateur pour la thèse.`,
         })),
       });
       if (!res.ok) throw new Error("Erreur IA");
@@ -297,7 +299,8 @@ export function FeuilleRouteAgilePage() {
       toast.success("Suggestion IA générée", {
         description: "Consultez les suggestions dans la zone de texte.",
       });
-      setAiSuggestion(data.data?.result ?? data.result ?? "Aucune suggestion générée.");
+      // A1L2A-01 : la réponse /api/ai-writing expose { data: { content, mode, model } }
+      setAiSuggestion(data.data?.content ?? data.content ?? "Aucune suggestion générée.");
     },
     onError: () => toast.error("Impossible de générer des suggestions IA"),
   });

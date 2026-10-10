@@ -33,7 +33,7 @@ function useAIStream() {
       const res = await fetch("/api/ai-writing/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: userText, mode, context }),
+        body: JSON.stringify({ prompt: userText, mode, context }), // A1L3A-03 : contrat {prompt, mode} (content → 400)
         signal: controller.signal,
       });
 
@@ -211,7 +211,7 @@ Génère :
 6. **Plan de test proposé** : type de test statistique, design expérimental
 
 Sois précis et académique. Chaque hypothèse doit être falsifiable.`;
-    hypotheses.generate(prompt, "generation-hypotheses", context);
+    hypotheses.generate(prompt, "hypothesis", context); // A1L3A-03 : mode WRITING_MODES valide (« generation-hypotheses » n’existe pas)
   }, [researchQuestion, fieldOfStudy, hypotheses, toast]);
 
   const handleOperationalize = useCallback(() => {
@@ -234,7 +234,7 @@ Génère pour chaque hypothèse :
 6. **Matrice de codification** : comment chaque variable sera codée
 
 Sois pratique et doctoral.`;
-    operational.generate(prompt, "generation-hypotheses");
+    operational.generate(prompt, "hypothesis"); // A1L3A-03 : idem
   }, [operationalInput, hypotheses.output, operational, toast]);
 
   const handleExportPrereg = useCallback(() => {
@@ -250,8 +250,9 @@ Sois pratique et doctoral.`;
   }, [prereg, toast]);
 
   const handleCopyToPrereg = useCallback(() => {
-    if (!hypotheses.output) {
-      toast({ title: "Pas d'hypothèses", description: "Générez d'abord des hypothèses", variant: "destructive" });
+    // A1L3A-04 : ne jamais transférer un texte d’erreur IA (préfixe ❌) dans le pré-enregistrement
+    if (!hypotheses.output || hypotheses.output.includes("❌")) {
+      toast({ title: "Pas d'hypothèses", description: hypotheses.output?.includes("❌") ? "La génération a échoué — corrigez l’erreur avant de transférer" : "Générez d'abord des hypothèses", variant: "destructive" });
       return;
     }
     setPrereg(prev => ({

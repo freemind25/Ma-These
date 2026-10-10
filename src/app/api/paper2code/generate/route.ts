@@ -232,7 +232,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const apiKey = getApiKey(provider);
+  // A1L3B-01 : l’absence de clé est une configuration manquante, PAS un crash —
+  // réponse JSON explicite (503) au lieu d’un 500 corps vide masquant l’erreur.
+  let apiKey: string;
+  try {
+    apiKey = getApiKey(provider);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return new Response(
+      JSON.stringify({
+        error: `${msg} Aucune clé n’est configurée pour ce fournisseur — configurez-la dans les réglages IA ou le fichier .env du serveur. (Cause externe : configuration, non défaut applicatif.)`,
+      }),
+      { status: 503, headers: { "Content-Type": "application/json" } }
+    );
+  }
 
   const encoder = new TextEncoder();
   let callCount = 0;

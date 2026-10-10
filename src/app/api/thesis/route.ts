@@ -13,7 +13,17 @@ export async function GET() {
       include: {
         chapters: {
           orderBy: { sortOrder: "asc" },
-          select: { id: true, number: true, title: true, wordCount: true, status: true },
+          // AUD-FUNC-007 : partId + sortOrder requis par la vue Plan
+          // (badges « N chap. » par partie, chips de détachement, tri)
+          select: {
+            id: true,
+            number: true,
+            title: true,
+            wordCount: true,
+            status: true,
+            partId: true,
+            sortOrder: true,
+          },
         },
       },
     });

@@ -78,7 +78,16 @@ describe('GET /api/thesis', () => {
       include: {
         chapters: {
           orderBy: { sortOrder: 'asc' },
-          select: { id: true, number: true, title: true, wordCount: true, status: true },
+          // AUD-FUNC-007 : partId + sortOrder requis par la vue Plan (badges par partie)
+          select: {
+            id: true,
+            number: true,
+            title: true,
+            wordCount: true,
+            status: true,
+            partId: true,
+            sortOrder: true,
+          },
         },
       },
     });

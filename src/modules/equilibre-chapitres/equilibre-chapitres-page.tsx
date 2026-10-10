@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { useAppStore } from "@/lib/stores/app-store";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAiConfig } from "@/hooks/use-ai-config";
@@ -127,6 +128,13 @@ export function EquilibreChapitresPage() {
   const { withAiConfig } = useAiConfig();
   const { data: theses, isLoading } = useTheses();
   const [selectedThesisId, setSelectedThesisId] = useState<string | null>(null);
+  // AUD-ISO-002 : défaut = thèse ACTIVE du store (jamais theses[0]) ;
+  // une sélection explicite dans la vue prime jusqu’au prochain changement de thèse active.
+  const activeThesisId = useAppStore((s) => s.activeThesisId);
+  useEffect(() => {
+    // la thèse active globale a changé → le sélecteur local redevient passif
+    setSelectedThesisId(null);
+  }, [activeThesisId]);
   const [localTargets, setLocalTargets] = useState<Record<string, number>>({});
   const [editingTarget, setEditingTarget] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState("");
@@ -134,12 +142,13 @@ export function EquilibreChapitresPage() {
   const [aiLoading, setAiLoading] = useState(false);
   const [deadline, setDeadline] = useState<string>("");
 
-  // Select thesis
+  // Select thesis — AUD-ISO-002 : pas de repli silencieux sur theses[0]
   const selectedThesis = useMemo(() => {
     if (!theses || theses.length === 0) return null;
-    const id = selectedThesisId || theses[0].id;
-    return theses.find((t) => t.id === id) || theses[0];
-  }, [theses, selectedThesisId]);
+    const id = selectedThesisId ?? activeThesisId;
+    if (!id) return null;
+    return theses.find((t) => t.id === id) ?? null;
+  }, [theses, selectedThesisId, activeThesisId]);
 
   // Chapters with analysis
   const chaptersAnalysis = useMemo<ThesisAnalysis[]>(() => {
@@ -257,18 +266,46 @@ Propose dans les sections suivantes :
 
   if (isLoading) return <LoadingSkeleton />;
 
-  if (!theses || theses.length === 0) {
+  if (!selectedThesis) {
+    // AUD-ISO-002 : thèse active manquante (ou aucune thèse) — état vide explicite
+    // avec sélecteur de secours ; vue en lecture seule, aucune écriture possible.
     return (
       <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+        {/* Header */}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <Scale className="h-6 w-6 text-primary" />
+            <h1 className="text-2xl font-bold tracking-tight">
+              Équilibre des chapitres
+            </h1>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Analysez la répartition de vos chapitres, définissez des objectifs et obtenez des recommandations IA.
+          </p>
+        </div>
+        {theses && theses.length > 0 && (
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium">Thèse :</span>
+            {theses.map((t) => (
+              <Button key={t.id} variant="outline" size="sm" onClick={() => setSelectedThesisId(t.id)}>
+                {t.title}
+              </Button>
+            ))}
+          </div>
+        )}
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
             <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
               <FileText className="h-8 w-8 text-muted-foreground" />
             </div>
             <div className="text-center">
-              <h3 className="text-lg font-semibold">Aucune thèse disponible</h3>
+              <h3 className="text-lg font-semibold">
+                {!theses || theses.length === 0 ? "Aucune thèse disponible" : "Aucune thèse active"}
+              </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Créez d&apos;abord une thèse dans l&apos;éditeur pour analyser l&apos;équilibre de vos chapitres.
+                {!theses || theses.length === 0
+                  ? "Créez d’abord une thèse dans l’éditeur pour analyser l’équilibre de vos chapitres."
+                  : "Ouvrez une thèse dans l’éditeur, ou sélectionnez-la ci-dessus, pour analyser son équilibre."}
               </p>
             </div>
           </CardContent>

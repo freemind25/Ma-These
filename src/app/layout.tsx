@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster"; // A1L2B-02 : Toaster shadcn (use-toast) jamais monté → toasts invisibles ~10 modules
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,7 +58,8 @@ export default function RootLayout({
           <QueryProvider>
             {children}
           </QueryProvider>
-          <Toaster richColors position="bottom-right" />
+          <SonnerToaster richColors position="bottom-right" />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

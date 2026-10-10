@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   ListTree,
   Copy,
@@ -495,11 +495,16 @@ function ChapterListSkeleton() {
 // ═══════════════════════════════════════
 
 export function ThesisPlanPage() {
-  const { setCurrentView } = useAppStore();
+  // AUD-ISO-001 : la vue Plan opère TOUJOURS sur la thèse ACTIVE (store),
+  // jamais sur theses[0] (tri updatedAt desc) — écriture cross-thèse interdite.
+  const { setCurrentView, activeThesisId } = useAppStore();
 
   // --- Fetch thesis list ---
   const { data: theses, isLoading } = useTheses();
-  const activeThesis = theses?.[0] ?? null;
+  const activeThesis = useMemo(
+    () => theses?.find((t) => t.id === activeThesisId) ?? null,
+    [theses, activeThesisId]
+  );
   const thesisId = activeThesis?.id ?? null;
 
   // --- Parts ---
@@ -699,9 +704,13 @@ export function ThesisPlanPage() {
                   <AlertCircle className="h-6 w-6 text-muted-foreground" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Aucune thèse trouvée</p>
+                  <p className="text-sm font-medium">
+                    {theses && theses.length > 0 ? "Aucune thèse active" : "Aucune thèse trouvée"}
+                  </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Créez d&apos;abord une thèse pour visualiser son plan.
+                    {theses && theses.length > 0
+                      ? "Ouvrez une thèse dans l’éditeur pour visualiser et modifier son plan."
+                      : "Créez d’abord une thèse pour visualiser son plan."}
                   </p>
                 </div>
                 <Button

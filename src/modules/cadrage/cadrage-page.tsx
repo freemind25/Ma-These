@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAiConfig } from "@/hooks/use-ai-config";
+import { useAppStore } from "@/lib/stores/app-store";
 import {
   Compass,
   FileText,
@@ -182,6 +183,13 @@ export function CadragePage() {
   const { data: theses, isLoading: thesesLoading } = useTheses();
 
   const [selectedThesisId, setSelectedThesisId] = useState<string | null>(null);
+  // AUD-ISO-002 : défaut = thèse ACTIVE du store (jamais theses[0]) ;
+  // une sélection explicite dans la vue prime jusqu’au prochain changement de thèse active.
+  const activeThesisId = useAppStore((s) => s.activeThesisId);
+  useEffect(() => {
+    // la thèse active globale a changé → le sélecteur local redevient passif
+    setSelectedThesisId(null);
+  }, [activeThesisId]);
   const [creatingCadrage, setCreatingCadrage] = useState(false);
   const [savingFieldId, setSavingFieldId] = useState<string | null>(null);
   const [aiDraftLoading, setAiDraftLoading] = useState(false);
@@ -192,12 +200,13 @@ export function CadragePage() {
   // Track local field values for unsaved edits
   const [localFieldValues, setLocalFieldValues] = useState<Record<string, string>>({});
 
-  // Thesis selection
+  // Thesis selection — AUD-ISO-002 : pas de repli silencieux sur theses[0]
   const selectedThesis = useMemo(() => {
     if (!theses || theses.length === 0) return null;
-    const id = selectedThesisId || theses[0].id;
-    return theses.find((t) => t.id === id) || theses[0];
-  }, [theses, selectedThesisId]);
+    const id = selectedThesisId ?? activeThesisId;
+    if (!id) return null;
+    return theses.find((t) => t.id === id) ?? null;
+  }, [theses, selectedThesisId, activeThesisId]);
 
   const thesisId = selectedThesis?.id ?? null;
 
@@ -529,18 +538,44 @@ Fournissez une analyse structurée en français. Ne corrigez pas automatiquement
 
   if (thesesLoading) return <LoadingSkeleton />;
 
-  if (!theses || theses.length === 0) {
+  if (!selectedThesis) {
+    // AUD-ISO-002 : thèse active manquante (ou aucune thèse) — état vide explicite
+    // avec sélecteur de secours ; JAMAIS d’écriture silencieuse sur theses[0].
     return (
       <div className="max-w-5xl mx-auto flex flex-col gap-6 p-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Compass className="h-6 w-6 text-primary" />
+            Cadrage de la thèse
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Définissez et structurez le cadrage préliminaire de votre projet de recherche.
+          </p>
+        </div>
+        <Separator />
+        {theses && theses.length > 0 && (
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="text-sm font-medium">Thèse :</span>
+            {theses.map((t) => (
+              <Button key={t.id} variant="outline" size="sm" onClick={() => setSelectedThesisId(t.id)}>
+                {t.title}
+              </Button>
+            ))}
+          </div>
+        )}
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
             <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
               <FileText className="h-8 w-8 text-muted-foreground" />
             </div>
             <div className="text-center">
-              <h3 className="text-lg font-semibold">Aucune thèse disponible</h3>
+              <h3 className="text-lg font-semibold">
+                {!theses || theses.length === 0 ? "Aucune thèse disponible" : "Aucune thèse active"}
+              </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Créez d&apos;abord une thèse dans l&apos;éditeur pour cadrer votre projet.
+                {!theses || theses.length === 0
+                  ? "Créez d’abord une thèse dans l’éditeur pour cadrer votre projet."
+                  : "Ouvrez une thèse dans l’éditeur, ou sélectionnez-la ci-dessus, pour cadrer votre projet."}
               </p>
             </div>
           </CardContent>
