@@ -1838,3 +1838,15 @@ Stage Summary:
 - Endpoints observés : PUT /api/research-tabs/{id} (Effacer, debounce 1,5 s), DELETE /api/research-tabs/{id}, DELETE /api/article-imports?id={id}, DELETE /api/articles/{id}, DELETE /api/legal-refs/{id}, DELETE /api/stories/{id}, DELETE /api/sprints/{id}.
 - REGISTRE C-3 CLÔTURÉ : 16/16 actions destructives vérifiées en UI réelle (3 C-3 + 5 lot 1 + 1 lot 1c + 7 lot 2) — « avancement_registre » : « 16/16 vérifiées en UI réelle » consigné dans a2-lot2.json.
 - État propriétaire strictement préservé (diff DB before/after vide) ; 1 anomalie environnement (serveur dev à redémarrer) + 1 observation statique P3 (removeImport sans res.ok) consignées sans correction (contrainte aucun code modifié).
+
+---
+Task ID: W1-9 (audit-final-v1.2 / synthèse de communication)
+Agent: Z.ai Code (session principale)
+Task: Produire un rapport d'étape autonome transmissible au développeur, sur demande du propriétaire.
+
+Work Log:
+- Lecture de l'état complet : BASELINE_AUDIT_REPORT_v1.2.md (73 l.), tasks.md (T1-T9 statuts), git log (8 commits du cycle f904c87→c01f5bd), fin du worklog (W1-7b/7c/8b), comptage preuves (157 PNG, 21 JSON), date 2026-10-10, arbre propre HEAD==origin/main==c01f5bd.
+- Rédaction audit/baseline/16_SYNTHESE_ETAPE_POUR_DEV.md : synthèse autonome (cadre 4 lots, réalisations vagues 1+2 avec commits, tableau conformité 11 critères, anomalies découvertes AUD-FUNC-007+P3, 6 règles contraignantes pour reprise, reste à faire réparti dev/propriétaire, moyens de vérification, incidents).
+
+Stage Summary:
+- 16_SYNTHESE_ETAPE_POUR_DEV.md livré — document de communication distinct des rapports canoniques (v1.0 immuable, v1.1 historique, v1.2 itératif) ; aucune modification de code, fichiers rouges intacts, db skip-worktree intacte.
