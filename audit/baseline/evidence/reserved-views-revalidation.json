@@ -1,0 +1,104 @@
+{
+  "task": "T6-b — Revalidation des 6 vues réservées (exigence §3 du propriétaire, 2026-10-10)",
+  "cycle": "audit-final-v1.2",
+  "commit_applicatif": "6f853ac5ae2b332a5966f59b4b1d8e4ca8e216b5",
+  "methode": "UI réelle headless (agent-browser/Chromium, SPA port 3000) + contre-vérification API (curl) + analyse fichier",
+  "etat_proprietaire": {
+    "invariant": "Aucune donnée propriétaire altérée — objets de test préfixés AUDIT-T6b- créés puis supprimés via les flux UI",
+    "preuve": "evidence/resv-db-final-state.json (integrity ok, 0 violation FK, baseline exacte : 1 thèse/7 chapitres, updatedAt 2026-08-10T08:22:35.464Z inchangé, 4 références, résidu DoctoralToolbox intact createdAt=updatedAt=09:17:21.942, 58 book-skills, 27 legal-refs, 0 veille)",
+    "sha_db_fin": "e73fb81f23628a06917049754e9e792e937482a6504b7c633acc012a51301613 (variance de fichier attendue : cycles écriture/suppression de test ; l'état ligne-à-ligne est la référence)"
+  },
+  "vues": {
+    "16_references": {
+      "statut": "VALIDÉE",
+      "reserve_v1_0": "suppression sans confirmation — LEVÉE (preuve matérielle cette session)",
+      "controles_executes": [
+        "Rendu + liste : 4 références propriétaire affichées (GET /api/references concordant)",
+        "Création dialog « Nouvelle référence » (zod) : POST 201, 5 références en base (AUDIT-T6b-Référence jetable)",
+        "AlertDialog « Supprimer cette référence ? » : capture resv-16-dialog-suppression.png",
+        "Clic « Annuler » : 0 DELETE émis — 5 références en base après (preuve API comptage)",
+        "Clic « Supprimer » : DELETE exécuté — 4 références (nettoyage complet)",
+        "Export BibTeX : GET /api/references/bibtex → HTTP 200, 846 o, format @article valide (resv-16-export-bibtex.bib)"
+      ],
+      "preuves": ["resv-16-vue-initiale.png", "resv-16-ref-creee.png", "resv-16-dialog-suppression.png", "resv-16-apres-annuler.png", "resv-16-apres-suppression-nettoyage.png", "resv-16-export-bibtex.bib"],
+      "risque_residuel": "Aucun sur la réserve. Le rattachement par thèse (thesisId) reste un chantier séparé — plan d'exécution au document 21."
+    },
+    "21_recherche_plein_texte": {
+      "statut": "VALIDÉE",
+      "reserve_v1_0": "recherche jamais exercée en UI — EXERCÉE cette session",
+      "controles_executes": [
+        "Stats : 7 documents indexés, 2 295 mots, dernière mise à jour 4 octobre 2026 (UI = API meta concordants)",
+        "Recherche UI « urbanisme durable » : 2 résultats (chap. I Introduction générale, VII Conclusion) avec snippets, scores (Très pertinent 241.75), statuts, attribution « Thèse : Urbanisme durable — Marie Dupont »",
+        "Opérateur booléen NOT : « urbanisme NOT durable » → 0 résultat (exclusion vérifiée UI + API)",
+        "Opérateur AND : « urbanisme AND durable » → résultats identiques à la recherche simple (intersection vérifiée)",
+        "Concordance UI ↔ API : GET /api/search?q=… retourne les mêmes résultats (champ data[].score 241.75)"
+      ],
+      "preuves": ["resv-21-vue-initiale.png", "resv-21-recherche-resultats.png", "resv-21-operateur-and.png"],
+      "risque_residuel": "Point d'isolation documenté (non bloquant à 1 thèse) : le dropdown de chapitres est construit depuis theses[0] (motif AUD-FUNC-007) alors que la recherche interroge tous les chapitres de toutes les thèses — à corriger lors du cycle P3 / implémentation thesisId."
+    },
+    "24_veille_academique": {
+      "statut": "VALIDÉE",
+      "reserve_v1_0": "UI jamais exercée (seule la trace worker constituait la preuve) — UI EXERCÉE BOUT EN BOUT cette session",
+      "controles_executes": [
+        "Création via flux UI réel : vue 22 « Thèses en ligne » → recherche HAL réelle « urbanisme » → 910 thèses trouvées → bouton « suivre cette recherche » → dialog → POST 201 (veille AUDIT-T6b, source hal)",
+        "Liste vue 24 : carte complète (switch autoCheck, Vérifier, Renommer, Supprimer)",
+        "Check manuel n°1 : 50 résultats réels HAL stockés, lastCheckedAt mis à jour (2026-10-10T16:58:03.575Z)",
+        "Switch « Vérification automatique » : checked=true (UI + API concordants) ; worker de balayage 60 s opérationnel (logs dev)",
+        "AlertDialog « Supprimer cette veille ? » : « Annuler » → 0 suppression (comptage 1 avant/après Annuler) ; « Supprimer » → veille supprimée + CASCADE (GET results → 404)",
+        "État final : 0 veille, 0 résultat en base (réponse brute {\"data\":[],\"meta\":{\"count\":0}})"
+      ],
+      "preuves": ["resv-24-hal-resultats.png", "resv-24-dialog-suivre.png", "resv-24-veille-creee.png", "resv-24-vue-liste.png", "resv-24-check-manuel.png", "resv-24-autocheck-active.png", "resv-24-dialog-suppression.png", "resv-24-apres-suppression-nettoyage.png", "resv-24-etat-final-vide.png"],
+      "risque_residuel": "Dépendance externe HAL (joignable, 910 résultats) ; arXiv éprouvé lot 4a (482 résultats). Aucun risque bloquant."
+    },
+    "43_livres_competences": {
+      "statut": "VALIDÉE",
+      "reserve_v1_0": "vue jamais exécutée en UI (« intégration prouvée cycle antérieur ») — EXERCÉE cette session",
+      "controles_executes": [
+        "Rendu des 6 onglets : Auto-evaluation / Ressources / Progression / IA / Bibliothèque / Registre juridique (cosmétique connu : TabsList grid-cols-4 pour 6 onglets)",
+        "Onglet Bibliothèque — recherche : « writing » → 22 résultats (API GET /api/book-skills?search=writing concordant) ; « rédaction » → 0 résultat légitime (contenu anglais) ; état vide propre",
+        "Onglet Bibliothèque — création : dialog « Nouvelle ressource » (zod : bouton Créer désactivé tant que titre/contenu <10 car.) → POST 201 (AUDIT-T6b-Ressource jetable, id cmv2n5tzn0029netc1z4qwj1h)",
+        "Onglet Bibliothèque — suppression : confirm() NATIF navigateur « Supprimer cette ressource ? » (capture en état bloquant) → accepté → suppression vérifiée API (0 résultat)",
+        "Onglet Registre juridique : 27 LegalRefs réels rendus (Loi n° 90-29 aménagement/urbanisme, Loi n° 04-05…) avec switches/Modifier/Supprimer",
+        "Onglet Auto-evaluation : changement de niveau Débutant→Intermédiaire → score recalculé 25/100 → 30/100 (interactivité prouvée)",
+        "Baseline restaurée : 58 book-skills, 27 legal-refs (comptages exacts)"
+      ],
+      "preuves": ["resv-43-vue-initiale.png", "resv-43-biblio-recherche.png", "resv-43-dialog-ressource.png", "resv-43-ressource-creee.png", "resv-43-ressource-filtree.png", "resv-43-apres-suppression.png", "resv-43-registre-juridique.png", "resv-43-autoevaluation.png", "resv-43-autoeval-score-recalcule.png"],
+      "risque_residuel": "Auto-évaluation non persistée (useState local, perdu au reload) — comportement documenté, non une régression ; onglet IA non exercé (1 appel /api/ai-writing, contrat déjà validé vues 13/32)."
+    },
+    "45_bibliotheque": {
+      "statut": "VALIDÉE AVEC LIMITATION EXTERNE",
+      "reserve_v1_0": "« recherche non exécutée » — RECHERCHE EXÉCUTÉE cette session",
+      "controles_executes": [
+        "Rendu : badge « 7 sources », boutons 3 APIs + 4 liens externes, annuaire « Sources disponibles »",
+        "Recherche UI « urbanisme » : flux complet exercé (saisie → bouton Rechercher → état « Recherche... » → agrégation → état 0 résultat propre, capture)",
+        "API GET /api/books?q=urbanisme → HTTP 200 en 10,5 s : structure {results:{openlibrary:[],gutenberg:[],standardebooks:[]},totalResults:0} — agrégateur fonctionnel",
+        "Contrat d'erreur : GET /api/books?q= (vide) → HTTP 400 (garde zod respectée)",
+        "Diagnostic externe (honnêteté) : openlibrary.org = connexion bloquée depuis le sandbox (réponse vide) ; gutendex.com = challenge Cloudflare (« Just a moment... ») ; standardebooks.org = injoignable/404 sur la route publique testée → 3/3 sources externes inatteignables depuis CET environnement (échec silencieux documenté de l'app = comportement conforme)",
+        "Requête contrôle « shakespeare » (anglais) : 0 résultat via app — cohérent avec le blocage réseau, écart applicatif exclu"
+      ],
+      "preuves": ["resv-45-vue-initiale.png", "resv-45-recherche-resultats.png", "resv-45-etat-zero-resultat.png"],
+      "risque_residuel": "L'affichage de résultats positifs avec données réelles n'est PAS observable depuis le sandbox (3 sources externes bloquées) — même classe d'écarts que vues 44/36 déjà qualifiées « non testables cause extérieure ». Le chemin de parsing des réponses externes réussies (non exécuté ici) est couvert par les tests unitaires existants. Justification du risque : l'agrégation, la garde 400, l'état 0-résultat et la navigation sont prouvés ; seule la branche « réponse externe 200 parsée » reste non observée — faible, mono-bloc, code inchangé depuis v1.0."
+    },
+    "47_export_docx": {
+      "statut": "VALIDÉE",
+      "reserve_v1_0": "« promesses de formatage » — LEVÉE (analyse ZIP/XML profonde)",
+      "controles_executes": [
+        "Rendu : sélecteur thèse (Urbanisme durable), 7/2 295 attendus, toutes options (page de garde, TDM, références, notes, 12pt, 1.5, marges, en-tête, numéros de page)",
+        "Génération UI : bouton « Générer le document DOCX » → POST /api/export-docx → HTTP 200 (trace réseau agent-browser)",
+        "Export API complet (options max, notes de bas de page incluses) : HTTP 200, 17 968 o — resv-47-export-t6b.docx",
+        "Analyse ZIP : archive ZIP valide (PK), « Microsoft Word 2007+ », word/document.xml 40 010 o, styles.xml, header1.xml, footer1.xml, numbering.xml, footnotes.xml",
+        "12/12 vérifications de formatage PASS : styles Word réels Heading1/2/3 · Times New Roman · page de garde (titre) · TDM (sdt/TOC) · bibliographie « Références » · interligne 1.5 (w:line=360) · numéros de page (footer PAGE) · en-tête personnalisé · footnotes.xml (3 notes) · chapitres « Introduction générale » et « Conclusion » présents"
+      ],
+      "preuves": ["resv-47-vue-initiale.png", "resv-47-generation-toast.png", "resv-47-toast-plein-ecran.png", "resv-47-export-t6b.docx"],
+      "risque_residuel": "Binding du sélecteur : auto-sélection list[0] au chargement — à expliciter en multi-thèses (exigence §6-bis, même famille que AUD-ISO-002 corrigé ailleurs) ; non bloquant à 1 thèse, consigné P3."
+    }
+  },
+  "synthese": {
+    "validées": ["16", "21", "24", "43", "47"],
+    "validée_avec_limitation_externe": ["45"],
+    "non_testables_cause_externe": [],
+    "tableau_conformite_47_vues_apres_repass": "39 validées UI réelle + 5 réservées revalidées (16/21/24/43/47) = 44 — 45 validée avec limitation externe (classe vues 44/36) — 36 APInex et 44 Traducteur non testables cause extérieure (inchangés)"
+  },
+  "erreurs_console": "3 lignes error-level constatées pendant la session, toutes attribuables aux 3 sources externes bloquées de la vue 45 (openlibrary/gutendex/standardebooks) — aucun autre défaut console/UI",
+  "tnr": "vitest 1658/1658 verts (78 fichiers, 17,44 s) rejoués la même session avant la revalidation UI"
+}

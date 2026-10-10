@@ -1,0 +1,37 @@
+{
+  "titre": "C1 pré-contrôle — build web de production (copie isolée /tmp/build-check)",
+  "date": "2026-10-10",
+  "portee": "PRÉ-CONTRÔLE DEV — ne remplace pas la preuve C1 formelle du propriétaire (doc 14), qu'il exécute sur le commit candidat final de distribution",
+  "methodologie": "Copie hard-link du dépôt (node_modules en liens physiques lecture seule) + base jetable — ni le serveur dev (port 3000) ni db/custom.db réel ne sont touchés. Smoke test serveur standalone sur port 3100, arrêté après test.",
+  "anomalies_detectees_et_corrigees": {
+    "fiche": "A1C1-01 (P2 — build bloquant, null-safety)",
+    "description": "TypeScript strict (ignoreBuildErrors:false) : `theses` (useQuery, Thesis[]|undefined) utilisé sans garde dans 3 sélecteurs de thèse introduits par AUD-ISO-002 (commit 6f853ac) — `next dev` ne type-checke pas à chaud, seul le build de production échoue",
+    "fichiers": [
+      "src/modules/boite-doctorale/boite-doctorale-page.tsx:771",
+      "src/modules/cadrage/cadrage-page.tsx:603",
+      "src/modules/equilibre-chapitres/equilibre-chapitres-page.tsx:333"
+    ],
+    "correctif": "3 lignes : `{theses.length > 1 && …}` → `{theses && theses.length > 1 && …}` (motif déjà utilisé l.719 du même fichier) — aucun changement de comportement",
+    "decouverte": "RENDUE POSSIBLE PAR CE PRÉ-CONTRÔLE — le propriétaire aurait rencontré l'échec à son C1"
+  },
+  "build": {
+    "commande": "bunx next build (copie isolée, DATABASE_URL → copie jetable)",
+    "resultat_initial": "ÉCHEC TypeScript (A1C1-01, 4 occurrences non-test)",
+    "resultat_final": "SUCCÈS — compilé en ~30 s, type-check OK, manifeste complet des routes généré (statique + API dynamiques)",
+    "next_version": "16.1.3 (Turbopack)",
+    "note": "tsc --noEmet : les erreurs *.test.ts préexistantes (mocks vitest) sont hors périmètre du type-check de next build (preuve : le build réel n'en rapporte aucune)"
+  },
+  "smoke_test_serveur_standalone": {
+    "port": "3100 (serveur dev 3000 intact)",
+    "base": "copie transactionnelle VACUUM INTO de db/custom.db (jetable) — note : une copie `cp` brute d'une base WAL active produit P1008 (timeout) au premier accès API ; VACUUM INTO = copie checkpointée 100 % saine",
+    "resultats": {
+      "demarrage": "✓ Ready in 92ms, module backup opérationnel",
+      "GET /": "200 — 168 567 o, <title>Ma Thèse — Assistant de thèse</title>",
+      "GET /api/thesis": "200 — 0,086 s",
+      "GET /api/references": "200 — 4 références (état propriétaire de la copie)",
+      "GET /api/search?q=urbanisme": "200 — résultats réels (chap. I Introduction générale)"
+    },
+    "arret": "serveur de test arrêté après smoke — aucun processus résiduel"
+  },
+  "conclusion": "PRÉ-CONTRÔLE_WEB_VALIDE : le build de production passe (après correctif A1C1-01) et le serveur standalone sert l'application + les API. La preuve C1 formelle reste à produire par le propriétaire sur le commit candidat final (doc 14)."
+}

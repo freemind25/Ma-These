@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-10-10T17:04:22.657Z",
+  "theses": [
+    {
+      "id": "cmsmyrdfs0000pa2sews4vo90",
+      "title": "Urbanisme durable",
+      "updatedAt": "2026-08-10T08:22:35.464Z",
+      "_count": {
+        "chapters": 7
+      }
+    }
+  ],
+  "references": [
+    {
+      "id": "cmsn1z0bt0000patk9xduej9u",
+      "title": "Méthodologies qualitatives en urbanisme",
+      "createdAt": "2026-08-10T09:52:30.569Z"
+    },
+    {
+      "id": "cmsz0h3w80000shkhsukj2pb7",
+      "title": "Test Reference for E2E Testing",
+      "createdAt": "2026-08-18T18:43:49.880Z"
+    },
+    {
+      "id": "cmsz38jar0001shy343tdx6fy",
+      "title": "Test Reference T4 Persistence",
+      "createdAt": "2026-08-18T20:01:08.787Z"
+    },
+    {
+      "id": "cmu4daa0b0003t39r00dtmbqm",
+      "title": "A Digital Twin Framework for Decision-Support and Optimization of EV Charging Infrastructure in Localized Urban Systems",
+      "createdAt": "2026-09-16T17:20:59.436Z"
+    }
+  ],
+  "doctoralToolbox": [
+    {
+      "id": "cmv26kryu001oq7vhdotgwrc1",
+      "thesisId": "cmsmyrdfs0000pa2sews4vo90",
+      "createdAt": "2026-10-10T09:17:21.942Z",
+      "updatedAt": "2026-10-10T09:17:21.942Z"
+    }
+  ],
+  "counts": {
+    "savedSearch": 0,
+    "savedSearchResult": 0,
+    "customBookSkill": 58,
+    "legalRef": 27,
+    "experiment": 1,
+    "notebookEntry": 1
+  },
+  "integrity_check": [
+    {
+      "integrity_check": "ok"
+    }
+  ],
+  "foreign_key_violations": 0,
+  "baselines_attendues": {
+    "theses": 1,
+    "references": 4,
+    "doctoralToolbox": 1,
+    "savedSearch": 0,
+    "customBookSkill": 58,
+    "legalRef": 27
+  }
+}

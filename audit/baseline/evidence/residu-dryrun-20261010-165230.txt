@@ -1,0 +1,10 @@
+SHA avant : 2e3e3f9336bfe8f4ff70c3307260115cf331f2e2cdc368c73209958fa8848bb7
+[MODE] DRY-RUN (aucune écriture)
+[GARDE] contenu en base identique octet pour octet au template INITIAL_* exporté — suppression autorisée par les gardes
+[THÈSE] "Urbanisme durable" updatedAt avant : 2026-08-10T08:22:35.464Z
+[DRY-RUN] suppression simulée : deleteMany({ where: { id: 'cmv26kryu001oq7vhdotgwrc1', thesisId: 'cmsmyrdfs0000pa2sews4vo90' } })
+[POST] DoctoralToolbox count = 1 (attendu 0)
+[POST] thèse intacte : title="Urbanisme durable", 7 chapitre(s), updatedAt INCHANGÉ
+[FIN] dry-run terminé, AUCUNE écriture effectuée
+SHA après : 2e3e3f9336bfe8f4ff70c3307260115cf331f2e2cdc368c73209958fa8848bb7
+VERDICT: SHA IDENTIQUE — ZÉRO ÉCRITURE PROUVÉE
