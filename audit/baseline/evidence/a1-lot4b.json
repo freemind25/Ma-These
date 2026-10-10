@@ -1,0 +1,171 @@
+{
+ "task": "A1 lot 4b (3 vues de clôture : Export PDF, Vérification cartographique, APInex Playground) — pass UI réel agent-browser avec preuve réseau, comptages DB avant/après, net nul. AUCUNE modification de code.",
+ "task_id": "W2-5b",
+ "cycle": "audit-final-v1.2",
+ "date": "2026-10-10",
+ "baseline_git": "3fd0f2f",
+ "lots": "4b — clôture (46, 30, 36)",
+ "methode": "HONNÊTETÉ DE LA PREUVE : parcours UI réels agent-browser (headless Chromium) avec captures séquentielles a1-lot4b-*.png ; audit réseau par agent-browser network requests (journal CDP du daemon, refs 4156.*/6148.*) ; persistance testée par reload quand applicable ; comptages DB node @prisma/client LECTURE SEULE avant et après (script one-shot temporaire supprimé) ; distinction explicite VÉRIFIÉ UI RÉEL vs REVUE DE CODE et TEST RÉEL vs NON TESTABLE EXTÉRIEUR (statut_externe par vue) ; revues de code lecture seule préalables (modules + routes) ; budget IA 1 génération/vue ; fichiers téléchargés vérifiés HORS ARBRE (/home/z/Downloads puis copie /tmp, RIEN dans le dépôt) ; écritures DB limitées aux objets AUDIT-L4b- créés puis supprimés VIA LES FLUX UI CONFIRMÉS. INCIDENT INFRA consigné : next-server (dev, pid 1634, RSS 2,6 Go) tué par OOM noyau à 11:08 pendant la vue 46 — serveur relancé à l'identique (next dev -p 3000, double-fork daemon), 0 code touché.",
+ "vues": [
+  {
+   "id": 46,
+   "nav_id": "export-pdf",
+   "nom": "Export PDF",
+   "module": "src/modules/export-pdf/export-pdf-page.tsx (1 339 l., toast sonner importé l.40, jsPDF + html2canvas-pro l.39-40) — GÉNÉRATION 100 % CLIENT-SIDE (0 route API d'export, 0 prisma) ; lectures : GET /api/thesis (liste) + GET /api/thesis/[id]/chapters (chapitres complets) + GET /api/references (notes de bas de page, option)",
+   "revue_de_code": [
+    "MÉCANISME DE SÉLECTION DE THÈSE (consigné) : selectedThesisId=null au montage, combobox « Sélectionner une thèse… » (l.155, l.721) — PAS d'auto-sélection theses[0] ; l'export LIT la thèse choisie par l'utilisateur (2 GET lecture seule) — l'export du propriétaire est donc une LECTURE, autorisée ; AUCUNE écriture thèse-scopée possible dans ce module → thèse jetable NON nécessaire",
+    "Options ExportOptions (l.72-79) : fontSize 10/11/12 pt, lineSpacing 1.0/1.5/2.0, margins normal/narrow/wide (MARGIN_MAP 2,5/1,5/3,5 cm), includePageNumbers, includeToc, includeCoverPage, includeFootnotes (citations Auteur, année → exposant + références en fin, formatReferenceApa)",
+    "Génération PDF (handleDownloadPdf l.547-615) : generatePrintHtml() → DOMParser → conteneur off-screen 210 mm → html2canvas scale 2 → jsPDF A4 'p','mm' → découpage pages par hauteur → pdf.save(filename) → toast.success('PDF téléchargé avec succès') (sonner, VISIBLE) ; erreur → setError inline (l.614)",
+    "2 autres exports : « Imprimer / Sauvegarder PDF » (boîte dialogue impression navigateur — non testé headless) et « Télécharger HTML » (a.download l.540, filename dérivé du titre, SANS toast — silencieux)",
+    "Gardes : onglets Aperçu/Exporter disabled tant que !selectedThesisId || selectedChapters.length===0 (l.693, l.697) ; « Tout désélectionner » ↔ « Tout sélectionner » toggle",
+    "Aucune clé API, aucun secret : 0 process.env côté module"
+   ],
+   "fonctionnalites": [
+    "Sélection thèse + chapitres (checkboxes, auto-sélection complète, compteur « x sur 7 · y mots »)",
+    "Métadonnées de couverture pré-remplies depuis la thèse (titre, auteur, directeur, université, année, laboratoire, discipline)",
+    "Options typographiques (police, interligne, marges, couverture, TDM, numéros de page, notes de bas de page)",
+    "Aperçu iframe live (document mis en page), résumé d'export (chapitres/mots/pages estimées/options), 3 modes de sortie (impression, PDF téléchargé, HTML)"
+   ],
+   "parcours_executes": [
+    "11:02 — visite : état vide propre — combobox « Sélectionner une thèse... », onglets Aperçu + Exporter DISABLED, métadonnées vides, année par défaut 2026 (capture -46-visite-vide)",
+    "11:04 — sélection du PROPRIÉTAIRE « Urbanisme durable 7 chap. » via combobox (LECTURE autorisée) → 3 GET 200 [4156.183-185] (/api/thesis ×2 + /api/thesis/cmsmyrdfs…/chapters) → chapitres auto-cochés 7/7, compteur « 7 sur 7 chapitres sélectionnés · 2 295 mots » (conforme DB), métadonnées pré-remplies (titre « Urbanisme durable », auteur « Marie Dupont »), onglets déverrouillés (capture -46-these-selectionnee)",
+    "11:05 — garde 0 chapitre : « Tout désélectionner » → « 0 sur 7 · 0 mots », onglets Aperçu/Exporter re-DISABLED (capture -46-garde-0-chapitre) → re-sélection (« Tout sélectionner ») → 7/7 · 2 295 mots",
+    "11:06 — onglet Aperçu : iframe rend la mise en page réelle — page de titre (« Urbanisme durable », « Sous la direction de »), Table des matières, les 7 titres de chapitres, texte RÉEL du chap. I (paragraphe « Le concept d'urbanisme durable recouvre une pluralité d'approches… ») — capture -46-apercu-iframe",
+    "11:07 — onglet Exporter : résumé (Chapitres 7, Mots totaux 2 295, Pages estimées ~7, Format A4 PDF, options Police 12 pt/Interligne 1.5/Marges Normales/Couverture Oui/TDM Oui/N° pages Oui/Notes Non) + contenu (TDM 7 entrées, mots par chapitre I=1 957 … VII=338) (capture -46-exporter-avant)",
+    "11:08 — « Télécharger PDF » → GÉNÉRATION RÉELLE client-side → /home/z/Downloads/Urbanisme_durable.pdf 41 689 452 octets (copie /tmp/a1-lot4b-urbanisme-durable.pdf) — vérifié : magique %PDF-1.3, 4 pages (/Type /Page), toast sonner « PDF téléchargé avec succès » (capture -46-apres-generation)",
+    "11:08 — « Télécharger HTML » → /home/z/Downloads/Urbanisme_durable.html 28 517 octets (copie /tmp) — SANS toast (silencieux, conforme au code)",
+    "11:09-11:11 — INCIDENT : le serveur next dev (pid 1634, RSS 2,6 Go depuis 07:44, cumul lots 1→4a) est TUÉ PAR LE NOYAU (OOM global, dmesg « Out of memory: Killed process 1634 (next-server v1) ») pendant les régénérations ; onglet chrome-error ; RÉCUPÉRATION INFRA : redémarrage du MÊME serveur (node node_modules/.bin/next dev -p 3000, double-fork daemon car nohup/setsid sont réapés par le sandbox) → 200 rétabli, 0 code touché, dev.log non suivi",
+    "11:17 — re-parcours complet post-redémarrage (nouvelle session réseau [6148.*]) : sélection thèse → 7/7 · 2 295 mots → Exporter → « Télécharger PDF » → 2ᵉ génération RÉELLE réussie → « Urbanisme_durable (2).pdf » 41 689 452 octets (identique, reproductible, copie /tmp/a1-lot4b-urbanisme-durable-gen2.pdf) → toast sonner OBSERVÉ EN DOM « TOAST_VISIBLE: PDF téléchargé avec succès » (poll ~1,8 s après clic, capture -46-toast-sonner-pdf) — CONTRASTE avec A1L2B-02 : ce module utilise sonner (monté), pas use-toast"
+   ],
+   "etats_erreurs": [
+    "État vide (aucune thèse sélectionnée) : onglets Aperçu/Exporter disabled — propre (UI réelle)",
+    "Garde 0 chapitre : onglets re-disabled, compteur 0/7 — propre (UI réelle)",
+    "Erreur de génération : non déclenchée (2/2 générations réussies) ; le chemin catch (l.613-615) met setError inline — REVUE DE CODE uniquement"
+   ],
+   "persistance": "AUCUNE — génération 100 % client-side (jsPDF/html2canvas), 0 POST/PUT/DELETE, 0 prisma côté serveur pour l'export ; les seuls appels sont 2 GET lecture (liste + chapitres) — reload réinitialise la sélection (selectedThesisId local)",
+   "isolation_multitheses": "Conforme — sélection explicite par l'utilisateur (pas de binding theses[0]) ; l'export lit UNIQUEMENT la thèse choisie (cmsmyrdfs… = propriétaire, LECTURE autorisée, 0 octet modifié) ; aucune écriture possible → pas de thèse jetable nécessaire",
+   "actions_destructives_statut": "Aucune action destructive dans la vue (export = lecture + téléchargement hors arbre ; fichiers dans /home/z/Downloads, copies de preuve dans /tmp, RIEN écrit dans le dépôt)",
+   "statut_externe": "AUCUNE DÉPENDANCE EXTERNE (génération locale navigateur) — TEST RÉEL RÉUSSI ; l'option « Notes de bas de page » fetcherait /api/references (interne) — non activée (restée Non, défaut) ; incident OOM serveur = infrastructure, documenté dans parcours",
+   "statut": "VALIDÉE — parcours complet UI réel (sélection, gardes, aperçu, options, génération PDF réelle ×2 vérifiée hors arbre, export HTML vérifié, toast visible), cohérence contenu prouvée (7 titres + 2 295 mots corps + métadonnées dans l'HTML ; PDF 4 pages image-based), 0 écriture DB",
+   "anomalies": [],
+   "captures": [
+    "a1-lot4b-46-visite-initiale.png",
+    "a1-lot4b-46-visite-vide.png",
+    "a1-lot4b-46-these-selectionnee.png",
+    "a1-lot4b-46-garde-0-chapitre.png",
+    "a1-lot4b-46-apercu.png",
+    "a1-lot4b-46-apercu-iframe.png",
+    "a1-lot4b-46-exporter-avant.png",
+    "a1-lot4b-46-apres-generation.png",
+    "a1-lot4b-46-toast-sonner-pdf.png"
+   ]
+  },
+  {
+   "id": 30,
+   "nav_id": "verification-carto",
+   "nom": "Vérification cartographique",
+   "module": "src/modules/verification-carto/verification-carto-page.tsx (1 856 l., 5 onglets) + POST/GET /api/verification-carto (350 l.) + /api/geo-mcp (outils MCP intégrés au process Next) + /api/osm-infra (143 l. → src/lib/osm-infra.ts 1 700+ l., Overpass QL + failover 2 endpoints + Nominatim) + /api/elements-analyse + /api/types-analyse(/seed)",
+   "revue_de_code": [
+    "5 onglets : Éléments (CRUD ElementAnalyse GLOBAL — modèle SANS thesisId, schema.prisma l.434-449), Vérification (modules A completude rule-based / B questionneur IA / C geo-enrich MCP), Historique (SessionVerification GET), Carto MCP (santé + enrichissement), Explorateur (InfraExplorer → /api/osm-infra → Overpass RÉEL)",
+    "PERSISTANCES (consignées) : completude + questionneur + save-session ÉCRIVENT db.sessionVerification.create (route l.148-236) — AUCUN handler DELETE dans la route ni bouton de suppression dans l'UI → lignes NON PURGEABLES via l'application ; element POST/DELETE = purgeable via flux UI confirmé",
+    "Module C geo-enrich : 0 écriture DB (retourne des enrichissements calculés) ; outils MCP géocodage (Nominatim), altitude (open-meteo), distance, superficie",
+    "Overpass : OVERPASS_ENDPOINTS = [overpass-api.de, maps.mail.ru] avec reprise automatique 3 tentatives + backoff (l.1470-1542) ; géocodage Nominatim séparé",
+    "Décision d'audit : completude/questionneur/save-session NON EXÉCUTÉS — chaque exécution créerait une SessionVerification non purgeable (ni UI ni API) et violerait l'invariant ABSOLU diff DB VIDE ; le cœur externe demandé (requête Overpass réelle) est couvert par l'onglet Explorateur (lecture seule). Budget IA : 0 génération consommée (questionneur non appelé)"
+   ],
+   "fonctionnalites": [
+    "Référentiel disciplinaire (seed idempotent types-analyse) + éléments d'analyse groupés en phases avec compteur « x sur 38 attendu »",
+    "Explorateur OSM : recherche en langage naturel (« hôpitaux à Paris ») → parseur → Overpass QL → résultats avec « Voir sur la carte » (iframe OSM embed)",
+    "Modules de vérification A/B/C + historique des sessions par site d'étude"
+   ],
+   "parcours_executes": [
+    "11:19 — visite : init → POST /api/types-analyse/seed ×2 200 (idempotent) + GET types-analyse + GET elements-analyse + GET geo-mcp health 200 ; onglet Éléments : « 1 » élément préexistant du PROPRIÉTAIRE (« Quartier de la Gare, Montpellier », OpenStreetMap) affiché — jamais modifié (capture -30-visite)",
+    "11:20 — Explorateur : saisie « hôpitaux à Alger » → bouton Rechercher → POST /api/osm-infra 400 ×3 → erreur INLINE propre « Type d'infrastructure non reconnu… » SANS crash (capture -30-overpass-resultats) → ANOMALIE A1L4B-01 (le PLURIEL « hôpitaux » n'est pas matché par le parseur /hôpital|hospital/ l.1295 alors que le placeholder du module suggère exactement « hôpitaux à Paris »)",
+    "11:22 — diagnostic curl (lecture seule) : « hôpital à Alger » (singulier) → 200 avec DONNÉES RÉELLES (Polyclinique Les Sources, 36.7339/3.0582, tags OSM complets) ; « écoles à Alger » → 200 (Lycée Okba…) ; « hospital in Paris » → « All Overpass API endpoints failed after 3 attempts: fetch failed » (fenêtre transitoire) — preuve que le failover 2-endpoints fonctionne",
+    "11:24 — diagnostic réseau direct hors app : overpass-api.de → TCP connect FAIL (HTTP 000 en 0,6 s, IPv4 162.55.144.139 ET IPv6 testés) ; maps.mail.ru/osm/tools/overpass → HTTP 200 « Connected as: 792324328 » (miroir joignable) ; Nominatim → 200 (géocodage Alger 36.77/3.06) ; témoin sortant arXiv → 200 — CONCLUSION : overpass-api.de est bloqué/filtré depuis le sandbox, le miroir mail.ru assure le service (failover A.7 opérationnel)",
+    "11:26 — Explorateur UI : « hôpital à Alger » → POST /api/osm-infra 200 → « Résultats 23 résultats — Hôpital — hôpital à Alger », liste de 23 hôpitaux RÉELS avec « Voir sur la carte » → clic 1ᵉʳ résultat → carte OSM recentrée (capture -30-overpass-23-resultats-carte)",
+    "11:28 — Éléments : formulaire rempli (nom AUDIT-L4b-Perimetre-test, type Périmètre urbain, nature Spatial, source OSM) → Ajouter DISABLED tant que champs requis vides (garde UI réelle) puis activé → POST /api/elements-analyse 201 → onglet « Éléments 2 » (capture -30-element-ajoute) ; suppression VIA FLUX CONFIRMÉ : poubelle → AlertDialog « Supprimer cet élément d'analyse ? » (capture -30-dialog-suppression) → Supprimer → DELETE /api/elements-analyse/cmv2b2f9z… 200 → retour « Éléments 1 » (élément propriétaire intact) — NET NUL",
+    "11:31 — Vérification : « Vérifier la complétude » + « Poser des questions méthodologiques » DISABLED à site d'étude vide (garde UI réelle) ; saisie site « AUDIT-L4b-Alger-test » → complétude activé, questionneur RESTÉ disabled (exige ≥1 élément) — NON CLIQUÉS (décision d'audit : SessionVerification non purgeable) (capture -30-garde-site-etude)",
+    "11:33 — Carto MCP : bouton « Enrichir les éléments avec le MCP géographique » activé (santé OK, 1 élément) → clic → POST /api/verification-carto 400 SILENCIEUX (aucun message à l'écran — catch console.error uniquement) → ANOMALIE A1L4B-02 : éléments avec dateSource=null (cas de l'élément propriétaire et de tout élément créé via le formulaire qui laisse la date vide) rejetés par le schéma Zod (dateSource z.string().optional() — null invalide, route l.115) → preuve par rejeu curl : {\"error\":\"Données invalides\",\"details\":[{\"path\":[\"elements\",0,\"dateSource\"],\"code\":\"invalid_type\",\"message\":\"expected string, received null\"}]} (capture -30-carto-mcp + -30-geo-enrich)",
+    "11:35 — Historique : filtré par site d'étude → GET /api/verification-carto?siteEtudeId=AUDIT-L4b-Alger-test… 200 → 0 session (vide propre, bouton Actualiser) ; les 2 sessions préexistantes du propriétaire (autres siteEtudeId) NON consultées en détail ni modifiées (capture -30-historique)"
+   ],
+   "etats_erreurs": [
+    "Parseur : « hôpitaux à Alger » → 400 + message inline propre (A1L4B-01)",
+    "geo-enrich : 400 silencieux (dateSource null) — AUCUN feedback UI (A1L4B-02)",
+    "Overpass indisponible (fenêtre transitoire) : « All Overpass API endpoints failed after 3 attempts: fetch failed » — message d'erreur affiché inline",
+    "Gardes : boutons disabled (Rechercher ≤3 car. — note : condition native respectée, l'état React ne suivait pas la saisie programmatique initiale ; complétude exige site d'étude ; questionneur exige éléments)"
+   ],
+   "persistance": "Éléments : ElementAnalyse GLOBAL (sans thesisId) — POST 201 + DELETE 200 testés, net nul. Sessions : SessionVerification écrite par completude/questionneur/save-session SANG SUPPRESSION POSSIBLE (route sans DELETE, UI sans bouton) — NON EXÉCUTÉS pour préserver l'invariant diff VIDE ; typeAnalyseMethodologique : seed idempotent (1 ligne avant = 1 ligne après attendu)",
+   "isolation_multitheses": "NON THÈSE-SCOPÉ PAR CONCEPTION : ElementAnalyse, SessionVerification, TypeAnalyseMethodologique sont des tables GLOBALES (aucun lien thesis) — la vue n'écrit jamais dans les tables thèse-scopées ; thèse jetable NON nécessaire (aucune écriture thèse-scopée possible) ; élément du propriétaire affiché mais jamais modifié",
+   "actions_destructives_statut": "Suppression d'élément : testée A2 lot 1 (consignée) — utilisée ICI uniquement pour le CLEANUP de l'objet AUDIT-L4b- via le flux confirmé (AlertDialog → DELETE 200), pas de retest",
+   "statut_externe": "OVERPASS : TEST RÉEL RÉUSSI AVEC RÉSERVE — le endpoint primaire overpass-api.de est INJOIGNABLE depuis l'environnement (TCP connect fail IPv4+IPv6, filtrage sortant), le service fonctionne VIA LE FAILOVER sur le miroir maps.mail.ru (reprise automatique A.7, prouvée par 200 + 23 résultats réels) ; Nominatim (géocodage) 200 ; fenêtre transitoire documentée où les 2 endpoints ont échoué (« fetch failed » après 3 tentatives) ; dépendance externe résiliente mais concentrée sur un miroir",
+   "statut": "VALIDÉE AVEC 2 ANOMALIES P3 — Overpass réel prouvé (23 hôpitaux d'Alger), CRUD élément net nul, gardes propres ; modules completude/questionneur NON EXÉCUTÉS (décision d'audit : persistance SessionVerification non purgeable → invariant diff VIDE préservé) — leur revue de code est consignée",
+   "anomalies": [
+    "A1L4B-01 P3 — Parseur osm-infra : le pluriel « hôpitaux » (forme EXACTE du placeholder « hôpitaux à Paris ») n'est pas reconnu par /hôpital|hospital/i (l.1295) → 400 « Type d'infrastructure non reconnu » systématique sur le pluriel français ; le singulier passe",
+    "A1L4B-02 P3 — Module C geo-enrich inutilisable pour les éléments sans date : le client envoie dateSource:null mais le schéma Zod exige string-ou-omis → 400 « Données invalides » ; l'échec est SILENCIEUX côté UI (catch console.error, aucun message) — touché aussi bien pour l'élément du propriétaire que pour tout élément créé via le formulaire (dateSource jamais requise à la création)"
+   ],
+   "captures": [
+    "a1-lot4b-30-visite.png",
+    "a1-lot4b-30-explorateur-requete.png",
+    "a1-lot4b-30-overpass-resultats.png",
+    "a1-lot4b-30-overpass-23-resultats-carte.png",
+    "a1-lot4b-30-formulaire-rempli.png",
+    "a1-lot4b-30-element-ajoute.png",
+    "a1-lot4b-30-dialog-suppression.png",
+    "a1-lot4b-30-onglet-verification.png",
+    "a1-lot4b-30-garde-site-etude.png",
+    "a1-lot4b-30-carto-mcp.png",
+    "a1-lot4b-30-geo-enrich.png",
+    "a1-lot4b-30-historique.png"
+   ]
+  },
+  {
+   "id": 36,
+   "nav_id": "apinex",
+   "nom": "APInex Playground",
+   "module": "src/modules/apinex/apinex-page.tsx (900 l., useToast shadcn — toasts INVISIBLES A1L2B-02) + proxys serveur src/app/api/apinex/{models,balance,web-search,chat} → src/lib/apinex/apinex-client.ts (base https://api.apinex.bond, clé Bearer sk-apx… lue UNIQUEMENT côté serveur via process.env.APINEX_API_KEY)",
+   "revue_de_code": [
+    "Clé : getApinexApiKey() = process.env.APINEX_API_KEY (client l.9) — JAMAIS exposée au client (les proxys n'entrent la clé que dans l'appel upstream) ; réponse models inclut hasKey (booléen) mais jamais la valeur",
+    "Sans clé : balance/web-search/chat → 500 {error:{message:'APINEX_API_KEY manquante côté serveur', type:'config_error'}} AVANT tout appel upstream ; models → GET public /api/public/models upstream (sans clé) + hasKey:false",
+    "Chat : SSE stream (postChatStream) ; erreurs non-SSE gérées l.328-360 → toast use-toast (INVISIBLE) MAIS message d'erreur AUSSI rendu inline dans la conversation (« Échec de la requête »)",
+    "UI : bannière « Clé API absente — Ajoutez APINEX_API_KEY dans le fichier .env du serveur » (l.535) quand la clé manque ; encarts solde « — » ; lien externe Dashboard https://apinex.bond/overview",
+    "AUCUNE clé testée (consigne) : la clé historique est INTERDITE (exposée) et aucune clé nouvelle n'a été fournie ; 0 ajout à .env.local ; aucune tentative d'authentification"
+   ],
+   "fonctionnalites": [
+    "Catalogue de modèles APInex (36 dont 18 gratuits) avec prix/contexte/health, sélecteur, température, tokens max, prompt système",
+    "Conversation streaming avec toggle Recherche web (≈600 tokens/appel), solde/dépenses (dashboard), bouton Effacer",
+    "1 clé serveur unique pour 7 fournisseurs (concept « une clé, tous les modèles »)"
+   ],
+   "parcours_executes": [
+    "11:38 — visite : GET /api/apinex/models 200 (catalogue PUBLIC RÉEL chargé — 36 modèles dont claude-sonnet-5.5, deepseek-v4.1-flash, free/glm-5.3-flash…) + GET /api/apinex/balance 500 ×2 → bannière inline « Clé API absente — Ajoutez APINEX_API_KEY dans le fichier .env du serveur », encarts « Solde disponible — / Dépensé / Réservé — » propres, PAS de crash (capture -36-visite)",
+    "11:40 — modèle par défaut free/glm-5.3-flash GRATUIT (contexte 1M, prix Gratuit), température 0.7, tokens max 1024 ; encart « Les modèles free/* fonctionnent même avec un solde à 0 $ »",
+    "11:41 — chat SANS clé : message « Test audit AUDIT-L4b : réponds en un mot. » → Envoyer activé → POST /api/apinex/chat → HTTP 500 [6148.414] → la conversation affiche INLINE « Échec de la requête — APINEX_API_KEY manquante côté serveur » (fallback visible propre, PAS seulement le toast invisible A1L2B-02), conversation non bloquée, bouton Effacer apparu (capture -36-echec-500-sans-cle)",
+    "11:43 — secret-check : regex sk-[a-zA-Z0-9]{8,} sur l'innerText = FALSE — AUCUNE valeur de clé lue/affichée nulle part (seul le NOM de variable APINEX_API_KEY apparaît comme instruction) ; link Dashboard = https://apinex.bond/overview (externe, non suivi)",
+    "11:44 — reload → conversation RESET (état local uniquement, 0 persistance DB)",
+    "11:45 — diagnostic hors app (aucune clé envoyée) : GET https://api.apinex.bond/api/public/models direct → HTTP 200 en 1,1 s (service externe VIVANT) ; /api/apinex/balance local → {\"ok\":false,\"error\":\"APINEX_API_KEY manquante côté serveur\"} ; grep -c APINEX_API_KEY sur .env.local/.env/.env.development = 0 occurrence (aucune clé configurée, valeurs jamais lues)"
+   ],
+   "etats_erreurs": [
+    "Balance sans clé : 500 config_error → encarts « — » + bannière « Clé API absente » (propre)",
+    "Chat sans clé : 500 config_error → erreur INLINE « APINEX_API_KEY manquante côté serveur » dans la conversation (propre, visible) + toast use-toast INVISIBLE (A1L2B-02 matérialisée aussi ici, par revue de code l.353-360)",
+    "Web-search sans clé : même config_error (revue de code l.23 — non déclenché en UI, même chemin de garde serveur)"
+   ],
+   "persistance": "AUCUNE — playground stateless (0 prisma dans les 4 routes apinex, 0 écriture DB) ; reload = reset complet (prouvé)",
+   "isolation_multitheses": "Sans objet — aucune lecture/écriture thèse ; aucune interaction avec les 4 références globales ni avec les tables métier",
+   "actions_destructives_statut": "Aucune action destructive (Effacer = reset état local, non destructif)",
+   "statut_externe": "NON TESTABLE POUR CAUSE EXTÉRIEURE — CLÉ NOUVELLE REQUISE AUPRÈS DU PROPRIÉTAIRE : le service upstream api.apinex.bond est VIVANT (HTTP 200 sur l'endpoint public models) mais toute fonctionnalité authentifiée (solde, chat, recherche web) exige APINEX_API_KEY côté serveur ; état actuel : aucune clé configurée (grep .env* = 0 occurrence du nom, valeurs jamais lues) ; la clé historique est INTERDITE de réutilisation (exposée) et AUCUNE nouvelle clé n'a été fournie à ce jour → ni chat réel ni solde ni web-search testables ; v1.0 rapportait 402 — v1.2 : le proxy renvoie désormais 500 config_error AVANT l'appel upstream (pas de 402 observable sans clé)",
+   "statut": "VALIDÉE AVEC RÉSERVE EXTERNE (comportement sans clé exhaustivement testé en UI réel : bannière, encarts « — », erreur inline de chat, secret-check négatif, reload reset ; fonctions authentifiées non testables — voir statut_externe)",
+   "anomalies": [],
+   "captures": [
+    "a1-lot4b-36-visite.png",
+    "a1-lot4b-36-message-saisi.png",
+    "a1-lot4b-36-echec-500-sans-cle.png"
+   ]
+  }
+ ],
+ "audit_reseau": "Rattachement par URL (journal CDP refs 4156.* pré-incident puis 6148.* post-redémarrage) — vue 46 : 3 GET lecture (thesis ×2 + chapters) à la sélection du propriétaire, 0 requête pour les générations PDF/HTML (100 % client-side jsPDF), 0 POST/PUT/DELETE ; vue 30 : POST types-analyse/seed ×2 (idempotent), GET types-analyse + elements-analyse + geo-mcp health, POST osm-infra 400×3 (parseur pluriel) puis 200 (Overpass réel via failover), POST elements-analyse 201 + DELETE 200 (net nul AUDIT-L4b-), GET verification-carto?siteEtudeId… 200 (historique 0 session), POST verification-carto 400 (geo-enrich dateSource null — A1L4B-02) ; vue 36 : GET apinex/models 200 (catalogue public réel) + GET apinex/balance 500 ×2 + POST apinex/chat 500 (config_error sans clé) ; diagnostics hors UI lecture seule : Overpass direct (overpass-api.de TCP fail, maps.mail.ru 200), Nominatim 200, arXiv témoin 200, api.apinex.bond public 200 ; 0 requête parasite ; 0 appel LLM (budget IA 0/3 consommé — aucune fonction IA exécutée : questionneur non appelé (décision d'audit), APInex sans clé) ; écritures DB de session : 1 ElementAnalyse AUDIT-L4b- créée puis supprimée VIA FLUX UI CONFIRMÉ → NET NUL (diff avant/après VIDE)",
+ "etat_proprietaire": {
+  "before": "a1-lot4b-db-before.json — conforme à l'attendu : 1 thèse « Urbanisme durable » (cmsmyrdfs0000pa2sews4vo90, 7 chap, updatedAt 2026-08-10T08:22:35.464Z), 4 réf, 16 ImportedDoc, 1 Article + 1v, 1 Experiment + 1 run, 27 LegalRef, 24 Job, 1 ElementAnalyse (« Quartier de la Gare, Montpellier » — affiché dans la vue 30, jamais modifié), 1 TypeAnalyse, 2 SessionVerification (préexistantes, non touchées), 1 NotebookEntry (témoin), 1 DoctoralToolbox (résidu documenté, non touché), 0 SavedSearch",
+  "after": "a1-lot4b-db-after.json — DIFF AVANT/APRÈS VIDE sur les 30 tables ; updatedAt thèse inchangé (2026-08-10T08:22:35.464Z, 7 chapitres) ; l'unique écriture de session (1 ElementAnalyse AUDIT-L4b-Perimetre-test) a été supprimée VIA LE FLUX UI CONFIRMÉ (AlertDialog → DELETE 200) avant le comptage final ; completude/questionneur/save-session volontairement NON exécutés pour ne pas créer de SessionVerification non purgeable",
+  "identique": true,
+  "ecarts": "AUCUN — résidu DoctoralToolbox inchangé, témoin NotebookEntry intact, l'interaction avec le propriétaire s'est limitée à des LECTURES (2× GET thesis+chapters pour l'export PDF — autorisé, 0 modification ; affichage de son élément cartographique en lecture seule)"
+ }
+}
