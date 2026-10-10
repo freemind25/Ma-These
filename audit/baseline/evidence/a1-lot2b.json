@@ -1,0 +1,251 @@
+{
+  "task": "A1 lot 2b (4 vues : Méthodologie 26, Analyse du champ 27, Outils SLR 28, Outils IA 35) — pass UI réel + cleanup + consolidation. AUCUNE modification de code.",
+  "task_id": "W2-3b",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "baseline_git": "8161a70",
+  "lots": "2b — 4 vues (26, 27, 28, 35)",
+  "methode": "UI réel via agent-browser (nav + clics + saisies), audit réseau CDP, comptages DB avant/après (30 tables, PrismaClient lecture seule one-shot), revue de code lecture seule pour distinguer VÉRIFIÉ UI RÉEL vs revue de code. Thèse propriétaire JAMAIS écrite : les 4 vues sont non thèse-scopées (revue de code : aucun usage de thesisId/activeThesisId/theses[0] dans methodology-page.tsx, analyse-champ-recherche-page.tsx, outils-slr-page.tsx ; ai-tools = global par conception AUD-ISO-006) — AUCUNE thèse jetable nécessaire.",
+  "vues": [
+    {
+      "id": 26,
+      "nav_id": "methodology",
+      "nom": "Méthodologie",
+      "module": "src/modules/methodology/methodology-page.tsx (505 l.)",
+      "fonctionnalites": [
+        "Guide méthodologique statique en 5 accordéons : Paradigmes de recherche (Qualitatif/Quantitatif/Mixte, forces/limites/exemples — données codées en dur PARADIGMS l.27-79), Démarche méthodologique (7 étapes, timeline verticale — METHODOLOGY_STEPS l.85-128), Outils de collecte (Entretiens/Questionnaires/Observation/Analyse documentaire — COLLECTION_TOOLS l.142-187), Techniques d'analyse (4 cartes — ANALYSIS_TECHNIQUES l.193-222)",
+        "Checklist méthodologique 10 items (CHECKLIST_ITEMS l.228-239) avec progression calculée (checkedCount/10, Progress bar)",
+        "Aucun appel API, aucune IA, aucune écriture DB (revue de code : aucun fetch/import prisma/store)"
+      ],
+      "parcours_executes": [
+        "Navigation sidebar « Méthodologie » (catégorie Méthodologie & Vérification) → vue affichée (H1 « Méthodologie de recherche »), 0 requête API propre à la vue",
+        "Ouverture des 4 accordéons fermés (Démarche, Outils de collecte, Techniques d'analyse, Checklist) — contenu statique complet rendu",
+        "Coche de 3 items checklist (Problématique formulée, Revue de littérature exhaustive, Méthode de collecte) → progression 3/10 — 30% (Progress bar à 30 %)",
+        "RELOAD + re-navigation → checklist 0/10 — 0% : état intégralement perdu"
+      ],
+      "etats_erreurs": "N/A — contenu statique en dur, aucun état vide ni erreur possible ; aucun champ éditable hors checkboxes",
+      "persistance": "AUCUNE — checklist en useState local uniquement (l.246-250), aucune requête réseau lors des toggles (audit réseau : 0 POST/PUT), perte au reload PROUVÉE UI RÉEL (3/10 → 0/10). Conforme au code, MAIS même classe de non-persistance que les objectifs d'Équilibre chapitres (A1L2A-03).",
+      "isolation_multitheses": "Global (non thèse-scopé) — revue de code : aucun usage de thesisId/activeThesisId/theses[0] dans le module ; aucune donnée utilisateur thèse-scopée à isoler (VÉRIFIÉ UI RÉEL pour l'absence d'écriture ; revue de code pour le binding)",
+      "actions_destructives_statut": "Aucune action destructive dans cette vue",
+      "anomalies": [
+        "A1L2B-01 P3 — Checklist méthodologique non persistée (useState local, perte au reload prouvée UI, 0 requête réseau) : fonctionnalité « progression » sans valeur durable ; cohérent avec AUD-ISO-006/A1L2A-03 (données locales sans signal)"
+      ],
+      "statut": "VALIDÉE (guide statique + checklist non persistée documentée)",
+      "captures": [
+        "a1-lot2b-26-vue-initiale.png",
+        "a1-lot2b-26-accordeons-ouverts.png",
+        "a1-lot2b-26-checklist-3-sur-10.png",
+        "a1-lot2b-26-reload-checklist-perdue.png"
+      ]
+    },
+    {
+      "id": 27,
+      "nav_id": "analyse-champ-recherche",
+      "nom": "Analyse du champ",
+      "module": "src/modules/analyse-champ-recherche/analyse-champ-recherche-page.tsx (1 334 l.)",
+      "fonctionnalites": [
+        "Formulaire « Définition du champ » (Sujet *, Discipline, Mots-clés, Questions) + Réinitialiser",
+        "Analyse IA du champ (POST /api/ai-writing mode literature-review, l.152) → 4 sections parsées via marqueurs ##SECTION## (État de l'art / Auteurs & Théories / Lacunes identifiées / Pistes de recherche)",
+        "Onglets résultats : État de l'art, Auteurs & Théories, Lacunes, Carte conceptuelle (carte des connaissances auto-peuplée + ajout manuel nœuds racine/sous-nœuds + suppression), Paysage littéraire (dérivé de l'analyse), Positionnement (4 champs + 2ᵉ génération IA, NON déclenchée — budget), Exporter",
+        "Aucune écriture DB (revue de code : seuls fetch = 2× /api/ai-writing ; ElementAnalyse appartient à verification-carto, PAS à ce module)"
+      ],
+      "parcours_executes": [
+        "Navigation sidebar « Analyse du champ » → état vide « Aucune analyse en cours — Remplissez le formulaire… » (capture)",
+        "Garde sujet vide : clic « Lancer l'analyse » sans sujet ×3 → AUCUN appel réseau (audit réseau : 0 POST ai-writing) MAIS AUCUN feedback visible (anomalie A1L2B-02)",
+        "Saisie sujet « AUDIT-L2b-Sujet jetable (méthodologie de la recherche en urbanisme) » + discipline → « Lancer l'analyse » → 1 POST /api/ai-writing (budget 1 IA respecté) → spinner « Analyse en cours » → résultat 4 sections rendues (« Vue d'ensemble du champ » + Pistes)",
+        "Onglet Carte conceptuelle : carte auto-peuplée (nœud dérivé de l'analyse) + ajout manuel « AUDIT-L2b-Nœud jetable » → visible dans la carte",
+        "Onglet Positionnement : 0/4 champs remplis, bouton « Générer avec l'IA » NON déclenché (2ᵉ IA évitée) ; onglet Paysage littéraire : 1 thème dérivé de l'analyse",
+        "RELOAD + re-navigation → formulaire vide + « Aucune analyse en cours » : analyse, carte (dont nœud AUDIT-L2b-) et paysage intégralement perdus"
+      ],
+      "etats_erreurs": [
+        "Sujet vide → garde en code (l.132-138) : 0 requête émise, MAIS toast « Champ requis » INVISIBLE (toast du hook shadcn use-toast, Toaster jamais monté — voir A1L2B-02)",
+        "État vide explicite (« Aucune analyse en cours ») vérifié avant/après reload",
+        "Erreur IA non sollicitée en session (génération 200)"
+      ],
+      "persistance": "AUCUNE — 100 % état local React (form/analysis/knowledgeMap/positioning en useState), aucune écriture DB ni localStorage ; perte au reload PROUVÉE UI RÉEL (résultat IA 4 sections + carte peuplée → vide). L'analyse IA doit être relancée à chaque visite (coût IA récurrent).",
+      "isolation_multitheses": "Global (non thèse-scopé) — revue de code : aucun thesisId/activeThesisId/theses[0] dans le module ; aucun lien avec ElementAnalyse (celui-ci appartient à la vue 30 verification-carto) ; VÉRIFIÉ UI RÉEL : aucune écriture DB (audit réseau 1 seul POST ai-writing)",
+      "actions_destructives_statut": "Suppression de nœuds de carte (×) présente mais NON testée (hors périmètre, état local perdu au reload de toute façon)",
+      "anomalies": [
+        "A1L2B-02 P2 — Toasts invisibles sur 10 modules : src/hooks/use-toast (shadcn) est appelé par 10 modules (dont analyse-champ-recherche, generation-hypotheses, soutenance, brouillon-chapitre, apinex…) mais le composant <Toaster> shadcn n'est JAMAIS monté (layout.tsx ne monte que le Toaster sonner) → les messages toast (gardes, confirmations, erreurs) de ces 10 modules sont muets à l'écran. Prouvé UI : garde sujet vide = 0 requête mais 0 feedback visible. Revue de code : liste des 10 modules consignée.",
+        "A1L2B-03 P3 — Résultat d'analyse IA non persisté (perdu au reload) : chaque visite reconsomme 1 génération IA pour le même champ (coût récurrent), sans possibilité d'archiver l'analyse"
+      ],
+      "statut": "VALIDÉE (1 IA consommée ; persistance absente documentée ; anomalie toaster P2)",
+      "captures": [
+        "a1-lot2b-27-vue-vide.png",
+        "a1-lot2b-27-erreur-champ-requis.png",
+        "a1-lot2b-27-analyse-ia-resultat.png",
+        "a1-lot2b-27-carte-connaissances.png",
+        "a1-lot2b-27-carte-noeud-ajoute.png",
+        "a1-lot2b-27-onglets-positionnement-paysage.png",
+        "a1-lot2b-27-reload-tout-perdu.png"
+      ]
+    },
+    {
+      "id": 28,
+      "nav_id": "outils-slr",
+      "nom": "Outils SLR",
+      "module": "src/modules/outils-slr/outils-slr-page.tsx (1 563 l.)",
+      "fonctionnalites": [
+        "Revue systématique (SLR) en 6 onglets : PRISMA (diagramme de flux avec compteurs démo 245/203/…), Protocole (cadre PICO/PICOS 5 champs + question de recherche générée dynamiquement + critères inclusion/exclusion + mots-clés + bases + assist IA NON déclenché), Criblage (8 articles démo DEMO_ARTICLES, décisions Inclure/Exclure/Peut-être avec stage auto, badges Total/Inclus/Exclus/Peut-être + % inclus, recherche + filtre), Extraction (template 14 champs préremplis par article + export CSV), Qualité (checklist qualité), Suivi (progression PRISMA)",
+        "Données 100 % démo codées en dur (INITIAL_PRISMA, DEMO_ARTICLES, INITIAL_PICO, INITIAL_CRITERIA) — aucune DB (revue de code : seul fetch = 1 POST /api/ai-writing pour l'assist IA, non déclenché)"
+      ],
+      "parcours_executes": [
+        "Navigation sidebar « Outils SLR » → onglet PRISMA par défaut (compteurs démo) (capture)",
+        "Protocole : édition champ P « Population / Participants » → « AUDIT-L2b-Population jetable » → question générée régénérée EN DIRECT (« chez AUDIT-L2b-Population jetable comparativement à… »)",
+        "Protocole CRUD critère : dialogue « Nouveau critère » (type Critère d'inclusion + description) → « AUDIT-L2b-Critère jetable (test audit) » ajouté : Inclusion (4)→(5) + toast sonner VISIBLE « Critère ajouté » ; suppression via poubelle → Inclusion (5)→(4) + toast « Critère supprimé »",
+        "Criblage : décision « Inclure » sur article démo « Machine learning… » (Peut-être) → badges 4→5 Inclus, 2→1 Peut-être, 50 %→63 % inclus ; recherche « MOOC » → 1 ligne visible (filtre fonctionne)",
+        "Extraction : template 14 champs, article sélectionné, bouton « Exporter en CSV » → toast sonner « Export CSV téléchargé » (téléchargement Blob réel côté code l.1244-1251)",
+        "Suivi : vue progression PRISMA (Identification 245 → Dépistage 203 → …) (capture)",
+        "RELOAD + re-navigation → tout l'atelier réinitialisé à l'état démo (PRISMA 245, criblage 8/4/2/2 — 50 %, critères INITIAUX, champ P réinitialisé) : décisions et critères AUDIT-L2b- perdus"
+      ],
+      "etats_erreurs": "Pas d'état vide (données démo pré-remplies par conception) ; assist IA non déclenché (budget) — son handler d'erreur utilise toast.error sonner (monté, donc visible)",
+      "persistance": "AUCUNE — 100 % état local (useState), 0 requête d'écriture (audit réseau : aucun POST/PUT/DELETE propre à la vue), perte au reload PROUVÉE UI RÉEL (badges 5 inclus → 4, PICO → valeurs démo). Export CSV = seul artefact sortant (fichier local).",
+      "isolation_multitheses": "Global (non thèse-scopé) — revue de code : aucun thesisId/activeThesisId/theses[0] ; données démo partagées, aucune écriture DB (VÉRIFIÉ UI RÉEL : 0 requête d'écriture)",
+      "actions_destructives_statut": "Suppression de critère = immédiate SANS dialogue de confirmation (poubelle → suppression directe + toast) — sans risque car état local non persisté ; aucune action destructive DB dans cette vue",
+      "anomalies": [
+        "A1L2B-04 P3 — Atelier SLR entièrement non persisté et pré-rempli de données démo génériques (IA dans l'enseignement supérieur) sans lien avec la thèse de l'utilisateur : décisions de criblage, critères, PICO et extraction perdus au reload (prouvé) ; l'assist IA (1 POST ai-writing) ne persiste pas davantage. Coût récurrent si utilisé comme vrai outil de travail.",
+        "A1L2B-05 P4 — Coquille template question PICO : « Quelle est l'effet de … » (accord « l'effet » au lieu de « l'effet de l'intervention » / « Quel est l'effet »)"
+      ],
+      "statut": "VALIDÉE (atelier démo local documenté ; 0 IA consommée)",
+      "captures": [
+        "a1-lot2b-28-vue-prisma.png",
+        "a1-lot2b-28-critere-ajoute.png",
+        "a1-lot2b-28-critere-supprime.png",
+        "a1-lot2b-28-criblage-initial.png",
+        "a1-lot2b-28-decision-include.png",
+        "a1-lot2b-28-extraction-export.png",
+        "a1-lot2b-28-suivi-prisma.png"
+      ]
+    },
+    {
+      "id": 35,
+      "nav_id": "ai-tools",
+      "nom": "Outils IA",
+      "module": "src/modules/ai-tools/ai-tools-page.tsx (1 125 l.)",
+      "fonctionnalites": [
+        "3 onglets : Carnet (ResearchNotebookTab — Sources de recherche + Notes et questions, React Query sur GET /api/sources et /api/entries, création via dialogues POST 201, suppression via ConfirmDeleteDialog → DELETE), Consensus (comparaison multi-modes IA : POST /api/ai-writing par mode sélectionné, l.793), Visualisation (placeholder « Bientôt disponible », statique)",
+        "AUCUNE fonction d'édition (revue de code : aucun PUT/PATCH sur sources/entries dans le module) — création + suppression + réorganisation par tri updatedAt desc côté API",
+        "Aucune IA dans le carnet ; 1 POST ai-writing PAR mode sélectionné dans le consensus (boucle l.789-811)"
+      ],
+      "parcours_executes": [
+        "Navigation sidebar « Outils IA » → GET /api/sources 200 + GET /api/entries 200 ; état initial : Sources 0 (état vide « Aucune source de recherche »), Notes 1 = « Question de test T4 » (entrée préexistante du propriétaire — JAMAIS modifiée)",
+        "Création source : « Ajouter une source » → bouton Ajouter DÉSACTIVÉ tant que le titre est vide (garde) → « AUDIT-L2b-Source jetable (test audit) » (auteur/année/notes) → POST /api/sources 201 + invalidate/refetch → visible en liste",
+        "Création note liée : « Ajouter une entrée » → « AUDIT-L2b-Question jetable… » + réponse + tag audit-l2b + liaison source via select (option « AUDIT-L2b-Source jetable (test audit) ») → POST /api/entries 201 → visible, compteur sources du carnet à jour",
+        "RELOAD + re-navigation → source ET note toujours présentes (refetch DB) + témoin propriétaire intact : PERSISTANCE DB PROUVÉE UI RÉEL",
+        "Consensus : 3 modes pré/toggés, réduit à 1 mode (Rédaction) = « 1 mode(s) sélectionné(s) » → prompt AUDIT-L2b- → « Comparer » → EXACTEMENT 1 POST /api/ai-writing 200 → réponse rendue sous l'onglet du mode (budget 1 IA respecté)",
+        "Visualisation : placeholder « Bientôt disponible » (aucune fonction, capture)",
+        "Cleanup VIA LE FLUX TESTÉ (flux destructifs déjà validés 6/6 contrôles en A2 lot 1 — SANS retest, simple exécution) : poubelle note → dialogue « Supprimer cette note ? « AUDIT-L2b-Question jetable… » » → Supprimer → exactement 1 DELETE /api/entries/cmv27hzm… 200 ; poubelle source → dialogue « Supprimer cette source ? « AUDIT-L2b-Source jetable (test audit) » sera définitivement supprimée. Cette action est irréversible. » → Supprimer → exactement 1 DELETE /api/sources/cmv27hkyn… 200 ; retour « Sources de recherche 0 / Aucune source », témoin propriétaire « Question de test T4 » intact"
+      ],
+      "etats_erreurs": [
+        "État vide sources (« Aucune source de recherche — Ajoutez votre première source… ») vérifié en début ET après cleanup",
+        "Garde bouton Ajouter désactivé tant que le titre de source est vide",
+        "Erreur IA consensus non sollicitée (génération 200) ; handler d'erreur par mode présent au code (« Erreur : … » dans la carte du mode)"
+      ],
+      "persistance": "DB PROUVÉE UI RÉEL — sources/entries persistées (reload → toujours présentes, refetch GET 200), suppression persistée (retour 0/1 après cleanup) ; comptages DB avant/après : ResearchSource 0→1→0, NotebookEntry 1 (propriétaire) inchangé",
+      "isolation_multitheses": "GLOBAL PAR CONCEPTION — re-confirmation AUD-ISO-006 : revue de code GET/POST /api/sources et /api/entries sans aucun filtre ni champ thesisId (src/app/api/sources/route.ts : where sans thesis, createResearchSourceSchema sans thesisId) → toute source/note est visible quel que soit activeThesisId ; VÉRIFIÉ UI RÉEL : création/suppression sans aucun paramètre de thèse. Contexte 1 seule thèse en base : le test discriminant 2 thèses n'est pas reproductible sans créer une thèse (non nécessaire, écriture cross-thèse impossible par construction ici).",
+      "actions_destructives_statut": "Déjà testées 6/6 contrôles en A2 lot 1 (a2-lot1.json) — SANS retest ; flux réutilisés pour le cleanup (2 DELETE exacts, dialogues de confirmation ciblés, Annuler non re-testé)",
+      "anomalies": [
+        "A1L2B-06 P3 — Aucune fonction d'édition des sources/notes (création + suppression seulement) : corriger une faute de frappe oblige à supprimer/recréer ; combiné au tri updatedAt desc, une recréation remonte l'objet en tête (réorganisation non maîtrisée)",
+        "A1L2B-07 P4 — deleteEntry/deleteSource ne vérifient pas res.ok (revue de code) : en cas d'échec serveur, toast « supprimée » affiché quand même et liste invalidée (divergence UI/DB éphémère jusqu'au refetch)"
+      ],
+      "statut": "VALIDÉE (persistance DB prouvée ; 1 IA consommée ; global par conception re-confirmé)",
+      "captures": [
+        "a1-lot2b-35-vue-notebook.png",
+        "a1-lot2b-35-source-note-creees.png",
+        "a1-lot2b-35-reload-persiste.png",
+        "a1-lot2b-35-consensus-1-mode.png",
+        "a1-lot2b-35-visualisation-placeholder.png",
+        "a1-lot2b-35-cleanup-dialogue-note.png",
+        "a1-lot2b-35-cleanup-dialogue-source.png",
+        "a1-lot2b-35-cleanup-net-nul.png"
+      ]
+    }
+  ],
+  "audit_reseau": {
+    "journal": "audit/baseline/evidence/a1-lot2b-network.log (57 requêtes /api*, journal CDP agent-browser)",
+    "requetes_ecriture": [
+      "POST /api/ai-writing 200 (vue 27 — analyse du champ, 1 seule IA de la vue)",
+      "POST /api/sources 201 (vue 35 — création source AUDIT-L2b)",
+      "POST /api/entries 201 (vue 35 — création note AUDIT-L2b liée)",
+      "POST /api/ai-writing 200 (vue 35 — consensus, 1 seul mode sélectionné = 1 seule IA de la vue)",
+      "DELETE /api/entries/cmv27hzm2001xq7vhflep1hrq 200 (vue 35 — cleanup note via flux confirmé)",
+      "DELETE /api/sources/cmv27hkyn001vq7vhg8j94rit 200 (vue 35 — cleanup source via flux confirmé)"
+    ],
+    "conformite": "Toutes les écritures rattachées aux objets AUDIT-L2b- (créations) ou à leur cleanup via le flux testé ; AUCUN POST/PUT/DELETE sur la thèse propriétaire, ses chapitres ou ses données (aucun /api/thesis/* en écriture) ; AUCUNE requête destructive parasite ; 0 erreur 4xx/5xx sur l'ensemble du journal",
+    "budget_ia": "2 générations IA sur la session (1/vue IA : analyse du champ 1, outils IA 1 ; méthodologie 0, outils SLR 0) — budget 1 max/vue RESPECTÉ"
+  },
+  "etat_proprietaire": {
+    "avant": {
+      "thesis": 1,
+      "chapter": 7,
+      "chapterVersion": 6,
+      "part": 0,
+      "thesisCadrage": 0,
+      "thesisCadrageField": 0,
+      "thesisCadrageVersion": 0,
+      "doctoralToolbox": 1,
+      "soutenancePrep": 1,
+      "researchTab": 0,
+      "reference": 4,
+      "researchSource": 0,
+      "notebookEntry": 1,
+      "agileSprint": 0,
+      "agileStory": 0,
+      "customBookSkill": 58,
+      "legalRef": 27,
+      "article": 1,
+      "articleVersion": 1,
+      "importedDoc": 16,
+      "licenseKey": 0,
+      "elementAnalyse": 1,
+      "typeAnalyseMethodologique": 1,
+      "sessionVerification": 2,
+      "documentChunk": 12,
+      "experiment": 1,
+      "experimentRun": 1,
+      "job": 24,
+      "savedSearch": 0,
+      "savedSearchResult": 0
+    },
+    "apres": "comptages identiques (a1-lot2b-db-after.json, 30 tables)",
+    "identique": true,
+    "diff": "VIDE sur les 30 tables ET sur _theses (titre/structureMode/updatedAt cmsmyrdfs0000pa2sews4vo90 inchangés 2026-08-10T08:22:35.464Z, 7 chapitres)",
+    "note": "Résidu DoctoralToolbox=1 préexistant (auto-création lot 2a, documenté commit 8161a70) — inchangé, non touché. Les 4 vues testées sont non thèse-scopées : aucune thèse jetable créée, aucune écriture sur le propriétaire (les seuls objets créés AUDIT-L2b-Source/note sont globaux et supprimés via le flux testé).",
+    "resume_cleanup": "2 créations (source+note) puis 2 DELETE via dialogues de confirmation — net nul prouvé réseau + DB + UI"
+  },
+  "invariants": {
+    "code_modifie": false,
+    "commit": false,
+    "db_push": false,
+    "build": false,
+    "fichiers_rouges_touches": false,
+    "ecriture_these_proprietaire": false,
+    "theses_jetables_creees": 0,
+    "budget_ia": "2 (1/vue IA, respecté)",
+    "db_skip_worktree": "intacte",
+    "scripts_temporaires_supprimes": true
+  },
+  "anomalies_lot2b": [
+    "A1L2B-01 P3 — vue 26 Méthodologie : checklist non persistée (useState local, perte au reload prouvée, 0 requête)",
+    "A1L2B-02 P2 — 10 modules avec toasts INVISIBLES : hook shadcn use-toast utilisé (analyse-champ-recherche, academic-db, apinex, verification-citations, generation-hypotheses, brouillon-chapitre, routesme, auto-edition, experimentations, soutenance, traducteur) mais composant <Toaster> shadcn jamais monté (layout.tsx ne monte que sonner) → gardes/confirmations/erreurs muets. Prouvé UI : garde sujet vide = 0 requête mais 0 feedback",
+    "A1L2B-03 P3 — vue 27 : analyse IA du champ non persistée (perdue au reload, reconsomme 1 IA à chaque analyse du même champ)",
+    "A1L2B-04 P3 — vue 28 Outils SLR : atelier 100 % démo/non persisté (données génériques IA-enseignement, décisions/critères/PICO/extraction perdus au reload)",
+    "A1L2B-05 P4 — vue 28 : coquille template question PICO « Quelle est l'effet de … »",
+    "A1L2B-06 P3 — vue 35 : aucune édition des sources/notes (création + suppression seulement) ; tri updatedAt desc côté API → recréation = remontée en tête non maîtrisée",
+    "A1L2B-07 P4 — vue 35 : deleteEntry/deleteSource sans vérification res.ok (revue de code, divergence UI/DB éphémère possible en cas d'échec serveur)"
+  ],
+  "captures_index": {
+    "vue26": 4,
+    "vue27": 7,
+    "vue28": 7,
+    "vue35": 8,
+    "total": 26,
+    "prefixe": "audit/baseline/evidence/a1-lot2b-*.png"
+  },
+  "quirks_session": [
+    "agent-browser : find text ne trouve pas les labels accordéon/checkbox (Radix) — contournement par find role button / eval IIFE",
+    "eval déclaratif : réutiliser un const entre 2 eval lève 'Identifier already declared' — passer en IIFE",
+    "Radix checkbox : clic sur <label> parent ne toggle pas le bouton (0 coché) — cliquer directement button[role=checkbox]",
+    "reload SPA → vue réinitialisée au dashboard, re-navigation sidebar systématique (connu)"
+  ]
+}
