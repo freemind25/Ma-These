@@ -1,0 +1,258 @@
+{
+  "task": "A1 lot 3a (5 vues de la famille « Vérifications méthodologiques » : Vérification méthodologique, Vérification Citations, Génération Hypothèses, Vérification Cohérence, Alignement Preuves) — pass UI réel agent-browser avec preuve réseau, comptages DB avant/après, net nul. AUCUNE modification de code.",
+  "task_id": "W2-4a",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "baseline_git": "bc0d2d7",
+  "lots": "3a — 5 vues (29, 31, 32, 33, 34)",
+  "methode": "HONNÊTETÉ DE LA PREUVE : parcours UI réels agent-browser (headless Chromium) avec captures séquentielles a1-lot3a-*.png ; audit réseau par agent-browser network requests (journal CDP du daemon, conservé entre sessions) ; persistance testée par reload ; comptages DB PrismaClient LECTURE SEULE avant (09:27) et après ; distinction explicite VÉRIFIÉ UI RÉEL vs REVUE DE CODE dans chaque vue ; revues de code lecture seule préalables (modules + routes API) pour mécanisme de sélection de thèse et sources de données ; budget IA 1 génération/vue RESPECTÉ (29:1, 31:0 non-IA, 32:1, 33:1, 34:0 non-IA) ; AUCUNE écriture DB attendue sur ces 5 vues (revue de code : routes citation-check/coherence-check/alignement-preuves/stats-recompute = 0 prisma write, ai-writing/ai-writing/stream = stateless) — thèse propriétaire jamais écrite, thèse jetable NON nécessaire.",
+  "vues": [
+    {
+      "id": 29,
+      "nav_id": "verification-methodo",
+      "nom": "Vérification méthodologique",
+      "module": "src/modules/verification-methodo/verification-methodo-page.tsx (1 356 l.) + POST /api/ai-writing (mode methodology, ×2 fonctions : analyse IA + vérificateur de cohérence) — AUCUN appel thèse (aucun fetch /api/thesis), AUCUN modèle DB",
+      "revue_de_code": [
+        "5 onglets : Audit (checklist 32 critères pondérés 1-3 en 8 sections), Vérification IA (textarea + POST /api/ai-writing → JSON strengths/weaknesses/recommendations/risks/overallScore, fallback texte libre si parse échoue), Cohérence (7 champs, runConsistencyCheck garde filled<2 → return SILENCIEUX, ≥2 → POST /api/ai-writing), Suivi (progression calculée), Rapport (génération .txt via Blob download — local)",
+        "SOURCE DE DONNÉES : 100 % saisie MANUELLE (textarea/checkbox) — la vue ne lit AUCUNE donnée de thèse (ni theses[0] ni activeThesisId ni fetch) → binding thèse NON APPLICABLE (consigné précisément, demandé par la mission)",
+        "PERSISTANCE : aucune (état React local, aucun modèle Prisma dédié) ; rapport = fichier .txt téléchargé",
+        "NOTE D'INVESTIGATION : suspicion d'erreur de syntaxe ligne 406/548 (« const ethodologyText… ») affichée par les outils grep/sed — DÉMENTIE par analyse byte-à-byte Node (codes 91=« [ » et 'method' présents) + parse TypeScript 0 diagnostic : artéfact de rendu terminal de la séquence « [m » (interprétée comme reset ANSI), AUCUNE anomalie code"
+      ],
+      "fonctionnalites": [
+        "Audit : 8 sections × 32 critères, cycle de statut par clic (— → ✓ → ◐ → ✗), score pondéré /100 + badge (Critique → À améliorer…), 100 % local",
+        "Vérification IA : analyse d'un texte de méthodologie collé, résultat structuré score/forces/faiblesses/recommandations/risques",
+        "Cohérence : vérificateur d'alignement inter-champs (question/paradigme/approche/collecte/échantillon/analyse/cadre) — 2e fonction IA",
+        "Suivi + Rapport : progression et rapport d'audit téléchargeable .txt"
+      ],
+      "parcours_executes": [
+        "10:03 — état initial : 0/100 « Critique », 0/32 critères, onglet Audit, 8 sections (capture -29-visit)",
+        "10:05 — 3 clics critères (e622 ×2 → ✓ puis ◐, e623 ×1 → ✓) → score 45/100 « À améliorer », 2/32 critères (capture -29-audit-3clics-45sur100) ; réseau : 0 écriture (seuls GET ai-keys/stats/ai-config du montage)",
+        "10:06 — onglet Suivi (capture -29-suivi-progress)",
+        "10:07 — onglet Cohérence : garde à 0 champ (clic Vérifier → 0 requête) puis 1 champ rempli « AUDIT-L3-Question jetable méthodo » → bouton ACTIVÉ mais clic → 0 requête, aucun résultat, AUCUN feedback visible (garde silencieuse, pas de toast dans ce module) (capture -29-coherence-garde-1champ) — la branche ≥2 champs (POST ai-writing) NON déclenchée volontairement (budget IA 1/vue) : mécanisme consigné par REVUE DE CODE (l.568-575 : filled.length<2 → return silencieux)",
+        "10:09 — onglet Vérification IA : garde champ vide PROUVÉE (bouton « Lancer l'analyse IA » disabled, snapshot) ; saisie texte AUDIT-L3-Methodo jetable (313 car.) → 1 POST /api/ai-writing mode methodology 200 [18433.1142, 10:15:58] → résultat parsé : Score global IA 75/100, 4 forces, 4 faiblesses (+ recommandations/risques) (capture -29-ia-resultat-75) — UNIQUE appel IA de la vue, prouvé par postData",
+        "10:17 — RELOAD → retour dashboard (quirk SPA connu) → re-navigation → 0/100, 0/32, résultat IA PERDU (capture -29-reload-reset) — rien n'est persisté"
+      ],
+      "etats_erreurs": [
+        "Garde IA : bouton disabled champ vide (UI réelle) — propre",
+        "Garde cohérence <2 champs : SILENCIEUSE (0 requête, 0 message UI) — le bouton reste activé à 1 champ mais ne fait rien : feedback utilisateur absent (classe A1L2B-02, ce module n'utilise pas de toast du tout)"
+      ],
+      "persistance": "AUCUNE par conception : checklist + résultat IA + cohérence = état local, tout perdu au reload (prouvé) ; seul artefact = export .txt du rapport (Blob téléchargé côté client, non testé — revue de code l.682-688)",
+      "isolation_multitheses": "NON APPLICABLE : la vue ne touche à aucune donnée de thèse (aucun fetch thèse, aucun write DB) — aucune lecture ni écriture du propriétaire possible ; revue de code + UI réelle concordantes",
+      "actions_destructives_statut": "Aucune (0 écriture DB sur toute la vue)",
+      "anomalies": [
+        {
+          "id": "A1L3A-01",
+          "priorite_proposee": "P3",
+          "titre": "Vérificateur de cohérence : garde <2 champs silencieuse et bouton activé à 1 champ (aucun feedback utilisateur)",
+          "preuves": "capture a1-lot3a-29-coherence-garde-1champ.png ; réseau 0 requête au clic à 1 champ ; code l.568-575 (return sans message) — module sans toast",
+          "note": "fonctionnelle mais muette ; même classe que A1L2B-02 (modules sans feedback) — ici aucun use-toast importé"
+        }
+      ],
+      "statut": "VALIDÉE (IA OK 200 + résultat structuré ; 100 % local, aucune donnée thèse)",
+      "captures": [
+        "a1-lot3a-29-visit.png",
+        "a1-lot3a-29-audit-3clics-45sur100.png",
+        "a1-lot3a-29-suivi-progress.png",
+        "a1-lot3a-29-coherence-garde-1champ.png",
+        "a1-lot3a-29-ia-resultat-75.png",
+        "a1-lot3a-29-reload-reset.png"
+      ]
+    },
+    {
+      "id": 31,
+      "nav_id": "verification-citations",
+      "nom": "Vérification Citations",
+      "module": "src/modules/verification-citations/verification-citations-page.tsx (431 l.) + POST /api/citation-check (route 436 l., fetch EXTERNES Crossref/OpenAlex/Semantic Scholar/DOAJ/PubMed, timeout + retri) + POST /api/stats-recompute (route 325 l., recalcul p déterministe type statcheck/Nuijten 2016) — 0 prisma, 0 IA",
+      "revue_de_code": [
+        "2 onglets : Vérification Citations (max 50 citations collées) + Recalcul Statistiques (t/F/χ²/z/r → p recalculée, tailles d'effet, APA)",
+        "SOURCE DE DONNÉES : 100 % saisie MANUELLE (collage) — aucune lecture de thèse/références de la DB (ni theses[0] ni activeThesisId) ; le badge nav « API » (non « IA ») est fidèle : la vue appelle des registres EXTERNES, pas de LLM",
+        "Toasts use-toast shadcn (l.15, 112, 118, 121, 142, 148, 151) → INVISIBLES (Toaster shadcn jamais monté — cause A1L2B-02 documentée lot 2b, non re-diagnostiquée)",
+        "Routes API SANS prisma (revue : grep db./prisma. = 0) → stateless, aucune écriture DB possible"
+      ],
+      "fonctionnalites": [
+        "Vérification de citations collées contre 5 registres académiques externes, verdicts verified/unverified/retracted/mismatch + détection de rétractations",
+        "Recalcul déterministe de valeurs p à partir des statistiques rapportées (t, F, χ², z, r), fourchette d'arrondi, tailles d'effet + formulation APA",
+        "Compteur de citations détectées en direct (lignes >5 car.), max 50"
+      ],
+      "parcours_executes": [
+        "10:20 — état vide : carte info « Collez vos références… », bouton Vérifier DISABLED, 0 citation détectée (capture -31-visit-vide)",
+        "10:22 — saisie 1 citation réelle avec DOI (Nuijten et al. 2016, Behavior Research Methods) → compteur « 1 citation(s) détectée(s) » → Vérifier → 1 POST /api/citation-check 200 [18433.1328] → verdict « ✅ Trouvé dans 3/5 registres », cartes 1 Vérifiés / 0 Non trouvés / 0 Rétractés / 0 Incohérents ; détails dépliables : Crossref ✓ (681 ms), OpenAlex ✓ (334 ms, Open Access, 533 citations), Semantic Scholar ✗ HTTP 400, DOAJ ✗ « fetch failed », PubMed ✓ (993 ms) (capture -31-citation-verifiee-details) — registres externes RÉELLEMENT interrogés",
+        "10:25 — onglet Recalcul Statistiques : texte AUDIT-L3- avec 3 stats (t(45)=3.21 p<.01 ; F(2,87)=4.56 p=.013 ; χ²(3)=12.4 p=.90 volontairement aberrante) → 1 POST /api/stats-recompute 200 [18433.1329] → 0 Corrects / 2 Incohérents / 1 Erreur grave ; par test : p recalculée, fourchette [borne, borne], taille d'effet (d=0.479 moyen ; η²=0.095), ligne APA (capture -31-stats-recompute)",
+        "10:26 — toast d'alerte « ⚠️ Erreur(s) statistique(s) » attendu (grossErrors>0, code l.147-149) ABSENT DU DOM → A1L2B-02 re-confirmée sur cette vue (toast use-toast jamais rendu)",
+        "10:27 — RELOAD → retour dashboard → re-navigation → résultats citation + stats PERDUS (capture -31-reload-reset) — aucun état persisté"
+      ],
+      "etats_erreurs": [
+        "État vide propre (carte info + bouton disabled)",
+        "Échecs registres individuels gérés sans casser le verdict global (Semantic Scholar HTTP 400, DOAJ fetch failed affichés en détails, citation nonetheless « Trouvé dans 3/5 »)",
+        "Toast d'erreur réseau/de rétractation INVISIBLE (A1L2B-02) — le seul feedback serait muet en cas d'échec complet"
+      ],
+      "persistance": "AUCUNE par conception : résultats = état React local, perdus au reload (prouvé) ; 0 écriture DB (routes stateless)",
+      "isolation_multitheses": "NON APPLICABLE : aucune donnée de thèse lue (collage manuel), aucune écriture DB — le propriétaire n'est pas touché même indirectement",
+      "actions_destructives_statut": "Aucune (bouton poubelle = effacer le textarea local uniquement)",
+      "anomalies": [
+        {
+          "id": "A1L3A-02",
+          "priorite_proposee": "P3",
+          "titre": "Toasts d'alerte invisibles sur Vérification Citations (rétractations détectées / erreurs réseau / erreurs statistiques) — A1L2B-02 re-confirmée",
+          "preuves": "toast « ⚠️ Erreur(s) statistique(s) » absent du DOM malgré grossErrors=1 (capture -31-stats-recompute + eval DOM) ; code l.15/112/118/121/142/148 use-toast",
+          "note": "cause racine déjà documentée lot 2b (use-toast shadcn sans <Toaster> monté) — consignée ici comme matérialisation supplémentaire, NON re-diagnostiquée"
+        }
+      ],
+      "statut": "VALIDÉE (2 vérificateurs OK : registres externes réels + recalcul statcheck ; aucune persistance prévue)",
+      "captures": [
+        "a1-lot3a-31-visit-vide.png",
+        "a1-lot3a-31-citation-verifiee-details.png",
+        "a1-lot3a-31-stats-recompute.png",
+        "a1-lot3a-31-reload-reset.png"
+      ]
+    },
+    {
+      "id": 32,
+      "nav_id": "generation-hypotheses",
+      "nom": "Génération Hypothèses",
+      "module": "src/modules/generation-hypotheses/generation-hypotheses-page.tsx (593 l.) + POST /api/ai-writing/stream (hook useAIStream l.20-89, SSE) — 2 fonctions IA (Génération + Cadre Opérationnel), 0 prisma, 0 lecture thèse",
+      "revue_de_code": [
+        "3 onglets : Génération Hypothèses (question + domaine → IA stream), Cadre Opérationnel (IA stream 2), Pré-enregistrement (formulaire local + export Markdown Blob)",
+        "SOURCE DE DONNÉES : 100 % saisie manuelle — aucune lecture thèse (ni theses[0] ni activeThesisId) ; garde champ vide : bouton disabled (l.340) + toast use-toast invisible si vide (l.194, A1L2B-02)",
+        "CAUSE RACINE DE L'ÉCHEC IA (revue de code, lecture seule) : DOUBLE incompatibilité de contrat — (a) le client envoie { content, mode, context } (l.36) alors que la route /api/ai-writing/stream exige { prompt } min 10 car. (streamSchema route.ts l.26-31) → zod 400 « Données invalides » DÉTERMINISTE ; (b) le mode « generation-hypotheses » n'existe NI dans src/data/ai-writing-modes.ts NI dans src/lib/ai/specializations (grep 0 occurrence) → même avec un payload corrigé, la route répondrait 400 « Mode d'écriture non trouvé » / « Aucun prompt de spécialisation »",
+        "Persistance : aucune (état local) ; export pré-enregistrement = Blob client"
+      ],
+      "fonctionnalites": [
+        "Génération IA d'hypothèses (H1, sous-hypothèses, variables VI/VD, H0, rivales, plan de test) — EN ÉCHEC systématique",
+        "Cadre Opérationnel IA (définitions opérationnelles, indicateurs, instruments) — même hook, même échec attendu (NON déclenchée, budget)",
+        "Pré-enregistrement : formulaire COS/OSF local + transfert « Vers pré-enregistrement » + export Markdown téléchargé"
+      ],
+      "parcours_executes": [
+        "10:31 — état vide : carte info standard, bouton « Générer des hypothèses » DISABLED champ vide (capture -32-visit-vide) — garde propre",
+        "10:33 — saisie question AUDIT-L3- jetable + domaine « Urbanisme (test audit) » → bouton activé → clic → 1 POST /api/ai-writing/stream → HTTP 400 [18433.1513] → sortie affichée « ❌ Données invalides » (UNIQUE appel IA de la vue ; PAS de retry : cause déterministe prouvée par revue de code, un retry ne peut pas réussir)",
+        "10:35 — cascade de bug : le texte d'ERREUR devient « hypotheses.output » → bouton « Vers pré-enregistrement » actif → clic → onglet Pré-enregistrement → textarea « Hypothèse principale (H1) » contient « \\n\\n❌ Données invalides » (vérifié DOM textarea[1]) (capture -32-erreur-transferee-prereg) — l'erreur est traitée comme un livrable, sans toast d'erreur visible (use-toast muet)",
+        "10:37 — « Exporter en Markdown » → téléchargement client OK, toast « Exporté » ABSENT du DOM (A1L2B-02 re-confirmée)",
+        "10:38 — RELOAD → RESET local complet (question, domaine, sortie, formulaire pré-enregistrement perdus) (capture -32-reload-reset)"
+      ],
+      "etats_erreurs": [
+        "IA stream : HTTP 400 « Données invalides » DÉTERMINISTE (contrat client/API incompatible + mode inexistant) — anomalie P2, fonctionnalité vendue de la vue",
+        "Aucun feedback visible de l'erreur (toast muet) ; l'erreur s'affiche dans le flux de sortie ET se propage dans le formulaire de pré-enregistrement"
+      ],
+      "persistance": "AUCUNE : tout est perdu au reload (prouvé) ; 0 écriture DB",
+      "isolation_multitheses": "NON APPLICABLE : aucune donnée thèse lue, 0 écriture DB — propriétaire intact",
+      "actions_destructives_statut": "Aucune",
+      "anomalies": [
+        {
+          "id": "A1L3A-03",
+          "priorite_proposee": "P2",
+          "titre": "Génération IA d'hypothèses cassée : POST /api/ai-writing/stream → 400 « Données invalides » déterministe (client envoie {content}, l'API exige {prompt}) ET mode « generation-hypotheses » absent des WRITING_MODES/spécialisations",
+          "preuves": "réseau [18433.1513] POST 400 ; capture a1-lot3a-32-erreur-transferee-prereg.png ; code client l.36 + l.214/237 vs stream/route.ts l.26-31 ; grep generation-hypotheses dans ai-writing-modes.ts + specializations = 0",
+          "note": "même classe qu'A1L2A-01 (IA agile 400×2) ; les 2 fonctions IA de la vue (génération + cadre opérationnel) sont inutilisables ; en l'état, chaque usage affiche « ❌ Données invalides » et peut polluer le pré-enregistrement"
+        },
+        {
+          "id": "A1L3A-04",
+          "priorite_proposee": "P3",
+          "titre": "Le texte d'erreur IA est traité comme un livrable : transféré dans « Hypothèse principale (H1) » du pré-enregistrement",
+          "preuves": "capture a1-lot3a-32-erreur-transferee-prereg.png ; DOM textarea[1] = « \\n\\n❌ Données invalides » ; code handleCopyToPrereg l.252-262 (ne vérifie que output non vide)",
+          "note": "sans garde sur le contenu d'erreur du stream (useAIStream écrit l'erreur DANS output l.76)"
+        }
+      ],
+      "statut": "VALIDÉE AVEC ANOMALIES MAJEURES (fonctions locales OK ; IA cassée déterministe P2 + cascade erreur P3)",
+      "captures": [
+        "a1-lot3a-32-visit-vide.png",
+        "a1-lot3a-32-erreur-transferee-prereg.png",
+        "a1-lot3a-32-reload-reset.png"
+      ]
+    },
+    {
+      "id": 33,
+      "nav_id": "verification-coherence",
+      "nom": "Vérification Cohérence",
+      "module": "src/modules/verification-coherence/verification-coherence-page.tsx (964 l.) + POST /api/coherence-check (route 382 l., pattern Multi-Agent Counter-Audit 2 passes : analyse complète + contre-audit adversarial des verdicts en défaut, via generateCompletion zai-client) — 0 prisma, 0 lecture thèse",
+      "revue_de_code": [
+        "4 modes d'analyse (Analyse globale / Introduction↔Discussion / Méthodologie↔Résultats / Trio) sur 5 sections (intro, discussion, conclusion, méthodologie, résultats) + 23 contrôles en 6 catégories (référentiel l.321+ de src/lib/data/coherence-data.ts)",
+        "SOURCE DE DONNÉES : 100 % collage manuel — aucune lecture thèse (ni theses[0] ni activeThesisId) ; garde canLaunch : bouton disabled tant que chaque section REQUISE du mode <20 car. (l.174-180)",
+        "Toasts sonner (VISIBLES, layout monte sonner) : toast.error garde sections vides l.224, success « Analyse de cohérence terminée ! » l.245",
+        "1 action utilisateur = 1 POST /api/coherence-check ; les 2 passes IA (analyse + contre-audit) s'exécutent SERVEUR dans cette même requête (route l.45-90) → conforme au budget « 1 génération/vue »",
+        "Persistance : aucune (état local)"
+      ],
+      "fonctionnalites": [
+        "Analyse IA de cohérence multi-sections avec score global /100, « sceau de cohérence » (accordé/refusé), contrôles 23 en 6 catégories avec sévérité (Critique/Majeur/Mineur), citations exactes du texte soumis et suggestions",
+        "Contre-audit adversarial serveur des contrôles en défaut (passe 2)",
+        "Référentiel des 23 contrôles consultable + onglet Aide"
+      ],
+      "parcours_executes": [
+        "10:42 — état vide : 4 cartes de mode, 5 sections vides (Optionnel/Requis), bouton Lancer (capture -33-visit-vide)",
+        "10:43 — garde UI réelle : mode Intro↔Discussion sélectionné, Introduction remplie avec 21 car. → bouton Lancer DISABLED (requis ≥20 car./section requise) ; texte court « AUDIT-L3-Intro courte » → toujours disabled",
+        "10:44 — onglet Référentiel : « 23 contrôles de cohérence organisés en 6 catégories » (4/4/4/4/3/4) affichés",
+        "10:46 — retour Analyse, saisie Introduction + Discussion jetables AUDIT-L3- (36+35 mots, avec incohérences VOLONTAIRES : question générale jamais retraitée dans la discussion, résultat n=204 orphelin, typo « moderé ») → bouton ACTIF → Lancer → 1 POST /api/coherence-check 200 [18433.1703] (2 passes IA serveur incluses) → RÉSULTAT RICHE : « Sceau de cohérence refusé — Cohérence insuffisante entre introduction et discussion », score 65/100, résumé (« L'hypothèse H1 est traitée mais la question de recherche générale reste orpheline… »), 3/4 passé(s) catégorie, Contrôles échoués 3 / réussis 1, Points forts (1), Recommandations (3) (captures -33-analyse-resultat)",
+        "10:49 — accordéon « Contrôles échoués » déplié : 3 contrôles avec sévérité Critique, MESSAGES ET CITATIONS EXACTES du texte soumis (« …quel effet des pistes cyclables sur la mobilité ? », « Le questionnaire (n=204) suggère un effet moderé. » — typo reprise verbatim) + suggestions correctives (capture -33-controles-echoues)",
+        "10:51 — RELOAD → RESET local complet (5 sections vides, résultat perdu) (capture -33-reload-reset) ; toast sonner de succès non re-observé (durée courte, expiré au moment du check — sonner est monté, constat lot 2b)"
+      ],
+      "etats_erreurs": [
+        "Garde <20 car./section requise : bouton disabled — propre (UI réelle)",
+        "Garde 0 section (mode global) : toast.error sonner « Veuillez saisir au moins une section » (revue de code l.224 — non déclenchée, garde UI amont suffisante)",
+        "Erreur API : message + toast sonner (l.240-249) — non déclenché (200)"
+      ],
+      "persistance": "AUCUNE : tout perdu au reload (prouvé) ; 0 écriture DB",
+      "isolation_multitheses": "NON APPLICABLE : collage manuel, 0 lecture/écriture thèse — propriétaire intact",
+      "actions_destructives_statut": "Aucune",
+      "anomalies": [],
+      "statut": "VALIDÉE (meilleure vue du lot : IA 200, résultat structuré riche avec citations exactes, garde propre ; 100 % local par conception)",
+      "captures": [
+        "a1-lot3a-33-visit-vide.png",
+        "a1-lot3a-33-analyse-resultat.png",
+        "a1-lot3a-33-controles-echoues.png",
+        "a1-lot3a-33-reload-reset.png"
+      ]
+    },
+    {
+      "id": 34,
+      "nav_id": "alignement-preuves",
+      "nom": "Alignement Preuves",
+      "module": "src/modules/alignement-preuves/alignement-preuves-page.tsx (590 l.) + GET /api/thesis (liste) + POST /api/alignement-preuves (route 631 l., LECTURE SEULE : db.thesis.findUnique + db.chapter.findMany + db.reference.findMany, AUCUN create/update/delete — grep prouvé) — DÉTERMINISTE (matching citations↔références par normalisation auteur/année), 0 IA malgré le badge nav « IA »",
+      "revue_de_code": [
+        "Sélecteur « Thèse à analyser » alimenté par GET /api/thesis, défaut = list[0] (= theses[0], updatedAt desc — l.145 setSelectedThesisId(list[0].id)) : MÊME FAMILLE qu'AUD-ISO-002 (sélecteur local défaut theses[0], pas activeThesisId) — avec 1 seule thèse (propriétaire) aucun risque cross-thèse démontrable",
+        "SOURCE DE DONNÉES : chapitres (contenu HTML strippé) + références DB de la thèse SÉLECTIONNÉE — la SEULE vue du lot qui lit la thèse propriétaire, en LECTURE SEULE prouvée (route sans écriture) → analyse autorisée sur le propriétaire conformément aux invariants",
+        "Score = densité de preuves par chapitre (citations/1000 mots), sévérité good/warning/critical, citations orphelines, références inutilisées, routing référence→chapitres",
+        "Persistance : aucune (rapport en état local, re-calculé à chaque « Lancer l'audit »)"
+      ],
+      "fonctionnalites": [
+        "Audit de cohérence citations/références par chapitre : score global /100, densité par chapitre, verdicts Critique/Attention/Bon",
+        "4 volets résultat : Chapitres (cartes), Citations orphelines, Références inutilisées, Routing (référence → chapitres cités)",
+        "Aucune écriture DB, aucune IA"
+      ],
+      "parcours_executes": [
+        "10:56 — visite : sélecteur « Thèse à analyser » = « Urbanisme durable » (theses[0] = propriétaire, seule thèse) (capture -34-visit)",
+        "10:57 — « Lancer l'audit » sur le PROPRIÉTAIRE (lecture seule, route prouvée sans écriture) → 1 POST /api/alignement-preuves 200 → rapport : Score global 0 « Cohérence critique », 1 citation / 4 références / 1 appariée / 7 chapitres, Références inutilisées 3, Routing 1 ; cartes chapitres : Ch.1 « Introduction générale et problématique » Critique 1 957 mots 0 citation, Ch.2-6 « 0 mots / Aucune citation » (CONFORME à la DB réelle : wordCount 0 pour Ch.2-6, vérifié en lecture seule) (capture -34-audit-resultat-score0)",
+        "10:58 — volets : Citations orphelines → « Toutes les citations sont référencées » (0) ; Références inutilisées → 3 vraies références propriétaire listées (« Méthodologies qualitatives en urbanisme / Dupont, J. (2023) », « Test Reference for E2E Testing / Smith, J. »…) (capture -34-references-inutilisees) ; Routing → « Bui Khanh Linh Do (2025) — A Digital Twin Framework… → Ch.7 » (la référence appariée est citée au Ch.7, coherent avec wordCount 338 de Ch.7)",
+        "10:59 — RELOAD → rapport PERDU, sélecteur re-défaut theses[0] (capture -34-reload-reset)"
+      ],
+      "etats_erreurs": [
+        "État vide géré : « Aucune thèse disponible » si 0 thèse (revue de code l.213-219, non testé — 1 thèse présente)",
+        "Erreur API : setError + toast sonner (l.176-178) — non déclenchée (200)"
+      ],
+      "persistance": "AUCUNE : rapport recalculé à chaque lancement, perdu au reload (prouvé) ; 0 écriture DB (route lecture seule prouvée + comptages finaux)",
+      "isolation_multitheses": "MÉCANISME theses[0] : le défaut du sélecteur = list[0] du GET /api/thesis (theses[0]) et non activeThesisId (l.145) — même famille qu'AUD-ISO-002 ; AVEC UNE SEULE THÈSE aucun risque démontrable ; la vue lit les données du propriétaire en LECTURE SEULE uniquement (route prouvée sans écriture, diff DB final vide)",
+      "actions_destructives_statut": "Aucune (0 écriture DB sur toute la vue)",
+      "anomalies": [
+        {
+          "id": "A1L3A-05",
+          "priorite_proposee": "P4",
+          "titre": "Badge nav « IA » inexact : l'audit Alignement Preuves est 100 % déterministe (matching auteur/année), aucun appel LLM",
+          "preuves": "route src/app/api/alignement-preuves/route.ts sans generateCompletion (grep) ; exécution 200 instantanée sur 7 chapitres",
+          "note": "cosmétique — risque de fausse attente IA chez l'utilisateur"
+        }
+      ],
+      "statut": "VALIDÉE (audit déterministe OK sur données propriétaire en lecture seule ; mécanisme theses[0] consigné ; aucune écriture)",
+      "captures": [
+        "a1-lot3a-34-visit.png",
+        "a1-lot3a-34-audit-resultat-score0.png",
+        "a1-lot3a-34-references-inutilisees.png",
+        "a1-lot3a-34-reload-reset.png"
+      ]
+    }
+  ],
+  "audit_reseau": "Journal CDP agent-browser (daemon persistant, conservé entre sessions) — requêtes api de la session filtrées et rattachées : 29 → 1 POST /api/ai-writing 200 (mode methodology, postData AUDIT-L3- prouvé [18433.1142]) ; 31 → 1 POST /api/citation-check 200 [18433.1328] + 1 POST /api/stats-recompute 200 [18433.1329] (registres EXTERNES interrogés : Crossref 681 ms ✓, OpenAlex 334 ms ✓, Semantic Scholar HTTP 400 ✗, DOAJ fetch failed ✗, PubMed 993 ms ✓ — échecs partiels gérés sans casser le verdict) ; 32 → 1 POST /api/ai-writing/stream 400 [18433.1513] (échec déterministe, cause prouvée par code) ; 33 → 1 POST /api/coherence-check 200 [18433.1703] (2 passes IA serveur incluses) ; 34 → GET /api/thesis (montage) + 1 POST /api/alignement-preuves 200 (route lecture seule) ; plus GET ai-keys/stats/ai-config de montage des pages. AUCUNE écriture DB (aucun POST/PUT/DELETE sur /api/thesis/*, aucun modèle touché — diff comptages avant/après VIDE) ; 0 requête parasite ; 0 4xx/5xx parasite (le seul 400 = anomalie A1L3A-03 documentée). ATTENTION : le journal contient aussi des requêtes des sessions précédentes (AUDIT-L2b-* visibles aux refs 374/950) — rattachement par postData, pas par ordre de refs.",
+  "etat_proprietaire": {
+    "before": "a1-lot3a-db-before.json (10:27) — conforme à l'attendu : 1 thèse « Urbanisme durable » (cmsmyrdfs0000pa2sews4vo90, 7 chap, structureMode chapters, updatedAt 2026-08-10T08:22:35.464Z), 6 ChapterVersion, 4 réf, 16 ImportedDoc, 1 Article + 1v, 0 ResearchTab/Sprint/Story, 1 Experiment + 1 run, 27 LegalRef, 24 Job, 1 ElementAnalyse, 1 NotebookEntry, 1 DoctoralToolbox (résidu documenté lot 2a, non touché)",
+    "after": "a1-lot3a-db-after.json (11:01) — DIFF AVANT/APRÈS VIDE sur les 30 tables + _theses ; updatedAt thèse inchangé",
+    "identique": true,
+    "ecarts": "AUCUN — pas même le résidu DoctoralToolbox n'a bougé (aucune vue de ce lot n'auto-crée quoi que ce soit) ; la thèse propriétaire n'a été QUE LUE (vue 34, route lecture seule prouvée par revue de code + diff DB vide) ; 0 thèse jetable créée (aucune vue thèse-scopée en écriture — toutes les vues sont soit sans données thèse, soit lecture seule)"
+  }
+}
