@@ -1,0 +1,58 @@
+{
+ "timestamp": "2026-10-10T08:28:49.675Z",
+ "theses": [
+  {
+   "id": "cmsmyrdfs0000pa2sews4vo90",
+   "title": "Urbanisme durable",
+   "author": "Marie Dupont",
+   "structureMode": "chapters",
+   "createdAt": "2026-08-10T08:22:35.464Z",
+   "updatedAt": "2026-08-10T08:22:35.464Z"
+  }
+ ],
+ "counts": {
+  "Thesis": 1,
+  "Chapter": 7,
+  "ChapterVersion": 6,
+  "Part": 0,
+  "ThesisCadrage": 0,
+  "ThesisCadrageField": 0,
+  "ThesisCadrageVersion": 0,
+  "DoctoralToolbox": 0,
+  "SoutenancePrep": 1,
+  "ResearchTab": 0,
+  "Reference": 4,
+  "ResearchSource": 0,
+  "NotebookEntry": 1,
+  "AgileSprint": 0,
+  "AgileStory": 0,
+  "CustomBookSkill": 58,
+  "LegalRef": 27,
+  "Article": 1,
+  "ArticleVersion": 1,
+  "ImportedDoc": 16,
+  "ElementAnalyse": 1,
+  "TypeAnalyseMethodologique": 1,
+  "SessionVerification": 2,
+  "DocumentChunk": 12,
+  "Experiment": 1,
+  "ExperimentRun": 1,
+  "Job": 24,
+  "SavedSearch": 0,
+  "SavedSearchResult": 0,
+  "LicenseKey": 0
+ },
+ "parThese": [
+  {
+   "id": "cmsmyrdfs0000pa2sews4vo90",
+   "title": "Urbanisme durable",
+   "structureMode": "chapters",
+   "chapters": 7,
+   "words": 2295,
+   "chaptersAvecPartId": 0,
+   "chapterVersions": 6,
+   "parts": 0,
+   "cadrages": 0
+  }
+ ]
+}
