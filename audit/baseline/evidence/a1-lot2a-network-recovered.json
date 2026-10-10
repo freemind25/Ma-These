@@ -1,0 +1,5770 @@
+{
+  "note": "Audit réseau RÉCUPÉRÉ + COMPLÉTÉ lors de la sous-session 2 (W2-3a-fin) : le contexte navigateur persistant du daemon agent-browser a conservé le journal réseau de la sous-session 1 (interrompue) — tests vues 13/14/15/25/37 + cleanup sprint/expérimentation/onglets — auquel se sont ajoutées les requêtes de la sous-session 2 (suppression thèse AUDIT-ISO-L2 via flux confirmé + contrôles de clôture des 5 vues + gestion net nul des auto-créations). Archivé intégralement avant fermeture du navigateur.",
+  "archived_at_utc": "2026-10-10T09:25:00Z",
+  "couverture": "sous-session 1 (08:42-09:06 UTC, refs 7743.180-1222) + sous-session 2 (refs 7743.1401-1621+)",
+  "total_requests_all_types": 827,
+  "total_fetch_api": 823,
+  "fetch_api": [
+    {
+      "ref": "8E47CD3BB45AC91C088EDAEE9870BFDF",
+      "method": "GET",
+      "url": "http://localhost:3000/",
+      "type": "Document",
+      "status": 200
+    },
+    {
+      "ref": "7743.2",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/797e433ab948586e-s.p.29207c2f.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.3",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.4",
+      "method": "GET",
+      "url": "http://localhost:3000/logo.png",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.5",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css",
+      "type": "Stylesheet",
+      "status": 200
+    },
+    {
+      "ref": "7743.6",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.7",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.8",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.9",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.10",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.11",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.12",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.13",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40swc_helpers_cjs_d80fb378._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.14",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_a0ff3932._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.15",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/turbopack-_23a915ee._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.16",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_be32b49c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.17",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.18",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_db32f6ba._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.19",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_67d81d68._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.20",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.21",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_1f7b0c91._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.22",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_lib_7d80f026._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.23",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_9a6d344e._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.24",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_editor_075b502c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.25",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_cadrage_cadrage-page_tsx_3b72a031._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.26",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_references_references-page_tsx_b43a5273._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.27",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_article-redaction_article-redaction-page_tsx_9bf22321._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.28",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_thesis-plan_thesis-plan-page_tsx_95a891a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.29",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_ai-tools_ai-tools-page_tsx_1c463995._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.30",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_deblocage-ecriture_deblocage-ecriture-page_tsx_d664d428._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.31",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_journaux-oa_journaux-oa-page_tsx_9c854999._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.32",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_auto-edition_auto-edition-page_tsx_9380acac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.33",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_feuille-route-agile_feuille-route-agile-page_tsx_26cfcff8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.34",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_analyse-champ-recherche_analyse-champ-recherche-page_tsx_15c091ca._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.35",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_outils-slr_outils-slr-page_tsx_023380dd._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.36",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apa-composer_apa-composer-page_tsx_3261c86c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.37",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-methodo_verification-methodo-page_tsx_b8216eda._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.38",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_boite-doctorale_boite-doctorale-page_tsx_4bfab5fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.39",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_routesme_routesme-page_tsx_759dfcc1._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.40",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_livres-competences_865875fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.41",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_onglet-recherche_onglet-recherche-page_tsx_300c45eb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.42",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_grammaire_grammaire-page_tsx_0df613a5._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.43",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-pdf_export-pdf-page_tsx_916d5c24._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.44",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_equilibre-chapitres_equilibre-chapitres-page_tsx_3e2c1a8f._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.45",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_diagrammes_diagrammes-page_tsx_22cda667._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.46",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_harper_harper-page_tsx_f7fb1ed7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.47",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-carto_verification-carto-page_tsx_73be909d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.48",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_paper2code_paper2code-page_tsx_327386b7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.49",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-docx_export-docx-page_tsx_e3381aa3._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.50",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_alignement-preuves_alignement-preuves-page_tsx_6e1bd204._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.51",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-coherence_verification-coherence-page_tsx_a59a559d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.52",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_explorateur-theses_explorateur-theses-page_tsx_aa6bb5b0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.53",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-citations_verification-citations-page_tsx_5fb9ff15._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.54",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_generation-hypotheses_generation-hypotheses-page_tsx_4eb9633d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.55",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apinex_apinex-page_tsx_48f5eab8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.56",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_experimentations_experimentations-page_tsx_cf48c634._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.57",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_veille-academique_veille-academique-page_tsx_3ddefd84._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.58",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_52264714._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.59",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_286c5379._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.60",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_lucide-react_dist_esm_5d2ee216._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.61",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_56b6fd65._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.62",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_71e330a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.63",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_prosemirror-view_dist_index_21ada2c5.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.64",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_core_dist_f5afb391._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.65",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_micromark-core-commonmark_dev_lib_fc41dd51._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.66",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/6b4ca_pako_dist_pako_esm_mjs_effcac73._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.67",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_jspdf_dist_jspdf_es_min_0d42d46a.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.68",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_html2canvas-pro_dist_html2canvas-pro_esm_b15a70c4.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.69",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40radix-ui_627fca2d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.70",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.71",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_669ee8e0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.72",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_833d1c82._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.73",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_page_tsx_1d68d4a7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.160",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/choisir-directeur-these-7-etapes.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.161",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/article-recherche-vs-revue.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.169",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c8c997ce._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.170",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c7192189._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.178",
+      "method": "GET",
+      "url": "http://localhost:3000/app-icon.png",
+      "type": "Other",
+      "status": 200
+    },
+    {
+      "ref": "7743.180",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.181",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-keys",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.182",
+      "method": "GET",
+      "url": "http://localhost:3000/api/stats",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.176",
+      "method": "GET",
+      "url": "http://localhost:3000/__nextjs_font/geist-latin.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.183",
+      "method": "POST",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.184",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.185",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.186",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.187",
+      "method": "POST",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.188",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.189",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints/cmv25gm410017q7vhpmpwowxf",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.190",
+      "method": "POST",
+      "url": "http://localhost:3000/api/sprints/cmv25gm410017q7vhpmpwowxf/stories",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.191",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints/cmv25gm410017q7vhpmpwowxf",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.192",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.193",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/stories/cmv25h7su0019q7vhx04qgxd0",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.194",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints/cmv25gm410017q7vhpmpwowxf",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.195",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.196",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/stories/cmv25h7su0019q7vhx04qgxd0",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.197",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints/cmv25gm410017q7vhpmpwowxf",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.198",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "0E2A911E2113A7837C033F5499CACDF4",
+      "method": "GET",
+      "url": "http://localhost:3000/",
+      "type": "Document",
+      "status": 200
+    },
+    {
+      "ref": "7743.200",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/797e433ab948586e-s.p.29207c2f.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.201",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.202",
+      "method": "GET",
+      "url": "http://localhost:3000/logo.png",
+      "type": "Image",
+      "status": 304
+    },
+    {
+      "ref": "7743.203",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css",
+      "type": "Stylesheet",
+      "status": 200
+    },
+    {
+      "ref": "7743.204",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.205",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.206",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.207",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.208",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.209",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.210",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.211",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40swc_helpers_cjs_d80fb378._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.212",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_a0ff3932._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.213",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/turbopack-_23a915ee._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.214",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_be32b49c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.215",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.216",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_db32f6ba._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.217",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_67d81d68._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.218",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.219",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_1f7b0c91._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.220",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_lib_7d80f026._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.221",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_9a6d344e._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.222",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_editor_075b502c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.223",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_cadrage_cadrage-page_tsx_3b72a031._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.224",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_references_references-page_tsx_b43a5273._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.225",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_article-redaction_article-redaction-page_tsx_9bf22321._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.226",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_thesis-plan_thesis-plan-page_tsx_95a891a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.227",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_ai-tools_ai-tools-page_tsx_1c463995._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.228",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_deblocage-ecriture_deblocage-ecriture-page_tsx_d664d428._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.229",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_journaux-oa_journaux-oa-page_tsx_9c854999._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.230",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_auto-edition_auto-edition-page_tsx_9380acac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.231",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_feuille-route-agile_feuille-route-agile-page_tsx_26cfcff8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.232",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_analyse-champ-recherche_analyse-champ-recherche-page_tsx_15c091ca._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.233",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_outils-slr_outils-slr-page_tsx_023380dd._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.234",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apa-composer_apa-composer-page_tsx_3261c86c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.235",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-methodo_verification-methodo-page_tsx_b8216eda._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.236",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_boite-doctorale_boite-doctorale-page_tsx_4bfab5fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.237",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_routesme_routesme-page_tsx_759dfcc1._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.238",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_livres-competences_865875fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.239",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_onglet-recherche_onglet-recherche-page_tsx_300c45eb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.240",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_grammaire_grammaire-page_tsx_0df613a5._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.241",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-pdf_export-pdf-page_tsx_916d5c24._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.242",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_equilibre-chapitres_equilibre-chapitres-page_tsx_3e2c1a8f._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.243",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_diagrammes_diagrammes-page_tsx_22cda667._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.244",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_harper_harper-page_tsx_f7fb1ed7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.245",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-carto_verification-carto-page_tsx_73be909d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.246",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_paper2code_paper2code-page_tsx_327386b7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.247",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-docx_export-docx-page_tsx_e3381aa3._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.248",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_alignement-preuves_alignement-preuves-page_tsx_6e1bd204._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.249",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-coherence_verification-coherence-page_tsx_a59a559d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.250",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_explorateur-theses_explorateur-theses-page_tsx_aa6bb5b0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.251",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-citations_verification-citations-page_tsx_5fb9ff15._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.252",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_generation-hypotheses_generation-hypotheses-page_tsx_4eb9633d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.253",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apinex_apinex-page_tsx_48f5eab8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.254",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_experimentations_experimentations-page_tsx_cf48c634._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.255",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_veille-academique_veille-academique-page_tsx_3ddefd84._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.256",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_52264714._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.257",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_286c5379._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.258",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_lucide-react_dist_esm_5d2ee216._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.259",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_56b6fd65._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.260",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_71e330a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.261",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_prosemirror-view_dist_index_21ada2c5.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.262",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_core_dist_f5afb391._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.263",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_micromark-core-commonmark_dev_lib_fc41dd51._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.264",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/6b4ca_pako_dist_pako_esm_mjs_effcac73._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.265",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_jspdf_dist_jspdf_es_min_0d42d46a.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.266",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_html2canvas-pro_dist_html2canvas-pro_esm_b15a70c4.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.267",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40radix-ui_627fca2d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.268",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.269",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_669ee8e0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.270",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_833d1c82._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.271",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_page_tsx_1d68d4a7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.346",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/choisir-directeur-these-7-etapes.jpg",
+      "type": "Image",
+      "status": 304
+    },
+    {
+      "ref": "7743.347",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/article-recherche-vs-revue.jpg",
+      "type": "Image",
+      "status": 304
+    },
+    {
+      "ref": "7743.367",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c8c997ce._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.368",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c7192189._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.374",
+      "method": "GET",
+      "url": "http://localhost:3000/__nextjs_font/geist-latin.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.376",
+      "method": "GET",
+      "url": "http://localhost:3000/app-icon.png",
+      "type": "Other",
+      "status": 200
+    },
+    {
+      "ref": "7743.378",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.379",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-keys",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.380",
+      "method": "GET",
+      "url": "http://localhost:3000/api/stats",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.381",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.382",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.383",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.384",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.385",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints/cmv25gm410017q7vhpmpwowxf",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.386",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/stories/cmv25h7su0019q7vhx04qgxd0",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.387",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints/cmv25gm410017q7vhpmpwowxf",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.388",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.389",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/stories/cmv25h7su0019q7vhx04qgxd0",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.390",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints/cmv25gm410017q7vhpmpwowxf",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.391",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.392",
+      "method": "POST",
+      "url": "http://localhost:3000/api/ai-writing",
+      "type": "Fetch",
+      "status": 400
+    },
+    {
+      "ref": "7743.393",
+      "method": "POST",
+      "url": "http://localhost:3000/api/ai-writing",
+      "type": "Fetch",
+      "status": 400
+    },
+    {
+      "ref": "7743.394",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.395",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.396",
+      "method": "POST",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.397",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.398",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.399",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.400",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.401",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.402",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.403",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.404",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.405",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.406",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.407",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.408",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.409",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.410",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.411",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.412",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.413",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "9A6BD4C703436AFC56A9905A3D8307A5",
+      "method": "GET",
+      "url": "http://localhost:3000/",
+      "type": "Document",
+      "status": 200
+    },
+    {
+      "ref": "7743.415",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/797e433ab948586e-s.p.29207c2f.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.416",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.417",
+      "method": "GET",
+      "url": "http://localhost:3000/logo.png",
+      "type": "Image",
+      "status": 304
+    },
+    {
+      "ref": "7743.418",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css",
+      "type": "Stylesheet",
+      "status": 200
+    },
+    {
+      "ref": "7743.419",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.420",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.421",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.422",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.423",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.424",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.425",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.426",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40swc_helpers_cjs_d80fb378._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.427",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_a0ff3932._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.428",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/turbopack-_23a915ee._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.429",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_be32b49c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.430",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.431",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_db32f6ba._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.432",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_67d81d68._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.433",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.434",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_1f7b0c91._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.435",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_lib_7d80f026._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.436",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_9a6d344e._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.437",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_editor_075b502c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.438",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_cadrage_cadrage-page_tsx_3b72a031._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.439",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_references_references-page_tsx_b43a5273._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.440",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_article-redaction_article-redaction-page_tsx_9bf22321._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.441",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_thesis-plan_thesis-plan-page_tsx_95a891a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.442",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_ai-tools_ai-tools-page_tsx_1c463995._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.443",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_deblocage-ecriture_deblocage-ecriture-page_tsx_d664d428._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.444",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_journaux-oa_journaux-oa-page_tsx_9c854999._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.445",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_auto-edition_auto-edition-page_tsx_9380acac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.446",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_feuille-route-agile_feuille-route-agile-page_tsx_26cfcff8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.447",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_analyse-champ-recherche_analyse-champ-recherche-page_tsx_15c091ca._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.448",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_outils-slr_outils-slr-page_tsx_023380dd._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.449",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apa-composer_apa-composer-page_tsx_3261c86c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.450",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-methodo_verification-methodo-page_tsx_b8216eda._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.451",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_boite-doctorale_boite-doctorale-page_tsx_4bfab5fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.452",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_routesme_routesme-page_tsx_759dfcc1._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.453",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_livres-competences_865875fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.454",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_onglet-recherche_onglet-recherche-page_tsx_300c45eb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.455",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_grammaire_grammaire-page_tsx_0df613a5._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.456",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-pdf_export-pdf-page_tsx_916d5c24._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.457",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_equilibre-chapitres_equilibre-chapitres-page_tsx_3e2c1a8f._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.458",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_diagrammes_diagrammes-page_tsx_22cda667._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.459",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_harper_harper-page_tsx_f7fb1ed7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.460",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-carto_verification-carto-page_tsx_73be909d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.461",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_paper2code_paper2code-page_tsx_327386b7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.462",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-docx_export-docx-page_tsx_e3381aa3._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.463",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_alignement-preuves_alignement-preuves-page_tsx_6e1bd204._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.464",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-coherence_verification-coherence-page_tsx_a59a559d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.465",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_explorateur-theses_explorateur-theses-page_tsx_aa6bb5b0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.466",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-citations_verification-citations-page_tsx_5fb9ff15._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.467",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_generation-hypotheses_generation-hypotheses-page_tsx_4eb9633d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.468",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apinex_apinex-page_tsx_48f5eab8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.469",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_experimentations_experimentations-page_tsx_cf48c634._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.470",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_veille-academique_veille-academique-page_tsx_3ddefd84._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.471",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_52264714._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.472",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_286c5379._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.473",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_lucide-react_dist_esm_5d2ee216._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.474",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_56b6fd65._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.475",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_71e330a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.476",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_prosemirror-view_dist_index_21ada2c5.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.477",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_core_dist_f5afb391._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.478",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_micromark-core-commonmark_dev_lib_fc41dd51._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.479",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/6b4ca_pako_dist_pako_esm_mjs_effcac73._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.480",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_jspdf_dist_jspdf_es_min_0d42d46a.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.481",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_html2canvas-pro_dist_html2canvas-pro_esm_b15a70c4.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.482",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40radix-ui_627fca2d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.483",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.484",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_669ee8e0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.485",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_833d1c82._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.486",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_page_tsx_1d68d4a7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.573",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/choisir-directeur-these-7-etapes.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.574",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/article-recherche-vs-revue.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.582",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c8c997ce._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.583",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c7192189._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.589",
+      "method": "GET",
+      "url": "http://localhost:3000/__nextjs_font/geist-latin.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.591",
+      "method": "GET",
+      "url": "http://localhost:3000/app-icon.png",
+      "type": "Other",
+      "status": 200
+    },
+    {
+      "ref": "7743.593",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.594",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-keys",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.595",
+      "method": "GET",
+      "url": "http://localhost:3000/api/stats",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.596",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.597",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.598",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.599",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.600",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.601",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.602",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.603",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.604",
+      "method": "POST",
+      "url": "http://localhost:3000/api/text-prediction",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.605",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.606",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.607",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.608",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.609",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.610",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.611",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.613",
+      "method": "POST",
+      "url": "http://localhost:3000/api/ai-writing",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "6DC2AA8F89C4152E09341054DB87D5B1",
+      "method": "GET",
+      "url": "http://localhost:3000/",
+      "type": "Document",
+      "status": 200
+    },
+    {
+      "ref": "7743.615",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/797e433ab948586e-s.p.29207c2f.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.616",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.617",
+      "method": "GET",
+      "url": "http://localhost:3000/logo.png",
+      "type": "Image",
+      "status": 304
+    },
+    {
+      "ref": "7743.618",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css",
+      "type": "Stylesheet",
+      "status": 200
+    },
+    {
+      "ref": "7743.619",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.620",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.621",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.622",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.623",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.624",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.625",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.626",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40swc_helpers_cjs_d80fb378._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.627",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_a0ff3932._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.628",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/turbopack-_23a915ee._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.629",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_be32b49c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.630",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.631",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_db32f6ba._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.632",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_67d81d68._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.633",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.634",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_1f7b0c91._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.635",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_lib_7d80f026._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.636",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_9a6d344e._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.637",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_editor_075b502c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.638",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_cadrage_cadrage-page_tsx_3b72a031._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.639",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_references_references-page_tsx_b43a5273._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.640",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_article-redaction_article-redaction-page_tsx_9bf22321._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.641",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_thesis-plan_thesis-plan-page_tsx_95a891a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.642",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_ai-tools_ai-tools-page_tsx_1c463995._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.643",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_deblocage-ecriture_deblocage-ecriture-page_tsx_d664d428._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.644",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_journaux-oa_journaux-oa-page_tsx_9c854999._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.645",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_auto-edition_auto-edition-page_tsx_9380acac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.646",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_feuille-route-agile_feuille-route-agile-page_tsx_26cfcff8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.647",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_analyse-champ-recherche_analyse-champ-recherche-page_tsx_15c091ca._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.648",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_outils-slr_outils-slr-page_tsx_023380dd._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.649",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apa-composer_apa-composer-page_tsx_3261c86c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.650",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-methodo_verification-methodo-page_tsx_b8216eda._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.651",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_boite-doctorale_boite-doctorale-page_tsx_4bfab5fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.652",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_routesme_routesme-page_tsx_759dfcc1._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.653",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_livres-competences_865875fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.654",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_onglet-recherche_onglet-recherche-page_tsx_300c45eb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.655",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_grammaire_grammaire-page_tsx_0df613a5._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.656",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-pdf_export-pdf-page_tsx_916d5c24._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.657",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_equilibre-chapitres_equilibre-chapitres-page_tsx_3e2c1a8f._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.658",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_diagrammes_diagrammes-page_tsx_22cda667._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.659",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_harper_harper-page_tsx_f7fb1ed7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.660",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-carto_verification-carto-page_tsx_73be909d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.661",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_paper2code_paper2code-page_tsx_327386b7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.662",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-docx_export-docx-page_tsx_e3381aa3._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.663",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_alignement-preuves_alignement-preuves-page_tsx_6e1bd204._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.664",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-coherence_verification-coherence-page_tsx_a59a559d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.665",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_explorateur-theses_explorateur-theses-page_tsx_aa6bb5b0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.666",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-citations_verification-citations-page_tsx_5fb9ff15._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.667",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_generation-hypotheses_generation-hypotheses-page_tsx_4eb9633d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.668",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apinex_apinex-page_tsx_48f5eab8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.669",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_experimentations_experimentations-page_tsx_cf48c634._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.670",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_veille-academique_veille-academique-page_tsx_3ddefd84._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.671",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_52264714._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.672",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_286c5379._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.673",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_lucide-react_dist_esm_5d2ee216._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.674",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_56b6fd65._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.675",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_71e330a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.676",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_prosemirror-view_dist_index_21ada2c5.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.677",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_core_dist_f5afb391._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.678",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_micromark-core-commonmark_dev_lib_fc41dd51._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.679",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/6b4ca_pako_dist_pako_esm_mjs_effcac73._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.680",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_jspdf_dist_jspdf_es_min_0d42d46a.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.681",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_html2canvas-pro_dist_html2canvas-pro_esm_b15a70c4.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.682",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40radix-ui_627fca2d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.683",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.684",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_669ee8e0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.685",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_833d1c82._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.686",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_page_tsx_1d68d4a7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.773",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/choisir-directeur-these-7-etapes.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.774",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/article-recherche-vs-revue.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.775",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/methodes-methodologie-uwa-1.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.776",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/revue-litterature-snyder-fiche-1.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.777",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/methodes-mixtes-sandelowski-fiche-1.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.785",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c8c997ce._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.786",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c7192189._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.792",
+      "method": "GET",
+      "url": "http://localhost:3000/__nextjs_font/geist-latin.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.794",
+      "method": "GET",
+      "url": "http://localhost:3000/app-icon.png",
+      "type": "Other",
+      "status": 200
+    },
+    {
+      "ref": "7743.796",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.797",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-keys",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.798",
+      "method": "GET",
+      "url": "http://localhost:3000/api/stats",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.799",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.800",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.801",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.802",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.804",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.805",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.806",
+      "method": "POST",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.807",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.808",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/research-tabs/cmv25xymw001dq7vhyb564az8",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.809",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.810",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.811",
+      "method": "POST",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.812",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.813",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/research-tabs/cmv25yudh001fq7vhg067zitm",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.814",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.815",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/research-tabs/cmv25yudh001fq7vhg067zitm",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.816",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.817",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/research-tabs/cmv25yudh001fq7vhg067zitm",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.818",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.819",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/research-tabs/cmv25yudh001fq7vhg067zitm",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.820",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.821",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/research-tabs/cmv25yudh001fq7vhg067zitm",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.822",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.823",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/research-tabs/cmv25yudh001fq7vhg067zitm",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.824",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.825",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/research-tabs/cmv25yudh001fq7vhg067zitm",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.826",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "92805775AE88CE5176D1A19F9AB13E28",
+      "method": "GET",
+      "url": "http://localhost:3000/",
+      "type": "Document",
+      "status": 200
+    },
+    {
+      "ref": "7743.828",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/797e433ab948586e-s.p.29207c2f.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.829",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.830",
+      "method": "GET",
+      "url": "http://localhost:3000/logo.png",
+      "type": "Image",
+      "status": 304
+    },
+    {
+      "ref": "7743.831",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css",
+      "type": "Stylesheet",
+      "status": 200
+    },
+    {
+      "ref": "7743.832",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.833",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.834",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.835",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.836",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.837",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.838",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.839",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40swc_helpers_cjs_d80fb378._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.840",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_a0ff3932._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.841",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/turbopack-_23a915ee._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.842",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_be32b49c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.843",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.844",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_db32f6ba._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.845",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_67d81d68._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.846",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.847",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_1f7b0c91._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.848",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_lib_7d80f026._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.849",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_9a6d344e._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.850",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_editor_075b502c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.851",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_cadrage_cadrage-page_tsx_3b72a031._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.852",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_references_references-page_tsx_b43a5273._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.853",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_article-redaction_article-redaction-page_tsx_9bf22321._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.854",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_thesis-plan_thesis-plan-page_tsx_95a891a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.855",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_ai-tools_ai-tools-page_tsx_1c463995._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.856",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_deblocage-ecriture_deblocage-ecriture-page_tsx_d664d428._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.857",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_journaux-oa_journaux-oa-page_tsx_9c854999._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.858",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_auto-edition_auto-edition-page_tsx_9380acac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.859",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_feuille-route-agile_feuille-route-agile-page_tsx_26cfcff8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.860",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_analyse-champ-recherche_analyse-champ-recherche-page_tsx_15c091ca._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.861",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_outils-slr_outils-slr-page_tsx_023380dd._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.862",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apa-composer_apa-composer-page_tsx_3261c86c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.863",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-methodo_verification-methodo-page_tsx_b8216eda._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.864",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_boite-doctorale_boite-doctorale-page_tsx_4bfab5fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.865",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_routesme_routesme-page_tsx_759dfcc1._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.866",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_livres-competences_865875fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.867",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_onglet-recherche_onglet-recherche-page_tsx_300c45eb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.868",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_grammaire_grammaire-page_tsx_0df613a5._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.869",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-pdf_export-pdf-page_tsx_916d5c24._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.870",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_equilibre-chapitres_equilibre-chapitres-page_tsx_3e2c1a8f._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.871",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_diagrammes_diagrammes-page_tsx_22cda667._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.872",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_harper_harper-page_tsx_f7fb1ed7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.873",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-carto_verification-carto-page_tsx_73be909d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.874",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_paper2code_paper2code-page_tsx_327386b7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.875",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-docx_export-docx-page_tsx_e3381aa3._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.876",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_alignement-preuves_alignement-preuves-page_tsx_6e1bd204._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.877",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-coherence_verification-coherence-page_tsx_a59a559d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.878",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_explorateur-theses_explorateur-theses-page_tsx_aa6bb5b0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.879",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-citations_verification-citations-page_tsx_5fb9ff15._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.880",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_generation-hypotheses_generation-hypotheses-page_tsx_4eb9633d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.881",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apinex_apinex-page_tsx_48f5eab8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.882",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_experimentations_experimentations-page_tsx_cf48c634._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.883",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_veille-academique_veille-academique-page_tsx_3ddefd84._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.884",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_52264714._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.885",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_286c5379._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.886",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_lucide-react_dist_esm_5d2ee216._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.887",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_56b6fd65._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.888",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_71e330a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.889",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_prosemirror-view_dist_index_21ada2c5.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.890",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_core_dist_f5afb391._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.891",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_micromark-core-commonmark_dev_lib_fc41dd51._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.892",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/6b4ca_pako_dist_pako_esm_mjs_effcac73._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.893",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_jspdf_dist_jspdf_es_min_0d42d46a.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.894",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_html2canvas-pro_dist_html2canvas-pro_esm_b15a70c4.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.895",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40radix-ui_627fca2d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.896",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.897",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_669ee8e0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.898",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_833d1c82._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.899",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_page_tsx_1d68d4a7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.986",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/choisir-directeur-these-7-etapes.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.987",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/article-recherche-vs-revue.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.995",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c8c997ce._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.996",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c7192189._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1002",
+      "method": "GET",
+      "url": "http://localhost:3000/__nextjs_font/geist-latin.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.1004",
+      "method": "GET",
+      "url": "http://localhost:3000/app-icon.png",
+      "type": "Other",
+      "status": 200
+    },
+    {
+      "ref": "7743.1006",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1007",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-keys",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1008",
+      "method": "GET",
+      "url": "http://localhost:3000/api/stats",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1009",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1010",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1011",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1012",
+      "method": "GET",
+      "url": "http://localhost:3000/api/experiments",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1013",
+      "method": "GET",
+      "url": "http://localhost:3000/api/experiments",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1014",
+      "method": "POST",
+      "url": "http://localhost:3000/api/experiments",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.1015",
+      "method": "POST",
+      "url": "http://localhost:3000/api/experiments/cmv2628hf001gq7vhtvgtq3rn/runs",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.1016",
+      "method": "PATCH",
+      "url": "http://localhost:3000/api/experiments/cmv2628hf001gq7vhtvgtq3rn",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1017",
+      "method": "PATCH",
+      "url": "http://localhost:3000/api/experiments/cmv2628hf001gq7vhtvgtq3rn",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1018",
+      "method": "PATCH",
+      "url": "http://localhost:3000/api/experiments/cmv2628hf001gq7vhtvgtq3rn",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1019",
+      "method": "PATCH",
+      "url": "http://localhost:3000/api/experiments/cmv2628hf001gq7vhtvgtq3rn",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1020",
+      "method": "PATCH",
+      "url": "http://localhost:3000/api/experiments/cmv2628hf001gq7vhtvgtq3rn",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "CF1A35EF2506E80B5DD53FF167EBCB13",
+      "method": "GET",
+      "url": "http://localhost:3000/",
+      "type": "Document",
+      "status": 200
+    },
+    {
+      "ref": "7743.1022",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/797e433ab948586e-s.p.29207c2f.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.1023",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.1024",
+      "method": "GET",
+      "url": "http://localhost:3000/logo.png",
+      "type": "Image",
+      "status": 304
+    },
+    {
+      "ref": "7743.1025",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css",
+      "type": "Stylesheet",
+      "status": 200
+    },
+    {
+      "ref": "7743.1026",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1027",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1028",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1029",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1030",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1031",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1032",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1033",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40swc_helpers_cjs_d80fb378._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1034",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_a0ff3932._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1035",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/turbopack-_23a915ee._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1036",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_be32b49c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1037",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1038",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_db32f6ba._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1039",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_67d81d68._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1040",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1041",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_1f7b0c91._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1042",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_lib_7d80f026._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1043",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_9a6d344e._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1044",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_editor_075b502c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1045",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_cadrage_cadrage-page_tsx_3b72a031._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1046",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_references_references-page_tsx_b43a5273._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1047",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_article-redaction_article-redaction-page_tsx_9bf22321._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1048",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_thesis-plan_thesis-plan-page_tsx_95a891a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1049",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_ai-tools_ai-tools-page_tsx_1c463995._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1050",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_deblocage-ecriture_deblocage-ecriture-page_tsx_d664d428._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1051",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_journaux-oa_journaux-oa-page_tsx_9c854999._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1052",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_auto-edition_auto-edition-page_tsx_9380acac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1053",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_feuille-route-agile_feuille-route-agile-page_tsx_26cfcff8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1054",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_analyse-champ-recherche_analyse-champ-recherche-page_tsx_15c091ca._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1055",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_outils-slr_outils-slr-page_tsx_023380dd._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1056",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apa-composer_apa-composer-page_tsx_3261c86c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1057",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-methodo_verification-methodo-page_tsx_b8216eda._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1058",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_boite-doctorale_boite-doctorale-page_tsx_4bfab5fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1059",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_routesme_routesme-page_tsx_759dfcc1._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1060",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_livres-competences_865875fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1061",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_onglet-recherche_onglet-recherche-page_tsx_300c45eb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1062",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_grammaire_grammaire-page_tsx_0df613a5._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1063",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-pdf_export-pdf-page_tsx_916d5c24._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1064",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_equilibre-chapitres_equilibre-chapitres-page_tsx_3e2c1a8f._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1065",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_diagrammes_diagrammes-page_tsx_22cda667._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1066",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_harper_harper-page_tsx_f7fb1ed7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1067",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-carto_verification-carto-page_tsx_73be909d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1068",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_paper2code_paper2code-page_tsx_327386b7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1069",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-docx_export-docx-page_tsx_e3381aa3._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1070",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_alignement-preuves_alignement-preuves-page_tsx_6e1bd204._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1071",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-coherence_verification-coherence-page_tsx_a59a559d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1072",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_explorateur-theses_explorateur-theses-page_tsx_aa6bb5b0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1073",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-citations_verification-citations-page_tsx_5fb9ff15._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1074",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_generation-hypotheses_generation-hypotheses-page_tsx_4eb9633d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1075",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apinex_apinex-page_tsx_48f5eab8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1076",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_experimentations_experimentations-page_tsx_cf48c634._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1077",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_veille-academique_veille-academique-page_tsx_3ddefd84._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1078",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_52264714._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1079",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_286c5379._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1080",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_lucide-react_dist_esm_5d2ee216._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1081",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_56b6fd65._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1082",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_71e330a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1083",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_prosemirror-view_dist_index_21ada2c5.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1084",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_core_dist_f5afb391._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1085",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_micromark-core-commonmark_dev_lib_fc41dd51._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1086",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/6b4ca_pako_dist_pako_esm_mjs_effcac73._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1087",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_jspdf_dist_jspdf_es_min_0d42d46a.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1088",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_html2canvas-pro_dist_html2canvas-pro_esm_b15a70c4.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1089",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40radix-ui_627fca2d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1090",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1091",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_669ee8e0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1092",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_833d1c82._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1093",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_page_tsx_1d68d4a7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1169",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/choisir-directeur-these-7-etapes.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.1170",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/article-recherche-vs-revue.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.1189",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c8c997ce._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1190",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c7192189._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1196",
+      "method": "GET",
+      "url": "http://localhost:3000/__nextjs_font/geist-latin.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.1198",
+      "method": "GET",
+      "url": "http://localhost:3000/app-icon.png",
+      "type": "Other",
+      "status": 200
+    },
+    {
+      "ref": "7743.1200",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1201",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-keys",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1202",
+      "method": "GET",
+      "url": "http://localhost:3000/api/stats",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1203",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1204",
+      "method": "GET",
+      "url": "http://localhost:3000/api/experiments",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1205",
+      "method": "GET",
+      "url": "http://localhost:3000/api/experiments",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1206",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1207",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1208",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1209",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints/cmv25gm410017q7vhpmpwowxf",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1210",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/sprints/cmv25gm410017q7vhpmpwowxf",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1211",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1212",
+      "method": "GET",
+      "url": "http://localhost:3000/api/experiments",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1213",
+      "method": "GET",
+      "url": "http://localhost:3000/api/experiments",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1214",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/experiments/cmv2628hf001gq7vhtvgtq3rn",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1215",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1216",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1217",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/research-tabs/cmv25yudh001fq7vhg067zitm",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1218",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1219",
+      "method": "POST",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.1220",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1221",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/research-tabs/cmv266soz001kq7vhikkrq7or",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1222",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "BCA316D4AE38F044F50CE2993F30DB08",
+      "method": "GET",
+      "url": "http://localhost:3000/",
+      "type": "Document",
+      "status": 200
+    },
+    {
+      "ref": "7743.1224",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/797e433ab948586e-s.p.29207c2f.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.1225",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.1226",
+      "method": "GET",
+      "url": "http://localhost:3000/logo.png",
+      "type": "Image",
+      "status": 304
+    },
+    {
+      "ref": "7743.1227",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css",
+      "type": "Stylesheet",
+      "status": 200
+    },
+    {
+      "ref": "7743.1228",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1229",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1230",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1231",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1232",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1233",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1234",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1235",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40swc_helpers_cjs_d80fb378._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1236",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_a0ff3932._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1237",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/turbopack-_23a915ee._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1238",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_be32b49c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1239",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1240",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_db32f6ba._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1241",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_67d81d68._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1242",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1243",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_1f7b0c91._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1244",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_lib_7d80f026._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1245",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_9a6d344e._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1246",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_editor_075b502c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1247",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_cadrage_cadrage-page_tsx_3b72a031._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1248",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_references_references-page_tsx_b43a5273._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1249",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_article-redaction_article-redaction-page_tsx_9bf22321._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1250",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_thesis-plan_thesis-plan-page_tsx_95a891a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1251",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_ai-tools_ai-tools-page_tsx_1c463995._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1252",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_deblocage-ecriture_deblocage-ecriture-page_tsx_d664d428._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1253",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_journaux-oa_journaux-oa-page_tsx_9c854999._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1254",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_auto-edition_auto-edition-page_tsx_9380acac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1255",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_feuille-route-agile_feuille-route-agile-page_tsx_26cfcff8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1256",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_analyse-champ-recherche_analyse-champ-recherche-page_tsx_15c091ca._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1257",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_outils-slr_outils-slr-page_tsx_023380dd._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1258",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apa-composer_apa-composer-page_tsx_3261c86c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1259",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-methodo_verification-methodo-page_tsx_b8216eda._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1260",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_boite-doctorale_boite-doctorale-page_tsx_4bfab5fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1261",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_routesme_routesme-page_tsx_759dfcc1._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1262",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_livres-competences_865875fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1263",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_onglet-recherche_onglet-recherche-page_tsx_300c45eb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1264",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_grammaire_grammaire-page_tsx_0df613a5._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1265",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-pdf_export-pdf-page_tsx_916d5c24._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1266",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_equilibre-chapitres_equilibre-chapitres-page_tsx_3e2c1a8f._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1267",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_diagrammes_diagrammes-page_tsx_22cda667._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1268",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_harper_harper-page_tsx_f7fb1ed7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1269",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-carto_verification-carto-page_tsx_73be909d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1270",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_paper2code_paper2code-page_tsx_327386b7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1271",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-docx_export-docx-page_tsx_e3381aa3._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1272",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_alignement-preuves_alignement-preuves-page_tsx_6e1bd204._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1273",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-coherence_verification-coherence-page_tsx_a59a559d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1274",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_explorateur-theses_explorateur-theses-page_tsx_aa6bb5b0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1275",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-citations_verification-citations-page_tsx_5fb9ff15._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1276",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_generation-hypotheses_generation-hypotheses-page_tsx_4eb9633d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1277",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apinex_apinex-page_tsx_48f5eab8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1278",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_experimentations_experimentations-page_tsx_cf48c634._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1279",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_veille-academique_veille-academique-page_tsx_3ddefd84._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1280",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_52264714._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1281",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_286c5379._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1282",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_lucide-react_dist_esm_5d2ee216._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1283",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_56b6fd65._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1284",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_71e330a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1285",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_prosemirror-view_dist_index_21ada2c5.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1286",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_core_dist_f5afb391._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1287",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_micromark-core-commonmark_dev_lib_fc41dd51._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1288",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/6b4ca_pako_dist_pako_esm_mjs_effcac73._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1289",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_jspdf_dist_jspdf_es_min_0d42d46a.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1290",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_html2canvas-pro_dist_html2canvas-pro_esm_b15a70c4.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1291",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40radix-ui_627fca2d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1292",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1293",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_669ee8e0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1294",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_833d1c82._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1295",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_page_tsx_1d68d4a7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1382",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/choisir-directeur-these-7-etapes.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.1383",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/article-recherche-vs-revue.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.1391",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c8c997ce._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1392",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c7192189._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1398",
+      "method": "GET",
+      "url": "http://localhost:3000/__nextjs_font/geist-latin.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.1401",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1402",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-keys",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1403",
+      "method": "GET",
+      "url": "http://localhost:3000/api/stats",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1404",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1405",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1406",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1407",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/thesis/cmv25f48u000zq7vhgjfp2jfd",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1408",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1409",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1410",
+      "method": "GET",
+      "url": "http://localhost:3000/api/sprints",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1411",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1412",
+      "method": "GET",
+      "url": "http://localhost:3000/api/experiments",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1413",
+      "method": "GET",
+      "url": "http://localhost:3000/api/experiments",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1414",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1415",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1416",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "3C62C6F5FC2DDAED3D1E131C290BA409",
+      "method": "GET",
+      "url": "http://localhost:3000/",
+      "type": "Document",
+      "status": 200
+    },
+    {
+      "ref": "7743.1419",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/797e433ab948586e-s.p.29207c2f.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.1420",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/media/caa3a2e1cccd8315-s.p.3b6cae6d.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.1421",
+      "method": "GET",
+      "url": "http://localhost:3000/logo.png",
+      "type": "Image",
+      "status": 304
+    },
+    {
+      "ref": "7743.1422",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css",
+      "type": "Stylesheet",
+      "status": 200
+    },
+    {
+      "ref": "7743.1423",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1424",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1425",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1426",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1427",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1428",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1429",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1430",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40swc_helpers_cjs_d80fb378._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1431",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_a0ff3932._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1432",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/turbopack-_23a915ee._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1433",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_be32b49c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1434",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1435",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_db32f6ba._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1436",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_67d81d68._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1437",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1438",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/_1f7b0c91._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1439",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_lib_7d80f026._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1440",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_components_9a6d344e._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1441",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_editor_075b502c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1442",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_cadrage_cadrage-page_tsx_3b72a031._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1443",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_references_references-page_tsx_b43a5273._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1444",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_article-redaction_article-redaction-page_tsx_9bf22321._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1445",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_thesis-plan_thesis-plan-page_tsx_95a891a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1446",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_ai-tools_ai-tools-page_tsx_1c463995._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1447",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_deblocage-ecriture_deblocage-ecriture-page_tsx_d664d428._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1448",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_journaux-oa_journaux-oa-page_tsx_9c854999._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1449",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_auto-edition_auto-edition-page_tsx_9380acac._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1450",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_feuille-route-agile_feuille-route-agile-page_tsx_26cfcff8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1451",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_analyse-champ-recherche_analyse-champ-recherche-page_tsx_15c091ca._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1452",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_outils-slr_outils-slr-page_tsx_023380dd._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1453",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apa-composer_apa-composer-page_tsx_3261c86c._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1454",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-methodo_verification-methodo-page_tsx_b8216eda._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1455",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_boite-doctorale_boite-doctorale-page_tsx_4bfab5fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1456",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_routesme_routesme-page_tsx_759dfcc1._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1457",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_livres-competences_865875fb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1458",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_onglet-recherche_onglet-recherche-page_tsx_300c45eb._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1459",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_grammaire_grammaire-page_tsx_0df613a5._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1460",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-pdf_export-pdf-page_tsx_916d5c24._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1461",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_equilibre-chapitres_equilibre-chapitres-page_tsx_3e2c1a8f._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1462",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_diagrammes_diagrammes-page_tsx_22cda667._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1463",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_harper_harper-page_tsx_f7fb1ed7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1464",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-carto_verification-carto-page_tsx_73be909d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1465",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_paper2code_paper2code-page_tsx_327386b7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1466",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_export-docx_export-docx-page_tsx_e3381aa3._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1467",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_alignement-preuves_alignement-preuves-page_tsx_6e1bd204._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1468",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-coherence_verification-coherence-page_tsx_a59a559d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1469",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_explorateur-theses_explorateur-theses-page_tsx_aa6bb5b0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1470",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_verification-citations_verification-citations-page_tsx_5fb9ff15._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1471",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_generation-hypotheses_generation-hypotheses-page_tsx_4eb9633d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1472",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_apinex_apinex-page_tsx_48f5eab8._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1473",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_experimentations_experimentations-page_tsx_cf48c634._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1474",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_veille-academique_veille-academique-page_tsx_3ddefd84._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1475",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_modules_52264714._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1476",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_286c5379._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1477",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_lucide-react_dist_esm_5d2ee216._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1478",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_56b6fd65._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1479",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_next_71e330a9._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1480",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_prosemirror-view_dist_index_21ada2c5.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1481",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_core_dist_f5afb391._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1482",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_micromark-core-commonmark_dev_lib_fc41dd51._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1483",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/6b4ca_pako_dist_pako_esm_mjs_effcac73._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1484",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_jspdf_dist_jspdf_es_min_0d42d46a.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1485",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_html2canvas-pro_dist_html2canvas-pro_esm_b15a70c4.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1486",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40radix-ui_627fca2d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1487",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1488",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_%40tiptap_669ee8e0._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1489",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/node_modules_833d1c82._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1490",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/src_app_page_tsx_1d68d4a7._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1577",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/choisir-directeur-these-7-etapes.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.1578",
+      "method": "GET",
+      "url": "http://localhost:3000/resources/article-recherche-vs-revue.jpg",
+      "type": "Image",
+      "status": 200
+    },
+    {
+      "ref": "7743.1586",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c8c997ce._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1587",
+      "method": "GET",
+      "url": "http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_c7192189._.js",
+      "type": "Script",
+      "status": 200
+    },
+    {
+      "ref": "7743.1593",
+      "method": "GET",
+      "url": "http://localhost:3000/__nextjs_font/geist-latin.woff2",
+      "type": "Font",
+      "status": 200
+    },
+    {
+      "ref": "7743.1595",
+      "method": "GET",
+      "url": "http://localhost:3000/app-icon.png",
+      "type": "Other",
+      "status": 200
+    },
+    {
+      "ref": "7743.1597",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1598",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-keys",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1599",
+      "method": "GET",
+      "url": "http://localhost:3000/api/stats",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1600",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1601",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1602",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1603",
+      "method": "GET",
+      "url": "http://localhost:3000/api/ai-config",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1605",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1606",
+      "method": "POST",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.1607",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1608",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/research-tabs/cmv26k0kb001mq7vhbgaoszbp",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1609",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1610",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1611",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1612",
+      "method": "POST",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.1613",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/doctoral-toolbox",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1614",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1615",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1616",
+      "method": "POST",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.1617",
+      "method": "POST",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.1618",
+      "method": "POST",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 201
+    },
+    {
+      "ref": "7743.1619",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1620",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1621",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1622",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/research-tabs/cmv26n5nl001qq7vhzbe76127",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1623",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1624",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/research-tabs/cmv26n5o1001sq7vhyllq88eb",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1625",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1626",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/research-tabs/cmv26n5oc001uq7vhgv38k9ce",
+      "type": "Fetch",
+      "status": 200
+    },
+    {
+      "ref": "7743.1627",
+      "method": "GET",
+      "url": "http://localhost:3000/api/thesis/cmsmyrdfs0000pa2sews4vo90/research-tabs",
+      "type": "Fetch",
+      "status": 200
+    }
+  ]
+}

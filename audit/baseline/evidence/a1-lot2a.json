@@ -1,0 +1,224 @@
+{
+  "task": "A1 lot 2a (5 vues : Feuille de Route Agile, Boîte doctorale, Équilibre chapitres, Onglet Recherche, Expérimentations) — pass UI réel + cleanup + consolidation. Exécution sous-session 1 (W2-3a, interrompue après captures + cleanup partiel) puis finalisation sous-session 2 (W2-3a-fin : cleanup thèse jetable, contrôles de clôture, comptages DB finaux, consolidation).",
+  "task_id": "W2-3a (exécution, sous-session 1 interrompue) + W2-3a-fin (finalisation)",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "date_execution_ss1_utc": "2026-10-10T08:42-09:06 (interrompue : consolidation, comptages finaux, worklog et cleanup thèse non faits)",
+  "date_execution_ss2_utc": "2026-10-10T09:10-09:25 (finalisation : cleanup thèse AUDIT-ISO-L2 via flux confirmé, contrôles de clôture 5 vues, comptages DB finaux, consolidation)",
+  "agent": "agent-finalisation (Z.ai Code, session W2-3a-fin) ; sous-session 1 : agent-exécution UI (W2-3a)",
+  "baseline_git": "2df1613",
+  "baseline_git_sous_session_1": "6e79e6e",
+  "lots": "2a — 5 vues (13, 14, 15, 25, 37)",
+  "methode": "HONNÊTETÉ DE LA PREUVE : (1) Sous-session 1 = parcours UI réels agent-browser avec captures séquentielles horodatées (08:45-09:06) ; son audit réseau n'a PAS été archivé par l'agent (interruption) MAIS a été RÉCUPÉRÉ en sous-session 2 depuis le contexte navigateur persistant du daemon agent-browser (journal CDP in-memory couvrant les 2 sous-sessions, refs 7743.180→1621) et archivé intégralement dans a1-lot2a-network-recovered.json — les requêtes écrites ci-dessous pour la sous-session 1 sont donc des faits réseau OBSERVÉS, pas des inférences. (2) Sous-session 2 = contrôles de clôture courts avec audit réseau agent-browser (filtre api) consigné + captures prefixées a1-lot2a-fin-. (3) Persistance prouvée par captures reload de la sous-session 1 + re-constats sous-session 2. (4) Cleanup 100 % via flux UI confirmés (ConfirmDeleteDialog → Supprimer → requête destructive 200) ; comptages DB PrismaClient lecture seule avant (08:42, repris de la sous-session 1) / après (09:25) ; AUCUNE modification de code, 0 génération IA en sous-session 2 (sous-session 1 : 2 POST ai-writing 400 en échec + 1 POST 200 recommandations équilibre), aucun secret dans les preuves.",
+  "vues": [
+    {
+      "id": 13,
+      "nav_id": "feuille-route-agile",
+      "nom": "Feuille de Route Agile",
+      "module": "src/modules/feuille-route-agile/feuille-route-agile-page.tsx (1 095 l.) + API /api/sprints, /api/sprints/{id}, /api/sprints/{id}/stories, /api/stories/{id} + POST /api/ai-writing (génération IA sprint/story)",
+      "fonctionnalites": [
+        "Feuille de route agile : sprints (phases) + stories en Kanban, progression sprint, stats sprint (créées sans thesisId — données GLOBALES par conception, AUD-ISO-006)",
+        "Création sprint (POST /api/sprints), création story (POST /api/sprints/{id}/stories), changement de statut story (PUT /api/stories/{id} — colonnes Kanban dont « En revue », 100 %)",
+        "Stats sprint (detail GET /api/sprints/{id}) et progression calculée côté client",
+        "Génération IA (POST /api/ai-writing) — EN ÉCHEC 400 dans le test (anomalie)"
+      ],
+      "parcours_executes": [
+        "SS1 08:45 — état vide initial sur thèse jetable AUDIT-ISO-L2 (capture -13-agile-vide ; GET /api/sprints 200, 0 sprint)",
+        "SS1 08:44-08:46 — création sprint [réseau : POST /api/sprints 201, id cmv25gm41…] (capture -13-agile-sprint-cree) puis story [POST /api/sprints/cmv25gm41…/stories 201, id cmv25h7su…] (capture -13-agile-story-en-revue après PUT statut → « En revue »)",
+        "SS1 08:47 — RELOAD → sprint et statut story PERSISTÉS (capture -13-agile-reload-chute-en-cours ; GET refetch)",
+        "SS1 08:47-08:48 — stats sprint détail + progression (captures -13-agile-stats / -stats-detail ; PUT stories jusqu'à 100 %, capture -13-agile-100pct)",
+        "SS1 08:49 — génération IA : 2 POST /api/ai-writing → 400 + toast erreur (captures -13-agile-ia-erreur-400 / -ia-erreur-toast ; réseau [7743.392/393] = 2×400)",
+        "SS1 09:05 — cleanup sprint : poubelle → ConfirmDeleteDialog (capture -cleanup-sprint-dialog) → Supprimer → DELETE /api/sprints/cmv25gm41… 200 [réseau 7743.1210] — CASCADE stories conforme au message (DB : AgileSprint 1→0, AgileStory 1→0, aucun orphelin, vérifié par comptage)",
+        "SS2 09:11 — re-constat : re-render vue = « Aucun sprint créé », GET /api/sprints 200 seule écriture réseau = 0 (capture -fin-13-agile-vide-apres-cleanup)"
+      ],
+      "etats_erreurs": [
+        "IA agile : 2 POST /api/ai-writing → HTTP 400 + toast d'erreur affiché (captures SS1) — anomalie P2",
+        "État vide « Aucun sprint créé » géré proprement après cleanup (SS2, capture)"
+      ],
+      "persistance": "PROUVÉE : sprint + story + statut survivent au reload (captures SS1 08:47 + refetch réseau) ; suppression sprint = cascade stories en DB (comptage AgileSprint/AgileStory 0)",
+      "isolation_multitheses": "AUD-ISO-006 CONFIRMÉ : sprints/stories GLOBALES par conception (POST sans thesisId, modèle sans FK thesis) — visibles de tous les contextes ; aucune indication UI « partagé entre thèses ». Complément SS2 : après cleanup, 0 sprint ; la vue n'affiche aucun sélecteur de thèse (cohérent avec le scoping global).",
+      "actions_destructives_statut": "DELETE story + DELETE sprint (cascade stories) DÉJÀ TESTÉES en UI réel A2 lot 2 (réf. a2-lot2.json, actions 6-7, 6 contrôles ①-⑥ conformes) — SANS retest ici ; le cleanup SS1 a réutilisé le même flux confirmé (dialogue capturé + DELETE 200 observé dans le réseau récupéré).",
+      "anomalies": [
+        {"id": "A1L2A-01", "priorite_proposee": "P2", "titre": "Génération IA agile en échec systématique : POST /api/ai-writing → HTTP 400 (×2) + toast d'erreur", "preuves": "captures a1-lot2a-13-agile-ia-erreur-400.png / -toast.png ; réseau récupéré [7743.392/393] 2×400", "note": "fonctionnalité vendue de la vue ; non reproduite en succès — à diagnostiquer côté dev (payload/contrat API)"}
+      ],
+      "statut": "VALIDÉE (avec 1 anomalie P2 IA en échec)",
+      "captures": ["a1-lot2a-13-agile-vide.png", "a1-lot2a-13-agile-sprint-cree.png", "a1-lot2a-13-agile-story-en-revue.png", "a1-lot2a-13-agile-reload-chute-en-cours.png", "a1-lot2a-13-agile-stats.png", "a1-lot2a-13-agile-stats-detail.png", "a1-lot2a-13-agile-100pct.png", "a1-lot2a-13-agile-ia-erreur-400.png", "a1-lot2a-13-agile-ia-erreur-toast.png", "a1-lot2a-cleanup-sprint-dialog.png", "a1-lot2a-fin-13-agile-vide-apres-cleanup.png"]
+    },
+    {
+      "id": 14,
+      "nav_id": "boite-doctorale",
+      "nom": "Boîte doctorale",
+      "module": "src/modules/boite-doctorale/boite-doctorale-page.tsx (1 130 l.) + API GET/POST/PUT /api/thesis/{id}/doctoral-toolbox (DoctoralToolbox 1:1 thèse, onDelete: Cascade) — AUCUN endpoint DELETE exposé",
+      "fonctionnalites": [
+        "Boîte à outils doctorale persistée 1:1 par thèse : checklist 5 phases (37 items), jalons/milestones (12), documents requis (16), contacts, notes — contenu initialisé depuis constantes INITIAL_*",
+        "AUTO-CRÉATION de la DoctoralToolbox à la simple visite de la vue si inexistante (POST 201 sans action utilisateur) — sur theses[0] (updatedAt desc), PAS la thèse active (AUD-ISO-003)",
+        "Sélecteur de thèse local (défaut theses[0]) non synchronisé avec activeThesisId (AUD-ISO-002)",
+        "Édition : checklist (cocher items), jalons (done), documents (statut), contacts (CRUD local persisté via PUT debounced)"
+      ],
+      "parcours_executes": [
+        "SS1 08:50 — visite vue sur contexte L2 : AUTO-CRÉATION toolbox sur AUDIT-ISO-L2 (= theses[0]) [réseau : POST /api/thesis/cmv25f48u…/doctoral-toolbox 201, 7743.396] (capture -14-boite-autocreation)",
+        "SS1 08:50-08:52 — édition : 2 items checklist cochés (captures -14-boite-checklist-2items), documents (captures -14-boite-documents / -doc-soumis), jalon atteint (capture -14-boite-jalon-atteint), calendrier (capture -14-boite-calendrier) — 12 PUT doctoral-toolbox 200 observés [7743.398-412]",
+        "SS1 08:54-08:55 — bascule contexte propriétaire via éditeur (captures -14-editeur-proprietaire / -contexte-proprietaire) : vue reste liée à theses[0] (PUT sur L2 encore observé [7743.607]) — confirme le binding theses[0] et non activeThesisId",
+        "SS2 09:17 — contrôle de clôture APRÈS suppression de la thèse L2 : DoctoralToolbox DB = 0 AVANT visite ; visite de la vue sur theses[0] = PROPRIÉTAIRE → AUTO-CRÉATION SUR LE PROPRIÉTAIRE [réseau : POST /api/thesis/cmsmyrdfs…/doctoral-toolbox 201, 7743.1612 ; DB 0→1] (capture -fin-14-boite-autocreation-proprietaire) — DANGER AUD-ISO-003 matérialisé sur la thèse propriétaire",
+        "SS2 09:18 — recherche d'une voie UI de suppression de la toolbox : AUCUNE (pas de poubelle globale, Trash2 uniquement sur les contacts ; aucun endpoint DELETE dans le module) → suppression IMPOSSIBLE via UI, état résiduel consigné et signalé (voir etat_proprietaire)"
+      ],
+      "etats_erreurs": [
+        "Aucune erreur bloquante observée dans les rendus ; états vides/non initialisés non atteignables en pratique (auto-création systématique)",
+        "Console non archivée en SS2 (navigateur fermé après archivage réseau ; nouvelle visite aurait re-déclenché l'auto-création)"
+      ],
+      "persistance": "PROUVÉE (SS1) : 12 PUT 200 + re-GET ; contenu persisté par thèse (cascades vérifiées W2-2 : DoctoralToolbox disparaît avec la thèse) ; SS2 : la toolbox auto-créée sur le propriétaire persiste (non supprimable via UI)",
+      "isolation_multitheses": "AUD-ISO-002 CONFIRMÉ (sélecteur local défaut theses[0], captures SS1 defaut/proprietaire) ; AUD-ISO-003 CONFIRMÉ UNE 2e FOIS SS1 (auto-création sur L2) et MATÉRIALISÉ SUR LE PROPRIÉTAIRE en SS2 (3e démonstration live, POST 201 sur cmsmyrdfs… à la simple visite) — renforcée : AUCUNE voie UI d'annulation (pas de DELETE)",
+      "actions_destructives_statut": "Suppression toolbox : AUCUNE action destructive disponible dans la vue (constat SS2 lecture seule) ; suppression par cascade thèse déjà vérifiée (W2-2 isolation, DoctoralToolbox 1→0 avec la thèse AUDIT-ISO)",
+      "anomalies": [
+        {"id": "A1L2A-02", "priorite_proposee": "P2", "titre": "Auto-création DoctoralToolbox sur theses[0] à la simple visite — matérialisée sur le PROPRIÉTAIRE après cleanup, et non supprimable via l'UI (aucun DELETE)", "preuves": "réseau SS2 POST /api/thesis/cmsmyrdfs…/doctoral-toolbox 201 [7743.1612] ; DB DoctoralToolbox 0→1 (a1-lot2a-db-after.json) ; code : boite-doctorale-page.tsx (GET/POST/PUT uniquement, Trash2 contacts seul)", "note": "consolidation d'AUD-ISO-003 avec un cas irréversible côté utilisateur ; contenu résiduel = template INITIAL_* pur (vérifié DB : tout non coché, documents « absent », contacts vides, notes \"\") — zéro donnée utilisateur perdue"}
+      ],
+      "statut": "VALIDÉE AVEC RÉSERVES (fonctionnalités OK en SS1 ; auto-création propriétaire non annulable consignée)",
+      "captures": ["a1-lot2a-14-boite-autocreation.png", "a1-lot2a-14-boite-checklist-2items.png", "a1-lot2a-14-boite-documents.png", "a1-lot2a-14-boite-doc-soumis.png", "a1-lot2a-14-boite-jalon-atteint.png", "a1-lot2a-14-boite-calendrier.png", "a1-lot2a-14-editeur-proprietaire.png", "a1-lot2a-14-boite-contexte-proprietaire.png", "a1-lot2a-fin-14-boite-autocreation-proprietaire.png"]
+    },
+    {
+      "id": 15,
+      "nav_id": "equilibre-chapitres",
+      "nom": "Équilibre chapitres",
+      "module": "src/modules/equilibre-chapitres/equilibre-chapitres-page.tsx (838 l.) + POST /api/ai-writing (recommandations IA) — AUCUNE écriture DB (aucun modèle de persistance objectif/rythme)",
+      "fonctionnalites": [
+        "Analyse de répartition des chapitres de la thèse sélectionnée (sélecteur LOCAL défaut theses[0], AUD-ISO-002) : mots totaux, moyenne, comparaison visuelle proportionnelle, écarts, badge d'équilibre (« Très déséquilibré »)",
+        "Objectif en mots par chapitre (crayon → spinbutton → Enregistrer) — ÉTAT LOCAL UNIQUEMENT",
+        "Estimation de rythme quotidien (spinbuttons mois/jours) — ÉTAT LOCAL UNIQUEMENT",
+        "Recommandations IA (POST /api/ai-writing 200)"
+      ],
+      "parcours_executes": [
+        "SS1 08:56 — ouverture sur défaut theses[0] = AUDIT-ISO-L2 (capture -15-equilibre-defaut-l2 : 0 mots/7 chapitres L2) PUIS bascule sélecteur local sur le propriétaire (capture -15-equilibre-proprietaire : 2 295 mots / 7 chapitres) — confirme AUD-ISO-002",
+        "SS1 08:57 — définition d'un objectif chapitre (capture -15-equilibre-objectif-local ; 0 écriture réseau) ; recommandations IA (capture -15-equilibre-ia-recommandations ; POST /api/ai-writing 200 [7743.613])",
+        "SS1 08:58 — RELOAD → objectif PERDU (capture -15-equilibre-reload-objectif-perdu) ; estimation de rythme explorée (capture -15-equilibre-rythme)",
+        "SS2 09:12 — re-constat complet : vue sur propriétaire affiche 7 chapitres / 2 295 mots / moy. 328 (capture -fin-15-equilibre-proprietaire-7chap) ; objectif 2000 défini sur chapitre 1 → « 1957/2000 mots (98%) » affiché, réseau = GET uniquement, 0 écriture (capture -fin-15-objectif-2000-local) ; RELOAD SPA (retour dashboard, quirk connu) → re-navigation → « Pas d'objectif » ×7 (capture -fin-15-objectif-perdu-reload2) — non-persistance RE-CONSTATÉE"
+      ],
+      "etats_erreurs": [
+        "Aucune erreur ; état sans objectif géré (« Pas d'objectif » ×7) ; label « Très déséquilibré » calculé et affiché"
+      ],
+      "persistance": "NON PERSISTÉE PAR CONCEPTION (constaté 2×) : objectif et rythme = état React local, 0 requête d'écriture observée (réseau SS1 récupéré + SS2), perte au reload prouvée 2 fois — anomalie UX consignée (P2)",
+      "isolation_multitheses": "AUD-ISO-002 CONFIRMÉ (sélecteur local défaut theses[0] : la vue s'est ouverte sur L2 pendant que le propriétaire était la thèse active en SS1) ; isolation « par absence de persistance » : aucun risque d'écriture cross-thèse (0 écriture DB possible)",
+      "actions_destructives_statut": "Aucune action destructive (0 écriture DB sur toute la vue)",
+      "anomalies": [
+        {"id": "A1L2A-03", "priorite_proposee": "P2", "titre": "Objectifs de chapitres (et estimation de rythme) non persistés — perdus au reload, 0 écriture DB", "preuves": "captures SS1 (-15-equilibre-objectif-local puis -reload-objectif-perdu) + re-constat SS2 (-fin-15-objectif-2000-local puis -objectif-perdu-reload2) ; réseau : 0 requête d'écriture sur les 2 sous-sessions", "note": "l'UI présente l'enregistrement comme abouti (progression affichée) — attente utilisateur non tenue ; choix de conception possible mais non signalé dans l'UI"},
+        {"id": "A1L2A-04", "priorite_proposee": "P3", "titre": "Estimation de rythme également locale (aucune table dédiée)", "preuves": "capture -15-equilibre-rythme + schéma Prisma (aucun modèle Équilibre/Rythme) ; re-constat de persistance non refait en SS2 (même mécanique d'état local que l'objectif)"}
+      ],
+      "statut": "VALIDÉE AVEC RÉSERVES (analyse OK ; objectifs/rythme non persistés — anomalie P2 consignée)",
+      "captures": ["a1-lot2a-15-equilibre-defaut-l2.png", "a1-lot2a-15-equilibre-proprietaire.png", "a1-lot2a-15-equilibre-objectif-local.png", "a1-lot2a-15-equilibre-ia-recommandations.png", "a1-lot2a-15-equilibre-reload-objectif-perdu.png", "a1-lot2a-15-equilibre-rythme.png", "a1-lot2a-fin-15-equilibre-proprietaire-7chap.png", "a1-lot2a-fin-15-objectif-2000-local.png", "a1-lot2a-fin-15-objectif-perdu-reload2.png"]
+    },
+    {
+      "id": 25,
+      "nav_id": "onglet-recherche",
+      "nom": "Onglet Recherche",
+      "module": "src/modules/onglet-recherche/onglet-recherche-page.tsx (1 412 l.) + API GET/POST /api/thesis/{id}/research-tabs, PUT/DELETE /api/research-tabs/{id} (ResearchTab thèse-scopé, onDelete: Cascade)",
+      "fonctionnalites": [
+        "Onglets de recherche thèse-scopés : titre/renommer/épingler/dupliquer, notes libres, liens, citations, tâches (PUT debounced 1,5 s)",
+        "Recherche de sujet (textbox + bouton Rechercher) ouvrant des résultats",
+        "AUTO-CRÉATION « Recherche principale » à la visite avec 0 onglet (POST 201, comportement produit consigné depuis A2 lot 2) — scoping par contexte (store||theses[0], sélecteur in-view qui mute le store global : AUD-ISO-005)",
+        "Effacer le contenu (PUT, dialogue), Fermer l'onglet (DELETE, dialogue)"
+      ],
+      "parcours_executes": [
+        "SS1 08:59 — visite sur contexte propriétaire : AUTO-CRÉATION « Recherche principale » SUR LE PROPRIÉTAIRE [réseau : POST /api/thesis/cmsmyrdfs…/research-tabs 201, 7743.806] (capture -25-onglet-autocreation-proprietaire) puis suppression immédiate via flux confirmé [DELETE 7743.808] — net nul pendant le test",
+        "SS1 08:59-09:01 — onglet de test sur L2 : auto-création [POST 7743.811] + remplissage notes/liens (capture -25-onglet-rempli ; 7 PUT debounced 200 [7743.813-826])",
+        "SS1 09:02 — RELOAD → contenu PERSISTÉ (capture -25-onglet-apres-reload)",
+        "SS1 09:06 — cleanup avant interruption : DELETE onglet L2 [7743.1217] puis re-auto-création à la revisite [POST 7743.1219] puis DELETE [7743.1221] — net nul ; thèse L2 NON supprimée (interruption)",
+        "SS2 09:15 — contrôle de clôture : ResearchTab DB = 0 ; visite vue → auto-création SUR LE PROPRIÉTAIRE [POST 7743.1606] (capture -fin-25-autocreation-proprietaire) → Fermer l'onglet → ConfirmDeleteDialog « « Recherche principale » et tout son contenu… » (capture -fin-25-dialog-suppression) → DELETE 200 [7743.1608] — net nul",
+        "SS2 09:19 — NOUVEAU CONSTAT (race) : seconde visite → 3 POST /api/research-tabs 201 quasi simultanés [7743.1616/1617/1618, timestamps 12.994/13.009/13.020] → 3 onglets « Recherche principale » dupliqués en DB (capture -fin-25-recree-auto) → les 3 supprimés via le flux confirmé (3× Fermer l'onglet → dialogue → Supprimer → DELETE 200 [7743.1622/1624/1626]) → ResearchTab DB = 0 (capture -fin-25-vide-net-nul) — net nul rétabli"
+      ],
+      "etats_erreurs": [
+        "État 0 onglet géré (bouton « Nouvel onglet » + auto-création applicative) ; aucun rendu cassé après suppressions",
+        "Race d'auto-création : 3 onglets dupliqués créés d'un coup (anomalie P2 proposée — non bloquante pour l'utilisateur, polluante)"
+      ],
+      "persistance": "PROUVÉE (SS1) : notes/liens survivent au reload (capture -apres-reload + 7 PUT debounced) ; suppressions DELETE 200 systématiquement vérifiées en DB (ResearchTab 0 après chaque cleanup)",
+      "isolation_multitheses": "AUD-ISO-005 CONFIRMÉ : auto-création par contexte à la visite (observée sur propriétaire SS1 [806], sur L2 SS1 [811], sur propriétaire SS2 [1606]) + sélecteur in-view mute le store global (code 760-777) ; onglet L2 invisible sous propriétaire (thèse-scoping OK) ; NOUVEAU : auto-création NON IDEMPOTENTE (race ×3, réseau SS2)",
+      "actions_destructives_statut": "Effacer (PUT) + Fermer l'onglet (DELETE) DÉJÀ TESTÉES A2 lot 2 (réf. a2-lot2.json, actions 1-2, contrôles ①-⑥ conformes) — SANS retest formel ; le flux a été RÉUTILISÉ 4× en SS1/SS2 pour le cleanup (tous DELETE 200 observés)",
+      "anomalies": [
+        {"id": "A1L2A-05", "priorite_proposee": "P2", "titre": "Auto-création d'onglet de recherche non idempotente : 3 POST 201 simultanés → 3 onglets « Recherche principale » dupliqués à la visite", "preuves": "réseau SS2 [7743.1616-1618] timestamps 12.994/13.009/13.020 sur la même thèse ; DB : ResearchTab 0→3 ; capture -fin-25-recree-auto", "note": "consolidation d'AUD-ISO-005 : l'effet d'auto-création n'a pas de garde/mutex (double-invocation + invalidations) ; pollution de données automatique sur la thèse du propriétaire ; net nul rétabli via flux confirmés"}
+      ],
+      "statut": "VALIDÉE (persistance + destructive reuse OK ; 1 anomalie P2 auto-création en course)",
+      "captures": ["a1-lot2a-25-onglet-autocreation-proprietaire.png", "a1-lot2a-25-onglet-rempli.png", "a1-lot2a-25-onglet-apres-reload.png", "a1-lot2a-fin-25-autocreation-proprietaire.png", "a1-lot2a-fin-25-dialog-suppression.png", "a1-lot2a-fin-25-recree-auto.png", "a1-lot2a-fin-25-vide-net-nul.png"]
+    },
+    {
+      "id": 37,
+      "nav_id": "experimentations",
+      "nom": "Expérimentations",
+      "module": "src/modules/experimentations/experimentations-page.tsx (1 094 l.) + API GET/POST /api/experiments, PATCH /api/experiments/{id}, POST /api/experiments/{id}/runs (Experiment + ExperimentRun GLOBAUX — sans thesisId, AUD-ISO-006)",
+      "fonctionnalites": [
+        "Journal d'expérimentations : CRUD expérimentation (titre, question, hypothèse, statut planifiée/en cours/conclue), runs (date, résultat), stats",
+        "Changement de statut par combobox (PATCH ×n)",
+        "Suppressions : DELETE expérimentation (cascade runs), DELETE run individuel (testées A2 lot 1)"
+      ],
+      "parcours_executes": [
+        "SS1 09:02 — liste des expérimentations (capture -37-exps-liste ; GET /api/experiments ×2 [7743.1012/1013] : 1 exp propriétaire préexistante + contexte test)",
+        "SS1 09:03-09:04 — création expérimentation de test [POST /api/experiments 201, id cmv2628hf…, 7743.1014] + run [POST …/runs 201, 7743.1015] + 5 PATCH statut → « Conclue » (capture -37-exp-conclue)",
+        "SS1 09:05 — RELOAD → exp + statut PERSISTÉS (capture -37-exps-apres-reload)",
+        "SS1 09:06 — cleanup expérimentation : poubelle détail → ConfirmDeleteDialog (capture -cleanup-exp-dialog) → Supprimer → DELETE /api/experiments/cmv2628hf… 200 [7743.1214] — cascade run conforme (DB : Experiment 2→1, ExperimentRun 2→1, seule l'exp propriétaire demeure)",
+        "SS2 09:12 — re-constat : liste = 1 expérimentation « Jumelage numérique du corridor UEMOA » (Planifiée, 1 run) = DONNÉE PROPRIÉTAIRE PRÉEXISTANTE (identique à a1-lot2a-db-before.json 08:42) — la liste N'EST PAS vide après cleanup (contrairement à l'attendu nominal) : état initial propriétaire restauré, capture -fin-37-exps-etat-initial-proprietaire ; réseau : GET uniquement, 0 écriture"
+      ],
+      "etats_erreurs": [
+        "États de statut manipulés (planifiée → conclue via 5 PATCH 200 en SS1) ; aucune erreur bloquante en SS2"
+      ],
+      "persistance": "PROUVÉE : expérimentation + run + statut survivent au reload (capture SS1 -apres-reload) ; suppression exp → cascade run vérifiée en DB (comptages)",
+      "isolation_multitheses": "AUD-ISO-006 CONFIRMÉ : expérimentations GLOBALES par conception (POST sans thesisId — l'exp de test SS1 était visible de tous les contextes, déjà observé en W2-2 iso-16/17) ; aucune indication UI « partagé » ; l'exp propriétaire préexistante et l'exp de test coexistaient dans la même liste",
+      "actions_destructives_statut": "DELETE expérimentation (cascade runs) + DELETE run DÉJÀ TESTÉES A2 lot 1 (réf. a2-lot1.json, contrôles ①-⑥ conformes) — SANS retest ; cleanup SS1 = réutilisation du flux confirmé (dialogue capturé + DELETE 200 réseau)",
+      "anomalies": [],
+      "statut": "VALIDÉE (cleanup complet ; liste finale = donnée propriétaire intacte)",
+      "captures": ["a1-lot2a-37-exps-liste.png", "a1-lot2a-37-exp-conclue.png", "a1-lot2a-37-exps-apres-reload.png", "a1-lot2a-cleanup-exp-dialog.png", "a1-lot2a-fin-37-exps-etat-initial-proprietaire.png"]
+    }
+  ],
+  "audit_reseau": {
+    "sous_session_1": "NON archivé par l'agent W2-3a (interruption) MAIS RÉCUPÉRÉ en sous-session 2 depuis le journal CDP in-memory du contexte navigateur persistant (daemon agent-browser resté vivant) — archivé dans a1-lot2a-network-recovered.json (refs 7743.180-1222) : création thèse L2 (POST /api/thesis 201), sprints/stories, 12 PUT doctoral-toolbox, 2×400 ai-writing, 1×200 ai-writing, auto-créations/suppressions onglets, expérimentation PATCH ×5, cleanup DELETE sprint/experimentation/onglet L2. Les DELETE de cleanup SS1 sont donc des faits réseau observés, cohérents avec les captures de dialogues (09:05-09:06) et l'état DB à 0.",
+    "sous_session_2": "Consigné en direct (filtre api), refs 7743.1401-1626 : GET ai-config/ai-keys/stats/thesis ; DELETE /api/thesis/cmv25f48u000zq7vhgjfp2jfd 200 (suppression thèse L2 via ConfirmDeleteDialog, capture -fin-cleanup-thesis-l2-dialog) ; vue 13 : GET /api/sprints uniquement ; vue 37 : GET /api/experiments uniquement ; vue 15 : GET uniquement (objectif local 0 écriture) ; vue 25 : POST research-tabs 201 (auto-création propriétaire) → DELETE 200 ; puis 3× POST 201 en course → 3× DELETE 200 ; vue 14 : GET doctoral-toolbox + POST 201 (auto-création SUR LE PROPRIÉTAIRE — non annulable via UI). Aucune autre écriture ; aucune requête destructive parasite ; 0 génération IA.",
+    "endpoints_observes_ss2": ["DELETE /api/thesis/{id} (200)", "GET /api/sprints (200)", "GET /api/experiments (200)", "GET /api/thesis (200)", "GET /api/thesis/{id} (200)", "POST /api/thesis/cmsmyrdfs…/doctoral-toolbox (201 — auto-création propriétaire)", "POST /api/thesis/cmsmyrdfs…/research-tabs (201 ×4 — auto-créations dont race ×3)", "DELETE /api/research-tabs/{id} (200 ×4)", "GET /api/thesis/{id}/research-tabs (200)", "GET /api/ai-config (200)", "GET /api/stats (200)"]
+  },
+  "etat_proprietaire": {
+    "avant": {"source": "a1-lot2a-db-before.json (08:42, début SS1)", "thesis": 1, "chapters": 7, "chapterVersions": 6, "words": 2295, "DoctoralToolbox": 0, "ResearchTab": 0, "AgileSprint": 0, "AgileStory": 0, "Experiment": 1, "ExperimentRun": 1, "Reference": 4, "ImportedDoc": 16, "LegalRef": 27, "updatedAt_proprietaire": "2026-08-10T08:22:35.464Z"},
+    "apres": {"source": "a1-lot2a-db-after.json (09:25, fin SS2)", "thesis": 1, "chapters": 7, "chapterVersions": 6, "words": 2295, "DoctoralToolbox": 1, "ResearchTab": 0, "AgileSprint": 0, "AgileStory": 0, "Experiment": 1, "ExperimentRun": 1, "Reference": 4, "ImportedDoc": 16, "LegalRef": 27, "updatedAt_proprietaire": "2026-08-10T08:22:35.464Z"},
+    "identique": false,
+    "diff": [
+      {
+        "table": "DoctoralToolbox",
+        "avant": 0,
+        "apres": 1,
+        "cause": "AUTO-CRÉATION APPLICATIVE SUR LE PROPRIÉTAIRE : la vue 14 (Boîte doctorale), visitée en SS2 pour le contrôle de clôture EXIGÉ par la mission APRÈS suppression de la thèse jetable, a auto-persisté une toolbox vide sur theses[0] = « Urbanisme durable » (POST /api/thesis/cmsmyrdfs…/doctoral-toolbox 201, réseau 7743.1612). 3e démonstration live d'AUD-ISO-003 — cette fois avec le propriétaire comme victime.",
+        "supprimable_via_ui": false,
+        "detail_supprimable": "AUCUN endpoint DELETE dans boite-doctorale-page.tsx (GET/POST/PUT uniquement) ; pas de poubelle globale dans la vue (Trash2 sur contacts uniquement) ; aucune action destructive toolbox au registre C-3. La suppression directe en DB est INTERDITE par le protocole (0 écriture directe propriétaire).",
+        "contenu": "Template INITIAL_* pur vérifié en DB (lecture seule) : checklist 37 items tous checked=false, 12 milestones = constantes du code (ms-1/2/3 done:true = défauts du code), 16 documents status « absent », 4 contacts nom/email vides, notes \"\" — ZÉRO donnée utilisateur, ZÉRO donnée d'audit, aucune perte, aucun mélange de données",
+        "action_demandee": "SIGNALÉ AU PROPRIÉTAIRE (voir worklog + rapport) : décision requise — (a) laisser (template par défaut sans conséquence fonctionnelle, base pour un futur usage), ou (b) suppression par le développeur/propriétaire hors audit (1 DELETE en DB sur cmv26kryu001oq7vhdotgwrc1), ou (c) correctif code (garde d'auto-création + endpoint DELETE avec confirmation) dans la vague de corrections AUD-ISO-003"
+      }
+    ],
+    "note": "Toutes les autres tables (29/30) : diff VIDE. Thèse propriétaire : titre/structureMode/7 chapitres/2 295 mots/6 versions/updatedAt 2026-08-10T08:22:35.464Z INCHANGÉS ; expérimentation propriétaire « Jumelage numérique du corridor UEMOA » + 1 run INTACTES (identiques avant/après, détail dans db-after.json). Aucune écriture directe en DB : la seule écriture sur le propriétaire est l'auto-création applicative documentée ci-dessus, déclenchée par la visite de contrôle exigée.",
+    "resume_cleanup": {
+      "objets_audit_supprimes_ss1_avant_interruption": ["sprint AUDIT (DELETE /api/sprints 200, cascade story)", "expérimentation AUDIT (DELETE /api/experiments 200, cascade run)", "onglet recherche L2 (DELETE ×2 dont re-auto-création)", "onglet auto-créé propriétaire (DELETE 200 pendant le test)"],
+      "objets_audit_supprimes_ss2": ["thèse AUDIT-ISO-L2 — Thèse jetable lot 2a (DELETE /api/thesis 200 via ConfirmDeleteDialog « …et ses 7 chapitre(s)… ») — cascades vérifiées : Chapter 14→7, DoctoralToolbox 1→0 (toolbox L2), AUCUN orphelin", "onglet auto-créé propriétaire SS2 ×4 (1 simple + 3 en course) — tous DELETE 200, net nul"]
+    }
+  },
+  "anomalies_lot2a": [
+    {"id": "A1L2A-01", "priorite_proposee": "P2", "vue": 13, "titre": "IA agile : POST /api/ai-writing → 400 (×2) + toast — génération IA en échec", "statut": "consignée, non corrigée (0 code modifié)"},
+    {"id": "A1L2A-02", "priorite_proposee": "P2", "vue": 14, "titre": "Auto-création DoctoralToolbox sur theses[0] à la visite — matérialisée sur le PROPRIÉTAIRE (SS2) et non supprimable via UI — consolidation AUD-ISO-003", "statut": "consignée + signalée (résidu DB documenté dans etat_proprietaire.diff)"},
+    {"id": "A1L2A-03", "priorite_proposee": "P2", "vue": 15, "titre": "Objectifs de chapitres non persistés (état local, perdus au reload — re-constaté 2×, 0 écriture réseau)", "statut": "consignée, non corrigée"},
+    {"id": "A1L2A-04", "priorite_proposee": "P3", "vue": 15, "titre": "Estimation de rythme locale (aucune table dédiée)", "statut": "consignée"},
+    {"id": "A1L2A-05", "priorite_proposee": "P2", "vue": 25, "titre": "Auto-création d'onglet NON IDEMPOTENTE : 3 POST 201 en course → 3 onglets dupliqués (net nul rétabli via flux confirmés) — consolidation AUD-ISO-005", "statut": "consignée, preuve réseau archivée"}
+  ],
+  "invariants": {
+    "code_modifie": 0,
+    "commit": 0,
+    "db_push_build": false,
+    "generations_ia_ss2": 0,
+    "generations_ia_ss1": "2 tentatives (400, échec) + 1 succès (recommandations équilibre) — budget respecté",
+    "ecriture_directe_db": 0,
+    "db_skip_worktree": "intacte",
+    "fichiers_rouges": "jamais touchés",
+    "suppressions_audit": "100 % via flux UI confirmés (ConfirmDeleteDialog → Supprimer → DELETE 200)"
+  },
+  "captures_index": {
+    "ss1_total": 33,
+    "ss2_total": 11,
+    "total": 44,
+    "ss2_liste": ["a1-lot2a-fin-cleanup-thesis-l2-dialog.png", "a1-lot2a-fin-13-agile-vide-apres-cleanup.png", "a1-lot2a-fin-37-exps-etat-initial-proprietaire.png", "a1-lot2a-fin-15-equilibre-proprietaire-7chap.png", "a1-lot2a-fin-15-objectif-2000-local.png", "a1-lot2a-fin-15-objectif-perdu-reload2.png", "a1-lot2a-fin-25-autocreation-proprietaire.png", "a1-lot2a-fin-25-dialog-suppression.png", "a1-lot2a-fin-25-recree-auto.png", "a1-lot2a-fin-25-vide-net-nul.png", "a1-lot2a-fin-14-boite-autocreation-proprietaire.png"]
+  },
+  "quirks_session": [
+    "Reload SPA → retour au dashboard (vue réinitialisée), re-navigations effectuées (déjà constaté a2-lot2)",
+    "agent-browser find text a ciblé le HEADING du dialogue au lieu du bouton (1 clic sans effet) → re-snapshot et clic par ref — aucune requête parasite",
+    "Console/page-errors non archivés en SS2 : navigateur fermé après archivage réseau pour éviter de re-déclencher les auto-créations (vue 14/25) lors d'une revisite"
+  ]
+}
