@@ -1,0 +1,548 @@
+{
+  "meta": {
+    "artifact": "rehearsal-refs",
+    "task": "Task ID 3 — répétition générale migration « références rattachées par thèse » sur COPIE",
+    "cycle": "audit-final-v1.2",
+    "agent": "agent-repetition-migration (Z.ai Code)",
+    "generatedAtUTC": "2026-10-10T15:34:26+00:00",
+    "projectHeadCommit": "6f853ac",
+    "baseState": {
+      "originalDbPath": "db/custom.db",
+      "originalDbSha256_sessionStart": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+      "originalDbSha256_sessionEnd": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+      "originalDbUntouched": true,
+      "originalDbBytes": 265330688,
+      "skipWorktree": "S db/custom.db (vérifié git ls-files -v)",
+      "rulesCompliance": [
+        "db/custom.db JAMAIS modifiée : aucun db:push, aucun renommage/déplacement ; SHA-256 identique avant/après toute la session (preuve chiffrée)",
+        "prisma/schema.prisma du dépôt JAMAIS modifié (git diff vide) ; amendement uniquement sur copie /tmp/rehearsal-refs/schema.prisma (copie de traçabilité : audit/baseline/tools/rehearsal-refs/schema-rehearsal.prisma)",
+        "DATABASE_URL passé en env inline du process uniquement (jamais écrit dans .env)",
+        "aucun commit/push/force-push ; fichiers rouges jamais touchés ; aucun code source suivi modifié",
+        "serveur dev port 3000 : ni redémarré ni reconfiguré (constat départ : port 3000 non à l'écoute, pid .zscripts/dev.pid inexistant — répétition indépendante du serveur : copie + client Prisma ad hoc + scripts directs)",
+        "aucun secret dans les preuves"
+      ]
+    },
+    "environment": {
+      "bun": "1.3.14",
+      "node": "v24.21.0",
+      "prismaCliPush": "bunx prisma db push (CLI résolu depuis le dépôt, prisma ^6.11.1)",
+      "prismaClientAdHoc": "v6.19.2 généré par bunx prisma generate --schema /tmp/rehearsal-refs/schema.prisma (output /tmp/rehearsal-refs/client, client autonome auto-contenu)",
+      "sqliteAccess": "bun:sqlite (readonly pour lectures/exports ; écritures transactionnelles sur la COPIE uniquement)"
+    }
+  },
+  "rehearsal_copy": {
+    "directory": "/tmp/rehearsal-refs/",
+    "copyPath": "/tmp/rehearsal-refs/rehearsal.db",
+    "backupPath": "/tmp/rehearsal-refs/rehearsal-BACKUP-rollback.db",
+    "copySha256_initial": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+    "backupSha256": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+    "copyByteIdenticalToOriginal": true,
+    "copyBytes": 265330688
+  },
+  "export_reversible": {
+    "path": "audit/baseline/evidence/rehearsal-refs-export-before.json",
+    "sha256": "7ef2f83b69e250a437998ef188d34e65a4f47ad71f09102f738708d656fc3643",
+    "rowCount": 4,
+    "columnsDumped": [
+      "id",
+      "type",
+      "authors",
+      "title",
+      "year",
+      "journal",
+      "volume",
+      "issue",
+      "pages",
+      "publisher",
+      "doi",
+      "isbn",
+      "url",
+      "abstract",
+      "keywords",
+      "notes",
+      "bibtexKey",
+      "source",
+      "isFavorite",
+      "createdAt",
+      "updatedAt"
+    ],
+    "sourceProvenance": "exporté depuis la copie byte-identique (SHA 47e429d6… = original) — équivalence prouvée par SHA",
+    "sourceDbSha256": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+    "sqliteIntegrityCheck": "ok",
+    "foreignKeyCheckViolations": 0,
+    "exportedAtUTC": "2026-10-10T15:21:39.190Z",
+    "tool": "audit/baseline/tools/rehearsal-refs/export-references.mjs (SQLite READONLY)"
+  },
+  "inventory_before": {
+    "tool": "audit/baseline/tools/rehearsal-refs/db-inventory.mjs (READONLY)",
+    "tableCount": 30,
+    "counts": {
+      "Reference": 4,
+      "Thesis": 1,
+      "Chapter": 7,
+      "ChapterVersion": 6,
+      "ImportedDoc": 16,
+      "LegalRef": 27,
+      "DoctoralToolbox": 1,
+      "NotebookEntry": 1,
+      "SoutenancePrep": 1
+    },
+    "theses": [
+      {
+        "id": "cmsmyrdfs0000pa2sews4vo90",
+        "title": "Urbanisme durable",
+        "status": "draft"
+      }
+    ],
+    "references": [
+      {
+        "id": "cmsn1z0bt0000patk9xduej9u",
+        "title": "Méthodologies qualitatives en urbanisme",
+        "type": "article",
+        "source": "manual"
+      },
+      {
+        "id": "cmsz0h3w80000shkhsukj2pb7",
+        "title": "Test Reference for E2E Testing",
+        "type": "article",
+        "source": "manual"
+      },
+      {
+        "id": "cmsz38jar0001shy343tdx6fy",
+        "title": "Test Reference T4 Persistence",
+        "type": "article",
+        "source": "manual"
+      },
+      {
+        "id": "cmu4daa0b0003t39r00dtmbqm",
+        "title": "A Digital Twin Framework for Decision-Support and Optimization of EV Charging Infrastructure in Localized Urban Systems",
+        "type": "article",
+        "source": "arxiv"
+      }
+    ],
+    "schema_reality": {
+      "referenceColumnCount": 21,
+      "referenceHasThesisIdColumn": false,
+      "referenceIndexes": [
+        {
+          "name": "sqlite_autoindex_Reference_1",
+          "sql": null
+        },
+        {
+          "name": "Reference_type_idx",
+          "sql": "CREATE INDEX \"Reference_type_idx\" ON \"Reference\"(\"type\")"
+        },
+        {
+          "name": "Reference_year_idx",
+          "sql": "CREATE INDEX \"Reference_year_idx\" ON \"Reference\"(\"year\")"
+        },
+        {
+          "name": "Reference_isFavorite_idx",
+          "sql": "CREATE INDEX \"Reference_isFavorite_idx\" ON \"Reference\"(\"isFavorite\")"
+        },
+        {
+          "name": "Reference_source_idx",
+          "sql": "CREATE INDEX \"Reference_source_idx\" ON \"Reference\"(\"source\")"
+        }
+      ],
+      "foreignKeysPointingToReference": [],
+      "dbLevelUsageRelations": 0,
+      "note": "RÉALITÉ DU SCHÉMA : la table Reference n'a AUCUNE relation DB entrante (0 FK pointe vers elle, vérifié PRAGMA foreign_key_list sur les 30 tables) et aucune sortante. Les « 8 points d'usage » de la proposition §0 sont des consommateurs APPLICATIFS (routes/vues), pas des tables de liaison. Inventaire applicatif confirmé par grep : src/app/api/references/* (route, [id], import, bibtex), src/app/api/export-docx, src/app/api/chapter-draft/stream, src/app/api/alignement-preuves, src/app/api/stats, src/lib/citations, src/lib/rag/rag-service, src/lib/articles/sources-server, src/modules/livres-competences/registre-juridique-tab.tsx",
+      "integrityCheck": "ok",
+      "foreignKeyCheckViolations": 0
+    }
+  },
+  "schema_amendment": {
+    "repoSchemaUntouched": true,
+    "copySchemaPath": "/tmp/rehearsal-refs/schema.prisma",
+    "traceabilityCopy": "audit/baseline/tools/rehearsal-refs/schema-rehearsal.prisma",
+    "originalCopyKept": "/tmp/rehearsal-refs/schema-original.prisma (byte-identique au schéma du dépôt, vérifié diff)",
+    "amendments": [
+      "model Reference : + thesisId String? (nullable permanent)",
+      "model Reference : + thesis Thesis? @relation(fields:[thesisId], references:[id], onDelete: Cascade)",
+      "model Reference : + @@index([thesisId])",
+      "model Thesis : + references Reference[]",
+      "generator client : output /tmp/rehearsal-refs/client (client ad hoc, node_modules du dépôt intact)"
+    ],
+    "conformity": "conforme à la lettre à proposition-technique.md §1 (aucun autre changement)"
+  },
+  "db_push_on_copy": {
+    "command": "DATABASE_URL=file:/tmp/rehearsal-refs/rehearsal.db bunx prisma db push --schema /tmp/rehearsal-refs/schema.prisma --skip-generate",
+    "result": "Your database is now in sync with your Prisma schema. Done in 19ms",
+    "log": "fragment 03-db-push.log",
+    "copySha256_before": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+    "copySha256_after": "c32fcff9de9eb9b5fb834c64db26c24fad73db157acb7742eb7061b9d420675b",
+    "shaChangedExpected": true,
+    "shaChangedReason": "reconstruction de la table Reference par SQLite (ALTER TABLE → copie de table) — changement de fichier attendu",
+    "controls": {
+      "thesisIdColumnCreated": true,
+      "thesisIdColumnNullable": true,
+      "thesisIdIndexCreated": "Reference_thesisId_idx",
+      "indexesPreserved": [
+        "Reference_type_idx",
+        "Reference_year_idx",
+        "Reference_isFavorite_idx",
+        "Reference_source_idx"
+      ],
+      "referenceCountBefore": 4,
+      "referenceCountAfter": 4,
+      "thesisCountAfter": 1,
+      "chapterCountAfter": 7,
+      "integrityCheck": "ok",
+      "foreignKeyCheckViolations": 0
+    }
+  },
+  "migration_run1_univoque": {
+    "stateAtRun": "1 seule thèse (cmsmyrdfs0000pa2sews4vo90 « Urbanisme durable »), 4 références thesisId NULL — ÉTAT IDENTIQUE à celui qui sera rencontré en exécution réelle",
+    "ruleApplied": "CAS_UNIVOQUE (1 thèse) — attribution de toutes les références thesisId=NULL à la thèse unique cmsmyrdfs0000pa2sews4vo90 (« Urbanisme durable »)",
+    "runId": "MIGREF-20261010152901",
+    "startedAtUTC": "2026-10-10T15:29:01.008Z",
+    "finishedAtUTC": "2026-10-10T15:29:01.679Z",
+    "rowsUpdated": 4,
+    "attributionJournal": [
+      {
+        "referenceId": "cmsn1z0bt0000patk9xduej9u",
+        "title": "Méthodologies qualitatives en urbanisme",
+        "thesisIdFrom": null,
+        "thesisIdTo": "cmsmyrdfs0000pa2sews4vo90",
+        "thesisTitleTo": "Urbanisme durable",
+        "reason": "cas univoque : base ne contenant qu'une seule thèse (proposition-technique.md §3.3)",
+        "decidedAtUTC": "2026-10-10T15:29:01.332Z"
+      },
+      {
+        "referenceId": "cmsz0h3w80000shkhsukj2pb7",
+        "title": "Test Reference for E2E Testing",
+        "thesisIdFrom": null,
+        "thesisIdTo": "cmsmyrdfs0000pa2sews4vo90",
+        "thesisTitleTo": "Urbanisme durable",
+        "reason": "cas univoque : base ne contenant qu'une seule thèse (proposition-technique.md §3.3)",
+        "decidedAtUTC": "2026-10-10T15:29:01.332Z"
+      },
+      {
+        "referenceId": "cmsz38jar0001shy343tdx6fy",
+        "title": "Test Reference T4 Persistence",
+        "thesisIdFrom": null,
+        "thesisIdTo": "cmsmyrdfs0000pa2sews4vo90",
+        "thesisTitleTo": "Urbanisme durable",
+        "reason": "cas univoque : base ne contenant qu'une seule thèse (proposition-technique.md §3.3)",
+        "decidedAtUTC": "2026-10-10T15:29:01.332Z"
+      },
+      {
+        "referenceId": "cmu4daa0b0003t39r00dtmbqm",
+        "title": "A Digital Twin Framework for Decision-Support and Optimization of EV Charging Infrastructure in Localized Urban Systems",
+        "thesisIdFrom": null,
+        "thesisIdTo": "cmsmyrdfs0000pa2sews4vo90",
+        "thesisTitleTo": "Urbanisme durable",
+        "reason": "cas univoque : base ne contenant qu'une seule thèse (proposition-technique.md §3.3)",
+        "decidedAtUTC": "2026-10-10T15:29:01.332Z"
+      }
+    ],
+    "ambiguityReport": [],
+    "countsAfter": {
+      "referenceTotal": 4,
+      "referenceAttributed": 4,
+      "referenceNull": 0
+    },
+    "integrityCheck": "ok",
+    "foreignKeyCheckViolations": 0,
+    "copySha256After": "c05836a4e54e101f3a2d22249d08532ba8d01e8897c3eac34f75d089cdf00e4e",
+    "updatedAtPreserved": "le script préserve updatedAt (diff vs export = thesisId UNIQUEMENT, prouvé au contrôle post-migration)",
+    "idempotencyProof": {
+      "runId": "MIGREF-20261010152901",
+      "rowsUpdatedOnSecondRun": 0,
+      "referenceAlreadyAttributed": 4,
+      "verdict": "IDEMPOTENT (0 ligne modifiée au 2e passage)"
+    }
+  },
+  "consistency_post_migration": {
+    "tool": "audit/baseline/tools/rehearsal-refs/consistency-check.mjs (READONLY)",
+    "verdict": "PASS",
+    "counts": {
+      "referencesTotalBefore": 4,
+      "referencesTotalAfter": 4,
+      "equal": true,
+      "attributed": 4,
+      "nullThesisId": 0,
+      "thesisCount": 1
+    },
+    "orphans": {
+      "danglingThesisIdReferences": [],
+      "danglingCount": 0,
+      "dbLevelUsageRelationsToReference": 0,
+      "note": "Aucune clé étrangère ne pointe vers Reference dans le schéma réel (vérifié PRAGMA foreign_key_list sur les 30 tables) — l'usage est exclusivement applicatif (8 consommateurs). Le critère « orphelin d'usage » est donc non applicable en base ; l'atteignabilité = FK thesisId valide (0 dangling)."
+    },
+    "integrity": {
+      "integrityCheck": "ok",
+      "foreignKeyCheckViolations": 0
+    },
+    "exportDiff": {
+      "preexistingRowsCompared": 4,
+      "fieldDiffs": [
+        {
+          "id": "cmsn1z0bt0000patk9xduej9u",
+          "field": "thesisId",
+          "before": null,
+          "after": "cmsmyrdfs0000pa2sews4vo90"
+        },
+        {
+          "id": "cmsz0h3w80000shkhsukj2pb7",
+          "field": "thesisId",
+          "before": null,
+          "after": "cmsmyrdfs0000pa2sews4vo90"
+        },
+        {
+          "id": "cmsz38jar0001shy343tdx6fy",
+          "field": "thesisId",
+          "before": null,
+          "after": "cmsmyrdfs0000pa2sews4vo90"
+        },
+        {
+          "id": "cmu4daa0b0003t39r00dtmbqm",
+          "field": "thesisId",
+          "before": null,
+          "after": "cmsmyrdfs0000pa2sews4vo90"
+        }
+      ],
+      "diffFields": [
+        "thesisId"
+      ],
+      "onlyThesisIdDiffers": true,
+      "missingRowsFromAfter": [],
+      "representationNormalization": "boolean↔0/1, Date ISO↔ms epoch (mêmes valeurs)"
+    },
+    "interpretation": "total avant == total après (4) ; 0 dangling thesisId ; integrity ok ; 0 violation FK ; les 4 lignes préexistantes diffèrent de l'export réversible UNIQUEMENT par thesisId ; 0 ligne manquante"
+  },
+  "scenario_2_theses": {
+    "purpose": "scénario exigé pour les tests d'isolation (2 thèses présentes)",
+    "setupTool": "audit/baseline/tools/rehearsal-refs/setup-test-thesis.mjs (client Prisma ad hoc)",
+    "thesisB": {
+      "id": "cmv2juwnl0000neiueg2wnl1g",
+      "title": "REHEARSAL-TH-B — Thèse test répétition migration refs",
+      "chapters": [
+        "cmv2juwnl0001neiu9465o0rg",
+        "cmv2juwnl0002neiu9xx8irve"
+      ]
+    },
+    "referencesCreated": {
+      "refB1": {
+        "id": "cmv2juwnm0004neiu575hsemd",
+        "thesisId": "cmv2juwnl0000neiueg2wnl1g",
+        "title": "REHEARSAL-B Réf 1 — attribuée thèse B (test isolation)"
+      },
+      "refB2": {
+        "id": "cmv2juwnn0006neiu7zo2s82d",
+        "thesisId": "cmv2juwnl0000neiueg2wnl1g",
+        "title": "REHEARSAL-B Réf 2 — attribuée thèse B (test isolation)"
+      },
+      "refGlobal": {
+        "id": "cmv2juwno0007neiu1w61g2kv",
+        "thesisId": null,
+        "title": "REHEARSAL-GLOBAL Réf ambigue — thesisId NULL (témoin visibilité + branche ambigu)"
+      }
+    },
+    "attributionAtCreation": "les 2 réf. de B sont créées avec thesisId=B (comportement de la future API : thesisId obligatoire à la création)",
+    "ownerReferencesUntouchedAfterSetup": 4,
+    "migration_run2_multitheses": {
+      "runId": "MIGREF-20261010152909",
+      "stateAtRun": "2 thèses présentes (propriétaire + REHEARSAL-TH-B), 1 réf. globale (thesisId NULL)",
+      "ruleApplied": "CAS_MULTI-THÈSES — 0 attribution automatique (règle impérative propriétaire : attribution UNIQUEMENT si appartenance non ambiguë) ; références laissées thesisId=NULL et listées",
+      "rowsUpdated": 0,
+      "ambiguityReport": [
+        {
+          "referenceId": "cmv2juwno0007neiu1w61g2kv",
+          "title": "REHEARSAL-GLOBAL Réf ambigue — thesisId NULL (témoin visibilité + branche ambigu)",
+          "createdAt": "2026-10-10T15:29:09.589Z",
+          "reason": "plusieurs thèses présentes (2) — aucun contexte de création/usage déterminant en base ; l'« attribution à la thèse active du moment » (proposition §3.3) est écartée par la règle impérative du propriétaire (ambigu = NULL + listé)"
+        }
+      ],
+      "countsAfter": {
+        "referenceTotal": 7,
+        "referenceAttributed": 6,
+        "referenceNull": 1
+      },
+      "copySha256After": "f27bab9d14fa6e6d990955efbdb426e7d95fb1ecf644a5075320b9a5364f1697",
+      "interpretation": "branche « ambigu » exercée : la réf. globale reste thesisId NULL et est LISTÉE ; les 6 réf. déjà attribuées (4 propriétaire + 2 B) ne sont pas touchées (idempotence en état multi-thèses)"
+    }
+  },
+  "isolation_tests": {
+    "tool": "audit/baseline/tools/rehearsal-refs/isolation-tests.mjs (client Prisma ad hoc)",
+    "output": "fragment 07-isolation-tests.json",
+    "summary": {
+      "total": 16,
+      "failed": 0,
+      "allPass": true
+    },
+    "tests": [
+      {
+        "name": "pré-requis : thèse propriétaire + thèse B présentes",
+        "verdict": "PASS"
+      },
+      {
+        "name": "pré-requis : 2 réf. attribuées à B + 1 réf. globale",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(a1) requête scopée thèse A = 4 réf. du propriétaire",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(a2) requête scopée thèse A ne voit AUCUNE réf. de B",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(a3) requête scopée thèse B = 2 réf. de B",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(a4) requête scopée thèse B ne voit AUCUNE réf. du propriétaire",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(a5) vue inclusive A ne contient aucune réf. attribuée B",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(a6) vue inclusive B ne contient aucune réf. attribuée A",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(b1) réf. globale visible côté A (vue inclusive)",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(b2) réf. globale visible côté B (vue inclusive)",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(a7) UPDATE cross-contexte (garde thesisId=owner sur réf. de B) → 0 ligne modifiée, réf. intacte",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(c1) DELETE thèse B → 0 chapitre B restant (cascade)",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(c2) CASCADE : les 2 réf. attribuées à B sont supprimées avec elle",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(c3) la réf. globale (thesisId NULL) SURVIT à la suppression de B",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(c4) les réf. du propriétaire ne changent pas de nombre (4)",
+        "verdict": "PASS"
+      },
+      {
+        "name": "(d1) diff vs export réversible (représentations normalisées) : les 4 réf. propriétaire présentes, modifiées UNIQUEMENT sur thesisId",
+        "verdict": "PASS"
+      }
+    ],
+    "proven": {
+      "a_isolation": "requête scopée thèse A = exactement les 4 réf. du propriétaire (0 réf. de B) ; requête scopée thèse B = exactement les 2 réf. de B (0 réf. du propriétaire) ; vues inclusives croisées sans fuite",
+      "b_globales": "la réf. globale (thesisId NULL) reste visible des deux thèses (état transitoire documenté : elle restera NULL jusqu'à résolution manuelle ou attribution propriétaire)",
+      "a7_contrat_404": "UPDATE cross-contexte (garde thesisId=A sur une réf. de B) → 0 ligne modifiée, réf. intacte — miroir DB du contrat API 404 (proposition §2)",
+      "c_cascade": "DELETE thèse B → cascade de SES références (2/2 supprimées) et de ses chapitres ; la réf. globale survit ; les réf. du propriétaire inchangées",
+      "d_proprietaire": "diff ligne à ligne des 4 réf. du propriétaire vs export réversible : seul thesisId diffère (NULL → cmsmyrdfs…)"
+    },
+    "cleanup": {
+      "globalRefsDeleted": 1,
+      "testThesesDeleted": 0
+    },
+    "finalStateCopy": {
+      "referencesTotal": 4,
+      "ownerReferences": 4,
+      "referencesNull": 0,
+      "thesisCount": 1
+    }
+  },
+  "rollback": {
+    "methodChosen": "double démonstration : (7a) inverse surgical via journal d'attribution + export réversible (voie §3.4.2) PUIS (7b) restauration complète byte-identique depuis la sauvegarde (procédure C-1, voie §3.4.1) — cette dernière est la méthode ROBUSTE recommandée en production",
+    "surgical": {
+      "tool": "audit/baseline/tools/rehearsal-refs/inverse-migration.mjs",
+      "journalRunId": "MIGREF-20261010152901",
+      "journalEntries": 4,
+      "revertedCount": 4,
+      "skipped": [],
+      "countsAfter": {
+        "referenceTotal": 4,
+        "attributed": 0,
+        "nullThesisId": 4
+      },
+      "verification": {
+        "tool": "consistency-check.mjs re-passé après inverse",
+        "verdict": "PASS",
+        "fieldDiffs": [],
+        "interpretation": "après inverse, les 4 lignes sont IDENTIQUES à l'export réversible sur TOUTES les colonnes (diff vide) — la réversibilité de l'export est prouvée"
+      }
+    },
+    "fullByteRestore": {
+      "method": "cp --preserve=timestamps de /tmp/rehearsal-refs/rehearsal-BACKUP-rollback.db → rehearsal.db (équivalent restore-db.ts procédure C-1)",
+      "copySha256_beforeRestore": "c7b7a37c000f6c12a17faff62de89ac0b02ce8239edc41a0ab80b70c5373e060",
+      "copySha256_afterRestore": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+      "initialCopySha256": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+      "shaIdenticalToInitialCopy": true,
+      "shaIdenticalToOriginalDb": true,
+      "postRestoreInventory": {
+        "tableCount": 30,
+        "counts": {
+          "Reference": 4,
+          "Thesis": 1,
+          "Chapter": 7,
+          "DoctoralToolbox": 1
+        },
+        "referenceHasThesisIdColumn": false,
+        "referenceTitles": [
+          "Méthodologies qualitatives en urbanisme",
+          "Test Reference for E2E Testing",
+          "Test Reference T4 Persistence",
+          "A Digital Twin Framework for Decision-Support and Optimization of EV Charging Infrastructure in Localized Urban Systems"
+        ],
+        "integrityCheck": "ok",
+        "foreignKeyCheckViolations": 0
+      },
+      "controlQuery": "PRAGMA table_info(Reference) → 21 colonnes, pas de thesisId ; SELECT COUNT(*) Reference → 4 ; PRAGMA integrity_check → ok"
+    }
+  },
+  "original_db_untouched": {
+    "sha256_sessionStart": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+    "sha256_midSession_recheck": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+    "sha256_sessionEnd": "47e429d6fa27b9411b6f59f4f328add9782c17226cb00a78708db919cc2ca6ec",
+    "sha256_unchanged": true,
+    "verifications": [
+      "sha256sum db/custom.db après copie initiale (15:21 UTC)",
+      "après db push sur copie (15:23 UTC)",
+      "finale (post-rollback/consolidation)"
+    ]
+  },
+  "deviations_vs_proposition": [
+    {
+      "id": "EC-1",
+      "subject": "branche multi-thèses de §3.3 (« attribution à la thèse active du moment »)",
+      "deviation": "NON appliquée : 0 attribution automatique en état multi-thèses ; toute réf. non attribuée = ambiguë → thesisId NULL + listée dans le rapport d'ambiguïté",
+      "justification": "règle impérative du propriétaire (Task ID 3) : attribution automatique UNIQUEMENT si appartenance non ambiguë ; aucun champ « thèse active » n'existe en base ; aucune heuristique inventée",
+      "impact": "en exécution réelle (1 seule thèse), cette branche n'est pas déclenchée — le cas univoque s'applique"
+    },
+    {
+      "id": "EC-2",
+      "subject": "ordre de création de la thèse de test (étape 2 attendue avant migration)",
+      "deviation": "la thèse REHEARSAL-TH-B a été créée APRÈS la migration run 1, pour répéter D'ABORD le cas univoque sur un état strictement identique à la base réelle (1 thèse, 4 réf. globales)",
+      "justification": "fidélité de la répétition : si la thèse B avait existé au moment de la migration, la règle d'ambiguïté aurait bloqué l'attribution des 4 réf. du propriétaire et la répétition n'aurait pas couvert le scénario réel ; la branche multi-thèses est ensuite exercée explicitement (run 2)",
+      "impact": "aucun — les deux branches de la règle §3.3 sont prouvées"
+    },
+    {
+      "id": "EC-3",
+      "subject": "version du client Prisma ad hoc",
+      "deviation": "client ad hoc généré en v6.19.2 (bunx) alors que le dépôt est en ^6.11.1",
+      "justification": "client autonome utilisé exclusivement sur la COPIE pour les scripts de répétition ; le schéma pushé est identique ; l'exécution réelle utilisera le client du dépôt",
+      "impact": "aucun impact sur les données ; scripts compatibles avec les deux versions (API PrismaClient standard)"
+    },
+    {
+      "id": "EC-4",
+      "subject": "serveur dev port 3000",
+      "deviation": "constaté NON à l'écoute en début de session (consigne : ne pas le redémarrer — respectée)",
+      "justification": "la répétition est indépendante du serveur (copie + client ad hoc + scripts SQLite/Prisma directs) ; le plan d'exécution réelle inclut le re-pass UI qui, lui, exigera le serveur",
+      "impact": "aucun sur les preuves DB"
+    }
+  ]
+}

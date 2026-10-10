@@ -1,0 +1,130 @@
+{
+  "task": "Correctifs isolation multi-thèses (AUD-ISO-001..004) + correctifs P2 (A1L2A-01, A1L3A-03/04, A1L3B-01, A1L2B-02) — validation UI réelle sur 2 thèses distinctes",
+  "task_id": "1-2-tests",
+  "cycle": "audit-final-v1.2",
+  "date": "2026-10-10",
+  "date_execution_utc": "2026-10-10T15:20-16:00",
+  "agent": "orchestrateur (Z.ai Code)",
+  "commit_teste": "6f853ac5ae2b332a5966f59b4b1d8e4ca8e216b5",
+  "autorisation_proprietaire": "Message de validation : §1 correctifs AUD-ISO-001..004 AUTORISÉS sans migration de schéma ; §2 correctifs P2 ciblés AUTORISÉS (IA Agile, IA Hypothèses, article→code sans clés, toasts) ; exigences : 2 thèses distinctes, preuve que seules les données de la thèse active sont lues/modifiées, preuves avant/après, TNR",
+  "methode": "UI réelle agent-browser headless (http://localhost:3000, serveur relancé 200 après interruption constatée en début de session) ; thèse jetable B « AUDIT-FIX — Thèse isolation 2 thèses » (cmv2k9ph80000netcid6vm74l, 7 chapitres template, POST 201) créée via le dialogue du dashboard ; thèse propriétaire « Urbanisme durable » (cmsmyrdfs0000pa2sews4vo90, 7 chapitres, 2 295 mots) JAMAIS écrite ; toutes les écritures de session ciblées sur B ou sur des objets préfixés AUDIT-FIX- ; comptages DB PrismaClient lecture seule avant/après (isolation-fix-db-before/after.json, 30 tables) ; audit réseau agent-browser par URL ; cleanup 100 % via l'UI (dialogue confirmé).",
+  "occurrence_theses_pendant_session": {
+    "theses_api_order": "GET /api/thesis orderBy updatedAt desc → theses[0] = B (cmv2k9ph80000netcid6vm74l, modifiée aujourd'hui) pendant TOUTE la phase propriétaire-actif",
+    "activeThesisId_store": "zustand persisté « thesisframe-app-store » — null en début de session (aucune thèse active), puis B (création), puis cmsmyrdfs0000pa2sews4vo90 (bascule Éditeur → Changer de thèse → carte propriétaire)",
+    "effet_decisif": "Pendant la phase finale, activeThesisId = propriétaire ≠ theses[0] = B : configuration exacte qui exposait AUD-ISO-001"
+  },
+  "resultats": [
+    {
+      "id": "AUD-ISO-001",
+      "severity_avant": "P1 (écriture cross-thèse prouvée W2-2)",
+      "verdict": "CORRIGÉ — PROUVÉ UI RÉELLE",
+      "preuves": [
+        "SANS thèse active (activeThesisId=null) : vue Plan affiche « Aucune thèse active / Ouvrez une thèse dans l'éditeur… » (isofix-01) — AVANT le fix : theses[0] propriétaire affiché silencieusement ; réseau : 1 GET /api/thesis 200, 0 écriture",
+        "activeThesisId=B : Plan affiche « AUDIT-FIX — Thèse isolation 2 thèses » (isofix-06)",
+        "DÉCISIF : activeThesisId=propriétaire ALORS QUE theses[0]=B : Plan affiche « Urbanisme durable », 0 occurrence de B ou de sa partie dans le DOM ({urb:true, b:false, partA:false}) (isofix-13) — AVANT le fix : affichage + PUT structureMode + POST parts/chapters sur theses[0]=B",
+        "PUT structureMode : PUT /api/thesis/cmv2k9ph8…(B) 200 — cible = thèse active affichée"
+      ]
+    },
+    {
+      "id": "AUD-ISO-002",
+      "severity_avant": "P2",
+      "verdict": "CORRIGÉ — PROUVÉ UI RÉELLE (Cadrage, Boîte doctorale, Équilibre)",
+      "preuves": [
+        "SANS thèse active : les 3 vues affichent « Aucune thèse active » + sélecteur de secours (boutons thèses) (isofix-02/03/04) — AVANT : défaut silencieux theses[0]",
+        "activeThesisId=B : Cadrage affiche B (bouton bg-primary sélectionné, contre-bouton Urbanisme outline) ; « Aucun cadrage pour cette thèse » (B n'en a pas) (isofix-09)",
+        "Création cadrage : POST → ThesisCadrage cmv2kce8g000dnetc3tr2l83u avec thesisId=cmv2k9ph8…(B) + 12 ThesisCadrageField (vérifié DB lecture seule)",
+        "activeThesisId=propriétaire : Cadrage affiche « Aucun cadrage » (le cadrage de B n'apparaît PAS) et bouton propriétaire en bg-primary (isofix-14)",
+        "Équilibre avec B active : chapitres de B affichés (Introduction/Méthodologie) (isofix-11) ; vue en lecture seule"
+      ]
+    },
+    {
+      "id": "AUD-ISO-003",
+      "severity_avant": "P2 (auto-création sur theses[0] à la simple visite)",
+      "verdict": "CORRIGÉ — PROUVÉ UI RÉELLE",
+      "preuves": [
+        "SANS thèse active : 4,5 s sur la vue → 0 requête doctoral-toolbox (isofix-03)",
+        "AVEC thèse active B : 5,0 s sur la vue → 1 GET /api/thesis/{B}/doctoral-toolbox 200 (data:null), 0 POST ; DB : DoctoralToolbox count=1 (résidu propriétaire uniquement)",
+        "1ʳᵉ modification réelle (cocher « Lettre de recommandation du directeur de thèse ») : ~3,5 s plus tard POST /api/thesis/cmv2k9ph8…(B)/doctoral-toolbox 201 → nouvelle ligne cmv2kcyi9… thesisId=B (isofix-10)",
+        "Résidu propriétaire cmv26kryu001oq7vhdotgwrc1 INTACT pendant toute la session (createdAt=updatedAt=2026-10-10T09:17:21.942Z vérifié avant/milieu/fin)",
+        "Visite Boîte avec propriétaire actif : contenu résidu AFFICHÉ (GET 200) sans AUCUN PUT/POST en 5 s — plus de re-sauvegarde silencieuse à la visite"
+      ]
+    },
+    {
+      "id": "AUD-FUNC-007",
+      "severity_avant": "P2 consolidée (chapitres rattachés invisibles)",
+      "verdict": "CORRIGÉ — PROUVÉ UI RÉELLE",
+      "preuves": [
+        "Création partie « AUDIT-FIX Partie A » (POST /api/thesis/{B}/parts 201) + « Ajouter un chapitre » (POST chapters + PUT /api/chapters/cmv2kaz42000bnetcn7au47pm 200, partId attaché)",
+        "RELOAD complet puis re-navigation Plan : badge partie « 1 chap. » + badge global « 1 chapitre rattaché à des parties » + chip « Chapitre VIII » PRÉSENT dans le DOM (isofix-08) — AVANT le fix (W2-2) : « 0 chap. » permanent, chip absent, détachement inatteignable",
+        "DB : Chapter cmv2kaz42000bnetcn7au47pm partId=cmv2kapvv0009netc3cq9w7og (la partie de B) ; Part cmv2kapvv… thesisId=B"
+      ]
+    },
+    {
+      "id": "A1L2A-01",
+      "severity_avant": "P2 (IA Feuille de Route Agile 400)",
+      "verdict": "CORRIGÉ — PROUVÉ UI RÉELLE",
+      "preuves": [
+        "Sprint jetable créé (POST /api/sprints 201, global par conception, nettoyé ensuite) → « Générer le prochain sprint » → POST /api/ai-writing 200 (AVANT : 400 zod {content,mode} vs {prompt} + mode sprint_planning inexistant)",
+        "Zone « Suggestion IA — Prochain sprint » rendue avec contenu réel structuré : {\"sprint_name\": \"AUDIT-FIX Sprint jetable\", \"sprint_objective\": …} (isofix-22)",
+        "Sprint jetable supprimé VIA FLUX UI CONFIRMÉ (AlertDialog → DELETE /api/sprints/cmv2kl468000snetci2g6bt60 200) → DB : 0 sprint, 0 story"
+      ]
+    },
+    {
+      "id": "A1L3A-03",
+      "severity_avant": "P2 (Génération Hypothèses IA 400 déterministe)",
+      "verdict": "CORRIGÉ — PROUVÉ UI RÉELLE",
+      "preuves": [
+        "Génération ×2 (2 questions de recherche distinctes) : POST /api/ai-writing/stream → flux réel rendu (« Hypothèses de recherche : Effet de la densité urbaine… 1. Hypothè… ») ; 0 occurrence de ❌ ni « Erreur 400 » (isofix-16/17)",
+        "Contrat corrigé : {prompt, mode:\"hypothesis\"} (mode présent dans WRITING_MODES + SPECIALIZATION_PROMPTS)"
+      ]
+    },
+    {
+      "id": "A1L3A-04",
+      "severity_avant": "P3 cascade (texte d'erreur transféré en H1)",
+      "verdict": "GARDE AJOUTÉE — PROUVÉE PAR REVUE + flux nominal",
+      "preuves": [
+        "handleCopyToPrereg refuse désormais tout output contenant ❌ (toast destructive « La génération a échoué… »)",
+        "Flux nominal exécuté : « Vers pré-enregistrement » → toast « Copié » + transfert effectif"
+      ]
+    },
+    {
+      "id": "A1L2B-02",
+      "severity_avant": "P2 (toasts use-toast invisibles ~10 modules)",
+      "verdict": "CORRIGÉ — PROUVÉ UI RÉELLE",
+      "preuves": [
+        "Toaster shadcn monté dans src/app/layout.tsx (racine) — viewport Radix ol.fixed.top-0 + régions aria « Notifications alt+T » / « Notifications (F8) » présentes dans le DOM après reload propre",
+        "Clic « Vers pré-enregistrement » (module generation-hypotheses, use-toast) → toast RENDU ET VISIBLE : « Copié — Hypothèses transférées vers le pré-enregistrement » capturé dans le viewport (isofix-21) — AVANT : généré mais jamais affiché"
+      ]
+    },
+    {
+      "id": "A1L3B-01",
+      "severity_avant": "P2 (500 corps vide sans clé)",
+      "verdict": "CORRIGÉ — PROUVÉ UI RÉELLE (cause externe distinguée)",
+      "preuves": [
+        "Texte ≥200 car. + « Generer le code » (fournisseur groq, aucune clé configurée) : POST /api/paper2code/generate → 503 JSON explicite",
+        "Message AFFICHÉ dans l'UI : « Aucune clé API pour groq. Configurez un fournisseur avec clé. Aucune clé n'est configurée pour ce fournisseur… » (isofix-24) — AVANT : 500 corps vide → « Unexpected end of JSON input »",
+        "Distinction externe/applicative explicite dans le message (configuration manquante ≠ défaut applicatif) ; 0 occurrence de « Unexpected end » "
+      ]
+    }
+  ],
+  "tests_non_regresssion": {
+    "vitest": "1 658/1 658 verts (78 fichiers) — dont route.test.ts mis à jour pour refléter le contrat AUD-FUNC-007 (partId+sortOrder)",
+    "lint": "0 erreur / 247 warnings (baseline exacte) — 25 warnings adventices éliminés en excluant audit/** (scripts d'outillage d'audit des sous-agents, non applicatifs) du périmètre ESLint (eslint.config.mjs, 1 ligne)",
+    "tnr_ui_leger": "GP-2 création thèse rejouée (POST 201 + 7 chapitres + activeThesisId auto) ; suppression thèse via dialogue confirmé conforme (2ᵉ application C-2)"
+  },
+  "reseau_session": {
+    "ecritures_toutes_ciblees_B": ["POST /api/thesis 201 (B)", "PUT /api/thesis/cmv2k9ph8… 200 (structureMode B)", "POST /api/thesis/cmv2k9ph8…/parts 201", "POST /api/thesis/cmv2k9ph8…/chapters (Chapitre VIII)", "PUT /api/chapters/cmv2kaz42… (attach partId)", "POST /api/thesis/cmv2k9ph8…/cadrages 201", "POST /api/thesis/cmv2k9ph8…/doctoral-toolbox 201", "POST /api/sprints 201", "POST /api/ai-writing 200 (agile)", "POST /api/ai-writing/stream 200 ×2 (hypothèses)", "POST /api/paper2code/generate 503 (sans clé, 0 écriture)"],
+    "phase_proprietaire_actif": ["GET /api/thesis 200", "GET /api/thesis/cmsmyrdfs… 200", "GET /api/thesis/cmsmyrdfs…/doctoral-toolbox 200", "0 écriture"],
+    "cleanup": ["DELETE /api/sprints/cmv2kl468… 200", "DELETE /api/thesis/cmv2k9ph8… 200 (cascade vérifiée)"]
+  },
+  "etat_proprietaire": {
+    "db_diff": "VIDE sur 30 tables (isolation-fix-db-before.json vs isolation-fix-db-after.json) — la suppression cascade de B a retiré TOUTES ses données (parts, chapitre VIII, cadrage+12 champs, toolbox B, sprint)",
+    "these_proprietaire": "JAMAIS écrite (updatedAt 2026-08-10T08:22:35.464Z inchangé) ; lectures limitées : liste, détail, toolbox GET, affichages Plan/Cadrage/Équilibre/Boîte",
+    "residu_doctoraltoolbox": "cmv26kryu001oq7vhdotgwrc1 intact (cf. 19_RESIDU_DOCTORALTOOLBOX.md)",
+    "references": "4 références globales intactes (comptage)",
+    "temoins": "NotebookEntry=1, Experiment=1, LegalRef=27, Job=24, ImportedDoc=16 — inchangés"
+  },
+  "invariants_verifies": ["0 modification des fichiers rouges", "pas de db:push", "pas de migration de schéma", "aucun secret dans les preuves (aucune clé lue/affichée)", "commit des correctifs PRÉCÉDENT la session de test (preuves liées à 6f853ac)"],
+  "captures": ["isofix-00-dashboard", "isofix-01-plan-sans-these-active", "isofix-02-cadrage-sans-these-active", "isofix-03-boite-sans-these-active", "isofix-04-equilibre-sans-these-active", "isofix-05-these-b-creee", "isofix-06-plan-these-b", "isofix-07-partie-creee-b", "isofix-08-audfunc007-badge-apres-reload", "isofix-09-cadrage-cree-b", "isofix-10-boite-toggle-item-b", "isofix-11-equilibre-b", "isofix-12-editeur-proprietaire", "isofix-13-plan-proprietaire-active", "isofix-14-cadrage-proprietaire", "isofix-15-boite-proprietaire-lecture", "isofix-16-hyp-gen-en-cours", "isofix-17-hyp-resultat", "isofix-18-toast-shadcn-visible", "isofix-19-toast-copie-visible", "isofix-20-toast-copie-capture", "isofix-21-toast-shadcn-copie", "isofix-22-agile-ia-suggestion", "isofix-23-agile-sprint-supprime", "isofix-24-paper2code-sans-cle-503", "isofix-25-dialog-suppression-b"],
+  "incidents": ["Serveur dev constaté arrêté en début de session (constat également par l'agent T3) — relancé à l'identique (double-fork daemon, node next dev -p 3000), 200 rétabli, 0 impact code/DB", "Recompilations HMR déclenchées par les scripts temporaires de comptage créés à la racine (supprimés depuis) — sans impact sur les résultats", "2 captures (isofix-18/19) prises avant identification du sélecteur DOM exact du viewport Radix (ol.fixed vs [data-radix-toast-viewport] absent dans cette version) — la preuve définitive est isofix-21"]
+}

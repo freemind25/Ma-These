@@ -1,0 +1,57 @@
+{
+ "counts": {
+  "thesis": 1,
+  "chapter": 7,
+  "part": 0,
+  "thesisCadrage": 0,
+  "thesisCadrageField": 0,
+  "thesisCadrageVersion": 0,
+  "doctoralToolbox": 1,
+  "soutenancePrep": 1,
+  "researchTab": 0,
+  "reference": 4,
+  "researchSource": 0,
+  "notebookEntry": 1,
+  "agileSprint": 0,
+  "agileStory": 0,
+  "experiment": 1,
+  "experimentRun": 1,
+  "elementAnalyse": 1,
+  "typeAnalyseMethodologique": 1,
+  "sessionVerification": 2,
+  "customBookSkill": 58,
+  "legalRef": 27,
+  "job": 24,
+  "savedSearch": 0,
+  "savedSearchResult": 0,
+  "article": 1,
+  "articleVersion": 1,
+  "importedDoc": 16,
+  "documentChunk": 12,
+  "licenseKey": 0
+ },
+ "theses": [
+  {
+   "id": "cmsmyrdfs0000pa2sews4vo90",
+   "title": "Urbanisme durable",
+   "updatedAt": "2026-08-10T08:22:35.464Z",
+   "structureMode": "chapters"
+  }
+ ],
+ "parts": [],
+ "toolbox": [
+  {
+   "id": "cmv26kryu001oq7vhdotgwrc1",
+   "thesisId": "cmsmyrdfs0000pa2sews4vo90",
+   "createdAt": "2026-10-10T09:17:21.942Z",
+   "updatedAt": "2026-10-10T09:17:21.942Z"
+  }
+ ],
+ "cadrages": [],
+ "refs": [
+  "Méthodologies qualitatives en urbanisme",
+  "Test Reference for E2E Testing",
+  "Test Reference T4 Persistence",
+  "A Digital Twin Framework for Decision-Support and Optimization of EV Charging Infrastructure in Localized Urban Systems"
+ ]
+}

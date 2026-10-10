@@ -38,6 +38,8 @@ const eslintConfig = [
       "examples/**",
       "mini-services/**",
       "scripts/**",
+      // Artefacts d'audit (scripts d'outillage non applicatifs, preuves) — hors périmètre qualité app
+      "audit/**",
       "skills",
       "prisma/seed.ts",
     ],

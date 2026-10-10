@@ -1,0 +1,115 @@
+{
+  "task": "T5 — export complet LECTURE SEULE du résidu DoctoralToolbox (db/custom.db)",
+  "capturedAt": "2026-10-10T15:21:51.094Z",
+  "method": "Client Prisma one-shot, requêtes findMany exclusivement (aucune écriture) ; script temporaire /tmp supprimé après exécution ; DATABASE_URL jamais journalisé",
+  "db": "db/custom.db (SQLite, ~253 Mo)",
+  "templateSource": {
+    "file": "src/modules/boite-doctorale/boite-doctorale-page.tsx",
+    "constants": [
+      "INITIAL_PHASES (l.124-198)",
+      "INITIAL_MILESTONES (l.200-213)",
+      "INITIAL_DOCUMENTS (l.215-232)",
+      "INITIAL_CONTACTS (l.234-267)"
+    ],
+    "extraction": "regex sur la source TSX (aucune transcription manuelle)",
+    "templateCounts": {
+      "phases": 5,
+      "checklistItems": 38,
+      "milestones": 12,
+      "documents": 16,
+      "contacts": 4
+    }
+  },
+  "totalCount": 1,
+  "thesisCountTotal": 1,
+  "verdict": "TEMPLATE_PUR",
+  "rows": [
+    {
+      "id": "cmv26kryu001oq7vhdotgwrc1",
+      "thesisId": "cmsmyrdfs0000pa2sews4vo90",
+      "thesis": {
+        "id": "cmsmyrdfs0000pa2sews4vo90",
+        "title": "Urbanisme durable",
+        "author": "Marie Dupont",
+        "createdAt": "2026-08-10T08:22:35.464Z",
+        "updatedAt": "2026-08-10T08:22:35.464Z"
+      },
+      "createdAt": "2026-10-10T09:17:21.942Z",
+      "updatedAt": "2026-10-10T09:17:21.942Z",
+      "byteSizes": {
+        "checklist": 3229,
+        "milestones": 1317,
+        "documents": 2265,
+        "contacts": 366,
+        "notes": 0
+      },
+      "parsedSummary": {
+        "checklist": {
+          "phases": 5,
+          "items": 38,
+          "itemsChecked": 0
+        },
+        "milestones": {
+          "count": 12,
+          "doneTrue": 3
+        },
+        "documents": {
+          "count": 16,
+          "statusNonAbsent": 0
+        },
+        "contacts": {
+          "count": 4,
+          "champsRenseignes": 0
+        },
+        "notes": ""
+      },
+      "templateComparison": {
+        "checklist_structure_phases": {
+          "template": 5,
+          "db": 5,
+          "keys_equal": true,
+          "deep_equal_to_template": true
+        },
+        "checklist_items": {
+          "template": 38,
+          "db": 38,
+          "db_checked": 0,
+          "deep_equal_to_template": true
+        },
+        "milestones": {
+          "template": 12,
+          "db": 12,
+          "db_done_true": 3,
+          "deep_equal_to_template": true
+        },
+        "documents": {
+          "template": 16,
+          "db": 16,
+          "db_status_non_absent": 0,
+          "deep_equal_to_template": true
+        },
+        "contacts": {
+          "template": 4,
+          "db": 4,
+          "db_champs_renseignes": 0,
+          "deep_equal_to_template": true
+        },
+        "notes": {
+          "template": "",
+          "db": "",
+          "deep_equal_to_template": true
+        }
+      },
+      "isPureTemplate": true,
+      "raw": {
+        "checklist": "{\"inscription\":[{\"id\":\"ins-1\",\"label\":\"Constitution du dossier d'inscription\",\"checked\":false},{\"id\":\"ins-2\",\"label\":\"Lettre de recommandation du directeur de thèse\",\"checked\":false},{\"id\":\"ins-3\",\"label\":\"Attestation de master ou équivalent\",\"checked\":false},{\"id\":\"ins-4\",\"label\":\"Lettre de motivation\",\"checked\":false},{\"id\":\"ins-5\",\"label\":\"Projet de recherche préliminaire (3-5 pages)\",\"checked\":false},{\"id\":\"ins-6\",\"label\":\"Avis favorable de la commission doctorale\",\"checked\":false},{\"id\":\"ins-7\",\"label\":\"Inscription administrative auprès du secrétariat\",\"checked\":false}],\"cours\":[{\"id\":\"cours-1\",\"label\":\"Inscription aux enseignements méthodologiques\",\"checked\":false},{\"id\":\"cours-2\",\"label\":\"Suivi du séminaire doctoral\",\"checked\":false},{\"id\":\"cours-3\",\"label\":\"Formation à la recherche (module obligatoire)\",\"checked\":false},{\"id\":\"cours-4\",\"label\":\"Formation éthique de la recherche\",\"checked\":false},{\"id\":\"cours-5\",\"label\":\"Participation aux conférences et journées d'étude\",\"checked\":false},{\"id\":\"cours-6\",\"label\":\"Validation des crédits de formation\",\"checked\":false},{\"id\":\"cours-7\",\"label\":\"Formation aux outils bibliographiques (Zotero, EndNote)\",\"checked\":false}],\"recherche\":[{\"id\":\"rech-1\",\"label\":\"Revue de littérature approfondie\",\"checked\":false},{\"id\":\"rech-2\",\"label\":\"Cadre théorique et conceptualisation\",\"checked\":false},{\"id\":\"rech-3\",\"label\":\"Formulation des questions/hypothèses de recherche\",\"checked\":false},{\"id\":\"rech-4\",\"label\":\"Choix et justification de la méthodologie\",\"checked\":false},{\"id\":\"rech-5\",\"label\":\"Collecte de données (terrain, enquête, archives)\",\"checked\":false},{\"id\":\"rech-6\",\"label\":\"Analyse des données\",\"checked\":false},{\"id\":\"rech-7\",\"label\":\"Rédaction d'au moins un article scientifique\",\"checked\":false},{\"id\":\"rech-8\",\"label\":\"Présentation dans un congrès national ou international\",\"checked\":false}],\"redaction\":[{\"id\":\"red-1\",\"label\":\"Plan détaillé de la thèse validé par le directeur\",\"checked\":false},{\"id\":\"red-2\",\"label\":\"Introduction générale\",\"checked\":false},{\"id\":\"red-3\",\"label\":\"Chapitres de revue de littérature\",\"checked\":false},{\"id\":\"red-4\",\"label\":\"Chapitres méthodologiques\",\"checked\":false},{\"id\":\"red-5\",\"label\":\"Chapitres de résultats et analyse\",\"checked\":false},{\"id\":\"red-6\",\"label\":\"Discussion et synthèse\",\"checked\":false},{\"id\":\"red-7\",\"label\":\"Conclusion générale et perspectives\",\"checked\":false}],\"soutenance\":[{\"id\":\"sout-1\",\"label\":\"Premier manuscrit complet remis au directeur\",\"checked\":false},{\"id\":\"sout-2\",\"label\":\"Relecture et corrections après retour du directeur\",\"checked\":false},{\"id\":\"sout-3\",\"label\":\"Demande d'autorisation de soutenance\",\"checked\":false},{\"id\":\"sout-4\",\"label\":\"Constitution du rapport préalable par les rapporteurs\",\"checked\":false},{\"id\":\"sout-5\",\"label\":\"Dépôt du manuscrit final (format institutionnel)\",\"checked\":false},{\"id\":\"sout-6\",\"label\":\"Planification de la séance de soutenance\",\"checked\":false},{\"id\":\"sout-7\",\"label\":\"Préparation de la présentation orale\",\"checked\":false},{\"id\":\"sout-8\",\"label\":\"Soutenance de la thèse\",\"checked\":false},{\"id\":\"sout-9\",\"label\":\"Dépôt de la version finale en ligne (thèse.fr / archive)\",\"checked\":false}]}",
+        "milestones": "[{\"id\":\"ms-1\",\"title\":\"Date prévue de première inscription doctorale\",\"date\":\"2024-09-15\",\"type\":\"jalon\",\"done\":true},{\"id\":\"ms-2\",\"title\":\"Validation du sujet de thèse\",\"date\":\"2024-12-20\",\"type\":\"jalon\",\"done\":true},{\"id\":\"ms-3\",\"title\":\"Réunion de suivi n°1 avec le directeur\",\"date\":\"2025-02-10\",\"type\":\"reunion\",\"done\":true},{\"id\":\"ms-4\",\"title\":\"Fin de la phase de cours doctoral\",\"date\":\"2025-06-30\",\"type\":\"echeance\",\"done\":false},{\"id\":\"ms-5\",\"title\":\"Réunion de suivi n°2 — État d'avancement\",\"date\":\"2025-06-15\",\"type\":\"reunion\",\"done\":false},{\"id\":\"ms-6\",\"title\":\"Soumission article scientifique\",\"date\":\"2025-09-01\",\"type\":\"echeance\",\"done\":false},{\"id\":\"ms-7\",\"title\":\"Réunion de suivi n°3 — Bilan mi-parcours\",\"date\":\"2025-12-10\",\"type\":\"reunion\",\"done\":false},{\"id\":\"ms-8\",\"title\":\"Achèvement de la collecte de données\",\"date\":\"2026-03-31\",\"type\":\"echeance\",\"done\":false},{\"id\":\"ms-9\",\"title\":\"Premier manuscrit complet\",\"date\":\"2026-07-01\",\"type\":\"jalon\",\"done\":false},{\"id\":\"ms-10\",\"title\":\"Demande d'autorisation de soutenance\",\"date\":\"2026-09-01\",\"type\":\"jalon\",\"done\":false},{\"id\":\"ms-11\",\"title\":\"Dépôt du manuscrit final\",\"date\":\"2026-10-15\",\"type\":\"echeance\",\"done\":false},{\"id\":\"ms-12\",\"title\":\"Date proposée de soutenance\",\"date\":\"2026-12-10\",\"type\":\"jalon\",\"done\":false}]",
+        "documents": "[{\"id\":\"doc-1\",\"name\":\"Page de titre\",\"description\":\"Page de garde conforme au template de l'établissement\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-2\",\"name\":\"Page de signatures\",\"description\":\"Signatures du directeur, du doyen et du président de l'université\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-3\",\"name\":\"Avis d'éthique (CER)\",\"description\":\"Avis du comité d'éthique de la recherche si requis\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-4\",\"name\":\"CV du candidat\",\"description\":\"Curriculum vitae académique actualisé\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-5\",\"name\":\"Lettre du directeur de thèse\",\"description\":\"Lettre officielle d'encadrement et d'approbation\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-6\",\"name\":\"Relevés de notes (Master)\",\"description\":\"Copies certifiées conformes des relevés de notes\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-7\",\"name\":\"Attestation d'inscription\",\"description\":\"Attestation d'inscription en année de doctorat\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-8\",\"name\":\"Fiche de renseignements doctoraux\",\"description\":\"Formulaire officiel de l'école doctorale\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-9\",\"name\":\"Rapports préalables des rapporteurs\",\"description\":\"Deux rapports écrits par les rapporteurs du jury\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-10\",\"name\":\"Résumé (fr/en, 300 mots)\",\"description\":\"Résumés en français et en anglais de la thèse\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-11\",\"name\":\"Mots-clés (fr/en)\",\"description\":\"Liste de mots-clés en français et en anglais\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-12\",\"name\":\"Plan de la thèse\",\"description\":\"Table des matières détaillée\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-13\",\"name\":\"Bibliographie complète\",\"description\":\"Liste complète des références citées\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-14\",\"name\":\"Annexes\",\"description\":\"Documents complémentaires (tableaux, figures, preuves)\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-15\",\"name\":\"Résumé des formations suivies\",\"description\":\"Attestations de formation doctorale validée\",\"status\":\"absent\",\"notes\":\"\"},{\"id\":\"doc-16\",\"name\":\"Déclaration de non-plagiat\",\"description\":\"Attestation sur l'honneur de travail original\",\"status\":\"absent\",\"notes\":\"\"}]",
+        "contacts": "[{\"id\":\"ct-1\",\"name\":\"\",\"role\":\"Directeur de thèse\",\"email\":\"\",\"phone\":\"\",\"notes\":\"\"},{\"id\":\"ct-2\",\"name\":\"\",\"role\":\"Co-directeur (le cas échéant)\",\"email\":\"\",\"phone\":\"\",\"notes\":\"\"},{\"id\":\"ct-3\",\"name\":\"\",\"role\":\"Rapporteur du jury\",\"email\":\"\",\"phone\":\"\",\"notes\":\"\"},{\"id\":\"ct-4\",\"name\":\"\",\"role\":\"Secrétariat école doctorale\",\"email\":\"\",\"phone\":\"\",\"notes\":\"\"}]",
+        "notes": ""
+      }
+    }
+  ],
+  "reversibility": "Chaque row.raw = contenu intégral des colonnes DB (checklist/milestones/documents/contacts = chaînes JSON telles que stockées, notes = texte). La ré-insertion par audit/baseline/tools/restore-doctoral-toolbox.ts restaure ces valeurs à l'identique (create simple, upsert interdit).",
+  "invariants": "Aucune valeur de secret dans ce fichier ; aucune écriture DB ; aucun commit."
+}

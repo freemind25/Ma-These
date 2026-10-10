@@ -1,0 +1,623 @@
+// ThesisFrame — Prisma Schema v1.0
+// Base de données SQLite pour l'assistant de thèse
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "/tmp/rehearsal-refs/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ═══════════════════════════════════════
+// THÈSE — Structure principale
+// ═══════════════════════════════════════
+
+model Thesis {
+  id            String    @id @default(cuid())
+  title         String
+  subtitle      String?
+  author        String
+  email         String?
+  institution   String?
+  laboratory    String?
+  discipline    String?
+  directorName  String?
+  status        String    @default("draft") // draft | in_progress | review | completed
+  structureMode String    @default("chapters") // chapters | parts
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  chapters         Chapter[]
+  parts            Part[]
+  cadrages         ThesisCadrage[]
+  doctoralToolbox  DoctoralToolbox?
+  soutenancePrep   SoutenancePrep?
+  researchTabs     ResearchTab[]
+  references       Reference[]
+}
+
+model Chapter {
+  id              String    @id @default(cuid())
+  thesisId        String
+  number          Int
+  title           String
+  romanNumeral    String?   // I, II, III, IV, etc.
+  content         String    @default("") // HTML content from Tiptap
+  plainText       String    @default("")
+  wordCount       Int       @default(0)
+  stamp           String?   // Provenance des savoirs (JSON : noyau version + compétences livres) — voir specs/sceau-provenance-savoirs
+  targetWordCount Int       @default(0)
+  status          String    @default("not_started") // not_started | in_progress | draft | review | completed
+  directorFeedback String?
+  partId          String?
+  sortOrder       Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  thesis          Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+  part            Part?     @relation(fields: [partId], references: [id], onDelete: SetNull)
+  versions        ChapterVersion[]
+
+  @@index([thesisId])
+  @@index([partId])
+}
+
+// A.4 (annexe technique) : historique natif des chapitres.
+// Le test de production a dû calculer les diffs mot à mot HORS outil
+// (difflib) car Chapter n'avait aucune table d'historique — seul le
+// cadrage possédait des versions (ThesisCadrageVersion). Même schéma :
+// un instantané par sauvegarde modifiant le contenu.
+model ChapterVersion {
+  id        String   @id @default(cuid())
+  chapterId String
+  content   String   @default("") // HTML (Tiptap) au moment de la sauvegarde
+  plainText String   @default("")
+  wordCount Int      @default(0)
+  author    String   @default("doctorant") // auteur de la modification
+  stamp     String?  // Provenance des savoirs de CET état (archivée avec lui) — JSON
+  createdAt DateTime @default(now())
+
+  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@index([chapterId])
+}
+
+model Part {
+  id        String  @id @default(cuid())
+  thesisId  String
+  title     String
+  sortOrder Int     @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  thesis    Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+  chapters  Chapter[]
+
+  @@index([thesisId])
+}
+
+// ═══════════════════════════════════════
+// CADRAGE — Cadrage préliminaire
+// ═══════════════════════════════════════
+
+model ThesisCadrage {
+  id          String    @id @default(cuid())
+  thesisId    String
+  label       String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  thesis      Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+  fields      ThesisCadrageField[]
+  versions    ThesisCadrageVersion[]
+
+  @@index([thesisId])
+}
+
+model ThesisCadrageField {
+  id            String   @id @default(cuid())
+  cadrageId     String
+  fieldKey      String   // e.g. "theme", "problématique", "methodologie"
+  label         String
+  value         String?
+  aiSuggestion  String?
+  isLocked      Boolean  @default(false)
+  sortOrder     Int      @default(0)
+
+  cadrage       ThesisCadrage @relation(fields: [cadrageId], references: [id], onDelete: Cascade)
+
+  @@unique([cadrageId, fieldKey])
+  @@index([cadrageId])
+}
+
+model ThesisCadrageVersion {
+  id          String   @id @default(cuid())
+  cadrageId   String
+  label       String?
+  snapshot    String   // JSON snapshot of all fields
+  createdAt   DateTime @default(now())
+
+  cadrage     ThesisCadrage @relation(fields: [cadrageId], references: [id], onDelete: Cascade)
+
+  @@index([cadrageId])
+}
+
+// ═══════════════════════════════════════
+// BOÎTE DOCTORALE — Persistance 1:1 avec Thesis
+// ═══════════════════════════════════════
+
+model DoctoralToolbox {
+  id          String   @id @default(cuid())
+  thesisId    String   @unique
+  checklist   String   @default("{}") // JSON : { [phaseId]: { items: [{ id, label, checked }] } }
+  milestones  String   @default("[]") // JSON : [{ id, title, date, type, done }]
+  documents   String   @default("[]") // JSON : [{ id, name, description, status, fileUrl }]
+  contacts    String   @default("[]") // JSON : [{ id, name, role, email, phone, institution }]
+  notes       String   @default("")  // Notes libres
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  thesis      Thesis   @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+
+  @@index([thesisId])
+}
+
+// ═══════════════════════════════════════
+// SOUTENANCE — Persistance 1:1 avec Thesis
+// ═══════════════════════════════════════
+
+model SoutenancePrep {
+  id                String   @id @default(cuid())
+  thesisId          String   @unique
+  slides            String   @default("[]")        // JSON : [{ title, points: [] }]
+  speech            String   @default("")          // Discours de soutenance (texte)
+  speechDurationMin Int      @default(15)          // Durée cible : 10 | 15 | 20
+  questions         String   @default("[]")        // JSON : [{ family, items: [{ question, angle }] }]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  thesis            Thesis   @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+
+  @@index([thesisId])
+}
+
+// ═══════════════════════════════════════
+// ONGLET RECHERCHE — Persistance N:1 avec Thesis
+// ═══════════════════════════════════════
+
+model ResearchTab {
+  id        String   @id @default(cuid())
+  thesisId  String
+  title     String
+  pinned    Boolean  @default(false)
+  notes     String   @default("")
+  links     String   @default("[]") // JSON : [{ id, title, url }]
+  quotes    String   @default("[]") // JSON : [{ id, text, author }]
+  todos     String   @default("[]") // JSON : [{ id, text, done }]
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  thesis    Thesis   @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+
+  @@index([thesisId])
+}
+
+// ═══════════════════════════════════════
+// RÉFÉRENCES BIBLIOGRAPHIQUES
+// ═══════════════════════════════════════
+
+model Reference {
+  id          String   @id @default(cuid())
+  type        String   @default("article") // article | book | thesis | conference | report | web | other
+  authors     String   // Semicolon separated
+  title       String
+  year        Int?
+  journal     String?
+  volume      String?
+  issue       String?
+  pages       String?
+  publisher   String?
+  doi         String?
+  isbn        String?
+  url         String?
+  abstract    String?
+  keywords    String?  // Comma separated tags
+  notes       String?
+  bibtexKey   String?  // Custom BibTeX citation key
+  source      String   @default("manual") // manual | mendeley | zotero | bibtex | ris | csl-json | doi
+  isFavorite  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // -- AMENDEMENT repetition generale (proposition-technique.md §1, Task ID 3) --
+  thesisId   String?
+  thesis     Thesis?  @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+
+  @@index([thesisId])
+  @@index([type])
+  @@index([year])
+  @@index([isFavorite])
+  @@index([source])
+}
+
+// ═══════════════════════════════════════
+// CARNET DE RECHERCHE
+// ═══════════════════════════════════════
+
+model ResearchSource {
+  id          String        @id @default(cuid())
+  title       String
+  authors     String?
+  year        Int?
+  type        String        @default("article") // article | book | thesis | report
+  url         String?
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  entries     NotebookEntry[]
+
+  @@index([type])
+}
+
+model NotebookEntry {
+  id          String         @id @default(cuid())
+  sourceId    String?
+  question    String
+  answer      String
+  tags        String?        // Comma separated
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  source      ResearchSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+
+  @@index([sourceId])
+}
+
+// ═══════════════════════════════════════
+// GESTION AGILE
+// ═══════════════════════════════════════
+
+model AgileSprint {
+  id          String      @id @default(cuid())
+  phase       String      // phase_0 | phase_1 | phase_2 | phase_3 | phase_4
+  title       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  status      String      @default("planned") // planned | active | completed
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  stories     AgileStory[]
+
+  @@index([phase])
+  @@index([status])
+}
+
+model AgileStory {
+  id          String      @id @default(cuid())
+  sprintId    String
+  title       String
+  description String?
+  status      String      @default("todo") // todo | in_progress | done
+  priority    String      @default("medium") // low | medium | high | critical
+  storyPoints Int?
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  sprint      AgileSprint @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+
+  @@index([sprintId])
+  @@index([status])
+}
+
+// ═══════════════════════════════════════
+// COMPÉTENCES LIVRES
+// ═══════════════════════════════════════
+
+model CustomBookSkill {
+  id          String   @id @default(cuid())
+  title       String
+  author      String?
+  content     String   // Extracted knowledge text
+  tags        String?
+  description String?  // Usage triggers — quand ce savoir s'applique (canal IA)
+  source      String?  // Provenance — ouvrage, cours, URL
+  enabled     Boolean  @default(false) // Injection IA opt-in (strict)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([title])
+}
+
+// ═══════════════════════════════════════
+// REGISTRE JURIDIQUE URBANIS-DZ (§7 du pack)
+// ═══════════════════════════════════════
+
+model LegalRef {
+  id                   String    @id @default(cuid())
+  domaine              String    // ex. Urbanisme, Foncier, Risques, Environnement
+  reference            String    // ex. « Loi n° 90-29 du 1er décembre 1990 »
+  joradp               String?   // Référence JORADP (n° + date)
+  statut               String    @default("à vérifier") // tel que formulé (vigilance pack conservée)
+  textesLies           String?   // Textes liés
+  portee               String?   // Portée / usage urbanistique
+  questions            String?   // Questions couvertes (aiguillage d'injection)
+  autorites            String?   // Autorités compétentes
+  derniereVerification DateTime? // Dernière vérification
+  niveauConfiance      String?   // élevé | moyen | faible
+  enabled              Boolean   @default(false) // Injection IA opt-in (strict)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([domaine])
+}
+
+// ═══════════════════════════════════════
+// ARTICLES SCIENTIFIQUES (brouillons distincts de la thèse)
+// ═══════════════════════════════════════
+
+model Article {
+  id            String   @id @default(cuid())
+  thesisId      String?  // isolation par thèse (app mono-utilisateur locale)
+  title         String
+  articleType   String   @default("empirique") // empirique | qualitatif | quantitatif | theorique | revue | cas
+  discipline    String?
+  targetLang    String   @default("fr")
+  targetWords   Int      @default(6000)
+  biblioStyle   String   @default("APA") // APA | IEEE | Vancouver | Chicago
+  targetJournal String?
+  journalGuide  String?  // consignes de revue / guide auteur collés
+  authors       String?  // auteurs + affiliations
+  angle         String?  // contribution / résultat mis en avant
+  status        String   @default("draft") // draft | plan | generated | revised
+  plan          String?  // JSON: [{ id, heading, brief }]
+  sections      String   @default("[]") // JSON: [{ id, heading, content, sources: [{type,id,label,location}] }]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  versions      ArticleVersion[]
+
+  @@index([thesisId])
+}
+
+model ArticleVersion {
+  id        String   @id @default(cuid())
+  articleId String
+  label     String?
+  sections  String   // JSON snapshot des sections
+  createdAt DateTime @default(now())
+
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+}
+
+model ImportedDoc {
+  id        String   @id @default(cuid())
+  thesisId  String?
+  filename  String
+  fileType  String   // docx | pdf | txt
+  sizeBytes Int
+  data      Bytes?   // octets d'origine — PDFs uniquement (OCR différé) ; null pour docx/txt
+  text      String   // texte extrait (confirmable/éditable par l'utilisateur)
+  pages     Int?
+  limits    String   @default("[]") // JSON: [{ kind, detail }] — limites de l'extraction
+  scanned   Boolean  @default(false) // PDF probablement scanné (pages sans texte)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([thesisId])
+}
+
+// ═══════════════════════════════════════
+// LICENCE (simplifié)
+// ═══════════════════════════════════════
+
+model LicenseKey {
+  id          String   @id @default(cuid())
+  keyHash     String   @unique
+  licenseType String   @default("trial") // trial | standard | academic | premium
+  email       String?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([licenseType])
+}
+
+// ═══════════════════════════════════════
+// VÉRIFICATION MÉTHODOLOGIQUE (Module A + B)
+// ═══════════════════════════════════════
+
+model ElementAnalyse {
+  id            String   @id @default(cuid())
+  nom           String
+  typeElement   String   // ex: "trame_viaire", "parcellaire", "gabarit_bati" (spatial) — ou "entretien_saturation", "grille_codage" (autre discipline)
+  natureElement String   // "spatial" | "bibliographique" | "donnee_enquete" | "document"
+  sousAnalyse   String?  // ex: "forme_batie_espaces_publics", "cadrage_spatial"
+  source        String   // ex: "OSM", "GADM", "WorldCover", "import_utilisateur", "terrain"
+  dateSource    DateTime?
+  geojson       String?  // JSON string — renseigné uniquement si natureElement = "spatial"
+  styleConfig   String?  // JSON string — couleur, opacité, ordre d'affichage
+  chapitreId    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([typeElement])
+  @@index([natureElement])
+}
+
+model TypeAnalyseMethodologique {
+  id                 String   @id @default(cuid())
+  discipline         String   // ex: "analyse_urbaine", "patrimoine", "sociologie_urbaine"
+  nom                String   // ex: "diagnostic morphologique", "analyse de mobilité"
+  elementsAttendus   String   // JSON string — liste de typeElement attendus, structurée par phase
+  promptQuestionneur String?  // override du prompt module B pour cette discipline ; null = prompt générique
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([discipline])
+}
+
+model SessionVerification {
+  id               String   @id @default(cuid())
+  siteEtudeId      String
+  typeAnalyseId    String
+  elementsManquants String   // JSON string — résultat du module A
+  questionsPosees  String   // JSON string — historique des questions du module B
+  reponses         String?  // JSON string — notes libres du chercheur
+  createdAt        DateTime @default(now())
+
+  @@index([siteEtudeId])
+  @@index([typeAnalyseId])
+}
+
+// ═══════════════════════════════════════
+// RAG — "Mon IA de thèse" Index sémantique
+// ═══════════════════════════════════════
+
+model DocumentChunk {
+  id            String   @id @default(cuid())
+  thesisId      String?  // Optional: set for chapter/cadrage chunks (references/notebooks are global)
+  sourceType    String   // chapter | reference | notebook | cadrage
+  sourceId      String   // FK to the original record
+  sourceTitle   String   // Title of the source (chapter title, reference title, etc.)
+  content       String   // The chunk text
+  chunkIndex    Int      // Index of chunk within the source
+  metadata      String   @default("{}") // JSON: { chapterNumber, authors, year, tags, etc. }
+  tokenCount    Int      @default(0)
+  embedding     String?  // JSON array of floats — vector embedding for semantic search
+  embeddingModel String? // Model used to generate the embedding (for dimension tracking)
+  createdAt     DateTime @default(now())
+
+  @@index([sourceType])
+  @@index([sourceId])
+  @@index([thesisId])
+}
+
+// ═════════════════════════════════════
+// JOURNAL D'EXPÉRIMENTATIONS
+// Inspiré d'alphaXiv/OpenResearch : hypothèses → runs → preuves → verdicts
+// ═════════════════════════════════════
+
+model Experiment {
+  id             String   @id @default(cuid())
+  title          String
+  question       String   // question de recherche / hypothèse testée
+  hypothesisRef  String?  // référence libre vers une hypothèse du module Génération Hypothèses
+  protocol       String?  // protocole / méthode appliquée
+  status         String   @default("planned") // planned | running | concluded
+  conclusion     String?  // conclusion globale (si concluded)
+  verdict        String?  // supported | refuted | inconclusive
+  tags           String?  // comma separated
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  runs ExperimentRun[]
+
+  @@index([status])
+}
+
+model ExperimentRun {
+  id           String    @id @default(cuid())
+  experimentId String
+  label        String    // nom du run / variante (ex : "baseline", "var-A lr=0.01")
+  variant      String?   // configuration et paramètres (texte ou JSON)
+  metrics      String?   // JSON : [{ "name": "rmse", "value": 0.42 }]
+  result       String?   // résultat observé (texte)
+  evidenceUrl  String?   // lien vers la preuve (artefact, notebook, dépôt, figure)
+  status       String    @default("pending") // pending | running | done | failed
+  verdict      String?   // confirmed | refuted | inconclusive
+  notes        String?
+  startedAt    DateTime?
+  sortOrder    Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  experiment Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+
+  @@index([experimentId])
+  @@index([status])
+}
+
+// ═════════════════════════════════════
+// FILE DE TÂCHES PERSISTANTE (A.8)
+// ═════════════════════════════════════
+
+// A.8 (annexe technique) : les opérations longues lancées ad hoc (nohup)
+// étaient tuées entre les sessions. Correction à la racine : file de tâches
+// PERSISTANTE en base — un job survit au processus qui l'a créé ; le worker
+// (src/lib/jobs/worker.ts, démarré par src/instrumentation.ts) reprend les
+// jobs en attente et récupère les jobs "running" devenus orphelins (stale).
+model Job {
+  id         String    @id @default(cuid())
+  type       String // ex : "deep-research" — enregistré dans le registre du worker
+  status     String    @default("pending") // pending | running | done | failed
+  payload    String    @default("{}") // JSON — paramètres d'exécution
+  result     String? // JSON — sortie du handler
+  error      String? // erreur d'échec (si failed)
+  attempts   Int       @default(0)
+  progress     Int?      // 0-100 — progression d'un job long (OCR par page) ; null = non applicable
+  progressNote String? // ex. « Page 3/12 (confiance moyenne 82 %) » ; null = non applicable
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  startedAt  DateTime?
+  finishedAt DateTime?
+
+  @@index([status])
+  @@index([type])
+}
+
+// ═════════════════════════════════════
+// VEILLE ACADÉMIQUE — recherches suivies
+// (specs/veille-academique — plan.md : modèles purement additifs)
+// ═════════════════════════════════════
+
+// Une veille = une recherche enregistrée (source "hal" | "arxiv"),
+// revérifiable manuellement ; filters en JSON conserve les paramètres
+// exacts de la recherche d'origine (patron JSON-dans-String du dépôt).
+model SavedSearch {
+  id            String    @id @default(cuid())
+  label         String
+  source        String // "hal" | "arxiv"
+  query         String
+  filters       String    @default("{}") // JSON : { domain?, yearMin?, yearMax?, sort? } (hal) | { sort? } (arxiv)
+  autoCheck     Boolean   @default(false) // vérification automatique (opt-in) — specs/veille-check-auto
+  lastCheckedAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  results SavedSearchResult[]
+
+  @@index([source])
+}
+
+// Un résultat observé lors d'une vérification. L'unicité par veille
+// garantit la déduplication (CA-2.2) : un résultat déjà connu n'est
+// jamais re-marqué « nouveau ».
+model SavedSearchResult {
+  id            String   @id @default(cuid())
+  savedSearchId String
+  externalId    String // docid HAL ou arxivId — identifiant stable de la source
+  title         String
+  authors       String   @default("") // séparés « ; »
+  year          Int?
+  url           String   @default("")
+  abstract      String?
+  seen          Boolean  @default(false)
+  firstSeenAt   DateTime @default(now()) // première observation lors d'une vérification
+
+  savedSearch SavedSearch @relation(fields: [savedSearchId], references: [id], onDelete: Cascade)
+
+  @@unique([savedSearchId, externalId])
+  @@index([savedSearchId])
+}

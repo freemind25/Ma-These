@@ -1,4 +1,4 @@
-# BASELINE_AUDIT_REPORT v1.2 — Cycle audit-final-v1.2 (EN COURS — vagues 1 et 2 exécutées)
+# BASELINE_AUDIT_REPORT v1.2 — Cycle audit-final-v1.2 (EN COURS — vagues 1, 2 et 3 exécutées)
 
 **Document distinct — la v1.0 reste immuable, la v1.1 reste l'historique du cycle C-1..C-4.**
 Références : instructions définitives du propriétaire (IM 2026-10-10) · validation de la vague 1 (IM 2026-10-10) · plan `12_PLAN_EXECUTION_CYCLE_FINAL.md`.
@@ -51,7 +51,7 @@ Verdict en vigueur : **GO SOUS CONDITIONS** — ni mise en production, ni ouvert
 - AUD-FUNC-007 consolidée (AUD-ISO-004) : cause racine `GET /api/thesis` (route.ts:16, select sans partId) + reproduction UI ; correctif 1 ligne proposé.
 - 7 fiches isolation nouvelles (registre) ; cartographie complète modèles thèse-scopés vs globaux-by-design.
 
-### W2-3→W2-5 — A1 CLÔTURÉ : 33/33 vues du périmètre traitées (critère #1 SATISFAIT)
+### W2-3→W2-5 — A1 CLÔTURÉ : 34/34 vues des lots traitées (critère #1 SATISFAIT — compte « 33 » corrigé, cf. 20_RAPPORT §7.2)
 - **Lot 2 (9 vues)** : 13 agile VALIDÉE (IA 400 = A1L2A-01 P2), 14 boîte doctorale (AUD-ISO-003 matérialisé), 15 équilibre (objectifs non persistés), 25 onglet VALIDÉE (race auto-création ×3), 26/27/28 VALIDÉES (états démo non persistés), 35 outils IA VALIDÉE (persistés, DB prouvée).
 - **Lot 3 (9 vues)** : 29 VALIDÉE (garde silencieuse), 31 VALIDÉE (**registres réels** Crossref/OpenAlex/PubMed), 32 hypothèses **IA cassée** (A1L3A-03 P2, contrat {content,mode} vs {prompt}), 33 cohérence VALIDÉE **0 anomalie** (2 passes IA, citations verbatim), 34 VALIDÉE (lecture seule), 38 soutenance VALIDÉE (**contre-exemple : binding activeThesisId correct**), 40 paper2code **inutilisable sans clé** (A1L3B-01 P2), 41 diagrammes VALIDÉE (export PNG vérifié), 42 APA VALIDÉE (2×P3).
 - **Lot 4 (8 vues, services externes RÉELS)** : 19 arXiv **482 résultats**, 20 OpenAlex 20 journaux + classement IA (DOAJ fail propre), 23 theses.fr **486 905 thèses** (détail NNT), 39 routesme (= comparateur multi-modèles même backend), 44 traducteur **NON TESTABLE cause extérieure** (LibreTranslate publics morts — 503 propre), 46 export PDF **réel** (%PDF 4 pages vérifié hors arbre), 30 carto **Overpass réel via failover** (23 hôpitaux Alger), 36 APInex **NON TESTABLE cause extérieure** (clé nouvelle requise ; comportement sans clé exhaustif).
@@ -66,15 +66,15 @@ Verdict en vigueur : **GO SOUS CONDITIONS** — ni mise en production, ni ouvert
 
 | # | Critère | Statut | Preuve | Commit | Limite / décision |
 |---|---|---|---|---|---|
-| 1 | 33 vues testées ; 47 statuts + preuves | ✅ **33/33 traitées** (24 validées UI réelle + 2 non testables extérieur + 7 lot 1) ; consolidation 47/47 en vague 4 | `a1-inventory-restantes.json` + `isolation-multitheses.json` + `a1-lot1/2a/2b/3a/3b/4a/4b.json` + ~240 captures | `bc71223`→`476862c` | 2 vues extérieures : 44 (LibreTranslate mort) + 36 (clé APInex nouvelle requise) |
+| 1 | 47 vues : statuts + preuves | ✅ **47/47 statués** — 34/34 vues de lots traitées (32 validées UI réelle + 2 non testables extérieur) + 7 validées v1.0 + 6 réservées ⚠️ v1.0 (39 validées UI réelle au total) ; compte « 33 » corrigé en « 34 » (erreur d'addition documentée) | `a1-inventory-restantes.json` + `isolation-multitheses.json` + `a1-lot*.json` + `isolation-fix.json` + ~265 captures | `bc71223`→`476862c` | 2 vues extérieures : 44 (LibreTranslate mort) + 36 (clé APInex nouvelle requise) ; 6 réservées ⚠️ : re-pass optionnel au cycle final |
 | 2 | 13 actions destructives testées UI | ✅ **16/16** | `evidence/a2-lot1.json` + `a2-lot2.json` + 37 captures | `bc71223` + commit lot 2 | — |
 | 3 | Restauration `upload/` démontrée | ✅ | `evidence/a3-upload-restore.json` + doc §6 | `bc71223` | copie manuelle statique (limite documentée) |
-| 4 | Références par thèse mise en œuvre + revalidée, ou report formel | 🟡 proposition soumise | `specs/ref-thesis-scoping/proposition-technique.md` | — | **autorisation distincte requise** |
+| 4 | Références par thèse mise en œuvre + revalidée, ou report formel | 🟡 **GO CONDITIONNEL — répétition générale exécutée sur copie** (isolation 16/16, rollback double prouvé, export réversible, plan d'exécution final 10 étapes) — migration base réelle EN ATTENTE de validation explicite propriétaire | `18_REPETITION_GENERALE_MIGRATION_REFS.md` + `evidence/rehearsal-refs.json` + `specs/ref-thesis-scoping/proposition-technique.md` | correctifs `6f853ac` (binding activeThesisId prérequis livré) | exécution réelle = décision propriétaire |
 | 5 | Build web production + parcours critiques | ⬜ procédure livrée | `14_PROCEDURE_BUILD_WEB.md` (gabarit) | — | exécution propriétaire sur commit final |
 | 6 | Build Windows + smoke CSP durcie | ⬜ procédure livrée | `15_PROCEDURE_BUILD_WINDOWS.md` (gabarit) | — | exécution propriétaire ; résultats rapportés séparément |
-| 7 | Purge git + secrets sécurisés | 🟡 audit + plan prêts | `evidence/a5-git-audit.json` + `13_PURGE_GIT_PLAN.md` | `6158f4e` (désuivre .env) | révocation + coordination = prérequis propriétaire |
+| 7 | Purge git + secrets sécurisés | 🟡 **plan version exécutable prête** (§7 doc 13) | `evidence/a5-git-audit.json` + `13_PURGE_GIT_PLAN.md` §7 | `6158f4e` (désuivre .env) | révocation + validation plan + fenêtre de coordination = prérequis propriétaire ; 0 exécution |
 | 8 | Suite + TNR verts | ✅ à chaque contrôle | 1 658/1 658 + lint 0 err (2026-10-10) | `03037e2` | référence v1.1 maintenue |
-| 9 | Anomalies recensées, risques justifiés | 🟡 tableau de gestion + 31 fiches vagues 2-bis ; **1 P1 ouverte (AUD-ISO-001) + 3 P2 fonctionnelles à corriger/arbitrer avant GO** | registre §Vague 2-bis | `6e79e6e`→`476862c` | correctifs prêts — arbitrage propriétaire requis |
+| 9 | Anomalies recensées, risques justifiés | 🟡 **P1 close + 8 P2 corrigées/validées** (commit `6f853ac`, preuves `isolation-fix.json`) ; 0 P1/P2 ouverte ; reste P3/P4 (~20 fiches, aucune bloquante) | registre §Vague 2-bis + §Vague 3 | `6f853ac` | P3/P4 = cycle à planifier ; résidu INITIAL_* = arbitrage propriétaire (doc 19) |
 | 10 | Incohérences corrigées ; preuves → commit | ✅ A4 + traçabilité | `reconciliation_A4` (7 canoniques) | `6abb3e8` | v1.0/v1.1 non modifiées |
 | 11 | Rapport v1.2 avec tableau de conformité | 🟡 présent document (itératif) | ce fichier | — | finalisé en vague 4 |
 
@@ -82,10 +82,9 @@ Légende : ✅ satisfait · 🟡 en cours/partiel · ⬜ à faire · chaque stat
 
 ## 3. Reste du cycle (vagues 3-4)
 
-- **Vague 2 : CLÔTURÉE** (A1 33/33 · A2 16/16 · A3 ✅ · isolation auditée · TNR 1 658 verts à chaque contrôle).
-- **Arbitrages propriétaire attendus** : ① correctifs isolation (AUD-ISO-001 P1 + famille AUD-ISO-002/003/004 — 2 fichiers, prêts) ; ② correctifs IA contrat (A1L2A-01, A1L3A-03) + A1L3B-01 + A1L2B-02 (toasts) ; ③ autorisation migration références (proposition §6-bis amendée) ; ④ clé APInex nouvelle pour la vue 36 ; ⑤ résidu DoctoralToolbox (DELETE ciblé hors audit ou conservé documenté).
-- **Vague 3** : C1/C2 exécutions propriétaire sur commit final candidat (procédures livrées) · C3 purge BFG coordonnée + confirmation révocation APINex (aucune réécriture ni force-push avant).
-- **Vague 4** : (si autorisée) migration références + revalidation · re-corrélation des correctifs autorisés + TNR globaux + 7 golden paths · finalisation v1.2 + **recommandation motivée (GO final / maintien GO SOUS CONDITIONS)**.
+- **Vague 3 (correctifs autorisés) : EXÉCUTÉE** — commit `6f853ac` : AUD-ISO-001 (P1) + AUD-ISO-002/003/004 corrigés sans migration, 4 P2 corrigées (A1L2A-01, A1L3A-03/04, A1L3B-01, A1L2B-02) ; validation UI réelle à 2 thèses (`evidence/isolation-fix.json`, 25 captures isofix, diff DB VIDE) ; TNR 1 658/1 658 + lint baseline 247 ; répétition générale migration sur copie (doc 18, GO conditionnel favorable, en attente de validation propriétaire) ; plan BFG version exécutable (doc 13 §7, en attente des 3 conditions) ; résidu INITIAL_* documenté (doc 19, template pur, procédure prête) ; compte « 33 » corrigé en « 34 » (20_RAPPORT §7) — détail complet dans `20_RAPPORT_CYCLE_CORRECTIFS_2026-10-10.md`.
+- **Arbitrages propriétaire restants** : ③ validation explicite de la migration références sur la base réelle (répétition générale livrée) ; ④ clé APInex nouvelle pour la vue 36 ; ⑤ résidu DoctoralToolbox (supprimer via procédure doc 19 / conserver documenté) ; + (i) confirmation révocation APINex, (ii) validation plan BFG §7, (iii) fenêtre de coordination pour C3.
+- **Vague 4** : C1/C2 exécutions propriétaire sur commit final candidat (procédures livrées) · rejeu 7 golden paths + TNR sur le candidat · (si validée) migration références + revalidation · re-pass optionnel des 6 vues réservées ⚠ · finalisation v1.2 + **recommandation motivée (GO final / maintien GO SOUS CONDITIONS)**.
 
 ## 4. Régressions et incidents
 
