@@ -1,15 +1,15 @@
-# 64 — BILAN DE LA ROTATION A1 (MODE S) — RÉVISION 2 : CADRE AU CAS PAR CAS, DÉCISIONS EN ATTENTE D'ACCORD
+# 64 — BILAN DE LA ROTATION A1 (MODE S) — RÉVISION 3 : CADRE AU CAS PAR CAS, DÉCISIONS EN ATTENTE D'ACCORD
 
-- **Date** : 2026-10-12, ~18:20 UTC (vague 41)
+- **Date** : 2026-10-12, ~18:55 UTC (vague 42)
 - **Cycle** : `audit-final-v1.2`
 - **Rédaction** : sous-agent Dev (consignation documentaire A1) — **aucune opération technique** sur le dépôt, les bases ou la configuration ; lecture seule.
-- **Révision 2** : la rév. 1 (~17:55 UTC) est **remplacée** — le présent fichier est réécrit intégralement dans le même fichier, l'esprit et les faits étant conservés ; l'historique de la rév. 1 est conservé au worklog (vague-39-t4).
+- **Révision 3** (~18:55 UTC, vague 42) : la rév. 2 (~18:20 UTC) est **remplacée** — corrections factuelles ciblées uniquement (erratum vague 42 : workflow CI présent ; précision `.env`) ; cadre, classification, matrice et décisions D-1…D-5 **INCHANGÉS** ; historique des rév. 1/2 conservé au worklog (vague-39-t4, vague-41-t4).
 - **NOUVEAU CADRE (directive propriétaire ~18:00 UTC)** : Ma Thèse est une **application privée à usage personnel** → **pas de rotation systématique**. Chaque clé est traitée **au cas par cas** : **AUCUNE révocation ni génération sans accord explicite du propriétaire** (décisions D-1…D-5, §2-§3). Objectif : **sécuriser et faire fonctionner l'application personnelle, sans opérations inutiles ni interruption de service**. L'autorisation A1 en bloc (doc 62) est **REMPLACÉE** par un régime d'**approbation explicite par clé**.
-- **Référence de suivi** : grille doc 63, **révision 2** — SHA-256 `da00eed1b80cb3cd822bccdc84ca3a3c14fe47e56c7defa090e69a07d7cc6024` ; classification CG-1/CG-2/CG-3, décisions D-1…D-5 **en attente d'accord**, vérifications console VS-1…VS-3, grille d'exécution G-1…G-8 **INACTIVE sans accord**.
+- **Référence de suivi** : grille doc 63, **révision 3** — SHA-256 `ae4083e1b7461a134eac66c45e53e63c7d40cca20e343077c8eade685cecb338` ; classification CG-1/CG-2/CG-3, décisions D-1…D-5 **en attente d'accord**, vérifications console VS-1…VS-3, grille d'exécution G-1…G-8 **INACTIVE sans accord**.
 - **Mode** : **S — « secrets jamais partagés »** (rappel absolu : **aucune valeur secrète, aucun fragment de clé (préfixe/suffixe), aucun token** — ni dans le présent document, ni dans le worklog, ni dans aucun message ; les SHA-256 des objets protégés sont des **empreintes de gel**, pas des secrets, et sont cités à ce titre).
-- **Gel re-mesuré 18:08 UTC conforme ×4** (`custom.db` `756c0158…8126d` · `urbanisme-test.db` `6b72e1dc…65fb8` · sauvegarde pre-resync `16f3c3f4…84ae5` · `/home/sync/repo.tar` `cb7e5eab…9272` mtime 23:49 inchangé — §6).
-- **Git** : HEAD `8b095e3` (17:48:21 — capture doc 64 rév. 1 + grille rév. 1), arbre propre à la mesure 18:08 UTC, tags `v1.10.7`/`v1.10.8` uniquement.
-- **Zéro credential résident re-prouvé 18:08 UTC** : `GIT_TERMINAL_PROMPT=0 git ls-remote origin` → « could not read Username » (échec attendu) ; `.env.local` **absent** (§6).
+- **Gel re-mesuré 18:47 UTC conforme ×4** (`custom.db` `756c0158…8126d` · `urbanisme-test.db` `6b72e1dc…65fb8` · sauvegarde pre-resync `16f3c3f4…84ae5` · `/home/sync/repo.tar` `cb7e5eab…9272` mtime 23:49 inchangé — §6).
+- **Git** : HEAD `696caf5` (18:15:42 — marqueurs plateforme documentaires : docs 63/64 + worklog) ← `8b095e3` (17:48) ← `f7f3816` (17:15), arbre propre à la mesure 18:47 UTC, tags `v1.10.7`/`v1.10.8` uniquement.
+- **Zéro credential résident re-prouvé 18:47 UTC** : `GIT_TERMINAL_PROMPT=0 git ls-remote origin` → « could not read Username » (échec attendu) ; `.env` racine **gitignored, limité à `DATABASE_URL`** (aucune clé) ; `.env.local` **absent** (§6).
 
 ---
 
@@ -46,7 +46,7 @@ Reprise de la grille 63 rév. 2 — trois groupes :
 | **K-2a** (APINex gén. A) | Fonctions IA via APINex (models/chat/web-search/balance) — fournisseur **OPTIONNEL** avec bascule (`apinex-client.ts` : `getApinexApiKey()` nullable) | `.env` **historique** du dépôt PRIVÉ (commits `04dc5ab`/`763ee5d`) | **Révocation non prouvée** — à confirmer (VS-2, cadre doc 40 §3) | **FAIBLE à modéré** (idem K-1a) | Fournisseur optionnel temporairement indisponible (**bascule**) | **D-2** — **CONSERVATION** + VS-2 | En attente d'accord |
 | **K-1b** (OpenAlex gén. B) | **Aucune résidente** (disparue au rollback 12:57 UTC) | Transmise par IM (**compromission par transport**) | **INCONNUE** côté service | Dépend de la validité — **à établir par VS-1** (si une clé correspondante apparaît active) | **Nulles** si non listée | **D-3** — vérification console **uniquement** ; si « Non listée » → **clôture sans opération** ; si active → décision ponctuelle séparée | En attente d'accord |
 | **K-2b** (APINex gén. B) | Idem K-1b : **aucune résidente** (perdue au rollback) | Transmise par chat (**compromission par transport**) | **INCONNUE** côté service | Dépend de la validité — **à établir par VS-2** (cadre doc 40 §3) | **Nulles** si non listée | **D-3** — idem K-1b (VS-2, cadre doc 40 §3) | En attente d'accord |
-| **K-4** (PAT GitHub gén. 3) | Opérations Git **au poste** (si le propriétaire en effectue) | Transmise par **chat** | Opérationnelle à l'émission — **à confirmer** (VS-3) | **Modéré** (transport) mais usage supposé légitime | Interruption des opérations Git du poste qui l'utilisent ; **remplacement planifié** (fine-grained G-3, permissions minimales vérifiées vague 39 : **Metadata + Contents read/write, NI Actions NI Workflows** — aucun workflow CI dans le dépôt, dépôt unique, expiration ≤ 90 j) | **D-4** — **CONSERVATION** jusqu'au remplacement planifié **au moment utile** (dégel/poussée) + VS-3 | En attente d'accord |
+| **K-4** (PAT GitHub gén. 3) | Opérations Git **au poste** (si le propriétaire en effectue) | Transmise par **chat** | Opérationnelle à l'émission — **à confirmer** (VS-3) | **Modéré** (transport) mais usage supposé légitime | Interruption des opérations Git du poste qui l'utilisent ; **remplacement planifié** (fine-grained G-3, jeu minimal : **Metadata + Contents read/write, pas d'Actions ; Workflows non accordée par défaut** — erratum vague 42 : un workflow CI existe, `.github/workflows/build-desktop.yml`, il s'exécute via le `GITHUB_TOKEN` automatique et ne requiert aucune permission PAT ; la permission fine-grained « Workflows » ne serait nécessaire que si la poussée prévue modifie des fichiers de workflow ; dépôt unique, expiration ≤ 90 j) | **D-4** — **CONSERVATION** jusqu'au remplacement planifié **au moment utile** (dégel/poussée) + VS-3 | En attente d'accord |
 | **K-5** (PAT GitHub gén. 1) | **Aucune** (401 invalide) | Transmise par **chat** | **NULLE** (401 établi) | **NUL** (ne peut rien faire) | **Aucune** | **D-5** — suppression d'hygiène **optionnelle**, **sans urgence** | En attente d'accord |
 
 - Repère de numérotation : les libellés K-3/K-4/K-5 suivent le **doc 60** (K-3 = gén. 2, K-4 = gén. 3, K-5 = gén. 1) — les générations et leurs caractérisations font foi et sont identiques dans tous les documents.
@@ -79,7 +79,7 @@ Ces retours alimentent la colonne « Validité actuelle » de la matrice §3 et 
 
 ---
 
-## 6. Vérifications agent re-mesurées (vague 41, 18:08 UTC, lecture seule)
+## 6. Vérifications agent re-mesurées (vague 42, 18:47 UTC, lecture seule)
 
 **Gel conforme ×4** (empreintes de gel — pas des secrets) :
 
@@ -92,13 +92,18 @@ Ces retours alimentent la colonne « Validité actuelle » de la matrice §3 et 
 
 **Git** :
 
-- HEAD `8b095e3` (17:48:21 — capture rév. 1 de la grille 63 + doc 64 rév. 1 + worklogs) ← `f7f3816` (17:15).
-- **Arbre propre** à la mesure 18:08 UTC ; tags `v1.10.7`/`v1.10.8` uniquement.
-- *Précision de consignation* : depuis la mesure 18:08 UTC, les seules différences de l'arbre de travail sont **documentaires** — la **rév. 2 de la grille 63** (orchestrateur, ~18:15 UTC) et le **présent doc 64 rév. 2** — sans aucun objet protégé touché, **sans effet sur le gel**.
+- HEAD `696caf5` (18:15:42 — marqueurs plateforme documentaires : rév. 2 grille 63 + doc 64 rév. 2 + worklogs) ← `8b095e3` (17:48) ← `f7f3816` (17:15).
+- **Arbre propre** à la mesure 18:47 UTC ; tags `v1.10.7`/`v1.10.8` uniquement.
+- *Précision de consignation* : depuis la mesure 18:47 UTC, les seules différences de l'arbre de travail sont **documentaires** — la **rév. 3 de la grille 63** et le **présent doc 64 rév. 3** — sans aucun objet protégé touché, **sans effet sur le gel**.
 
-**Zéro credential résident (re-prouvé 18:08 UTC)** :
+**Zéro credential résident (re-prouvé 18:47 UTC)** :
 
-- `.env.local` **ABSENT** ; `GIT_TERMINAL_PROMPT=0 git ls-remote origin` → « could not read Username » = **preuve zéro credential Git résident**.
+- `.env` racine **PRÉSENT mais gitignored** (`.gitignore` l.34) et limité à la variable `DATABASE_URL` (chemin de base SQLite) — **aucune clé, aucun secret** ; `.env.local` **ABSENT** ; `GIT_TERMINAL_PROMPT=0 git ls-remote origin` → « could not read Username » = **preuve zéro credential Git résident**.
+
+**ERRATUM vague 42 — précisions factuelles (sans effet sur les décisions)** :
+
+1. **Workflow CI présent** : `.github/workflows/build-desktop.yml` est tracké et ancêtre du HEAD courant (commits `cfa3377` → `c9a05e8`) ; le constat vague 39 « `.github/` inexistant » était **erroné**. Le workflow ne référence que `secrets.GITHUB_TOKEN` (token automatique d'Actions), aucun PAT, aucune valeur en dur (vérifié 18:48 UTC, lecture seule). Conséquences : la justification de G-3 est corrigée (grille 63 rév. 3 — Workflows « non par défaut », requis seulement si la poussée prévue modifie des fichiers de workflow) ; après un éventuel dégel, une poussée pourrait déclencher le build desktop via le `GITHUB_TOKEN` automatique — **sans rapport avec les clés K-1…K-5 ni avec les décisions D-1…D-5**.
+2. **`.env` racine** : les relevés antérieurs (vagues 39-41) citaient `.env.local` absent ; le relevé vague 42 complète : `.env` présent, gitignored, ne contenant que `DATABASE_URL` — la preuve « zéro résidence de clé » **demeure**.
 
 **Usage des clés dans le code — re-confirmé (env-only, aucune valeur en dur)** :
 
@@ -112,7 +117,7 @@ Ces retours alimentent la colonne « Validité actuelle » de la matrice §3 et 
 
 ## 7. État des décisions (honnête et daté)
 
-- Décisions **D-1…D-5 : TOUTES « en attente d'accord »** à la date du présent bilan (~18:20 UTC).
+- Décisions **D-1…D-5 : TOUTES « en attente d'accord »** à la date du présent bilan (~18:55 UTC).
 - **AUCUNE révocation ni génération exécutée** — ni par l'agent (qui n'en a ni le droit ni le moyen), ni confirmée côté propriétaire.
 - Les vérifications console **VS-1…VS-3 sont proposées mais non réalisées** à ce stade ; aucun de leurs retours n'est reçu.
 - Le présent bilan sera **mis à jour à chaque accord** (D-x) et **à réception des retours non sensibles** (VS-x / G-x) — jamais anticipé, toujours daté.
@@ -143,4 +148,4 @@ Objectif transversal du nouveau cadre : **« sans interruption de service »** �
 
 ---
 
-*Bilan révision 2 établi sans aucune valeur secrète — Mode S. Aucune opération sans accord explicite.*
+*Bilan révision 3 établi sans aucune valeur secrète — Mode S. Aucune opération sans accord explicite.*
