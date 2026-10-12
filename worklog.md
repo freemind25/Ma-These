@@ -2915,3 +2915,21 @@ Stage Summary:
 - A1 PRÊT À EXÉCUTER, en attente du propriétaire : bilan initial consigné (5 générations à révoquer/confirmer — K-4 impératif —, 1 à renouveler ; aucune valeur résidente dans le sandbox, preuve ls-remote), impacts signalés, protocole en 6 étapes + 2 modes de vérification (Mode S recommandé) déposés sur le canal.
 - Prochain retour attendu du propriétaire : choix du mode (S ou T) + preuves de console sans valeur à chaque étape → l'agent consigne alors le BILAN FINAL DE ROTATION et le présente AVANT toute poursuite — aucune autre action ne sera lancée.
 - Gel intégral maintenu : empreintes des bases et de repo.tar inchangées à 17:10 UTC ; état d'attente opérateur inchangé.
+
+---
+
+Task ID: vague-38
+Agent: orchestrateur (A1 suite — Mode S retenu par le propriétaire 2026-10-12 ~17:14 UTC : aucune valeur secrète jamais dans chat/fichier partagé/worklog ; agent = consignation des preuves non sensibles + bilan final avant toute reprise)
+Task: (1) Maintenir le gel intégral ; (2) ne demander ni ne récupérer aucun secret ; (3) préparer la grille de suivi des révocations/renouvellements ; (4) à réception des résultats non sensibles du propriétaire, consigner les preuves et établir le bilan final A1 ; (5) présenter ce bilan avant toute reprise d'une autre opération. Aucune opération hors périmètre A1.
+
+Work Log:
+- CHOIX MODE S ENREGISTRÉ : secrets jamais partagés (chat, fichier partagé, worklog) — le propriétaire exécute les révocations/renouvellements via ses sessions ; l'agent consigne uniquement des résultats non sensibles et n'accédera à aucune valeur.
+- État vérifié 17:14 UTC (lecture seule) : marqueur plateforme 0c726a3 (17:12:24 — capture doc 62 + worklog vague-37), arbre PROPRE, tags v1.10.7/v1.10.8 inchangés — gel intact ; AUCUN dépôt opérateur nouveau dans /home/sync/upload/ (attente maintenue).
+- DOC 63 RÉDIGÉ : audit/baseline/63_GRILLE_SUIVI_ROTATION_A1_MODE_S_2026-10-12.md (SHA be899574…b387) — grille de suivi en 8 lignes G-1…G-8 (GitHub gen.2 révoquée / gen.1 hygiène / remplaçant fine-grained / ls-remote au poste / OpenAlex régénération / APINex selon doc 40 §3 / installation desktop optionnelle / impacts constatés), colonnes à remplir (statut, horodatage UTC, référence capture/ticket sans valeur, impact), règles de confidentialité des retours (jamais de valeur ni fragment, captures masquées, jamais d'URL tokenisée, statuts admis), processus agent à réception (consignation doc 64 + contrôle résidus + cohérence doc 40/57/61 + présentation du bilan AVANT toute reprise).
+- Dépôt canal visible : /home/sync/upload/preparation-mep-20261012/ += doc 63 (copie) + SHA256SUMS-doc-63-20261012T1715Z.txt — sha256sum -c OK ; SUMS antérieurs intacts.
+- Red lines : 0 écriture .git/bases/sauvegardes/preuves/repo.tar · 0 commit/tag/push/db:push/restauration/build/déploiement · 0 secret demandé/récupéré/affiché/transmis · 0 rotation exécutée par l'agent · seules écritures = doc 63 + copie/SUMS + présent append.
+
+Stage Summary:
+- A1 EN COURS SELON LE MODE S : grille de suivi (doc 63) prête et déposée — le propriétaire l'exécutera aux consoles et retournera uniquement des résultats non sensibles (statuts, horodatages, références).
+- À réception : l'agent établira le BILAN FINAL A1 (doc 64, sans aucune valeur), contrôlera les résidus du sandbox, et le présentera AVANT toute reprise — aucune autre opération ne sera lancée d'ici là.
+- Gel intégral maintenu ; attente opérateur Git inchangée.
