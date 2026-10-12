@@ -2841,3 +2841,16 @@ Stage Summary:
 - Demande opérateur PRÊTE ET DÉPOSÉE sur le canal visible plateforme (/home/sync/upload/demande-operateur-recuperation-r2-20261012/, 4 documents + SUMS vérifiés) ; le propriétaire peut aussi la transmettre par son propre canal — aucun appel direct opérateur n'existe depuis le sandbox.
 - Décision propriétaire ENREGISTRÉE : ne plus toucher au dépôt ni aux bases ; attendre la réponse de l'opérateur avant tout choix — Option A (conserver l'état actuel, historique d'origine manquant) vs Option B (nouvelle lignée explicitement documentée comme reconstruction) ; toute restauration conditionnée à la vérification 52 §5 + autorisation écrite préalable ; finalisation R2 ensuite (52 §6, sans db:push).
 - État courant SCELLÉ (mesures 15:04-15:07) : bases + backup conformes, repo.tar inchangé, secours A/B/C intacts, marqueurs plateforme b266110/63dea12/fb03efc capturent l'état de travail (sauf custom.db réel, skip-worktree).
+
+---
+Task ID: vague-34-cloture (état d'attente opérateur)
+Agent: orchestrateur (AUCUNE intervention technique — enregistrement de la directive de clôture du propriétaire)
+Task: Clôture de la vague 34 confirmée par le propriétaire (2026-10-12, après 15:04 UTC) : nous sommes EN ATTENTE de la réponse de l'opérateur plateforme ; aucune nouvelle intervention technique d'ici là.
+
+Work Log:
+- Directive propriétaire enregistrée : sauvegardes A/B/C vérifiées ; empreintes des bases conformes aux références consignées ; transmission (note 54 + annexes 51-53) déposée dans /home/sync/upload/demande-operateur-recuperation-r2-20261012/ ; historique Git toujours irrécupéré — les marqueurs automatiques ne restaurent ni les commits ni les tags manquants ; AUCUNE reconstruction, restauration ou finalisation R2 autorisée à ce stade.
+- Conditions de reprise consignées (seules valables) : (1) une archive est fournie → vérifier son contenu et ses empreintes AVANT toute restauration (protocole 52 §5 en lecture seule, extraction /tmp/verif-snapshot/, résultats présentés au propriétaire, autorisation écrite préalable requise) ; (2) absence confirmée par l'opérateur → le propriétaire décide entre Option A (conserver l'état actuel, historique d'origine manquant) et Option B (nouvelle lignée explicitement documentée comme reconstruction).
+- Aucune opération technique exécutée dans la présente entrée ; seules écritures = présent append.
+
+Stage Summary:
+- ÉTAT : ATTENTE OPÉRATEUR. Aucun agent ne doit toucher au dépôt, aux bases, aux sauvegardes, aux preuves ou à repo.tar jusqu'à nouvelle instruction du propriétaire. Reprise uniquement sur l'un des deux déclencheurs ci-dessus ; en cas de restauration validée, finalisation R2 selon 52 §6 (doc 46 §5bis étapes 6-12, sans db:push).
