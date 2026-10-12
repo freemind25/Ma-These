@@ -2802,3 +2802,24 @@ Stage Summary:
 - Secours DUPLEX opérationnel : /home/sync/upload/secours-r2-20261012/ (OSS, visible opérateur) + /tmp/local — 3 archives vérifiées (A preuves 46 Mo, B bases 398 Mo, C git 195 Mo).
 - Lignée Git d'origine : toujours ABSENTE de tout support accessible (mesuré 14:19) — récupérable uniquement via instantané plateforme ; demande §9 du rapport 52 prête à transmettre par le propriétaire ; protocole de vérification + plan de reprise §5bis étapes 6-12 prêts et conditionnés.
 - Restent à la décision du propriétaire : transmission de la demande plateforme ; autorisation écrite de toute restauration ; en dernier recours, autorisation de reconstruction (option 2 doc 50) ; côté plateforme : versionnage OSS de repo.tar + origine de backups/custom-2026-10-12.db.
+
+---
+Task ID: vague-33
+Agent: orchestrateur (exécution de la demande de récupération plateforme — instruction propriétaire : instantané antérieur au 10-12 12:57 UTC si possible, livraison en copie, confirmation explicite sinon)
+Task: Tenter la récupération d'un instantané contenant les commits 7dff2c6c…/24415b7f… et les tags candidat-app-audit-v1.2/candidat-docs-audit-v1.2 : dépôt opérateur dans /home/sync, versions antérieures de repo.tar (OSS), instantanés d'instances parallèles ; livraison en copie sans écrasement ; préservation de l'état ; origine/date/empreintes si trouvé ; confirmation explicite si impossible.
+
+Work Log:
+- /home/sync (racine + upload/) : AUCUN dépôt opérateur depuis la demande (seuls repo.tar 10-11 23:49 + documents antérieurs + dossier secours vague 32).
+- Versionnage OSS de repo.tar : INACCESSIBLE depuis le sandbox — ossfs sans support xattr (os.listxattr → Operation not supported ×3), aucun outil oss (ossutil/osscmd/aliyun absents), aucune credential accessible (pas de /etc/passwd-ossfs, aucune variable d'env, processus ossfs côté hôte invisible). Examen uniquement possible côté plateforme (console OSS).
+- /proc/mounts : inventaire complet (rootfs overlay + ossfs ×3 + PolarFS ×2 + virtiofs ro) — aucun montage/disque supplémentaire ; /root et /app/temp permission denied (isolation plateforme, non forcée).
+- Second OSS /home/z/my-project/upload : miroir de /home/sync/upload, rien de nouveau ; PolarFS /tmp/my-project : copie 10-11 20:57 sans .git (re-confirmé) + .initial_snapshot.json mis à jour à 14:26 (manifeste mtimes vivant, sans historique) ; /home/user_skills : zips de skills, rien de pertinent.
+- Balayage disque ciblé (*.tar, *.tgz, *.bundle, *urbanisme*, copies) sur /home /tmp /var /opt /srv /mnt /media : uniquement éléments connus — AUCUNE nouvelle copie Git.
+- .git courant + repo.tar : conclusions vagues 30/31/32 re-confirmées (objets perdus ABSENTS ; repo.tar cb7e5eab…e272, mtime 23:49 inchangé, sans lignée — preuve au niveau contenu doc 51 §5).
+- État courant re-vérifié à 14:35 UTC : custom.db 756c0158…8126d · urbanisme-test.db 6b72e1dc…65fb8 · sauvegarde 16f3c3f4…84ae5 — INTACTES.
+- Dossier 53 rédigé (matrice 10 pistes + confirmation explicite négative + 3 actions plateforme restantes) : audit/baseline/53_CONFIRMATION_RECUPERATION_IMPOSSIBLE_SANDBOX_2026-10-12.md — copié vers /home/sync/upload/secours-r2-20261012/.
+- Red lines : 0 écriture .git/bases/sauvegardes/preuves/repo.tar · 0 commit/tag/push/restauration/reconstruction · 0 db:push · 0 contournement d'isolation · seules écritures = dossier 53 + copie OSS + présent append.
+
+Stage Summary:
+- CONFIRMATION EXPLICITE : aucune récupération possible depuis l'intérieur du sandbox — ni commits 7dff2c6c…/24415b7f…, ni tags candidat, ni instantané antérieur au 10-12 12:57 UTC, ni versions antérieures de repo.tar, ni instantanés d'instances parallèles ne sont accessibles (matrice complète au dossier 53 §1).
+- La récupération exige exclusivement des actions plateforme : (1) console OSS — versionnage du bucket /home/sync et export de la version de repo.tar antérieure à l'écrasement du 10-11 23:49:09 UTC ; (2) instantané/image du projet capturé le 10-12 avant 12:57 ; (3) instantanés d'instances parallèles — livraison exigée EN COPIE dans /home/sync/upload/.
+- État courant intact et scellé (bases re-vérifiées 14:35) ; secours duplex OSS + /tmp opérationnels ; protocole de vérification (rapport 52 §5) et plan de reprise R2 (rapport 52 §6) prêts dès qu'une source serait fournie.
