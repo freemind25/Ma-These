@@ -1,0 +1,11 @@
+=== DÉMONSTRATION comparateur de contenu v2.1 — vague 26 — 2026-10-11T20:03:10Z ===
+
+--- 1) identité (AVANT vs AVANT) → PASS attendu ---
+exit=0
+verdict: PASS
+
+--- 2) variante SYNTHÉTIQUE corrompue vague 25 (1 cellule Chapter, comptages identiques) → FAIL attendu ---
+exit=1
+verdict: FAIL
+note: COMPTAGES IDENTIQUES MAIS CONTENU DIVERGENT — cas exact signalé par le propriétaire (vague 25) : la vérification de comptages seule est insuffisante
+divergence: Chapter contenu

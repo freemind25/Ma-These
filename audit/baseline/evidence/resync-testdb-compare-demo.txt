@@ -1,0 +1,99 @@
+== DEMO 1 : AVANT réel vs APRES synthétique conforme — ATTENDU PASS (exit 0)
+{
+  "verdict": "PASS",
+  "avant": "audit/baseline/evidence/resync-testdb-before.json",
+  "apres": "audit/baseline/evidence/resync-testdb-compare-demo-apres-synthetique.json",
+  "checks": [
+    {
+      "nom": "integrity_avant",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "nom": "integrity_apres",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "nom": "fk_avant_0",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "fk_apres_0",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "tables_apres_conformes",
+      "ok": true,
+      "detail": "APRÈS 30 tables / attendu 30"
+    },
+    {
+      "nom": "comptages_preexistants_identiques",
+      "ok": true,
+      "detail": "25 tables comparées"
+    },
+    {
+      "nom": "nouvelles_tables_vides",
+      "ok": true,
+      "detail": "Article, ArticleVersion, ImportedDoc, LegalRef, SoutenancePrep"
+    },
+    {
+      "nom": "index_attendus_presents",
+      "ok": true,
+      "detail": "6 index présents"
+    }
+  ]
+}
+exit=0
+
+== DEMO 2 : variante corrompue (Chapter 7->8) — ATTENDU FAIL (exit 1)
+{
+  "verdict": "FAIL",
+  "avant": "audit/baseline/evidence/resync-testdb-before.json",
+  "apres": "audit/baseline/evidence/resync-testdb-compare-demo-apres-corrompu.json",
+  "checks": [
+    {
+      "nom": "integrity_avant",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "nom": "integrity_apres",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "nom": "fk_avant_0",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "fk_apres_0",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "nom": "tables_apres_conformes",
+      "ok": true,
+      "detail": "APRÈS 30 tables / attendu 30"
+    },
+    {
+      "nom": "comptages_preexistants_identiques",
+      "ok": false,
+      "detail": "divergences: Chapter 7→8"
+    },
+    {
+      "nom": "nouvelles_tables_vides",
+      "ok": true,
+      "detail": "Article, ArticleVersion, ImportedDoc, LegalRef, SoutenancePrep"
+    },
+    {
+      "nom": "index_attendus_presents",
+      "ok": true,
+      "detail": "6 index présents"
+    }
+  ]
+}
+exit=1

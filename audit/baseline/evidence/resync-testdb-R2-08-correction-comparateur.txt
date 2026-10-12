@@ -1,0 +1,56 @@
+==================================================================
+R2 — LEVÉE DE GEL CIBLÉE (décision propriétaire — option 1 doc 49) — 2026-10-12T12:48:53Z
+GO consigné : evidence/GO-REPRISE-COMPARATEUR-proprietaire-20261011.md
+==================================================================
+
+### Empreintes AVANT modification (état gelé vagues 27-28)
+23fc22f23255d070241f1897d665ae469e73e70944afaafed4c4e581e8fd4ed7  audit/baseline/evidence/resync-testdb-compare-contenu.mjs
+894f9a18d5532981171c28972d1ce73049a98f601e1695296b31c7b09f8431dd  audit/baseline/evidence/resync-testdb-contenu-tests.mjs
+f4ef4673e30f58cc0d82507839275c5f59e028dbb4bb40edab7268e493d5bf0f  audit/baseline/evidence/resync-testdb-rows-dump.mjs
+-- compare-contenu (v2.1) et contenu-tests vont être modifiés (autorisation expresse)
+-- rows-dump.mjs (vidage) reste STRICTEMENT INTACT (aucun changement de la référence de données)
+
+### Références de données — vérification de non-toucherie (interdiction propriétaire : modifier le snapshot)
+d2a9d5000556392849f72dd4adb389006a86f288b8cc85965a8c08914f24ba77  audit/baseline/evidence/resync-testdb-rows-avant.json
+29f38a5f44d7f35fe5c42631a99a29a8b5fa649332f5ace9d5499c89e463c06e  audit/baseline/evidence/resync-testdb-rows-apres-R2.json
+-- d2a9d500…4ba77 (référence gelée vagues 25-26) · fb85ff00…9c3e (vidage AVANT R2) · 29f38a5f…c06e (vidage APRÈS R2)
+
+-- note : le pointeur /tmp/r2-vidage-avant-path.txt a disparu (nettoyage /tmp entre sessions) — relocalisé : audit/baseline/evidence/resync-testdb-rows-avant-R2-20261011T205147Z.json
+fb85ff00259d8ea63b82a095c6691e63a3e084d0ab31d1575691e7c068b39c3e  audit/baseline/evidence/resync-testdb-rows-avant-R2-20261011T205147Z.json
+-- SHA fb85ff00…9c3e confirmé (référence §2.7bis conservée SANS modification)
+### Nouvelles empreintes APRÈS modification (v2.2 + série E)
+6e952fbc5d0f5af9ce31a9a89a888e6ce8342014f43f5bd5420d91b222dc1830  audit/baseline/evidence/resync-testdb-compare-contenu.mjs
+042fa2ee50c64bcffb468b40a7d28b7e9d19efa44716ade33e8e51d8bc2e4a19  audit/baseline/evidence/resync-testdb-contenu-tests.mjs
+f4ef4673e30f58cc0d82507839275c5f59e028dbb4bb40edab7268e493d5bf0f  audit/baseline/evidence/resync-testdb-rows-dump.mjs
+-- rows-dump.mjs : f4ef4673…5bf0f INCHANGÉ (outil de vidage gelé — non touché)
+-- compare-contenu v2.1 23fc22f2…d4ed7 → v2.2 ci-dessus (levée de gel autorisée)
+-- contenu-tests 894f9a18…431dd → série E ajoutée (levée de gel autorisée)
+
+### Démonstrations doc 47 §6 re-jouées avec v2.2 (non-masquage)
+$ bun rows-dump.mjs db/urbanisme-test.db > /tmp/vidage-controle-v30.json (lecture seule)
+exit=0
+$ identité : compare-contenu v2.2 <vidage> <vidage>
+verdict=PASS | r2bis: aucune colonne ajoutée — comparaison strictement structurellement identique
+exit=0
+$ variante corrompue SYNTHÉTIQUE-DEMO (vague 25) : compare-contenu v2.2 <vidage> <corrompu>
+verdict=FAIL | note: COMPTAGES IDENTIQUES MAIS CONTENU DIVERGENT — cas exact sign… | divergence: Chapter colonnes
+exit=0
+-- l'identité reste PASS et la corruption reste DÉTECTÉE : la tolérance v2.2 ne masque rien
+
+### SHA du transcript de la suite (vague 30)
+82ec14731f3b7d0018a67d16251770e4f2694cbf9f14389ffcdef76bd5e87cb4  audit/baseline/evidence/resync-testdb-contenu-tests-vague30.txt
+
+### RECTIFICATION — codes de sortie mesurés SANS pipe + démonstration canonique « contenu »
+(les 'exit=' ci-dessus étaient ceux du filtre JSON, pas du comparateur — re-mesure propre :)
+
+$ identité : compare-contenu v2.2 <vidage> <vidage>  (exit direct)
+exit=0 (verdict: PASS)
+
+$ corrompu SYNTHÉTIQUE-DEMO vs vidage POST-PUSH (16 col. Chapter) — exit direct
+exit=1 (verdict: FAIL | motif: colonnes)
+-- FAIL détecté (la base post-push a stamp en plus que la variante vague 25 → motif 'colonnes')
+
+$ corrompu SYNTHÉTIQUE-DEMO vs référence pré-push (vidage AVANT R2, 15 col. Chapter) — démonstration canonique
+exit=1 (verdict: FAIL | motif: contenu | table: Chapter | note: COMPTAGES IDENTIQUES MAIS CONTENU DIVERGENT — cas exact…)
+-- comportement v2.1 CANONIQUE INTACT : divergence de contenu détectée + note dédiée (exit 1)
+

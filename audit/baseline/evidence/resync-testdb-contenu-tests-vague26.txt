@@ -1,0 +1,22 @@
+=== SUITE DE TESTS SYNTHÉTIQUES — comparateur de contenu (vague 26) — bases en /tmp, AUCUNE base réelle ===
+
+OK   A1 empreinte globale identique (ordre d'insertion inverse) — attendu 686b33b44d51d74550a43681f4a9a9f82bdef809f976af5b8a2cc12d4cd4f1f0, obtenu 686b33b44d51d74550a43681f4a9a9f82bdef809f976af5b8a2cc12d4cd4f1f0
+OK   A2 comparaison ordre-inverse → PASS/exit 0 — attendu 0|PASS, obtenu 0|PASS
+OK   A3 NULL canonisé en null distinct de '' — attendu true, obtenu true — [1,null,1.5]
+OK   A4 INTEGER 0 / REAL 0 / TEXT '0' distincts — attendu true, obtenu true — [1,0,0,"0"]
+OK   A5 BLOB canonisé en base64 étiqueté — attendu true, obtenu true — [2,{"__blob_b64":"AP8="}]
+OK   A6 BLOB vide ≠ NULL — attendu true, obtenu true — [1,{"__blob_b64":""}]
+OK   A7 doublons identiques préservés (3 lignes, 2 identiques) — attendu true, obtenu true — 3 lignes triées
+OK   B var_identique → PASS/0 — attendu 0|PASS, obtenu 0|PASS
+OK   B var_cellule_modifiee → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — note: COMPTAGES IDENTIQUES MAIS CONTENU DIVERGENT — cas exact sign…
+OK   B var_ligne_supprimee → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nopk
+OK   B var_ligne_ajoutee → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nopk
+OK   B var_null_vers_chaine_vide → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nulls
+OK   B var_blob_modifie → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_blobs
+OK   B var_infinity → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nums
+OK   B garde INTEGER hors plage → REFUS exit 2 — attendu 2, obtenu 2 — REFUS DE VIDAGE (exit 2) — INTEGER hors plage JS-safe détecté (précision JS non 
+OK   D1 préexistantes + 5 nouvelles vides → PASS/exit 0 — attendu 0|PASS, obtenu 0|PASS
+OK   D2 nouvelle table non vide → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — Article: 1 ligne(s) (attendu 0)
+OK   D3 table inattendue → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — inattendues: t_zzz
+
+=== SYNTHÈSE : 18/18 tests conformes aux attentes — SUITE VALIDÉE ===

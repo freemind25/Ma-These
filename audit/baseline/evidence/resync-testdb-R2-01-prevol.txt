@@ -1,0 +1,128 @@
+==================================================================
+R2 — TRANSCRIPT PRÉVOL (doc 46 v3.3 §2) — 2026-10-11T20:50:40Z
+GO : autorisation écrite RESYNC-TESTDB du propriétaire consignée
+     evidence/GO-RESYNC-TESTDB-proprietaire-20261011.md (§2.1)
+==================================================================
+
+### §2.1 / §2.2 — Autorisation écrite + ouverture de fenêtre R2
+sha256sum evidence/GO-RESYNC-TESTDB-proprietaire-20261011.md
+b9f0b9439cf28c7c109cdcfc5cffa3d19bf8f5cf0cc3bab5c6624656c19c5912  audit/baseline/evidence/GO-RESYNC-TESTDB-proprietaire-20261011.md
+-- l'autorisation écrite du propriétaire (message intégral, §1-§5) ouvre la fenêtre R2 et tient lieu
+-- de contexte R2 (étape 2.2) : exécution limitée à db/urbanisme-test.db, ordre 12 étapes §5bis.
+
+### §2.3 — Arbre propre (mesuré AVANT création des artefacts R2, 20:50:40Z)
+$ git status --porcelain  (mesure initiale)
+(vide — vérifié à 20:50:02Z avant création du GO et du présent transcript)
+-- les artefacts R2 (GO, transcripts, vidages) sont ensuite créés comme fichiers non suivis, prévus
+-- par le protocole (preuves §7.7) et seront inclus au commit documentaire (étape 11).
+
+### §2.4 — Arrêt du serveur (bloquant avant toute écriture sur une base)
+-- état avant : curl -s localhost:3000 → HTTP 200 (serveur en cours)
+-- arrêt : pkill des processus du serveur dev (préparation autorisée §A de l'autorisation)
+$ curl -s -m 2 http://localhost:3000
+connexion refusée — serveur arrêté ✓
+$ pgrep -af 'next dev|next-server|bun run dev'
+(aucun processus serveur)
+
+### §2.5 — État de départ des deux bases (SHAs, tailles, mtimes, inodes)
+$ sha256sum db/urbanisme-test.db db/custom.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  db/urbanisme-test.db
+756c01587cc54a25db37c2f099266506aa01ffcff440870a61b43e441b38126d  db/custom.db
+-- attendu test : 16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5
+-- attendu custom: 756c01587cc54a25db37c2f099266506aa01ffcff440870a61b43e441b38126d
+$ stat -c '%n | inode=%i | liens=%h | taille=%s | mtime=%y' db/urbanisme-test.db db/custom.db
+db/urbanisme-test.db | inode=527790 | liens=2 | taille=552960 | mtime=2026-10-02 17:26:56.000000000 +0000
+db/custom.db | inode=527789 | liens=1 | taille=265330688 | mtime=2026-10-11 06:45:23.410462155 +0000
+-- attendu test : 552 960 o, mtime 2026-10-02 17:26:56 ; custom : 265 330 688 o, mtime 2026-10-11 06:45:23.410462155
+
+### Empreintes des outils GELÉS (doc 47 §4 — toute divergence = altération → ARRÊT)
+$ sha256sum (9 artefacts gelés + runbook)
+f4ef4673e30f58cc0d82507839275c5f59e028dbb4bb40edab7268e493d5bf0f  audit/baseline/evidence/resync-testdb-rows-dump.mjs
+23fc22f23255d070241f1897d665ae469e73e70944afaafed4c4e581e8fd4ed7  audit/baseline/evidence/resync-testdb-compare-contenu.mjs
+894f9a18d5532981171c28972d1ce73049a98f601e1695296b31c7b09f8431dd  audit/baseline/evidence/resync-testdb-contenu-tests.mjs
+1815e70a4dfaa3fd643188b9ebdc577917e864317ddcb41cfeb87f6ed0ce3d59  audit/baseline/evidence/resync-testdb-compare.mjs
+9697e644b37d6c5e591f00f158e83503adf69837f3d3cb6c362568cbea7bcbcf  audit/baseline/evidence/resync-testdb-inventory.mjs
+d2a9d5000556392849f72dd4adb389006a86f288b8cc85965a8c08914f24ba77  audit/baseline/evidence/resync-testdb-rows-avant.json
+ab2c312ba1fa021e064903b92153932f1574fd4a19642d94fee99020407e3355  audit/baseline/evidence/resync-testdb-ddl-attendu.sql
+820202f44a87cc4560353f6f0c6e3ccc7ad465fe427b077bda4eea461e03db84  audit/baseline/46_RUNBOOK_RESYNC_URBANISME_TEST_DB_2026-10-11.md
+c898d5505df93995d918dac940275b76be8117a3f6d2ace6e298de0f94c7a44e  audit/baseline/47_DOSSIER_INSPECTION_COMPARATEUR_PREPARATION_R2_2026-10-11.md
+
+### §2.8 — Sauvegarde indépendante (SHA == source, inode ≠ source)
+$ sha256sum + stat de la sauvegarde
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  audit/baseline/evidence/backups/urbanisme-test-avant-resync-20261011T091500Z.db
+audit/baseline/evidence/backups/urbanisme-test-avant-resync-20261011T091500Z.db | inode=169333 | liens=1 | taille=552960 | mtime=2026-10-02 17:26:56.000000000 +0000
+
+### §2.9 — URL effective (.env — la substitution en ligne §3 est obligatoire)
+$ rg -n 'DATABASE_URL' .env
+1:DATABASE_URL=file:/home/z/my-project/db/custom.db
+
+### §2.10 — État des liens physiques re-mesuré au R2
+$ stat -c '%i %h' db/urbanisme-test.db && find -xdev -samefile db/urbanisme-test.db
+inode=527790 liens=2
+./db/urbanisme-test.db
+$ stat -c '%i %h' db/custom.db && find -xdev -samefile db/custom.db
+inode=527789 liens=1
+./db/custom.db
+
+-- complément §2.10 : recherche du jumeau depuis / (find -xdev -samefile)
+$ find / -xdev -samefile db/urbanisme-test.db 2>/dev/null
+/tmp/c1-candidate/db/urbanisme-test.db
+/home/z/my-project/db/urbanisme-test.db
+$ stat -c '%n | inode=%i | liens=%h | mtime=%y' /tmp/c1-candidate/db/urbanisme-test.db
+/tmp/c1-candidate/db/urbanisme-test.db | inode=527790 | liens=2 | mtime=2026-10-02 17:26:56.000000000 +0000
+$ sha256sum /tmp/c1-candidate/db/urbanisme-test.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  /tmp/c1-candidate/db/urbanisme-test.db
+-- jumeau custom.db du staging (inode distinct, hors périmètre)
+/tmp/c1-candidate/db/custom.db | inode=573344 | liens=1 | taille=222609408 | mtime=2026-10-11 06:11:02.799031602 +0000
+
+### §2.6 — Dérive de départ attendue : custom = 0, test = 2 (reconfirmation R2)
+$ bunx prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-url file:db/custom.db --exit-code
+No difference detected.
+exit=0
+$ bunx prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-url file:db/urbanisme-test.db --exit-code
+
+[-] Removed tables
+  - SoutenancePrep
+  - LegalRef
+  - Article
+(sortie tronquée à 5 lignes pour le transcript — diff complet attendu)
+exit=2
+-- attendu : exit=0 (custom) puis exit=2 (test) — toute autre valeur = ARRÊT
+
+### §2.7 — Inventaire AVANT reconstitué au R2 (lecture seule) vs JSON gelé
+$ bun audit/baseline/evidence/resync-testdb-inventory.mjs db/urbanisme-test.db > /tmp/r2-inventory-avant.json
+exit=0
+$ sha256sum /tmp/r2-inventory-avant.json (le JSON gelé contient un horodatage — comparaison sémantique exigée)
+68367188c72abce70cfbc020fb7445c58d3b28c0fa0df9bafd904d379d9cf383  /tmp/r2-inventory-avant.json
+$ comparaison sémantique (champs hors timestamp) vs evidence/resync-testdb-before.json :
+IDENTIQUE (hors timestamp)
+$ synthèse de l'inventaire AVANT :
+tables=25 integrity=ok fk_violations=0 lignes_totales=38
+tables non vides: {"Chapter":7,"ChapterVersion":3,"Job":2,"Reference":12,"Thesis":1,"ThesisCadrage":1,"ThesisCadrageField":12}
+-- attendu : 25 tables · 38 lignes · integrity ok · FK 0 · Thesis 1 Chapter 7 ChapterVersion 3 Job 2 ·
+-- ThesisCadrage 1 · ThesisCadrageField 12 · Reference 12 · 18 tables à 0
+
+### §2.11 — DDL attendu GELÉ : hash pré-flight == ab2c312b…07e3355
+$ bunx prisma migrate diff --from-url file:/home/z/my-project/db/urbanisme-test.db --to-schema-datamodel prisma/schema.prisma --script | sha256sum
+ab2c312ba1fa021e064903b92153932f1574fd4a19642d94fee99020407e3355  -
+-- attendu : ab2c312ba1fa021e064903b92153932f1574fd4a19642d94fee99020407e3355 (toute divergence = ARRÊT)
+$ diff sémantique du DDL pré-flight vs DDL gelé :
+DDL pré-flight == DDL gelé (octet pour octet) ✓
+
+### §2.7bis — Vidage de CONTENU AVANT (référence exclusive du R2 — règle point C vague 26)
+$ bun audit/baseline/evidence/resync-testdb-rows-dump.mjs db/urbanisme-test.db > audit/baseline/evidence/resync-testdb-rows-avant-R2-20261011T205147Z.json
+exit=0
+$ synthèse du vidage :
+tool=resync-testdb-rows-dump.mjs v2 (vague 26) tables=25 globalContentSha256=faed00f900080e397f821f2893c43f9fb2f2117d592a88b2ae41643d7fe80f6d
+lignes totales: 38 | tables non vides: Chapter:7 ChapterVersion:3 Job:2 Reference:12 Thesis:1 ThesisCadrage:1 ThesisCadrageField:12
+-- référence constituée IMMÉDIATEMENT AVANT le push ; conservée sans modification pendant toute l'opération
+-- (exclusivité §2.7bis : aucune référence antérieure ne sera utilisée pour la comparaison APRÈS)
+
+### Preuve de lecture seule — SHAs des bases re-mesurés après vidage §2.7bis
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  db/urbanisme-test.db
+756c01587cc54a25db37c2f099266506aa01ffcff440870a61b43e441b38126d  db/custom.db
+db/urbanisme-test.db | inode=527790 | liens=2 | mtime=2026-10-02 17:26:56.000000000 +0000
+db/custom.db | inode=527789 | liens=1 | mtime=2026-10-11 06:45:23.410462155 +0000
+-- attendu : identiques à §2.5 (16f3c3f4… / 756c0158…, inodes 527790/527789)
+
+### VERDICT PRÉVOL §2 — TOUS LES CONTRÔLES SONT CONFORMES

@@ -1,0 +1,80 @@
+=== VÉRIFICATIONS VAGUE 27 — gel du comparateur + reproductibilité + préparation opérationnelle R2 ===
+Lecture seule : AUCUNE écriture sur db/custom.db ni db/urbanisme-test.db (pré+post SHA). Bases de test : /tmp uniquement.
+
+--- V1. Bases réelles (AVANT suite) : SHA-256 / inode / liens / taille / mtime ---
+756c01587cc54a25db37c2f099266506aa01ffcff440870a61b43e441b38126d  db/custom.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  db/urbanisme-test.db
+inode=527789 liens=1 taille=265330688 mtime=2026-10-11 06:45:23.410462155 +0000 db/custom.db
+inode=527790 liens=2 taille=552960 mtime=2026-10-02 17:26:56.000000000 +0000 db/urbanisme-test.db
+
+--- V2. Sauvegarde indépendante ---
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  audit/baseline/evidence/backups/urbanisme-test-avant-resync-20261011T091500Z.db
+inode=169333 liens=1 audit/baseline/evidence/backups/urbanisme-test-avant-resync-20261011T091500Z.db
+
+--- V3. Jumeau hard link /tmp/c1-candidate (option A : préservé) ---
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  /tmp/c1-candidate/db/urbanisme-test.db
+inode=527790 liens=2 /tmp/c1-candidate/db/urbanisme-test.db
+
+--- V4. .env (DATABASE_URL) ---
+1:DATABASE_URL=file:/home/z/my-project/db/custom.db
+
+--- V5. Dépôt Git au moment du contrôle (2 artefacts vague 27 attendus en non-suivi) ---
+HEAD=0207f96 — porcelain:
+?? audit/baseline/evidence/resync-testdb-contenu-tests-vague27.txt
+?? audit/baseline/evidence/resync-testdb-verif-vague27.txt
+Tags :
+candidat-app-audit-v1.2
+candidat-docs-audit-v1.2
+v1.10.7
+v1.10.8
+Commits en avance sur origin/main : 29
+
+--- V6. DDL gelé (référence ab2c312b…07e3355) ---
+ab2c312ba1fa021e064903b92153932f1574fd4a19642d94fee99020407e3355  audit/baseline/evidence/resync-testdb-ddl-attendu.sql
+
+--- V7. RE-RUN suite synthétique (bases jetables /tmp/v26-tests, AUCUNE base réelle) ---
+exit code : 0
+=== SUITE DE TESTS SYNTHÉTIQUES — comparateur de contenu (vague 26) — bases en /tmp, AUCUNE base réelle ===
+
+OK   A1 empreinte globale identique (ordre d'insertion inverse) — attendu 686b33b44d51d74550a43681f4a9a9f82bdef809f976af5b8a2cc12d4cd4f1f0, obtenu 686b33b44d51d74550a43681f4a9a9f82bdef809f976af5b8a2cc12d4cd4f1f0
+OK   A2 comparaison ordre-inverse → PASS/exit 0 — attendu 0|PASS, obtenu 0|PASS
+OK   A3 NULL canonisé en null distinct de '' — attendu true, obtenu true — [1,null,1.5]
+OK   A4 INTEGER 0 / REAL 0 / TEXT '0' distincts — attendu true, obtenu true — [1,0,0,"0"]
+OK   A5 BLOB canonisé en base64 étiqueté — attendu true, obtenu true — [2,{"__blob_b64":"AP8="}]
+OK   A6 BLOB vide ≠ NULL — attendu true, obtenu true — [1,{"__blob_b64":""}]
+OK   A7 doublons identiques préservés (3 lignes, 2 identiques) — attendu true, obtenu true — 3 lignes triées
+OK   B var_identique → PASS/0 — attendu 0|PASS, obtenu 0|PASS
+OK   B var_cellule_modifiee → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — note: COMPTAGES IDENTIQUES MAIS CONTENU DIVERGENT — cas exact sign…
+OK   B var_ligne_supprimee → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nopk
+OK   B var_ligne_ajoutee → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nopk
+OK   B var_null_vers_chaine_vide → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nulls
+OK   B var_blob_modifie → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_blobs
+OK   B var_infinity → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nums
+OK   B garde INTEGER hors plage → REFUS exit 2 — attendu 2, obtenu 2 — REFUS DE VIDAGE (exit 2) — INTEGER hors plage JS-safe détecté (précision JS non 
+OK   D1 préexistantes + 5 nouvelles vides → PASS/exit 0 — attendu 0|PASS, obtenu 0|PASS
+OK   D2 nouvelle table non vide → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — Article: 1 ligne(s) (attendu 0)
+OK   D3 table inattendue → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — inattendues: t_zzz
+
+=== SYNTHÈSE : 18/18 tests conformes aux attentes — SUITE VALIDÉE ===
+
+--- V8. Bases réelles (APRÈS suite) : SHA-256 AVANT=APRÈS exigé ---
+756c01587cc54a25db37c2f099266506aa01ffcff440870a61b43e441b38126d  db/custom.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  db/urbanisme-test.db
+inode=527789 liens=1 mtime=2026-10-11 06:45:23.410462155 +0000 db/custom.db
+inode=527790 liens=2 mtime=2026-10-02 17:26:56.000000000 +0000 db/urbanisme-test.db
+
+--- V9. GEL : empreintes SHA-256 des artefacts du comparateur (toute divergence ultérieure = altération) ---
+f4ef4673e30f58cc0d82507839275c5f59e028dbb4bb40edab7268e493d5bf0f  audit/baseline/evidence/resync-testdb-rows-dump.mjs
+23fc22f23255d070241f1897d665ae469e73e70944afaafed4c4e581e8fd4ed7  audit/baseline/evidence/resync-testdb-compare-contenu.mjs
+894f9a18d5532981171c28972d1ce73049a98f601e1695296b31c7b09f8431dd  audit/baseline/evidence/resync-testdb-contenu-tests.mjs
+1815e70a4dfaa3fd643188b9ebdc577917e864317ddcb41cfeb87f6ed0ce3d59  audit/baseline/evidence/resync-testdb-compare.mjs
+9697e644b37d6c5e591f00f158e83503adf69837f3d3cb6c362568cbea7bcbcf  audit/baseline/evidence/resync-testdb-inventory.mjs
+d2a9d5000556392849f72dd4adb389006a86f288b8cc85965a8c08914f24ba77  audit/baseline/evidence/resync-testdb-rows-avant.json
+ab2c312ba1fa021e064903b92153932f1574fd4a19642d94fee99020407e3355  audit/baseline/evidence/resync-testdb-ddl-attendu.sql
+e85612430a7fac3ba5f577f9276508719e3423b4da551b7874fc0a3817f7b4a6  audit/baseline/evidence/resync-testdb-contenu-tests-vague26.txt
+e2966f08a6a74fd1eddf5f355a3c43ac9e4e5cf70bd95476fe9dc56c4eefa1e0  audit/baseline/evidence/resync-testdb-compare-contenu-demo-vague26.txt
+e85612430a7fac3ba5f577f9276508719e3423b4da551b7874fc0a3817f7b4a6  audit/baseline/evidence/resync-testdb-contenu-tests-vague27.txt
+
+--- V10. Doc 46 v3.3 (runbook) ---
+358 audit/baseline/evidence/../46_RUNBOOK_RESYNC_URBANISME_TEST_DB_2026-10-11.md
+820202f44a87cc4560353f6f0c6e3ccc7ad465fe427b077bda4eea461e03db84  audit/baseline/evidence/../46_RUNBOOK_RESYNC_URBANISME_TEST_DB_2026-10-11.md

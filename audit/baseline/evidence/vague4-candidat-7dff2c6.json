@@ -1,0 +1,29 @@
+{
+  "titre": "Vague 4 — validations finales sur le commit candidat 7dff2c6 (exigences propriétaire §4)",
+  "date": "2026-10-10",
+  "commit_candidat_applicatif": "7dff2c6 (tag candidat-app-audit-v1.2) — fix A1C1-02 ; précédent figé fb60ae1 déplacé par le correctif build",
+  "commit_documentaire": "f4ca696 puis commits docs vague 4 (voir git log)",
+  "tnr": {"commande": "bun run test:run", "resultat": "78 fichiers, 1658/1658 tests verts (17,6 s)", "exit": 0},
+  "lint": {"commande": "bun run lint", "resultat": "0 erreur / 247 warnings (baseline exacte)", "exit": 0},
+  "c1_build_production": {
+    "resultat": "SUCCÈS après correctif A1C1-02 (détail evidence/c1-build-web.json)",
+    "smoke_standalone": "7/7 contrôles API OK sur port 3100 (base jetable VACUUM INTO), serveur arrêté après test"
+  },
+  "golden_paths_ui_reelle": [
+    {"id": "GP-1", "parcours": "Consulter/rédiger sa thèse", "resultat": "OK — thèse jetable B2 : onglet II cliqué, texte saisi, auto-save PUT en base (105 car./18 mots), reload complet → contenu retrouvé ; thèse propriétaire 7 chapitres intacte", "preuves": ["v4r-gp1-saisie.png", "v4r-gp1-persiste.png"], "constat_nouveau": "A1V4-01 (P3) : chapitre affiché par défaut (chapters[0]) sans onglet cliqué → auto-save inerte (activeChapterId null, editor-page.tsx l.86/92 vs l.226) — documenté au registre"},
+    {"id": "GP-2", "parcours": "Créer une nouvelle thèse", "resultat": "OK — dialog : bouton Créer DÉSACTIVÉ tant que champs requis vides → remplissage → création 201 → bascule automatique sur la thèse B2 (activeThesisId vérifié)", "preuves": ["v4r-gp2-creee.png"]},
+    {"id": "GP-3", "parcours": "Références CRUD", "resultat": "OK — POST 201 (total 5) ; suppression : dialog « Supprimer cette référence ? » ; Annuler = 0 DELETE (5→5, fiche intacte) ; Confirmer = suppression (5→4, fiche test 0)", "preuves": ["v4r-gp3-creee.png", "v4r-gp3-supprime.png"], "reseau": "GET 200 / POST 201 / GET 200 capturés"},
+    {"id": "GP-4", "parcours": "Génération IA (Rédaction de résumé)", "resultat": "OK — clic DIRECT sur Générer (post AUD-UX-002) → POST /api/ai-writing/stream 200 (3,9 s) → résumé structuré réel affiché (Résultats/Conclusion)", "preuves": ["v4r-gp4-ia.png"], "serveur": "POST /api/ai-writing/stream 200 in 3.9s (dev.log)"},
+    {"id": "GP-5", "parcours": "RAG thèse cité", "resultat": "OK — indexation (1 chapitre/1 référence/1 note) → question → réponse « D'après l'extrait fourni… » ancrée sur le contenu réel indexé (cite le texte de test GP-1)", "preuves": ["v4r-gp5-indexe.png", "v4r-gp5-reponse.png"]},
+    {"id": "GP-6", "parcours": "Recherche thèses en ligne", "resultat": "OK — 135 thèses HAL réelles affichées (UI) ; GET /api/theses-en-ligne/search 200 (route LIGNE ROUGE intacte)", "preuves": ["v4r-gp6-hal.png"]},
+    {"id": "GP-7", "parcours": "Export DOCX", "resultat": "OK — UI : carte de téléchargement affichée ; API : POST 200 en 208 ms, 17 275 o, magic bytes = Microsoft Word 2007+", "preuves": ["v4r-gp7-docx.png"]}
+  ],
+  "etat_db": {
+    "avant": {"theses": 1, "chapitres": 7, "refs": 4, "integrity": "ok"},
+    "apres_nettoyage": {"theses": 1, "chapitres": 7, "refs": 4, "veilles": 0, "bookSkills": 58, "legalRefs": 27, "integrity": "ok", "thèse": "Urbanisme durable", "updatedAt_propriétaire_inchangé": 1786350155464},
+    "methode_nettoyage": "thèse jetable AUDIT-V4R + référence AUDIT-V4R-GP3 créés via flux UI puis SUPPRIMÉS via flux UI (dialog confirmés) ; aucune écriture directe ; skip-worktree db/custom.db intact"
+  },
+  "regressions": "aucune",
+  "ecarts_signales": ["A1V4-01 (P3, auto-save inerte sans onglet cliqué) — signalé au propriétaire, sans risque de perte si l'utilisateur clique un onglet (flux normal)"],
+  "verdict": "VAGUE4_VALIDÉE_SUR_CANDIDAT_7dff2c6"
+}

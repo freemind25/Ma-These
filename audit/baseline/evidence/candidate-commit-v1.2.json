@@ -1,0 +1,19 @@
+{
+  "titre": "Consignation du commit candidat — cycle audit-final-v1.2 (vague 4)",
+  "date": "2026-10-10",
+  "candidat_applicatif": {
+    "hash": "7dff2c6",
+    "description": "fix(audit-final-v1.2): A1C1-02 P2 build bloquant — tsconfig exclude audit (dernier commit touchant code/config)",
+    "tag_git": "candidat-app-audit-v1.2",
+    "historique": "candidat initial fb60ae1 (figé vague 4, build ÉCHOUÉ sur A1C1-02) → refigé sur 7dff2c6 après correctif 1 ligne ; TNR/GP/C1 tous rejoués sur 7dff2c6"
+  },
+  "candidat_documentaire": {
+    "hash": "f4ca696",
+    "description": "docs(audit-final-v1.2): doc 22 rapport pour le développeur — dernier commit documentaire au moment du gel",
+    "tag_git": "candidat-docs-audit-v1.2"
+  },
+  "distinction_explicite": "Exigence point 6 de la décision propriétaire : le commit APPLICATIF (code, fb60ae1) et le commit DOCUMENTAIRE (preuves/rapports, f4ca696) sont distincts. Aucun commit applicatif postérieur à fb60ae1 ; la base de code validée est celle de fb60ae1 (l'arbre de travail f4ca696 n'ajoute que des fichiers audit/).",
+  "etat_arbre": "arbre propre (git status vide), skip-worktree db/custom.db verrouillé (S)",
+  "regle": "Toute validation finale (C1, rejeu GP, TNR, lint) porte exactement sur ces commits ; tout changement de code ultérieur invalide la consignation et exige un nouveau gel.",
+  "note_gel": "Validation C1 + 7 GP + TNR + lint toutes exécutées et consignées sur 7dff2c6 (evidence/vague4-candidat-7dff2c6.json, evidence/c1-build-web.json)."
+}

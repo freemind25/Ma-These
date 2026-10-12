@@ -3,6 +3,8 @@
 **Cycle** : audit-final-v1.2 — réponse à l'exigence propriétaire 6.4 (« aucun défaut sécurité laissé ouvert » : traiter OU justifier explicitement)
 **Source** : 04_SECURITY_AUDIT.md §8 (AUD-SEC-004, pondérée Basse) · registre 09 l.99-100 + l.154 · 22_RAPPORT_POUR_DEV §AUD-SEC-004
 **Portée de ce document** : mesure à HEAD, modèle de menace, contrôles compensatoires, analyse de risque résiduel, plan de traitement progressif, décision demandée. **Aucune modification de code effectuée ni proposée sans décision** (red line cycle v1.2).
+**Mise à jour 2026-10-10 (3ᵉ décision propriétaire)** : les options A/B/C (§6) sont présentées au propriétaire avec risques, charge estimée, couverture réelle et conséquences sur le GO final. Préférence exprimée : un traitement complet si réalisable dans un périmètre maîtrisé, sinon plan priorisé + justification des risques résiduels. **Aucune option n'est considérée comme acceptée avant décision écrite.**
+**Mise à jour 2026-10-11 — DÉCISION FORMALISÉE (confirmation écrite du propriétaire)** : **D1 = C-B** (lot 1 sur les 10 routes destructives, revalidation complète + nouveau candidat — **bloqué** jusqu'à levée expresse P7 + GO spécifique) · **D4 = D4-accept** (réévaluation obligatoire avant toute diffusion large, inscrite au registre) · **D5 = D5-accept** (paramétrage des 2 raw SQL GET reporté au backlog v1.3, sous-tâche P3). Traçabilité D6 exécutée : registre 09 + doc 04 + doc 23/31/35. Détail d'exécution : doc 35 (périmètre §2, fichiers §3, tests §4, calendrier §5, refigeage §6).
 
 ---
 
@@ -133,7 +135,7 @@ La surface exploitée par AUD-SEC-004 n'est **pas démontrable comme exploitable
 
 1. **D1 — Choix de l'option** : A / B / C (§6 ci-dessus).
 2. **D2 — Si A** : validation de l'inscription du plan §5 au backlog post-GO (v1.3), lots 1→2→3 dans cet ordre.
-3. **D3 — Si B ou C** : levée explicite de la red line « aucune modification de code » pour ce périmètre, fenêtre d'exécution, et rejeu TNR + 7 GP sur le nouveau candidat (le candidat applicatif actuel `fb60ae1` serait déplacé).
+3. **D3 — Si B ou C** : levée explicite de la red line « aucune modification de code » pour ce périmètre, fenêtre d'exécution, et rejeu TNR + 7 GP sur le nouveau candidat (le candidat applicatif actuel `7dff2c6` — tag `candidat-app-audit-v1.2` — serait déplacé ; refigeage + nouveau tag exigés).
 4. **D4 — Vecteur d'origine locale S3 (distinct de zod)** : accepter comme résiduel documenté (recommandé tant que l'app n'est pas diffusée largement — aucune élévation, données locales, restauration prouvée), OU exiger une vérification d'origine (header Origin/Host) avant GO/diffusion large. Une décision « zod » seule ne clôt pas ce point.
 5. **D5 — Raw SQL GET** (`book-skills/route.ts` l.19, `legal-refs/route.ts` l.17, échappement manuel `'`→`''`) : accepté tel quel en local (recommandé, risque non démontré), OU paramétrage exigé au prochain cycle touchant ces routes (à inscrire au registre comme sous-tâche P3).
 6. **D6 — Traçabilité documentaire** : après décision, mise à jour du registre 09 (statut final), du 04 (colonne Action) et du présent dossier (ligne « décision ») par l'orchestrateur.

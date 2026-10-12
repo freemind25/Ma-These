@@ -1,0 +1,109 @@
+==================================================================
+R2 — REPRISE DU CONTRÔLE §4.3bis (comparateur v2.2 — décision propriétaire option 1 doc 49) — 2026-10-12T12:52:09Z
+Conditions préalables vérifiées : suite 27/27 (exit 0), démonstrations non-masquage OK, empreintes consignées
+NE RELANCE PAS db:push — validation de l'état déjà obtenu (instruction expresse du propriétaire)
+==================================================================
+
+### Validation §2 (condition 1) de la décision : vidages R2 préservés inchangés
+fb85ff00259d8ea63b82a095c6691e63a3e084d0ab31d1575691e7c068b39c3e  audit/baseline/evidence/resync-testdb-rows-avant-R2-20261011T205147Z.json
+29f38a5f44d7f35fe5c42631a99a29a8b5fa649332f5ace9d5499c89e463c06e  audit/baseline/evidence/resync-testdb-rows-apres-R2.json
+-- fb85ff00…9c3e (AVANT §2.7bis) · 29f38a5f…c06e (APRÈS constitué au §4.3bis v1) — conservés sans modification
+
+### §4.3bis — exécution avec v2.2 (vidage AVANT R2 vs vidage APRÈS R2)
+$ bun audit/baseline/evidence/resync-testdb-compare-contenu.mjs <vidage-avant-R2> <vidage-après-R2>
+exit=1
+{
+  "verdict": "FAIL",
+  "outil": "resync-testdb-compare-contenu.mjs v2.2 (levée de gel ciblée, vague 30)",
+  "avant": "audit/baseline/evidence/resync-testdb-rows-avant-R2-20261011T205147Z.json",
+  "apres": "audit/baseline/evidence/resync-testdb-rows-apres-R2.json",
+  "note": "COMPTAGES IDENTIQUES MAIS CONTENU DIVERGENT — cas exact signalé par le propriétaire (vague 25) : la vérification de comptages seule est insuffisante",
+  "divergences": [
+    {
+      "table": "CustomBookSkill",
+      "motif": "colonnes",
+      "detail": "colonnes préexistantes absentes ou réordonnées (la liste AVANT doit être un préfixe exact de la liste APRÈS)",
+      "avant": [
+        "id",
+        "title",
+        "author",
+        "content",
+        "tags",
+        "createdAt",
+        "updatedAt"
+      ],
+      "apres": [
+        "id",
+        "title",
+        "author",
+        "content",
+        "tags",
+        "description",
+        "source",
+        "enabled",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "nom": "r1_tables_preexistantes_presents",
+      "ok": true,
+      "detail": "25 tables préexistantes présentes APRÈS"
+    },
+    {
+      "nom": "r2_contenu_preexistant_identique",
+      "ok": false,
+      "detail": "1 table(s) divergente(s)"
+    },
+    {
+      "nom": "r2bis_ajouts_structurels_ddl_uniquement",
+      "ok": true,
+      "detail": "Chapter: +stamp (DDL gelé §3.1) · ChapterVersion: +stamp (DDL gelé §3.1) · Job: +progress, +progressNote (DDL gelé §3.1)"
+    },
+    {
+      "nom": "r3_empreinte_globale_preexistante_identique",
+      "ok": true,
+      "detail": "faed00f900080e397f821f2893c43f9fb2f2117d592a88b2ae41643d7fe80f6d vs faed00f900080e397f821f2893c43f9fb2f2117d592a88b2ae41643d7fe80f6d"
+    },
+    {
+      "nom": "r4_nouvelles_tables_vides_si_presentes",
+      "ok": true,
+      "detail": "5 nouvelles tables présentes et vides"
+    },
+
+##################################################################
+# COMPLÉTION v2.2 — reconstruction CustomBookSkill détectée par la v2.2 stricte (angle mort v2.1 sur table vide)
+# 2026-10-12T12:54:35Z
+##################################################################
+
+### Analyse (lecture seule) : la divergence signalée par la v2.2 initiale est EXACTEMENT la reconstruction du DDL gelé
+-- DDL gelé (resync-testdb-ddl-attendu.sql l.92-107) : CREATE new_CustomBookSkill (10 colonnes) → INSERT copie
+--   des 7 colonnes existantes → DROP → RENAME → CREATE INDEX title_idx ; table à 0 ligne (§2.7/§4.2)
+-- Vérification PRAGMA table_info sur la base réelle : 10 colonnes IDENTIQUES (noms, types, contraintes), 0 ligne
+-- → différence structurelle EXPLICITEMENT prévue par le DDL gelé (doc 46 §3bis) — couverte par l'autorisation
+--   (« colonnes explicitement ajoutées par le DDL gelé et dûment vérifiées »)
+-- Traitement : tolérance v2.2 complétée (DDL_REBUILT_COLUMNS) — liste de colonnes EXACTE + table VIDE des deux
+--   côtés obligatoire (toute ligne = divergence réelle) ; tests E9/E10/E11 ajoutés → suite 30/30 (exit 0),
+--   SHA transcript b8988f16…3992 ; empreintes v2.2 et suite re-mesurées après complétion (voir §final)
+
+### §4.3bis — exécution avec v2.2 complétée (vidage AVANT R2 vs vidage APRÈS R2)
+exit=0
+verdict: PASS
+note: (aucune)
+  ok  r1_tables_preexistantes_presents — 25 tables préexistantes présentes APRÈS
+  ok  r2_contenu_preexistant_identique — 25 tables — contenu ligne à ligne identique (colonnes préexistantes comparées exactement)
+  ok  r2bis_ajouts_structurels_ddl_uniquement — Chapter: +stamp (DDL gelé §3.1) · ChapterVersion: +stamp (DDL gelé §3.1) · CustomBookSkill: reconstruite selon
+  ok  r3_empreinte_globale_preexistante_identique — faed00f900080e397f821f2893c43f9fb2f2117d592a88b2ae41643d7fe80f6d vs faed00f900080e397f821f2893c43f9fb2f2117d59
+  ok  r4_nouvelles_tables_vides_si_presentes — 5 nouvelles tables présentes et vides
+  ok  r5_aucune_table_inattendue — aucune table hors préexistantes + 5 nouvelles
+divergences: []
+
+### Preuve de stabilité de l'état depuis l'arrêt (vidage frais LECTURE SEULE vs vidage APRÈS R2 préservé)
+$ bun rows-dump.mjs db/urbanisme-test.db > /tmp/vidage-frais-reprise.json && compare-contenu v2.2 <apres-R2> <frais>
+vidage frais exit=0
+exit=0
+verdict: PASS
+
+### VERDICT §4.3bis (reprise) : PASS — contrôle bloquant satisfait avec v2.2

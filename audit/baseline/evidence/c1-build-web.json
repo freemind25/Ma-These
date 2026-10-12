@@ -1,0 +1,33 @@
+{
+  "titre": "C1 — Build web de production exécuté sur le commit candidat (gabarit doc 14 rempli)",
+  "date": "2026-10-10",
+  "commit_teste": {
+    "initial": "fb60ae1 (candidat figé vague 4 — build ÉCHOUÉ, voir A1C1-02)",
+    "final": "7dff2c6 (candidat refigé après correctif A1C1-02 — build SUCCÈS)",
+    "distinction": "commit applicatif 7dff2c6 = dernier commit touchant le code/config (tsconfig.json) ; commits documentaires distincts"
+  },
+  "machine": "sandbox Linux dev (4 Go RAM) — exécution DEV de la procédure doc 14 ; l'exécution propriétaire reste possible en complément",
+  "anomalie_decouverte": {
+    "fiche": "A1C1-02 (P2 — build bloquant sur le candidat figé fb60ae1)",
+    "description": "next build échoue : audit/baseline/tools/{delete,restore}-doctoral-toolbox.ts utilisent import.meta.dir (API Bun non typée) — tsconfig include **/*.ts couvrait audit/ (2 erreurs TS2339, hors mocks *.test.ts)",
+    "correctif": "1 ligne tsconfig.json : 'audit' ajouté à exclude (alignement périmètre ESLint, zéro impact runtime/outillage)",
+    "precedent": "même catégorie que A1C1-01 (P2 build bloquant, corrigée et acceptée cycle T8)"
+  },
+  "commandes": [
+    {"cmd": "bunx next build (copie isolée hard-link, DATABASE_URL → copie VACUUM INTO jetable)", "resultat": "ÉCHEC sur fb60ae1 (A1C1-02) puis SUCCÈS sur 7dff2c6", "duree": "compilé en 31,2 s + type-check OK, manifeste routes complet"},
+    {"cmd": "node .next/standalone/server.js (port 3100, base jetable)", "resultat": "Ready in 95ms, job-worker + backup boot OK, arrêté après smoke"}
+  ],
+  "smoke_api_production": [
+    {"n": 1, "controle": "GET /", "resultat": "200 — 168 567 o"},
+    {"n": 2, "controle": "GET /api/thesis", "resultat": "200 — 0,087 s"},
+    {"n": 3, "controle": "GET /api/references", "resultat": "200 — 4 références (état propriétaire de la copie)"},
+    {"n": 4, "controle": "GET /api/search?q=urbanisme", "resultat": "200"},
+    {"n": 5, "controle": "GET /api/theses-en-ligne/search?q=urbanisme (HAL réel)", "resultat": "200"},
+    {"n": 6, "controle": "POST /api/export-docx", "resultat": "200 — 17 273 o — magic bytes = Microsoft Word 2007+"},
+    {"n": 7, "controle": "GET /api/veille", "resultat": "200"}
+  ],
+  "parcours_critiques": "les 7 golden paths ont été rejoués en UI réelle sur le candidat 7dff2c6 (serveur dev) — voir evidence/vague4-candidat-7dff2c6.json ; le parcours UI sur le build standalone (port 3100) est couvert par les contrôles API ci-dessus (l'app sert 200 + toutes les API critiques)",
+  "erreurs_serveur": "aucune",
+  "captures": ["c1-prebuild-web.json (pré-contrôle T8), v4r-*.png (GP sur candidat)"],
+  "conclusion": "BUILD_WEB_PRODUCTION_VALIDE sur 7dff2c6 — C1 exécuté avec succès après correctif A1C1-02 ; le candidat a été refigé (tag candidat-app-audit-v1.2 → 7dff2c6)"
+}

@@ -1,0 +1,34 @@
+=== SUITE DE TESTS SYNTHÉTIQUES — comparateur de contenu (vagues 26 + 30 : A/B/D inchangés + série E v2.2) — bases en /tmp, AUCUNE base réelle ===
+
+OK   A1 empreinte globale identique (ordre d'insertion inverse) — attendu 686b33b44d51d74550a43681f4a9a9f82bdef809f976af5b8a2cc12d4cd4f1f0, obtenu 686b33b44d51d74550a43681f4a9a9f82bdef809f976af5b8a2cc12d4cd4f1f0
+OK   A2 comparaison ordre-inverse → PASS/exit 0 — attendu 0|PASS, obtenu 0|PASS
+OK   A3 NULL canonisé en null distinct de '' — attendu true, obtenu true — [1,null,1.5]
+OK   A4 INTEGER 0 / REAL 0 / TEXT '0' distincts — attendu true, obtenu true — [1,0,0,"0"]
+OK   A5 BLOB canonisé en base64 étiqueté — attendu true, obtenu true — [2,{"__blob_b64":"AP8="}]
+OK   A6 BLOB vide ≠ NULL — attendu true, obtenu true — [1,{"__blob_b64":""}]
+OK   A7 doublons identiques préservés (3 lignes, 2 identiques) — attendu true, obtenu true — 3 lignes triées
+OK   B var_identique → PASS/0 — attendu 0|PASS, obtenu 0|PASS
+OK   B var_cellule_modifiee → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — note: COMPTAGES IDENTIQUES MAIS CONTENU DIVERGENT — cas exact sign…
+OK   B var_ligne_supprimee → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nopk
+OK   B var_ligne_ajoutee → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nopk
+OK   B var_null_vers_chaine_vide → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nulls
+OK   B var_blob_modifie → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_blobs
+OK   B var_infinity → FAIL/1 — attendu 1|FAIL, obtenu 1|FAIL — t_nums
+OK   B garde INTEGER hors plage → REFUS exit 2 — attendu 2, obtenu 2 — REFUS DE VIDAGE (exit 2) — INTEGER hors plage JS-safe détecté (précision JS non 
+OK   D1 préexistantes + 5 nouvelles vides → PASS/exit 0 — attendu 0|PASS, obtenu 0|PASS
+OK   D2 nouvelle table non vide → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — Article: 1 ligne(s) (attendu 0)
+OK   D3 table inattendue → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — inattendues: t_zzz
+OK   E1 colonne DDL ajoutée, toutes NULL → PASS/exit 0 — attendu 0|PASS, obtenu 0|PASS — Chapter: +stamp (DDL gelé §3.1)
+OK   E2 valeur non null dans colonne ajoutée → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — colonne_ajoutee_non_null
+OK   E2b chaîne vide '' dans colonne ajoutée → FAIL/exit 1 (≠ NULL) — attendu 1|FAIL, obtenu 1|FAIL — colonne_ajoutee_non_null
+OK   E3 colonne ajoutée hors DDL → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — colonnes
+OK   E4 colonne DDL insérée au milieu → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — colonnes
+OK   E5 valeur préexistante modifiée + colonne DDL → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — contenu (Chapter)
+OK   E6 application DDL partielle → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — colonnes
+OK   E7 deux colonnes DDL ajoutées, toutes NULL → PASS/exit 0 — attendu 0|PASS, obtenu 0|PASS — Job: +progress, +progressNote (DDL gelé §3.1)
+OK   E8 ligne ajoutée + colonnes DDL présentes → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — rowCount (Chapter)
+OK   E9 reconstruction CustomBookSkill conforme au DDL, 0 ligne → PASS/exit 0 — attendu 0|PASS, obtenu 0|PASS — CustomBookSkill: reconstruite selon DDL gelé (3 colonnes ajoutées: description, source, enabled) — 0 ligne AVANT et APRÈS
+OK   E10 reconstruction avec ligne APRÈS (0 AVANT) → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — table_reconstruite_non_vide
+OK   E11 reconstruction avec colonnes ≠ DDL → FAIL/exit 1 — attendu 1|FAIL, obtenu 1|FAIL — colonnes
+
+=== SYNTHÈSE : 30/30 tests conformes aux attentes — SUITE VALIDÉE ===

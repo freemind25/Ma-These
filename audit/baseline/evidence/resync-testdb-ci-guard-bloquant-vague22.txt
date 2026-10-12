@@ -1,0 +1,35 @@
+No difference detected.
+
+custom.db : synchrone avec le schéma.
+
+[-] Removed tables
+  - SoutenancePrep
+  - LegalRef
+  - Article
+  - ArticleVersion
+  - ImportedDoc
+
+[*] Redefined table `Chapter`
+
+[*] Redefined table `ChapterVersion`
+
+[*] Redefined table `CustomBookSkill`
+
+[*] Redefined table `Job`
+
+[*] Changed the `Article` table
+  [-] Removed index on columns (thesisId)
+
+[*] Changed the `ArticleVersion` table
+  [-] Removed index on columns (articleId)
+
+[*] Changed the `ImportedDoc` table
+  [-] Removed index on columns (thesisId)
+
+[*] Changed the `LegalRef` table
+  [-] Removed index on columns (domaine)
+
+[*] Changed the `SoutenancePrep` table
+  [-] Removed unique index on columns (thesisId)
+  [-] Removed index on columns (thesisId)
+code_sortie_garde=2

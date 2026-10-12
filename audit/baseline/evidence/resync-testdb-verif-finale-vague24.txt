@@ -1,0 +1,73 @@
+=== VÉRIFICATIONS FINALES LECTURE SEULE — vague 24 — 2026-10-11T19:33:00Z ===
+
+--- [V1] SHA-256 + taille + mtime + inode/liens des deux bases ---
+756c01587cc54a25db37c2f099266506aa01ffcff440870a61b43e441b38126d  db/custom.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  db/urbanisme-test.db
+db/custom.db : taille=265330688 o, inode=527789, liens=1, mtime=2026-10-11 06:45:23.410462155 +0000
+db/urbanisme-test.db : taille=552960 o, inode=527790, liens=2, mtime=2026-10-02 17:26:56.000000000 +0000
+
+--- [V2] Sauvegarde indépendante (audit/baseline/evidence/backups/) ---
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  audit/baseline/evidence/backups/urbanisme-test-avant-resync-20261011T091500Z.db
+audit/baseline/evidence/backups/urbanisme-test-avant-resync-20261011T091500Z.db : taille=552960 o, inode=169333, liens=1, mtime=2026-10-02 17:26:56.000000000 +0000
+
+--- [V3] Jumeau /tmp/c1-candidate (hard link attendu avec db/urbanisme-test.db) ---
+/tmp/c1-candidate/db/urbanisme-test.db : taille=552960 o, inode=527790, liens=2
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  /tmp/c1-candidate/db/urbanisme-test.db
+
+--- [V4] .env (cible Prisma par défaut) ---
+1
+OK absolu custom.db
+
+--- [V5] DDL gelé (hash pré-flight §2.11) ---
+ab2c312ba1fa021e064903b92153932f1574fd4a19642d94fee99020407e3355  -
+référence attendue : ab2c312ba1fa021e…07e3355
+
+--- [V6] État git (arbre, tags, commits en avance) ---
+2
+26
+candidat-app-audit-v1.2
+candidat-docs-audit-v1.2
+v1.10.7
+v1.10.8
+e4ce306
+
+--- [V7] Drift ×2 (lecture seule) ---
+No difference detected.
+
+custom.db exit=0
+
+[-] Removed tables
+  - SoutenancePrep
+  - LegalRef
+  - Article
+  - ArticleVersion
+  - ImportedDoc
+
+[*] Redefined table `Chapter`
+
+[*] Redefined table `ChapterVersion`
+
+[*] Redefined table `CustomBookSkill`
+
+[*] Redefined table `Job`
+
+[*] Changed the `Article` table
+  [-] Removed index on columns (thesisId)
+
+[*] Changed the `ArticleVersion` table
+  [-] Removed index on columns (articleId)
+
+[*] Changed the `ImportedDoc` table
+  [-] Removed index on columns (thesisId)
+
+[*] Changed the `LegalRef` table
+  [-] Removed index on columns (domaine)
+
+[*] Changed the `SoutenancePrep` table
+  [-] Removed unique index on columns (thesisId)
+  [-] Removed index on columns (thesisId)
+urbanisme-test.db exit=2
+
+--- [V8] SHAs APRÈS mesures (preuve de non-altération AVANT=APRÈS) ---
+756c01587cc54a25db37c2f099266506aa01ffcff440870a61b43e441b38126d  db/custom.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  db/urbanisme-test.db

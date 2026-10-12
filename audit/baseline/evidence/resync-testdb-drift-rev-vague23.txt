@@ -1,0 +1,45 @@
+# Re-mesure drift x2 — vague 23 (finalisation GO RESYNC-TESTDB) — 2026-10-11
+# Attendu : exit=0 (custom) / exit=2 (test) — état de départ du runbook doc 46 §2.6
+
+== custom.db ==
+No difference detected.
+
+exit=0
+
+== urbanisme-test.db ==
+
+[-] Removed tables
+  - SoutenancePrep
+  - LegalRef
+  - Article
+  - ArticleVersion
+  - ImportedDoc
+
+[*] Redefined table `Chapter`
+
+[*] Redefined table `ChapterVersion`
+
+[*] Redefined table `CustomBookSkill`
+
+[*] Redefined table `Job`
+
+[*] Changed the `Article` table
+  [-] Removed index on columns (thesisId)
+
+[*] Changed the `ArticleVersion` table
+  [-] Removed index on columns (articleId)
+
+[*] Changed the `ImportedDoc` table
+  [-] Removed index on columns (thesisId)
+
+[*] Changed the `LegalRef` table
+  [-] Removed index on columns (domaine)
+
+[*] Changed the `SoutenancePrep` table
+  [-] Removed unique index on columns (thesisId)
+  [-] Removed index on columns (thesisId)
+exit=2
+
+== SHA apres mesures (non-modification prouvee) ==
+756c01587cc54a25db37c2f099266506aa01ffcff440870a61b43e441b38126d  db/custom.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  db/urbanisme-test.db

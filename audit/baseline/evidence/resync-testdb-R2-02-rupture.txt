@@ -1,0 +1,51 @@
+==================================================================
+R2 — TRANSCRIPT RUPTURE DU HARD LINK (doc 46 v3.3 §2bis — option A, arbitrage 8.6) — 2026-10-11T20:51:59Z
+==================================================================
+
+### A.1 — État AVANT (dépôt + staging : SHA, inode, liens)
+$ sha256sum db/urbanisme-test.db /tmp/c1-candidate/db/urbanisme-test.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  db/urbanisme-test.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  /tmp/c1-candidate/db/urbanisme-test.db
+$ stat -c '%n | inode=%i | liens=%h' db/urbanisme-test.db /tmp/c1-candidate/db/urbanisme-test.db
+db/urbanisme-test.db | inode=527790 | liens=2
+/tmp/c1-candidate/db/urbanisme-test.db | inode=527790 | liens=2
+-- attendu : SHA ×2 == 16f3c3f4…84ae5 · inode 527790 · liens 2 ×2 — sinon ARRÊT
+
+### A.2 — Création du fichier indépendant (cp réel, JAMAIS cp -l)
+$ cp --preserve=timestamps db/urbanisme-test.db db/.resync-inode.db
+exit=0
+$ sha256sum + stat du fichier indépendant
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  db/.resync-inode.db
+db/.resync-inode.db | inode=576619 | liens=1 | taille=552960 | mtime=2026-10-02 17:26:56.000000000 +0000
+-- attendu : SHA == 16f3c3f4…84ae5 · inode ≠ 527790 · liens 1 — sinon ARRÊT
+
+### A.3 — Remplacement atomique (rename sur le même système de fichiers)
+$ mv db/.resync-inode.db db/urbanisme-test.db
+exit=0
+
+### A.4 — Vérification dépôt (contenu identique, nouvel inode, liens 1)
+$ sha256sum + stat db/urbanisme-test.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  db/urbanisme-test.db
+db/urbanisme-test.db | inode=576619 | liens=1 | taille=552960 | mtime=2026-10-02 17:26:56.000000000 +0000
+-- attendu : SHA == 16f3c3f4…84ae5 · inode ≠ 527790 (nouveau) · liens 1 — inode inchangé = rupture échouée : ARRÊT
+
+### A.5 — Vérification staging (ni supprimé, ni modifié)
+$ sha256sum + stat /tmp/c1-candidate/db/urbanisme-test.db
+16f3c3f4b42cdcaa1be1235ec593ff6beda3fbea6ed8104803ac0eb5a7584ae5  /tmp/c1-candidate/db/urbanisme-test.db
+/tmp/c1-candidate/db/urbanisme-test.db | inode=527790 | liens=1 | taille=552960 | mtime=2026-10-02 17:26:56.000000000 +0000
+-- attendu : SHA == 16f3c3f4…84ae5 (état pré-resync préservé) · inode 527790 conservé · liens 2→1
+
+### A.6 — Aucun changement Git inattendu + rupture prouvée
+$ git status --porcelain
+?? audit/baseline/evidence/GO-RESYNC-TESTDB-proprietaire-20261011.md
+?? audit/baseline/evidence/resync-testdb-R2-01-prevol.txt
+?? audit/baseline/evidence/resync-testdb-R2-02-rupture.txt
+?? audit/baseline/evidence/resync-testdb-rows-avant-R2-20261011T205147Z.json
+-- attendu : db/urbanisme-test.db NON listé (opération à contenu constant) ; seuls les artefacts R2 non suivis peuvent apparaître
+$ find -xdev -samefile db/urbanisme-test.db (depuis le dépôt)
+./db/urbanisme-test.db
+$ find / -xdev -samefile db/urbanisme-test.db 2>/dev/null (global)
+/home/z/my-project/db/urbanisme-test.db
+-- attendu : le dépôt et le staging partagent DÉSORMAIS des inodes DISTINCTS (un seul chemin par inode)
+
+### VERDICT §2bis — RUPTURE RÉUSSIE (étape 3 terminée)
