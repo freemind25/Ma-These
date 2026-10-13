@@ -3115,3 +3115,20 @@ Work Log:
 Stage Summary:
 - Perte Git bornée exactement : tout l'historique publié (≤ f4ca696, miroir GitHub) + d17488a + l'état courant complet EXISTENT et sont scellés ; seul le segment non publié d17488a→candidats est irrécupérable — et AUCUN besoin réel de le reconstituer (l'état courant contient tout le travail utile).
 - Gouvernance simplifiée : décision de stratégie = propriétaire seul ; recommandation Option B ; déviation déclarée impact nul ; attente : choix de stratégie + autorisation Phase 1.
+
+---
+
+Task ID: vague-48
+Agent: orchestrateur (poursuite après limite de contexte ; mission réitérée du propriétaire : plan de sortie du blocage Git fondé exclusivement sur les ressources réellement disponibles, en 5 parties, avec recommandation claire et décisions à approuver ; abandon définitif de la piste opérateur ; aucune modification pendant l'analyse)
+
+Task: (1) Re-vérifier l'état courant par un unique instantané Git lecture seule ; (2) re-livrer le plan complet en conversation de façon autonome après la coupure de session (5 parties + recommandation + décisions requises) ; (3) aucune recherche relancée, aucune écriture technique.
+
+Work Log:
+- Instantané lecture seule (unique, ce vague) : main ahead 19, HEAD a6d5e09 (un marqueur plateforme UUID de plus depuis la topologie vague 47 : 586f3dd → a6d5e09), arbre propre, tags v1.10.7/v1.10.8, origin/main f4ca696 inchangé ; cadence observée ≈ +1 marqueur/30-60 min — divergence main↔origin en croissance continue, intégrée au plan comme facteur de risque.
+- Plan FINAL livré en conversation (sans fichier nouveau ; résultat négatif doc 51 maintenu, aucune recherche répétée) : ressources vérifiées + limites ; options A (constat minimal) / B (reconstruction documentée non destructive — RECOMMANDÉE) / C (statu quo) / D (reconstitution hash-exacte — écartée) ; Phase 1 de scellement (1 commit documentaire + branche orpheline reconstruction/v1.2 + RECONSTRUCTION_NOTES.md + 3 tags annotés + validations lecture seule — SANS db:push, SANS push Git, SANS écriture base) puis Phase 2 (R2 ét. 7-12 → C2 Windows 8 preuves → GO A S1-S4 / GO B 10 routes zod + levée P7 → candidat final → GO MEP) ; risque transversal de persistance intégré (repo.tar = état 10-10, docs 51 §5/§8 ; archives secours A/B/C = état vague 32).
+- Décisions soumises au propriétaire : DEC-GIT-1 (stratégie A/B/C, reco B) · DEC-GIT-2 (périmètre exact Phase 1) · DEC-GIT-3 (point du tag app R2, reco b266110 — arbre contenant la base de test post-resync, blob suivi b35a8d0a) · DEC-GIT-4 (préservation : téléchargement secours A/B/C et/ou instantané secours frais sur autorisation distincte) · DEC-GIT-5 (push Git différé après GO MEP) ; D-1…D-5 et VS-1/2/3 inchangés, hors périmètre de la présente mission.
+- Red lines : 0 écriture .git/bases/sauvegardes/preuves/repo.tar · 0 commit/tag/push/db:push/restauration/build · 0 révocation/génération · 0 valeur secrète · seules écritures = présent append ; docs 53/54 + dossier demande opérateur = SANS OBJET, conservés tels quels, jamais transmis.
+
+Stage Summary:
+- Mission accomplie : plan de sortie livré intégralement en conversation ; recommandation Option B (superset non destructif de A) ; zéro mutation pendant l'analyse.
+- Sortie du blocage conditionnée à DEC-GIT-1…5 : dès accord, Phase 1 exécutable en une session (~10 min), puis Phase 2 sous GO séparés.
