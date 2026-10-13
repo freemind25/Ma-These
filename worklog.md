@@ -3132,3 +3132,19 @@ Work Log:
 Stage Summary:
 - Mission accomplie : plan de sortie livré intégralement en conversation ; recommandation Option B (superset non destructif de A) ; zéro mutation pendant l'analyse.
 - Sortie du blocage conditionnée à DEC-GIT-1…5 : dès accord, Phase 1 exécutable en une session (~10 min), puis Phase 2 sous GO séparés.
+
+---
+
+Task ID: vague-49
+Agent: orchestrateur (propriétaire 2026-10-13 ~06:1x UTC : option B retenue PROVISOIREMENT ; avant toute exécution, dossier en 5 points — inventaire sauvegarde + moyens de copie indépendante, rien ne modifie tant que sauvegarde non faite et vérifiée, plan exact des commandes Git distinguant main et branche orpheline, explication du pointage des tags SANS présenter un marqueur plateforme comme candidat validé, confirmation d'intégrité des bases/proofs ; AUCUN commit/tag/branch-change/push/data-modification autorisé à ce stade)
+
+Task: (1) Mesure lecture seule unique de gel pour dater le dossier ; (2) livrer le dossier d'exécution en conversation (5 points) SANS exécuter quoi que ce soit ; (3) réviser le périmètre de tags suite au point 4 du propriétaire (retrait de tout tag sur marqueur plateforme) ; (4) append worklog.
+
+Work Log:
+- Gel lecture seule 06:17:04 UTC : ×4 CONFORMES (custom.db 756c0158…8126d · urbanisme-test.db 6b72e1dc…65fb8 · sauvegarde pre-resync 16f3c3f4…84ae5, chemin confirmé audit/baseline/evidence/backups/urbanisme-test-avant-resync-20261011T091500Z.db · repo.tar cb7e5eab…9272) ; HEAD 1aea6f4 (marqueur plateforme, ahead 20 — croissance continue documentée) ; arbre propre.
+- DOSSIER LIVRÉ EN CONVERSATION (sans fichier nouveau) : inventaire sauvegarde A-D (état de travail worklog+docs 00-64+preuves ; bases protégées ; canaux existants repo.tar + secours A/B/C vague 32 ; dépôt Git post-Phase 1) ; moyens de copie indépendante (archive duplex /home/sync/upload [OSS] + /tmp avec SHA256SUMS + téléchargement propriétaire) ; séquencement S1-S4 sauvegarde-vérification AVANT tout Git ; plan exact des commandes (M1 commit vide constat sur main via --allow-empty -F ; R1-R3 branche orpheline par plumbing hash-object/read-tree index temporaire/write-tree/commit-tree/update-ref — ZÉRO checkout, ZÉRO déplacement de HEAD, ZÉRO modification d'arbre de travail ; T1-T2 tags annotés) ; révision TAGS : DEC-GIT-3 RETIRÉE — aucun tag sur marqueur plateforme en Phase 1, tags Phase 1 = constat-perte-lignée-2026-10-12 (→ commit constat authored) + reconstruction-base-v1.2 (→ commit orphelin authored) ; tags candidat-*-R2 DIFFÉRÉS en Phase 2 après GO A/GO B, pointeront vers commits authored post-vérification ; confirmations d'intégrité (0 commande d'écriture sur bases/sauvegardes/preuves dans le plan ; gel avant/après ×4 obligatoire ; règle corrective vague 47 : aucun contrôle de dérive par db:push).
+- Red lines : 0 écriture .git/bases/sauvegardes/preuves/repo.tar · 0 commit/tag/push/checkout/db:push/restauration · 0 révocation/génération · 0 valeur secrète · seules écritures = présent append.
+
+Stage Summary:
+- Dossier d'exécution complet livré, sans exécution ; option B provisoire confirmée, périmètre Phase 1 révisé (sauvegarde préalable obligatoire, 2 tags authored seulement, candidat tags en Phase 2).
+- Attente : autorisation d'exécution du propriétaire sur le périmètre révisé ; aucun acte technique avant.
