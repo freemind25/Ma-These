@@ -3148,3 +3148,22 @@ Work Log:
 Stage Summary:
 - Dossier d'exécution complet livré, sans exécution ; option B provisoire confirmée, périmètre Phase 1 révisé (sauvegarde préalable obligatoire, 2 tags authored seulement, candidat tags en Phase 2).
 - Attente : autorisation d'exécution du propriétaire sur le périmètre révisé ; aucun acte technique avant.
+
+---
+
+Task ID: vague-50
+Agent: orchestrateur (propriétaire 2026-10-13 : Étape 1 UNIQUEMENT autorisée — préparer la sauvegarde ; archives sans déplacement/modification des sources ; vérification SHA-256 + contrôle contenu ; chemins/tailles/empreintes/vérifs à fournir ; distinguer copies environnement vs copies indépendantes ; procédure de téléchargement propriétaire ; AUCUNE opération Git (0 commit/tag/ref/branche/push) ; bases/sauvegardes/preuves intouchées ; commit vide main à RÉÉVALUER avant toute autorisation ; aucune étape suivante implicite)
+
+Task: Exécuter l'étape S (sauvegarde duplex + vérifications) strictement dans ce périmètre, consigner les résultats, append worklog.
+
+Work Log:
+- S1 GEL AVANT 06:24:35 UTC ×4 CONFORMES (custom.db 756c0158…8126d · urbanisme-test.db 6b72e1dc…65fb8 · pre-resync 16f3c3f4…84ae5 · repo.tar cb7e5eab…9272) ; espace OK (5,7 G /, OSS dispo).
+- S2 CRÉATION ARCHIVES (lecture pure des sources, tar -czf, aucune source touchée) : arch1 etat-travail-20261013T062446Z.tar.gz (worklog.md + audit/baseline [docs 00-64, preuves, tools, diagrams, backup pre-resync inclus] + db/custom.db + db/urbanisme-test.db) = 263 194 447 o ; arch2 git-magasin-20261013T062446Z.tar.gz (.git complet : refs, logs, 2 packs dont pack-42d03321 réécrit 10-12 13:02 6 053 639 o, pack-32c71e10 58 329 082 o) = 198 889 254 o ; duplex copié avec cp -p vers /home/sync/upload/secours-optionB-20261013/ (OSS).
+- S3 VÉRIFICATIONS : SHA-256 identiques ×2 sites (arch1 b3dd6369…d24d, arch2 30d8d121…c1f9) ; arch1 = 644 entrées, entrées clés présentes avec tailles/mtimes exacts (worklog 603 947 o 06:17 · pre-resync 552 960 o mtime préservé 10-02 17:26 · custom.db 265 330 688 o · test.db 622 592 o · docs 50/64 présents) ; arch2 = 3 121 entrées (refs/heads/main, tags v1.10.7/8, HEAD, logs, packs) ; extraction témoin worklog.md vers /tmp/verif-optionB : SHA 65102ea7…d9f367 == source ; SHA256SUMS.txt créés et sha256sum -c OK ×2 sites.
+- S4 GEL APRÈS 06:26:17 UTC ×4 IDENTIQUES au gel avant → la sauvegarde n'a rien altéré.
+- ZÉRO opération Git exécutée ; zéro écriture sur bases/sauvegardes/preuves/repo.tar ; seules écritures : nouveaux fichiers d'archive (destinations nouvelles) + présent append ; le worklog archivé = état vague 49 (l'append vague 50 est postérieur à la capture, documenté).
+- Red lines : 0 commit/tag/ref/branche/push · 0 checkout/db:push/restauration · 0 révocation/génération · 0 valeur secrète.
+
+Stage Summary:
+- Étape 1 ACQUIRTÉE : sauvegarde duplex vérifiée (2 sites, empreintes identiques, contenu contrôlé, gel avant/après prouvé) ; copie OSS = hors cycle de vie du sandbox mais sur infrastructure plateforme ; seule copie réellement indépendante = téléchargement propriétaire (procédure fournie).
+- En attente : téléchargement propriétaire + sa vérification locale, puis décision SÉPARÉE sur la reconstruction Git (M1 commit vide à réévaluer avant autorisation ; aucune étape implicite).
