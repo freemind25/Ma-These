@@ -12,7 +12,7 @@ export function AppFooter() {
             height={16}
             className="object-contain"
           />
-          <span>Ma Thèse v1.2.0</span>
+          <span>Ma Thèse v1.10.9</span>
         </div>
         <span>Assistant intelligent pour la rédaction de thèses</span>
       </div>

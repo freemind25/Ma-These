@@ -7,7 +7,7 @@
 #   - tauri.conf.json l.8 : beforeBuildCommand = "bash scripts/build-tauri-prep.sh"
 #     (produit build/tauri-bundle/standalone.zip + node.exe, ressources l.42-46)
 #   - next.config.ts l.4 : output: "standalone"
-#   - Framework Tauri v2 (Cargo.toml) ; version produit 1.10.7 (tauri.conf.json l.4)
+#   - Framework Tauri v2 (Cargo.toml) ; version produit 1.10.9 (tauri.conf.json l.4)
 #
 # Secret runtime : depuis T14 (C-D2 option a), AUCUNE clé API n'est embarquée au
 # build — OPENALEX_API_KEY est fournie par l'environnement de la machine

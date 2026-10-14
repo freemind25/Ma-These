@@ -42,7 +42,7 @@ export function AboutDialog({
               <p className="font-semibold text-lg">Ma Thèse</p>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="text-[10px]">
-                  v1.2.0
+                  v1.10.9
                 </Badge>
                 <Badge variant="outline" className="text-[10px]">
                   Next.js 16
