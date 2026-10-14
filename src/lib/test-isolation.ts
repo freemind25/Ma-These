@@ -34,12 +34,53 @@ const FORBIDDEN_PATTERNS: ReadonlyArray<{ label: string; regex: RegExp }> = [
   { label: 'espace de préservation /home/sync', regex: /[/\\]home[/\\]sync/i },
 ]
 
+/** Partie « chemin » d'une URL (avant tout ?query ou #fragment). */
+function extractPathPart(url: string): string {
+  let out = url
+  const queryIndex = out.indexOf('?')
+  if (queryIndex !== -1) out = out.slice(0, queryIndex)
+  const fragmentIndex = out.indexOf('#')
+  if (fragmentIndex !== -1) out = out.slice(0, fragmentIndex)
+  return out
+}
+
+/**
+ * Détecte toute traversée de chemin (segment '..') dans l'URL brute comme
+ * dans ses formes décodées (ex. %2e%2e). Encodage malformé = suspect par
+ * défaut (échec fermé) — une URL illisible ne doit jamais être autorisée.
+ */
+function hasPathTraversal(url: string): boolean {
+  const forms = new Set<string>([url])
+  try {
+    forms.add(decodeURIComponent(url))
+  } catch {
+    return true
+  }
+  for (const form of forms) {
+    if (form.split(/[/\\]/).some((segment) => segment === '..')) return true
+  }
+  return false
+}
+
 /** true si l'URL est explicitement autorisée comme cible jetable de test. */
 export function isAllowedTestDatabaseUrl(url: string): boolean {
   const trimmed = url.trim()
   if (trimmed === '') return false
-  if (trimmed.includes(':memory:')) return true
-  return ALLOWED_PREFIXES.some((prefix) => trimmed.startsWith(prefix))
+
+  // SQLite en mémoire : uniquement si le chemin (hors ?query/#fragment) est
+  // exactement ':memory:' ou 'file::memory:'. Un ':memory:' placé dans un
+  // paramètre de requête d'une URL de fichier réel n'est PAS une base en
+  // mémoire et ne doit pas passer la liste blanche.
+  const pathPart = extractPathPart(trimmed)
+  if (pathPart === ':memory:' || pathPart === 'file::memory:') return true
+
+  // Liste blanche de préfixe, puis contrôles de robustesse (échec fermé) :
+  // une URL commençant par le préfixe autorisé mais contenant une traversée
+  // ('..', y compris encodée) ou un motif protégé est refusée.
+  if (!ALLOWED_PREFIXES.some((prefix) => trimmed.startsWith(prefix))) return false
+  if (hasPathTraversal(trimmed)) return false
+  if (findForbiddenMatch(trimmed) !== null) return false
+  return true
 }
 
 /** Retourne le libellé du premier motif protégé reconnu, sinon null. */

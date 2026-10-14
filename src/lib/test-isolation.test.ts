@@ -86,4 +86,40 @@ describe("filet d'isolation des bases de données protégées", () => {
     expect(findForbiddenMatch(SAFE_TEST_DATABASE_URL)).toBeNull()
     expect(isAllowedTestDatabaseUrl(SAFE_TEST_DATABASE_URL)).toBe(true)
   })
+
+  it('régression W1 : refuse une traversée de chemin vers une base protégée depuis le préfixe jetable', () => {
+    const env = {
+      DATABASE_URL:
+        'file:/tmp/thesisframe-vitest-isolation/../../home/z/my-project/db/custom.db',
+    }
+    const result = enforceTestDatabaseIsolation(env)
+    expect(result.replaced).toBe(true)
+    expect(env.DATABASE_URL).toBe(SAFE_TEST_DATABASE_URL)
+    expect(
+      isAllowedTestDatabaseUrl('file:/tmp/thesisframe-vitest-isolation/../../db/urbanisme-test.db')
+    ).toBe(false)
+  })
+
+  it('régression W1b : refuse une traversée encodée (%2e%2e)', () => {
+    expect(
+      isAllowedTestDatabaseUrl('file:/tmp/thesisframe-vitest-isolation/%2e%2e/%2e%2e/db/custom.db')
+    ).toBe(false)
+  })
+
+  it("régression W2 : refuse ':memory:' contrebandé dans une URL de fichier réel", () => {
+    expect(isAllowedTestDatabaseUrl('file:/home/z/my-project/db/custom.db?mode=:memory:')).toBe(
+      false
+    )
+    const env = { DATABASE_URL: 'file:/home/z/my-project/db/custom.db?mode=:memory:' }
+    expect(enforceTestDatabaseIsolation(env).replaced).toBe(true)
+    expect(env.DATABASE_URL).toBe(SAFE_TEST_DATABASE_URL)
+  })
+
+  it('accepte les formes légitimes : paramètre de requête sur la base jetable, :memory: strict', () => {
+    expect(
+      isAllowedTestDatabaseUrl('file:/tmp/thesisframe-vitest-isolation/test.db?connection_limit=1')
+    ).toBe(true)
+    expect(isAllowedTestDatabaseUrl(':memory:')).toBe(true)
+    expect(isAllowedTestDatabaseUrl('file::memory:?cache=shared')).toBe(true)
+  })
 })
