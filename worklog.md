@@ -3167,3 +3167,75 @@ Work Log:
 Stage Summary:
 - Étape 1 ACQUIRTÉE : sauvegarde duplex vérifiée (2 sites, empreintes identiques, contenu contrôlé, gel avant/après prouvé) ; copie OSS = hors cycle de vie du sandbox mais sur infrastructure plateforme ; seule copie réellement indépendante = téléchargement propriétaire (procédure fournie).
 - En attente : téléchargement propriétaire + sa vérification locale, puis décision SÉPARÉE sur la reconstruction Git (M1 commit vide à réévaluer avant autorisation ; aucune étape implicite).
+---
+Task ID: P-3
+Agent: explore-prod-docs
+Task: consolidation procédures production (lecture seule)
+
+Work Log:
+- Contexte obligatoire lu : worklog.md lignes 3090-3170 (vagues 45-50 : clarification « push » = prisma db push ; gouvernance définitive « aucun opérateur externe » ; perte Git bornée ; option B provisoire ; sauvegarde duplex S1-S4 acquise vague 50).
+- Lecture des 10 documents demandés : audit/baseline 15 (intégral), 14, 24, 43, 58, 61, 64 ; specs/build-desktop-pipeline (spec+plan+preuves) ; specs/prod-readiness-audit (spec + preuves 508 l., sections ciblées) ; docs/SAUVEGARDE-RESTAURATION, NOTICE-UTILISATION, EXPLOITATION-SERVEUR. Tous présents et non vides.
+- Recoupements de résolution : drift urbanisme-test.db (doc 43 §4) résorbé par resync sous GO RESYNC-TESTDB (doc 46 + worklog vague 29, dérive 0×2) ; durcies C-4 capabilities/CSP (doc 15 §1) ; réserve R-CI dissoute (run vert CI, preuves build-desktop-pipeline).
+- Rapport structuré A-D livré en conversation (build Windows docs 15/24 ; 8 preuves C2 + verdict doc 43 ; scénarios RA-1…RA-8 doc 58 ; rotations D-1…D-5 doc 64 + actions A0-A10 doc 61) — aucune valeur de clé, désignation symbolique K-1…K-7 uniquement.
+- Red lines : 0 modification de fichier existant, 0 commande technique, 0 écriture sous /home/sync ; seules écritures = présent append.
+
+Stage Summary:
+- Doc 15 : procédure C2 complète mais sans durées estimées (seules mesures existantes : runs CI 13 min 42 s / 9 min 13 s, preuves build-desktop-pipeline) ; points d'arrêt formalisés par doc 24 §2/§6.
+- C2 : verdict doc 43 = PROBLEMES (6/8 preuves non reçues + drift exit 2 sur urbanisme-test.db, résorbé depuis) ; les 8 preuves restent à produire par le propriétaire sur son PC (A7 doc 61).
+- Doc 64 : décisions D-1…D-5 toutes « en attente d'accord », vérifications console VS-1…VS-3 proposées non réalisées ; aucune révocation/génération.
+- Doc 61 : actions A2/A3/A10 (dépendantes « opérateur ») à relire au regard de la gouvernance définitive vague 47 (aucun opérateur externe) ; chemin actuel = sauvegarde S1-S4 acquise (vague 50) puis décisions propriétaire.
+---
+---
+Task ID: P-1
+Agent: explore-config
+Task: inventaire configuration/packaging production (lecture seule)
+
+Work Log:
+- Contexte lu (worklog l.3090-3169) : gel levé partiellement, production perso en préparation ; analyse 100 % lecture seule (0 écriture code/Git/base, 0 install, 0 build, 0 test, 0 serveur).
+- Lecture des 12 périmètres demandés : package.json, tauri.conf.json, Cargo.toml, main.rs/lib.rs, capabilities/default.json, next.config.ts, vercel.json, middleware.ts, db.ts, build-tauri-prep.sh, geo-mcp-service, secours-download, vitest.config.ts, dist-tauri.
+- Recherche exhaustive chemins codés en dur (localhost / 127.0.0.1 / XTransformPort / /home/ / :3000 / :3030) sur src/ + src-tauri/src ; comptages : localhost 209 (dont 207 en tests), 127.0.0.1 2, XTransformPort 0, /home/ 2, :3000 119 (tests), :3030 0.
+
+Stage Summary:
+- Versions 1.10.8 cohérentes ×3 (package.json:3, tauri.conf.json:4, Cargo.toml:3) MAIS about-dialog.tsx:45 affiche « v1.2.0 » (incohérence UI à corriger avant MEP) ; commentaire périmé build-desktop.yml:10 (1.10.7).
+- Secrets : 0 clé codée en dur — hardcoded-keys.ts = process.env uniquement ; lib.rs:227-234 ne transmet que des noms (défauts vides) ; .env présent et ignoré (.gitignore:34 `.env*`), .env.example versionné (l.36) ; .env.local absent.
+- Risques desktop : omniroute http://localhost:20128/v1 (ai-types.ts:100) mort hors sandbox (contournable : autre provider) ; /home/sync/upload (secours-download route.ts:32) sandbox-only → 404 propre en desktop ; :3000/:3030/XTransformPort = 0 en code non-test ; worker.ts:241 s'appuie sur PORT (=14325 via lib.rs:214) → sain.
+- geo-mcp-service (port 3005, 0.0.0.0) NON consommé par l'app (/api/geo-mcp intégré, route.ts:2) ; start.sh:6 bug (bun index.ts vs index.js) ; urbanisme-test.db embarquée dans les resources (poids installeur, tauri.conf.json:44).
+---
+
+---
+
+Task ID: P-2
+Agent: explore-quality
+Task: état qualité/sécurité/tests (lecture seule)
+
+Work Log:
+- Contexte lu (80 dernières lignes worklog) ; baseline consignée : tests 1658/1658, lint 0 err / 247 warn, 0 P1/P2, zéro credential résident.
+- Lint relancé (bun run lint = eslint .) : EXIT 0, « ✖ 247 problems (0 errors, 247 warnings) » = baseline exacte, aucune erreur nouvelle. Top règles : no-explicit-any 129, no-unused-vars 39, no-non-null-assertion 35, no-console 34, exhaustive-deps 5 (+ no-img-element 3, 2 directives eslint-disable inutilisées : ai-prediction.ts:64, paper2code-page.tsx:151).
+- Scan secrets (motifs key/token/secret/Bearer/sk-/pat_ sur src/, src-tauri/src/, scripts/) : 0 littéral, 0 sk-/Bearer/pat_. hardcoded-keys.ts = map process.env uniquement (aucune valeur en dur). Clés IA : env machine OU cookie httpOnly base64 « thesisframe-ai-config » ; /api/ai-keys n'expose que des masques (8 premiers + 4 derniers car.) ; use-ai-config migre localStorage→cookie puis n'expose jamais la clé au client ; Tauri lib.rs n'embarque aucune clé (transmet seulement OPENALEX_API_KEY/CORE_API_KEY depuis l'environnement). .env (50 o) présent sur disque, NON suivi Git (gitignore .env* ; ls-files → .env.example seul). Zéro credential résident confirmé.
+- Tests : vitest.config.ts (env node, setupFiles [], include src/**/*.test.*, 78 fichiers) ; 26/26 tests importantant @/lib/db le mockent (vi.mock) ; les 5 tests passant par modules serveur à dépendance db (book-skills-server, rag-service, legal-refs-server, zai-client, corpus-publication) mockent ces intermédiaires → @/lib/db jamais atteint ; 0 « new PrismaClient » dans les tests. DATABASE_URL est SET dans l'env shell → un futur test sans mock toucherait la base réelle (custom.db) : isolation actuelle = par convention, sans filet (setup vitest forçant une base jetable recommandé). Conclusion : tests isolés de la base réelle en l'état ; suite NON rejouée (consigne) ; commande exacte = bun run test:run (vitest run).
+- TODO/FIXME/HACK : 17 occurrences case-insensitive dans src/, toutes bénignes (feature « todo » UI onglet-recherche, statut « todo » enum api-schemas.ts:285, texte de prompt paper2code route:122) ; 0 FIXME, 0 HACK, 0 vrai marqueur de dette.
+- Gestion d'erreurs : error.tsx / global-error.tsx / not-found.tsx / loading.tsx ABSENTS de src/ (écart UX résilience) ; pattern routes API homogène try/catch → NextResponse.json 400 (ZodError) / 500 générique : ex. src/app/api/thesis/route.ts:35-41, src/app/api/ai-config/route.ts:64-73.
+- dev.log (~4166 lignes, serveur dev actif next-server v16.1.3) : fond = uniquement prisma:query du worker (polling Job 3 s, sweep veille 60 s) ; aucune exception récente ; seul artefact ancien lignes 1-3 (EADDRINUSE double démarrage) ; fichier contient un \0 binaire vers offset 291.
+- instrumentation.ts : au boot nodejs démarre startJobWorker (file persistante modèle Job en base, claim optimiste updateMany, reprise des orphelins >10 min, handlers deep-research / veille-check / article-import-ocr / noop) + startDailyBackup (VACUUM INTO quotidien, rotation 7 j). Dans un build Tauri desktop ces tâches de fond tourneront dans le serveur Next embarqué (polling 3 s en continu, veilles auto = trafic réseau sortant, snapshots quotidiens SQLite sur la machine de l'utilisateur ; timer.unref ne bloque pas l'arrêt).
+
+Stage Summary:
+- Conforme : lint = baseline exacte (0 err / 247 warn), zéro secret littéral ou résident, tests isolés de la base réelle (vérifié 26/26 mocks + 5/5 mocks intermédiaires), pattern d'erreur API homogène.
+- Écarts : absence error.tsx/global-error.tsx/not-found.tsx/loading.tsx ; isolation tests sans filet technique (DATABASE_URL réel set dans l'env, prudence pour tout nouveau test) ; aucune nouvelle P1/P2. Red lines : 0 écriture projet (seul présent append), 0 git write, 0 install, 0 serveur, 0 exécution de tests, 0 valeur secrète affichée.
+
+---
+
+Task ID: P-0
+Agent: orchestrateur (décision propriétaire 2026-10-14 : FIN DU GEL INTÉGRAL — reprise ciblée préparation production personnelle Ma Thèse ; autorisé = analyse code, corrections indispensables + tests/preuves, stratégie version/build/installeur Windows, PRÉPARATION Git avec plan présenté AVANT toute opération modifiant refs/historique, documentation/traçabilité ; protections maintenues = bases/sauvegardes, migrations réelles, clés, push/publication, opérations destructives, endpoint)
+
+Task: Mission prioritaire = état consolidé 6 sections ; orchestration analyses P-1/P-2/P-3 ; aucune opération réservée.
+
+Work Log:
+- Cadrage lecture seule : worklog vagues 44-50 relues ; docs 55 (checklist MEP) + 57 (blocages priorisés) lus intégralement ; Git : main ahead 24, HEAD 8173f67 (marqueurs plateforme UUID), arbre propre, tags v1.10.7/8, origin/main f4ca696.
+- Agents lecture seule exécutés (entrées P-1/P-2/P-3 ci-dessus) : config/packaging, qualité/sécurité/tests, procédures production.
+- Constats clés : lint 0 err/247 warnings (= baseline exacte) ; 0 littéral + 0 credential résident (re-prouvé) ; tests isolés par mocks (78 fichiers) mais sans filet technique DATABASE_URL ; launcher Tauri cohérent (port 14325, DB data/custom.db, clés par env, CSP durcie, capabilities core:default) ; version UI about-dialog.tsx:45 « v1.2.0 » obsolète vs 1.10.8 ; urbanisme-test.db embarquée dans le bundle sans usage runtime ; 0 nouvelle P1/P2.
+- État consolidé livré EN CONVERSATION (6 sections + plan Git Phase 1 soumis pour accord + stratégie version v1.10.9) ; aucune exécution d'opération réservée.
+
+Stage Summary:
+- VERDICT : aucune anomalie bloquante pour une application personnelle mono-thèse ; critère 4 (migration réelle) reporté avec justification ; chemin recalibré = [GO-GIT-Phase1] → candidat identifiable → re-validations (tests/lint/GP) → R2 ét.6-12 [GO] → C2 Windows propriétaire → GO MEP.
+- Corrections avant lancement réduites à : (1) cohérence version v1.10.9 (4 fichiers), (2) filet tests DATABASE_URL jetable.
+- Red lines : 0 écriture base/sauvegarde/preuve/repo.tar · 0 commit/tag/push/db:push · 0 rotation de clé · 0 valeur secrète · seules écritures = appends worklog P-0..P-3.
