@@ -1,0 +1,6 @@
+c9fdcfb1d78cfc7596d9dee2a9e23999d56da91e2712953f7a45e9f474bc95dc  fix-c2-ecarts.patchs.mbox
+d9d28807abc3e6a8a3ba01136e781f9d7190f7596da28ed565ba66c3291da986  patches/0001-fix-c2-O1-arr-t-propre-du-serveur-node-la-fermeture-.patch
+18fa60524bf0675b7c26d3ba0eea844e0cd7c9f4a97dd8264b3d6d5f48cf66fd  patches/0002-fix-c2-E2-erreurs-DB-explicites-c-t-serveur-toasts-v.patch
+f18619264dfdf9765335d61fefd9a0b53f2031291f79d370890dce792608e60c  patches/0003-fix-c2-E3-migration-de-sch-ma-SQLite-la-mise-jour-no.patch
+415c940a2dbfb9713dc68d2450000f4218b4eca9a77f55de6ad9eea549c8e2e1  patches/0004-style-c2-E3-console.warn-au-lieu-de-console.log-r-gl.patch
+5281925951196ab1d5224bd3a640fddac507c26a83cffa2e76f1f825e68bbf7d  patches/0005-style-c2-E3-console.warn-au-lieu-de-console.log-r-gl.patch

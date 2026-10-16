@@ -1,0 +1,1217 @@
+From 58c0866e4b78356b12342cf43939c5967cf5fa61 Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Fri, 16 Oct 2026 13:52:59 +0000
+Subject: [PATCH 1/5] =?UTF-8?q?fix(c2-O1):=20arr=C3=AAt=20propre=20du=20se?=
+ =?UTF-8?q?rveur=20node=20=C3=A0=20la=20fermeture=20+=20purge=20orphelin?=
+ =?UTF-8?q?=20au=20boot?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- Remplace std::mem::forget(child) par ServerChild (état Tauri) + kill
+  de l'arbre (taskkill /T /F) sur RunEvent::Exit → plus de node.exe
+  orphelin occupant SERVER_PORT après fermeture.
+- Au boot: si le port 14325 est déjà occupé (orphelin d'une session
+  précédente ≤ 1.10.9), l'orphelin est détecté via netstat et arrêté
+  avant le spawn (sinon EADDRINUSE silencieux).
+- Écart C2-O1 confirmé en exécution (node.exe PID 8072, audit 2026-10-16).
+---
+ src-tauri/src/lib.rs | 81 ++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 78 insertions(+), 3 deletions(-)
+
+diff --git a/src-tauri/src/lib.rs b/src-tauri/src/lib.rs
+index 2ccc800..179f6bb 100755
+--- a/src-tauri/src/lib.rs
++++ b/src-tauri/src/lib.rs
+@@ -121,10 +121,49 @@ fn extract_standalone(
+     Ok(standalone_dir)
+ }
+ 
++/// C2-O1 : handle du processus serveur node.exe, conservé dans l'état Tauri
++/// pour permettre un arrêt propre à la fermeture de l'application.
++/// (Remplace `std::mem::forget(child)` qui laissait un node.exe orphelin
++/// occuper SERVER_PORT après chaque fermeture → EADDRINUSE au redémarrage.)
++struct ServerChild(std::sync::Mutex<Option<std::process::Child>>);
++
++/// C2-O1 : arrête un éventuel node.exe orphelin d'une session précédente qui
++/// écouterait déjà SERVER_PORT (versions ≤ 1.10.9 : process jamais tué).
++fn kill_port_orphan(port: u16, log_file: &mut Option<std::fs::File>) {
++    #[cfg(target_os = "windows")]
++    {
++        let out = std::process::Command::new("netstat")
++            .args(["-ano", "-p", "tcp"])
++            .creation_flags(CREATE_NO_WINDOW)
++            .output();
++        if let Ok(o) = out {
++            let text = String::from_utf8_lossy(&o.stdout);
++            let needle = format!(":{}", port);
++            let mut seen: std::collections::HashSet<String> = Default::default();
++            for line in text.lines() {
++                if line.contains("LISTENING") && line.contains(&needle) {
++                    if let Some(pid) = line.split_whitespace().last() {
++                        if pid.chars().all(|c| c.is_ascii_digit()) && seen.insert(pid.to_string()) {
++                            diag!(log_file, "C2-O1: arrêt de l'orphelin pid={} (port {})", pid, port);
++                            let _ = std::process::Command::new("taskkill")
++                                .args(["/PID", pid, "/T", "/F"])
++                                .creation_flags(CREATE_NO_WINDOW)
++                                .output();
++                        }
++                    }
++                }
++            }
++        }
++    }
++    #[cfg(not(target_os = "windows"))]
++    let _ = (port, log_file);
++}
++
+ #[cfg_attr(mobile, tauri::mobile_entry_point)]
+ pub fn run() {
+     tauri::Builder::default()
+         .plugin(tauri_plugin_shell::init())
++        .manage(ServerChild(std::sync::Mutex::new(None)))
+         .setup(|app| {
+             let handle = app.handle().clone();
+ 
+@@ -207,6 +246,15 @@ pub fn run() {
+                 let port = SERVER_PORT;
+                 diag!(log_file, "Démarrage node.exe sur le port {}...", port);
+ 
++                // C2-O1 : si un orphelin d'une session précédente écoute déjà le
++                // port, l'arrêter AVANT le spawn (sinon le nouveau serveur échoue
++                // en EADDRINUSE et l'app se raccroche silencieusement à l'ancien).
++                if std::net::TcpStream::connect(&format!("127.0.0.1:{}", port)).is_ok() {
++                    diag!(log_file, "C2-O1: port {} déjà occupé — orphelin probable", port);
++                    kill_port_orphan(port, &mut log_file);
++                    std::thread::sleep(std::time::Duration::from_millis(500));
++                }
++
+                 let mut cmd = std::process::Command::new(&node_exe);
+                 #[cfg(target_os = "windows")]
+                 cmd.creation_flags(CREATE_NO_WINDOW);
+@@ -275,11 +323,38 @@ pub fn run() {
+                     }
+                 }
+ 
+-                std::mem::forget(child);
++                // C2-O1 : conserver le handle pour l'arrêt propre à la fermeture
++                // (remplace std::mem::forget — cf. struct ServerChild).
++                let state = app.state::<ServerChild>();
++                *state.0.lock().unwrap() = Some(child);
+             }
+ 
+             Ok(())
+         })
+-        .run(tauri::generate_context!())
+-        .expect("error while running Ma Thèse");
++        .build(tauri::generate_context!())
++        .expect("error while running Ma Thèse")
++        .run(|app, event| {
++            // C2-O1 : arrêt propre du serveur embarqué à la fermeture de l'app
++            // (RunEvent::Exit couvre la fermeture de la dernière fenêtre).
++            if let tauri::RunEvent::Exit = event {
++                if let Some(state) = app.try_state::<ServerChild>() {
++                    if let Ok(mut guard) = state.0.lock() {
++                        if let Some(mut child) = guard.take() {
++                            let pid = child.id();
++                            #[cfg(target_os = "windows")]
++                            {
++                                let _ = std::process::Command::new("taskkill")
++                                    .args(["/PID", &pid.to_string(), "/T", "/F"])
++                                    .creation_flags(CREATE_NO_WINDOW)
++                                    .output();
++                            }
++                            #[cfg(not(target_os = "windows"))]
++                            let _ = child.kill();
++                            let _ = child.wait();
++                            eprintln!("[Ma Thèse] C2-O1: serveur node.exe (pid={}) arrêté", pid);
++                        }
++                    }
++                }
++            }
++        });
+ }
+From d35dc0afc5d0962153580c631f907976bd899f83 Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Fri, 16 Oct 2026 13:59:58 +0000
+Subject: [PATCH 2/5] =?UTF-8?q?fix(c2-E2):=20erreurs=20DB=20explicites=20c?=
+ =?UTF-8?q?=C3=B4t=C3=A9=20serveur=20+=20toasts=20visibles=20c=C3=B4t?=
+ =?UTF-8?q?=C3=A9=20client?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Serveur (src/lib/api/db-errors.ts + 9 routes du parcours principal):
+- translateDbError traduit les codes Prisma P2021/P2022 (base obsolète),
+  P2002/P2025/P2003 et PrismaClientInitializationError en réponses
+  503/409/404 avec message ACTIONNABLE au lieu d'un 500 générique.
+- Routes couvertes: thesis, references (CRUD), chapters/[id] (PUT/GET/DELETE),
+  thesis/[id]/chapters, jobs (P2021 constaté en audit), document-chunks,
+  thesis-rag.
+
+Client (src/lib/api/api-fetch.ts + use-thesis.ts + references-page.tsx):
+- apiJson(): toute réponse !ok → toast sonner visible + ApiError.
+- Le hook use-thesis (11 appels: thèses, chapitres, parties) et la page
+  références (GP-3) passent par apiJson — plus aucun échec silencieux.
+- Historique: l'utilisateur voyait « rien ne se passe » (écart bloquant
+  C2-E2, audit 2026-10-16).
+---
+ src/app/api/chapters/[id]/route.ts         | 16 ++---
+ src/app/api/document-chunks/route.ts       | 11 +--
+ src/app/api/jobs/route.ts                  | 11 +--
+ src/app/api/references/[id]/route.ts       | 11 +--
+ src/app/api/references/route.ts            | 11 +--
+ src/app/api/thesis-rag/route.ts            |  6 +-
+ src/app/api/thesis/[id]/chapters/route.ts  | 11 +--
+ src/app/api/thesis/route.ts                | 11 +--
+ src/lib/api/api-fetch.ts                   | 63 +++++++++++++++++
+ src/lib/api/db-errors.ts                   | 79 ++++++++++++++++++++++
+ src/modules/editor/hooks/use-thesis.ts     | 58 ++++------------
+ src/modules/references/references-page.tsx | 14 ++--
+ 12 files changed, 185 insertions(+), 117 deletions(-)
+ create mode 100644 src/lib/api/api-fetch.ts
+ create mode 100644 src/lib/api/db-errors.ts
+
+diff --git a/src/app/api/chapters/[id]/route.ts b/src/app/api/chapters/[id]/route.ts
+index 5e82c82..1a22f1b 100755
+--- a/src/app/api/chapters/[id]/route.ts
++++ b/src/app/api/chapters/[id]/route.ts
+@@ -1,6 +1,7 @@
+ import { NextRequest, NextResponse } from "next/server";
+ import { db } from "@/lib/db";
+ import { updateChapterSchema } from "@/lib/api-schemas";
++import { dbErrorResponse } from "@/lib/api/db-errors";
+ import { z } from "zod/v4";
+ 
+ // ═══════════════════════════════════════
+@@ -33,10 +34,7 @@ export async function GET(
+     return NextResponse.json({ data: chapter });
+   } catch (error) {
+     console.error("[GET /api/chapters/[id]] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la récupération du chapitre" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la récupération du chapitre");
+   }
+ }
+ 
+@@ -93,10 +91,7 @@ export async function PUT(
+       );
+     }
+     console.error("[PUT /api/chapters/[id]] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la mise à jour du chapitre" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la mise à jour du chapitre");
+   }
+ }
+ 
+@@ -113,9 +108,6 @@ export async function DELETE(
+     return NextResponse.json({ data: { id } });
+   } catch (error) {
+     console.error("[DELETE /api/chapters/[id]] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la suppression du chapitre" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la suppression du chapitre");
+   }
+ }
+diff --git a/src/app/api/document-chunks/route.ts b/src/app/api/document-chunks/route.ts
+index a195739..3686ce6 100755
+--- a/src/app/api/document-chunks/route.ts
++++ b/src/app/api/document-chunks/route.ts
+@@ -1,5 +1,6 @@
+ import { NextRequest, NextResponse } from "next/server";
+ import { db } from "@/lib/db";
++import { dbErrorResponse } from "@/lib/api/db-errors";
+ import { z } from "zod/v4";
+ 
+ // ═══════════════════════════════════════
+@@ -35,10 +36,7 @@ export async function GET(request: NextRequest) {
+     });
+   } catch (error) {
+     console.error("[GET /api/document-chunks] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la récupération des chunks" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la récupération des chunks");
+   }
+ }
+ 
+@@ -96,9 +94,6 @@ export async function DELETE(request: NextRequest) {
+       );
+     }
+     console.error("[DELETE /api/document-chunks] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la suppression des chunks" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la suppression des chunks");
+   }
+ }
+diff --git a/src/app/api/jobs/route.ts b/src/app/api/jobs/route.ts
+index 7b5507a..46d9474 100755
+--- a/src/app/api/jobs/route.ts
++++ b/src/app/api/jobs/route.ts
+@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
+ import { z } from "zod/v4";
+ import { db } from "@/lib/db";
+ import { enqueueJob } from "@/lib/jobs/queue";
++import { dbErrorResponse } from "@/lib/api/db-errors";
+ import { getRegisteredJobTypes } from "@/lib/jobs/worker";
+ 
+ // ═══════════════════════════════════════
+@@ -44,10 +45,7 @@ export async function POST(request: NextRequest) {
+       );
+     }
+     console.error("[POST /api/jobs] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la soumission du job" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la soumission du job");
+   }
+ }
+ 
+@@ -76,9 +74,6 @@ export async function GET(request: NextRequest) {
+     return NextResponse.json({ data: jobs });
+   } catch (error) {
+     console.error("[GET /api/jobs] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la récupération des jobs" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la récupération des jobs");
+   }
+ }
+diff --git a/src/app/api/references/[id]/route.ts b/src/app/api/references/[id]/route.ts
+index b8712ed..6298c73 100755
+--- a/src/app/api/references/[id]/route.ts
++++ b/src/app/api/references/[id]/route.ts
+@@ -1,6 +1,7 @@
+ import { NextRequest, NextResponse } from "next/server";
+ import { db } from "@/lib/db";
+ import { updateReferenceSchema } from "@/lib/api-schemas";
++import { dbErrorResponse } from "@/lib/api/db-errors";
+ import { z } from "zod/v4";
+ 
+ // ═══════════════════════════════════════
+@@ -31,10 +32,7 @@ export async function PUT(
+       );
+     }
+     console.error("[PUT /api/references/[id]] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la mise à jour" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la mise à jour");
+   }
+ }
+ 
+@@ -51,9 +49,6 @@ export async function DELETE(
+     return NextResponse.json({ data: { id } });
+   } catch (error) {
+     console.error("[DELETE /api/references/[id]] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la suppression" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la suppression");
+   }
+ }
+diff --git a/src/app/api/references/route.ts b/src/app/api/references/route.ts
+index 367aa56..15c0501 100755
+--- a/src/app/api/references/route.ts
++++ b/src/app/api/references/route.ts
+@@ -1,6 +1,7 @@
+ import { NextRequest, NextResponse } from "next/server";
+ import { db } from "@/lib/db";
+ import { createReferenceSchema } from "@/lib/api-schemas";
++import { dbErrorResponse } from "@/lib/api/db-errors";
+ import { z } from "zod/v4";
+ 
+ // ═══════════════════════════════════════
+@@ -37,10 +38,7 @@ export async function GET(request: NextRequest) {
+     });
+   } catch (error) {
+     console.error("[GET /api/references] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la récupération des références" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la récupération des références");
+   }
+ }
+ 
+@@ -65,9 +63,6 @@ export async function POST(request: NextRequest) {
+       );
+     }
+     console.error("[POST /api/references] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la création de la référence" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la création de la référence");
+   }
+ }
+diff --git a/src/app/api/thesis-rag/route.ts b/src/app/api/thesis-rag/route.ts
+index 96b8afa..1aea9b9 100755
+--- a/src/app/api/thesis-rag/route.ts
++++ b/src/app/api/thesis-rag/route.ts
+@@ -5,6 +5,7 @@
+ 
+ import { NextRequest, NextResponse } from "next/server";
+ import { indexThesisContent, generateRagResponse } from "@/lib/rag/rag-service";
++import { dbErrorResponse } from "@/lib/api/db-errors";
+ import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
+ 
+ export async function POST(request: NextRequest) {
+@@ -51,8 +52,7 @@ export async function POST(request: NextRequest) {
+     );
+   } catch (error) {
+     console.error("[RAG API] Error:", error);
+-    const message =
+-      error instanceof Error ? error.message : "Erreur interne du serveur.";
+-    return NextResponse.json({ error: message }, { status: 500 });
++    const fallback = error instanceof Error ? error.message : "Erreur interne du serveur.";
++    return dbErrorResponse(error, fallback);
+   }
+ }
+diff --git a/src/app/api/thesis/[id]/chapters/route.ts b/src/app/api/thesis/[id]/chapters/route.ts
+index 812e96c..41c26df 100755
+--- a/src/app/api/thesis/[id]/chapters/route.ts
++++ b/src/app/api/thesis/[id]/chapters/route.ts
+@@ -1,6 +1,7 @@
+ import { NextRequest, NextResponse } from "next/server";
+ import { db } from "@/lib/db";
+ import { createChapterSchema } from "@/lib/api-schemas";
++import { dbErrorResponse } from "@/lib/api/db-errors";
+ import { z } from "zod/v4";
+ 
+ // ═══════════════════════════════════════
+@@ -23,10 +24,7 @@ export async function GET(
+     });
+   } catch (error) {
+     console.error("[GET /api/thesis/[id]/chapters] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la récupération des chapitres" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la récupération des chapitres");
+   }
+ }
+ 
+@@ -69,9 +67,6 @@ export async function POST(
+       );
+     }
+     console.error("[POST /api/thesis/[id]/chapters] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la création du chapitre" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la création du chapitre");
+   }
+ }
+diff --git a/src/app/api/thesis/route.ts b/src/app/api/thesis/route.ts
+index 617d852..9a68454 100755
+--- a/src/app/api/thesis/route.ts
++++ b/src/app/api/thesis/route.ts
+@@ -1,6 +1,7 @@
+ import { NextRequest, NextResponse } from "next/server";
+ import { db } from "@/lib/db";
+ import { createThesisSchema } from "@/lib/api-schemas";
++import { dbErrorResponse } from "@/lib/api/db-errors";
+ import { z } from "zod/v4";
+ 
+ // ═══════════════════════════════════════
+@@ -34,10 +35,7 @@ export async function GET() {
+     });
+   } catch (error) {
+     console.error("[GET /api/thesis] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la récupération des thèses" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la récupération des thèses");
+   }
+ }
+ 
+@@ -102,9 +100,6 @@ export async function POST(request: NextRequest) {
+       );
+     }
+     console.error("[POST /api/thesis] Error:", error);
+-    return NextResponse.json(
+-      { error: "Erreur lors de la création de la thèse" },
+-      { status: 500 }
+-    );
++    return dbErrorResponse(error, "Erreur lors de la création de la thèse");
+   }
+ }
+diff --git a/src/lib/api/api-fetch.ts b/src/lib/api/api-fetch.ts
+new file mode 100644
+index 0000000..2c6eba4
+--- /dev/null
++++ b/src/lib/api/api-fetch.ts
+@@ -0,0 +1,63 @@
++"use client";
++
++// ═══════════════════════════════════════════════════════════════
++// C2-E2 — Client HTTP centralisé : toute erreur serveur devient un
++// toast visible (sonner, monté dans layout.tsx) + une exception.
++// Historique : les mutations échouaient en silence — l'utilisateur
++// voyait « rien ne se passe » (écart bloquant C2-E2, audit
++// 2026-10-16 : P2021/P2022 renvoyés par le serveur mais ignorés).
++// ═══════════════════════════════════════════════════════════════
++
++import { toast } from "sonner";
++
++export class ApiError extends Error {
++  status: number;
++  code?: string;
++  constructor(message: string, status: number, code?: string) {
++    super(message);
++    this.name = "ApiError";
++    this.status = status;
++    this.code = code;
++  }
++}
++
++export interface ApiJsonEnvelope<T> {
++  data?: T;
++  error?: string;
++  code?: string;
++}
++
++export async function apiJson<T = unknown>(
++  url: string,
++  init?: RequestInit,
++  opts?: { silent?: boolean }
++): Promise<T> {
++  let res: Response;
++  try {
++    res = await fetch(url, init);
++  } catch (e) {
++    // Serveur injoignable (arrêt en cours, orphelin, etc.)
++    if (!opts?.silent) {
++      toast.error("Le serveur n'a pas répondu", {
++        description:
++          "Relancez l'application. Si le problème persiste, consultez server.log.",
++      });
++    }
++    throw e;
++  }
++
++  const json = (await res.json().catch(() => null)) as
++    | ApiJsonEnvelope<T>
++    | null;
++
++  if (!res.ok) {
++    const message = json?.error || `Erreur ${res.status}`;
++    if (!opts?.silent) {
++      toast.error("L'opération a échoué", { description: message });
++    }
++    throw new ApiError(message, res.status, json?.code);
++  }
++
++  // Routes enveloppées {data, meta} → renvoyer data ; sinon l'objet brut.
++  return (json && json.data !== undefined ? json.data : (json as unknown)) as T;
++}
+diff --git a/src/lib/api/db-errors.ts b/src/lib/api/db-errors.ts
+new file mode 100644
+index 0000000..fbde00a
+--- /dev/null
++++ b/src/lib/api/db-errors.ts
+@@ -0,0 +1,79 @@
++// ═══════════════════════════════════════════════════════════════
++// C2-E2 — Traduction des erreurs Prisma en réponses HTTP explicites.
++// Historique : les routes renvoyaient un 500 générique (« Erreur lors
++// de … ») sans code Prisma, et le client n'affichait rien →
++// « rien ne se passe » pour l'utilisateur (écart bloquant C2-E2,
++// audit 2026-10-16 : P2021/P2022 sur base obsolète, remédiée à la
++// main — le codage restait fail-open).
++// ═══════════════════════════════════════════════════════════════
++
++import { NextResponse } from "next/server";
++import { Prisma } from "@prisma/client";
++
++export interface DbErrorTranslation {
++  status: number;
++  body: { error: string; code?: string };
++}
++
++export function translateDbError(
++  error: unknown,
++  fallback = "Erreur interne du serveur"
++): DbErrorTranslation {
++  if (error instanceof Prisma.PrismaClientKnownRequestError) {
++    switch (error.code) {
++      case "P2021":
++        return {
++          status: 503,
++          body: {
++            error:
++              "Base de données obsolète ou corrompue (table manquante). Mettez à jour l'application — vos données sont conservées.",
++            code: "P2021",
++          },
++        };
++      case "P2022":
++        return {
++          status: 503,
++          body: {
++            error:
++              "Base de données obsolète (champ manquant). Mettez à jour l'application — vos données sont conservées.",
++            code: "P2022",
++          },
++        };
++      case "P2002":
++        return {
++          status: 409,
++          body: { error: "Doublon : un élément identique existe déjà.", code: "P2002" },
++        };
++      case "P2025":
++        return {
++          status: 404,
++          body: { error: "Élément introuvable (déjà supprimé ?).", code: "P2025" },
++        };
++      case "P2003":
++        return {
++          status: 409,
++          body: {
++            error: "Impossible de supprimer : cet élément est référencé ailleurs.",
++            code: "P2003",
++          },
++        };
++    }
++  }
++  if (error instanceof Prisma.PrismaClientInitializationError) {
++    return {
++      status: 503,
++      body: {
++        error:
++          "Base de données inaccessible. Vérifiez que l'application n'est pas déjà ouverte ailleurs, puis relancez-la.",
++        code: "DB_INIT",
++      },
++    };
++  }
++  return { status: 500, body: { error: fallback } };
++}
++
++/** Réponse prête à l'emploi pour les catch génériques des routes API. */
++export function dbErrorResponse(error: unknown, fallback: string): NextResponse {
++  const t = translateDbError(error, fallback);
++  return NextResponse.json(t.body, { status: t.status });
++}
+diff --git a/src/modules/editor/hooks/use-thesis.ts b/src/modules/editor/hooks/use-thesis.ts
+index 7f74305..36177bf 100755
+--- a/src/modules/editor/hooks/use-thesis.ts
++++ b/src/modules/editor/hooks/use-thesis.ts
+@@ -2,6 +2,7 @@
+ 
+ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+ import { useAppStore } from "@/lib/stores/app-store";
++import { apiJson } from "@/lib/api/api-fetch";
+ 
+ // ═══════════════════════════════════════
+ // Types
+@@ -74,10 +75,7 @@ export function useTheses() {
+   return useQuery({
+     queryKey: thesisKeys.lists(),
+     queryFn: async () => {
+-      const res = await fetch("/api/thesis");
+-      if (!res.ok) throw new Error("Erreur de chargement");
+-      const json = await res.json();
+-      return json.data as Thesis[];
++      return apiJson<Thesis[]>("/api/thesis");
+     },
+   });
+ }
+@@ -87,10 +85,7 @@ export function useThesis(id: string | null) {
+     queryKey: thesisKeys.detail(id ?? ""),
+     queryFn: async () => {
+       if (!id) return null;
+-      const res = await fetch(`/api/thesis/${id}`);
+-      if (!res.ok) throw new Error("Thèse non trouvée");
+-      const json = await res.json();
+-      return json.data as Thesis;
++      return apiJson<Thesis>(`/api/thesis/${id}`);
+     },
+     enabled: !!id,
+   });
+@@ -111,17 +106,11 @@ export function useCreateThesis() {
+       discipline?: string;
+       directorName?: string;
+     }) => {
+-      const res = await fetch("/api/thesis", {
++      return apiJson<Thesis>("/api/thesis", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(data),
+       });
+-      if (!res.ok) {
+-        const err = await res.json();
+-        throw new Error(err.error || "Erreur de création");
+-      }
+-      const json = await res.json();
+-      return json.data as Thesis;
+     },
+     onSuccess: (thesis) => {
+       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+@@ -135,14 +124,11 @@ export function useUpdateThesis() {
+ 
+   return useMutation({
+     mutationFn: async ({ id, ...data }: Partial<Thesis> & { id: string }) => {
+-      const res = await fetch(`/api/thesis/${id}`, {
++      return apiJson<Thesis>(`/api/thesis/${id}`, {
+         method: "PUT",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(data),
+       });
+-      if (!res.ok) throw new Error("Erreur de mise à jour");
+-      const json = await res.json();
+-      return json.data as Thesis;
+     },
+     onSuccess: (_data, _variables) => {
+       queryClient.invalidateQueries({
+@@ -159,8 +145,7 @@ export function useDeleteThesis() {
+ 
+   return useMutation({
+     mutationFn: async (id: string) => {
+-      const res = await fetch(`/api/thesis/${id}`, { method: "DELETE" });
+-      if (!res.ok) throw new Error("Erreur de suppression");
++      await apiJson(`/api/thesis/${id}`, { method: "DELETE" });
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+@@ -181,14 +166,11 @@ export function useUpdateChapter() {
+       id,
+       ...data
+     }: { id: string; title?: string; content?: string; plainText?: string; wordCount?: number; status?: string; sortOrder?: number; partId?: string | null; stamp?: string }) => {
+-      const res = await fetch(`/api/chapters/${id}`, {
++      return apiJson<ThesisChapter>(`/api/chapters/${id}`, {
+         method: "PUT",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(data),
+       });
+-      if (!res.ok) throw new Error("Erreur de mise à jour");
+-      const json = await res.json();
+-      return json.data;
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+@@ -209,14 +191,11 @@ export function useCreateChapter() {
+       title: string;
+       romanNumeral?: string;
+     }) => {
+-      const res = await fetch(`/api/thesis/${thesisId}/chapters`, {
++      return apiJson<ThesisChapter>(`/api/thesis/${thesisId}/chapters`, {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({ title, romanNumeral }),
+       });
+-      if (!res.ok) throw new Error("Erreur de création");
+-      const json = await res.json();
+-      return json.data;
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+@@ -229,8 +208,7 @@ export function useDeleteChapter() {
+ 
+   return useMutation({
+     mutationFn: async (id: string) => {
+-      const res = await fetch(`/api/chapters/${id}`, { method: "DELETE" });
+-      if (!res.ok) throw new Error("Erreur de suppression");
++      await apiJson(`/api/chapters/${id}`, { method: "DELETE" });
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+@@ -247,10 +225,7 @@ export function useParts(thesisId: string | null) {
+     queryKey: thesisKeys.parts(thesisId ?? ""),
+     queryFn: async () => {
+       if (!thesisId) return [];
+-      const res = await fetch(`/api/thesis/${thesisId}/parts`);
+-      if (!res.ok) throw new Error("Erreur de chargement des parties");
+-      const json = await res.json();
+-      return json.data as ThesisPart[];
++      return apiJson<ThesisPart[]>(`/api/thesis/${thesisId}/parts`);
+     },
+     enabled: !!thesisId,
+   });
+@@ -261,14 +236,11 @@ export function useCreatePart() {
+ 
+   return useMutation({
+     mutationFn: async ({ thesisId, title }: { thesisId: string; title: string }) => {
+-      const res = await fetch(`/api/thesis/${thesisId}/parts`, {
++      return apiJson<ThesisPart>(`/api/thesis/${thesisId}/parts`, {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({ title }),
+       });
+-      if (!res.ok) throw new Error("Erreur de création de la partie");
+-      const json = await res.json();
+-      return json.data as ThesisPart;
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+@@ -281,14 +253,11 @@ export function useUpdatePart() {
+ 
+   return useMutation({
+     mutationFn: async ({ id, ...data }: { id: string; title?: string; sortOrder?: number }) => {
+-      const res = await fetch(`/api/parts/${id}`, {
++      return apiJson<ThesisPart>(`/api/parts/${id}`, {
+         method: "PUT",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(data),
+       });
+-      if (!res.ok) throw new Error("Erreur de mise à jour de la partie");
+-      const json = await res.json();
+-      return json.data as ThesisPart;
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+@@ -301,8 +270,7 @@ export function useDeletePart() {
+ 
+   return useMutation({
+     mutationFn: async (id: string) => {
+-      const res = await fetch(`/api/parts/${id}`, { method: "DELETE" });
+-      if (!res.ok) throw new Error("Erreur de suppression de la partie");
++      await apiJson(`/api/parts/${id}`, { method: "DELETE" });
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
+diff --git a/src/modules/references/references-page.tsx b/src/modules/references/references-page.tsx
+index e18f624..7a45c97 100755
+--- a/src/modules/references/references-page.tsx
++++ b/src/modules/references/references-page.tsx
+@@ -1,5 +1,6 @@
+ "use client";
+ 
++import { apiJson } from "@/lib/api/api-fetch";
+ import { Card, CardContent } from "@/components/ui/card";
+ import { Button } from "@/components/ui/button";
+ import { Input } from "@/components/ui/input";
+@@ -143,7 +144,7 @@ function fetchReferences(filters: { type?: string; search?: string; source?: str
+   if (filters.type && filters.type !== "all") params.set("type", filters.type);
+   if (filters.search) params.set("search", filters.search);
+   if (filters.source && filters.source !== "all") params.set("source", filters.source);
+-  return fetch(`/api/references?${params}`).then((r) => r.json()).then((j) => j.data as Reference[]);
++  return apiJson<Reference[]>(`/api/references?${params}`);
+ }
+ 
+ export function ReferencesPage() {
+@@ -163,7 +164,7 @@ export function ReferencesPage() {
+ 
+   const toggleFavorite = useMutation({
+     mutationFn: async ({ id, isFavorite }: { id: string; isFavorite: boolean }) => {
+-      await fetch(`/api/references/${id}`, {
++      await apiJson(`/api/references/${id}`, {
+         method: "PUT",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({ isFavorite: !isFavorite }),
+@@ -174,7 +175,7 @@ export function ReferencesPage() {
+ 
+   const deleteRef = useMutation({
+     mutationFn: async (id: string) => {
+-      await fetch(`/api/references/${id}`, { method: "DELETE" });
++      await apiJson(`/api/references/${id}`, { method: "DELETE" });
+     },
+     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["references"] }),
+   });
+@@ -183,16 +184,11 @@ export function ReferencesPage() {
+     mutationFn: async (data: Record<string, string>) => {
+       const payload: Record<string, unknown> = { ...data, source: "manual" };
+       if (data.year) payload.year = parseInt(data.year, 10);
+-      const res = await fetch("/api/references", {
++      return apiJson("/api/references", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(payload),
+       });
+-      if (!res.ok) {
+-        const err = await res.json();
+-        throw new Error(err.error || "Erreur");
+-      }
+-      return res.json();
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: ["references"] });
+From d689b75ac361ab98bdff746a09d4f08c9aed500c Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Fri, 16 Oct 2026 14:04:30 +0000
+Subject: [PATCH 3/5] =?UTF-8?q?fix(c2-E3):=20migration=20de=20sch=C3=A9ma?=
+ =?UTF-8?q?=20SQLite=20=C3=A0=20la=20mise=20=C3=A0=20jour=20(non=20destruc?=
+ =?UTF-8?q?tive)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Cause racine (écart C2-E3, gravité haute): lib.rs ne copiait le template
+de base que si le fichier était ABSENT (if !db_path.exists, l.159) → une
+base d'une version antérieure n'était jamais migrée → P2021/P2022 au
+premier lancement après mise à jour — le scénario même d'une release R2.
+
+Correctif:
+- lib.rs transmet TAURI_TEMPLATE_DB (template embarqué) au process node.
+- src/lib/db/schema-migrate.ts (nouveau): compare la structure de la base
+  utilisateur au template (sqlite_master + pragma_table_info) et applique
+  le DIFF en DDL idempotents: CREATE TABLE IF NOT EXISTS / ALTER TABLE
+  ADD COLUMN / CREATE INDEX IF NOT EXISTS — APRÈS sauvegarde du fichier
+  .db (custom.db.sauvegarde-pre-update-<stamp>). Jamais destructif.
+- instrumentation.ts: appelé au boot du serveur, AVANT le worker de jobs
+  (celui qui bouclait sur P2021 en cas de base obsolète).
+- Marqueur _app_meta.schemaVersion pour le suivi/diagnostic.
+
+Validé en sandbox: base obsolète (Job DROP, Chapter.stamp DROP) →
+migration → 4 DDL, données intactes (1 thèse/7 chapitres/4 références),
+sauvegarde créée, structures identiques au template, 2e exécution
+sans diff (idempotent). Échec initial corrigé: «notnull» refusé comme
+identifiant nu dans SELECT → SELECT * sur pragma_table_info.
+---
+ src-tauri/src/lib.rs         |   7 +-
+ src/instrumentation.ts       |  10 ++
+ src/lib/db/schema-migrate.ts | 233 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 249 insertions(+), 1 deletion(-)
+ create mode 100644 src/lib/db/schema-migrate.ts
+
+diff --git a/src-tauri/src/lib.rs b/src-tauri/src/lib.rs
+index 179f6bb..67062f1 100755
+--- a/src-tauri/src/lib.rs
++++ b/src-tauri/src/lib.rs
+@@ -263,7 +263,12 @@ pub fn run() {
+                     .env("HOSTNAME", "127.0.0.1")
+                     .env("NODE_ENV", "production")
+                     .env("TAURI", "true")
+-                    .env("DATABASE_URL", &database_url);
++                    .env("DATABASE_URL", &database_url)
++                    // C2-E3 : chemin du template de base embarqué — référence de
++                    // migration au boot (cf. src/lib/db/schema-migrate.ts). La base
++                    // utilisateur y est comparée et le DIFF appliqué en DDL
++                    // idempotents après sauvegarde (jamais destructif).
++                    .env("TAURI_TEMPLATE_DB", bundled_db.to_string_lossy().to_string());
+ 
+                 // T14 (C-D2, option a env-only) : les clés API ne sont plus
+                 // embarquées dans le binaire — la variable d'environnement
+diff --git a/src/instrumentation.ts b/src/instrumentation.ts
+index d43539c..b585dab 100755
+--- a/src/instrumentation.ts
++++ b/src/instrumentation.ts
+@@ -7,6 +7,16 @@
+ 
+ export async function register() {
+   if (process.env.NEXT_RUNTIME === "nodejs") {
++    // C2-E3 : migration de schéma au boot, AVANT le worker — compare la base
++    // utilisateur au template embarqué (TAURI_TEMPLATE_DB) et applique le diff
++    // en DDL idempotents après sauvegarde (non destructif). Sans cela, une
++    // base d'une version antérieure n'était jamais migrée → P2021/P2022.
++    try {
++      const { ensureSchemaUpToDate } = await import("@/lib/db/schema-migrate");
++      await ensureSchemaUpToDate();
++    } catch (e) {
++      console.error("[instrumentation] C2-E3: migration de schéma échouée:", e);
++    }
+     const { startJobWorker } = await import("@/lib/jobs/worker");
+     startJobWorker();
+     // C-1 / AUD-GOV-001 : sauvegarde quotidienne de la base
+diff --git a/src/lib/db/schema-migrate.ts b/src/lib/db/schema-migrate.ts
+new file mode 100644
+index 0000000..f2f3ba3
+--- /dev/null
++++ b/src/lib/db/schema-migrate.ts
+@@ -0,0 +1,233 @@
++// ═══════════════════════════════════════════════════════════════
++// C2-E3 — Migration de schéma SQLite à la mise à jour de l'app.
++// Historique (audit 2026-10-16) : lib.rs ne copiait le template de
++// base que si le fichier était ABSENT (if !db_path.exists) → une
++// base d'une version antérieure n'était JAMAIS migrée → P2021/P2022
++// silencieux au premier lancement après mise à jour (écart E3,
++// gravité haute — c'est le scénario même d'une release R2).
++//
++// Stratégie NON destructive : comparer la structure de la base
++// utilisateur au TEMPLATE embarqué (ressource db/custom.db, livré à
++// jour avec chaque version de l'app, passé via TAURI_TEMPLATE_DB)
++// et appliquer le DIFF en DDL idempotents :
++//   1. CREATE TABLE IF NOT EXISTS  (tables manquantes)
++//   2. ALTER TABLE ADD COLUMN      (colonnes manquantes)
++//   3. CREATE INDEX IF NOT EXISTS  (index manquants)
++// — après sauvegarde du fichier .db (jamais d'écrasement de données).
++// Appelé depuis src/instrumentation.ts (boot du serveur, AVANT le
++// worker de jobs qui bouclait sur P2021 en cas de base obsolète).
++// ═══════════════════════════════════════════════════════════════
++
++import * as fs from "fs";
++import { PrismaClient } from "@prisma/client";
++
++const SKIP_TABLES = new Set(["_app_meta", "_prisma_migrations"]);
++
++interface TableInfo {
++  name: string;
++  sql: string | null;
++}
++
++interface ColumnInfo {
++  name: string;
++  type: string;
++  notnull: number;
++  dflt_value: string | null;
++  pk: number;
++}
++
++interface IndexInfo {
++  name: string;
++  sql: string | null;
++}
++
++function dbFileFromUrl(url: string | undefined): string | null {
++  if (!url || !url.startsWith("file:")) return null;
++  return url.slice("file:".length);
++}
++
++async function listTables(client: PrismaClient): Promise<TableInfo[]> {
++  return client.$queryRawUnsafe<TableInfo[]>(
++    "SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
++  );
++}
++
++async function listIndexes(client: PrismaClient): Promise<IndexInfo[]> {
++  return client.$queryRawUnsafe<IndexInfo[]>(
++    "SELECT name, sql FROM sqlite_master WHERE type='index' AND sql IS NOT NULL AND sql != ''"
++  );
++}
++
++async function listColumns(
++  client: PrismaClient,
++  table: string
++): Promise<ColumnInfo[]> {
++  // NB : « notnull » est refusé comme identifiant nu dans un SELECT
++  // (parsé comme les tokens NOT NULL) → SELECT * sur la table-valuée.
++  return client.$queryRawUnsafe<ColumnInfo[]>(
++    `SELECT * FROM pragma_table_info('${table.replace(/'/g, "''")}')`
++  );
++}
++
++/** DEFAULT de repli pour une colonne NOT NULL sans défaut explicite (SQLite refuse sinon). */
++function defaultFor(type: string): string {
++  const t = type.toUpperCase();
++  if (t.includes("INT") || t.includes("REAL") || t.includes("FLOA") || t.includes("DOUB") || t.includes("NUM") || t.includes("DEC")) {
++    return "0";
++  }
++  return "''";
++}
++
++function quoteIdent(name: string): string {
++  return `"${name.replace(/"/g, '""')}"`;
++}
++
++export async function ensureSchemaUpToDate(): Promise<void> {
++  const userDbFile = dbFileFromUrl(process.env.DATABASE_URL);
++  const templateDbFile = dbFileFromUrl(process.env.TAURI_TEMPLATE_DB);
++
++  // Dev / sandbox : pas de template Tauri → rien à faire.
++  if (!userDbFile || !templateDbFile) return;
++  if (!fs.existsSync(templateDbFile)) {
++    console.warn("[schema-migrate] C2-E3: template introuvable:", templateDbFile);
++    return;
++  }
++  if (!fs.existsSync(userDbFile)) {
++    console.log(
++      "[schema-migrate] C2-E3: base utilisateur absente — lib.rs copie le template, rien à migrer."
++    );
++    return;
++  }
++
++  const user = new PrismaClient({
++    datasources: { db: { url: `file:${userDbFile}` } },
++  });
++  const template = new PrismaClient({
++    datasources: { db: { url: `file:${templateDbFile}` } },
++  });
++
++  try {
++    const [userTables, tplTables, tplIndexes] = await Promise.all([
++      listTables(user),
++      listTables(template),
++      listIndexes(template),
++    ]);
++
++    const userTableNames = new Set(userTables.map((t) => t.name));
++
++    // 1. Tables manquantes
++    const missingTables = tplTables.filter(
++      (t) => !SKIP_TABLES.has(t.name) && !userTableNames.has(t.name)
++    );
++
++    // 2. Colonnes manquantes sur les tables communes
++    const missingColumns: { table: string; column: ColumnInfo }[] = [];
++    const commonTables = tplTables.filter(
++      (t) => !SKIP_TABLES.has(t.name) && userTableNames.has(t.name)
++    );
++    for (const t of commonTables) {
++      const [userCols, tplCols] = await Promise.all([
++        listColumns(user, t.name),
++        listColumns(template, t.name),
++      ]);
++      const userColNames = new Set(userCols.map((c) => c.name));
++      for (const c of tplCols) {
++        if (!userColNames.has(c.name)) missingColumns.push({ table: t.name, column: c });
++      }
++    }
++
++    // 3. Index manquants (les index sont des entrées sqlite_master séparées
++    //    du CREATE TABLE — ils ne viennent pas « avec » la table recréée)
++    const userIndexes = await listIndexes(user);
++    const userIndexNames = new Set(userIndexes.map((i) => i.name));
++    const missingIndexes = tplIndexes.filter(
++      (i) => !userIndexNames.has(i.name) && !SKIP_TABLES.has(i.name)
++    );
++
++    const needsMigration =
++      missingTables.length > 0 ||
++      missingColumns.length > 0 ||
++      missingIndexes.length > 0;
++
++    if (!needsMigration) {
++      console.log("[schema-migrate] C2-E3: schéma à jour (aucun diff).");
++      return;
++    }
++
++    console.log(
++      `[schema-migrate] C2-E3: diff détecté — ${missingTables.length} table(s), ${missingColumns.length} colonne(s), ${missingIndexes.length} index(s) à ajouter.`
++    );
++
++    // Sauvegarde AVANT toute écriture — jamais destructif.
++    const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
++    const backupFile = `${userDbFile}.sauvegarde-pre-update-${stamp}`;
++    fs.copyFileSync(userDbFile, backupFile);
++    console.log(`[schema-migrate] C2-E3: sauvegarde → ${backupFile}`);
++
++    let applied = 0;
++
++    for (const t of missingTables) {
++      let ddl = t.sql ?? "";
++      if (ddl && !/IF\s+NOT\s+EXISTS/i.test(ddl)) {
++        ddl = ddl.replace(/^\s*CREATE\s+TABLE/i, "CREATE TABLE IF NOT EXISTS");
++      }
++      if (ddl) {
++        await user.$executeRawUnsafe(ddl);
++        applied++;
++        console.log(`[schema-migrate] C2-E3: +table ${t.name}`);
++      }
++    }
++
++    for (const { table, column } of missingColumns) {
++      const notNull = column.notnull ? " NOT NULL" : "";
++      const dflt =
++        column.dflt_value != null
++          ? ` DEFAULT ${column.dflt_value}`
++          : notNull
++            ? ` DEFAULT ${defaultFor(column.type)}`
++            : "";
++      await user.$executeRawUnsafe(
++        `ALTER TABLE ${quoteIdent(table)} ADD COLUMN ${quoteIdent(column.name)} ${column.type}${notNull}${dflt}`
++      );
++      applied++;
++      console.log(`[schema-migrate] C2-E3: +colonne ${table}.${column.name}`);
++    }
++
++    for (const i of missingIndexes) {
++      let ddl = i.sql ?? "";
++      if (ddl && !/IF\s+NOT\s+EXISTS/i.test(ddl)) {
++        if (/^\s*CREATE\s+UNIQUE\s+INDEX/i.test(ddl)) {
++          ddl = ddl.replace(/^\s*CREATE\s+UNIQUE\s+INDEX/i, "CREATE UNIQUE INDEX IF NOT EXISTS");
++        } else {
++          ddl = ddl.replace(/^\s*CREATE\s+INDEX/i, "CREATE INDEX IF NOT EXISTS");
++        }
++      }
++      if (ddl) {
++        await user.$executeRawUnsafe(ddl);
++        applied++;
++        console.log(`[schema-migrate] C2-E3: +index ${i.name}`);
++      }
++    }
++
++    // Marqueur de version (suivi/diagnostic) : mtime du template qui a servi.
++    await user.$executeRawUnsafe(
++      `CREATE TABLE IF NOT EXISTS "_app_meta" ("key" TEXT PRIMARY KEY, "value" TEXT NOT NULL)`
++    );
++    const tplStat = fs.statSync(templateDbFile);
++    await user.$executeRawUnsafe(
++      `INSERT OR REPLACE INTO "_app_meta" ("key", "value") VALUES ('schemaVersion', '${tplStat.mtime.toISOString()}')`
++    );
++
++    console.log(`[schema-migrate] C2-E3: migration terminée (${applied} DDL appliqués).`);
++  } catch (e) {
++    // Ne bloque pas le démarrage : les routes renverront des 503 explicites
++    // (C2-E2) et l'utilisateur verra le problème au lieu d'un silence.
++    console.error("[schema-migrate] C2-E3: ÉCHEC de la migration de schéma:", e);
++    console.error(
++      "[schema-migrate] L'application continue, mais certaines opérations peuvent échouer avec un message explicite."
++    );
++  } finally {
++    await user.$disconnect().catch(() => {});
++    await template.$disconnect().catch(() => {});
++  }
++}
+From 61513f70e35a2983e2f660e35285beb158922d0a Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Fri, 16 Oct 2026 14:05:39 +0000
+Subject: [PATCH 4/5] =?UTF-8?q?style(c2-E3):=20console.warn=20au=20lieu=20?=
+ =?UTF-8?q?de=20console.log=20(r=C3=A8gle=20no-console=20du=20projet)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ src/lib/db/schema-migrate.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/lib/db/schema-migrate.ts b/src/lib/db/schema-migrate.ts
+index f2f3ba3..560e7ba 100644
+--- a/src/lib/db/schema-migrate.ts
++++ b/src/lib/db/schema-migrate.ts
+@@ -150,7 +150,7 @@ export async function ensureSchemaUpToDate(): Promise<void> {
+       missingIndexes.length > 0;
+ 
+     if (!needsMigration) {
+-      console.log("[schema-migrate] C2-E3: schéma à jour (aucun diff).");
++      console.warn("[schema-migrate] C2-E3: schéma à jour (aucun diff).");
+       return;
+     }
+ 
+From 1ed3cd17a8f3cad6d50be50b4f03327d11002717 Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Fri, 16 Oct 2026 14:07:03 +0000
+Subject: [PATCH 5/5] =?UTF-8?q?style(c2-E3):=20console.warn=20au=20lieu=20?=
+ =?UTF-8?q?de=20console.log=20(r=C3=A8gle=20no-console=20du=20projet)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ src/lib/db/schema-migrate.ts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/lib/db/schema-migrate.ts b/src/lib/db/schema-migrate.ts
+index 560e7ba..751695a 100644
+--- a/src/lib/db/schema-migrate.ts
++++ b/src/lib/db/schema-migrate.ts
+@@ -93,7 +93,7 @@ export async function ensureSchemaUpToDate(): Promise<void> {
+     return;
+   }
+   if (!fs.existsSync(userDbFile)) {
+-    console.log(
++    console.warn(
+       "[schema-migrate] C2-E3: base utilisateur absente — lib.rs copie le template, rien à migrer."
+     );
+     return;
+@@ -154,7 +154,7 @@ export async function ensureSchemaUpToDate(): Promise<void> {
+       return;
+     }
+ 
+-    console.log(
++    console.warn(
+       `[schema-migrate] C2-E3: diff détecté — ${missingTables.length} table(s), ${missingColumns.length} colonne(s), ${missingIndexes.length} index(s) à ajouter.`
+     );
+ 
