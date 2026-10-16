@@ -93,7 +93,7 @@ export async function ensureSchemaUpToDate(): Promise<void> {
     return;
   }
   if (!fs.existsSync(userDbFile)) {
-    console.log(
+    console.warn(
       "[schema-migrate] C2-E3: base utilisateur absente — lib.rs copie le template, rien à migrer."
     );
     return;
@@ -154,7 +154,7 @@ export async function ensureSchemaUpToDate(): Promise<void> {
       return;
     }
 
-    console.log(
+    console.warn(
       `[schema-migrate] C2-E3: diff détecté — ${missingTables.length} table(s), ${missingColumns.length} colonne(s), ${missingIndexes.length} index(s) à ajouter.`
     );
 
