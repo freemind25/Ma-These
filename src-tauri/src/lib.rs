@@ -121,10 +121,49 @@ fn extract_standalone(
     Ok(standalone_dir)
 }
 
+/// C2-O1 : handle du processus serveur node.exe, conservé dans l'état Tauri
+/// pour permettre un arrêt propre à la fermeture de l'application.
+/// (Remplace `std::mem::forget(child)` qui laissait un node.exe orphelin
+/// occuper SERVER_PORT après chaque fermeture → EADDRINUSE au redémarrage.)
+struct ServerChild(std::sync::Mutex<Option<std::process::Child>>);
+
+/// C2-O1 : arrête un éventuel node.exe orphelin d'une session précédente qui
+/// écouterait déjà SERVER_PORT (versions ≤ 1.10.9 : process jamais tué).
+fn kill_port_orphan(port: u16, log_file: &mut Option<std::fs::File>) {
+    #[cfg(target_os = "windows")]
+    {
+        let out = std::process::Command::new("netstat")
+            .args(["-ano", "-p", "tcp"])
+            .creation_flags(CREATE_NO_WINDOW)
+            .output();
+        if let Ok(o) = out {
+            let text = String::from_utf8_lossy(&o.stdout);
+            let needle = format!(":{}", port);
+            let mut seen: std::collections::HashSet<String> = Default::default();
+            for line in text.lines() {
+                if line.contains("LISTENING") && line.contains(&needle) {
+                    if let Some(pid) = line.split_whitespace().last() {
+                        if pid.chars().all(|c| c.is_ascii_digit()) && seen.insert(pid.to_string()) {
+                            diag!(log_file, "C2-O1: arrêt de l'orphelin pid={} (port {})", pid, port);
+                            let _ = std::process::Command::new("taskkill")
+                                .args(["/PID", pid, "/T", "/F"])
+                                .creation_flags(CREATE_NO_WINDOW)
+                                .output();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    #[cfg(not(target_os = "windows"))]
+    let _ = (port, log_file);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .manage(ServerChild(std::sync::Mutex::new(None)))
         .setup(|app| {
             let handle = app.handle().clone();
 
@@ -207,6 +246,15 @@ pub fn run() {
                 let port = SERVER_PORT;
                 diag!(log_file, "Démarrage node.exe sur le port {}...", port);
 
+                // C2-O1 : si un orphelin d'une session précédente écoute déjà le
+                // port, l'arrêter AVANT le spawn (sinon le nouveau serveur échoue
+                // en EADDRINUSE et l'app se raccroche silencieusement à l'ancien).
+                if std::net::TcpStream::connect(&format!("127.0.0.1:{}", port)).is_ok() {
+                    diag!(log_file, "C2-O1: port {} déjà occupé — orphelin probable", port);
+                    kill_port_orphan(port, &mut log_file);
+                    std::thread::sleep(std::time::Duration::from_millis(500));
+                }
+
                 let mut cmd = std::process::Command::new(&node_exe);
                 #[cfg(target_os = "windows")]
                 cmd.creation_flags(CREATE_NO_WINDOW);
@@ -275,11 +323,38 @@ pub fn run() {
                     }
                 }
 
-                std::mem::forget(child);
+                // C2-O1 : conserver le handle pour l'arrêt propre à la fermeture
+                // (remplace std::mem::forget — cf. struct ServerChild).
+                let state = app.state::<ServerChild>();
+                *state.0.lock().unwrap() = Some(child);
             }
 
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .expect("error while running Ma Thèse");
+        .build(tauri::generate_context!())
+        .expect("error while running Ma Thèse")
+        .run(|app, event| {
+            // C2-O1 : arrêt propre du serveur embarqué à la fermeture de l'app
+            // (RunEvent::Exit couvre la fermeture de la dernière fenêtre).
+            if let tauri::RunEvent::Exit = event {
+                if let Some(state) = app.try_state::<ServerChild>() {
+                    if let Ok(mut guard) = state.0.lock() {
+                        if let Some(mut child) = guard.take() {
+                            let pid = child.id();
+                            #[cfg(target_os = "windows")]
+                            {
+                                let _ = std::process::Command::new("taskkill")
+                                    .args(["/PID", &pid.to_string(), "/T", "/F"])
+                                    .creation_flags(CREATE_NO_WINDOW)
+                                    .output();
+                            }
+                            #[cfg(not(target_os = "windows"))]
+                            let _ = child.kill();
+                            let _ = child.wait();
+                            eprintln!("[Ma Thèse] C2-O1: serveur node.exe (pid={}) arrêté", pid);
+                        }
+                    }
+                }
+            }
+        });
 }
