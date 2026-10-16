@@ -150,7 +150,7 @@ export async function ensureSchemaUpToDate(): Promise<void> {
       missingIndexes.length > 0;
 
     if (!needsMigration) {
-      console.log("[schema-migrate] C2-E3: schéma à jour (aucun diff).");
+      console.warn("[schema-migrate] C2-E3: schéma à jour (aucun diff).");
       return;
     }
 
