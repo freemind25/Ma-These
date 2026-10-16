@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { indexThesisContent, generateRagResponse } from "@/lib/rag/rag-service";
+import { dbErrorResponse } from "@/lib/api/db-errors";
 import { resolveAiConfig } from "@/lib/ai/resolve-ai-config";
 
 export async function POST(request: NextRequest) {
@@ -51,8 +52,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("[RAG API] Error:", error);
-    const message =
-      error instanceof Error ? error.message : "Erreur interne du serveur.";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const fallback = error instanceof Error ? error.message : "Erreur interne du serveur.";
+    return dbErrorResponse(error, fallback);
   }
 }

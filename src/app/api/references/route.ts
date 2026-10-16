@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { createReferenceSchema } from "@/lib/api-schemas";
+import { dbErrorResponse } from "@/lib/api/db-errors";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
@@ -37,10 +38,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("[GET /api/references] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la récupération des références" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la récupération des références");
   }
 }
 
@@ -65,9 +63,6 @@ export async function POST(request: NextRequest) {
       );
     }
     console.error("[POST /api/references] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la création de la référence" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la création de la référence");
   }
 }

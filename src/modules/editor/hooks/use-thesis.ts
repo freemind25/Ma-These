@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppStore } from "@/lib/stores/app-store";
+import { apiJson } from "@/lib/api/api-fetch";
 
 // ═══════════════════════════════════════
 // Types
@@ -74,10 +75,7 @@ export function useTheses() {
   return useQuery({
     queryKey: thesisKeys.lists(),
     queryFn: async () => {
-      const res = await fetch("/api/thesis");
-      if (!res.ok) throw new Error("Erreur de chargement");
-      const json = await res.json();
-      return json.data as Thesis[];
+      return apiJson<Thesis[]>("/api/thesis");
     },
   });
 }
@@ -87,10 +85,7 @@ export function useThesis(id: string | null) {
     queryKey: thesisKeys.detail(id ?? ""),
     queryFn: async () => {
       if (!id) return null;
-      const res = await fetch(`/api/thesis/${id}`);
-      if (!res.ok) throw new Error("Thèse non trouvée");
-      const json = await res.json();
-      return json.data as Thesis;
+      return apiJson<Thesis>(`/api/thesis/${id}`);
     },
     enabled: !!id,
   });
@@ -111,17 +106,11 @@ export function useCreateThesis() {
       discipline?: string;
       directorName?: string;
     }) => {
-      const res = await fetch("/api/thesis", {
+      return apiJson<Thesis>("/api/thesis", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Erreur de création");
-      }
-      const json = await res.json();
-      return json.data as Thesis;
     },
     onSuccess: (thesis) => {
       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
@@ -135,14 +124,11 @@ export function useUpdateThesis() {
 
   return useMutation({
     mutationFn: async ({ id, ...data }: Partial<Thesis> & { id: string }) => {
-      const res = await fetch(`/api/thesis/${id}`, {
+      return apiJson<Thesis>(`/api/thesis/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Erreur de mise à jour");
-      const json = await res.json();
-      return json.data as Thesis;
     },
     onSuccess: (_data, _variables) => {
       queryClient.invalidateQueries({
@@ -159,8 +145,7 @@ export function useDeleteThesis() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/api/thesis/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Erreur de suppression");
+      await apiJson(`/api/thesis/${id}`, { method: "DELETE" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
@@ -181,14 +166,11 @@ export function useUpdateChapter() {
       id,
       ...data
     }: { id: string; title?: string; content?: string; plainText?: string; wordCount?: number; status?: string; sortOrder?: number; partId?: string | null; stamp?: string }) => {
-      const res = await fetch(`/api/chapters/${id}`, {
+      return apiJson<ThesisChapter>(`/api/chapters/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Erreur de mise à jour");
-      const json = await res.json();
-      return json.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
@@ -209,14 +191,11 @@ export function useCreateChapter() {
       title: string;
       romanNumeral?: string;
     }) => {
-      const res = await fetch(`/api/thesis/${thesisId}/chapters`, {
+      return apiJson<ThesisChapter>(`/api/thesis/${thesisId}/chapters`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, romanNumeral }),
       });
-      if (!res.ok) throw new Error("Erreur de création");
-      const json = await res.json();
-      return json.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
@@ -229,8 +208,7 @@ export function useDeleteChapter() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/api/chapters/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Erreur de suppression");
+      await apiJson(`/api/chapters/${id}`, { method: "DELETE" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
@@ -247,10 +225,7 @@ export function useParts(thesisId: string | null) {
     queryKey: thesisKeys.parts(thesisId ?? ""),
     queryFn: async () => {
       if (!thesisId) return [];
-      const res = await fetch(`/api/thesis/${thesisId}/parts`);
-      if (!res.ok) throw new Error("Erreur de chargement des parties");
-      const json = await res.json();
-      return json.data as ThesisPart[];
+      return apiJson<ThesisPart[]>(`/api/thesis/${thesisId}/parts`);
     },
     enabled: !!thesisId,
   });
@@ -261,14 +236,11 @@ export function useCreatePart() {
 
   return useMutation({
     mutationFn: async ({ thesisId, title }: { thesisId: string; title: string }) => {
-      const res = await fetch(`/api/thesis/${thesisId}/parts`, {
+      return apiJson<ThesisPart>(`/api/thesis/${thesisId}/parts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title }),
       });
-      if (!res.ok) throw new Error("Erreur de création de la partie");
-      const json = await res.json();
-      return json.data as ThesisPart;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
@@ -281,14 +253,11 @@ export function useUpdatePart() {
 
   return useMutation({
     mutationFn: async ({ id, ...data }: { id: string; title?: string; sortOrder?: number }) => {
-      const res = await fetch(`/api/parts/${id}`, {
+      return apiJson<ThesisPart>(`/api/parts/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Erreur de mise à jour de la partie");
-      const json = await res.json();
-      return json.data as ThesisPart;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: thesisKeys.all });
@@ -301,8 +270,7 @@ export function useDeletePart() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/api/parts/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Erreur de suppression de la partie");
+      await apiJson(`/api/parts/${id}`, { method: "DELETE" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: thesisKeys.all });

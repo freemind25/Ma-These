@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { updateChapterSchema } from "@/lib/api-schemas";
+import { dbErrorResponse } from "@/lib/api/db-errors";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
@@ -33,10 +34,7 @@ export async function GET(
     return NextResponse.json({ data: chapter });
   } catch (error) {
     console.error("[GET /api/chapters/[id]] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la récupération du chapitre" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la récupération du chapitre");
   }
 }
 
@@ -93,10 +91,7 @@ export async function PUT(
       );
     }
     console.error("[PUT /api/chapters/[id]] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la mise à jour du chapitre" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la mise à jour du chapitre");
   }
 }
 
@@ -113,9 +108,6 @@ export async function DELETE(
     return NextResponse.json({ data: { id } });
   } catch (error) {
     console.error("[DELETE /api/chapters/[id]] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la suppression du chapitre" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la suppression du chapitre");
   }
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { dbErrorResponse } from "@/lib/api/db-errors";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
@@ -35,10 +36,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("[GET /api/document-chunks] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la récupération des chunks" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la récupération des chunks");
   }
 }
 
@@ -96,9 +94,6 @@ export async function DELETE(request: NextRequest) {
       );
     }
     console.error("[DELETE /api/document-chunks] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la suppression des chunks" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la suppression des chunks");
   }
 }

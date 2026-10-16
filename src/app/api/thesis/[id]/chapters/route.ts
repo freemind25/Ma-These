@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { createChapterSchema } from "@/lib/api-schemas";
+import { dbErrorResponse } from "@/lib/api/db-errors";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
@@ -23,10 +24,7 @@ export async function GET(
     });
   } catch (error) {
     console.error("[GET /api/thesis/[id]/chapters] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la récupération des chapitres" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la récupération des chapitres");
   }
 }
 
@@ -69,9 +67,6 @@ export async function POST(
       );
     }
     console.error("[POST /api/thesis/[id]/chapters] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la création du chapitre" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la création du chapitre");
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { updateReferenceSchema } from "@/lib/api-schemas";
+import { dbErrorResponse } from "@/lib/api/db-errors";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
@@ -31,10 +32,7 @@ export async function PUT(
       );
     }
     console.error("[PUT /api/references/[id]] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la mise à jour" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la mise à jour");
   }
 }
 
@@ -51,9 +49,6 @@ export async function DELETE(
     return NextResponse.json({ data: { id } });
   } catch (error) {
     console.error("[DELETE /api/references/[id]] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la suppression" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la suppression");
   }
 }

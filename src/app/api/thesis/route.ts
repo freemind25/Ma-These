@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { createThesisSchema } from "@/lib/api-schemas";
+import { dbErrorResponse } from "@/lib/api/db-errors";
 import { z } from "zod/v4";
 
 // ═══════════════════════════════════════
@@ -34,10 +35,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error("[GET /api/thesis] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la récupération des thèses" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la récupération des thèses");
   }
 }
 
@@ -102,9 +100,6 @@ export async function POST(request: NextRequest) {
       );
     }
     console.error("[POST /api/thesis] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la création de la thèse" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la création de la thèse");
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { apiJson } from "@/lib/api/api-fetch";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -143,7 +144,7 @@ function fetchReferences(filters: { type?: string; search?: string; source?: str
   if (filters.type && filters.type !== "all") params.set("type", filters.type);
   if (filters.search) params.set("search", filters.search);
   if (filters.source && filters.source !== "all") params.set("source", filters.source);
-  return fetch(`/api/references?${params}`).then((r) => r.json()).then((j) => j.data as Reference[]);
+  return apiJson<Reference[]>(`/api/references?${params}`);
 }
 
 export function ReferencesPage() {
@@ -163,7 +164,7 @@ export function ReferencesPage() {
 
   const toggleFavorite = useMutation({
     mutationFn: async ({ id, isFavorite }: { id: string; isFavorite: boolean }) => {
-      await fetch(`/api/references/${id}`, {
+      await apiJson(`/api/references/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isFavorite: !isFavorite }),
@@ -174,7 +175,7 @@ export function ReferencesPage() {
 
   const deleteRef = useMutation({
     mutationFn: async (id: string) => {
-      await fetch(`/api/references/${id}`, { method: "DELETE" });
+      await apiJson(`/api/references/${id}`, { method: "DELETE" });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["references"] }),
   });
@@ -183,16 +184,11 @@ export function ReferencesPage() {
     mutationFn: async (data: Record<string, string>) => {
       const payload: Record<string, unknown> = { ...data, source: "manual" };
       if (data.year) payload.year = parseInt(data.year, 10);
-      const res = await fetch("/api/references", {
+      return apiJson("/api/references", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Erreur");
-      }
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["references"] });

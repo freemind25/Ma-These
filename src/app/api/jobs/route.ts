@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { db } from "@/lib/db";
 import { enqueueJob } from "@/lib/jobs/queue";
+import { dbErrorResponse } from "@/lib/api/db-errors";
 import { getRegisteredJobTypes } from "@/lib/jobs/worker";
 
 // ═══════════════════════════════════════
@@ -44,10 +45,7 @@ export async function POST(request: NextRequest) {
       );
     }
     console.error("[POST /api/jobs] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la soumission du job" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la soumission du job");
   }
 }
 
@@ -76,9 +74,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ data: jobs });
   } catch (error) {
     console.error("[GET /api/jobs] Error:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la récupération des jobs" },
-      { status: 500 }
-    );
+    return dbErrorResponse(error, "Erreur lors de la récupération des jobs");
   }
 }
