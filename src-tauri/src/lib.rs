@@ -263,7 +263,12 @@ pub fn run() {
                     .env("HOSTNAME", "127.0.0.1")
                     .env("NODE_ENV", "production")
                     .env("TAURI", "true")
-                    .env("DATABASE_URL", &database_url);
+                    .env("DATABASE_URL", &database_url)
+                    // C2-E3 : chemin du template de base embarqué — référence de
+                    // migration au boot (cf. src/lib/db/schema-migrate.ts). La base
+                    // utilisateur y est comparée et le DIFF appliqué en DDL
+                    // idempotents après sauvegarde (jamais destructif).
+                    .env("TAURI_TEMPLATE_DB", bundled_db.to_string_lossy().to_string());
 
                 // T14 (C-D2, option a env-only) : les clés API ne sont plus
                 // embarquées dans le binaire — la variable d'environnement
