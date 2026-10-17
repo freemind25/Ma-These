@@ -27,7 +27,11 @@ rm -rf build/tauri-bundle
 mkdir -p build/tauri-bundle/standalone
 
 # 4. Copier le serveur standalone + static + public
-cp -r .next/standalone/* build/tauri-bundle/standalone/
+# Liste blanche stricte : le traceur Next (output standalone) embarque
+# ici tout le projet (src-tauri/target, db/, upload/, logs...).
+# On ne copie que le strict necessaire du standalone.
+cp .next/standalone/server.js .next/standalone/package.json build/tauri-bundle/standalone/
+cp -r .next/standalone/node_modules build/tauri-bundle/standalone/
 cp -r .next/standalone/.next build/tauri-bundle/standalone/
 mkdir -p build/tauri-bundle/standalone/.next/static
 cp -r .next/static/* build/tauri-bundle/standalone/.next/static/
