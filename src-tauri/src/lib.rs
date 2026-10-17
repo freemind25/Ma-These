@@ -45,6 +45,82 @@ fn strip_extended_length_prefix(p: &std::path::Path) -> std::path::PathBuf {
     std::path::PathBuf::from(cleaned)
 }
 
+/// C2-A2 : taille du zip serveur (octets). Combinée à la version dans le
+/// marqueur .app-version, elle déclenche la ré-extraction même à version
+/// identique si le code serveur embarqué a changé (mise à jour à version
+/// égale — écart C2-A2).
+fn server_zip_size(zip_path: &std::path::Path) -> Result<u64, String> {
+    std::fs::metadata(zip_path)
+        .map(|m| m.len())
+        .map_err(|e| format!("lecture de standalone.zip impossible: {}", e))
+}
+
+/// C2-A3 : migrer les sauvegardes du schéma historique (standalone/backups,
+/// détruit à chaque ré-extraction) vers <install>/backups, hors de la zone
+/// ré-extractable. Idempotent : un fichier déjà migré n'est pas écrasé (le
+/// doublon legacy est supprimé, la copie cible est conservée). La présence
+/// de fichiers non migrés bloque l'extraction (jamais destructif).
+fn migrate_legacy_backups(
+    resource_dir: &std::path::Path,
+    log_file: &mut Option<std::fs::File>,
+) {
+    let legacy_dir = resource_dir.join("standalone").join("backups");
+    let target_dir = resource_dir.join("backups");
+    if !legacy_dir.is_dir() {
+        return;
+    }
+    diag!(log_file, "C2-A3: migration de {:?} vers {:?}", legacy_dir, target_dir);
+    if let Err(e) = std::fs::create_dir_all(&target_dir) {
+        diag!(log_file, "C2-A3: création de {:?} impossible: {}", target_dir, e);
+        return;
+    }
+    let mut moved = 0usize;
+    let mut kept = 0usize;
+    let mut failed = 0usize;
+    if let Ok(entries) = std::fs::read_dir(&legacy_dir) {
+        for entry in entries.flatten() {
+            let from = entry.path();
+            let name = match from.file_name() {
+                Some(n) => n.to_os_string(),
+                None => continue,
+            };
+            let to = target_dir.join(&name);
+            if to.exists() {
+                // Déjà migré : supprimer le doublon legacy (la copie cible
+                // est conservée).
+                if std::fs::remove_file(&from).is_ok() {
+                    kept += 1;
+                } else {
+                    failed += 1;
+                    diag!(log_file, "C2-A3: doublon legacy non supprimable: {:?}", from);
+                }
+                continue;
+            }
+            // Même volume : rename suffit ; repli copie + suppression.
+            let ok = std::fs::rename(&from, &to).is_ok()
+                || (std::fs::copy(&from, &to).is_ok() && std::fs::remove_file(&from).is_ok());
+            if ok {
+                moved += 1;
+            } else {
+                failed += 1;
+                diag!(log_file, "C2-A3: migration impossible: {:?}", from);
+            }
+        }
+    }
+    if failed == 0 {
+        if let Err(e) = std::fs::remove_dir(&legacy_dir) {
+            diag!(log_file, "C2-A3: répertoire legacy non supprimé: {}", e);
+        }
+    }
+    diag!(
+        log_file,
+        "C2-A3: migration sauvegardes terminée ({} déplacés, {} déjà présents, {} échecs)",
+        moved,
+        kept,
+        failed
+    );
+}
+
 /// Extraire standalone.zip avec PowerShell.
 /// Vérifie la version pour forcer la ré-extraction lors d'une mise à jour.
 fn extract_standalone(
@@ -59,20 +135,35 @@ fn extract_standalone(
     if !zip_path.exists() {
         return Err(format!("standalone.zip introuvable: {:?}", zip_path));
     }
+    let zip_len = server_zip_size(&zip_path)?;
 
-    // Décider si l'extraction est nécessaire
+    // C2-A2 : décision d'extraction basée sur version + taille du zip —
+    // une même version avec un zip serveur différent (code corrigé) est
+    // redéployée au lieu d'être ignorée.
     let needs_extract =
         if standalone_dir.join("server.js").exists() && standalone_dir.join("node_modules").exists() {
-            let extracted_version = std::fs::read_to_string(&version_file).unwrap_or_default();
-            if extracted_version.trim() == current_version {
-                diag!(log_file, "standalone v{} déjà extrait, skip", current_version);
+            let marker = std::fs::read_to_string(&version_file).unwrap_or_default();
+            let marker = marker.trim();
+            let (extracted_version, extracted_len) = match marker.split_once('|') {
+                Some((v, l)) => (v, l.parse::<u64>().unwrap_or(0)),
+                None => (marker, 0u64),
+            };
+            if extracted_version == current_version && extracted_len == zip_len {
+                diag!(
+                    log_file,
+                    "standalone v{} (zip {} octets) déjà extrait, skip",
+                    current_version,
+                    zip_len
+                );
                 false
             } else {
                 diag!(
                     log_file,
-                    "standalone v{} détecté, mise à jour vers v{}...",
-                    extracted_version.trim(),
-                    current_version
+                    "standalone v{} (zip {}) détecté, mise à jour vers v{} (zip {})...",
+                    extracted_version,
+                    extracted_len,
+                    current_version,
+                    zip_len
                 );
                 true
             }
@@ -81,12 +172,31 @@ fn extract_standalone(
         };
 
     if needs_extract {
+        // C2-A3 : migrer les sauvegardes AVANT toute suppression. Si des
+        // fichiers n'ont pas pu être migrés, annuler l'extraction plutôt
+        // que de détruire des sauvegardes (jamais destructif).
+        migrate_legacy_backups(resource_dir, log_file);
+        if resource_dir.join("standalone").join("backups").exists() {
+            return Err(
+                "C2-A3: sauvegardes non migrées dans standalone/backups — extraction annulée pour ne pas les détruire"
+                    .to_string(),
+            );
+        }
+
         // Supprimer l'ancien standalone avant extraction
         if standalone_dir.exists() {
             diag!(log_file, "Suppression de l'ancien standalone...");
-            let _ = std::fs::remove_dir_all(&standalone_dir);
+            // C2-A2 : suppression stricte (1 réessai) — jamais d'arbre mixte
+            // ancien/nouveau en cas d'échec silencieux.
+            if std::fs::remove_dir_all(&standalone_dir).is_err() {
+                std::thread::sleep(std::time::Duration::from_secs(1));
+                if let Err(e) = std::fs::remove_dir_all(&standalone_dir) {
+                    return Err(format!("suppression de l'ancien standalone impossible: {}", e));
+                }
+            }
         }
 
+        let extract_started = std::time::Instant::now();
         diag!(log_file, "Extraction de standalone.zip... (premier lancement ~30-60s)");
 
         let zip_win = zip_path.display().to_string().replace('/', "\\");
@@ -112,10 +222,34 @@ fn extract_standalone(
             let stderr = String::from_utf8_lossy(&output.stderr);
             return Err(format!("Expand-Archive failed: {}", stderr));
         }
+        diag!(
+            log_file,
+            "C2-A2: Expand-Archive terminé en {}s",
+            extract_started.elapsed().as_secs()
+        );
 
-        // Écrire le fichier de version après extraction réussie
-        let _ = std::fs::write(&version_file, current_version);
-        diag!(log_file, "Extraction terminée (v{})", current_version);
+        // C2-A2 : vérifier le résultat de l'extraction AVANT d'écrire le
+        // marqueur (sinon une extraction incomplète serait déclarée à jour).
+        if !standalone_dir.join("server.js").exists()
+            || !standalone_dir.join("node_modules").exists()
+        {
+            return Err(
+                "extraction incomplète : server.js ou node_modules absent après Expand-Archive"
+                    .to_string(),
+            );
+        }
+
+        // C2-A2 : marqueur = version + taille du zip, écrit puis relu —
+        // une écriture ratée ne doit plus boucler l'extraction en silence.
+        let marker_text = format!("{}|{}", current_version, zip_len);
+        std::fs::write(&version_file, &marker_text).map_err(|e| {
+            format!(
+                "écriture du marqueur impossible ({}): {}",
+                version_file.display(),
+                e
+            )
+        })?;
+        diag!(log_file, "C2-A2: marqueur écrit ({})", marker_text);
     }
 
     Ok(standalone_dir)
@@ -255,6 +389,11 @@ pub fn run() {
                     std::thread::sleep(std::time::Duration::from_millis(500));
                 }
 
+                // C2-A3 : répertoire des sauvegardes hors de standalone/ (zone
+                // ré-extractable) — cf. src/lib/backup.ts (TF_BACKUP_DIR).
+                let backup_dir = resource_dir.join("backups");
+                let _ = std::fs::create_dir_all(&backup_dir);
+
                 let mut cmd = std::process::Command::new(&node_exe);
                 #[cfg(target_os = "windows")]
                 cmd.creation_flags(CREATE_NO_WINDOW);
@@ -264,6 +403,10 @@ pub fn run() {
                     .env("NODE_ENV", "production")
                     .env("TAURI", "true")
                     .env("DATABASE_URL", &database_url)
+                    // C2-A3 : les sauvegardes quotidiennes vont dans
+                    // <install>/backups (TF_BACKUP_DIR prime sur le défaut
+                    // process.cwd()/backups — cf. src/lib/backup.ts).
+                    .env("TF_BACKUP_DIR", backup_dir.to_string_lossy().to_string())
                     // C2-E3 : chemin du template de base embarqué — référence de
                     // migration au boot (cf. src/lib/db/schema-migrate.ts). La base
                     // utilisateur y est comparée et le DIFF appliqué en DDL
