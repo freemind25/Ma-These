@@ -11,6 +11,16 @@ const CREATE_NO_WINDOW: u32 = 0x08000000;
 const SERVER_PORT: u16 = 14325;
 const SERVER_STARTUP_TIMEOUT_SECS: u64 = 60;
 
+// --- C2-R5 : journal persistant, horodaté, avec rotation ---
+const LOG_ROTATE_MAX_BYTES: u64 = 5 * 1024 * 1024; // 5 Mo
+const LOG_KEEP_ARCHIVES: usize = 10;
+const SERVER_STOP_TIMEOUT_SECS: u64 = 10;
+
+/// C2-R5 (A1) : horodatage local [AAAA-MM-JJ HH:MM:SS] pour le journal.
+fn ts_now() -> String {
+    chrono::Local::now().format("[%Y-%m-%d %H:%M:%S]").to_string()
+}
+
 fn wait_for_server(port: u16, timeout_secs: u64) -> bool {
     let addr = format!("127.0.0.1:{}", port);
     let start = std::time::Instant::now();
@@ -29,7 +39,7 @@ macro_rules! diag {
         let msg = format!($($arg)*);
         eprintln!("[Ma Thèse] {}", msg);
         if let Some(ref mut f) = $log_file {
-            let _ = writeln!(f, "{}", msg);
+            let _ = writeln!(f, "{} {}", ts_now(), msg);
             let _ = f.flush();
         }
     }};
@@ -197,7 +207,7 @@ fn extract_standalone(
         }
 
         let extract_started = std::time::Instant::now();
-        diag!(log_file, "Extraction de standalone.zip... (premier lancement ~30-60s)");
+        diag!(log_file, "Extraction de standalone.zip... (premier lancement ~1 à 2 min)");
 
         let zip_win = zip_path.display().to_string().replace('/', "\\");
         let dest_win = resource_dir.display().to_string().replace('/', "\\");
@@ -261,6 +271,10 @@ fn extract_standalone(
 /// occuper SERVER_PORT après chaque fermeture → EADDRINUSE au redémarrage.)
 struct ServerChild(std::sync::Mutex<Option<std::process::Child>>);
 
+/// C2-R5 (A4) : chemin du journal, partagé avec le gestionnaire d'arrêt
+/// (le fichier est réouvert en mode ajout au moment de journaliser l'arrêt).
+struct LogPath(std::path::PathBuf);
+
 /// C2-O1 : arrête un éventuel node.exe orphelin d'une session précédente qui
 /// écouterait déjà SERVER_PORT (versions ≤ 1.10.9 : process jamais tué).
 fn kill_port_orphan(port: u16, log_file: &mut Option<std::fs::File>) {
@@ -293,6 +307,57 @@ fn kill_port_orphan(port: u16, log_file: &mut Option<std::fs::File>) {
     let _ = (port, log_file);
 }
 
+/// C2-R5 (A1) : rotation du journal si trop volumineux : server.log est
+/// renommé en server.log.<date> et seules les LOG_KEEP_ARCHIVES archives
+/// les plus récentes sont conservées.
+fn rotate_log_if_large(log_path: &std::path::Path) {
+    let meta = match std::fs::metadata(log_path) {
+        Ok(m) => m,
+        Err(_) => return,
+    };
+    if meta.len() < LOG_ROTATE_MAX_BYTES {
+        return;
+    }
+    let name = match log_path.file_name() {
+        Some(n) => n.to_string_lossy().to_string(),
+        None => return,
+    };
+    let dir = match log_path.parent() {
+        Some(d) => d.to_path_buf(),
+        None => return,
+    };
+    let stamp = chrono::Local::now().format("%Y%m%d-%H%M%S");
+    let archived = dir.join(format!("{}.{}", name, stamp));
+    let _ = std::fs::rename(log_path, &archived);
+    let prefix = format!("{}.", name);
+    let mut archives: Vec<std::path::PathBuf> = std::fs::read_dir(&dir)
+        .map(|rd| {
+            rd.filter_map(|e| e.ok())
+                .map(|e| e.path())
+                .filter(|p| {
+                    p.file_name()
+                        .map(|n| n.to_string_lossy().starts_with(&prefix))
+                        .unwrap_or(false)
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    archives.sort();
+    while archives.len() > LOG_KEEP_ARCHIVES {
+        let oldest = archives.remove(0);
+        let _ = std::fs::remove_file(oldest);
+    }
+}
+
+/// C2-R5 (A4) : réouvrir le journal en mode ajout (pour journaliser l'arrêt).
+fn reopen_log(log_path: &std::path::Path) -> Option<std::fs::File> {
+    std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(log_path)
+        .ok()
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -306,9 +371,11 @@ pub fn run() {
                 let exe = std::env::current_exe().unwrap();
                 let exe_dir = exe.parent().unwrap();
 
-                // --- Log file ---
+                // --- Log file (C2-R5 : mode ajout + rotation, plus d'écrasement) ---
                 let log_path = exe_dir.join("server.log");
-                let mut log_file: Option<std::fs::File> = std::fs::File::create(&log_path).ok();
+                rotate_log_if_large(&log_path);
+                let mut log_file: Option<std::fs::File> = reopen_log(&log_path);
+                handle.manage(LogPath(log_path.clone()));
 
                 diag!(log_file, "=== Ma Thèse v{} démarrage ===", env!("CARGO_PKG_VERSION"));
                 diag!(log_file, "exe: {:?}", exe);
@@ -482,24 +549,57 @@ pub fn run() {
         .build(tauri::generate_context!())
         .expect("error while running Ma Thèse")
         .run(|app, event| {
-            // C2-O1 : arrêt propre du serveur embarqué à la fermeture de l'app
-            // (RunEvent::Exit couvre la fermeture de la dernière fenêtre).
+            // C2-R5 (A4) : arrêt du serveur embarqué, journalisé, en deux temps
+            // (tentative d'arrêt doux, puis forcé après SERVER_STOP_TIMEOUT_SECS).
+            // (RunEvent::Exit couvre la fermeture de la dernière fenêtre.)
             if let tauri::RunEvent::Exit = event {
                 if let Some(state) = app.try_state::<ServerChild>() {
                     if let Ok(mut guard) = state.0.lock() {
                         if let Some(mut child) = guard.take() {
                             let pid = child.id();
+                            let mut log_file: Option<std::fs::File> = app
+                                .try_state::<LogPath>()
+                                .and_then(|lp| reopen_log(&lp.0));
+                            diag!(log_file, "C2-R5: fermeture de l'application, arrêt du serveur node.exe (pid={})...", pid);
                             #[cfg(target_os = "windows")]
                             {
                                 let _ = std::process::Command::new("taskkill")
-                                    .args(["/PID", &pid.to_string(), "/T", "/F"])
+                                    .args(["/PID", &pid.to_string(), "/T"])
                                     .creation_flags(CREATE_NO_WINDOW)
                                     .output();
                             }
                             #[cfg(not(target_os = "windows"))]
                             let _ = child.kill();
-                            let _ = child.wait();
-                            eprintln!("[Ma Thèse] C2-O1: serveur node.exe (pid={}) arrêté", pid);
+                            let deadline = std::time::Instant::now()
+                                + std::time::Duration::from_secs(SERVER_STOP_TIMEOUT_SECS);
+                            let mut stopped = false;
+                            while std::time::Instant::now() < deadline {
+                                match child.try_wait() {
+                                    Ok(Some(_)) | Err(_) => {
+                                        stopped = true;
+                                        break;
+                                    }
+                                    Ok(None) => {
+                                        std::thread::sleep(std::time::Duration::from_millis(200));
+                                    }
+                                }
+                            }
+                            if stopped {
+                                diag!(log_file, "C2-R5: serveur node.exe (pid={}) arrêté", pid);
+                            } else {
+                                diag!(log_file, "C2-R5: serveur node.exe (pid={}) toujours actif après {}s, arrêt forcé", pid, SERVER_STOP_TIMEOUT_SECS);
+                                #[cfg(target_os = "windows")]
+                                {
+                                    let _ = std::process::Command::new("taskkill")
+                                        .args(["/PID", &pid.to_string(), "/T", "/F"])
+                                        .creation_flags(CREATE_NO_WINDOW)
+                                        .output();
+                                }
+                                #[cfg(not(target_os = "windows"))]
+                                let _ = child.kill();
+                                let _ = child.wait();
+                                diag!(log_file, "C2-R5: serveur node.exe (pid={}) arrêté (forcé)", pid);
+                            }
                         }
                     }
                 }
