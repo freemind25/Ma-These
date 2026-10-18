@@ -1,0 +1,37 @@
+--- loc 2026-10-18 12:54:15 ---
+[loc] Installation : /c/Users/ink house/AppData/Local/Ma Thèse
+[loc] server.log présent : oui ; taille : 21543 octets
+--- prep1 2026-10-18 12:54:17 ---
+[prep1] marqueur T1 ajouté ; journal : 21599 octets / 193 lignes
+--- verif1 (T1,T2,T3,T4) 2026-10-18 12:56:56 ---
+FAIL T1 : marqueur/ordre incohérent (lm=193 ln=)
+FAIL T2 : aucune ligne horodatée
+FAIL T4 : message absent
+FAIL T3 : lignes d'arrêt C2-R5 absentes (app fermée ?)
+PASS T3b : zéro node.exe résiduel (server.js)
+--- prep2 2026-10-18 12:57:01 ---
+[prep2] journal porté à 6313055 octets
+--- verif1 (T1,T2,T3,T4) 2026-10-18 13:36:41 ---
+PASS T1 : append confirmé (marqueur ligne 193 < section 1.10.11 ligne 194 — pas d'écrasement)
+PASS T2 : 14 lignes horodatées
+PASS T4 : message « ~1 à 2 min » présent
+FAIL T3 : lignes d'arrêt C2-R5 absentes (app fermée ?)
+FAIL T3b : 1 node.exe résiduel(aux) — commandlines ci-dessus
+--- verif1 (T1,T2,T3,T4) 2026-10-18 13:48:13 ---
+PASS T1 : append confirmé (marqueur ligne 193 < section 1.10.11 ligne 194 — pas d'écrasement)
+PASS T2 : 16 lignes horodatées
+PASS T4 : message « ~1 à 2 min » présent
+PASS T3 : arrêt journalisé :
+PASS T3b : zéro node.exe résiduel (server.js)
+--- prep2 2026-10-18 13:48:16 ---
+[prep2] journal porté à 6317661 octets
+--- verif2 (T5,T7) 2026-10-18 15:03:55 ---
+FAIL T5 : aucune archive
+PASS T7 : réutilisation :
+--- prep3 2026-10-18 15:03:59 ---
+[prep3] 12 archives 2024 créées ; journal regrossi à 12609117 octets
+--- verif2 (T5,T7) 2026-10-18 15:14:57 ---
+PASS T5 : rotation — 12 archive(s) ; contenues :
+PASS T7 : réutilisation :
+--- prep3 2026-10-18 15:14:59 ---
+[prep3] 12 archives 2024 créées ; journal regrossi à 18900573 octets
