@@ -1789,7 +1789,7 @@ dependencies = [
 
 [[package]]
 name = "mathese"
-version = "1.10.11"
+version = "1.10.12"
 dependencies = [
  "chrono",
  "serde",
