@@ -39,6 +39,29 @@ if [ -d "public" ]; then
   cp -r public build/tauri-bundle/standalone/public
 fi
 
+# 4bis. OCR hors-ligne (audit C2 — écart « packaging OCR ») : le traceur
+# Next n'embarque ni vendor/tessdata, ni les require dynamiques de
+# tesseract.js (worker-script interne, wasm de tesseract.js-core, et les
+# dépendances chargées par chemin à l'exécution). Copie explicite depuis
+# node_modules et vendor du projet — remplace les copies partielles du traceur.
+echo "[4bis/6] OCR hors-ligne : tessdata + paquets non tracés..."
+if [ ! -f "vendor/tessdata/fra.traineddata.gz" ]; then
+  echo "ERREUR: vendor/tessdata/fra.traineddata.gz absent du dépôt" >&2
+  exit 1
+fi
+mkdir -p build/tauri-bundle/standalone/vendor
+cp -r vendor/tessdata build/tauri-bundle/standalone/vendor/tessdata
+OCR_PKGS="tesseract.js tesseract.js-core wasm-feature-detect bmp-js idb-keyval is-url node-fetch regenerator-runtime zlibjs"
+for pkg in $OCR_PKGS; do
+  if [ ! -d "node_modules/$pkg" ]; then
+    echo "ERREUR: paquet OCR manquant dans node_modules : $pkg" >&2
+    exit 1
+  fi
+  rm -rf "build/tauri-bundle/standalone/node_modules/$pkg"
+  cp -r "node_modules/$pkg" "build/tauri-bundle/standalone/node_modules/$pkg"
+done
+echo "  OCR hors-ligne : tessdata + 9 paquets copiés"
+
 FILE_COUNT=$(find build/tauri-bundle/standalone -type f | wc -l)
 echo "  Standalone: $FILE_COUNT fichiers"
 
