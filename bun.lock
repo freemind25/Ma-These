@@ -41,7 +41,9 @@
         "@tanstack/react-query": "^5.82.0",
         "@tanstack/react-table": "^8.21.3",
         "@tauri-apps/api": "2.12.4",
+        "@tauri-apps/plugin-process": "2.4.0",
         "@tauri-apps/plugin-shell": "2.3.5",
+        "@tauri-apps/plugin-updater": "2.14.1",
         "@tiptap/extension-character-count": "^3.29.2",
         "@tiptap/extension-highlight": "^3.29.2",
         "@tiptap/extension-link": "^3.29.2",
@@ -589,7 +591,11 @@
 
     "@tauri-apps/cli-win32-x64-msvc": ["@tauri-apps/cli-win32-x64-msvc@2.11.4", "", { "os": "win32", "cpu": "x64" }, "sha512-+vDiqBIU5dMISg/wNvX3sF+ZHfgJGJ5T0AcO+EHNXV9GGAG+P5fzodlDXD3QdKCRgZxMoCm5PPvj3BqLNjBthw=="],
 
+    "@tauri-apps/plugin-process": ["@tauri-apps/plugin-process@2.4.0", "", { "dependencies": { "@tauri-apps/api": "^2.12.0" } }, "sha512-GddrmsSLAYrLa/yTXlXK/YRDzUgYeeOnUXTbiyvJWkmI424RmDPD3FVLeqcon7rv6O6ZfhBilcrHWnSo7o6hIQ=="],
+
     "@tauri-apps/plugin-shell": ["@tauri-apps/plugin-shell@2.3.5", "", { "dependencies": { "@tauri-apps/api": "^2.10.1" } }, "sha512-jewtULhiQ7lI7+owCKAjc8tYLJr92U16bPOeAa472LHJdgaibLP83NcfAF2e+wkEcA53FxKQAZ7byDzs2eeizg=="],
+
+    "@tauri-apps/plugin-updater": ["@tauri-apps/plugin-updater@2.14.1", "", { "dependencies": { "@tauri-apps/api": "^2.12.0" } }, "sha512-Hr7nlBm1wT6xbwzjZ/S36YULazu8MNlj5vvOwMl47fXI7HTa5Bjl1PbDEwVHaZTAKzE1VZsUy35UqnbrQxmYQw=="],
 
     "@tiptap/core": ["@tiptap/core@3.29.2", "", { "peerDependencies": { "@tiptap/pm": "3.29.2" } }, "sha512-oKUkiPUB7noilVYxI9lNzUD4rX17sHub+PYjMfHMWHG9A3nvIy+FdePIVIIhThKWF7ijhr3eIqHY51Bn+GAFtw=="],
 

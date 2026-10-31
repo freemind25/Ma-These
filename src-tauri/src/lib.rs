@@ -362,6 +362,8 @@ fn reopen_log(log_path: &std::path::Path) -> Option<std::fs::File> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .manage(ServerChild(std::sync::Mutex::new(None)))
         .setup(|app| {
             let handle = app.handle().clone();

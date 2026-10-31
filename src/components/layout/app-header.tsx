@@ -65,6 +65,7 @@ import {
 } from "@/lib/ai/ai-types";
 import { UsageGuideDialog } from "./usage-guide-dialog";
 import { AboutDialog } from "./about-dialog";
+import { AppUpdateDialog } from "./app-update-dialog";
 import { ShortcutsDialog } from "./shortcuts-dialog";
 
 // ═══════════════════════════════════════════════════
@@ -689,6 +690,7 @@ export function AppHeader() {
   const [guideOpen, setGuideOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [updateOpen, setUpdateOpen] = useState(false);
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-4">
@@ -744,6 +746,16 @@ export function AppHeader() {
               <Info className="h-4 w-4 mr-2" />
               À propos de Ma Thèse
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setUpdateOpen(true);
+              }}
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Rechercher les mises à jour
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -798,6 +810,9 @@ export function AppHeader() {
 
       {/* About Dialog */}
       <AboutDialog open={aboutOpen} onOpenChange={setAboutOpen} />
+
+      {/* Update Dialog — Tauri updater v2 */}
+      <AppUpdateDialog open={updateOpen} onOpenChange={setUpdateOpen} />
     </header>
   );
 }

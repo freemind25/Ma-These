@@ -1,6 +1,6 @@
 {
   "name": "thesisframe",
-  "version": "1.10.14",
+  "version": "1.10.15",
   "private": true,
   "description": "ThesisFrame — Assistant intelligent pour la rédaction de thèses de doctorat",
   "scripts": {
@@ -59,7 +59,9 @@
     "@tanstack/react-query": "^5.82.0",
     "@tanstack/react-table": "^8.21.3",
     "@tauri-apps/api": "2.12.4",
+    "@tauri-apps/plugin-process": "2.4.0",
     "@tauri-apps/plugin-shell": "2.3.5",
+    "@tauri-apps/plugin-updater": "2.14.1",
     "@tiptap/extension-character-count": "^3.29.2",
     "@tiptap/extension-highlight": "^3.29.2",
     "@tiptap/extension-link": "^3.29.2",
