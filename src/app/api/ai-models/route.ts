@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { type AiProviderId, PROVIDER_BASE_URLS } from "@/lib/ai/ai-types";
 import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
+import { getProviderExtraHeaders } from "@/lib/ai/ai-provider";
 
 // In-memory cache (5 min TTL)
 const modelCache = new Map<string, { models: string[]; fetchedAt: number }>();
@@ -41,6 +42,11 @@ export async function GET(request: NextRequest) {
     const headers: Record<string, string> = {};
     if (effectiveApiKey) {
       headers["Authorization"] = `Bearer ${effectiveApiKey}`;
+    }
+    // En-têtes spécifiques au fournisseur (ex. User-Agent navigateur exigé par
+    // Cloudflare devant certains gateways — v1.10.13)
+    if (providerId) {
+      Object.assign(headers, getProviderExtraHeaders(providerId));
     }
 
     const res = await fetch(url, {

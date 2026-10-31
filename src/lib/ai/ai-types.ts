@@ -12,6 +12,7 @@ export type AiProviderId =
   | "anthropic"
   | "mistral"
   | "routesme"
+  | "codecraftapi" // CodeCraft API (multi-modèles, OpenAI-compatible)
   // --- Fournisseurs gratuits majeurs ---
   | "google"       // Google Gemini (gratuit, excellent)
   | "groq"         // Groq (ultra-rapide, Llama/Mixtral/Gemma)
@@ -74,6 +75,7 @@ export const PROVIDER_BASE_URLS: Record<AiProviderId, string> = {
   anthropic: "https://api.anthropic.com/v1",
   mistral: "https://api.mistral.ai/v1",
   routesme: "https://routesme.online/v1",
+  codecraftapi: "https://codecraftapi.com/v1",
   // Fournisseurs gratuits majeurs
   google: "https://generativelanguage.googleapis.com/v1beta/openai",
   groq: "https://api.groq.com/openai/v1",
@@ -111,6 +113,7 @@ export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
   anthropic: ["claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022", "claude-3-haiku-20240307"],
   mistral: ["mistral-large-latest", "mistral-medium-latest", "mistral-small-latest", "codestral-latest", "mistral-tiny"],
   routesme: [],
+  codecraftapi: [],
   // Fournisseurs gratuits majeurs
   google: ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-3.6-flash", "gemma-4-26b-a4b-it"],
   groq: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"],
@@ -203,6 +206,7 @@ export const DYNAMIC_MODEL_PROVIDERS: AiProviderId[] = [
   "huggingface", "nvidia", "cloudflare", "github", "siliconflow",
   "routeway", "ainative", "aion", "requesty", "sealion", "tokenrouter", "google", "cohere",
   "omniroute",
+  "codecraftapi",
 ];
 
 /**
@@ -227,7 +231,7 @@ export const PROVIDER_CATEGORIES: Record<ProviderCategory, { label: string; desc
   premium: {
     label: "Premium",
     description: "Fournisseurs payants (clé API requise)",
-    providers: ["openai", "anthropic", "mistral", "routesme", "kiraai"],
+    providers: ["openai", "anthropic", "mistral", "routesme", "kiraai", "codecraftapi"],
   },
   gratuit: {
     label: "Gratuit",
@@ -261,6 +265,7 @@ export function getProviderLabel(provider: AiProviderId): string {
     anthropic: "Anthropic (Claude)",
     mistral: "Mistral AI",
     routesme: "RoutesMe (multi-modèles)",
+    codecraftapi: "CodeCraft API (multi-modèles, OpenAI-compatible)",
     google: "Google Gemini (gratuit)",
     groq: "Groq (ultra-rapide, gratuit)",
     cerebras: "Cerebras (gratuit)",
@@ -322,7 +327,7 @@ export function getProviderFields(provider: AiProviderId): {
  * All provider IDs (useful for iterating)
  */
 export const ALL_PROVIDER_IDS: AiProviderId[] = [
-  "zai", "openai", "anthropic", "mistral", "routesme",
+  "zai", "openai", "anthropic", "mistral", "routesme", "codecraftapi",
   "google", "groq", "cerebras", "openrouter", "github",
   "cloudflare", "huggingface", "nvidia", "cohere", "siliconflow",
   "pollinations", "kilo", "routeway", "ainative", "aion", "requesty", "sealion", "tokenrouter",

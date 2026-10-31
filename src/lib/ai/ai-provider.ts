@@ -100,6 +100,10 @@ export function getProviderExtraHeaders(provider: AiProviderId): Record<string, 
       };
     case "routeway":
       return { "User-Agent": "Mozilla/5.0 MaThese/1.4" };
+    case "codecraftapi":
+      // Cloudflare devant codecraftapi.com rejette les User-Agents non navigateur
+      // (sondes 2026-10-21 : 403 HTML avec UA undici/vide, 401 JSON avec UA Mozilla/5.0)
+      return { "User-Agent": "Mozilla/5.0 MaThese/1.10" };
     case "kilo":
       // Kilo is keyless — no auth header
       return {};

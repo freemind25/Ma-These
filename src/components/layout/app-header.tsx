@@ -582,6 +582,22 @@ function AiConfigDialog({
             </div>
           )}
 
+          {config.provider === "codecraftapi" && (
+            <div className="rounded-lg border border-emerald-200 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-950/20 p-3 text-[11px] text-emerald-800 dark:text-emerald-300 space-y-1">
+              <p className="font-semibold">CodeCraft API — Multi-modèles (compatible OpenAI)</p>
+              <p>
+                Créez et copiez votre clé sur{" "}
+                <a href="https://codecraftapi.com/dashboard/api-keys" target="_blank" rel="noopener" className="underline hover:text-emerald-600">
+                  codecraftapi.com/dashboard/api-keys
+                </a>{" "}
+                puis collez-la ci-dessous.
+              </p>
+              <p>
+                • <span className="font-medium">Modèles</span> : la liste se charge automatiquement depuis votre compte dès que la clé est saisie.
+              </p>
+            </div>
+          )}
+
           {config.provider === "mistral" && (
             <div className="rounded-lg border border-sky-200 dark:border-sky-800/50 bg-sky-50 dark:bg-sky-950/20 p-3 text-[11px] text-sky-800 dark:text-sky-300 space-y-1">
               <p className="font-semibold">Mistral AI — Modèles IA français</p>
