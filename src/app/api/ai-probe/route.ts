@@ -5,6 +5,7 @@ import {
   ALL_PROVIDER_IDS,
 } from "@/lib/ai/ai-types";
 import { getBaseUrl, getProviderExtraHeaders } from "@/lib/ai/ai-provider";
+import { gatewayFetch } from "@/lib/ai/gateway-fetch";
 
 // ═══════════════════════════════════════════════════════════════
 // GET /api/ai-probe — Teste SEULEMENT les fournisseurs avec clé configurée
@@ -77,7 +78,7 @@ async function probe(providerId: string, apiKey: string) {
 
   const t0 = Date.now();
   try {
-    const res = await fetch(url, {
+    const res = await gatewayFetch(providerId as AiProviderId, url, {
       method: "POST",
       headers,
       body: JSON.stringify({ model, max_tokens: 15, messages: [{ role: "user", content: "Réponds juste OK" }] }),

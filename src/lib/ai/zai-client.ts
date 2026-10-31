@@ -18,6 +18,7 @@ import {
   isAnthropicFormat,
 } from "./ai-provider";
 import { getHardcodedKey } from "./hardcoded-keys";
+import { gatewayFetch } from "./gateway-fetch";
 
 // ═══════════════════════════════════════════════════════════════
 // Dynamic SDK import — z-ai-web-dev-sdk is in serverExternalPackages,
@@ -294,7 +295,7 @@ async function generateWithAPI(
     };
   }
 
-  const response = await fetch(url, {
+  const response = await gatewayFetch(config.provider, url, {
     method: "POST",
     headers,
     body: JSON.stringify(body),
@@ -743,7 +744,7 @@ async function streamWithProvider(
   // Start fetching and parsing in the background
   (async () => {
     try {
-      const fetchResponse = await fetch(url, {
+      const fetchResponse = await gatewayFetch(config.provider, url, {
         method: "POST",
         headers,
         body: JSON.stringify(body),

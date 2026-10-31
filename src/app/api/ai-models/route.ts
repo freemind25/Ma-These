@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { type AiProviderId, PROVIDER_BASE_URLS } from "@/lib/ai/ai-types";
 import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
 import { getProviderExtraHeaders } from "@/lib/ai/ai-provider";
+import { gatewayFetch } from "@/lib/ai/gateway-fetch";
 
 // In-memory cache (5 min TTL)
 const modelCache = new Map<string, { models: string[]; fetchedAt: number }>();
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest) {
       Object.assign(headers, getProviderExtraHeaders(providerId));
     }
 
-    const res = await fetch(url, {
+    const res = await gatewayFetch(providerId ?? undefined, url, {
       method: "GET",
       headers,
       signal: AbortSignal.timeout(10000),

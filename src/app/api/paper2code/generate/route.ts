@@ -10,6 +10,7 @@ import {
   PROVIDER_BASE_URLS,
 } from "@/lib/ai/ai-types";
 import { getProviderExtraHeaders } from "@/lib/ai/ai-provider";
+import { gatewayFetch } from "@/lib/ai/gateway-fetch";
 import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
 
 // ─── Types ───────────────────────────────────────────────
@@ -153,7 +154,7 @@ async function callLLM(
   Object.assign(headers, getProviderExtraHeaders(provider));
 
   const url = `${baseUrl}/chat/completions`;
-  const res = await fetch(url, {
+  const res = await gatewayFetch(provider, url, {
     method: "POST",
     headers,
     body: JSON.stringify({

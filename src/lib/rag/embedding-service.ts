@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════
 
 import { getBaseUrl, getProviderExtraHeaders, isAnthropicFormat, detectBackend } from "@/lib/ai/ai-provider";
+import { gatewayFetch } from "@/lib/ai/gateway-fetch";
 import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
 import type { AiProviderConfig, AiProviderId } from "@/lib/ai/ai-types";
 
@@ -180,7 +181,7 @@ async function callEmbeddingApi(
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), EMBEDDING_TIMEOUT_MS);
 
-    const response = await fetch(url, {
+    const response = await gatewayFetch(config.provider, url, {
       method: "POST",
       headers,
       body: JSON.stringify({

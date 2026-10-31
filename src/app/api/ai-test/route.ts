@@ -9,6 +9,7 @@ import {
 } from "@/lib/ai/ai-provider";
 import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
 import { getAiConfigFromRequest } from "@/lib/ai/config-cookie";
+import { gatewayFetch } from "@/lib/ai/gateway-fetch";
 
 // ═══════════════════════════════════════
 // POST /api/ai-test — Test AI provider connection
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
       messages: [{ role: "user", content: "Réponds juste 'OK' en français." }],
     };
 
-    const res = await fetch(url, {
+    const res = await gatewayFetch(provider, url, {
       method: "POST",
       headers,
       body: JSON.stringify(requestBody),
