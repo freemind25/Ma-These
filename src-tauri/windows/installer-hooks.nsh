@@ -14,16 +14,45 @@
 ; MessageBox in interactive mode, silent kill in passive/silent mode).
 ; Covers both in-app self-updates launched from versions WITHOUT the
 ; Rust-side fix (stop_server_for_update) and manual setup.exe runs.
+; The uninstaller has the same lock problem, hence PREUNINSTALL.
 ;
-; The uninstaller has the same lock problem (files must be removable),
-; hence the PREUNINSTALL hook.
+; Implementation note: the PowerShell helper is WRITTEN AT RUNTIME with
+; FileWrite instead of being extracted with File - tauri-bundler copies
+; only this .nsh into its nsis workdir, so ${__FILEDIR__} points to a
+; directory where companion files do not exist (CI failure of 1.10.19
+; attempt 1: File "...update-helper.ps1" -> no files found). Keeping the
+; helper inline makes the hook self-contained. NSIS escaping: $$ emits a
+; literal $ (PowerShell variables), $\r$\n emits CRLF. ASCII-only.
 ; ================================================================
 
 Var MatheseHelperResult
+Var MatheseFh
+
+!macro _MatheseWriteHelper
+  FileOpen $MatheseFh "$PLUGINSDIR\mathese-update-helper.ps1" w
+  FileWrite $MatheseFh "param([string]$$InstallDir,[string]$$ExcludeName='mathese.exe')$\r$\n"
+  FileWrite $MatheseFh "$$ErrorActionPreference='SilentlyContinue'$\r$\n"
+  FileWrite $MatheseFh "$$prefix=$$InstallDir.TrimEnd('\')+'\'$\r$\n"
+  FileWrite $MatheseFh "$$exclude=$$ExcludeName.ToLowerInvariant()$\r$\n"
+  FileWrite $MatheseFh "$$found=$$false$\r$\n"
+  FileWrite $MatheseFh "Get-CimInstance Win32_Process | ForEach-Object {$\r$\n"
+  FileWrite $MatheseFh "$$exePath=$$_.ExecutablePath$\r$\n"
+  FileWrite $MatheseFh "if ($$exePath) {$\r$\n"
+  FileWrite $MatheseFh "$$name=[System.IO.Path]::GetFileName($$exePath).ToLowerInvariant()$\r$\n"
+  FileWrite $MatheseFh "if ($$exePath.StartsWith($$prefix,[System.StringComparison]::OrdinalIgnoreCase) -and $$name -ne $$exclude) {$\r$\n"
+  FileWrite $MatheseFh "$$found=$$true$\r$\n"
+  FileWrite $MatheseFh "Stop-Process -Id $$_.ProcessId -Force$\r$\n"
+  FileWrite $MatheseFh "}$\r$\n"
+  FileWrite $MatheseFh "}$\r$\n"
+  FileWrite $MatheseFh "}$\r$\n"
+  FileWrite $MatheseFh "if ($$found) { Start-Sleep -Milliseconds 800 }$\r$\n"
+  FileWrite $MatheseFh "exit 0$\r$\n"
+  FileClose $MatheseFh
+!macroend
 
 !macro _MatheseKillServerOrphans
   InitPluginsDir
-  File "/oname=$PLUGINSDIR\mathese-update-helper.ps1" "${__FILEDIR__}\update-helper.ps1"
+  !insertmacro _MatheseWriteHelper
   ; Two passes: catch any process that appeared between the two scans.
   nsExec::Exec `powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$PLUGINSDIR\mathese-update-helper.ps1" -InstallDir "$INSTDIR" -ExcludeName "${MAINBINARYNAME}.exe"`
   Pop $MatheseHelperResult
