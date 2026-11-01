@@ -68,6 +68,9 @@ const REGISTRY_META: Record<string, { label: string; color: string; url: string 
   DOAJ: { label: "DOAJ", color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300", url: "https://doaj.org" },
   PubMed: { label: "PubMed", color: "bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300", url: "https://pubmed.ncbi.nlm.nih.gov" },
   DataCite: { label: "DataCite", color: "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300", url: "https://datacite.org" },
+  BnF: { label: "BnF", color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300", url: "https://catalogue.bnf.fr" },
+  Zenodo: { label: "Zenodo", color: "bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/30 dark:text-fuchsia-300", url: "https://zenodo.org" },
+  "Europe PMC": { label: "Europe PMC", color: "bg-lime-100 text-lime-800 dark:bg-lime-900/30 dark:text-lime-300", url: "https://europepmc.org" },
 };
 
 const VERDICT_STYLES: Record<string, { icon: React.ComponentType<{ className?: string }>; color: string; bg: string }> = {
@@ -325,10 +328,10 @@ export function VerificationCitationsPage() {
         <div>
           <h1 className="text-xl font-semibold tracking-tight">Vérification Citations</h1>
           <p className="text-sm text-muted-foreground">
-            Vérifiez vos références contre 6 registres académiques, détectez les accès ouverts et recalculez vos statistiques
+            Vérifiez vos références contre 9 registres académiques, détectez les accès ouverts et recalculez vos statistiques
           </p>
         </div>
-        <Badge variant="secondary" className="ml-auto text-xs">6 registres</Badge>
+        <Badge variant="secondary" className="ml-auto text-xs">9 registres</Badge>
       </div>
 
       <Tabs defaultValue="citations" className="space-y-4">
@@ -385,7 +388,9 @@ Zhang et al. (2021) 10.1007/s00134-021-06500-3`}
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Collez vos références bibliographiques ci-dessus. Chaque citation sera vérifiée contre
-                  <strong> Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed et DataCite</strong> (jeux de données).
+                  <strong> Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed, DataCite</strong> (jeux de données),
+                  <strong> la BnF</strong> (catalogue national français : livres, thèses), <strong>Zenodo</strong> (dépôts
+                  open science) et <strong>Europe PMC</strong> (biomédical).
                   Les rétractations sont détectées automatiquement et l&apos;accès ouvert est repéré via Unpaywall.
                 </p>
               </CardContent>

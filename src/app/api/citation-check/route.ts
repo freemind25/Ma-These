@@ -1,13 +1,19 @@
 // ═══════════════════════════════════════════════════════════════
 // Ma Thèse — Citation Check API
-// Verifies citations against Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed,
-// DataCite (v1.10.16 — DOI de jeux de données, absents de Crossref) et enrichit
+// Vérifie les citations contre 9 registres : Crossref, OpenAlex,
+// Semantic Scholar, DOAJ, PubMed, DataCite (v1.10.16 — DOI de jeux de
+// données), BnF (v1.10.18 — catalogue national français : livres,
+// thèses, périodiques), Zenodo (v1.10.18 — dépôts open science) et
+// Europe PMC (v1.10.18 — biomédical, sur-ensemble de PubMed) ; enrichit
 // les citations avec DOI d'un statut d'accès ouvert Unpaywall (lien légal plein-texte).
 // ═══════════════════════════════════════════════════════════════
 
 import { NextRequest, NextResponse } from "next/server";
 import { lookupDataciteByDoi, searchDataciteByTitle } from "@/lib/scholarly/datacite";
 import { getOpenAccessStatus } from "@/lib/scholarly/unpaywall";
+import { searchBnf } from "@/lib/scholarly/bnf";
+import { lookupZenodoByDoi, searchZenodoByTitle } from "@/lib/scholarly/zenodo";
+import { lookupEuropePmcByDoi, searchEuropePmcByTitle } from "@/lib/scholarly/europepmc";
 
 // ── Types ──
 
@@ -375,6 +381,93 @@ async function checkDatacite(citation: ParsedCitation): Promise<RegistryResult> 
   }
 }
 
+async function checkBnf(citation: ParsedCitation): Promise<RegistryResult> {
+  const start = Date.now();
+  try {
+    // BnF : catalogue de notices bibliographiques — recherche par titre (+ auteur), pas de DOI
+    if (!citation.title) {
+      return { registry: "BnF", found: false, error: "Pas de titre (BnF : recherche par titre)", latencyMs: 0 };
+    }
+    const records = await searchBnf(citation.title, citation.authors?.[0], 1);
+    if (records.length === 0) {
+      return { registry: "BnF", found: false, error: "Non indexé dans le catalogue BnF", latencyMs: Date.now() - start };
+    }
+    const rec = records[0];
+    return {
+      registry: "BnF",
+      found: true,
+      title: rec.title,
+      authors: rec.authors,
+      year: rec.year,
+      journal: [rec.type, rec.publisher].filter(Boolean).join(" — ") || undefined,
+      url: rec.url,
+      latencyMs: Date.now() - start,
+    };
+  } catch (err) {
+    return { registry: "BnF", found: false, error: err instanceof Error ? err.message : "Erreur", latencyMs: Date.now() - start };
+  }
+}
+
+async function checkZenodo(citation: ParsedCitation): Promise<RegistryResult> {
+  const start = Date.now();
+  try {
+    if (!citation.doi && !citation.title) {
+      return { registry: "Zenodo", found: false, error: "No title or DOI", latencyMs: 0 };
+    }
+    let work = citation.doi ? await lookupZenodoByDoi(citation.doi) : null;
+    if (!work && citation.title) {
+      work = (await searchZenodoByTitle(citation.title, 1))[0] ?? null;
+    }
+    if (!work) {
+      return { registry: "Zenodo", found: false, error: "Non déposé sur Zenodo", latencyMs: Date.now() - start };
+    }
+    return {
+      registry: "Zenodo",
+      found: true,
+      title: work.title,
+      authors: work.authors,
+      year: work.year,
+      doi: work.doi,
+      journal: work.resourceType,
+      url: work.url,
+      latencyMs: Date.now() - start,
+    };
+  } catch (err) {
+    return { registry: "Zenodo", found: false, error: err instanceof Error ? err.message : "Erreur", latencyMs: Date.now() - start };
+  }
+}
+
+async function checkEuropePmc(citation: ParsedCitation): Promise<RegistryResult> {
+  const start = Date.now();
+  try {
+    if (!citation.doi && !citation.title) {
+      return { registry: "Europe PMC", found: false, error: "No title or DOI", latencyMs: 0 };
+    }
+    let work = citation.doi ? await lookupEuropePmcByDoi(citation.doi) : null;
+    if (!work && citation.title) {
+      work = (await searchEuropePmcByTitle(citation.title, 1))[0] ?? null;
+    }
+    if (!work) {
+      return { registry: "Europe PMC", found: false, error: "Non indexé dans Europe PMC", latencyMs: Date.now() - start };
+    }
+    return {
+      registry: "Europe PMC",
+      found: true,
+      title: work.title,
+      authors: work.authors,
+      year: work.year,
+      doi: work.doi,
+      journal: work.journal,
+      openAccess: work.isOpenAccess,
+      citationCount: work.citedByCount,
+      url: work.url,
+      latencyMs: Date.now() - start,
+    };
+  } catch (err) {
+    return { registry: "Europe PMC", found: false, error: err instanceof Error ? err.message : "Erreur", latencyMs: Date.now() - start };
+  }
+}
+
 // ── Verdict Logic ──
 
 function computeVerdict(citation: ParsedCitation, results: RegistryResult[]): CitationCheckResult["verdict"] {
@@ -415,7 +508,7 @@ function computeSummary(citation: ParsedCitation, results: RegistryResult[]): st
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { text, registries = ["crossref", "openalex", "semantic-scholar", "doaj", "pubmed", "datacite"] } = body;
+    const { text, registries = ["crossref", "openalex", "semantic-scholar", "doaj", "pubmed", "datacite", "bnf", "zenodo", "europepmc"] } = body;
 
     if (!text || typeof text !== "string" || text.trim().length < 5) {
       return NextResponse.json({ error: "Texte requis (minimum 5 caractères)" }, { status: 400 });
@@ -437,6 +530,9 @@ export async function POST(request: NextRequest) {
       doaj: checkDoaj,
       pubmed: checkPubMed,
       datacite: checkDatacite,
+      bnf: checkBnf,
+      zenodo: checkZenodo,
+      europepmc: checkEuropePmc,
     };
 
     const selectedCheckers = registries
