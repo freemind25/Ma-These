@@ -358,12 +358,90 @@ fn reopen_log(log_path: &std::path::Path) -> Option<std::fs::File> {
         .ok()
 }
 
+/// FIX-UPD-1 : arrêt explicite du serveur node.exe AVANT d'exécuter
+/// l'installeur d'une mise à jour.
+///
+/// Cause racine de l'échec d'installation constaté en 1.10.18 (« Erreur lors
+/// de l'ouverture du fichier en écriture : …\Ma Thèse\node.exe ») :
+/// tauri-plugin-updater spawn l'installeur NSIS puis ferme l'application via
+/// `std::process::exit(0)` (plugins-workspace updater/src/updater.rs,
+/// commentaire « exit the app through std::process::exit(0) on Windows »),
+/// ce qui CONTOURNE le gestionnaire RunEvent::Exit (C2-R5) chargé d'arrêter
+/// node.exe. Le serveur survit en orphelin, garde un verrou d'écriture sur
+/// <install>\node.exe, et l'installeur échoue au moment d'écraser ce fichier.
+///
+/// La commande est invoquée par le front (app-update-dialog.tsx) entre
+/// update.download() et update.install(). Filet de sécurité complémentaire :
+/// le hook NSIS PREINSTALL (installer-hooks.nsh) tue tout process résiduel
+/// du dossier d'installation, y compris pour les MAJ lancées depuis une
+/// version antérieure au présent correctif.
+#[tauri::command]
+fn stop_server_for_update(
+    app: tauri::AppHandle,
+    state: tauri::State<'_, ServerChild>,
+) -> Result<(), String> {
+    let mut log_file: Option<std::fs::File> = app
+        .try_state::<LogPath>()
+        .and_then(|lp| reopen_log(&lp.0));
+
+    let child = state.0.lock().map_err(|e| e.to_string())?.take();
+    if let Some(mut child) = child {
+        let pid = child.id();
+        diag!(
+            log_file,
+            "FIX-UPD-1: arrêt du serveur node.exe (pid={}) avant installation de la MAJ...",
+            pid
+        );
+        #[cfg(target_os = "windows")]
+        {
+            let _ = std::process::Command::new("taskkill")
+                .args(["/PID", &pid.to_string(), "/T", "/F"])
+                .creation_flags(CREATE_NO_WINDOW)
+                .output();
+        }
+        #[cfg(not(target_os = "windows"))]
+        let _ = child.kill();
+        let deadline =
+            std::time::Instant::now() + std::time::Duration::from_secs(SERVER_STOP_TIMEOUT_SECS);
+        while std::time::Instant::now() < deadline {
+            match child.try_wait() {
+                Ok(Some(_)) | Err(_) => break,
+                Ok(None) => std::thread::sleep(std::time::Duration::from_millis(200)),
+            }
+        }
+        diag!(log_file, "FIX-UPD-1: handle serveur libéré");
+    } else {
+        diag!(log_file, "FIX-UPD-1: aucun handle serveur (déjà arrêté ?)");
+    }
+
+    // Le verrou fichier disparaît à la mort effective du process : on attend
+    // la libération du port plutôt que de croire taskkill sur parole.
+    let addr = format!("127.0.0.1:{}", SERVER_PORT);
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+    while std::time::Instant::now() < deadline {
+        if std::net::TcpStream::connect(&addr).is_err() {
+            diag!(log_file, "FIX-UPD-1: port {} libéré", SERVER_PORT);
+            return Ok(());
+        }
+        std::thread::sleep(std::time::Duration::from_millis(250));
+    }
+    let msg = format!(
+        "le serveur embarqué écoute encore le port {} après arrêt",
+        SERVER_PORT
+    );
+    diag!(log_file, "FIX-UPD-1: {}", msg);
+    Err(msg)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
+        // FIX-UPD-1 : commande d'arrêt du serveur embarqué appelée par le
+        // dialogue de mise à jour avant update.install() (voir doc commande).
+        .invoke_handler(tauri::generate_handler![stop_server_for_update])
         .manage(ServerChild(std::sync::Mutex::new(None)))
         .setup(|app| {
             let handle = app.handle().clone();

@@ -35,6 +35,7 @@ type Phase =
   | "up-to-date"
   | "available"
   | "downloading"
+  | "stopping-server"
   | "installing"
   | "done"
   | "error";
@@ -109,6 +110,16 @@ export function AppUpdateDialog({
     }
   }
 
+  // FIX-UPD-1 : téléchargement et installation sont désormais DÉCOUPLÉS.
+  // Cause racine de l'échec d'installation en 1.10.18 (« Erreur lors de
+  // l'ouverture du fichier en écriture : …\Ma Thèse\node.exe ») : le plugin
+  // updater ferme l'application via std::process::exit(0) juste après avoir
+  // spawné l'installeur NSIS, ce qui contourne l'arrêt du serveur embarqué
+  // prévu dans RunEvent::Exit (C2-R5). node.exe survivait en orphelin et
+  // verrouillait son propre fichier pendant l'écrasement. On arrête donc
+  // explicitement le serveur (commande Rust stop_server_for_update) ENTRE le
+  // téléchargement et l'installation. Filet de sécurité : le hook NSIS
+  // PREINSTALL de l'installeur tue tout process résiduel du dossier.
   async function downloadAndInstall() {
     setError("");
     setPhase("downloading");
@@ -124,17 +135,36 @@ export function AppUpdateDialog({
       setAvailableVersion(update.version);
       let received = 0;
       let size = 0;
-      await update.downloadAndInstall((event) => {
+      await update.download((event) => {
         if (event.event === "Started") {
           size = event.data.contentLength ?? 0;
           setTotal(size);
         } else if (event.event === "Progress") {
           received += event.data.chunkLength;
           setDownloaded(received);
-        } else if (event.event === "Finished") {
-          setPhase("installing");
         }
       });
+
+      setPhase("stopping-server");
+      try {
+        const { invoke } = await import("@tauri-apps/api/core");
+        await invoke("stop_server_for_update");
+      } catch (stopErr) {
+        // Non bloquant : le hook NSIS PREINSTALL tue les process résiduels
+        // au début de l'installation (y compris pour une MAJ depuis une
+        // version antérieure au présent correctif).
+        console.warn(
+          "stop_server_for_update a échoué — le hook NSIS prendra le relais :",
+          stopErr,
+        );
+      }
+
+      setPhase("installing");
+      // Windows : le plugin ferme l'application (exit(0)) dès le spawn de
+      // l'installeur — la promesse ne résout jamais, l'installeur NSIS prend
+      // la main puis relance l'application (restart_after_install). Les
+      // phases « done »/« error » restent atteignables sur les autres OS.
+      await update.install();
       setPhase("done");
     } catch (e) {
       setPhase("error");
@@ -246,6 +276,17 @@ export function AppUpdateDialog({
               L&apos;installation démarrera automatiquement à la fin du téléchargement. Ne fermez pas l&apos;application.
             </p>
           </div>
+        ) : phase === "stopping-server" ? (
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Arrêt du serveur embarqué…
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Le serveur interne doit être arrêté avant l&apos;installation pour
+              libérer les fichiers à mettre à jour (FIX-UPD-1).
+            </p>
+          </div>
         ) : phase === "installing" ? (
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
@@ -253,7 +294,8 @@ export function AppUpdateDialog({
               Installation de la mise à jour…
             </div>
             <p className="text-[11px] text-muted-foreground">
-              L&apos;application redémarrera d&apos;elle-même à la fin de l&apos;installation.
+              L&apos;application va se fermer, l&apos;installeur prendra le relais puis
+              relancera Ma Thèse automatiquement.
             </p>
           </div>
         ) : phase === "done" ? (

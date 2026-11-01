@@ -1,6 +1,6 @@
 {
   "identifier": "default",
-  "description": "Default capability for Ma Thèse — durcie (C-4 / AUD-SEC-001+005) : permissions minimales, le plugin shell n'est jamais utilisé par le front (0 usage vérifié au cycle audit-remediation-p1). Contexte remote requis : le webview navigue vers le serveur Next standalone embarqué (http://127.0.0.1:14325, lib.rs) — Tauri v2 classe cette origine comme remote (is_local_url ne reconnaît que tauri://, devUrl/frontendDist et les protocoles custom), sans remote.urls toute commande plugin est refusée « not allowed by ACL » (v1.10.15/1.10.16). Port fixe SERVER_PORT=14325, wildcard de chemin implicite (pattern sans path = tout chemin).",
+  "description": "Default capability for Ma Thèse — durcie (C-4 / AUD-SEC-001+005) : permissions minimales, le plugin shell n'est jamais utilisé par le front (0 usage vérifié au cycle audit-remediation-p1). Contexte remote requis : le webview navigue vers le serveur Next standalone embarqué (http://127.0.0.1:14325, lib.rs) — Tauri v2 classe cette origine comme remote (is_local_url ne reconnaît que tauri://, devUrl/frontendDist et les protocoles custom), sans remote.urls toute commande plugin est refusée « not allowed by ACL » (v1.10.15/1.10.16). Port fixe SERVER_PORT=14325, wildcard de chemin implicite (pattern sans path = tout chemin). FIX-UPD-1 : allow-stop_server_for_update autorise la commande custom d'arrêt du serveur embarqué avant update.install() — depuis une origine remote, Tauri v2 refuse toute commande sans entrée ACL explicite (webview/mod.rs « remote content can never reach custom commands »).",
   "windows": ["main"],
   "remote": {
     "urls": ["http://127.0.0.1:14325", "http://localhost:14325"]
@@ -8,6 +8,7 @@
   "permissions": [
     "core:default",
     "updater:default",
-    "process:default"
+    "process:default",
+    "allow-stop_server_for_update"
   ]
 }
