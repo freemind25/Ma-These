@@ -3363,3 +3363,28 @@ Stage Summary:
 - Effet produit : les 6 modes IA qui injectent `methodology` — dont le mode dédié « Problématique » — guident désormais le doctorant avec le framework Clark des 3 propositions (principale/interactive/spéculative), l'entonnoir général→spécifique, l'exigence de gap documenté par littérature récente et l'itérativité de la formulation.
 - Dérive préexistante signalée (hors périmètre, à corriger dans un cycle dédié) : le test ai-types attend 20 providers dynamiques mais ai-types.ts en expose 21.
 - Le correctif de libellé menu (a3a54f2) et cette digestion partiront avec la prochaine release 1.10.20.
+
+---
+Task ID: RELEASE-1.10.20
+Agent: Z.ai Code (session externe, instruction propriétaire : « go » — préparer le tag v1.10.20 après la synthèse de fin de mission)
+
+Task: Livrer la release v1.10.20 (libellé « 9 registres » a3a54f2 + digestion Machiridza & Muringani 2fe70bf + FICHE 6b53699) via le pipeline tag → CI → publication.
+
+Work Log:
+- Bump version 1.10.19 → 1.10.20 sur les 4 fichiers (package.json, src-tauri/tauri.conf.json, src-tauri/Cargo.toml, src-tauri/Cargo.lock entrée mathese) — commit 1b2a071, poussé.
+- Tag annoté v1.10.20 (« Ma Thèse v1.10.20 — libellé « Vérification Citations » 9 registres (BnF, Zenodo, Europe PMC inclus) + digestion Machiridza & Muringani 2023… ») créé et poussé → CI build-desktop run 41326322410 : **succès en ~11 min** (les 9 étapes vertes, y compris garde-fou bases synchronisées et Build Tauri NSIS + release draft).
+- Actifs de release téléchargés (API, login freemind25) : Ma.These_1.10.20_x64-setup.exe 146 183 906 octets, .sig 424 octets, latest.json 1 391 octets.
+- VALIDATION (batterie complète, supérieure à 1.10.19) :
+  1. En-tête PE « MZ » ✓ ; latest.json : version 1.10.20, pub_date 2026-11-01T16:37Z, url → download/v1.10.20 ✓ ; plateformes windows-x86_64 + windows-x86_64-nsis ✓.
+  2. SHA-256 setup.exe = 15e8adf7195cf12df24b84770c9d03836ee2da04fd6490477e47993c79d0119c (consigné).
+  3. .sig == champ signature de latest.json ✓.
+  4. KEYNUM identiques partout : 3D661F011B642881 (signature = clé publique tauri.conf.json = backup mathese-updater.key.pub) ✓.
+  5. **Vérification cryptographique Ed25519 réelle** : algo « ED » = Ed25519 préhashé ; préhash rust-minisign = **BLAKE2b-512** (prouvé par lecture du code source tauri-cli signer + jedisct1/rust-minisign lib.rs prehash()) ; Ed25519(BLAKE2b-512(setup.exe)) VALIDE ✓ ; signature du trusted comment VALIDE ✓ (timestamp 1793551019, file:Ma Thèse_1.10.20_x64-setup.exe).
+  6. Payload 7zz 24.09 : 13 fichiers, mathese.exe (15,3 Mo) + node.exe (87 Mo) + standalone.zip (114,5 Mo) + db (custom.db, urbanisme-test.db) ✓.
+  7. **Preuves de contenu dans le build embarqué** : « Machiridza » présent dans standalone/.next/server/chunks/src_lib_ai_knowledge-core_ts_*.js avec la section « Énoncé du problème / problématique (Machiridza & Muringani 2023, d'après Clark et al. 1977) » ✓ ; « 9 registres académiques » présent dans les chunks client ✓.
+- Publication : release draft 430710470 → **publiée le 2026-11-01T16:45:01Z** ; latest.json public 200 ✓ ; setup.exe public MZ ✓ (https://github.com/freemind25/Ma-These/releases/tag/v1.10.20).
+
+Stage Summary:
+- v1.10.20 livrée, validée (7 contrôles dont 2 cryptographiques) et publiée. L'updater embarqué proposera la mise à jour aux installations 1.10.16+ ; la recette propriétaire (application mise à jour, menu « Vérification Citations » affichant 9 registres, mode Problématique guidant avec les 3 propositions Clark) reste à faire côté machine Windows.
+- Note technique consignée : la vérification de signature updater doit utiliser BLAKE2b-512 comme préhash (pas SHA-512 ni SHA-256) — doc utile pour les futures releases.
+- Dérive cosmétique signalée (hors périmètre) : drafts résiduelles v1.10.12-15, v1.9.8.1, v1.3.0 sur GitHub Releases.

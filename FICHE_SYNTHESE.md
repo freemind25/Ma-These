@@ -397,5 +397,5 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Points ouverts pour la session suivante** :
 
 1. Correctif du test `ai-types.test.ts` (attend 20, réel 21) — cycle dédié à ouvrir (préexistant, hors périmètre de la digestion).
-2. Recette propriétaire de la digestion : effet visible au mode « Problématique » (et au directeur) dès la prochaine release — le correctif de libellé et la digestion partiront ensemble (1.10.20).
+2. Recette propriétaire de la digestion : **la release 1.10.20 est publiée le 2026-11-01T16:45Z** (tag annoté v1.10.20 → CI run 41326322410 succès → actifs validés dont vérification cryptographique Ed25519/BLAKE2b-512, preuves de contenu dans le build embarqué — voir worklog RELEASE-1.10.20). Reste la recette côté machine Windows : mise à jour via updater, menu « Vérification Citations » affichant 9 registres, mode « Problématique » guidant avec les 3 propositions Clark.
 3. Reprendre la consignation FICHE à chaque fin de session (écart de 3 semaines corrigé par le rattrapage ci-dessus).
