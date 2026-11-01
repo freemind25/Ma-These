@@ -43,6 +43,9 @@ import {
   CheckCircle2,
   Library,
   X,
+  UserSearch,
+  Loader2,
+  ExternalLink,
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef, useCallback } from "react";
@@ -127,6 +130,7 @@ const SOURCE_LABELS: Record<string, string> = {
   ris: "RIS",
   "csl-json": "CSL-JSON",
   doi: "DOI",
+  orcid: "ORCID",
 };
 
 const SOURCE_COLORS: Record<string, string> = {
@@ -137,6 +141,7 @@ const SOURCE_COLORS: Record<string, string> = {
   ris: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
   "csl-json": "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
   doi: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400",
+  orcid: "bg-lime-100 text-lime-700 dark:bg-lime-900/30 dark:text-lime-400",
 };
 
 function fetchReferences(filters: { type?: string; search?: string; source?: string }) {
@@ -147,6 +152,65 @@ function fetchReferences(filters: { type?: string; search?: string; source?: str
   return apiJson<Reference[]>(`/api/references?${params}`);
 }
 
+// ── ORCID (v1.10.16) ──
+
+interface OrcidSearchItem {
+  orcidId: string;
+  name: string;
+  institutions: string[];
+}
+
+interface OrcidAuthor {
+  orcidId: string;
+  givenNames?: string;
+  familyName?: string;
+  creditName?: string;
+  biography?: string;
+  keywords: string[];
+  affiliations: string[];
+}
+
+interface OrcidWork {
+  doi?: string;
+  title?: string;
+  year?: number;
+  type?: string;
+}
+
+/** Type ORCID → type de référence interne */
+function mapOrcidType(orcidType?: string): string {
+  switch (orcidType) {
+    case "JOURNAL_ARTICLE":
+    case "JOURNAL_ISSUE":
+      return "article-journal";
+    case "BOOK":
+    case "BOOK_CHAPTER":
+      return "book";
+    case "BOOK_REVIEW":
+      return "review-book";
+    case "DISSERTATION":
+    case "THESIS":
+      return "phdthesis";
+    case "CONFERENCE_PAPER":
+    case "CONFERENCE_ABSTRACT":
+      return "paper-conference";
+    case "DATASET":
+      return "dataset";
+    case "PREPRINT":
+      return "preprint";
+    case "REPORT":
+    case "WORKING_PAPER":
+      return "report";
+    case "STANDARDS_AND_POLICY":
+    case "RESEARCH_TECHNIQUE":
+      return "techreport";
+    case "PATENT":
+      return "patent";
+    default:
+      return "article";
+  }
+}
+
 export function ReferencesPage() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
@@ -154,6 +218,7 @@ export function ReferencesPage() {
   const [sourceFilter, setSourceFilter] = useState("all");
   const [createOpen, setCreateOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [orcidOpen, setOrcidOpen] = useState(false);
   // C-3 (AUD-FUNC-003) : suppression de référence uniquement après confirmation
   const [deleteTarget, setDeleteTarget] = useState<Reference | null>(null);
 
@@ -210,6 +275,10 @@ export function ReferencesPage() {
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="outline" className="gap-2" onClick={() => setOrcidOpen(true)}>
+            <UserSearch className="h-4 w-4" />
+            Fiche auteur ORCID
+          </Button>
           <Button variant="outline" className="gap-2" asChild>
             <a href="/api/references/bibtex" download="references.bib">
               <Download className="h-4 w-4" />
@@ -217,6 +286,7 @@ export function ReferencesPage() {
             </a>
           </Button>
           <ImportDialog open={importOpen} onOpenChange={setImportOpen} />
+          <OrcidDialog open={orcidOpen} onOpenChange={setOrcidOpen} />
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2">
@@ -272,6 +342,7 @@ export function ReferencesPage() {
             <SelectItem value="bibtex">BibTeX</SelectItem>
             <SelectItem value="ris">RIS</SelectItem>
             <SelectItem value="csl-json">CSL-JSON</SelectItem>
+            <SelectItem value="orcid">ORCID</SelectItem>
             <SelectItem value="manual">Manuel</SelectItem>
           </SelectContent>
         </Select>
@@ -860,5 +931,251 @@ function AddReferenceForm({
         </Button>
       </DialogFooter>
     </div>
+  );
+}
+
+// ═══════════════════════════════════════
+// ORCID Dialog (v1.10.16) — fiche auteur + import de travaux
+// API publique ORCID, sans clé. Recherche par nom ou iD direct.
+// ═══════════════════════════════════════
+
+function OrcidDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const queryClient = useQueryClient();
+  const [query, setQuery] = useState("");
+  const [searching, setSearching] = useState(false);
+  const [searchItems, setSearchItems] = useState<OrcidSearchItem[] | null>(null);
+  const [cardLoading, setCardLoading] = useState(false);
+  const [author, setAuthor] = useState<OrcidAuthor | null>(null);
+  const [works, setWorks] = useState<OrcidWork[]>([]);
+
+  const reset = useCallback(() => {
+    setQuery("");
+    setSearching(false);
+    setSearchItems(null);
+    setCardLoading(false);
+    setAuthor(null);
+    setWorks([]);
+  }, []);
+
+  const handleSearch = useCallback(async () => {
+    const q = query.trim();
+    if (q.length < 2) return;
+    setSearching(true);
+    setSearchItems(null);
+    setAuthor(null);
+    setWorks([]);
+    try {
+      if (/^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/i.test(q)) {
+        // iD direct → fiche
+        await selectAuthor(q.toUpperCase());
+      } else {
+        const data = await apiJson<{ numFound: number; results: OrcidSearchItem[] }>(
+          `/api/orcid?q=${encodeURIComponent(q)}`
+        );
+        setSearchItems(data.results ?? []);
+        if ((data.numFound ?? 0) === 0) {
+          toast.info("Aucun auteur trouvé pour cette recherche");
+        }
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Recherche ORCID impossible");
+    } finally {
+      setSearching(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
+  const selectAuthor = useCallback(async (orcidId: string) => {
+    setCardLoading(true);
+    setAuthor(null);
+    setWorks([]);
+    try {
+      const data = await apiJson<{ author: OrcidAuthor; works: OrcidWork[] }>(
+        `/api/orcid?id=${encodeURIComponent(orcidId)}`
+      );
+      setAuthor(data.author);
+      setWorks(data.works ?? []);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Fiche ORCID indisponible");
+    } finally {
+      setCardLoading(false);
+    }
+  }, []);
+
+  const importWork = useMutation({
+    mutationFn: async (work: OrcidWork) => {
+      if (!work.title || !author) throw new Error("Données incomplètes");
+      const family = author.familyName ?? "";
+      const given = author.givenNames ?? "";
+      const authorsName = [family, given].filter(Boolean).join(", ") || author.creditName || "Auteur inconnu";
+      const payload: Record<string, unknown> = {
+        type: mapOrcidType(work.type),
+        authors: authorsName,
+        title: work.title,
+        source: "orcid",
+      };
+      if (work.year && Number.isFinite(work.year)) payload.year = work.year;
+      if (work.doi) payload.doi = work.doi;
+      return apiJson("/api/references", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["references"] });
+      toast.success("Référence ajoutée depuis ORCID");
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Import impossible");
+    },
+  });
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        onOpenChange(o);
+        if (!o) reset();
+      }}
+    >
+      <DialogContent className="sm:max-w-[560px] max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <UserSearch className="h-4 w-4" />
+            Fiche auteur ORCID
+          </DialogTitle>
+          <DialogDescription>
+            Recherchez un auteur par nom ou collez son ORCID iD. Importez ensuite ses travaux dans vos références.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex gap-2">
+          <Input
+            placeholder="Nom (ex. Canguilhem) ou iD (ex. 0000-0002-1825-0097)"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch();
+            }}
+          />
+          <Button onClick={handleSearch} disabled={searching || query.trim().length < 2} className="shrink-0">
+            {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+          </Button>
+        </div>
+
+        {/* Résultats de recherche */}
+        {searchItems && searchItems.length > 0 && !author && (
+          <div className="space-y-1.5 max-h-52 overflow-y-auto">
+            {searchItems.map((item) => (
+              <button
+                key={item.orcidId}
+                className="w-full text-left p-2.5 rounded-md border hover:bg-accent transition-colors"
+                onClick={() => selectAuthor(item.orcidId)}
+              >
+                <p className="text-sm font-medium">{item.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {item.orcidId}
+                  {item.institutions.length > 0 ? ` — ${item.institutions.join(", ")}` : ""}
+                </p>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {cardLoading && (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        )}
+
+        {/* Fiche auteur */}
+        {author && !cardLoading && (
+          <div className="space-y-3">
+            <div className="p-3 rounded-lg border bg-muted/40 space-y-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-sm font-semibold">
+                  {author.creditName || [author.givenNames, author.familyName].filter(Boolean).join(" ")}
+                </p>
+                <Badge variant="outline" className="text-[10px] font-mono">
+                  {author.orcidId}
+                </Badge>
+              </div>
+              {author.affiliations.length > 0 && (
+                <p className="text-xs text-muted-foreground">{author.affiliations.slice(0, 3).join(" · ")}</p>
+              )}
+              {author.biography && (
+                <p className="text-xs text-muted-foreground line-clamp-3">{author.biography}</p>
+              )}
+              {author.keywords.length > 0 && (
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {author.keywords.slice(0, 6).map((k) => (
+                    <Badge key={k} variant="secondary" className="text-[10px]">
+                      {k}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">
+                Travaux publics ({works.length})
+              </p>
+              {works.length === 0 ? (
+                <p className="text-xs text-muted-foreground">Aucun travail public sur ce profil ORCID.</p>
+              ) : (
+                <div className="space-y-1.5 max-h-64 overflow-y-auto">
+                  {works.map((w, i) => (
+                    <div
+                      key={`${w.doi ?? w.title ?? i}-${i}`}
+                      className="flex items-start justify-between gap-2 p-2 rounded-md border"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium line-clamp-2">{w.title ?? "Sans titre"}</p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {w.year ?? "s.d."}
+                          {w.type ? ` — ${w.type.toLowerCase().replace(/_/g, " ")}` : ""}
+                          {w.doi ? ` — DOI ${w.doi}` : ""}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        {w.doi && (
+                          <a
+                            href={`https://doi.org/${w.doi}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-foreground"
+                            aria-label="Voir le DOI"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-xs gap-1"
+                          disabled={!w.title || importWork.isPending}
+                          onClick={() => importWork.mutate(w)}
+                        >
+                          <Plus className="h-3 w-3" />
+                          Ajouter
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

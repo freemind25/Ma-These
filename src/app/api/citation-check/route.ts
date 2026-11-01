@@ -1,9 +1,13 @@
 // ═══════════════════════════════════════════════════════════════
 // Ma Thèse — Citation Check API
-// Verifies citations against Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed
+// Verifies citations against Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed,
+// DataCite (v1.10.16 — DOI de jeux de données, absents de Crossref) et enrichit
+// les citations avec DOI d'un statut d'accès ouvert Unpaywall (lien légal plein-texte).
 // ═══════════════════════════════════════════════════════════════
 
 import { NextRequest, NextResponse } from "next/server";
+import { lookupDataciteByDoi, searchDataciteByTitle } from "@/lib/scholarly/datacite";
+import { getOpenAccessStatus } from "@/lib/scholarly/unpaywall";
 
 // ── Types ──
 
@@ -37,6 +41,14 @@ interface RegistryResult {
 interface CitationCheckResult {
  citation: ParsedCitation;
  results: RegistryResult[];
+ /** Enrichissement Unpaywall (v1.10.16) — présent si la citation porte un DOI */
+ oa?: {
+   isOa: boolean;
+   oaStatus?: string;
+   bestOaUrl?: string;
+   bestOaUrlForPdf?: string;
+   journal?: string;
+ };
  verdict: "verified" | "unverified" | "retracted" | "mismatch" | "error";
  summary: string;
 }
@@ -329,6 +341,40 @@ async function checkPubMed(citation: ParsedCitation): Promise<RegistryResult> {
   }
 }
 
+async function checkDatacite(citation: ParsedCitation): Promise<RegistryResult> {
+  const start = Date.now();
+  try {
+    if (!citation.doi && !citation.title) {
+      return { registry: "DataCite", found: false, error: "No title or DOI", latencyMs: 0 };
+    }
+
+    // DOI d'abord (cas le plus précis), titre ensuite
+    let work = citation.doi ? await lookupDataciteByDoi(citation.doi) : null;
+    if (!work && citation.title) {
+      const candidates = await searchDataciteByTitle(citation.title, 1);
+      work = candidates[0] ?? null;
+    }
+
+    if (!work) {
+      return { registry: "DataCite", found: false, error: "Non indexé dans DataCite", latencyMs: Date.now() - start };
+    }
+
+    return {
+      registry: "DataCite",
+      found: true,
+      title: work.title,
+      authors: work.authors,
+      year: work.year,
+      doi: work.doi,
+      journal: work.publisher ? `${work.resourceType ?? "Objet"} — ${work.publisher}` : work.resourceType,
+      url: `https://doi.org/${work.doi}`,
+      latencyMs: Date.now() - start,
+    };
+  } catch (err) {
+    return { registry: "DataCite", found: false, error: err instanceof Error ? err.message : "Erreur", latencyMs: Date.now() - start };
+  }
+}
+
 // ── Verdict Logic ──
 
 function computeVerdict(citation: ParsedCitation, results: RegistryResult[]): CitationCheckResult["verdict"] {
@@ -369,7 +415,7 @@ function computeSummary(citation: ParsedCitation, results: RegistryResult[]): st
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { text, registries = ["crossref", "openalex", "semantic-scholar", "doaj", "pubmed"] } = body;
+    const { text, registries = ["crossref", "openalex", "semantic-scholar", "doaj", "pubmed", "datacite"] } = body;
 
     if (!text || typeof text !== "string" || text.trim().length < 5) {
       return NextResponse.json({ error: "Texte requis (minimum 5 caractères)" }, { status: 400 });
@@ -390,6 +436,7 @@ export async function POST(request: NextRequest) {
       "semantic-scholar": checkSemanticScholar,
       doaj: checkDoaj,
       pubmed: checkPubMed,
+      datacite: checkDatacite,
     };
 
     const selectedCheckers = registries
@@ -403,12 +450,26 @@ export async function POST(request: NextRequest) {
       const batch = citations.slice(i, i + 3);
       const batchResults = await Promise.all(
         batch.map(async (citation) => {
-          const registryResults = await Promise.all(
-            selectedCheckers.map((checker: (c: ParsedCitation) => Promise<RegistryResult>) => checker(citation))
-          );
+          const [registryResults, oa] = await Promise.all([
+            Promise.all(
+              selectedCheckers.map((checker: (c: ParsedCitation) => Promise<RegistryResult>) => checker(citation))
+            ),
+            citation.doi
+              ? getOpenAccessStatus(citation.doi)
+              : Promise.resolve(null),
+          ]);
           return {
             citation,
             results: registryResults,
+            oa: oa
+              ? {
+                  isOa: oa.isOa,
+                  oaStatus: oa.oaStatus,
+                  bestOaUrl: oa.bestOaUrl,
+                  bestOaUrlForPdf: oa.bestOaUrlForPdf,
+                  journal: oa.journal,
+                }
+              : undefined,
             verdict: computeVerdict(citation, registryResults),
             summary: computeSummary(citation, registryResults),
           };
