@@ -359,3 +359,43 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Honnêteté consignée** : la fixture bitmap synthétique (police 5×7 maison) n'est reconnue qu'à ~71 % (« OCE TEST 12354 ») — hors domaine LSTM ; la chaîne est prouvée, la précision sur scans réels relève de la recette propriétaire (relecture humaine exigée par design). RSS post-OCR stabilisé non cumulatif (~2,2 Go, retour 1,9 Go) — aucun kill OOM pendant le cycle.
 
 **Points ouverts** : recette propriétaire du cycle (cases tasks.md) ; emballage Tauri de `vendor/tessdata` (cycle build-desktop) ; précision OCR à juger sur un scan réel du propriétaire.
+
+---
+
+## Session du 2026-11-01 — Digestion Machiridza & Muringani 2023 (DIGEST-PROBLEMATIQUE-V1) + correctif libellé registres + rattrapage de consignation 1.10.12 → 1.10.19
+
+**Déclencheur** : propriétaire (IM) : « ajouter les connaissances de cet articles aux exigences et guides . respecter les critères établis pour la digestion des informations . faites une synthèse du travail effectué en fin de mission » — article reçu en 4 captures (1.1.jpg → 1.4.jpg, 4 pages).
+
+**Slug(s) traité(s)** : `DIGEST-PROBLEMATIQUE-V1` (travail de connaissance selon le protocole de digestion — pas un cycle spec → plan) + voie rapide documentaire `a3a54f2` (libellé menu).
+
+**Travail digéré** (commit `2fe70bf`, poussé) :
+
+- Article : Machiridza, L. H. & Muringani, J. (2023), « Understanding and Developing a Problem Statement: A Guideline for Novice Researchers », *Ann Rev Resear* 10(2), 555785, DOI 10.19080/ARR.2023.10.555785 — framework source Clark, Guba & Smith (1977).
+- Archive détaillée : `src/lib/ai/knowledge-core/modules/problematique-machiridza-2023.md` (9 sections, modèle = revue-litterature-snyder.md, Pattern A).
+- Noyau (`knowledge-core.ts`) : section « Énoncé du problème / problématique » insérée dans METHODOLOGY_MODULE après « Choix du sujet (Eco) » — 7 règles compactes : ordre de succession problème → objectif → questions, définition Clark de l'anomalie (3 formes), gap DOCUMENTÉ jamais imaginé, entonnoir général → spécifique avec exigence de littérature récente, 3 propositions (principale / interactive avec mots de tension / spéculative), interaction principale ↔ interactive = CRÉATION du problème (apport corrigeant Jacobs 2013), itérativité. 6 modes IA bénéficient, dont le mode dédié « Problématique ».
+- Version noyau 2026-10-03 → 2026-11-01 ; budget full core 22 000 → 24 500 tok (croissance légitime documentée, capteur 7/7 vert) ; registres ARCHITECTURE-CONNAISSANCE §4 + §6 ter et CONTEXT-PROJET §2.5 à jour ; anti-duplication vérifiée (`specializations/problematique.ts` pur rôle, aucun conflit).
+
+**Validation** : capteur budget 7/7 ✓ · vitest src/lib/ai/ 122/123 (1 échec PRÉEXISTANT hors périmètre, prouvé par stash : `ai-types.test.ts` attend 20 providers dynamiques, `ai-types.ts` en expose 21) · lint 0 erreur (baseline avertissements inchangée) · **fidélité de digestion re-vérifiée en fin de mission** : les 4 pages sources relues et confrontées au module — aucun écart (définitions, entonnoir, 3 propositions + illustration Khami, limites déclarées, référence DOI).
+
+**Correctif libellé** (`a3a54f2`) : menu « Vérification Citations » annonçait « 5 registres » alors que l'application en expose 9 (Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed + DataCite, BnF, Zenodo, Europe PMC) + Unpaywall — écart UI/état signalé puis vérifié par le propriétaire (« c'est vérifiée »).
+
+**Rattrapage de consignation** (sessions du 2026-10-08 au 2026-10-31 non consignées dans la présente fiche — écart au protocole signalé et corrigé ci-dessous) :
+
+- **1.10.12** (`18498cb`) : livraison C2 — OCR standalone embarqué, reprise des jobs bloqués, reset progression (+ 2 fixes CI d'alignement crate/npm Tauri).
+- **1.10.13** (`49d564f`) / **1.10.14** (`996055d`) : fournisseur dédié CodeCraft API + contournement du blocage Cloudflare du client undici.
+- **1.10.15** (`046c4da`) : mises à jour automatiques signées (Tauri updater v2).
+- **1.10.16** (`c9c69af`) : registres DataCite, ORCID + Unpaywall (détection OA).
+- **1.10.17** (`b6fd6a4`) : contexte remote ACL pour l'origine du serveur Next embarqué — updater opérationnel (vérifié par le propriétaire).
+- **1.10.18** (`c86aa22`) : registres BnF, Zenodo, Europe PMC — 9 registres au total dans « Vérification Citations ».
+- **1.10.19** (`19dde41` + `d6d20bd` + `3df3027`) : FIX-UPD-1 — node.exe orphelin (sortie par `std::process::exit(0)` sans arrêt du serveur Next embarqué) verrouillait l'installeur NSIS et survivait à la désinstallation ; triple défense (commande `stop_server_for_update` invoquée entre téléchargement et installation + hooks NSIS PREINSTALL/PREUNINSTALL auto-réparants + vérification fichiers/ports avant install) ; release validée (3 actifs, signature = latest.json, payload vérifié 7zz) ; **récupération propriétaire réussie** (procédure 5 étapes : sauvegarde, kill processus orphelins, désinstallation, installation 1.10.19, vérification updater).
+
+**Décisions prises** :
+
+- Budget capteur porté 22 000 → 24 500 tok (formule maison mesure + ~10 %) — croissance légitime documentée dans le test, pas une dérive silencieuse.
+- Digestion en « Pattern A » (archive détaillée modules/ + extrait compact noyau), modèle snyder — protocole ARCHITECTURE-CONNAISSANCE §7 + checklist §11 respectés.
+
+**Points ouverts pour la session suivante** :
+
+1. Correctif du test `ai-types.test.ts` (attend 20, réel 21) — cycle dédié à ouvrir (préexistant, hors périmètre de la digestion).
+2. Recette propriétaire de la digestion : effet visible au mode « Problématique » (et au directeur) dès la prochaine release — le correctif de libellé et la digestion partiront ensemble (1.10.20).
+3. Reprendre la consignation FICHE à chaque fin de session (écart de 3 semaines corrigé par le rattrapage ci-dessus).
