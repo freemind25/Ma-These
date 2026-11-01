@@ -1,7 +1,7 @@
 # Architecture de la Gestion des Connaissances
 
 > ThesisFrame v1.9.0 — Guide pour contributeurs (humains ou IA)
-> Dernière mise à jour : 3 octobre 2026 (digestion Snyder 2019 — revues de littérature)
+> Dernière mise à jour : 1er novembre 2026 (digestion Machiridza & Muringani 2023 — énoncé du problème)
 
 ---
 
@@ -107,14 +107,14 @@ La calibration adapte le **comportement** (ton, granularité, pédagogie) sans m
 | `coherence` | White, existant | ~520 | directeur, peer-review, revision-plan, defense, coherence-check |
 | `auto-edition` | Existant | ~180 | auto-edition-8c |
 | `peer-review` | Existant | ~380 | peer-review, revision-plan |
-| `methodology` | Kumar, Salkind, Sandelowski (2000), STUDYSmarter (UWA) | ~4 470 | directeur, hypothesis, methodology, revue-litterature |
+| `methodology` | Kumar, Salkind, Sandelowski (2000), STUDYSmarter (UWA), Machiridza & Muringani (2023) | ~4 976 | directeur, hypothesis, methodology, problematique, revue-litterature, empirique |
 | `writing-process` | White | ~310 | directeur, scientific-writing, theory, revision-plan |
 | `literature-review` | Ollhoff, Snyder (2019) | ~3 094 | literature-review, revue-litterature |
 | `data-analysis` | Rae & Wong | ~310 | (disponible, pas encore injecté) |
 | `grant-writing` | Smith & Works | ~340 | (disponible, pas encore injecté) |
 | `publication` | Gastel & Day | ~380 | directeur, abstract, verification-publication |
 
-> **Jetons — note de mesure (2026-10-03) :** la colonne « Tokens » ci-dessus conserve des estimations historiques ; la mesure faisant foi est le capteur `src/lib/ai/knowledge-core.budget.test.ts` (full core ~21 794 tokens mesurés / budget 22 000 — marge ~206 tok ; méthodologie ~4 470 / plafond 5 000, toujours le plus grand module).
+> **Jetons — note de mesure (2026-11-01) :** la colonne « Tokens » ci-dessus conserve des estimations historiques ; la mesure faisant foi est le capteur `src/lib/ai/knowledge-core.budget.test.ts` (full core ~22 300 tokens mesurés / budget 24 500 — digestion Machiridza & Muringani 2026-11-01 : +1 518 car. / ~506 tok, budget full core relevé 22 000 → 24 500 selon le protocole du capteur ; méthodologie ~4 976 / plafond 5 000, toujours le plus grand module).
 
 ### Détail du module `coherence` (v1.8.3 — enrichi)
 
@@ -213,6 +213,7 @@ contenu édité, ingestion, compaction) et à consigner ici :
 | Version | Date | Changement |
 |---|---|---|
 | `2026-10-03` | 2026-10-03 | Valeur initiale — 13 modules, 65 382 car. / ~21 794 tok |
+| `2026-11-01` | 2026-11-01 | Digestion Machiridza & Muringani 2023 (énoncé du problème, d'après Clark et al. 1977) — section « Énoncé du problème / problématique » ajoutée au module `methodology` (+1 518 car. / ~506 tok) ; archive `modules/problematique-machiridza-2023.md` ; budget full core 22 000 → 24 500 (protocole du capteur) |
 
 **Stamp « Provenance des savoirs »** (`specs/sceau-provenance-savoirs/`) : chaque génération du
 brouillon de chapitre et de l'assistant d'écriture émet un événement SSE `stamp` **en fin de flux,

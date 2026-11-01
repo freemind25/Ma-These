@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// ThesisFrame — Knowledge Core v2 (distillé de 23 ouvrages de référence)
+// ThesisFrame — Knowledge Core v2 (distillé de 25 sources de référence)
 // SOURCE UNIQUE DE VÉRITÉ — savoir métier digéré
 // ═══════════════════════════════════════════════════════════════
 //
@@ -35,6 +35,9 @@
 //   Yin — Case Study Research (étude de cas : composition, explications rivales, multi-cas)
 //   Creswell & Plano Clark — Designing and Conducting Mixed Methods Research (écriture méthodes mixtes)
 //   Snyder — Literature Review as a Research Methodology (typologie des revues, 4 phases, qualité)
+//   Machiridza & Muringani — Understanding and Developing a Problem Statement (énoncé du
+//     problème : distinctions objectif/questions, entonnoir général→spécifique, 3 propositions
+//     de Clark et al. 1977 — principale/interactive/spéculative)
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -44,7 +47,7 @@
  * chaque changement dans docs/ARCHITECTURE-CONNAISSANCE.md. Sert au stamp
  * « Provenance des savoirs » (specs/sceau-provenance-savoirs).
  */
-export const KNOWLEDGE_CORE_VERSION = "2026-10-03";
+export const KNOWLEDGE_CORE_VERSION = "2026-11-01";
 
 /**
  * Module identifiers that can be selectively injected.
@@ -394,6 +397,15 @@ const METHODOLOGY_MODULE = `
 - Test de faisabilité AVANT engagement : (1) OÙ sont les sources ? (2) Sont-elles matériellement accessibles ? (3) Sont-elles culturellement utilisables (langue, paléographie) ? SI une réponse négative → changer de sujet
 - Critères de scientificité (4 conditions) : (1) objet publiquement reconnaissable, (2) résultat nouveau ou révisé, (3) utile aux travaux ultérieurs, (4) moyens de confirmer/infirmer fournis. SI (4) absent → non scientifique
 - SI thèse de compilation/bilan → vérifier qu'aucun ouvrage comparable n'existe déjà. Sinon = perte de temps ou plagiat
+
+### Énoncé du problème / problématique (Machiridza & Muringani 2023, d'après Clark et al. 1977)
+- L'énoncé du problème ≠ statement of purpose (vient APRÈS) ≠ questions de recherche (viennent après l'objectif). C'est l'épicentre du design : mal fait, toute la recherche est affectée
+- Problème = interaction de 2+ facteurs révélant une anomalie : état énigmatique, conséquence indésirable, choix ambigu entre lignes d'action
+- Digne de recherche = gap DOCUMENTÉ par la littérature (jamais un « gap imaginé » ni une opinion) ; doit intéresser chercheur/communauté/société et créer l'intérêt du lecteur
+- Entonnoir : problème général (contexte large, littérature RÉCENTE — sans récence le gap est peut-être comblé : plus de problème) → problème spécifique (délimité, validé par plusieurs sources, publics affectés/bénéficiaires identifiés)
+- 3 propositions : PRINCIPALE = fait accepté/théorie reçue qui situe le phénomène (contexte large) ; INTERACTIVE = la contredit via des termes de tension (« cependant/bien que/manque de/limité/difficulté ») — étayée littérature, jamais conjecturale ; SPÉCULATIVE = juxtapose les deux, explique pourquoi résoudre la contradiction importe, énonce ce qui doit être fait → objectif puis questions de recherche
+- C'est l'INTERACTION principale↔interactive qui CRÉE le problème de recherche (anomalie, controverse, gap, conflit)
+- Itératif : la revue rigoureuse contredit souvent les hypothèses initiales — réviser l'énoncé sans s'entêter ; pas d'approche toute faite, adapter au champ
 
 ### Gestion des sources (Eco)
 - Traduction = prothèse (lunettes), pas source de première main. SI langue accessible → consulter l'original. SI langue inaccessible → justifier le recours à la traduction et délimiter l'objet en conséquence

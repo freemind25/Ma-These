@@ -76,11 +76,11 @@ Routes impactées : `ai-writing`, `ai-writing/stream`, `directeur-chat`.
 
 ### 2.5 Token budget (post-compactage, calibré APRÈS optimisation)
 
-- **Full core** : ~20 123 tokens (mesuré, 60 370 chars ÷ 3)
-- **Budget calibré** : 22 000 tokens (mesure + 10 %)
+- **Full core** : ~22 300 tokens (mesuré, 66 900 chars ÷ 3 — après digestion Machiridza & Muringani 2026-11-01)
+- **Budget calibré** : 24 500 tokens (mesure + ~10 %)
 - **Mode le plus lourd** (directeur) : ~15 339 tokens (mesuré)
 - **Budget par mode** : 17 000 tokens (mesure + 10 %)
-- **Max module unique** : 5 000 tokens (methodology ~3 665)
+- **Max module unique** : 5 000 tokens (methodology ~4 976, digestions Snyder + Sandelowski + UWA + Machiridza incluses)
 - **Capteur permanent** : `src/lib/ai/knowledge-core.budget.test.ts` — 7 assertions
 - **Calibration niveau** : +~110 tokens (optionnel)
 - Chaque spécialisation déclare ses modules nécessaires → injection sélective

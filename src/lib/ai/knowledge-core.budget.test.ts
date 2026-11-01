@@ -25,9 +25,9 @@ import { join } from 'path'
 // Any FUTURE growth >10% will trigger a test failure.
 
 const CHARS_PER_TOKEN = 3
-const BUDGET_FULL_CORE_TOKENS = 22_000  // ~20,123 measured (post-optimization) + 10%
+const BUDGET_FULL_CORE_TOKENS = 24_500  // ~22,300 measured (digestion Machiridza & Muringani 2026-11-01, +1,518 chars) + ~10%
 const BUDGET_PER_MODE_TOKENS = 17_000  // ~15,339 (directeur, post-optimization) + 10%
-const MAX_SINGLE_MODULE_TOKENS = 5_000  // methodology was ~5,726 pre-compaction, now ~3,665
+const MAX_SINGLE_MODULE_TOKENS = 5_000  // methodology was ~5,726 pre-compaction, ~4,976 post-digestion 2026-11-01
 
 // ─── Module name mapping ───
 const MODULE_NAME_MAP: Record<string, string> = {
