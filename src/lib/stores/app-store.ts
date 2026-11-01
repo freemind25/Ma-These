@@ -310,7 +310,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     id: "verification-citations",
     label: "Vérification Citations",
     icon: "ShieldCheck",
-    description: "Vérifiez vos références contre 5 registres académiques + recalcul des statistiques",
+    description: "Vérifiez vos références contre 9 registres académiques (dont BnF, Zenodo, Europe PMC) + recalcul des statistiques",
     badge: "API",
     category: "methodologie",
   },
