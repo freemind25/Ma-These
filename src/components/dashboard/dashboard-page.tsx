@@ -325,7 +325,7 @@ export function DashboardPage() {
             />
             <ModuleCard
               title="Bases de données"
-              description="27 ressources académiques : HAL, Google Scholar, Persée, CAIRN..."
+              description="28 ressources académiques : HAL, Google Scholar, ResearchCollab, Persée..."
               status="Prêt"
               onClick={() => setCurrentView("academic-db")}
             />

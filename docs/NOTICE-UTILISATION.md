@@ -375,7 +375,7 @@ Module **Références**. Boutons d'en-tête : « Export BibTeX », « Importer �
 
 **Exporter** : « Export BibTeX » télécharge `references.bib` (tri auteurs/année) — prêt pour LaTeX/Zotero.
 
-### 6.2 Bases de données — arXiv en direct + annuaire de 27 ressources
+### 6.2 Bases de données — arXiv en direct + annuaire de 28 ressources
 
 Module **Bases de données**, deux parties :
 
@@ -386,7 +386,9 @@ Module **Bases de données**, deux parties :
 3. Par résultat : « Ajouter aux références » (→ devient « Ajoutée », import direct dans votre bibliothèque), « BibTeX » (copie), « PDF » (ouvre le PDF arXiv).
 4. « suivre cette recherche » crée une **veille** arXiv (voir §6.7).
 
-**b) Annuaire — 27 ressources en 5 catégories** : « Archives ouvertes » (HAL, arXiv, PubMed Central, SSRN, OpenAlex), « Moteurs de recherche » (Google Scholar, Semantic Scholar, BASE, Dimensions), « Éditeurs & Bases » (ScienceDirect, Springer, Wiley, Taylor & Francis, Sage, IEEE Xplore, ACM), « Bibliothèques numériques » (CAIRN, Persée, JSTOR, Project MUSE, ERIC), « Outils spécialisés » (Scopus, Web of Science, DBLP, MathSciNet, zbMATH, IngentaConnect). Chaque carte indique le pays, la description et l'accès (« Gratuit » / « Abonnement » / « Open Access ») + bouton « Visiter ».
+**b) Annuaire — 28 ressources en 6 catégories** : « Archives ouvertes » (HAL, arXiv, PubMed Central, SSRN, OpenAlex), « Moteurs de recherche » (Google Scholar, Semantic Scholar, BASE, Dimensions), « Assistants IA de recherche » (ResearchCollab), « Éditeurs & Bases » (ScienceDirect, Springer, Wiley, Taylor & Francis, Sage, IEEE Xplore, ACM), « Bibliothèques numériques » (CAIRN, Persée, JSTOR, Project MUSE, ERIC), « Outils spécialisés » (Scopus, Web of Science, DBLP, MathSciNet, zbMATH, IngentaConnect). Chaque carte indique le pays, la description et l'accès (« Gratuit » / « Abonnement » / « Open Access ») + bouton « Visiter ».
+
+**ResearchCollab** (researchcollab.ai) — assistant IA de recherche au démarrage gratuit (sans carte bancaire) : sa **Topic Map** transforme une question de recherche en carte mentale interactive des travaux connexes, sous-thèmes et lacunes, avec recherche sémantique sur **460 M+ articles indexés** — idéal pour cadrer un champ avant la recherche locale. Sa revue systématique alignée **PRISMA** (7 étapes) et la rédaction citée sont sur abonnement ; le module **Outils SLR** (§7.3) couvre localement l'équivalent PRISMA sans compte externe.
 
 ### 6.3 Thèses en ligne — HAL
 
@@ -456,11 +458,11 @@ Module **Onglet Recherche** (lié à la thèse active) — organisez chaque pist
 - Actions d'onglet : « Renommer », « Épingler » / « Désépingler », « Dupliquer », « Effacer ».
 - **« Résumé de session »** : synthèse de tous les onglets (liens, citations, % de tâches).
 
-### 6.10 Vérification Citations — 5 registres + recalcul statistique
+### 6.10 Vérification Citations — 9 registres + recalcul statistique
 
 Module **Vérification Citations** (badge API). **2 onglets** :
 
-**« Vérification Citations »** — vérifiez chaque référence contre **Crossref, OpenAlex, Semantic Scholar, DOAJ et PubMed** :
+**« Vérification Citations »** — vérifiez chaque référence contre **9 registres académiques** : Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed (citations publiées) ; DataCite, BnF, Zenodo, Europe PMC (livrables, ouvrages, dépôts, prépublications) :
 
 1. Collez vos références (une par ligne, max 50 ; DOI détectés automatiquement).
 2. **« Vérifier les citations »** → résumé en 4 tuiles : « Vérifiés », « Non trouvés », « Rétractés », « Incohérents ».

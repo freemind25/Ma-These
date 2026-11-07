@@ -109,6 +109,17 @@ const DATABASES: Database[] = [
     country: "Royaume-Uni",
   },
 
+  // Assistants IA de recherche
+  {
+    name: "ResearchCollab",
+    url: "https://researchcollab.ai",
+    description:
+      "Assistant IA de recherche : Topic Map transformant une question en carte mentale des travaux, sous-thèmes et lacunes sur 460 M+ articles indexés ; revue de littérature et revue systématique alignée PRISMA sur abonnement. À utiliser en amont du module Outils SLR pour l'exploration du champ.",
+    category: "Assistants IA de recherche",
+    accessType: "Gratuit",
+    country: "International",
+  },
+
   // Éditeurs & Bases
   {
     name: "Elsevier / ScienceDirect",
@@ -281,6 +292,7 @@ const DATABASES: Database[] = [
 const CATEGORIES = [
   "Archives ouvertes",
   "Moteurs de recherche",
+  "Assistants IA de recherche",
   "Éditeurs & Bases",
   "Bibliothèques numériques",
   "Outils spécialisés",

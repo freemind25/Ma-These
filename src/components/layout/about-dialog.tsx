@@ -10,6 +10,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Github, Heart, ExternalLink } from "lucide-react";
+import { APP_VERSION } from "@/lib/version";
 import Image from "next/image";
 
 export function AboutDialog({
@@ -42,7 +43,7 @@ export function AboutDialog({
               <p className="font-semibold text-lg">Ma Thèse</p>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="text-[10px]">
-                  v1.10.9
+                  v{APP_VERSION}
                 </Badge>
                 <Badge variant="outline" className="text-[10px]">
                   Next.js 16

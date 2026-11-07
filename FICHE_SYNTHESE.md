@@ -425,3 +425,25 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 1. Release applicative **v1.10.21** pour livrer Jane (v1.10.20 déjà publiée le 2026-11-01) + recette propriétaire : onglet Jane sur l'installation Windows mise à jour.
 2. Correctif du test `ai-types.test.ts` (attend 20, réel 21) — cycle dédié toujours en attente (préexistant).
 3. Recette propriétaire 1.10.20 (updater, 9 registres, mode Problématique Clark) toujours en attente côté machine Windows (reportée de la session du 2026-11-01).
+
+## Session du 2026-11-07 (suite) — ResearchCollab.ai dans l'annuaire + corrections de cohérence (RESEARCHCOLLAB-RESOURCE-V1)
+
+**Déclencheur** : propriétaire (IM) : « avançons d'abord et on fera le tag à la fin. voir maintenant ceci si on peux y prendre des choses : https://researchcollab.ai/ ».
+
+**Analyse du site** (navigateur headless, curl bloqué par captcha) : ResearchCollab.ai = assistant IA de recherche freemium — Topic Map (question → carte mentale des travaux/sous-thèmes/lacunes sur 460 M+ articles ; démarrage gratuit sans carte bancaire), revue de littérature (recherche sémantique, criblage, résumés, citations APA/MLA/Chicago/Harvard), revue systématique PRISMA 7 étapes (sur abonnement), Evidence Tracker / Outline Generator / Knowledge Bank / Virtual Peer Review / Research Agent (abonnement). Pas d'API publique → pas d'intégration proxy type Jane ; usage complet = compte requis.
+
+**Décision d'intégration** (règle anti-duplication) : Topic Map ≈ module « Analyse du champ » (carte/lacunes) ; PRISMA ≈ module « Outils SLR » (6 onglets complets) ; Evidence Tracker ≈ « Alignement preuves » + « Vérification Citations » ; Outline/Peer review ≈ Plan de thèse / Brouillon de chapitre / Auto-édition 8C → **ressource externe documentée dans l'annuaire**, aucun module créé.
+
+**Ce qui est livré** :
+- **Annuaire « Bases de données »** : nouvelle catégorie **« Assistants IA de recherche »** (28 ressources / 6 catégories) avec carte **ResearchCollab** (Topic Map 460 M+, PRISMA sur abonnement, Gratuit, International, renvoi amont vers Outils SLR).
+- **Cohérence documentaire** : NOTICE §6.2 (28 ressources, 6 catégories, paragraphe d'usage ResearchCollab + renvoi §7.3) ; dashboard « 28 ressources académiques … ResearchCollab … » ; NOTE-PRESENTATION (28 ressources, Journaux OA « + Jane », **Vérification Citations 5 → 9 registres**) ; NOTICE §6.10 (titre + liste des **9 registres** : Crossref, OpenAlex, Semantic Scholar, DOAJ, PubMed + DataCite, BnF, Zenodo, Europe PMC) — rattrapage de la dette doc du correctif 1.10.20.
+- **Correctif de version UI** : footer et À propos affichaient « v1.10.9 » hardcodé → source unique `src/lib/version.ts` (`APP_VERSION`) consommée par les deux composants ; 0 résidu hardcodé.
+
+**Validation** : suite complète 1694 ✓ / 3 ✗ préexistants (chapters/[id] ×2, ai-types 20 vs 21 — confirmés sur arbre propre par stash) ; lint 0 erreur ; recette navigateur réelle : dashboard + vue Bases de données (« 28 bases affichées », section « ASSISTANTS IA DE RECHERCHE », carte complète, filtre catégorie → 1 base affichée, captures `test-snapshots/academic-db-researchcollab-01..05.png`, mobile 390 px + desktop) ; footer + À propos = « v1.10.20 » après correctif.
+
+**Décisions** : (1) intégration externe documentée plutôt que module dupliqué ; (2) catégorie « Assistants IA de recherche » placée après « Moteurs de recherche » ; (3) APP_VERSION comme source unique de version UI (à bump avec package.json/tauri.conf.json à chaque release).
+
+**Points ouverts pour la session suivante** :
+1. **Tag v1.10.21 à la fin de cette session** (instruction propriétaire) : Jane (d37f81a) + ResearchCollab + correctifs de cohérence — bump package.json/tauri.conf.json/Cargo.toml/Cargo.lock/APP_VERSION, push tag, vérif CI 3 assets.
+2. Correctif du test `ai-types.test.ts` (attend 20, réel 21) — toujours en attente (préexistant).
+3. Recettes propriétaires Windows : 1.10.20 (updater, 9 registres, mode Problématique Clark) puis 1.10.21 (Jane, annuaire 28 ressources).
