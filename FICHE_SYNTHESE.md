@@ -399,3 +399,29 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 1. Correctif du test `ai-types.test.ts` (attend 20, réel 21) — cycle dédié à ouvrir (préexistant, hors périmètre de la digestion).
 2. Recette propriétaire de la digestion : **la release 1.10.20 est publiée le 2026-11-01T16:45Z** (tag annoté v1.10.20 → CI run 41326322410 succès → actifs validés dont vérification cryptographique Ed25519/BLAKE2b-512, preuves de contenu dans le build embarqué — voir worklog RELEASE-1.10.20). Reste la recette côté machine Windows : mise à jour via updater, menu « Vérification Citations » affichant 9 registres, mode « Problématique » guidant avec les 3 propositions Clark.
 3. Reprendre la consignation FICHE à chaque fin de session (écart de 3 semaines corrigé par le rattrapage ci-dessus).
+
+## Session du 2026-11-07 — Intégration Jane (Journal/Author Name Estimator) dans « Journaux OA » (JANE-JOURNAL-FINDER-V1)
+
+**Déclencheur** : propriétaire (IM) : « ajouter ce site pour la recherche de journeaux pour publication (enter the title and/or abstract of the paper in the box, and click on 'Find journals', 'Find authors' or 'Find Articles'. Jane will then compare your document to millions of documents in PubMed to find the best matching journals, authors or articles.) : https://jane.biosemantics.org/ ».
+
+**Ce qui est livré** : l'outil public **Jane** (Texas Health Science Center / OHDISI) est intégré comme **onglet « Jane — Où publier ? »** du module « Journaux OA » (décision : pas de nouveau module latéral, même famille fonctionnelle que le catalogue OA).
+
+- **Backend** `src/app/api/jane/route.ts` : POST `{ text, mode: journals|authors|papers, languages?, publicationTypes? }` → proxy vers `jane.biosemantics.org/suggestions.php` (form-urlencoded, User-Agent ThesisFrame/1.0, timeout 60 s) → **parsage du HTML de Jane** (barres bluebar/orangebar, badges OA/Medline/PMC, authorName/authorPMIDs, PMID_*) → JSON normalisé ; filtres 7 langues + 19 types MeSH transmis uniquement s'ils sont actifs ; erreurs réseau/HTTP/timeout → 502 explicites ; lignes de référence Jane jamais exposées comme résultats.
+- **Frontend** `src/modules/journaux-oa/jane-finder.tsx` : encart de périmètre (PubMed = biomédecine/santé/sciences de la vie ; service externe — ne coller que titre + résumé non confidentiel), textarea (min 10 car. → boutons désactivés, max 5 000), 3 modes (« Trouver des journaux » : confiance % + badges + Article Influence ≥ percentile + « Voir sur OpenAlex » ; « Trouver des auteurs » : PMIDs → PubMed ; « Trouver des articles » : % semblable + lien PubMed), filtres repliables, listes scrollables, états vides dédiés. Page existante enveloppée en Tabs (« Catalogue OA » / « Jane — Où publier ? ») sans régression.
+- **Spec SDD** : `specs/jane-journal-finder/spec.md` (6 US, 4 décisions : onglet vs module ; parsé HTML documenté ; 5 000 car. max ; aucune persistance).
+- **Tests** : `src/app/api/jane/route.test.ts` — 17/17 ✓ (validation, parsage 3 modes sur HTML d'échantillon réel, exclusion lignes info, filtres, 502 réseau/timeout) ; suite `journaux-oa` 21/21 ✓.
+
+**Validation (recette navigateur réelle, serveur local)** :
+- Mode journaux : 26 cartes rendues avec confiance/badges/Article Influence/liens OpenAlex (captures `test-snapshots/journaux-jane-01-journals.png`, `-02-resultats.png`).
+- Mode articles : « 20 articles similaires » avec badge « N% semblable », journal · année (`-03-articles.png`).
+- Mode auteurs : « 100 auteurs suggérés » avec PMIDs cliquables (`-06-auteurs.png`).
+- Filtres réels via API : `languages:["fre"]` + `["Review"]` → 25 journaux francophones uniquement.
+- Mobile 390 px : boutons empilés, encart lisible, garde texte < 10 car. (`-04-mobile-390.png`) ; non-régression catalogue OA vérifiée (`-05-catalogue-regression.png`) ; lint 0 erreur.
+
+**Documentation** : NOTICE-UTILISATION.md §6.5 réécrite (2 onglets + mode d'emploi Jane) ; description sidebar du module mise à jour (« Catalogue OpenAlex + DOAJ, suggestions de publication Jane (PubMed) ») ; worklog `JANE-JOURNAL-FINDER-V1`.
+
+**Points ouverts pour la session suivante** :
+
+1. Release applicative **v1.10.21** pour livrer Jane (v1.10.20 déjà publiée le 2026-11-01) + recette propriétaire : onglet Jane sur l'installation Windows mise à jour.
+2. Correctif du test `ai-types.test.ts` (attend 20, réel 21) — cycle dédié toujours en attente (préexistant).
+3. Recette propriétaire 1.10.20 (updater, 9 registres, mode Problématique Clark) toujours en attente côté machine Windows (reportée de la session du 2026-11-01).

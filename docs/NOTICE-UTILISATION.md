@@ -408,13 +408,20 @@ Module **Explorateur Thèses** (API officielle ABES). **3 onglets** :
 
 ### 6.5 Journaux OA — revues en accès ouvert
 
-Module **Journaux OA** (OpenAlex + DOAJ interrogés en parallèle). Encart « Principe DORA » : ne réduisez pas une revue à un seul chiffre.
+Module **Journaux OA** en 2 onglets : « Catalogue OA » (OpenAlex + DOAJ interrogés en parallèle) et « Jane — Où publier ? ». Encart « Principe DORA » : ne réduisez pas une revue à un seul chiffre.
 
 1. Recherchez (« ex. sociologie, machine learning »), filtrez par source (« Toutes » / « OpenAlex » / « DOAJ ») et par domaine (23 disciplines).
 2. Résultats : éditeur, ISSN, pays, « APC » (frais de publication), **type d'accès : Or / Diamant / Hybride / Bronze / Vert** ; bouton « Site web ».
 3. **« Classer par IA »** : l'IA classe les 10 premiers résultats selon la pertinence pour votre recherche.
 4. **« Exporter CSV »** : fichier `journaux-oa-<requête>.csv` (Nom, Éditeur, ISSN, Domaines, Type OA, Pays, Source, Page d'accueil, APC).
 5. Section **« Évaluer la légitimité d'une revue »** : cochez les signaux observés — 5 « Signaux d'alerte (prédatrices) » (« Promesses irréalistes », « Métriques fabriquées »…) vs 3 « Signaux de légitimité » (« Indexation reconnue »…) — verdict automatique (vert / ambre « vérification approfondie » / rouge « Fort risque de revue prédatrice »).
+
+**Onglet « Jane — Où publier ? »** — suggestions ciblées pour votre manuscrit via **Jane (Journal / Author Name Estimator)**, l'outil public de référence en biomédecine/santé (jane.biosemantics.org) :
+
+1. Collez le titre et/ou le résumé de votre manuscrit (10 à 5 000 caractères ; en anglais de préférence — Jane compare votre document à des millions de références de **PubMed**).
+2. Choisissez un des trois modes : **« Trouver des journaux »** (journaux suggérés avec score de confiance en %, badges « Accès ouvert de qualité » / « Medline-indexé » / « PMC », score d'influence d'article « Article Influence » et percentile — croisement possible via « Voir sur OpenAlex »), **« Trouver des auteurs »** (experts du sujet avec leurs PMIDs PubMed) ou **« Trouver des articles »** (articles les plus similaires, avec pourcentage de ressemblance et lien PubMed).
+3. **« Filtres optionnels »** : langues de publication (7) et types de publication MeSH (19) — transmis à Jane uniquement lorsqu'au moins une case est cochée.
+4. Périmètre : PubMed couvre biomédecine, santé publique et sciences de la vie ; pour les autres disciplines, utilisez l'onglet « Catalogue OA ». Votre texte est transmis au service externe jane.biosemantics.org — ne collez que le titre et un résumé non confidentiel.
 
 ### 6.6 Bibliothèque — livres gratuits
 

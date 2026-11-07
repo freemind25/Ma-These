@@ -44,8 +44,15 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useAiConfig } from "@/hooks/use-ai-config";
+import { JaneFinder } from "./jane-finder";
 
 // ═══════════════════════════════════════
 // Types
@@ -440,10 +447,19 @@ Réponds UNIQUEMENT avec un objet JSON valide (pas de markdown) contenant un tab
           Journaux OA
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Recherchez des revues en accès ouvert via OpenAlex et DOAJ
+          Recherchez des revues en accès ouvert via OpenAlex et DOAJ, ou
+          trouvez où publier avec Jane
         </p>
       </div>
 
+      {/* Onglets : Catalogue OA / Jane */}
+      <Tabs defaultValue="catalogue" className="flex flex-col gap-4">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="catalogue">Catalogue OA</TabsTrigger>
+          <TabsTrigger value="jane">Jane — Où publier ?</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="catalogue" className="mt-0 flex flex-col gap-6">
       {/* DORA Principle Info Callout */}
       <div className="flex items-start gap-3 rounded-lg border border-sky-200 bg-sky-50 dark:border-sky-900/50 dark:bg-sky-950/20 p-4">
         <Info className="h-4.5 w-4.5 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0" />
@@ -771,6 +787,12 @@ Réponds UNIQUEMENT avec un objet JSON valide (pas de markdown) contenant un tab
           </p>
         </div>
       )}
+        </TabsContent>
+
+        <TabsContent value="jane" className="mt-0">
+          <JaneFinder />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

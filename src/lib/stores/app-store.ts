@@ -228,7 +228,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     id: "journaux-oa",
     label: "Journaux OA",
     icon: "Library",
-    description: "Recherche OpenAlex + DOAJ, export CSV",
+    description: "Catalogue OpenAlex + DOAJ, suggestions de publication Jane (PubMed)",
     badge: "OA",
     category: "recherche",
   },
