@@ -25,7 +25,10 @@ import {
   Users,
 } from "lucide-react";
 import type {
+  JaneAuthor,
+  JaneJournal,
   JaneMode,
+  JanePaper,
   JaneResponse,
 } from "@/app/api/jane/route";
 
@@ -70,7 +73,7 @@ const MIN_TEXT = 10;
 // ═══════════════════════════════════════
 // Cartes de résultats
 // ═══════════════════════════════════════
-function JournalResultCard({ journal }: { journal: JaneResponse["journals"][number] }) {
+function JournalResultCard({ journal }: { journal: JaneJournal }) {
   return (
     <Card>
       <CardContent className="p-4 flex flex-col gap-2">
@@ -112,7 +115,7 @@ function JournalResultCard({ journal }: { journal: JaneResponse["journals"][numb
   );
 }
 
-function AuthorResultCard({ author }: { author: JaneResponse["authors"][number] }) {
+function AuthorResultCard({ author }: { author: JaneAuthor }) {
   return (
     <Card>
       <CardContent className="p-4 flex flex-col gap-2">
@@ -149,7 +152,7 @@ function AuthorResultCard({ author }: { author: JaneResponse["authors"][number] 
   );
 }
 
-function PaperResultCard({ paper }: { paper: JaneResponse["papers"][number] }) {
+function PaperResultCard({ paper }: { paper: JanePaper }) {
   return (
     <Card>
       <CardContent className="p-4 flex flex-col gap-1.5">
