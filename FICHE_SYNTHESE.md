@@ -444,6 +444,23 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Décisions** : (1) intégration externe documentée plutôt que module dupliqué ; (2) catégorie « Assistants IA de recherche » placée après « Moteurs de recherche » ; (3) APP_VERSION comme source unique de version UI (à bump avec package.json/tauri.conf.json à chaque release).
 
 **Points ouverts pour la session suivante** :
-1. **Tag v1.10.21 à la fin de cette session** (instruction propriétaire) : Jane (d37f81a) + ResearchCollab + correctifs de cohérence — bump package.json/tauri.conf.json/Cargo.toml/Cargo.lock/APP_VERSION, push tag, vérif CI 3 assets.
-2. Correctif du test `ai-types.test.ts` (attend 20, réel 21) — toujours en attente (préexistant).
-3. Recettes propriétaires Windows : 1.10.20 (updater, 9 registres, mode Problématique Clark) puis 1.10.21 (Jane, annuaire 28 ressources).
+1. Correctif du test `ai-types.test.ts` (attend 20, réel 21) — toujours en attente (préexistant).
+2. Recettes propriétaires Windows : 1.10.20/1.10.21 (updater, 9 registres, mode Problématique Clark, onglet Jane, annuaire 28 ressources avec ResearchCollab).
+3. Leçon consignée : toute feature frontend doit passer `tsc --noEmit` avant tag (les `*.test.ts` ne sont pas dans le graphe next build — cf. RELEASE-1.10.21).
+
+---
+
+## Session du 2026-11-07 (fin) — Release v1.10.21 (RELEASE-1.10.21)
+
+**Déclencheur** : instruction propriétaire « avançons d'abord et on fera le tag à la fin ».
+
+**Ce qui est livré** : **v1.10.21 publiée le 2026-11-07T09:07:50Z** (https://github.com/freemind25/Ma-These/releases/tag/v1.10.21) — embarque Jane (d37f81a), ResearchCollab (6b26d86) et les corrections de cohérence/version UI.
+
+- **Bump** sur 5 fichiers (package.json, tauri.conf.json, Cargo.toml, Cargo.lock, APP_VERSION) ; commit aed57ba ; tag v1.10.21.
+- **CI run #34 FAILURE** → erreur TypeScript `jane-finder.tsx:73` (`JaneResponse["journals"][number]` sur champ optionnel) — invisible en dev/vitest, détectée seulement par le build production. **Fix 59237ea** (types d'éléments importés : JaneJournal/JaneAuthor/JanePaper) ; re-tag (convention force-push) ; **run #35 SUCCESS**.
+- **3 assets validés** : latest.json (1 391 o), Ma.These_1.10.21_x64-setup.exe (146 207 473 o), .sig (424 o).
+- **Crypto** (outil reconstruit, calibré sur 1.10.20 dont la validité était prouvée le 2026-11-01) : format minisign rust élucidé (global = ED+keyid+sig 74 o ; comment = 64 o brut) ; **1.10.20 ET 1.10.21 GLOBAL VALIDE** Ed25519(BLAKE2b-512(file)) ; keyid embarqué = pubkey tauri.conf.json (octets inversés) ; signature latest.json = asset .sig ✓ ; trusted comment non reproduit localement (~15 variantes) — sans portée updater.
+- **Payload** 7-Zip 24.09 : 13 fichiers NSIS-3 Unicode — mathese.exe 15,3 Mo + node.exe 87 Mo + standalone.zip 114,5 Mo + db ✓. **Preuves embarquées** : ResearchCollab/« Assistants IA de recherche » ✓, jane.biosemantics.org ✓, « 9 registres académiques » ✓, Machiridza (knowledge-core) ✓, package.json embarqué = 1.10.21 ✓.
+- **Public** : latest.json public = 1.10.21 → l'updater proposera la mise à jour aux installations 1.10.16+ ; setup.exe public MZ, taille identique à l'asset signé.
+
+**Décision** : leçon procédurale consignée — `tsc --noEmit` obligatoire avant tout tag (le graphe next build ne type-checke pas les fichiers hors application).

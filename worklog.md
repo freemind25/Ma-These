@@ -3430,3 +3430,30 @@ Stage Summary:
 - ResearchCollab.ai intégré comme 1re ressource de la catégorie « Assistants IA de recherche » de l'annuaire (28 ressources / 6 catégories), avec documentation d'usage et renvoi amont vers Outils SLR ; aucun module dupliqué.
 - Corrections de cohérence embarquées : libellés « 9 registres » (NOTICE §6.10 + NOTE-PRESENTATION, dette 1.10.20), compteur 28 ressources (dashboard + notice + note), source unique de version UI APP_VERSION (footer + À propos → v1.10.20).
 - Livraison : commit sur fix/c2-ecarts ; release applicative visée en **v1.10.21** (à la fin de session, conformément à l'instruction propriétaire « on fera le tag à la fin ») — embarquera Jane (d37f81a) + ResearchCollab + correctifs.
+
+---
+Task ID: RELEASE-1.10.21
+Agent: Z.ai Code (session externe, instruction propriétaire : « avançons d'abord et on fera le tag à la fin »)
+
+Task: Livrer v1.10.21 (Jane + ResearchCollab + cohérence) : bump versions, tag, CI, validation 3 assets, publication.
+
+Work Log:
+- Bump 1.10.20 → 1.10.21 sur 5 fichiers : package.json, src-tauri/tauri.conf.json, src-tauri/Cargo.toml (l.3), src-tauri/Cargo.lock (mathese l.1884), src/lib/version.ts (APP_VERSION — la nouvelle source unique UI). Commit aed57ba, tag v1.10.21, push branche+tag.
+- **CI run #34 : FAILURE** — step « Build Tauri (NSIS) + release draft » : erreur TypeScript `./src/modules/journaux-oa/jane-finder.tsx:73:77` — `JaneResponse["journals"][number]` invalide sur champ optionnel (`JaneJournal[] | undefined` : pas d'index signature number sur undefined). Cette erreur du commit Jane d37f81a n'apparaissait qu'en build production (next build / phase « Running TypeScript ») — dev server et vitest ne la détectaient pas.
+- Fix 59237ea : import direct des types d'éléments exportés par route.ts (`JaneJournal` / `JaneAuthor` / `JanePaper`) dans les 3 cartes de résultats. `tsc --noEmit` : 0 erreur hors `*.test.ts` (les fichiers de test ne font pas partie du graphe next build — preuve : 1.10.20 passait avec les mêmes erreurs de tests) ; tests Jane 17/17 ✓ ; lint 0 erreur.
+- Re-tag selon la convention force-push du dépôt : suppression tag distant `:refs/tags/v1.10.21` → re-création sur 59237ea → push. Sync vérifiée 0/0, tag = origin/fix/c2-ecarts = HEAD.
+- **CI run #35 : SUCCESS** (08:56Z). Release draft 437453393 « Ma Thèse v1.10.21 » (target 59237ea) avec **3 assets** : `latest.json` (1 391 o), `Ma.These_1.10.21_x64-setup.exe` (146 207 473 o), `Ma.These_1.10.21_x64-setup.exe.sig` (424 o).
+- Validation cryptographique (outil reconstruit après reset du sandbox : cryptography 44.0.3, format minisign rust calibré sur la release 1.10.20 dont la validité avait été prouvée en session 2026-11-01) :
+  - Format élucidé : global sig = alg « ED » (2 o) + keyid (8 o) + sig Ed25519 (64 o) = 74 o ; comment sig = Ed25519 brut (64 o sans préfixe).
+  - **1.10.20 GLOBAL VALIDE** : Ed25519(BLAKE2b-512(setup20.exe)) — calibrage confirmé, reproduit le résultat de la session précédente ✓.
+  - **1.10.21 GLOBAL VALIDE** : Ed25519(BLAKE2b-512(setup21.exe)) ✓ ; keyid embarqué `3D661F011B642881` = keyid de la pubkey tauri.conf.json (`8128641B011F663D` en ordre d'affichage = mêmes octets inversés) ✓ ; signature embarquée dans latest.json = asset .sig (identiques octet pour octet) ✓.
+  - Trusted comment (2ᵉ signature d'information liant timestamp/fichier) : non reproduite localement malgré ~15 variantes de construction du message (raw/b64/préhash × utf-8/latin-1 × newline) — sans portée sur l'updater (tauri-updater vérifie la signature globale du fichier).
+- Payload NSIS extrait avec **7-Zip 24.09** (wasm — même version que la validation 1.10.20) : **13 fichiers**, SubType « NSIS-3 Unicode » ; mathese.exe (15 334 400 o) + node.exe (87 034 184 o) + standalone.zip (114 513 135 o) + db/custom.db + db/urbanisme-test.db + 7 plugins $PLUGINSDIR ✓.
+- Preuves de contenu dans le build embarqué (standalone.zip décompressé) : « Assistants IA de recherche » + « ResearchCollab » dans les chunks client/SSR ✓ ; « jane.biosemantics.org » dans les chunks SSR ✓ ; « 9 registres académiques » dans les chunks client ✓ ; « Machiridza » dans le chunk knowledge-core serveur ✓ ; standalone/package.json = « version": "1.10.21" » ✓.
+- Publication : release draft 437453393 → **publiée le 2026-11-07T09:07:50Z**. Contrôles publics : latest.json public = 1.10.21 (pub_date 2026-11-07T08:56:35.119Z, url pointant l'asset v1.10.21) ✓ ; setup.exe public = MZ, 146 207 473 octets (identique à l'asset signé) ✓ (https://github.com/freemind25/Ma-These/releases/tag/v1.10.21).
+
+Stage Summary:
+- **v1.10.21 livrée, validée et publiée** : embarque l'intégration Jane (3 modes journaux/auteurs/articles vs PubMed, filtres langues+MeSH), l'annuaire « Assistants IA de recherche » avec ResearchCollab (28 ressources / 6 catégories), les corrections de cohérence (9 registres NOTICE/NOTE, compteur 28, APP_VERSION source unique) et la digestion Machiridza (v2026-11-01).
+- Correctif du cycle : l'erreur TS de jane-finder.tsx ne survenait qu'en build production — leçon consignée : toute feature frontend doit passer `tsc --noEmit` (ou un build) avant tag, les fichiers `*.test.ts` ne sont pas dans le graphe next build.
+- L'updater embarqué proposera la 1.10.21 aux installations 1.10.16+ via latest.json ; recettes propriétaires Windows restantes : 1.10.20/1.10.21 (updater, 9 registres, mode Problématique Clark, onglet Jane, annuaire 28 ressources).
+- Tests 3 échecs préexistants inchangés (chapters/[id] ×2, ai-types 20 vs 21) — toujours hors périmètre.
