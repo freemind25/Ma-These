@@ -464,3 +464,24 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 - **Public** : latest.json public = 1.10.21 → l'updater proposera la mise à jour aux installations 1.10.16+ ; setup.exe public MZ, taille identique à l'asset signé.
 
 **Décision** : leçon procédurale consignée — `tsc --noEmit` obligatoire avant tout tag (le graphe next build ne type-checke pas les fichiers hors application).
+
+---
+
+## Session du 2026-11-08 — Affinage du logo Ma Thèse (LOGO-AFFINAGE-V1) — master vectoriel M+plume
+
+**Déclencheur** : propriétaire (IM) : « utilisez ce dépot pour affiner le logo de mon application : https://github.com/kaankiziltug/logo-design-skill » — dépôt-skill de design de logo (SKILL.md professionnel : modes Design/Redesign/Critique/System/Assets, bibliothèque 1 400+ logos, scripts d'audit/tests).
+
+**Slug(s) traité(s)** : `LOGO-AFFINAGE-V1` (affinage de marque selon la méthode du dépôt fourni — mode **Redesign/refresh**, pas un cycle spec → plan).
+
+**Diagnostic** : logo existant uniquement en raster (lockup 1774×887 + icône 1024² + set Tauri) ; `public/logo.svg` = placeholder étranger « Z » ; défauts = pixels-confettis épars, ombre portée, M asymétrique accidentel, jonctions irrégulières, lockup surchargé affiché de 16 à 180 px ; aucun master vectoriel ni variante (mono/revers/petite taille).
+
+**Équité conservée** : concept M + plume, lignes de document, famille marine→violet→corail→orange (#1C2267/#6D3FC4/#F0526E/#F99B4E), wordmark « Ma**Thèse** » bicolore, tagline. **Éliminé** : confettis, ombre, 4 chips explicatives, asymétrie.
+
+**Livrables** (commit feat(brand) sur fix/c2-ecarts) :
+- `public/brand/` : `symbol-color.svg` (master, un seul path `fill-rule="evenodd"` — détails en vrais trous), `symbol-mono.svg`, `symbol-reversed.svg`, `symbol-color-small.svg` (< 48 px), `lockup.svg` (wordmark DejaVu Sans Bold vectorisé + tagline 2 lignes), `tile.svg` (tuile icône rx 22,6 %), `GUIDELINE-LOGO.md` (palette, clairage = largeur de fût ≈ 19 %, tailles minimales, interdits).
+- Régénération complète : `public/logo.svg` (remplace le Z), `public/logo.png` (1774×751), `public/app-icon.png` (1024²), `src-tauri/icons/` 32x32/128x128/128x128@2x/icon.png/icon.ico (7 tailles, small-cut ≤ 48) — noms inchangés, zéro modif de `tauri.conf.json`.
+- Scores audit skill : symbole couleur 91/100, mono 99, revers 99 (warn gradient = choix d'équité, master mono fourni) ; preuve petite taille : à 32/16 px l'original est illisible, l'affiné reste net.
+
+**Décisions** : évolution (pas révolution) — l'idée et la palette restent, la facture devient géométrique et reproductible ; la pointe de plume déborde la ligne de base (signature conservée/amplifiée) ; dégradé userSpaceOnUse unique continu sur toute la silhouette.
+
+**Points ouverts** : recette propriétaire du nouveau logo dans l'app reconstruite (sidebar/footer/dashboard/À propos + icône desktop + installateur NSIS) ; aucune release dans ce cycle (convention : tag sur instruction du propriétaire).

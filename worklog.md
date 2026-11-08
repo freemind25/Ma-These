@@ -3457,3 +3457,26 @@ Stage Summary:
 - Correctif du cycle : l'erreur TS de jane-finder.tsx ne survenait qu'en build production — leçon consignée : toute feature frontend doit passer `tsc --noEmit` (ou un build) avant tag, les fichiers `*.test.ts` ne sont pas dans le graphe next build.
 - L'updater embarqué proposera la 1.10.21 aux installations 1.10.16+ via latest.json ; recettes propriétaires Windows restantes : 1.10.20/1.10.21 (updater, 9 registres, mode Problématique Clark, onglet Jane, annuaire 28 ressources).
 - Tests 3 échecs préexistants inchangés (chapters/[id] ×2, ai-types 20 vs 21) — toujours hors périmètre.
+
+---
+Task ID: LOGO-AFFINAGE-V1
+Agent: Z.ai Code (session externe, instruction propriétaire : « utilisez ce dépot pour affiner le logo de mon application : https://github.com/kaankiziltug/logo-design-skill »)
+
+Task: Affiner le logo Ma Thèse en appliquant la méthode du dépôt logo-design-skill (mode Redesign/refresh), produire les masters vectoriels manquants et régénérer toute la chaîne d'assets (app icon, icônes Tauri, lockup UI).
+
+Work Log:
+- Environnement : sandbox réinitialisé entre les tours — Ma-These re-cloné sur fix/c2-ecarts (HEAD 8a98db2 = origin, arbre propre, 0/0) ; skill clonée dans /home/z/logo-design-skill (SKILL.md 223 lignes + 14 références + 9 scripts Python sans dépendance).
+- Méthode suivie : SKILL.md §« Pick the mode » → **Redesign** (references/redesign.md : audit d'équité, techniques de refresh, avant/après) + svg-construction.md (primitives, peu d'ancres, arcs exacts) + tests (render → regarder → itérer, ≥ 2 boucles).
+- **Diagnostic (critique)** : le logo n'existait qu'en raster (logo.png 1774×887, app-icon.png 1024², icônes Tauri 512/256/128/32 + ICO) ; `public/logo.svg` = placeholder étranger « Z » (héritage sandbox) ; défauts : pixels-confettis épars (bruit AI-cliché, boue < 48 px), ombre portée (non reproductible 1 couleur), asymétrie accidentelle du M, jonctions vallée↔plume irrégulières, lockup affiché 16→180 px avec tagline + 4 chips illisibles à ces tailles ; aucun master vectoriel, aucune variante mono/revers/petite taille.
+- **Audit d'équité** — conservé : concept M + plume, lignes de document sur le fût gauche, famille chromatique marine→violet→corail→orange, wordmark bicolore « Ma » marine + « Thèse » dégradé, tagline. Supprimé : confettis, ombre, chips (redondantes avec l'UI), asymétrie.
+- Construction (5 itérations rendues et inspectées) : v2 diagonales trop fines + plume « pique » ; v3 jonctions blanches concaves ; **v4 surface centrale unifiée** (2 diagonales + coin + plume en UN chemin, crotch d'épaule voulu) ; **v5 détails en vrais trous** (`fill-rule="evenodd"` : lignes de doc, œillet r=7, fente — plus aucune forme blanche peinte). Overshoots : dômes capsule à y=50, pointe de plume à y=228 (débordement 18 sous la baseline = signature). Dégradé userSpaceOnUse x1=28,y1=80→x2=228,y2=230, stops 0/0.55/0.80/1 (#1C2267/#6D3FC4/#F0526E/#F99B4E — palette équité extraite de l'original).
+- Audit `svg_audit.py` : symbol-color **91/100**, mono **99**, reversed **99** (reste : warn gradient = équité assumée, master mono fourni) ; lockup 68 (931 ancres = contours DejaVu vectorisés + micro-détails d'accents — inhérent au texte-en-chemins, petite taille couverte par symbol-color-small).
+- Tests petite taille (preuve) : à 32 et 16 px, l'original = bouillie (confettis + plume effacée) ; l'affiné reste lisible (M, dégradé, dash document). Small-cut dédié < 48 px (œillet r=10, fente 9, 2 lignes h=14).
+- Kit généré (scripts maison matplotlib/cairosvg/PIL) : tuile blanche rx=58/256 + symbole 74 % ; lockup 755×320 (symbole + « MaThèse » DejaVu Sans Bold vectorisé — licence Bitstream Vera compatible logo — + tagline 2 lignes « De l'idée à l'impact, / nous écrivons l'excellence. ») exporté 1774×751 ; ICO 7 tailles (16/24/32/48 small-cut + 64/128/256) ; PNG tuile 16→1024.
+- Déploiement Ma-These : `public/logo.svg` = master couleur (remplace le placeholder Z) ; `public/logo.png` = lockup ; `public/app-icon.png` = tuile 1024 ; `src-tauri/icons/` = 32x32 (small-cut), 128x128, 128x128@2x, icon.png 512, icon.ico 7 tailles (les 6 refs tauri.conf.json couvertes, installerIcon incluse — noms inchangés, zéro modif de config) ; `public/brand/` (nouveau) = 4 symboles + lockup.svg + tile.svg + GUIDELINE-LOGO.md (palette, clairage 19 %, tailles min, interdits).
+- Déploiement aperçu sandbox (my-project) : mêmes fichiers (l'utilisateur voit le nouveau logo dans sidebar/footer/dashboard/À propos + favicon/app-icon).
+
+Stage Summary:
+- Logo Ma Thèse affiné selon la méthode professionnelle du dépôt fourni : équité intacte (concept, couleurs, wordmark bicolore, tagline), bruit éliminé, **master vectoriel unique avec trous réels** (reproductible impression/broderie/une couleur), variantes complètes (mono, revers, small-cut, tuile, lockup) + guideline d'usage.
+- Chaîne d'assets régénérée de bout en bout sans toucher une ligne de config (mêmes noms de fichiers) ; l'icône desktop et l'installateur NSIS prendront le nouveau rendu au prochain build packagé.
+- Pas de release dans ce cycle (convention propriétaire : tag seulement sur instruction) ; recette visuelle à faire par le propriétaire sur l'app reconstruite.
