@@ -25,7 +25,7 @@ export function AboutDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Image src="/logo.png" alt="Ma Thèse" width={20} height={20} className="object-contain" />
+            <Image src="/brand/symbol-color-small.svg" alt="Ma Thèse" width={20} height={20} className="object-contain" />
             À propos de Ma Thèse
           </DialogTitle>
           <DialogDescription>

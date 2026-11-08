@@ -3480,3 +3480,18 @@ Stage Summary:
 - Logo Ma Thèse affiné selon la méthode professionnelle du dépôt fourni : équité intacte (concept, couleurs, wordmark bicolore, tagline), bruit éliminé, **master vectoriel unique avec trous réels** (reproductible impression/broderie/une couleur), variantes complètes (mono, revers, small-cut, tuile, lockup) + guideline d'usage.
 - Chaîne d'assets régénérée de bout en bout sans toucher une ligne de config (mêmes noms de fichiers) ; l'icône desktop et l'installateur NSIS prendront le nouveau rendu au prochain build packagé.
 - Pas de release dans ce cycle (convention propriétaire : tag seulement sur instruction) ; recette visuelle à faire par le propriétaire sur l'app reconstruite.
+
+---
+Task ID: LOGO-AFFINAGE-V1 (complément) — variantes contextuelles appliquées à l'UI
+Agent: Z.ai Code (session externe)
+
+Work Log:
+- Recette navigateur (agent-browser sur l'aperçu sandbox) : sidebar sombre = le lockup couleur transparent régressait (« Ma » marine + tagline noyés sur teal) → création de `public/brand/lockup-on-dark.svg` (tuile blanche r=58 + symbole couleur 74 % + « Ma » blanc + « Thèse » dégradé violet→corail, tagline omise) — contraste rétabli, équité conservée.
+- Footer (16 px) et À propos (20 px) : le lockup entier est illisible à ces tailles (constaté aussi sur l'original) → remplacés par le symbole vectoriel `symbol-color-small.svg` (net à 16 px, finement antialiasé).
+- Dashboard (180 px) et À propos (88×44) conservent le lockup couleur (fond clair) ✓.
+- Édits : app-sidebar.tsx (l.139), app-footer.tsx (l.10), about-dialog.tsx (l.28) — 3 lignes de src d'image, aucune autre modif. Lint : 0 erreur. Console navigateur : 0 erreur. Captures de preuve : sidebar, footer, dashboard.
+- Déployé sur l'aperçu sandbox (my-project) et poussé sur fix/c2-ecarts.
+
+Stage Summary:
+- Le kit logo couvre désormais TOUS les contextes réels de l'app : lockup couleur (fond clair), lockup-on-dark (sidebar sombre), symbole vectoriel (16-20 px), tuile (icônes app/installateur), mono/revers (futures impressions).
+- Le logo.png (lockup 1774×751) reste disponible pour tout usage document/print ; les usages UI pointent désormais vers les masters SVG vectoriels (netteté à toute échelle, poids minime).

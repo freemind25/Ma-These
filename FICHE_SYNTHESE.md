@@ -485,3 +485,15 @@ Tenue à jour à la fin de chaque session (protocole SDD — `skills/sdd-thesisf
 **Décisions** : évolution (pas révolution) — l'idée et la palette restent, la facture devient géométrique et reproductible ; la pointe de plume déborde la ligne de base (signature conservée/amplifiée) ; dégradé userSpaceOnUse unique continu sur toute la silhouette.
 
 **Points ouverts** : recette propriétaire du nouveau logo dans l'app reconstruite (sidebar/footer/dashboard/À propos + icône desktop + installateur NSIS) ; aucune release dans ce cycle (convention : tag sur instruction du propriétaire).
+
+---
+
+## Session du 2026-11-08 (complément) — LOGO-AFFINAGE-V1 : variantes contextuelles appliquées à l'UI
+
+Recette navigateur (agent-browser) sur l'aperçu : la sidebar sombre noyait le « Ma » marine du lockup transparent (régression introduite par la suppression du fond blanc raster) et le footer 16 px rendait le lockup illisible. Corrections appliquées (3 lignes de src d'image) :
+
+- `app-sidebar.tsx` → `public/brand/lockup-on-dark.svg` (nouvelle variante : tuile blanche + symbole couleur + « Ma » blanc + « Thèse » dégradé) — contraste rétabli sur teal sombre.
+- `app-footer.tsx` (16 px) et `about-dialog.tsx` (20 px) → `public/brand/symbol-color-small.svg` — symbole vectoriel net aux petites tailles.
+- Dashboard (180 px) + À propos (88×44) : lockup couleur conservé (fond clair).
+
+Vérifié en navigateur : sidebar, footer, dashboard OK ; console 0 erreur ; lint 0 erreur. Le kit couvre tous les contextes réels de l'app.

@@ -7,7 +7,7 @@ export function AppFooter() {
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <Image
-            src="/logo.png"
+            src="/brand/symbol-color-small.svg"
             alt="Ma Thèse"
             width={16}
             height={16}

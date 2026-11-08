@@ -136,7 +136,7 @@ export function AppSidebar() {
           {/* Logo image — visible only when sidebar is expanded */}
           <div className="h-9 w-auto max-w-[120px] min-w-0 overflow-hidden group-data-[collapsible=icon]:hidden">
             <img
-              src="/logo.png"
+              src="/brand/lockup-on-dark.svg"
               alt="Ma Thèse"
               className="h-full w-auto object-contain"
             />
