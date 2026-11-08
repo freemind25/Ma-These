@@ -3495,3 +3495,23 @@ Work Log:
 Stage Summary:
 - Le kit logo couvre désormais TOUS les contextes réels de l'app : lockup couleur (fond clair), lockup-on-dark (sidebar sombre), symbole vectoriel (16-20 px), tuile (icônes app/installateur), mono/revers (futures impressions).
 - Le logo.png (lockup 1774×751) reste disponible pour tout usage document/print ; les usages UI pointent désormais vers les masters SVG vectoriels (netteté à toute échelle, poids minime).
+
+---
+Task ID: BRAND-V3 — palette « Orange & Bleu » adoptée + crédit « Designed by M.SADI »
+Agent: Z.ai Code (session externe)
+
+Work Log:
+- Demande propriétaire (IM) : « ok, rajouter en petit caractère "Designed by M.SADI" sous le slogan et essayez cette palette de couleur ci-jointe » — puis validation : « je valide "Lockup v3" ».
+- Palette extraite au pixel de l'image fournie (bandes plates vérifiées, PIL) : orange #FF6B35 · pêche #F7C59F · crème #F0EFD2 · bleu nuit #014378 · bleu #1A659D.
+- 7 fichiers v3 construits par transmutation (script matplotlib/regex — /home/z/scripts/build-v3.py) : géométries strictement inchangées (équité de forme), seuls remplissages/dégradés substitués. Dégradé symbole stops 0/0.55/0.80/1 = #014378/#1A659D/#FF6B35/#F7C59F (coordonnées userSpace 28,80→228,230 conservées) ; wordmark « Thèse » #1A659D→#FF6B35 (x 422→712) ; « Ma »/mono #014378 ; tagline #1A659D ; reversed + tuile = crème #F0EFD2 (ex-blanc).
+- **Crédit « Designed by M.SADI » vectorisé** (matplotlib TextPath + DejaVu Sans 11 px, contours réels — pas de <text> live, conformément à la guideline) : lockup clair baseline y=276/320, aligné sur le bord gauche de la tagline (x=286.8) ; lockup sombre y=212/320, aligné sous le wordmark (x=310.1). Encre #014378 sur clair · pêche #F7C59F sur sombre.
+- Audit `svg_audit.py` : symbol-color-v3 **91/100**, small 91, mono **99**, reversed **99**, tile 84 (warns = gradient d'équité assumé + 5 couleurs de tuile — hérités du design validé).
+- Rendus contrôlés 512 px ×7 + échelles exactes 256→16 px (tuile crème + symbole bleu/orange) : lisibilité 16 px confirmée.
+- Planche de présentation (sandbox my-project) : comparaison côte à côte v2/v3, lockups avec crédit (clair + sombre), grilles de fichiers, échelles, palettes — recette navigateur complète (agent-browser : clair/sombre, mobile 390 px, 0 erreur console) → **validation propriétaire explicite**.
+- **Promotion v3 → officiel** : les 7 fichiers -v3.svg remplacent les officiels dans public/brand/ (git conserve v2 dans l'historique) ; intermédiaires -v3 supprimés ; public/logo.svg = master v3.
+- Régénération chaîne assets : src-tauri/icons/icon.png 512², 128x128.png 128², 128x128@2x.png 256², 32x32.png, icon.ico 7 frames (16/24/32/48/64/128/256) — tous rendus depuis tile.svg (tuile crème) ; public/app-icon.png 1024² (favicon) ; public/logo.png 1774×751 (lockup avec crédit → dashboard + À propos). Dimensions identiques à l'existant — zéro modif de tauri.conf.json ni de code.
+- GUIDELINE-LOGO.md réécrit en v3 : palette, coordonnées des 3 dégradés, section « Crédit » (position/couleurs/interdits), inventaire des icônes régénérées.
+
+Stage Summary:
+- La charte officielle est désormais la **v3 « Orange & Bleu » avec crédit de conception vectorisé** ; le kit complet (7 SVG masters + 9 assets binaires) est cohérent et régénéré de bout en bout depuis les masters vectoriels.
+- Recette propriétaire restante : icône desktop + installateur NSIS prendront le nouveau rendu au prochain build packagé ; tag sur instruction (convention « tag à la fin »).

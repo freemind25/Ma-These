@@ -497,3 +497,22 @@ Recette navigateur (agent-browser) sur l'aperçu : la sidebar sombre noyait le �
 - Dashboard (180 px) + À propos (88×44) : lockup couleur conservé (fond clair).
 
 Vérifié en navigateur : sidebar, footer, dashboard OK ; console 0 erreur ; lint 0 erreur. Le kit couvre tous les contextes réels de l'app.
+
+---
+
+## Session du 2026-11-08 — BRAND-V3 : palette « Orange & Bleu » adoptée + crédit « Designed by M.SADI »
+
+**Déclencheur** : propriétaire (IM) : « ok, rajouter en petit caractère "Designed by M.SADI" sous le slogan et essayez cette palette de couleur ci-jointe » ; puis validation explicite : « je valide "Lockup v3" ».
+
+**Palette** (extraite au pixel de l'image fournie — bandes plates vérifiées) : #FF6B35 orange · #F7C59F pêche · #F0EFD2 crème · #014378 bleu nuit · #1A659D bleu.
+
+**Livrables** (commit feat(brand) sur fix/c2-ecarts) :
+- 7 fichiers `public/brand/*.svg` transmutés v2→v3 — **géométries strictement inchangées** (équité de forme) : dégradé symbole #014378→#1A659D→#FF6B35→#F7C59F (stops 0/0.55/0.80/1), « Ma » + mono bleu nuit, tagline bleu, tuile + reversed **crème** (ex-blanc).
+- **Crédit « Designed by M.SADI » vectorisé** dans `lockup.svg` (baseline y=276/320, sous la tagline, aligné à gauche) et `lockup-on-dark.svg` (y=212/320, sous le wordmark) — DejaVu Sans ≈ 11 px en contours réels (aucun `<text>` live) ; encre sur clair / pêche sur sombre.
+- Chaîne d'assets régénérée : `src-tauri/icons/` (icon.png 512² / 128x128 / 128x128@2x 256² / 32x32 / icon.ico 7 frames) depuis `tile.svg` crème ; `public/app-icon.png` 1024² (favicon) ; `public/logo.png` 1774×751 (lockup + crédit → dashboard + À propos) ; `public/logo.svg` = master. Dimensions inchangées — zéro modif de config ou de code.
+- `GUIDELINE-LOGO.md` v3 : palette, coordonnées des 3 dégradés, section « Crédit » (position/couleurs/interdits), inventaire des icônes.
+- Audit skill `svg_audit.py` : symbole couleur 91/100, mono/reversed 99/100 ; lisibilité 16 px vérifiée par rendus exacts.
+
+**Décisions** : le crédit fait partie du lockup officiel (ne pas le recadrer ni le recolorer) ; la tuile d'app passe du blanc au crème ; les fichiers v2 restent dans l'historique git (les intermédiaires -v3 ont été supprimés après promotion) ; validation recette faite sur planche navigateur (comparaison v2/v3, clair/sombre, mobile) avant adoption.
+
+**Points ouverts** : tag 1.10.22 sur instruction (convention « tag à la fin ») ; recette icône desktop/installateur NSIS au prochain build packagé.
