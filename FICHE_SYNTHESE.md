@@ -516,3 +516,20 @@ Vérifié en navigateur : sidebar, footer, dashboard OK ; console 0 erreur ; lin
 **Décisions** : le crédit fait partie du lockup officiel (ne pas le recadrer ni le recolorer) ; la tuile d'app passe du blanc au crème ; les fichiers v2 restent dans l'historique git (les intermédiaires -v3 ont été supprimés après promotion) ; validation recette faite sur planche navigateur (comparaison v2/v3, clair/sombre, mobile) avant adoption.
 
 **Points ouverts** : tag 1.10.22 sur instruction (convention « tag à la fin ») ; recette icône desktop/installateur NSIS au prochain build packagé.
+
+---
+
+## Session du 2026-11-13 — RELEASE-1.10.22 : publication de la charte v3 « Orange & Bleu »
+
+**Déclencheur** : propriétaire (IM) : « publiez le tag » — clôture du point ouvert de la session BRAND-V3 (« tag 1.10.22 sur instruction »).
+
+**Livrables** (commit chore(version) ae98477 + tag v1.10.22 + release publiée) :
+- Bump 1.10.21 → 1.10.22 sur 5 fichiers (package.json, tauri.conf.json, Cargo.toml, Cargo.lock mathese, APP_VERSION) — même profil que le bump 1.10.21 (aed57ba).
+- Tag v1.10.22 sur ae98477 → CI run #36 **SUCCESS** (~12 min, sans incident).
+- Release « Ma Thèse v1.10.22 » (target ae98477) avec 3 assets : latest.json 1 391 o, `Ma.These_1.10.22_x64-setup.exe` 145 024 393 o, `.sig` 424 o — **signature Ed25519(BLAKE2b-512) valide**, keyid `3D661F011B642881` = pubkey, blobs latest.json ≡ .sig octet-pour-octet (2 plateformes), trusted comment `timestamp:1794581770`.
+- Preuves de contenu embarqué : standalone/package.json = 1.10.22 ; **8/8 SVG publics embarqués identiques au dépôt @ae98477** (charte v3 : dégradé « Thèse » #1A659D→#FF6B35, tuile crème #F0EFD2 rx 58, groupe credit vectorisé) ; NSIS 13 fichiers (mathese.exe + node.exe + standalone.zip + 2 bases + 7 plugins $PLUGINSDIR).
+- Publication **2026-11-13T15:01:53Z** ; contrôles publics : latest.json = 1.10.22 (url v1.10.22), setup.exe MZ 145 024 393 o identique à l'asset signé ✓.
+
+**Décisions** : tag léger sur le commit bump (convention) ; publication seulement après validation cryptographique et preuves de contenu ; artefact documenté : l'extracteur 7z-wasm convertit les fins de ligne LF→CRLF — la comparaison de contenu embarqué se fait après normalisation (8/8 identiques).
+
+**Points ouverts** : recette propriétaire Windows (icône crème + lockup avec crédit au premier lancement de la 1.10.22) ; tests préexistants hors périmètre (chapters/[id] ×2, ai-types 20 vs 21).

@@ -3515,3 +3515,27 @@ Work Log:
 Stage Summary:
 - La charte officielle est désormais la **v3 « Orange & Bleu » avec crédit de conception vectorisé** ; le kit complet (7 SVG masters + 9 assets binaires) est cohérent et régénéré de bout en bout depuis les masters vectoriels.
 - Recette propriétaire restante : icône desktop + installateur NSIS prendront le nouveau rendu au prochain build packagé ; tag sur instruction (convention « tag à la fin »).
+
+---
+Task ID: RELEASE-1.10.22
+Agent: Z.ai Code (session externe, instruction propriétaire : « publiez le tag »)
+
+Task: Livrer v1.10.22 (charte logo v3 « Orange & Bleu » + crédit « Designed by M.SADI ») : bump versions, tag, CI, validation 3 assets, publication.
+
+Work Log:
+- Contexte : adoption charte v3 déjà consignée (commit 1344dd3, worklog/FICHE BRAND-V3, point ouvert « tag 1.10.22 sur instruction ») ; le propriétaire a demandé « publiez le tag ».
+- Bump 1.10.21 → 1.10.22 sur 5 fichiers : package.json, src-tauri/tauri.conf.json, src-tauri/Cargo.toml (l.3), src-tauri/Cargo.lock (mathese), src/lib/version.ts (APP_VERSION). Commit ae98477 (5 files, +5/-5 — même profil que le bump 1.10.21 aed57ba) ; push branche 1344dd3..ae98477 (fast-forward).
+- Tag v1.10.22 (léger, convention) sur ae98477, push tag → **CI run #36 : SUCCESS** (déclenché 2026-11-13T14:43:45Z, release générée 14:56:19Z, ~12 min — sans incident, contrairement au run #34 de la 1.10.21).
+- Release draft 444359593 « Ma Thèse v1.10.22 » (target ae98477) avec **3 assets** : `latest.json` (1 391 o), `Ma.These_1.10.22_x64-setup.exe` (145 024 393 o), `Ma.These_1.10.22_x64-setup.exe.sig` (424 o).
+- Validation cryptographique (outil reconstruit après reset du sandbox : cryptography 44.0.3 ; formats recalés : pubkey blob 42 o = alg « Ed » 2 o + keyid 8 o + clé 32 o ; global sig 74 o = alg « ED » + keyid + sig Ed25519 64 o) :
+  - keyid sig = keyid pubkey = `3D661F011B642881` ✓ (affichage conf `8128641B011F663D` = mêmes octets inversés — cohérent 1.10.20/21).
+  - **1.10.22 GLOBAL VALIDE** : Ed25519(BLAKE2b-512(setup.exe)) ✓ ; digest = 5a9f859ee1752b36…6df4b1b58.
+  - latest.json ⊗ .sig : blob octet-pour-octet identique sur windows-x86_64 ET windows-x86_64-nsis ✓ ; trusted comment `timestamp:1794581770 file:Ma Thèse_1.10.22_x64-setup.exe` ; comment sig non reproduite localement (comme 1.10.21 — sans portée sur l'updater).
+- Extraction NSIS (7-Zip 24.09 wasm — même version que 1.10.20/21) : **13 fichiers**, SubType « NSIS-3 Unicode » ; mathese.exe (15 280 128 o) + node.exe (87 034 184 o) + standalone.zip (113 445 182 o) + db/custom.db (37 625 856 o) + db/urbanisme-test.db + 7 plugins $PLUGINSDIR ✓.
+- Preuves de contenu charte v3 dans le build embarqué : standalone/package.json = « version": "1.10.22" » ✓ ; **8/8 SVG publics embarqués identiques au dépôt @ae98477** (contenu, normalisation CRLF de l'extracteur) — logo.svg master v3, lockup.svg (dégradé « Thèse » #1A659D→#FF6B35, groupe `id="credit"`), lockup-on-dark.svg, symbol-color/-mono/-reversed/-small.svg, tile.svg (tuile crème #F0EFD2 rx 58) ✓ ; crédit vectorisé en contours (aucun <text> live, conforme guideline) — le groupe credit porte « Designed by M.SADI ».
+- Publication : release draft 444359593 → **publiée le 2026-11-13T15:01:53Z**. Contrôles publics : latest.json public = 1.10.22 (pub_date 2026-11-13T14:56:19.709Z, url pointant l'asset v1.10.22) ✓ ; setup.exe public = MZ, 145 024 393 octets (identique à l'asset signé) ✓.
+
+Stage Summary:
+- **v1.10.22 livrée, validée et publiée** : première release à la charte v3 « Orange & Bleu » — palette 5 couleurs (#FF6B35/#F7C59F/#F0EFD2/#014378/#1A659D), tuile crème, crédit vectorisé « Designed by M.SADI » embarqués dans l'installateur NSIS et les icônes desktop.
+- L'updater proposera la 1.10.22 aux installations 1.10.16+ via latest.json ; recette propriétaire Windows restante : icône crème + lockup avec crédit au premier lancement (recettes cumulées 1.10.20/21/22 : updater, 9 registres, Clark, Jane, annuaire).
+- Tests 3 échecs préexistants inchangés (chapters/[id] ×2, ai-types 20 vs 21) — toujours hors périmètre.
