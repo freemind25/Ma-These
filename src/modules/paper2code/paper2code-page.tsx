@@ -42,6 +42,9 @@ import {
   GitBranch,
   ClipboardList,
   Code2,
+  Upload,
+  CheckCircle2,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -76,6 +79,18 @@ interface StreamEvent {
 
 const FAST_PROVIDERS: AiProviderId[] = ["groq", "google", "openrouter", "github", "openai"];
 
+// Plafond d'import PDF — même règle que la maison (MAX_IMPORT_BYTES,
+// src/lib/articles/extraction.ts l.10 = 50 Mo). Constante locale : ne PAS
+// importer extraction.ts dans le bundle client (parseurs dynamiques serveur).
+const MAX_PDF_BYTES = 50 * 1024 * 1024;
+
+interface PdfImportInfo {
+  name: string;
+  pages: number;
+  chars: number;
+  warnings: string[];
+}
+
 export function Paper2CodePage() {
   const [paperText, setPaperText] = useState("");
   const [provider, setProvider] = useState<AiProviderId>("groq");
@@ -90,6 +105,10 @@ export function Paper2CodePage() {
   const [expandedFiles, setExpandedFiles] = useState<Set<string>>(new Set());
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const [importingPdf, setImportingPdf] = useState(false);
+  const [pdfImport, setPdfImport] = useState<PdfImportInfo | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const pdfInputRef = useRef<HTMLInputElement | null>(null);
 
   const availableModels = PROVIDER_MODELS[provider] || [];
 
@@ -173,6 +192,47 @@ export function Paper2CodePage() {
   const toggleFile = (f: string) => setExpandedFiles((prev) => { const n = new Set(prev); if (n.has(f)) n.delete(f); else n.add(f); return n; });
   const copyToClipboard = async (text: string, file: string) => { await navigator.clipboard.writeText(text); setCopiedFile(file); setTimeout(() => setCopiedFile(null), 2000); };
 
+  const handlePdfFile = useCallback(async (file: File) => {
+    if (importingPdf) return;
+    const isPdf = file.name.toLowerCase().endsWith(".pdf") || file.type === "application/pdf";
+    if (!isPdf) {
+      toast.error(`Format non pris en charge : « ${file.name} ». Ce module accepte uniquement un fichier PDF.`);
+      return;
+    }
+    if (file.size > MAX_PDF_BYTES) {
+      toast.error(`Fichier trop volumineux : ${(file.size / 1024 / 1024).toFixed(1)} Mo (maximum 50 Mo).`);
+      return;
+    }
+    setImportingPdf(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/paper2code/extract-pdf", { method: "POST", body: fd });
+      const data = (await res.json()) as { text?: string; pages?: number; chars?: number; warnings?: string[]; error?: string };
+      if (!res.ok || !data.text) {
+        toast.error(data.error || `HTTP ${res.status}`);
+        return;
+      }
+      setPaperText(data.text);
+      setPdfImport({ name: file.name, pages: data.pages || 0, chars: data.chars || data.text.length, warnings: data.warnings || [] });
+      toast.success(`PDF importe : ${data.pages} page(s), ${data.chars.toLocaleString()} caracteres.`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      toast.error(`Echec de l'import : ${msg}`);
+    } finally {
+      setImportingPdf(false);
+    }
+  }, [importingPdf]);
+
+  const handlePdfDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handlePdfFile(file);
+  }, [handlePdfFile]);
+
+  const clearPdfImport = () => setPdfImport(null);
+
   const downloadAll = () => {
     if (!plan) return;
     let content = "";
@@ -213,9 +273,74 @@ export function Paper2CodePage() {
             <FileText className="h-5 w-5" />
             Article source
           </CardTitle>
-          <CardDescription>Collez le texte complet d&apos;un article (methodologie, experiences, hyperparametres).</CardDescription>
+          <CardDescription>Importez un PDF d&apos;article ou collez le texte complet (methodologie, experiences, hyperparametres).</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
+          {/* Import PDF — zone de dépôt (drag & drop + clic) */}
+          <div
+            className={`relative flex flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed px-4 py-5 text-center cursor-pointer transition-colors ${
+              dragOver
+                ? "border-primary bg-primary/5"
+                : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
+            } ${importingPdf ? "pointer-events-none opacity-60" : ""}`}
+            onDrop={handlePdfDrop}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onClick={() => pdfInputRef.current?.click()}
+            role="button"
+            aria-label="Importer un article PDF"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pdfInputRef.current?.click(); } }}
+          >
+            {importingPdf ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                <p className="text-sm font-medium">Extraction du texte en cours...</p>
+              </>
+            ) : (
+              <>
+                <Upload className="h-5 w-5 text-muted-foreground" />
+                <p className="text-sm font-medium">Glissez-déposez l&apos;article PDF ici</p>
+                <p className="text-xs text-muted-foreground">ou cliquez pour parcourir · PDF textuel, max 50 Mo</p>
+              </>
+            )}
+            <input
+              ref={pdfInputRef}
+              type="file"
+              className="hidden"
+              accept=".pdf,application/pdf"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handlePdfFile(file);
+                e.target.value = "";
+              }}
+            />
+          </div>
+
+          {/* Import réussi : badge fichier + avertissements */}
+          {pdfImport && (
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between gap-2 rounded-lg border border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-950/20 px-3 py-2">
+                <span className="flex items-center gap-2 min-w-0">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <span className="text-sm font-medium truncate" title={pdfImport.name}>{pdfImport.name}</span>
+                  <span className="text-xs text-muted-foreground shrink-0">{pdfImport.pages} page(s) · {pdfImport.chars.toLocaleString()} caracteres</span>
+                </span>
+                <Button variant="ghost" size="sm" className="h-7 w-7 p-0 shrink-0" onClick={clearPdfImport} aria-label="Retirer le fichier importé">
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              {pdfImport.warnings.some((w) => w.startsWith("PDF partiellement")) && (
+                <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-950/20 px-3 py-2">
+                  <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <div className="text-xs text-amber-800 dark:text-amber-300">
+                    {pdfImport.warnings.filter((w) => w.startsWith("PDF partiellement")).map((w, i) => <p key={i}>{w}</p>)}
+                  </div>
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground">Texte extrait ci-dessous — relisez-le et corrigez-le si besoin avant la génération.</p>
+            </div>
+          )}
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
               <Label>Texte de l&apos;article</Label>
