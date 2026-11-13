@@ -116,7 +116,7 @@ describe("POST /api/text-prediction", () => {
     );
   });
 
-  it("should use temperature 0.35 and maxTokens 120", async () => {
+  it("should use temperature 0.35, maxTokens 200, timeout 15s and 0 retry", async () => {
     mockGenerateCompletion.mockResolvedValue({
       content: "text|||alt1|||alt2",
       model: "default",
@@ -128,7 +128,7 @@ describe("POST /api/text-prediction", () => {
     );
 
     expect(mockGenerateCompletion).toHaveBeenCalledWith(
-      expect.objectContaining({ temperature: 0.35, maxTokens: 120 })
+      expect.objectContaining({ temperature: 0.35, maxTokens: 200, timeoutMs: 15_000, maxRetriesPerProvider: 0 })
     );
   });
 

@@ -16,6 +16,8 @@ export interface PredictionPluginState {
   decoSet: DecorationSet;
   loading: boolean;
   enabled: boolean;
+  /** Dernier message d'erreur utilisateur (ex. fournisseur IA non configuré) — null si aucun */
+  error: string | null;
 }
 
 // ─── Helper: ghost text widget ───
@@ -25,7 +27,7 @@ function createGhostWidget(pos: number, text: string): Decoration {
     () => {
       const span = document.createElement("span");
       span.className =
-        "ai-ghost-text text-muted-foreground/30 italic pointer-events-none select-none";
+        "ai-ghost-text text-muted-foreground/45 italic pointer-events-none select-none";
       span.textContent = text;
       span.contentEditable = "false";
       // Prevent cursor from entering the ghost text
@@ -59,9 +61,9 @@ function createLoadingWidget(pos: number): Decoration {
 type PredictionMeta =
   | { type: "set"; value: string | null }
   | { type: "setLoading"; value: boolean }
+  | { type: "setError"; value: string | null }
   | { type: "toggleEnabled" };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const AiPrediction = Extension.create({
   name: "aiPrediction",
 
@@ -97,7 +99,7 @@ export const AiPrediction = Extension.create({
       },
       Escape: () => {
         const state = AI_PREDICTION_KEY.getState(this.editor.state);
-        if (state?.suggestion || state?.loading) {
+        if (state?.suggestion || state?.loading || state?.error) {
           this.editor.view.dispatch(
             this.editor.state.tr.setMeta(AI_PREDICTION_KEY, {
               type: "set",
@@ -124,6 +126,8 @@ export const AiPrediction = Extension.create({
     const fetchPrediction = async (
       view: import("@tiptap/pm/view").EditorView
     ) => {
+      // Annule toute prédiction en vol avant d'en lancer une nouvelle
+      if (currentAbort) currentAbort.abort();
       const ctrl = new AbortController();
       currentAbort = ctrl;
 
@@ -169,7 +173,26 @@ export const AiPrediction = Extension.create({
           signal: ctrl.signal,
         });
 
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {
+          // Remonte le message du serveur (ex. fournisseur non configuré,
+          // clé invalide, circuit ouvert) au lieu d'échouer en silence.
+          let msg = `Prédiction indisponible (HTTP ${res.status})`;
+          try {
+            const errData = (await res.json()) as { error?: string };
+            if (errData?.error) {
+              msg = errData.error.slice(0, 160);
+            }
+          } catch {
+            /* corps non JSON — message par défaut */
+          }
+          view.dispatch(
+            view.state.tr.setMeta(AI_PREDICTION_KEY, {
+              type: "setError",
+              value: msg,
+            } satisfies PredictionMeta)
+          );
+          return;
+        }
         const data = (await res.json()) as {
           primary: string | null;
           alternatives: string[];
@@ -196,13 +219,18 @@ export const AiPrediction = Extension.create({
             } satisfies PredictionMeta)
           );
         }
-      } catch {
+      } catch (err) {
         if (ctrl.signal.aborted) return;
+        // Erreur réseau / inattendue : signalée à l'utilisateur (jamais silencieuse)
+        const detail =
+          err instanceof Error && err.message
+            ? err.message.slice(0, 120)
+            : "erreur réseau";
         try {
           view.dispatch(
             view.state.tr.setMeta(AI_PREDICTION_KEY, {
-              type: "setLoading",
-              value: false,
+              type: "setError",
+              value: `Prédiction IA indisponible — ${detail}`,
             } satisfies PredictionMeta)
           );
         } catch {
@@ -224,6 +252,7 @@ export const AiPrediction = Extension.create({
               decoSet: DecorationSet.empty,
               loading: false,
               enabled: true,
+              error: null,
             };
           },
           apply(tr, value) {
@@ -244,6 +273,7 @@ export const AiPrediction = Extension.create({
                   : DecorationSet.empty,
                 loading: false,
                 enabled: value.enabled,
+                error: null,
               };
             }
 
@@ -260,6 +290,19 @@ export const AiPrediction = Extension.create({
                     ])
                   : DecorationSet.empty,
                 loading: isLoading,
+                error: null,
+              };
+            }
+
+            // Error display (chip visible jusqu'au prochain frappe / Esc / 8 s)
+            if (meta?.type === "setError") {
+              return {
+                suggestion: null,
+                prevFrom: tr.selection.from,
+                decoSet: DecorationSet.empty,
+                loading: false,
+                enabled: value.enabled,
+                error: meta.value,
               };
             }
 
@@ -271,10 +314,11 @@ export const AiPrediction = Extension.create({
                 decoSet: DecorationSet.empty,
                 loading: false,
                 enabled: !value.enabled,
+                error: null,
               };
             }
 
-            // Doc changed or cursor moved → clear suggestion
+            // Doc changed or cursor moved → clear suggestion + error
             const cursorMoved = tr.selection.from !== value.prevFrom;
             if (tr.docChanged || cursorMoved) {
               // Cancel in-flight request
@@ -285,6 +329,7 @@ export const AiPrediction = Extension.create({
                 decoSet: DecorationSet.empty,
                 loading: false,
                 enabled: value.enabled,
+                error: null,
               };
             }
 

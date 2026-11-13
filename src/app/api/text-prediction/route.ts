@@ -48,11 +48,20 @@ Réponse: mettre en évidence les lacunes|||synthétiser les connaissances actue
         { role: "user", content: userPrompt },
       ],
       temperature: 0.35,
-      maxTokens: 120,
+      maxTokens: 200,
+      // Une prédiction doit échouer vite (feedback utilisateur) — pas de
+      // timeout 60 s ni de retries silencieux comme pour les autres routes IA.
+      timeoutMs: 15_000,
+      maxRetriesPerProvider: 0,
       providerConfig,
     });
 
-    const raw = result.content.trim();
+    // Les modèles « reasoning » (certains gateways) enrobent la réponse
+    // dans des balises <think>…</think> — on les retire avant le parsing.
+    const raw = result.content
+      .replace(/<think>[\s\S]*?<\/think>/gi, "")
+      .replace(/<think>[\s\S]*/i, "") // balise <think> non fermée → tout le reste est du raisonnement
+      .trim();
 
     // Parse format: "primary|||alt1|||alt2"
     const parts = raw.split("|||").map((p) => p.trim());

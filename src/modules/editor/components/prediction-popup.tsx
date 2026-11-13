@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { type Editor } from "@tiptap/react";
 import { AI_PREDICTION_KEY } from "../extensions/ai-prediction";
-import { Sparkles, X } from "lucide-react";
+import { Sparkles, X, AlertTriangle } from "lucide-react";
 import { createPortal } from "react-dom";
 
 interface PredictionPopupProps {
@@ -18,6 +18,13 @@ export function PredictionPopup({ editor }: PredictionPopupProps) {
   } | null>(null);
   const [alternatives, setAlternatives] = useState<string[]>([]);
   const [visible, setVisible] = useState(false);
+  // Erreur de prédiction (fournisseur IA non configuré, réseau, HTTP…)
+  const [error, setError] = useState<string | null>(null);
+  const [errorPos, setErrorPos] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
+  const [errorVisible, setErrorVisible] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
   // Subscribe to prediction state changes
@@ -29,6 +36,7 @@ export function PredictionPopup({ editor }: PredictionPopupProps) {
 
         const newSuggestion = state.suggestion ?? null;
         const enabled = state.enabled ?? true;
+        const newError = state.error ?? null;
 
         if (newSuggestion && enabled) {
           setSuggestion(newSuggestion);
@@ -46,14 +54,30 @@ export function PredictionPopup({ editor }: PredictionPopupProps) {
 
           // Fade in
           setVisible(true);
+          setErrorVisible(false);
+        } else if (newError && enabled) {
+          // Pastille d'erreur près du curseur — jamais silencieuse
+          setSuggestion(null);
+          setError(newError);
+          const { from } = editor.state.selection;
+          const coords = editor.view.coordsAtPos(from);
+          setErrorPos({
+            top: coords.bottom + 6,
+            left: Math.max(8, coords.left - 4),
+          });
+          setErrorVisible(true);
+          setVisible(false);
         } else {
           // Fade out
           setVisible(false);
+          setErrorVisible(false);
           // Clear after animation
           const timer = setTimeout(() => {
             setSuggestion(null);
             setPosition(null);
             setAlternatives([]);
+            setError(null);
+            setErrorPos(null);
           }, 200);
           return () => clearTimeout(timer);
         }
@@ -67,6 +91,24 @@ export function PredictionPopup({ editor }: PredictionPopupProps) {
       editor.off("transaction", handler);
     };
   }, [editor]);
+
+  // Auto-dismiss de la pastille d'erreur après 8 s
+  useEffect(() => {
+    if (!error) return;
+    const timer = setTimeout(() => {
+      try {
+        editor.view.dispatch(
+          editor.state.tr.setMeta(AI_PREDICTION_KEY, {
+            type: "setError",
+            value: null,
+          })
+        );
+      } catch {
+        /* editor may be destroyed */
+      }
+    }, 8000);
+    return () => clearTimeout(timer);
+  }, [error, editor]);
 
   // Accept a suggestion (primary or alternative)
   const acceptSuggestion = useCallback(
@@ -90,7 +132,52 @@ export function PredictionPopup({ editor }: PredictionPopupProps) {
     );
   }, [editor]);
 
-  if (!suggestion || !position) return null;
+  // Dismiss error chip
+  const dismissError = useCallback(() => {
+    try {
+      editor.view.dispatch(
+        editor.state.tr.setMeta(AI_PREDICTION_KEY, {
+          type: "setError",
+          value: null,
+        })
+      );
+    } catch {
+      /* editor may be destroyed */
+    }
+    setErrorVisible(false);
+  }, [editor]);
+
+  if (!suggestion && !error) return null;
+
+  // ─── Pastille d'erreur (diagnostic visible près du curseur) ───
+  if (error && errorPos) {
+    return createPortal(
+      <div
+        className="fixed z-[100] transition-opacity duration-200"
+        style={{
+          top: errorPos.top,
+          left: errorPos.left,
+          opacity: errorVisible ? 1 : 0,
+          pointerEvents: errorVisible ? "auto" : "none",
+        }}
+      >
+        <div className="flex items-center gap-1.5 bg-popover border border-amber-500/40 rounded-lg shadow-lg px-2.5 py-1.5 text-xs max-w-[460px]">
+          <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+          <span className="text-foreground/90 leading-snug break-words">
+            {error}
+          </span>
+          <button
+            onClick={dismissError}
+            className="p-0.5 rounded hover:bg-accent transition-colors shrink-0"
+            title="Fermer (Esc)"
+          >
+            <X className="h-3 w-3 text-muted-foreground" />
+          </button>
+        </div>
+      </div>,
+      document.body
+    );
+  }
 
   return createPortal(
     <div

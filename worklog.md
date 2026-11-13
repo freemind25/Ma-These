@@ -3539,3 +3539,24 @@ Stage Summary:
 - **v1.10.22 livrée, validée et publiée** : première release à la charte v3 « Orange & Bleu » — palette 5 couleurs (#FF6B35/#F7C59F/#F0EFD2/#014378/#1A659D), tuile crème, crédit vectorisé « Designed by M.SADI » embarqués dans l'installateur NSIS et les icônes desktop.
 - L'updater proposera la 1.10.22 aux installations 1.10.16+ via latest.json ; recette propriétaire Windows restante : icône crème + lockup avec crédit au premier lancement (recettes cumulées 1.10.20/21/22 : updater, 9 registres, Clark, Jane, annuaire).
 - Tests 3 échecs préexistants inchangés (chapters/[id] ×2, ai-types 20 vs 21) — toujours hors périmètre.
+
+---
+Task ID: PREDICTION-IA-FIX-V1
+Agent: Z.ai Code (session externe, instruction propriétaire : « pourquoi l'assistant de texte prédictif n'est pas fonctionnel ? j'ai essayé dans éditeur de thèse et il ne propose rien ! »)
+
+Task: Diagnostiquer et corriger l'absence de propositions de l'assistant de texte prédictif dans l'éditeur de thèse (extension TipTap AiPrediction + POST /api/text-prediction).
+
+Work Log:
+- Diagnostic — cartographie complète du flux : EditorPage → TiptapEditor (extension AiPrediction enregistrée, toggle toolbar ON par défaut) → plugin ProseMirror debounce 1 s → POST /api/text-prediction → resolveAiConfig (cookie httpOnly prioritaire, _aiConfig localStorage legacy en secours) → generateCompletion (chaîne + circuit breaker + failover).
+- Reproduction navigateur (dev :3001, thèse « Urbanisme durable ») : chemin positif FONCTIONNEL — frappe « Les villes intelligentes constituent » → ghost text « une réponse prometteuse à ces défis » + popup « Cliquez pour insérer » ; Tab insère la suggestion. Le client est donc sain quand l'IA répond.
+- Reproduction du dysfonctionnement : cookie provider custom baseUrl 127.0.0.1:9 → curl POST → **HTTP 500 {"error":"Tous les fournisseurs IA ont échoué…"} en 3,3 s** — et le client avalait l'échec en silence (`if (!res.ok) throw` → catch sans aucun rendu UI, message du serveur jeté). Sur desktop Tauri (pas de SDK z.ai), fournisseur non configuré (défaut « zai » → « Aucune URL de base configurée ») ou en panne ⇒ **zéro feedback ⇒ « il ne propose rien »**. Cause racine : échecs 100 % silencieux, pas une panne du mécanisme de prédiction.
+- Correctif client `src/modules/editor/extensions/ai-prediction.ts` : nouvel état plugin `error` + meta `setError` ; !res.ok ⇒ le message du corps 500 est remonté (tronqué 160 c.) ; catch réseau ⇒ « Prédiction IA indisponible — <détail> » ; abort systématique de la requête en vol avant chaque nouvelle prédiction ; erreur purgée sur frappe/déplacement curseur/toggle ; Esc ferme aussi la pastille ; ghost text /30 → /45 (visibilité).
+- Correctif UI `src/modules/editor/components/prediction-popup.tsx` : pastille ambre (AlertTriangle + message + bouton X) rendue en portal près du curseur, auto-dismiss 8 s, dismiss Esc/X ; suggestion et erreur exclusives l'une de l'autre.
+- Correctif serveur `src/app/api/text-prediction/route.ts` : `timeoutMs: 15_000` + `maxRetriesPerProvider: 0` (une prédiction doit échouer vite au lieu de pendre 60 s + retries silencieux) ; strip `<think>…</think>` (y compris balise non fermée) pour les modèles reasoning dont la réponse enrobée donnait primary:null silencieux ; maxTokens 120 → 200.
+- Recette navigateur post-correctif (agent-browser) : (1) chemin positif — ghost « fondamentale pour comprendre les dynamiques contemporaines » + popup ✓ ; (2) Tab acceptation ✓ ; (3) chemin d'erreur avec cookie cassé — pastille ambre affichant le message serveur « Tous les fournisseurs IA ont échoué… » ✓ ; (4) auto-dismiss 8 s ✓. Aucune erreur runtime dev.log.
+- Tests : text-prediction route.test.ts 18/18 (assertion maxTokens mise à jour 120→200 + timeoutMs/maxRetries ajoutés au test « should use temperature… ») ; lint 0 erreur sur les 3 fichiers.
+
+Stage Summary:
+- La prédiction IA ne peut plus échouer en silence : tout échec (fournisseur non configuré, clé invalide, réseau, circuit ouvert) affiche désormais une pastille de diagnostic près du curseur avec le motif exact — l'utilisateur saura immédiatement quoi faire (Paramètres → Fournisseur IA).
+- La prédiction échoue vite (15 s max, sans retries) et tolère les modèles reasoning ; chemin positif inchangé et re-vérifié de bout en bout.
+- Reste propriétaire : dans l'app desktop installée, configurer un fournisseur IA dans Paramètres si aucun n'est actif — la pastille le dira désormais explicitement.
