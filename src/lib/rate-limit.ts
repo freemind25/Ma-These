@@ -54,6 +54,10 @@ export const RATE_LIMIT_RULES: Array<{ pattern: RegExp; rule: RateLimitRule }> =
   { pattern: /^\/api\/text-prediction/, rule: { windowMs: 60_000, maxRequests: 30 } }, // 30 req/1min
   { pattern: /^\/api\/thesis-rag/, rule: { windowMs: 300_000, maxRequests: 15 } },   // 15 req/5min
   { pattern: /^\/api\/verification-/, rule: { windowMs: 300_000, maxRequests: 10 } }, // 10 req/5min
+  // Extraction PDF du module Article → Code : parsing local, aucun appel LLM —
+  // règle dédiée AVANT le pattern générique ci-dessous (first match wins),
+  // pour ne pas partager le quota IA coûteux de la génération (5 req/5min).
+  { pattern: /^\/api\/paper2code\/extract-pdf/, rule: { windowMs: 60_000, maxRequests: 12 } }, // 12 req/1min
   { pattern: /^\/api\/paper2code/, rule: { windowMs: 300_000, maxRequests: 5 } },   // 5 req/5min
 
   // AI test endpoint (used during configuration)
