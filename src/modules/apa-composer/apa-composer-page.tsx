@@ -54,8 +54,10 @@ import {
   Quote,
   List,
   MessageSquare,
+  BookMarked,
 } from "lucide-react";
 import { useAiConfig } from "@/hooks/use-ai-config";
+import { CslStylesPanel } from "./csl-styles-panel";
 
 // ═══════════════════════════════════════════════
 // Types
@@ -922,10 +924,10 @@ ${aiInput}`
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
           <BookOpen className="h-6 w-6 text-primary" />
-          Compositeur APA — Résultats
+          Compositeur de références — APA & styles CSL
         </h1>
         <p className="text-sm text-muted-foreground">
-          Créez et gérez vos références en style APA 7<sup>e</sup> édition avec formatage automatique
+          Créez et gérez vos références en style APA 7<sup>e</sup> édition, ou formatez vos identifiants (DOI, PMID, arXiv…) dans 10 000+ styles CSL
         </p>
       </div>
 
@@ -952,6 +954,10 @@ ${aiInput}`
           <TabsTrigger value="export" className="gap-1.5">
             <Download className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Exporter</span>
+          </TabsTrigger>
+          <TabsTrigger value="csl" className="gap-1.5">
+            <BookMarked className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Styles CSL (10 000+)</span>
           </TabsTrigger>
           <TabsTrigger value="ai" className="gap-1.5">
             <Sparkles className="h-3.5 w-3.5" />
@@ -1283,6 +1289,11 @@ ${aiInput}`
               </Button>
             </div>
           )}
+        </TabsContent>
+
+        {/* ═══ CSL STYLES TAB (v1.10.23 — Scholar Sidekick) ═══ */}
+        <TabsContent value="csl" className="mt-4">
+          <CslStylesPanel />
         </TabsContent>
 
         {/* ═══ AI ASSISTANT TAB ═══ */}

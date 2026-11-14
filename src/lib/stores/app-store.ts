@@ -396,7 +396,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     id: "apa-composer",
     label: "APA Composer",
     icon: "FileCheck",
-    description: "Mise en forme APA 7e édition",
+    description: "Mise en forme APA 7e édition et 10 000+ styles CSL (DOI, PMID, arXiv)",
     category: "ia-outils",
   },
   {
