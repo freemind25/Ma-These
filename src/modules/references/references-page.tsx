@@ -46,11 +46,13 @@ import {
   UserSearch,
   Loader2,
   ExternalLink,
+  ShieldCheck,
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import { ConfirmDeleteDialog } from "@/components/common/confirm-delete-dialog";
+import { AuditIaDialog } from "./audit-ia-dialog";
 
 interface Reference {
   id: string;
@@ -219,6 +221,8 @@ export function ReferencesPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [orcidOpen, setOrcidOpen] = useState(false);
+  // v1.10.23 — audit IA anti-hallucination de la bibliothèque (Scholar Sidekick)
+  const [auditOpen, setAuditOpen] = useState(false);
   // C-3 (AUD-FUNC-003) : suppression de référence uniquement après confirmation
   const [deleteTarget, setDeleteTarget] = useState<Reference | null>(null);
 
@@ -275,6 +279,10 @@ export function ReferencesPage() {
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="outline" className="gap-2" onClick={() => setAuditOpen(true)}>
+            <ShieldCheck className="h-4 w-4" />
+            Audit IA
+          </Button>
           <Button variant="outline" className="gap-2" onClick={() => setOrcidOpen(true)}>
             <UserSearch className="h-4 w-4" />
             Fiche auteur ORCID
@@ -286,6 +294,7 @@ export function ReferencesPage() {
             </a>
           </Button>
           <ImportDialog open={importOpen} onOpenChange={setImportOpen} />
+          <AuditIaDialog open={auditOpen} onOpenChange={setAuditOpen} />
           <OrcidDialog open={orcidOpen} onOpenChange={setOrcidOpen} />
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>

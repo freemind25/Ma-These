@@ -14,6 +14,7 @@ import { getOpenAccessStatus } from "@/lib/scholarly/unpaywall";
 import { searchBnf } from "@/lib/scholarly/bnf";
 import { lookupZenodoByDoi, searchZenodoByTitle } from "@/lib/scholarly/zenodo";
 import { lookupEuropePmcByDoi, searchEuropePmcByTitle } from "@/lib/scholarly/europepmc";
+import { verifyCitation, type SsFieldMismatch } from "@/lib/scholarly/scholar-sidekick";
 
 // ── Types ──
 
@@ -44,9 +45,33 @@ interface RegistryResult {
  latencyMs: number;
 }
 
+/**
+ * v1.10.23 — Anti-fabrication (Scholar Sidekick) : comparaison titre revendiqué
+ * ↔ titre résolu par le DOI, avec diff champ par champ.
+ */
+interface FabricationCheck {
+  verdict: "matched" | "mismatch" | "ambiguous" | "not_found";
+  confidence?: string;
+  claimedTitle?: string;
+  resolvedTitle?: string;
+  resolvedAuthors?: string[];
+  resolvedYear?: number;
+  resolvedJournal?: string;
+  url?: string;
+  mismatches?: SsFieldMismatch[];
+  error?: string;
+}
+
 interface CitationCheckResult {
  citation: ParsedCitation;
  results: RegistryResult[];
+ /**
+  * v1.10.23 — Anti-fabrication (Scholar Sidekick) : compare le titre revendiqué
+  * au titre réellement résolu par le DOI — attrape le pattern « DOI réel +
+  * titre inventé » (Topaz et al., Lancet 2026), invisible pour un simple test
+  * d'existence du DOI.
+  */
+ fabrication?: FabricationCheck;
  /** Enrichissement Unpaywall (v1.10.16) — présent si la citation porte un DOI */
  oa?: {
    isOa: boolean;
@@ -470,9 +495,12 @@ async function checkEuropePmc(citation: ParsedCitation): Promise<RegistryResult>
 
 // ── Verdict Logic ──
 
-function computeVerdict(citation: ParsedCitation, results: RegistryResult[]): CitationCheckResult["verdict"] {
+function computeVerdict(citation: ParsedCitation, results: RegistryResult[], fabrication?: FabricationCheck | null): CitationCheckResult["verdict"] {
   const anyRetracted = results.some(r => r.isRetracted);
   if (anyRetracted) return "retracted";
+
+  // v1.10.23 — fabrication : DOI réel mais titre inventé (Scholar Sidekick)
+  if (fabrication?.verdict === "mismatch") return "mismatch";
 
   const foundCount = results.filter(r => r.found).length;
   if (foundCount === 0) return "unverified";
@@ -501,6 +529,24 @@ function computeSummary(citation: ParsedCitation, results: RegistryResult[]): st
     return `✅ Trouvé dans ${found.length}/${results.length} registres`;
   }
   return `✅ Vérifié dans les ${found.length} registres`;
+}
+
+/**
+ * v1.10.23 — Résumé enrichi par le contrôle anti-fabrication Scholar Sidekick.
+ * Le pattern « DOI réel + titre inventé » prime sur le simple « trouvé ».
+ */
+function computeSummaryWithFabrication(
+  baseSummary: string,
+  fabrication?: FabricationCheck | null
+): string {
+  if (!fabrication) return baseSummary;
+  if (fabrication.verdict === "mismatch") {
+    return `🚨 FABRICATION PROBABLE — DOI réel mais titre inventé (Scholar Sidekick)`;
+  }
+  if (fabrication.verdict === "matched" && baseSummary.startsWith("✅")) {
+    return `${baseSummary} • titre confirmé vs DOI`;
+  }
+  return baseSummary;
 }
 
 // ── Route ──
@@ -546,14 +592,47 @@ export async function POST(request: NextRequest) {
       const batch = citations.slice(i, i + 3);
       const batchResults = await Promise.all(
         batch.map(async (citation) => {
-          const [registryResults, oa] = await Promise.all([
+          const [registryResults, oa, fabrication] = await Promise.all([
             Promise.all(
               selectedCheckers.map((checker: (c: ParsedCitation) => Promise<RegistryResult>) => checker(citation))
             ),
             citation.doi
               ? getOpenAccessStatus(citation.doi)
               : Promise.resolve(null),
+            // v1.10.23 — anti-fabrication : DOI + titre revendiqué → diff titre↔titre
+            citation.doi && citation.title
+              ? verifyCitation({
+                  title: citation.title,
+                  doi: citation.doi,
+                  ...(citation.year ? { year: citation.year } : {}),
+                  ...(citation.authors?.length
+                    ? {
+                        authors: citation.authors.slice(0, 50).map((a) => {
+                          const parts = a.trim().split(/\s+/);
+                          const family = parts.pop() ?? a.trim();
+                          return { family, ...(parts.length ? { given: parts.join(" ") } : {}) };
+                        }),
+                      }
+                    : {}),
+                })
+                  .then((r) => ({
+                    verdict: r.verdict,
+                    confidence: r.confidence,
+                    claimedTitle: citation.title,
+                    resolvedTitle: r.matched?.title,
+                    resolvedAuthors: r.matched?.authors?.map((a) => [a.given, a.family].filter(Boolean).join(" ")),
+                    resolvedYear: r.matched?.issued?.year,
+                    resolvedJournal: r.matched?.container?.title,
+                    url: r.matched?.url,
+                    mismatches: r.mismatches ?? [],
+                  }))
+                  .catch((err) => ({
+                    verdict: "not_found" as const,
+                    error: err instanceof Error ? err.message : "Erreur Scholar Sidekick",
+                  }))
+              : Promise.resolve(null),
           ]);
+          const baseSummary = computeSummary(citation, registryResults);
           return {
             citation,
             results: registryResults,
@@ -566,8 +645,9 @@ export async function POST(request: NextRequest) {
                   journal: oa.journal,
                 }
               : undefined,
-            verdict: computeVerdict(citation, registryResults),
-            summary: computeSummary(citation, registryResults),
+            fabrication: fabrication ?? undefined,
+            verdict: computeVerdict(citation, registryResults, fabrication),
+            summary: computeSummaryWithFabrication(baseSummary, fabrication),
           };
         })
       );

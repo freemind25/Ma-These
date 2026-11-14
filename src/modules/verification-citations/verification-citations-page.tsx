@@ -36,9 +36,24 @@ interface RegistryResult {
 interface CitationCheckResult {
   citation: { raw: string; doi?: string; title?: string; authors?: string[]; year?: number };
   results: RegistryResult[];
+  fabrication?: FabricationCheck;
   oa?: { isOa: boolean; oaStatus?: string; bestOaUrl?: string; bestOaUrlForPdf?: string; journal?: string };
   verdict: "verified" | "unverified" | "retracted" | "mismatch" | "error";
   summary: string;
+}
+
+/** v1.10.23 — Anti-fabrication Scholar Sidekick (DOI réel + titre inventé) */
+interface FabricationCheck {
+  verdict: "matched" | "mismatch" | "ambiguous" | "not_found";
+  confidence?: string;
+  claimedTitle?: string;
+  resolvedTitle?: string;
+  resolvedAuthors?: string[];
+  resolvedYear?: number;
+  resolvedJournal?: string;
+  url?: string;
+  mismatches?: { field?: string; claimed?: string; resolved?: string }[];
+  error?: string;
 }
 
 interface ExtractedStat {
@@ -235,6 +250,7 @@ export function VerificationCitationsPage() {
                         </div>
                       );
                     })}
+                    {renderFabrication(item.fabrication)}
                     {item.oa && (
                       <div className="text-xs border-t pt-2 flex items-center gap-2 flex-wrap">
                         <Badge variant="outline" className="text-[10px]">Unpaywall</Badge>
@@ -261,6 +277,54 @@ export function VerificationCitationsPage() {
             </Card>
           );
         })}
+      </div>
+    );
+  };
+
+  const renderFabrication = (fab?: FabricationCheck) => {
+    if (!fab) return null;
+    const verdictMeta = {
+      matched: { icon: ShieldCheck, label: "Titre confirmé par le DOI", color: "text-emerald-600" },
+      mismatch: { icon: XCircle, label: "FABRICATION PROBABLE — DOI réel, titre inventé", color: "text-red-600" },
+      ambiguous: { icon: AlertCircle, label: "Ambigu — vérification manuelle conseillée", color: "text-amber-600" },
+      not_found: { icon: AlertCircle, label: "Non résolu par Scholar Sidekick", color: "text-muted-foreground" },
+    }[fab.verdict];
+    const VIcon = verdictMeta.icon;
+    return (
+      <div className="text-xs border-t pt-2 space-y-1.5">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Badge variant="outline" className="text-[10px]">Scholar Sidekick</Badge>
+          <VIcon className={`h-3.5 w-3.5 ${verdictMeta.color}`} />
+          <span className={`font-medium ${verdictMeta.color}`}>{verdictMeta.label}</span>
+          {fab.confidence && <Badge variant="outline" className="text-[10px] h-4">confiance : {fab.confidence}</Badge>}
+        </div>
+        {fab.claimedTitle && fab.resolvedTitle && (
+          <div className="ml-6 space-y-1">
+            <p className="text-muted-foreground">
+              Titre cité : <span className={fab.verdict === "mismatch" ? "text-red-600 font-medium" : "text-foreground"}>{fab.claimedTitle.slice(0, 140)}</span>
+            </p>
+            <p className="text-muted-foreground">
+              Titre réel : <span className="text-emerald-600">{fab.resolvedTitle.slice(0, 140)}</span>
+            </p>
+            {fab.resolvedAuthors && fab.resolvedAuthors.length > 0 && (
+              <p className="text-muted-foreground">Auteurs réels : {fab.resolvedAuthors.join(", ").slice(0, 120)}</p>
+            )}
+            {fab.resolvedJournal && <p className="text-muted-foreground">Journal réel : {fab.resolvedJournal}{fab.resolvedYear ? ` (${fab.resolvedYear})` : ""}</p>}
+            {fab.mismatches && fab.mismatches.length > 0 && (
+              <div className="flex flex-wrap gap-1 pt-1">
+                {fab.mismatches.slice(0, 6).map((m, k) => (
+                  <Badge key={k} variant="destructive" className="text-[10px] h-4">{m.field ?? "champ"}</Badge>
+                ))}
+              </div>
+            )}
+            {fab.url && (
+              <a href={fab.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-blue-600 hover:underline">
+                <ExternalLink className="h-3 w-3" /> Voir l&apos;enregistrement résolu
+              </a>
+            )}
+          </div>
+        )}
+        {fab.error && <p className="ml-6 text-muted-foreground">{fab.error}</p>}
       </div>
     );
   };
