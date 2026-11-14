@@ -23,11 +23,14 @@ import {
   Undo,
   Redo,
   Sparkles,
+  ScanSearch,
 } from "lucide-react";
 import { AI_PREDICTION_KEY } from "../extensions/ai-prediction";
+import { ReferenceDetectorDialog } from "./reference-detector-dialog";
 
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
+import { useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -51,6 +54,9 @@ function useAiPredictionEnabled(editor: Editor): boolean {
 }
 
 export function EditorToolbar({ editor }: EditorToolbarProps) {
+  // v1.10.23 — détecteur de références (DOI, PMID, arXiv…) dans le chapitre
+  const [detectorOpen, setDetectorOpen] = useState(false);
+
   return (
     <TooltipProvider delayDuration={300}>
       <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 overflow-x-auto">
@@ -226,7 +232,24 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
             });
           }}
         />
+
+        <ToolbarSeparator />
+
+        {/* v1.10.23 — Détection de références (Scholar Sidekick) */}
+        <ToolbarButton
+          icon={ScanSearch}
+          label="Détecter les références (DOI, PMID, arXiv…) dans le chapitre"
+          pressed={detectorOpen}
+          onClick={() => setDetectorOpen(true)}
+        />
       </div>
+
+      {/* v1.10.23 — Dialogue détecteur de références */}
+      <ReferenceDetectorDialog
+        open={detectorOpen}
+        onOpenChange={setDetectorOpen}
+        getText={() => editor.getText()}
+      />
     </TooltipProvider>
   );
 }
@@ -254,6 +277,7 @@ function ToolbarButton({
           pressed={pressed}
           onPressedChange={onClick}
           disabled={disabled}
+          aria-label={label}
           className={cn(
             "h-8 w-8 p-0 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
           )}
