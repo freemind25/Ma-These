@@ -179,6 +179,10 @@ export function PredictionPopup({ editor }: PredictionPopupProps) {
     );
   }
 
+  // Popup de suggestion — rendu seulement si suggestion et position sont
+  // disponibles (états transitoires : rien à afficher, jamais de crash)
+  if (!suggestion || !position) return null;
+
   return createPortal(
     <div
       ref={popupRef}

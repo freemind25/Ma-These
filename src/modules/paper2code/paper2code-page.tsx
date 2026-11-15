@@ -215,7 +215,7 @@ export function Paper2CodePage() {
       }
       setPaperText(data.text);
       setPdfImport({ name: file.name, pages: data.pages || 0, chars: data.chars || data.text.length, warnings: data.warnings || [] });
-      toast.success(`PDF importe : ${data.pages} page(s), ${data.chars.toLocaleString()} caracteres.`);
+      toast.success(`PDF importe : ${data.pages} page(s), ${(data.chars ?? data.text.length).toLocaleString()} caracteres.`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       toast.error(`Echec de l'import : ${msg}`);
