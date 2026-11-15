@@ -533,3 +533,23 @@ Vérifié en navigateur : sidebar, footer, dashboard OK ; console 0 erreur ; lin
 **Décisions** : tag léger sur le commit bump (convention) ; publication seulement après validation cryptographique et preuves de contenu ; artefact documenté : l'extracteur 7z-wasm convertit les fins de ligne LF→CRLF — la comparaison de contenu embarqué se fait après normalisation (8/8 identiques).
 
 **Points ouverts** : recette propriétaire Windows (icône crème + lockup avec crédit au premier lancement de la 1.10.22) ; tests préexistants hors périmètre (chapters/[id] ×2, ai-types 20 vs 21).
+
+---
+
+## Session du 2026-11-15 — RELEASE-1.10.23 : intégration Scholar Sidekick (anti-fabrication, styles CSL, détection de références)
+
+**Déclencheur** : propriétaire (IM) : « faites la release v1.10.23 » — livraison des chantiers A→B→C Scholar Sidekick (analyse scholar-sidekick.com validée en session précédente, implémentation commitée 2026-11-14).
+
+**Livrables** (commits d71c68f + ae610ae + 90ccd13 + 0586c45, chore(version) c051be2, fix(build) ba89142, tag v1.10.23 + release publiée) :
+- **Chantier A — anti-fabrication** : bouton « Audit IA » dans Références (audit bibliothèque entière ou bibliographie collée ; verdicts Confirmées/Fabrications probables/Ambiguës/Introuvables/Rétractées avec rétractations Retraction Watch) + section Scholar Sidekick dans Vérification Citations (titre cité ↔ titre résolu) — attrape le pattern « DOI réel + titre inventé » (Topaz et al., Lancet 2026) invisible aux 9 registres d'existence.
+- **Chantier B — multi-styles** : onglet « Styles CSL » du Compositeur de références — DOI/PMID/PMCID/arXiv/ISBN/ISSN/bibcode ADS → 12 styles populaires + 10 000+ styles CSL, copie et export BibTeX/RIS/CSL-JSON/EndNote XML/CSV.
+- **Chantier C — éditeur** : bouton « Détecter les références » dans la barre d'outils de l'éditeur de thèse — scan du chapitre, résolution (titre, auteurs, année, journal), « Ajouter aux références » en un clic.
+- Infrastructure : client serveur-unique `src/lib/scholarly/scholar-sidekick.ts` + 7 routes `/api/scholar-sidekick/*` (audit, verify, format, export, styles, detect, lookup) — API gratuite sans clé, lots ≤ 25 entrées, fenêtrage ≤ 9 500 chars.
+- **CI** : run #37 FAILURE à 2 min 50 s (typecheck production `next build` : « 'position' is possibly 'null' » prediction-popup.tsx:187 — régression TS strict de 22a580d jamais exercée en build, la 1.10.22 précédant ce commit ; ni dev ni lint ne typecheck) → diagnostic exhaustif via `tsc --noEmit` (2e erreur masquée : paper2code-page.tsx:218) → fix ba89142 → run #38 **SUCCESS** en 10 min 15 s.
+- Release « Ma Thèse v1.10.23 » (target ba89142) : **3 assets** — latest.json 1 391 o, `Ma.These_1.10.23_x64-setup.exe` 145 096 172 o, `.sig` 424 o ; **signature Ed25519(BLAKE2b-512) VALIDE**, keyid `3D661F011B642881` = pubkey (8128641B011F663D inversé), blob latest.json ≡ .sig octet-pour-octet (2 plateformes), trusted comment `timestamp:1794734217` ; digest BLAKE2b-512(setup.exe) = 1fe1803dde19df21…0142cf5.
+- Preuves de contenu embarqué : standalone/package.json = **1.10.23** ; NSIS 13 fichiers (mathese.exe 15 280 128 o + node.exe 87 034 184 o + standalone.zip 113 539 107 o + 2 bases + 8 items $PLUGINSDIR) ; chaînes des 3 chantiers présentes dans le build embarqué (« Audit IA », « Fabrications probables », « Styles CSL », « Détecter les références », `scholar-sidekick` dans 49 fichiers).
+- Publication **2026-11-15T09:27:06Z** ; contrôles publics : latest.json = 1.10.23 (url v1.10.23, pub_date 09:17:05Z), setup.exe public MZ 145 096 172 o identique à l'asset signé ✓.
+
+**Décisions** : tag léger déplacé sur le commit fix (précédent v1.10.21 → 59237ea) ; correctif limité au typecheck applicatif — `tsc --noEmit` signale des erreurs préexistantes dans les *.test.ts mais `next build` ne typecheck pas les tests (0 erreur hors tests) ; la barrière locale lint+tests reste la protection pour les tests.
+
+**Points ouverts** : recette propriétaire Windows des 3 chantiers (Audit IA dans Références, onglet Styles CSL du Compositeur, Détecter les références dans l'éditeur) ; tests préexistants hors périmètre (chapters/[id] ×2, ai-types 20 vs 21).
