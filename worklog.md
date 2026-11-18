@@ -3632,3 +3632,19 @@ Stage Summary:
 - Le propriétaire peut tester dans l'app : Paramètres → Datalab (badge « clé configurée » si cookie) OU clé env déjà active ; module Article → Code → importer un PDF → Extraction structurée / JATS.
 - 3 correctifs de conformité aux formes réelles de l'API committés (3140b9f) — le client suit désormais la réponse effective observée, avec replis si l'API revient aux anciennes formes.
 - Reste : recette Windows installée (identique), surveillance du timeout JATS en heure de pointe.
+
+---
+Task ID: PAPER2CODE-GEN-ZAI-V1
+Agent: Z.ai Code (session externe, propriétaire : « en voulant générer le code j'ai eu ce message : Aucune clé API pour openrouter… »)
+
+Task: Corriger l'échec de « Générer le code » (Article → Code) : 503 « Aucune clé API pour openrouter » malgré les réglages IA.
+
+Work Log:
+- Diagnostic : la route POST /api/paper2code/generate résout la clé UNIQUEMENT via env (getHardcodedKey) — le cookie des réglages IA était ignoré alors que le message d'erreur invite à y configurer la clé (contradiction) ; et le fournisseur natif « zai » (défaut de l'app sans cookie) n'avait ni entrée HARDCODED_KEYS ni URL OpenAI-compatible → double voie sans issue.
+- Correctif (commit b4fbc5e) : (1) branche provider « zai » dans callLLM → generateCompletion du zai-client (SDK sandbox, sans clé, circuit breaker + retries internes) ; en Tauri, SDK absent → erreur explicite « z.ai SDK non disponible en dehors de l'environnement sandbox » ; getApiKey renvoie un placeholder « sdk-sandbox » pour zai. (2) lecture du cookie thesisframe-ai-config (getAiConfigFromRequest) : provider/model des réglages IA en replis, clé des réglages IA passée à getApiKey (userKey) → l'UI « Fournisseur IA » devient fonctionnelle sur cette route.
+- Tests : provider zai + model default → pipeline streamé complet (planning ✓, analyse des 8 fichiers ✓ en arrière-plan, ~28 Ko d'événements) sans aucune clé ; cookie avec clé factice openrouter → 401 amont OpenRouter (la clé atteint l'appel LLM) ; sans cookie provider openrouter → 503 NO_KEY inchangé (zéro régression) ; tsc --noEmit 0 erreur hors tests.
+- Contexte usage : sandbox/preview → choisir ZAI dans Paramètres → Fournisseur IA (0 clé, immédiat) ; app Windows → zai indisponible (SDK absent), y configurer une clé réelle (openrouter, groq, google…) qui sera désormais honorée, ou poser OPENROUTER_API_KEY dans le .env serveur.
+
+Stage Summary:
+- « Générer le code » fonctionne sans clé dans le preview (fournisseur ZAI) et honore enfin la clé configurée dans les réglages IA pour les autres fournisseurs — la promesse du message d'erreur est tenue.
+- Le défaut racine était double (fournisseur natif non câblé + clé UI ignorée) ; les deux corrigés en une route, zéro changement d'UI.
