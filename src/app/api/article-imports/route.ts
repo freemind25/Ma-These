@@ -11,7 +11,10 @@ import {
   buildLimits,
   truncatePreview,
   MAX_IMPORT_BYTES,
+  type ExtractionLimit,
 } from "@/lib/articles/extraction";
+import { resolveDatalabApiKey } from "@/lib/datalab/config";
+import { DatalabError, datalabConvert } from "@/lib/datalab/client";
 
 export const runtime = "nodejs";
 
@@ -74,6 +77,8 @@ export async function POST(request: NextRequest) {
     let pages: number | null = null;
     let scanned = false;
     let emptyPages: number[] = [];
+    let datalabNote: string | null = null;
+    let datalabSucceeded = false;
 
     try {
       if (fileType === "docx") {
@@ -81,13 +86,38 @@ export async function POST(request: NextRequest) {
         text = t;
         headings = headingsFromHtml(html);
       } else if (fileType === "pdf") {
-        const { pages: p } = await extractPdf(buffer);
-        const joined = p.join("\n\n");
-        text = joined;
-        pages = p.length;
-        const det = detectScannedPages(p);
-        scanned = det.scanned;
-        emptyPages = det.emptyPages;
+        // ── Voie haute fidélité : Datalab Convert (si clé configurée) ──
+        // Repli automatique sur la voie locale unpdf (jamais de blocage).
+        const apiKey = resolveDatalabApiKey(request);
+        let datalabDone = false;
+        if (apiKey) {
+          try {
+            const conv = await datalabConvert(apiKey, { name: file.name, type: file.type, buffer }, {
+              mode: "fast",
+              signal: request.signal,
+            });
+            text = conv.markdown;
+            pages = conv.pages ?? null;
+            datalabDone = true;
+            datalabSucceeded = true;
+          } catch (dlErr) {
+            if (dlErr instanceof DatalabError) {
+              console.warn("[POST /api/article-imports] Datalab → repli local:", dlErr.code, dlErr.message);
+              datalabNote = `Datalab indisponible (${dlErr.message}) — extraction locale utilisée.`;
+            } else {
+              throw dlErr;
+            }
+          }
+        }
+        if (!datalabDone) {
+          const { pages: p } = await extractPdf(buffer);
+          const joined = p.join("\n\n");
+          text = joined;
+          pages = p.length;
+          const det = detectScannedPages(p);
+          scanned = det.scanned;
+          emptyPages = det.emptyPages;
+        }
       } else {
         text = buffer.toString("utf-8");
       }
@@ -116,7 +146,17 @@ export async function POST(request: NextRequest) {
     // marqueur scanné) : l'OCR asynchrone le rendra exploitable (cycle
     // article-ocr-async). Le rejet 422 reste valable pour les non-scannés.
 
-    const limits = buildLimits({ fileType, scanned, emptyPages, headings, text });
+    const limits: ExtractionLimit[] = buildLimits({ fileType, scanned, emptyPages, headings, text });
+    if (fileType === "pdf") {
+      if (datalabNote) {
+        limits.push({ kind: "engine", detail: datalabNote });
+      } else if (datalabSucceeded) {
+        limits.push({
+          kind: "engine",
+          detail: "Import via Datalab Convert (fast) : mise en page préservée (colonnes, tableaux, titres Markdown) — qualité supérieure à l'extraction locale.",
+        });
+      }
+    }
 
     const doc = await db.importedDoc.create({
       data: {

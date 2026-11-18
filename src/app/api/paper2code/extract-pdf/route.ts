@@ -7,6 +7,8 @@ import {
   detectScannedPages,
   MAX_IMPORT_BYTES,
 } from "@/lib/articles/extraction";
+import { resolveDatalabApiKey } from "@/lib/datalab/config";
+import { DatalabError, datalabConvert } from "@/lib/datalab/client";
 
 export const runtime = "nodejs";
 
@@ -82,6 +84,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // ── Voie haute fidélité : Datalab Convert (si clé configurée) ──
+    // Parse layout-aware (colonnes, tableaux, titres, formules) bien plus
+    // fidèle que l'extraction texte brute. Sans clé ou en cas d'échec :
+    // repli automatique sur la voie locale unpdf (jamais de blocage).
+    const apiKey = resolveDatalabApiKey(request);
+    let datalabNote = "";
+    if (apiKey) {
+      try {
+        const conv = await datalabConvert(apiKey, { name: file.name, type: file.type, buffer }, {
+          mode: "fast",
+          signal: request.signal,
+        });
+        return NextResponse.json({
+          text: conv.markdown,
+          pages: conv.pages,
+          chars: conv.markdown.length,
+          warnings: [],
+          engine: "datalab",
+          engineDetail: `Datalab Convert fast${conv.version ? ` (${conv.version})` : ""} — mise en page préservée (colonnes, tableaux, titres).`,
+        });
+      } catch (dlErr) {
+        if (dlErr instanceof DatalabError) {
+          console.warn("[POST /api/paper2code/extract-pdf] Datalab → repli local:", dlErr.code, dlErr.message);
+          datalabNote = `Datalab indisponible (${dlErr.message}) — extraction locale utilisée.`;
+        } else {
+          throw dlErr;
+        }
+      }
+    }
+
     let pages: string[] = [];
     try {
       pages = (await extractPdf(buffer)).pages;
@@ -114,6 +146,7 @@ export async function POST(request: NextRequest) {
     }
 
     const warnings: string[] = [];
+    if (datalabNote) warnings.push(datalabNote);
     if (scanned.scanned) {
       warnings.push(
         `PDF partiellement scanné : ${scanned.emptyPages.length} page(s) sans texte extractible ` +
@@ -130,6 +163,7 @@ export async function POST(request: NextRequest) {
       pages: pages.length,
       chars: text.length,
       warnings,
+      engine: "local",
     });
   } catch (e) {
     return NextResponse.json(

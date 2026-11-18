@@ -50,6 +50,7 @@ import {
   KeyRound,
 } from "lucide-react";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { DatalabConfigDialog } from "./datalab-config-dialog";
 import { toast } from "sonner";
 import {
   type AiProviderId,
@@ -687,10 +688,25 @@ export function AppHeader() {
   const { currentView, aiProvider } = useAppStore();
   const currentNav = NAVIGATION_ITEMS.find((item) => item.id === currentView);
   const [configOpen, setConfigOpen] = useState(false);
+  const [datalabOpen, setDatalabOpen] = useState(false);
+  const [datalabHasKey, setDatalabHasKey] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
+
+  // Statut clé Datalab (badge du menu Paramètres) — rafraîchi sur événement
+  useEffect(() => {
+    const load = () => {
+      fetch("/api/datalab/config")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((json) => setDatalabHasKey(!!json?.data?.hasApiKey))
+        .catch(() => {});
+    };
+    load();
+    window.addEventListener("datalab-config-changed", load);
+    return () => window.removeEventListener("datalab-config-changed", load);
+  }, []);
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-4">
@@ -783,6 +799,18 @@ export function AppHeader() {
               </Badge>
             </DropdownMenuItem>
             <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setDatalabOpen(true);
+              }}
+            >
+              <KeyRound className="h-4 w-4 mr-2" />
+              Datalab (documents)
+              <Badge variant="outline" className="ml-auto text-[10px]">
+                {datalabHasKey ? "OK" : "—"}
+              </Badge>
+            </DropdownMenuItem>
+            <DropdownMenuItem
               onClick={() => {
                 const link = document.createElement("a");
                 link.href = "https://github.com/freemind25/Ma-These";
@@ -800,6 +828,11 @@ export function AppHeader() {
       {/* AI Config Dialog (rendered outside dropdown to avoid nesting) */}
       <Dialog open={configOpen} onOpenChange={setConfigOpen}>
         <AiConfigDialog open={configOpen} onOpenChange={setConfigOpen} />
+      </Dialog>
+
+      {/* Datalab Config Dialog — fournisseur documentaire (clé httpOnly) */}
+      <Dialog open={datalabOpen} onOpenChange={setDatalabOpen}>
+        <DatalabConfigDialog open={datalabOpen} onOpenChange={setDatalabOpen} />
       </Dialog>
 
       {/* Usage Guide Dialog */}

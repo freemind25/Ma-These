@@ -12,7 +12,7 @@ export const MAX_IMPORT_BYTES = 50 * 1024 * 1024; // 50 Mo — couvre les scans 
 export type ImportFileType = "docx" | "pdf" | "txt";
 
 export interface ExtractionLimit {
-  kind: "scanned" | "ocr" | "no-headings" | "no-biblio" | "parse-error";
+  kind: "scanned" | "ocr" | "no-headings" | "no-biblio" | "parse-error" | "engine";
   detail: string;
 }
 
