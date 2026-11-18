@@ -12,6 +12,8 @@ import {
 import { getProviderExtraHeaders } from "@/lib/ai/ai-provider";
 import { gatewayFetch } from "@/lib/ai/gateway-fetch";
 import { getHardcodedKey } from "@/lib/ai/hardcoded-keys";
+import { generateCompletion } from "@/lib/ai/zai-client";
+import { getAiConfigFromRequest } from "@/lib/ai/config-cookie";
 
 // ─── Types ───────────────────────────────────────────────
 
@@ -132,6 +134,10 @@ Output Python code only, no explanation, no markdown fences.`;
 
 function getApiKey(provider: AiProviderId, userKey?: string): string {
   if (userKey) return userKey;
+  // Fournisseur natif z.ai : SDK sandbox sans clé (zai-client) — pas de
+  // clé env attendue. Dans l'app Tauri (SDK absent), le message ci-dessous
+  // reste honnête : configurer un fournisseur réel.
+  if (provider === "zai") return "sdk-sandbox";
   const hardcoded = getHardcodedKey(provider);
   if (hardcoded) return hardcoded;
   throw new Error(`Aucune clé API pour ${provider}. Configurez un fournisseur avec clé.`);
@@ -144,6 +150,23 @@ async function callLLM(
   model: string,
   apiKey: string
 ): Promise<string> {
+  // Fournisseur natif z.ai : SDK sandbox (zai-client, sans clé, circuit
+  // breaker + retries internes). L'app Tauri n'embarque pas le SDK —
+  // generateCompletion lèvera une erreur explicite dans ce cas.
+  if (provider === "zai") {
+    const result = await generateCompletion({
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userMessage },
+      ],
+      model,
+      temperature: 0.2,
+      maxTokens: 16384,
+      providerConfig: { provider: "zai", model },
+    });
+    return result.content;
+  }
+
   const baseUrl = PROVIDER_BASE_URLS[provider];
   if (!baseUrl) throw new Error(`Pas d'URL de base pour ${provider}`);
 
@@ -222,9 +245,14 @@ function extractCode(text: string): string {
 
 export async function POST(request: NextRequest) {
   const body = (await request.json()) as Partial<GenerateRequest>;
+  // Réglages IA (cookie httpOnly) : fournisseur + modèle + clé utilisateur.
+  // Le message d'erreur historique invite à configurer la clé « dans les
+  // réglages IA » — cette route doit donc honorer cette clé (sinon seule
+  // une clé env fonctionnerait, en contradiction avec le message).
+  const cookieConfig = getAiConfigFromRequest(request);
   const paperText = body.paperText || "";
-  const provider = (body.provider || "groq") as AiProviderId;
-  const model = body.model || "llama-3.3-70b-versatile";
+  const provider = (body.provider || cookieConfig?.provider || "groq") as AiProviderId;
+  const model = body.model || cookieConfig?.model || "llama-3.3-70b-versatile";
 
   if (paperText.length < 200) {
     return new Response(
@@ -237,7 +265,7 @@ export async function POST(request: NextRequest) {
   // réponse JSON explicite (503) au lieu d’un 500 corps vide masquant l’erreur.
   let apiKey: string;
   try {
-    apiKey = getApiKey(provider);
+    apiKey = getApiKey(provider, cookieConfig?.apiKey);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return new Response(
