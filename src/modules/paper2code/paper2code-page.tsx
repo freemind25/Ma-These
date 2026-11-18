@@ -80,7 +80,11 @@ interface StreamEvent {
   error?: string;
 }
 
-const FAST_PROVIDERS: AiProviderId[] = ["groq", "google", "openrouter", "github", "openai"];
+// Fournisseurs proposés dans le sélecteur du module. « zai » en tête :
+// natif sandbox sans clé (SDK z-ai-web-dev-sdk) — le choix le plus
+// immédiat dans l'environnement de prévisualisation ; en app Tauri le
+// SDK est absent et la route renverra l'erreur explicite correspondante.
+const FAST_PROVIDERS: AiProviderId[] = ["zai", "groq", "google", "openrouter", "github", "openai"];
 
 // Plafond d'import PDF — même règle que la maison (MAX_IMPORT_BYTES,
 // src/lib/articles/extraction.ts l.10 = 50 Mo). Constante locale : ne PAS
@@ -390,7 +394,19 @@ export function Paper2CodePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
               <Label>Fournisseur IA</Label>
-              <Select value={provider} onValueChange={(v) => setProvider(v as AiProviderId)} disabled={generating}>
+              <Select
+                value={provider}
+                onValueChange={(v) => {
+                  const next = v as AiProviderId;
+                  setProvider(next);
+                  // Réaligner le modèle : chaque fournisseur a sa liste
+                  // (ex. zai → "default") — garder le modèle de l'ancien
+                  // fournisseur casserait l'appel amont.
+                  const nextModel = PROVIDER_MODELS[next]?.[0];
+                  if (nextModel) setModel(nextModel);
+                }}
+                disabled={generating}
+              >
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {FAST_PROVIDERS.map((p) => (
