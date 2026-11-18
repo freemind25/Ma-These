@@ -45,7 +45,10 @@ import {
   Upload,
   CheckCircle2,
   X,
+  Wand2,
 } from "lucide-react";
+import { ExtractStructuredDialog } from "./extract-structured-panel";
+import { JatsDialog } from "./jats-panel";
 import { toast } from "sonner";
 import {
   type AiProviderId,
@@ -89,6 +92,7 @@ interface PdfImportInfo {
   pages: number;
   chars: number;
   warnings: string[];
+  engine?: string;
 }
 
 export function Paper2CodePage() {
@@ -109,6 +113,10 @@ export function Paper2CodePage() {
   const [pdfImport, setPdfImport] = useState<PdfImportInfo | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const pdfInputRef = useRef<HTMLInputElement | null>(null);
+  // Fichier conservé pour les traitements Datalab (extraction structurée / JATS)
+  const pdfFileRef = useRef<File | null>(null);
+  const [extractOpen, setExtractOpen] = useState(false);
+  const [jatsOpen, setJatsOpen] = useState(false);
 
   const availableModels = PROVIDER_MODELS[provider] || [];
 
@@ -208,14 +216,15 @@ export function Paper2CodePage() {
       const fd = new FormData();
       fd.append("file", file);
       const res = await fetch("/api/paper2code/extract-pdf", { method: "POST", body: fd });
-      const data = (await res.json()) as { text?: string; pages?: number; chars?: number; warnings?: string[]; error?: string };
+      const data = (await res.json()) as { text?: string; pages?: number; chars?: number; warnings?: string[]; engine?: string; error?: string };
       if (!res.ok || !data.text) {
         toast.error(data.error || `HTTP ${res.status}`);
         return;
       }
       setPaperText(data.text);
-      setPdfImport({ name: file.name, pages: data.pages || 0, chars: data.chars || data.text.length, warnings: data.warnings || [] });
-      toast.success(`PDF importe : ${data.pages} page(s), ${(data.chars ?? data.text.length).toLocaleString()} caracteres.`);
+      pdfFileRef.current = file;
+      setPdfImport({ name: file.name, pages: data.pages || 0, chars: data.chars || data.text.length, warnings: data.warnings || [], engine: data.engine });
+      toast.success(`PDF importe : ${data.pages ? `${data.pages} page(s), ` : ""}${(data.chars ?? data.text.length).toLocaleString()} caracteres${data.engine === "datalab" ? " (Datalab, haute fidelite)" : ""}.`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       toast.error(`Echec de l'import : ${msg}`);
@@ -231,7 +240,14 @@ export function Paper2CodePage() {
     if (file) handlePdfFile(file);
   }, [handlePdfFile]);
 
-  const clearPdfImport = () => setPdfImport(null);
+  const clearPdfImport = () => {
+    setPdfImport(null);
+    pdfFileRef.current = null;
+  };
+
+  const insertStructured = useCallback((markdown: string) => {
+    setPaperText((t) => (t.trim() ? `${t}\n\n${markdown}` : markdown));
+  }, []);
 
   const downloadAll = () => {
     if (!plan) return;
@@ -339,6 +355,20 @@ export function Paper2CodePage() {
                 </div>
               )}
               <p className="text-xs text-muted-foreground">Texte extrait ci-dessous — relisez-le et corrigez-le si besoin avant la génération.</p>
+              {/* Traitements Datalab sur le fichier importé (chantiers B & C) */}
+              <div className="flex flex-wrap items-center gap-2">
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setExtractOpen(true)} disabled={generating}>
+                  <Wand2 className="h-3.5 w-3.5" /> Extraction structurée
+                </Button>
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setJatsOpen(true)} disabled={generating}>
+                  <FileCode2 className="h-3.5 w-3.5" /> Article → XML JATS
+                </Button>
+                {pdfImport.engine === "datalab" && (
+                  <span className="text-xs text-emerald-700 dark:text-emerald-400">
+                    Import haute fidélité via Datalab — mise en page préservée.
+                  </span>
+                )}
+              </div>
             </div>
           )}
           <div className="flex flex-col gap-1.5">
@@ -551,6 +581,19 @@ export function Paper2CodePage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Dialogues Datalab — extraction structurée (B) et JATS XML (C) */}
+      <ExtractStructuredDialog
+        open={extractOpen}
+        onOpenChange={setExtractOpen}
+        file={pdfFileRef.current}
+        onInsert={insertStructured}
+      />
+      <JatsDialog
+        open={jatsOpen}
+        onOpenChange={setJatsOpen}
+        file={pdfFileRef.current}
+      />
     </div>
   );
 }
