@@ -164,7 +164,8 @@ export function ExtractStructuredDialog({
     : [];
 
   return (
-    <DialogContent className="sm:max-w-2xl">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-2xl">
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2">
           <Wand2 className="h-5 w-5 text-primary" />
@@ -291,5 +292,6 @@ export function ExtractStructuredDialog({
       </DialogFooter>
       <Separator className="hidden" />
     </DialogContent>
+    </Dialog>
   );
 }

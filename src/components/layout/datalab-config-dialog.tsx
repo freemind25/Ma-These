@@ -10,6 +10,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -100,7 +101,8 @@ export function DatalabConfigDialog({
   };
 
   return (
-    <DialogContent className="sm:max-w-lg">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg">
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5 text-primary" />
@@ -194,5 +196,6 @@ export function DatalabConfigDialog({
         </Button>
       </DialogFooter>
     </DialogContent>
+    </Dialog>
   );
 }

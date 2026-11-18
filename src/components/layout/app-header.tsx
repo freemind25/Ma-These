@@ -831,9 +831,7 @@ export function AppHeader() {
       </Dialog>
 
       {/* Datalab Config Dialog — fournisseur documentaire (clé httpOnly) */}
-      <Dialog open={datalabOpen} onOpenChange={setDatalabOpen}>
-        <DatalabConfigDialog open={datalabOpen} onOpenChange={setDatalabOpen} />
-      </Dialog>
+      <DatalabConfigDialog open={datalabOpen} onOpenChange={setDatalabOpen} />
 
       {/* Usage Guide Dialog */}
       <UsageGuideDialog open={guideOpen} onOpenChange={setGuideOpen} />
