@@ -94,6 +94,12 @@ export async function POST(request: NextRequest) {
       try {
         const conv = await datalabConvert(apiKey, { name: file.name, type: file.type, buffer }, {
           mode: "fast",
+          // 300 s au lieu du défaut 180 s : la file gratuite de datalab.to
+          // fluctue fortement (jusqu'à 189 polls observés au premier essai)
+          // et un gros PDF (mémoire) dépassait les 3 min → échec systématique
+          // puis repli local vide sur un PDF scanné. request.signal annule
+          // proprement si l'utilisateur abandonne l'import.
+          timeoutMs: 300_000,
           signal: request.signal,
         });
         return NextResponse.json({
@@ -132,13 +138,22 @@ export async function POST(request: NextRequest) {
     const scanned = detectScannedPages(pages);
 
     // Honnêteté : un PDF sans texte extractible ne peut pas servir la
-    // génération (garde < 200 caractères). On refuse avec un message actionnable.
+    // génération (garde < 200 caractères). On refuse avec un message
+    // actionnable qui distingue les deux causes réelles : (a) pas de clé
+    // Datalab → la configurer pour l'OCR d'un scan ; (b) clé présente →
+    // la voie Datalab a été tentée et a échoué avant le repli local
+    // (file gratuite lente, incident) → réessayer, le traitement est
+    // côté service et peut prendre plusieurs minutes.
     if (text.trim().length < 20) {
+      const datalabHint = !apiKey
+        ? " Pour lire un PDF scanné (OCR), configurez la clé Datalab dans Paramètres → Datalab puis réimportez — sans elle, seul le texte natif du PDF est lisible."
+        : ` La voie Datalab (OCR) a été tentée avant le repli local mais a échoué${datalabNote ? ` — ${datalabNote}` : ""} Le traitement est côté datalab.to et la file gratuite peut retarder un gros document de plusieurs minutes : réessayez dans un instant.`;
       return NextResponse.json(
         {
           error:
-            "Extraction vide : ce PDF ne contient pas de texte extractible (scan image ?). " +
-            "Utilisez un PDF textuel (article natif) ou collez le texte manuellement.",
+            "Extraction vide : ce PDF ne contient pas de texte extractible en local (scan image ?)." +
+            datalabHint +
+            " Vous pouvez aussi coller le texte manuellement.",
           pages: pages.length,
         },
         { status: 422 }

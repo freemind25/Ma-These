@@ -132,6 +132,66 @@ Output Python code only, no explanation, no markdown fences.`;
 
 // ─── Helpers ─────────────────────────────────────────────
 
+// Plafond du texte article envoyé au LLM. La voie de planification est le
+// SEUL appel qui porte le texte intégral (analyse/codage travaillent sur le
+// plan résumé) — un mémoire/thèse de plusieurs centaines de pages y entre
+// sans garde-fou aujourd'hui, et les très gros corps augmentent la
+// probabilité de coupure du flux de transport (undici « Error in input
+// stream »). 60 000 caractères ≈ 15 000 tokens : largement assez pour
+// méthodologie + hyperparamètres + résultats d'un article, tête (abstract,
+// intro) et fin (résultats, conclusion) conservées en priorité.
+const MAX_PAPER_CHARS = 60_000;
+
+/**
+ * Nettoie un texte extrait de PDF avant l'appel LLM :
+ * - normalisation NFC (accents composés stables) ;
+ * - surrogates UTF-16 isolés → U+FFFD (un surrogate non apparié survit à
+ *   JSON.stringify et produit un corps de requête invalide — coupure
+ *   « Error in input stream » côté transport) ;
+ * - caractères de contrôle C0/C1 hors \n \r \t → espace.
+ */
+function sanitizePaperText(raw: string): string {
+  let s = raw.normalize("NFC");
+  s = s.replace(
+    /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g,
+    "\uFFFD"
+  );
+  s = s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, " ");
+  return s;
+}
+
+/**
+ * Plafonne le texte pour l'appel IA : 75 % tête + 25 % queue, marqueur
+ * explicite au milieu (l'abstract et les résultats restent visibles).
+ */
+function capPaperText(s: string, max: number = MAX_PAPER_CHARS): { text: string; truncated: boolean } {
+  if (s.length <= max) return { text: s, truncated: false };
+  const head = s.slice(0, Math.floor(max * 0.75));
+  const tail = s.slice(-Math.floor(max * 0.25));
+  const omitted = s.length - head.length - tail.length;
+  return {
+    text: `${head}\n\n[… document tronqué pour l'appel IA : ${omitted.toLocaleString("fr-FR")} caractères omis au milieu …]\n\n${tail}`,
+    truncated: true,
+  };
+}
+
+/**
+ * Traduit les erreurs brutes de transport en messages actionnables.
+ * « Error in input stream » (undici/bun fetch) = coupure du flux de
+ * transport vers le fournisseur — transitoire dans la grande majorité
+ * des cas, aggravée par les très gros corps de requête.
+ */
+function translateAiError(msg: string): string {
+  if (/input stream/i.test(msg)) {
+    return (
+      "Le flux IA s'est interrompu pendant l'appel au fournisseur (coupure réseau ou interruption temporaire). " +
+      "Les tentatives automatiques ont échoué. Réessayez : si l'erreur revient, réduisez le texte source " +
+      "(document très long) ou changez de fournisseur/modèle."
+    );
+  }
+  return msg;
+}
+
 function getApiKey(provider: AiProviderId, userKey?: string): string {
   if (userKey) return userKey;
   // Fournisseur natif z.ai : SDK sandbox sans clé (zai-client) — pas de
@@ -162,6 +222,10 @@ async function callLLM(
       model,
       temperature: 0.2,
       maxTokens: 16384,
+      // La planification sur un gros document peut courir 60-90 s : le
+      // timeout global du zai-client (60 s) tuerait un appel légitime avec
+      // « Délai de la requête IA dépassé ». 3 min pour la voie pipeline.
+      timeoutMs: 180_000,
       providerConfig: { provider: "zai", model },
     });
     return result.content;
@@ -250,7 +314,10 @@ export async function POST(request: NextRequest) {
   // réglages IA » — cette route doit donc honorer cette clé (sinon seule
   // une clé env fonctionnerait, en contradiction avec le message).
   const cookieConfig = getAiConfigFromRequest(request);
-  const paperText = body.paperText || "";
+  // Nettoyage AVANT tout (garde < 200 car, prompts, transport) : les textes
+  // d'import PDF peuvent contenir des caractères de contrôle ou des
+  // surrogates isolés qui cassent le corps JSON de la requête LLM.
+  const paperText = sanitizePaperText(body.paperText || "");
   const provider = (body.provider || cookieConfig?.provider || "groq") as AiProviderId;
   const model = body.model || cookieConfig?.model || "llama-3.3-70b-versatile";
 
@@ -279,11 +346,24 @@ export async function POST(request: NextRequest) {
   const encoder = new TextEncoder();
   let callCount = 0;
 
+  // Texte réellement envoyé au LLM (plafonné) — l'analyse et le codage
+  // n'utilisent pas paperText, seul l'appel de planification le porte.
+  const { text: llmPaperText, truncated: paperTruncated } = capPaperText(paperText);
+
   const stream = new ReadableStream({
     async start(controller) {
       function send(event: Record<string, unknown>) {
         controller.enqueue(encoder.encode(JSON.stringify(event) + "\n"));
       }
+
+      // Heartbeat : pendant un appel LLM de 30-90 s AUCUN octet ne part sur
+      // le flux (les événements ne sont émis qu'entre les appels). Un proxy
+      // ou le navigateur peut couper une connexion idle → le frontend
+      // perd le flux en plein travail. Un ping toutes les 15 s garde la
+      // connexion vivante ; le frontend ignore les types inconnus.
+      const heartbeat = setInterval(() => {
+        try { send({ type: "ping", at: Date.now() }); } catch { /* flux fermé */ }
+      }, 15_000);
 
       try {
         // ═══════════════════════════════════════
@@ -297,13 +377,49 @@ export async function POST(request: NextRequest) {
           message: "📋 Planification en cours...",
         });
 
-        const planRaw = await callLLM(
-          PLANNING_SYSTEM,
-          planningPrompt(paperText),
-          provider,
-          model,
-          apiKey
-        );
+        if (paperTruncated) {
+          send({
+            type: "progress",
+            stage: "planning",
+            step: 0,
+            total: 1,
+            message: `📄 Document très long (${paperText.length.toLocaleString("fr-FR")} caractères) — texte plafonné à ${MAX_PAPER_CHARS.toLocaleString("fr-FR")} pour l'appel IA (tête + fin conservées).`,
+          });
+        }
+
+        // La planification est le seul appel fatal du pipeline : une coupure
+        // de flux y est systématiquement fatale pour l'utilisateur. Les
+        // interruptions de transport sont majoritairement transitoires → une
+        // relance explicite (au-delà des retries internes du client IA) avec
+        // un backoff plus long, sous les yeux de l'utilisateur.
+        let planRaw: string;
+        try {
+          planRaw = await callLLM(
+            PLANNING_SYSTEM,
+            planningPrompt(llmPaperText),
+            provider,
+            model,
+            apiKey
+          );
+        } catch (firstErr) {
+          const firstMsg = translateAiError(firstErr instanceof Error ? firstErr.message : String(firstErr));
+          console.warn("[paper2code/generate] planification échouée, relance:", firstMsg);
+          send({
+            type: "progress",
+            stage: "planning",
+            step: 0,
+            total: 1,
+            message: `⚠️ ${firstMsg} — nouvelle tentative...`,
+          });
+          await new Promise((r) => setTimeout(r, 4_000));
+          planRaw = await callLLM(
+            PLANNING_SYSTEM,
+            planningPrompt(llmPaperText),
+            provider,
+            model,
+            apiKey
+          );
+        }
         callCount++;
 
         let plan: PlanResult;
@@ -434,9 +550,10 @@ export async function POST(request: NextRequest) {
           },
         });
       } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
+        const msg = translateAiError(err instanceof Error ? err.message : String(err));
         send({ type: "error", message: msg });
       } finally {
+        clearInterval(heartbeat);
         controller.close();
       }
     },
