@@ -54,11 +54,23 @@ function normalizeFields(extracted: Record<string, unknown>, names: string[]): {
       missing.push(name);
       continue;
     }
-    // Datalab peut envelopper chaque champ : { value, _score: {score, reasoning}, citation? }
+    // Réponse réelle observée (essai clé réelle 2026-11) : structure plate —
+    // valeur dans « name », citations dans la clé sœur « name_citations »
+    // (ex. title + title_citations: ["/page/0/SectionHeader/2"]).
+    const citationsRaw = extracted[`${name}_citations`];
+    let companionCitation: string | null = null;
+    if (typeof citationsRaw === "string" && citationsRaw.trim()) {
+      companionCitation = citationsRaw;
+    } else if (Array.isArray(citationsRaw) && citationsRaw.length > 0) {
+      const first = citationsRaw[0];
+      if (typeof first === "string" && first.trim()) companionCitation = first;
+    }
+
+    // Repli historique : champ enveloppé { value, _score: {score, reasoning}, citation? }
     let value: unknown = raw;
     let score: number | null = null;
     let reasoning: string | null = null;
-    let citation: string | null = null;
+    let citation: string | null = companionCitation;
     if (typeof raw === "object" && raw !== null && !Array.isArray(raw)) {
       const obj = raw as Record<string, unknown>;
       if ("value" in obj) value = obj.value;
@@ -68,8 +80,10 @@ function normalizeFields(extracted: Record<string, unknown>, names: string[]): {
         if (typeof scoreObj.score === "number") score = scoreObj.score;
         if (typeof scoreObj.reasoning === "string") reasoning = scoreObj.reasoning;
       }
-      if (typeof obj._citation === "string") citation = obj._citation;
-      else if (typeof obj.citation === "string") citation = obj.citation;
+      if (!citation) {
+        if (typeof obj._citation === "string") citation = obj._citation;
+        else if (typeof obj.citation === "string") citation = obj.citation;
+      }
       // _meta balanced/accurate : extraction_status / verification — ignorés en fast
     }
     fields.push({ name, value, citation, score, reasoning });

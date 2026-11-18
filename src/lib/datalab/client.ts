@@ -176,7 +176,10 @@ async function pollDatalabJob(
         const resultBody = (await dl.json()) as Record<string, unknown>;
         return { ...last, resultBody };
       }
-      return { ...last, resultBody: null };
+      // Réponse réelle observée (essai clé réelle 2026-11, /api/v1/convert) :
+      // certains endpoints omettent result_url et portent les données
+      // directement dans le corps du poll (markdown, page_count, json…).
+      return { ...last, resultBody: last as unknown as Record<string, unknown> };
     }
     // status === "processing" → attendre (progression géométrique plafonnée)
     await new Promise((r) => setTimeout(r, delayMs));
@@ -360,7 +363,12 @@ export interface DatalabJatsResult {
   jatsXml: string;
   verdict: string | null; // PASS | FAIL | …
   finished: boolean | null;
-  verifierMetrics: Array<{ name?: string; status?: string; severity?: string }> | null;
+  verifierMetrics: Array<{
+    name?: string;
+    status?: string;
+    severity?: string;
+    details?: string;
+  }> | null;
   raw: Record<string, unknown>;
 }
 
@@ -399,11 +407,19 @@ export async function datalabJats(
     throw new DatalabError("Résultat JATS vide ou illisible.", 502, "EMPTY_RESULT");
   }
   const metricsRaw = merged.verifier_metrics;
+  // Réponse réelle observée (essai clé réelle) : { id, status, details, severity } —
+  // « name » est un alias de repli si l'API change de champ.
   const verifierMetrics = Array.isArray(metricsRaw)
     ? (metricsRaw as Array<Record<string, unknown>>).map((m) => ({
-        name: typeof m.name === "string" ? m.name : undefined,
+        name:
+          typeof m.name === "string"
+            ? m.name
+            : typeof m.id === "string"
+              ? m.id
+              : undefined,
         status: typeof m.status === "string" ? m.status : undefined,
         severity: typeof m.severity === "string" ? m.severity : undefined,
+        details: typeof m.details === "string" ? m.details : undefined,
       }))
     : null;
 
