@@ -3610,3 +3610,25 @@ Stage Summary:
 - Ma Thèse dispose d'un fournisseur documentaire haute fidélité optionnel : sans clé, tout repasse par le moteur local (aucune régression) ; avec clé (10-20 $ de crédits mensuels gratuits), imports PDF layout-aware (colonnes/tableaux/titres), extraction structurée à champs sourcés et vérifiés, articles en JATS XML vérifié.
 - La clé ne quitte jamais la machine (cookie httpOnly, pattern identique aux clés IA) ; les erreurs upstream sont mappées en messages FR actionnables (clé invalide, crédits épuisés + lien billing, rate limit, timeout).
 - Reste propriétaire : créer un compte datalab.to + clé (2 min), tester avec un vrai article (import → extraction structurée → insertion ; JATS export) ; la recette utilisateur du module reste à valider sur Windows (installation installée).
+
+---
+Task ID: DATALAB-ESSAI-CLE-V1
+Agent: Z.ai Code (session externe, propriétaire : « j'ai la clé est ce que je vous la transmets pour l'insérer dans l'app et faire l'essaie? » puis clé livrée en upload datalab.txt)
+
+Task: Insérer la clé Datalab réelle dans l'app et faire l'essai de bout en bout des chantiers A/B/C avec un vrai article scientifique.
+
+Work Log:
+- Clé reçue par upload (43 caractères, fragments volontairement omis de ce journal — repo public) : premier probe avec champ form `api_key` → 401 (mauvais mode) ; lecture du client du chantier A → auth par header **X-API-Key** ; re-probe → 400 « Invalid file type » (auth passée, /dev/null n'est pas un PDF) = **clé VALIDÉE** sans consommer de crédit.
+- Insertion : `.env` local (`DATALAB_API_KEY`, gitignore couvert, chmod 600) — jamais committée ; GET /api/datalab/config → source « env », clé masquée ✓.
+- PDF d'essai : arXiv 1706.03762 (Vaswani et al., *Attention Is All You Need*, 15 pages réelles).
+- Essais directs API (bun, soumission parallèle + polling) : **Convert** fast → 50 560 chars markdown, 15 pages, ~4 s ; **Extract** fast (schéma 8 champs) → tous champs remplis + citations de position `/page/0/SectionHeader/2` etc., structure de réponse PLATE (valeur + clé sœur `<champ>_citations`), `final_cost_cents: 0` (free tier) ; **JATS** → 165 s, 138 743 chars, verdict **PASS**, 58 métriques de vérification (0 bloquant, 5 avis advisory : copyright-holder manquant, ISSN absent… normaux pour un preprint) ; 2e appel JATS sur fichier identique → ~3 s (checkpoint réutilisé côté Datalab).
+- **3 écarts client↔API découverts par l'essai, corrigés (commit 3140b9f)** : (1) pollDatalabJob — convert fast omet result_url et porte les données dans le corps du poll → avant : EMPTY_RESULT systématique ; (2) normalizeFields — citations en clés sœurs `<champ>_citations` → avant : jamais affichées dans l'UI ; (3) datalabJats — métriques avec `id`+`details`, pas `name` → avant : tous contrôles « contrôle » sans détail ; panneau JATS enrichi (details).
+- Recette via les routes de l'app (dev :3000, env key) : /api/datalab/convert → 200 (50 560 chars/15 p.) ; /api/paper2code/extract-structured → 200 (**8/8 champs, citations présentes, score moyen 4,5/5**, hyperparamètres N=6/d_model=512/d_ff=2048/h=8 exacts) ; /api/datalab/jats → 200 (PASS, 58 métriques nommées + détails, 0 bloquant).
+- QA : lint 0 erreur (251 warnings préexistants) ; clé absente du repo (aucun fragment dans les fichiers suivis, .env local ignoré par git).
+- Premier run JATS : timeout 420 s après 189 polls « processing » (progress 4-5 %) — file d'attente free tier variable ; le re-run est passé en 165 s. Le timeout client de 300 s peut rester court en heure de pointe → si récurrence, passer jats timeoutMs à 600 s.
+
+Stage Summary:
+- **L'intégration Datalab est opérationnelle de bout en bout avec une clé réelle** : import haute fidélité, extraction structurée sourcée (citations de page/bloc + confiance), JATS vérifié PASS — le tout pour 0 € sur le free tier (crédits mensuels 10-20 $).
+- Le propriétaire peut tester dans l'app : Paramètres → Datalab (badge « clé configurée » si cookie) OU clé env déjà active ; module Article → Code → importer un PDF → Extraction structurée / JATS.
+- 3 correctifs de conformité aux formes réelles de l'API committés (3140b9f) — le client suit désormais la réponse effective observée, avec replis si l'API revient aux anciennes formes.
+- Reste : recette Windows installée (identique), surveillance du timeout JATS en heure de pointe.
