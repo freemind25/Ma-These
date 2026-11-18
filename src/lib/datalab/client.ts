@@ -62,12 +62,29 @@ async function submitDatalabJob(
   form: FormData,
   signal?: AbortSignal
 ): Promise<string> {
-  const res = await fetch(`${DATALAB_BASE_URL}${path}`, {
-    method: "POST",
-    headers: { "X-API-Key": apiKey },
-    body: form,
-    signal,
-  });
+  // Relance transport : datalab.to renvoie parfois un hiccup réseau isolé
+  // (reset TLS, 502 edge) qui basculait sinon l'import complet vers la voie
+  // locale — sur un PDF scanné, cela finissait en « Extraction vide » alors
+  // qu'un second essai passait. Une seule relance, abort utilisateur respecté.
+  let res!: Response;
+  for (let attempt = 0; ; attempt++) {
+    try {
+      res = await fetch(`${DATALAB_BASE_URL}${path}`, {
+        method: "POST",
+        headers: { "X-API-Key": apiKey },
+        body: form,
+        signal,
+      });
+      break;
+    } catch (err) {
+      if (signal?.aborted || attempt >= 1) throw err;
+      console.warn(
+        "[datalab] soumission réseau échouée, relance:",
+        err instanceof Error ? err.message : err
+      );
+      await new Promise((r) => setTimeout(r, 2_000));
+    }
+  }
 
   if (!res.ok) {
     const errCode = res.headers.get("X-Datalab-Error-Code");

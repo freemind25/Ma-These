@@ -67,7 +67,7 @@ IMPORTANT RULES:
 
 const ANALYZING_SYSTEM = `You are an expert ML researcher analyzing a paper to write production-ready Python code. Provide detailed, actionable logic analysis.`;
 
-function analyzingPrompt(paperText: string, plan: PlanResult, filename: string): string {
+function analyzingPrompt(plan: PlanResult, filename: string): string {
   const desc = plan.task_descriptions[filename] || filename;
   return `Analyze the file "${filename}" for implementation.
 
@@ -95,7 +95,6 @@ Provide a thorough logic analysis for implementing "${filename}":
 const CODING_SYSTEM = `You are an expert Python developer writing production-ready ML code. Write clean, well-documented code following PEP 8 and Google style guidelines.`;
 
 function codingPrompt(
-  paperText: string,
   plan: PlanResult,
   filename: string,
   fileAnalysis: string,
@@ -175,6 +174,26 @@ function capPaperText(s: string, max: number = MAX_PAPER_CHARS): { text: string;
   };
 }
 
+// Bornes des sections dérivées du plan / des analyses. Le LLM peut renvoyer
+// des champs démesurés (un overview de 40k caractères, un classDiagram de
+// 30k…) : sans borne, le corps de la requête d'analyse/codage grossit sans
+// limite et déclenche des coupures de transport (« Error in input stream »
+// de Bun/undici). Ces plafonds bornent chaque requête à ~60k caractères.
+const CAP_PLAN_OVERVIEW = 16_000;
+const CAP_PLAN_DIAGRAM = 16_000;
+const CAP_PLAN_CONFIG = 8_000;
+const CAP_TASK_DESC = 8_000;
+const CAP_ANALYSIS = 20_000;
+const CAP_PREV_CODE_PER_FILE = 8_000;
+const CAP_PREV_CODE_TOTAL = 40_000;
+
+/** Troncature dure d'une section de prompt avec marqueur explicite. */
+function capSection(label: string, s: string, max: number): string {
+  if (!s || s.length <= max) return s || "";
+  const omitted = (s.length - max).toLocaleString("fr-FR");
+  return `${s.slice(0, max)}\n\n[… ${label} tronqué : ${omitted} caractères omis …]`;
+}
+
 /**
  * Traduit les erreurs brutes de transport en messages actionnables.
  * « Error in input stream » (undici/bun fetch) = coupure du flux de
@@ -190,6 +209,35 @@ function translateAiError(msg: string): string {
     );
   }
   return msg;
+}
+
+/**
+ * Appel LLM avec relance visible : au premier échec, l'utilisateur est
+ * informé dans la zone de progression puis une 2e tentative est lancée
+ * après un court backoff. Les coupures de transport (« Error in input
+ * stream », reset TLS, 5xx) sont majoritairement transitoires — une seule
+ * relance bien visible suffit et borne le pire cas à 2 × timeout.
+ */
+async function callLLMResilient(
+  label: string,
+  systemPrompt: string,
+  userMessage: string,
+  provider: AiProviderId,
+  model: string,
+  apiKey: string,
+  notify: (message: string) => void,
+  restoreProgress: () => void
+): Promise<string> {
+  try {
+    return await callLLM(systemPrompt, userMessage, provider, model, apiKey);
+  } catch (firstErr) {
+    const firstMsg = translateAiError(firstErr instanceof Error ? firstErr.message : String(firstErr));
+    console.warn(`[paper2code/generate] ${label} échouée, relance:`, firstMsg);
+    notify(`⚠️ ${label} : ${firstMsg} — nouvelle tentative...`);
+    await new Promise((r) => setTimeout(r, 3_000));
+    restoreProgress();
+    return await callLLM(systemPrompt, userMessage, provider, model, apiKey);
+  }
 }
 
 function getApiKey(provider: AiProviderId, userKey?: string): string {
@@ -211,8 +259,11 @@ async function callLLM(
   apiKey: string
 ): Promise<string> {
   // Fournisseur natif z.ai : SDK sandbox (zai-client, sans clé, circuit
-  // breaker + retries internes). L'app Tauri n'embarque pas le SDK —
-  // generateCompletion lèvera une erreur explicite dans ce cas.
+  // breaker). L'app Tauri n'embarque pas le SDK — generateCompletion lèvera
+  // une erreur explicite dans ce cas. maxRetriesPerProvider 0 : les
+  // reprises sont gérées au niveau du pipeline (callLLMResilient) avec un
+  // backoff visible côté utilisateur, sinon un échec de transport peut
+  // multiplier silencieusement les appels (3×180 s = 9 min figées).
   if (provider === "zai") {
     const result = await generateCompletion({
       messages: [
@@ -222,6 +273,7 @@ async function callLLM(
       model,
       temperature: 0.2,
       maxTokens: 16384,
+      maxRetriesPerProvider: 0,
       // La planification sur un gros document peut courir 60-90 s : le
       // timeout global du zai-client (60 s) tuerait un appel légitime avec
       // « Délai de la requête IA dépassé ». 3 min pour la voie pipeline.
@@ -244,6 +296,11 @@ async function callLLM(
   const res = await gatewayFetch(provider, url, {
     method: "POST",
     headers,
+    // Timeout dur : sans signal, un appel qui pend (hôte qui n'acquitte
+    // pas, connexion HS mais ouverte) fige le pipeline INDÉFINIMENT —
+    // l'utilisateur voit « Étape 1/6 » immobile pendant que le stade
+    // analyse attend un socket mort. 3 min alignées sur la voie z.ai.
+    signal: AbortSignal.timeout(180_000),
     body: JSON.stringify({
       model,
       temperature: 0.2,
@@ -431,7 +488,9 @@ export async function POST(request: NextRequest) {
           return;
         }
 
-        // Ensure required fields
+        // Ensure required fields + bornage des sections (un plan démesuré
+        // gonfle TOUS les prompts d'analyse/codage qui en dérivent — voir
+        // les constantes CAP_*).
         plan.file_list = Array.isArray(plan.file_list) ? plan.file_list : ["main.py"];
         plan.task_descriptions = plan.task_descriptions || {};
         plan.config_yaml = plan.config_yaml || "# Configuration\nmodel:\n  name: default\n";
@@ -439,6 +498,13 @@ export async function POST(request: NextRequest) {
         plan.overview = plan.overview || "";
         plan.class_diagram = plan.class_diagram || "";
         plan.sequence_diagram = plan.sequence_diagram || "";
+        plan.overview = capSection("résumé", plan.overview, CAP_PLAN_OVERVIEW);
+        plan.class_diagram = capSection("diagramme de classes", plan.class_diagram, CAP_PLAN_DIAGRAM);
+        plan.sequence_diagram = capSection("diagramme de séquence", plan.sequence_diagram, CAP_PLAN_DIAGRAM);
+        plan.config_yaml = capSection("configuration", plan.config_yaml, CAP_PLAN_CONFIG);
+        for (const [k, v] of Object.entries(plan.task_descriptions)) {
+          plan.task_descriptions[k] = capSection(`description de ${k}`, String(v ?? ""), CAP_TASK_DESC);
+        }
 
         send({ type: "progress", stage: "planning", step: 1, total: 1, message: "Planification terminée ✓" });
         send({ type: "result", stage: "planning", data: plan });
@@ -469,20 +535,32 @@ export async function POST(request: NextRequest) {
           });
 
           try {
-            const analysis = await callLLM(
+            const analysis = await callLLMResilient(
+              `Analyse de ${filename}`,
               ANALYZING_SYSTEM,
-              analyzingPrompt(paperText, plan, filename),
+              analyzingPrompt(plan, filename),
               provider,
               model,
-              apiKey
+              apiKey,
+              (m) => send({ type: "progress", stage: "analyzing", step: i + 1, total: totalAnalyze, message: m }),
+              () => send({ type: "progress", stage: "analyzing", step: i + 1, total: totalAnalyze, message: `Analyse de ${filename}...` })
             );
             callCount++;
             analyses[filename] = analysis;
             send({ type: "result", stage: "analyzing", file: filename, content: analysis });
           } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
+            const msg = translateAiError(err instanceof Error ? err.message : String(err));
             analyses[filename] = `[ERREUR] ${msg}`;
             send({ type: "result", stage: "analyzing", file: filename, content: `[ERREUR] ${msg}` });
+            // Visible aussi dans la zone de progression (l'utilisateur ne
+            // lit pas forcément l'onglet Analyse) — sans stopper le pipeline.
+            send({
+              type: "progress",
+              stage: "analyzing",
+              step: i + 1,
+              total: totalAnalyze,
+              message: `⚠️ Analyse de ${filename} échouée (${msg}) — le pipeline continue.`,
+            });
           }
         }
 
@@ -510,18 +588,35 @@ export async function POST(request: NextRequest) {
             message: `Génération de ${filename}...`,
           });
 
-          // Build context of previously generated code
-          const prevCode = doneFiles
-            .map((f) => `### ${f}\n\`\`\`python\n${codes[f]}\n\`\`\`\n`)
-            .join("\n");
+          // Contexte des fichiers déjà générés — chaque fichier plafonné,
+          // total plafonné : sans borne, le prompt du dernier fichier porte
+          // TOUT le code précédent et le corps de requête explose.
+          const prevCodeParts: string[] = [];
+          let prevCodeLen = 0;
+          for (const f of doneFiles) {
+            const body = capSection(`code de ${f}`, codes[f] || "", CAP_PREV_CODE_PER_FILE);
+            const block = `### ${f}\n\`\`\`python\n${body}\n\`\`\`\n`;
+            if (prevCodeLen + block.length > CAP_PREV_CODE_TOTAL) break;
+            prevCodeParts.push(block);
+            prevCodeLen += block.length;
+          }
+          const prevCode = prevCodeParts.join("\n");
 
           try {
-            const raw = await callLLM(
+            const raw = await callLLMResilient(
+              `Génération de ${filename}`,
               CODING_SYSTEM,
-              codingPrompt(paperText, plan, filename, analyses[filename] || "", prevCode),
+              codingPrompt(
+                plan,
+                filename,
+                capSection(`analyse de ${filename}`, analyses[filename] || "", CAP_ANALYSIS),
+                prevCode
+              ),
               provider,
               model,
-              apiKey
+              apiKey,
+              (m) => send({ type: "progress", stage: "coding", step: i + 1, total: codeFiles.length, message: m }),
+              () => send({ type: "progress", stage: "coding", step: i + 1, total: codeFiles.length, message: `Génération de ${filename}...` })
             );
             callCount++;
             const code = extractCode(raw);
@@ -529,10 +624,17 @@ export async function POST(request: NextRequest) {
             doneFiles.push(filename);
             send({ type: "result", stage: "coding", file: filename, content: code });
           } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
+            const msg = translateAiError(err instanceof Error ? err.message : String(err));
             codes[filename] = `# Erreur de génération\n# ${msg}`;
             doneFiles.push(filename);
             send({ type: "result", stage: "coding", file: filename, content: `# Erreur\n${msg}` });
+            send({
+              type: "progress",
+              stage: "coding",
+              step: i + 1,
+              total: codeFiles.length,
+              message: `⚠️ Génération de ${filename} échouée (${msg}) — le pipeline continue.`,
+            });
           }
         }
 

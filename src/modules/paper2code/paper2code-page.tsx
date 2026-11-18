@@ -91,6 +91,24 @@ const FAST_PROVIDERS: AiProviderId[] = ["zai", "groq", "google", "openrouter", "
 // importer extraction.ts dans le bundle client (parseurs dynamiques serveur).
 const MAX_PDF_BYTES = 50 * 1024 * 1024;
 
+/**
+ * Traduit les erreurs de transport brutes du fetch/reader en messages
+ * actionnables. Messages observés selon runtime : « Error in input
+ * stream » (Bun), « Failed to fetch » (Chromium/WebView2), « Load failed »
+ * (WebKit), « terminated » (undici) — tous = coupure de la connexion au
+ * serveur pendant la génération, majoritairement transitoire.
+ */
+function translateTransportError(msg: string): string {
+  if (/input stream|failed to fetch|network error|load failed|terminated|socket|econn/i.test(msg)) {
+    return (
+      "La connexion au serveur s'est interrompue pendant la génération (erreur de transport). " +
+      "Réessayez : les coupures sont généralement transitoires. Si l'erreur revient systématiquement, " +
+      "vérifiez votre connexion réseau ou changez de fournisseur IA dans les réglages."
+    );
+  }
+  return msg;
+}
+
 interface PdfImportInfo {
   name: string;
   pages: number;
@@ -179,7 +197,7 @@ export function Paper2CodePage() {
       if (!reader) throw new Error("Pas de reponse streamee.");
       const decoder = new TextDecoder();
       let buf = "";
-      // eslint-disable-next-line no-constant-condition
+      let sawTerminal = false; // event « error » ou « done » reçu du serveur
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -188,15 +206,38 @@ export function Paper2CodePage() {
         buf = parts.pop() || "";
         for (const part of parts) {
           if (!part.trim()) continue;
-          try { handleEvent(JSON.parse(part) as StreamEvent); } catch { /* skip */ }
+          try {
+            const ev = JSON.parse(part) as StreamEvent;
+            if (ev.type === "error" || ev.type === "done") sawTerminal = true;
+            handleEvent(ev);
+          } catch { /* skip */ }
         }
       }
       if (buf.trim()) {
-        try { handleEvent(JSON.parse(buf) as StreamEvent); } catch { /* skip */ }
+        try {
+          const ev = JSON.parse(buf) as StreamEvent;
+          if (ev.type === "error" || ev.type === "done") sawTerminal = true;
+          handleEvent(ev);
+        } catch { /* skip */ }
+      }
+      // Flux refermé sans event terminal : le serveur a été coupé en plein
+      // travail (crash, proxy, veille machine) — message explicite plutôt
+      // qu'un arrêt silencieux.
+      if (!sawTerminal) {
+        const msg =
+          "La génération a été interrompue avant la fin (connexion au serveur perdue). " +
+          "Réessayez — la progression reprend depuis le début.";
+        setError(msg);
+        toast.error(msg);
       }
     } catch (err) {
       if ((err as Error).name === "AbortError") { toast.info("Generation annulee."); }
-      else { const msg = err instanceof Error ? err.message : String(err); setError(msg); toast.error(msg); }
+      else {
+        const raw = err instanceof Error ? err.message : String(err);
+        const msg = translateTransportError(raw);
+        setError(msg);
+        toast.error(msg);
+      }
     } finally { setGenerating(false); abortRef.current = null; }
   }, [paperText, provider, model, handleEvent]);
 

@@ -195,6 +195,9 @@ async function generateWithSDK(
     messages: formattedMessages,
     model: options.model || "default",
     temperature: options.temperature ?? 0.7,
+    // maxTokens explicite (pipeline Article→Code : 16384) — sans lui, le
+    // backend applique son défaut et peut tronquer un plan JSON volumineux.
+    ...(options.maxTokens ? { max_tokens: options.maxTokens } : {}),
   });
 
   let content = "";

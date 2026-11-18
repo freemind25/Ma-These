@@ -2,59 +2,51 @@ import https from "node:https";
 import { Readable } from "node:stream";
 
 // ═══════════════════════════════════════════════════════════════
-// gatewayFetch — contournement du blocage Cloudflare du client undici
+// gatewayFetch — client HTTP unifié node:https pour les appels IA
 // ═══════════════════════════════════════════════════════════════
 //
-// Constat mesuré (sondes 2026-10-31, codecraftapi.com) :
+// DEUX motivations mesurées :
+//
+// 1. Cloudflare (sondes 2026-10-31, codecraftapi.com) :
 //   - fetch Node (undici) + User-Agent navigateur  => 403 « Just a moment… »
-//     (HTTP/1.1 ET HTTP/2, avec ou sans Accept/Accept-Encoding additionnels)
 //   - node:https classique (MÊME stack TLS OpenSSL) + même UA => 401 JSON
 //   - curl h1/h2 + même UA => 401 JSON
-//   - undici npm + dispatcher allowH2 => 403
-// La règle Cloudflare empreinte la présentation HTTP du client undici
-// lui-même — ni l'User-Agent (indispensable mais insuffisante), ni le
-// protocole, ni l'empreinte TLS ne sont discriminants.
+//   La règle Cloudflare empreinte la présentation HTTP du client undici
+//   lui-même — node:https contourne l'empreinte.
 //
-// gatewayFetch route donc les appels vers les hôtes concernés via
-// node:https, et laisse le fetch global pour tous les autres. La réponse
-// est reconstruite en Response WHATWG (body = Readable.toWeb) pour rester
-// compatible avec tous les appels existants : .ok/.status/.statusText/
-// .json()/.text()/.body.getReader().
+// 2. Stabilité inter-runtime (2026-11) : en dev Tauri (`tauri dev`), le
+//   serveur Next tourne sous BUN et le fetch global est celui de Bun. Sur
+//   les appels LLM (corps JSON de dizaines de ko, réponses longues), Bun
+//   fetch produit des coupures « Error in input stream » qui interrompent
+//   le pipeline Article→Code en pleine génération. node:https (couche de
+//   compat Node de Bun + Node réel en build standalone) est stable sur les
+//   deux runtimes — tous les appels IA https passent donc par lui.
 //
-// La détection se fait par NOM D'HÔTE (pas par provider id) afin de couvrir
-// aussi le canal « custom » pointant vers ces gateways.
+// La réponse est reconstruite en Response WHATWG (body = Readable.toWeb)
+// pour rester compatible avec tous les appels existants : .ok/.status/
+// .statusText/.json()/.text()/.body.getReader().
+//
+// Les corps non-string (FormData, streams) ne sont pas gérés par la voie
+// node:https : repli sur le fetch global (aucun appelant IA actuel n'en
+// utilise — garde-fou pour les usages futurs).
 // ═══════════════════════════════════════════════════════════════
-
-/**
- * Hôtes dont la protection Cloudflare rejette la présentation undici.
- * Ajouter ici tout nouveau gateway constaté bloqué côté app (403 HTML
- * « Just a moment… » malgré l'UA).
- */
-const UNDICI_BLOCKED_HOST_SUFFIXES = ["codecraftapi.com"];
-
-export function hostNeedsNodeClient(url: string): boolean {
-  try {
-    const host = new URL(url).hostname.toLowerCase();
-    return UNDICI_BLOCKED_HOST_SUFFIXES.some(
-      (s) => host === s || host.endsWith("." + s),
-    );
-  } catch {
-    return false;
-  }
-}
 
 /**
  * Drop-in fetch pour les appels IA côté serveur : signature identique à
- * fetch(url, init), route vers node:https pour les hôtes bloqués.
- * Le paramètre provider est conservé pour la lisibilité des appelants mais
- * la décision repose sur l'hôte de l'URL.
+ * fetch(url, init). Tout https passe par node:https (stabilité undici/Bun),
+ * le fetch global ne sert qu'aux cas non couverts (http local, corps non
+ * string).
  */
 export async function gatewayFetch(
   _provider: string | undefined,
   url: string,
   init?: RequestInit,
 ): Promise<Response> {
-  if (!hostNeedsNodeClient(url) || !url.startsWith("https://")) {
+  // Corps non gérable par node:https → fetch global (aucun usage actuel).
+  if (init?.body != null && typeof init.body !== "string") {
+    return fetch(url, init);
+  }
+  if (!url.startsWith("https://")) {
     return fetch(url, init);
   }
   return nodeHttpsFetch(url, init);
