@@ -109,6 +109,21 @@ function translateTransportError(msg: string): string {
   return msg;
 }
 
+/**
+ * Hiccup réseau ISOLÉ sur une requête de polling (timeout 10 s, fetch
+ * raté) : on retente au tick suivant sans rien casser. À distinguer des
+ * erreurs fatales (404 job perdu, 400) qui interrompent le suivi.
+ */
+class TransportPollError extends Error {}
+
+/** Réponse de polling de /api/paper2code/generate (GET ?jobId&cursor). */
+interface PollResponse {
+  status: "running" | "done" | "error" | "cancelled";
+  events: StreamEvent[];
+  cursor: number;
+  error?: string;
+}
+
 interface PdfImportInfo {
   name: string;
   pages: number;
@@ -130,7 +145,18 @@ export function Paper2CodePage() {
   const [error, setError] = useState<string | null>(null);
   const [expandedFiles, setExpandedFiles] = useState<Set<string>>(new Set());
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
-  const abortRef = useRef<AbortController | null>(null);
+  // Contrôle du job courant : id côté serveur + drapeau d'arrêt local.
+  // Le suivi se fait par POLLING (requêtes courtes) — pas de flux long,
+  // coupable par les passerelles/proxies (~50 s observé en prévisualisation).
+  const runCtlRef = useRef<{ jobId: string | null; stopped: boolean } | null>(null);
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      runCtlRef.current = null;
+    };
+  }, []);
   const [importingPdf, setImportingPdf] = useState(false);
   const [pdfImport, setPdfImport] = useState<PdfImportInfo | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -180,55 +206,70 @@ export function Paper2CodePage() {
     setCodes({});
     setActiveTab("plan");
     setProgress({ stage: "planning", step: 0, total: 1, message: "" });
-    abortRef.current = new AbortController();
+    runCtlRef.current = { jobId: null, stopped: false };
 
     try {
+      // 1) Démarrage : POST court → { jobId }. Le pipeline tourne en tâche
+      // de fond côté serveur, découplé de toute connexion HTTP longue.
       const res = await fetch("/api/paper2code/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ paperText, provider, model }),
-        signal: abortRef.current.signal,
       });
-      if (!res.ok) {
-        const errData = (await res.json()) as { error?: string };
-        throw new Error(errData.error || `HTTP ${res.status}`);
+      const data = (await res.json()) as { jobId?: string; error?: string };
+      if (!res.ok || !data.jobId) {
+        throw new Error(data.error || `HTTP ${res.status}`);
       }
-      const reader = res.body?.getReader();
-      if (!reader) throw new Error("Pas de reponse streamee.");
-      const decoder = new TextDecoder();
-      let buf = "";
-      let sawTerminal = false; // event « error » ou « done » reçu du serveur
+      runCtlRef.current.jobId = data.jobId;
+
+      // 2) Suivi par POLLING : chaque requête est courte et indépendante —
+      // une coupure réseau ou de proxy entre deux ticks ne perd rien (le
+      // job continue côté serveur, le prochain tick rattrape les events).
+      let cursor = 0;
+      let consecutiveFailures = 0;
+      const MAX_POLL_FAILURES = 8; // ≈ 12 s de coupure tolérée
       while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const parts = buf.split("\n");
-        buf = parts.pop() || "";
-        for (const part of parts) {
-          if (!part.trim()) continue;
-          try {
-            const ev = JSON.parse(part) as StreamEvent;
-            if (ev.type === "error" || ev.type === "done") sawTerminal = true;
-            handleEvent(ev);
-          } catch { /* skip */ }
-        }
-      }
-      if (buf.trim()) {
+        if (!mountedRef.current || runCtlRef.current?.stopped) return;
+        await new Promise((r) => setTimeout(r, 1500));
+        if (!mountedRef.current || runCtlRef.current?.stopped) return;
+
+        let resp: PollResponse;
         try {
-          const ev = JSON.parse(buf) as StreamEvent;
-          if (ev.type === "error" || ev.type === "done") sawTerminal = true;
+          const pr = await fetch(
+            `/api/paper2code/generate?jobId=${encodeURIComponent(data.jobId)}&cursor=${cursor}`,
+            { signal: AbortSignal.timeout(10_000) }
+          );
+          if (!pr.ok) {
+            const pe = (await pr.json().catch(() => ({}))) as { error?: string };
+            if (pr.status === 404) {
+              // Job perdu (redémarrage serveur) : fiable et définitif.
+              throw new Error(pe.error || "Tâche de génération introuvable (serveur redémarré ?). Relancez la génération.");
+            }
+            // 5xx/429 etc. : hiccup serveur isolé → retenter.
+            throw new TransportPollError();
+          }
+          resp = (await pr.json()) as PollResponse;
+          consecutiveFailures = 0;
+        } catch (pollErr) {
+          const name = (pollErr as Error).name;
+          const transient =
+            pollErr instanceof TransportPollError || name === "TimeoutError" || name === "AbortError";
+          if (!transient) throw pollErr;
+          consecutiveFailures++;
+          if (consecutiveFailures >= MAX_POLL_FAILURES) {
+            throw new Error(
+              "Suivi de la génération perdu : le serveur ne répond plus depuis trop longtemps. " +
+              "Vérifiez que l'application tourne toujours, puis relancez la génération."
+            );
+          }
+          continue; // hiccup isolé → le prochain tick rattrape
+        }
+
+        for (const ev of resp.events) {
           handleEvent(ev);
-        } catch { /* skip */ }
-      }
-      // Flux refermé sans event terminal : le serveur a été coupé en plein
-      // travail (crash, proxy, veille machine) — message explicite plutôt
-      // qu'un arrêt silencieux.
-      if (!sawTerminal) {
-        const msg =
-          "La génération a été interrompue avant la fin (connexion au serveur perdue). " +
-          "Réessayez — la progression reprend depuis le début.";
-        setError(msg);
-        toast.error(msg);
+        }
+        cursor = resp.cursor;
+        if (resp.status !== "running") return; // done | error | cancelled — UI déjà mise à jour par les events
       }
     } catch (err) {
       if ((err as Error).name === "AbortError") { toast.info("Generation annulee."); }
@@ -238,10 +279,23 @@ export function Paper2CodePage() {
         setError(msg);
         toast.error(msg);
       }
-    } finally { setGenerating(false); abortRef.current = null; }
+    } finally { setGenerating(false); runCtlRef.current = null; }
   }, [paperText, provider, model, handleEvent]);
 
-  const handleCancel = useCallback(() => { abortRef.current?.abort(); }, []);
+  const handleCancel = useCallback(() => {
+    const ctl = runCtlRef.current;
+    if (!ctl) return;
+    ctl.stopped = true;
+    // Best effort : prévenir le serveur pour libérer le pipeline (les
+    // événements déjà produits restent visibles).
+    if (ctl.jobId) {
+      fetch(`/api/paper2code/generate?jobId=${encodeURIComponent(ctl.jobId)}`, {
+        method: "DELETE",
+        signal: AbortSignal.timeout(5000),
+      }).catch(() => { /* best effort */ });
+    }
+    toast.info("Generation annulee.");
+  }, []);
   const toggleFile = (f: string) => setExpandedFiles((prev) => { const n = new Set(prev); if (n.has(f)) n.delete(f); else n.add(f); return n; });
   const copyToClipboard = async (text: string, file: string) => { await navigator.clipboard.writeText(text); setCopiedFile(file); setTimeout(() => setCopiedFile(null), 2000); };
 

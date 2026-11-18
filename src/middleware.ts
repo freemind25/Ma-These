@@ -18,13 +18,17 @@ export const config = {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const rule = getRateLimitRule(pathname);
+  // Method-aware : un même pathname peut servir des usages très différents
+  // (ex. POST = démarrage coûteux, GET = polling léger sur
+  // /api/paper2code/generate). Sans la méthode dans la clé, le polling
+  // saturerait le quota du démarrage.
+  const rule = getRateLimitRule(pathname, request.method);
 
   // No rule = no rate limiting
   if (!rule) return NextResponse.next();
 
   const ip = getClientIp(request);
-  const key = `${ip}:${pathname}`;
+  const key = `${ip}:${request.method}:${pathname}`;
 
   const result = checkRateLimit(key, rule);
 

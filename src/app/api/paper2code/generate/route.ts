@@ -362,10 +362,337 @@ function extractCode(text: string): string {
   return text.trim();
 }
 
-// ─── Main Handler ─────────────────────────────────────────
+
+// ─── Job store (in-memory) ──────────────────────────────────
+//
+// ARCHITECTURE JOB + POLLING (remplace le flux NDJSON long) :
+// la passerelle de prévisualisation (et tout proxy intermédiaire) coupe
+// les réponses longues (~50-60 s observé) malgré les heartbeats — le
+// frontend perdait la génération en plein travail (« La connexion au
+// serveur s'est interrompue »). Désormais :
+//   POST   → démarre un job (pipeline en tâche de fond) et renvoie {jobId}
+//   GET    → polling : {status, events nouveaux depuis cursor, cursor}
+//   DELETE → annulation demandée
+// Chaque requête est courte (< 2 s) : plus aucune connexion longue à
+// couper. Un redémarrage du serveur perd les jobs (404 → message
+// explicite côté client, la génération est relancable).
+
+type JobStatus = "running" | "done" | "error" | "cancelled";
+
+interface GenerateJob {
+  id: string;
+  status: JobStatus;
+  events: Array<Record<string, unknown>>;
+  cancelRequested: boolean;
+  createdAt: number;
+}
+
+const jobs = new Map<string, GenerateJob>();
+const JOB_TTL_MS = 2 * 60 * 60 * 1000; // 2 h
+const MAX_JOBS = 20;
+
+function pruneJobs(): void {
+  const now = Date.now();
+  for (const [id, job] of jobs) {
+    if (now - job.createdAt > JOB_TTL_MS) jobs.delete(id);
+  }
+  while (jobs.size > MAX_JOBS) {
+    let oldestId: string | null = null;
+    let oldestAt = Infinity;
+    for (const [id, job] of jobs) {
+      if (job.createdAt < oldestAt) {
+        oldestAt = job.createdAt;
+        oldestId = id;
+      }
+    }
+    if (!oldestId) break;
+    jobs.delete(oldestId);
+  }
+}
+
+function jsonResponse(payload: unknown, status: number): Response {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+// ─── Pipeline (tâche de fond d'un job) ──────────────────────
+
+interface RunArgs {
+  job: GenerateJob;
+  paperText: string;
+  llmPaperText: string;
+  paperTruncated: boolean;
+  provider: AiProviderId;
+  model: string;
+  apiKey: string;
+}
+
+async function runGenerateJob(args: RunArgs): Promise<void> {
+  const { job } = args;
+  let callCount = 0;
+
+  function emit(event: Record<string, unknown>): void {
+    job.events.push(event);
+  }
+  function isCancelled(): boolean {
+    return job.cancelRequested;
+  }
+
+  try {
+    // ═══════════════════════════════════════
+    // STAGE 1: PLANNING
+    // ═══════════════════════════════════════
+    emit({
+      type: "progress",
+      stage: "planning",
+      step: 0,
+      total: 1,
+      message: "📋 Planification en cours...",
+    });
+
+    if (args.paperTruncated) {
+      emit({
+        type: "progress",
+        stage: "planning",
+        step: 0,
+        total: 1,
+        message: `📄 Document très long (${args.paperText.length.toLocaleString("fr-FR")} caractères) — texte plafonné à ${MAX_PAPER_CHARS.toLocaleString("fr-FR")} pour l'appel IA (tête + fin conservées).`,
+      });
+    }
+
+    // La planification est le seul appel fatal du pipeline : les
+    // interruptions de transport sont majoritairement transitoires → une
+    // relance explicite avec un backoff plus long, sous les yeux de
+    // l'utilisateur (les événements sont poussés dans le job, le client
+    // les voit au tick de polling suivant).
+    let planRaw: string;
+    try {
+      planRaw = await callLLM(
+        PLANNING_SYSTEM,
+        planningPrompt(args.llmPaperText),
+        args.provider,
+        args.model,
+        args.apiKey
+      );
+    } catch (firstErr) {
+      if (isCancelled()) { job.status = "cancelled"; return; }
+      const firstMsg = translateAiError(firstErr instanceof Error ? firstErr.message : String(firstErr));
+      console.warn("[paper2code/generate] planification échouée, relance:", firstMsg);
+      emit({
+        type: "progress",
+        stage: "planning",
+        step: 0,
+        total: 1,
+        message: `⚠️ ${firstMsg} — nouvelle tentative...`,
+      });
+      await new Promise((r) => setTimeout(r, 4_000));
+      if (isCancelled()) { job.status = "cancelled"; return; }
+      planRaw = await callLLM(
+        PLANNING_SYSTEM,
+        planningPrompt(args.llmPaperText),
+        args.provider,
+        args.model,
+        args.apiKey
+      );
+    }
+    callCount++;
+
+    if (isCancelled()) { job.status = "cancelled"; return; }
+
+    let plan: PlanResult;
+    try {
+      plan = extractJson(planRaw) as unknown as PlanResult;
+    } catch {
+      emit({ type: "error", message: "Échec de l'extraction du plan JSON. Réessayez." });
+      job.status = "error";
+      return;
+    }
+
+    // Ensure required fields + bornage des sections (un plan démesuré
+    // gonfle TOUS les prompts d'analyse/codage qui en dérivent — voir
+    // les constantes CAP_*).
+    plan.file_list = Array.isArray(plan.file_list) ? plan.file_list : ["main.py"];
+    plan.task_descriptions = plan.task_descriptions || {};
+    plan.config_yaml = plan.config_yaml || "# Configuration\nmodel:\n  name: default\n";
+    plan.required_packages = Array.isArray(plan.required_packages) ? plan.required_packages : [];
+    plan.overview = plan.overview || "";
+    plan.class_diagram = plan.class_diagram || "";
+    plan.sequence_diagram = plan.sequence_diagram || "";
+    plan.overview = capSection("résumé", plan.overview, CAP_PLAN_OVERVIEW);
+    plan.class_diagram = capSection("diagramme de classes", plan.class_diagram, CAP_PLAN_DIAGRAM);
+    plan.sequence_diagram = capSection("diagramme de séquence", plan.sequence_diagram, CAP_PLAN_DIAGRAM);
+    plan.config_yaml = capSection("configuration", plan.config_yaml, CAP_PLAN_CONFIG);
+    for (const [k, v] of Object.entries(plan.task_descriptions)) {
+      plan.task_descriptions[k] = capSection(`description de ${k}`, String(v ?? ""), CAP_TASK_DESC);
+    }
+
+    emit({ type: "progress", stage: "planning", step: 1, total: 1, message: "Planification terminée ✓" });
+    emit({ type: "result", stage: "planning", data: plan });
+
+    // ═══════════════════════════════════════
+    // STAGE 2: ANALYZING
+    // ═══════════════════════════════════════
+    const codeFiles = plan.file_list.filter((f) => f.endsWith(".py"));
+    const totalAnalyze = codeFiles.length;
+    const analyses: Record<string, string> = {};
+
+    emit({
+      type: "progress",
+      stage: "analyzing",
+      step: 0,
+      total: totalAnalyze,
+      message: `🔍 Analyse de ${totalAnalyze} fichiers...`,
+    });
+
+    for (let i = 0; i < codeFiles.length; i++) {
+      if (isCancelled()) { job.status = "cancelled"; return; }
+      const filename = codeFiles[i];
+      emit({
+        type: "progress",
+        stage: "analyzing",
+        step: i + 1,
+        total: totalAnalyze,
+        message: `Analyse de ${filename}...`,
+      });
+
+      try {
+        const analysis = await callLLMResilient(
+          `Analyse de ${filename}`,
+          ANALYZING_SYSTEM,
+          analyzingPrompt(plan, filename),
+          args.provider,
+          args.model,
+          args.apiKey,
+          (m) => emit({ type: "progress", stage: "analyzing", step: i + 1, total: totalAnalyze, message: m }),
+          () => emit({ type: "progress", stage: "analyzing", step: i + 1, total: totalAnalyze, message: `Analyse de ${filename}...` })
+        );
+        callCount++;
+        analyses[filename] = analysis;
+        emit({ type: "result", stage: "analyzing", file: filename, content: analysis });
+      } catch (err) {
+        const msg = translateAiError(err instanceof Error ? err.message : String(err));
+        analyses[filename] = `[ERREUR] ${msg}`;
+        emit({ type: "result", stage: "analyzing", file: filename, content: `[ERREUR] ${msg}` });
+        // Visible aussi dans la zone de progression (l'utilisateur ne
+        // lit pas forcément l'onglet Analyse) — sans stopper le pipeline.
+        emit({
+          type: "progress",
+          stage: "analyzing",
+          step: i + 1,
+          total: totalAnalyze,
+          message: `⚠️ Analyse de ${filename} échouée (${msg}) — le pipeline continue.`,
+        });
+      }
+    }
+
+    // ═══════════════════════════════════════
+    // STAGE 3: CODING
+    // ═══════════════════════════════════════
+    const codes: Record<string, string> = {};
+    const doneFiles: string[] = [];
+
+    emit({
+      type: "progress",
+      stage: "coding",
+      step: 0,
+      total: codeFiles.length,
+      message: `💻 Génération de ${codeFiles.length} fichiers...`,
+    });
+
+    for (let i = 0; i < codeFiles.length; i++) {
+      if (isCancelled()) { job.status = "cancelled"; return; }
+      const filename = codeFiles[i];
+      emit({
+        type: "progress",
+        stage: "coding",
+        step: i + 1,
+        total: codeFiles.length,
+        message: `Génération de ${filename}...`,
+      });
+
+      // Contexte des fichiers déjà générés — chaque fichier plafonné,
+      // total plafonné : sans borne, le prompt du dernier fichier porte
+      // TOUT le code précédent et le corps de requête explose.
+      const prevCodeParts: string[] = [];
+      let prevCodeLen = 0;
+      for (const f of doneFiles) {
+        const body = capSection(`code de ${f}`, codes[f] || "", CAP_PREV_CODE_PER_FILE);
+        const block = `### ${f}\n\`\`\`python\n${body}\n\`\`\`\n`;
+        if (prevCodeLen + block.length > CAP_PREV_CODE_TOTAL) break;
+        prevCodeParts.push(block);
+        prevCodeLen += block.length;
+      }
+      const prevCode = prevCodeParts.join("\n");
+
+      try {
+        const raw = await callLLMResilient(
+          `Génération de ${filename}`,
+          CODING_SYSTEM,
+          codingPrompt(
+            plan,
+            filename,
+            capSection(`analyse de ${filename}`, analyses[filename] || "", CAP_ANALYSIS),
+            prevCode
+          ),
+          args.provider,
+          args.model,
+          args.apiKey,
+          (m) => emit({ type: "progress", stage: "coding", step: i + 1, total: codeFiles.length, message: m }),
+          () => emit({ type: "progress", stage: "coding", step: i + 1, total: codeFiles.length, message: `Génération de ${filename}...` })
+        );
+        callCount++;
+        const code = extractCode(raw);
+        codes[filename] = code;
+        doneFiles.push(filename);
+        emit({ type: "result", stage: "coding", file: filename, content: code });
+      } catch (err) {
+        const msg = translateAiError(err instanceof Error ? err.message : String(err));
+        codes[filename] = `# Erreur de génération\n# ${msg}`;
+        doneFiles.push(filename);
+        emit({ type: "result", stage: "coding", file: filename, content: `# Erreur\n${msg}` });
+        emit({
+          type: "progress",
+          stage: "coding",
+          step: i + 1,
+          total: codeFiles.length,
+          message: `⚠️ Génération de ${filename} échouée (${msg}) — le pipeline continue.`,
+        });
+      }
+    }
+
+    // ═══════════════════════════════════════
+    // DONE
+    // ═══════════════════════════════════════
+    emit({
+      type: "done",
+      stats: {
+        files: codeFiles.length,
+        calls: callCount,
+        plan,
+        codes,
+        analyses,
+      },
+    });
+    job.status = "done";
+  } catch (err) {
+    const msg = translateAiError(err instanceof Error ? err.message : String(err));
+    emit({ type: "error", message: msg });
+    job.status = "error";
+  }
+}
+
+// ─── Handlers ───────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
-  const body = (await request.json()) as Partial<GenerateRequest>;
+  let body: Partial<GenerateRequest>;
+  try {
+    body = (await request.json()) as Partial<GenerateRequest>;
+  } catch {
+    return jsonResponse({ error: "Corps de requête invalide (JSON attendu)." }, 400);
+  }
+
   // Réglages IA (cookie httpOnly) : fournisseur + modèle + clé utilisateur.
   // Le message d'erreur historique invite à configurer la clé « dans les
   // réglages IA » — cette route doit donc honorer cette clé (sinon seule
@@ -379,293 +706,96 @@ export async function POST(request: NextRequest) {
   const model = body.model || cookieConfig?.model || "llama-3.3-70b-versatile";
 
   if (paperText.length < 200) {
-    return new Response(
-      JSON.stringify({ error: "Texte de l'article trop court (minimum 200 caractères)." }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
-    );
+    return jsonResponse({ error: "Texte de l'article trop court (minimum 200 caractères)." }, 400);
   }
 
-  // A1L3B-01 : l’absence de clé est une configuration manquante, PAS un crash —
-  // réponse JSON explicite (503) au lieu d’un 500 corps vide masquant l’erreur.
+  // A1L3B-01 : l'absence de clé est une configuration manquante, PAS un crash —
+  // réponse JSON explicite (503) au lieu d'un 500 corps vide masquant l'erreur.
   let apiKey: string;
   try {
     apiKey = getApiKey(provider, cookieConfig?.apiKey);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    return new Response(
-      JSON.stringify({
-        error: `${msg} Aucune clé n’est configurée pour ce fournisseur — configurez-la dans les réglages IA ou le fichier .env du serveur. (Cause externe : configuration, non défaut applicatif.)`,
-      }),
-      { status: 503, headers: { "Content-Type": "application/json" } }
+    return jsonResponse(
+      {
+        error: `${msg} Aucune clé n'est configurée pour ce fournisseur — configurez-la dans les réglages IA ou le fichier .env du serveur. (Cause externe : configuration, non défaut applicatif.)`,
+      },
+      503
     );
   }
 
-  const encoder = new TextEncoder();
-  let callCount = 0;
+  pruneJobs();
+  const job: GenerateJob = {
+    id: crypto.randomUUID(),
+    status: "running",
+    events: [],
+    cancelRequested: false,
+    createdAt: Date.now(),
+  };
+  jobs.set(job.id, job);
 
   // Texte réellement envoyé au LLM (plafonné) — l'analyse et le codage
   // n'utilisent pas paperText, seul l'appel de planification le porte.
   const { text: llmPaperText, truncated: paperTruncated } = capPaperText(paperText);
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      function send(event: Record<string, unknown>) {
-        controller.enqueue(encoder.encode(JSON.stringify(event) + "\n"));
-      }
-
-      // Heartbeat : pendant un appel LLM de 30-90 s AUCUN octet ne part sur
-      // le flux (les événements ne sont émis qu'entre les appels). Un proxy
-      // ou le navigateur peut couper une connexion idle → le frontend
-      // perd le flux en plein travail. Un ping toutes les 15 s garde la
-      // connexion vivante ; le frontend ignore les types inconnus.
-      const heartbeat = setInterval(() => {
-        try { send({ type: "ping", at: Date.now() }); } catch { /* flux fermé */ }
-      }, 15_000);
-
-      try {
-        // ═══════════════════════════════════════
-        // STAGE 1: PLANNING
-        // ═══════════════════════════════════════
-        send({
-          type: "progress",
-          stage: "planning",
-          step: 0,
-          total: 1,
-          message: "📋 Planification en cours...",
-        });
-
-        if (paperTruncated) {
-          send({
-            type: "progress",
-            stage: "planning",
-            step: 0,
-            total: 1,
-            message: `📄 Document très long (${paperText.length.toLocaleString("fr-FR")} caractères) — texte plafonné à ${MAX_PAPER_CHARS.toLocaleString("fr-FR")} pour l'appel IA (tête + fin conservées).`,
-          });
-        }
-
-        // La planification est le seul appel fatal du pipeline : une coupure
-        // de flux y est systématiquement fatale pour l'utilisateur. Les
-        // interruptions de transport sont majoritairement transitoires → une
-        // relance explicite (au-delà des retries internes du client IA) avec
-        // un backoff plus long, sous les yeux de l'utilisateur.
-        let planRaw: string;
-        try {
-          planRaw = await callLLM(
-            PLANNING_SYSTEM,
-            planningPrompt(llmPaperText),
-            provider,
-            model,
-            apiKey
-          );
-        } catch (firstErr) {
-          const firstMsg = translateAiError(firstErr instanceof Error ? firstErr.message : String(firstErr));
-          console.warn("[paper2code/generate] planification échouée, relance:", firstMsg);
-          send({
-            type: "progress",
-            stage: "planning",
-            step: 0,
-            total: 1,
-            message: `⚠️ ${firstMsg} — nouvelle tentative...`,
-          });
-          await new Promise((r) => setTimeout(r, 4_000));
-          planRaw = await callLLM(
-            PLANNING_SYSTEM,
-            planningPrompt(llmPaperText),
-            provider,
-            model,
-            apiKey
-          );
-        }
-        callCount++;
-
-        let plan: PlanResult;
-        try {
-          plan = extractJson(planRaw) as unknown as PlanResult;
-        } catch {
-          send({ type: "error", message: "Échec de l'extraction du plan JSON. Réessayez." });
-          controller.close();
-          return;
-        }
-
-        // Ensure required fields + bornage des sections (un plan démesuré
-        // gonfle TOUS les prompts d'analyse/codage qui en dérivent — voir
-        // les constantes CAP_*).
-        plan.file_list = Array.isArray(plan.file_list) ? plan.file_list : ["main.py"];
-        plan.task_descriptions = plan.task_descriptions || {};
-        plan.config_yaml = plan.config_yaml || "# Configuration\nmodel:\n  name: default\n";
-        plan.required_packages = Array.isArray(plan.required_packages) ? plan.required_packages : [];
-        plan.overview = plan.overview || "";
-        plan.class_diagram = plan.class_diagram || "";
-        plan.sequence_diagram = plan.sequence_diagram || "";
-        plan.overview = capSection("résumé", plan.overview, CAP_PLAN_OVERVIEW);
-        plan.class_diagram = capSection("diagramme de classes", plan.class_diagram, CAP_PLAN_DIAGRAM);
-        plan.sequence_diagram = capSection("diagramme de séquence", plan.sequence_diagram, CAP_PLAN_DIAGRAM);
-        plan.config_yaml = capSection("configuration", plan.config_yaml, CAP_PLAN_CONFIG);
-        for (const [k, v] of Object.entries(plan.task_descriptions)) {
-          plan.task_descriptions[k] = capSection(`description de ${k}`, String(v ?? ""), CAP_TASK_DESC);
-        }
-
-        send({ type: "progress", stage: "planning", step: 1, total: 1, message: "Planification terminée ✓" });
-        send({ type: "result", stage: "planning", data: plan });
-
-        // ═══════════════════════════════════════
-        // STAGE 2: ANALYZING
-        // ═══════════════════════════════════════
-        const codeFiles = plan.file_list.filter((f) => f.endsWith(".py"));
-        const totalAnalyze = codeFiles.length;
-        const analyses: Record<string, string> = {};
-
-        send({
-          type: "progress",
-          stage: "analyzing",
-          step: 0,
-          total: totalAnalyze,
-          message: `🔍 Analyse de ${totalAnalyze} fichiers...`,
-        });
-
-        for (let i = 0; i < codeFiles.length; i++) {
-          const filename = codeFiles[i];
-          send({
-            type: "progress",
-            stage: "analyzing",
-            step: i + 1,
-            total: totalAnalyze,
-            message: `Analyse de ${filename}...`,
-          });
-
-          try {
-            const analysis = await callLLMResilient(
-              `Analyse de ${filename}`,
-              ANALYZING_SYSTEM,
-              analyzingPrompt(plan, filename),
-              provider,
-              model,
-              apiKey,
-              (m) => send({ type: "progress", stage: "analyzing", step: i + 1, total: totalAnalyze, message: m }),
-              () => send({ type: "progress", stage: "analyzing", step: i + 1, total: totalAnalyze, message: `Analyse de ${filename}...` })
-            );
-            callCount++;
-            analyses[filename] = analysis;
-            send({ type: "result", stage: "analyzing", file: filename, content: analysis });
-          } catch (err) {
-            const msg = translateAiError(err instanceof Error ? err.message : String(err));
-            analyses[filename] = `[ERREUR] ${msg}`;
-            send({ type: "result", stage: "analyzing", file: filename, content: `[ERREUR] ${msg}` });
-            // Visible aussi dans la zone de progression (l'utilisateur ne
-            // lit pas forcément l'onglet Analyse) — sans stopper le pipeline.
-            send({
-              type: "progress",
-              stage: "analyzing",
-              step: i + 1,
-              total: totalAnalyze,
-              message: `⚠️ Analyse de ${filename} échouée (${msg}) — le pipeline continue.`,
-            });
-          }
-        }
-
-        // ═══════════════════════════════════════
-        // STAGE 3: CODING
-        // ═══════════════════════════════════════
-        const codes: Record<string, string> = {};
-        const doneFiles: string[] = [];
-
-        send({
-          type: "progress",
-          stage: "coding",
-          step: 0,
-          total: codeFiles.length,
-          message: `💻 Génération de ${codeFiles.length} fichiers...`,
-        });
-
-        for (let i = 0; i < codeFiles.length; i++) {
-          const filename = codeFiles[i];
-          send({
-            type: "progress",
-            stage: "coding",
-            step: i + 1,
-            total: codeFiles.length,
-            message: `Génération de ${filename}...`,
-          });
-
-          // Contexte des fichiers déjà générés — chaque fichier plafonné,
-          // total plafonné : sans borne, le prompt du dernier fichier porte
-          // TOUT le code précédent et le corps de requête explose.
-          const prevCodeParts: string[] = [];
-          let prevCodeLen = 0;
-          for (const f of doneFiles) {
-            const body = capSection(`code de ${f}`, codes[f] || "", CAP_PREV_CODE_PER_FILE);
-            const block = `### ${f}\n\`\`\`python\n${body}\n\`\`\`\n`;
-            if (prevCodeLen + block.length > CAP_PREV_CODE_TOTAL) break;
-            prevCodeParts.push(block);
-            prevCodeLen += block.length;
-          }
-          const prevCode = prevCodeParts.join("\n");
-
-          try {
-            const raw = await callLLMResilient(
-              `Génération de ${filename}`,
-              CODING_SYSTEM,
-              codingPrompt(
-                plan,
-                filename,
-                capSection(`analyse de ${filename}`, analyses[filename] || "", CAP_ANALYSIS),
-                prevCode
-              ),
-              provider,
-              model,
-              apiKey,
-              (m) => send({ type: "progress", stage: "coding", step: i + 1, total: codeFiles.length, message: m }),
-              () => send({ type: "progress", stage: "coding", step: i + 1, total: codeFiles.length, message: `Génération de ${filename}...` })
-            );
-            callCount++;
-            const code = extractCode(raw);
-            codes[filename] = code;
-            doneFiles.push(filename);
-            send({ type: "result", stage: "coding", file: filename, content: code });
-          } catch (err) {
-            const msg = translateAiError(err instanceof Error ? err.message : String(err));
-            codes[filename] = `# Erreur de génération\n# ${msg}`;
-            doneFiles.push(filename);
-            send({ type: "result", stage: "coding", file: filename, content: `# Erreur\n${msg}` });
-            send({
-              type: "progress",
-              stage: "coding",
-              step: i + 1,
-              total: codeFiles.length,
-              message: `⚠️ Génération de ${filename} échouée (${msg}) — le pipeline continue.`,
-            });
-          }
-        }
-
-        // ═══════════════════════════════════════
-        // DONE
-        // ═══════════════════════════════════════
-        send({
-          type: "done",
-          stats: {
-            files: codeFiles.length,
-            calls: callCount,
-            plan,
-            codes,
-            analyses,
-          },
-        });
-      } catch (err) {
-        const msg = translateAiError(err instanceof Error ? err.message : String(err));
-        send({ type: "error", message: msg });
-      } finally {
-        clearInterval(heartbeat);
-        controller.close();
-      }
-    },
+  // Tâche de fond : le pipeline vit dans le processus serveur, découplé de
+  // la connexion HTTP qui l'a déclenché. Aucune requête longue ne transite
+  // par la passerelle — le client suit l'avancement par polling.
+  void runGenerateJob({
+    job,
+    paperText,
+    llmPaperText,
+    paperTruncated,
+    provider,
+    model,
+    apiKey,
+  }).catch((err) => {
+    console.error("[paper2code/generate] job crash:", err);
+    if (job.status === "running") {
+      job.events.push({ type: "error", message: "Erreur interne du pipeline de génération." });
+      job.status = "error";
+    }
   });
 
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "application/x-ndjson",
-      "Cache-Control": "no-cache",
-      "Connection": "keep-alive",
+  return jsonResponse({ jobId: job.id }, 200);
+}
+
+export async function GET(request: NextRequest) {
+  const url = new URL(request.url);
+  const jobId = url.searchParams.get("jobId") || "";
+  const cursorParam = Number(url.searchParams.get("cursor") || 0);
+  const cursor = Number.isFinite(cursorParam) && cursorParam > 0 ? Math.floor(cursorParam) : 0;
+
+  const job = jobs.get(jobId);
+  if (!job) {
+    return jsonResponse(
+      { error: "Tâche de génération introuvable (serveur redémarré ?). Relancez la génération." },
+      404
+    );
+  }
+
+  return jsonResponse(
+    {
+      status: job.status,
+      events: job.events.slice(cursor),
+      cursor: job.events.length,
     },
-  });
+    200
+  );
+}
+
+export async function DELETE(request: NextRequest) {
+  const url = new URL(request.url);
+  const jobId = url.searchParams.get("jobId") || "";
+  const job = jobs.get(jobId);
+  if (!job) {
+    return jsonResponse({ error: "Tâche introuvable." }, 404);
+  }
+  // Annulation : le pipeline s'arrête entre deux appels LLM (l'appel en
+  // cours, borné par le timeout de 3 min, s'achève mais son résultat est
+  // ignoré). Statut passé à « cancelled » immédiatement : le client arrête
+  // son polling au tick suivant.
+  job.cancelRequested = true;
+  if (job.status === "running") job.status = "cancelled";
+  return jsonResponse({ ok: true }, 200);
 }

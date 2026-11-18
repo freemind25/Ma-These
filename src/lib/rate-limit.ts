@@ -25,10 +25,13 @@ interface RateLimitEntry {
  * Rate limit configuration per route pattern.
  * - windowMs: time window in milliseconds
  * - maxRequests: maximum requests allowed in the window
+ * - methods: optional list of HTTP methods this rule applies to
+ *   (ex. ["GET"] pour un endpoint de polling). Absent = toutes méthodes.
  */
 export interface RateLimitRule {
   windowMs: number;
   maxRequests: number;
+  methods?: string[];
 }
 
 // In-memory store (per IP + route pattern)
@@ -58,6 +61,13 @@ export const RATE_LIMIT_RULES: Array<{ pattern: RegExp; rule: RateLimitRule }> =
   // règle dédiée AVANT le pattern générique ci-dessous (first match wins),
   // pour ne pas partager le quota IA coûteux de la génération (5 req/5min).
   { pattern: /^\/api\/paper2code\/extract-pdf/, rule: { windowMs: 60_000, maxRequests: 12 } }, // 12 req/1min
+  // Génération Article → Code — architecture job + polling : le même
+  // pathname sert trois usages très différents (démarrage coûteux en
+  // appels LLM / polling du suivi à ~1 req/1,5 s / annulation). Règles
+  // method-aware AVANT le pattern générique (first match wins) :
+  { pattern: /^\/api\/paper2code\/generate$/, rule: { windowMs: 60_000, maxRequests: 120, methods: ["GET"] } },    // polling : 120 req/1min (client ~40/min nominal)
+  { pattern: /^\/api\/paper2code\/generate$/, rule: { windowMs: 300_000, maxRequests: 12, methods: ["POST"] } },   // démarrage : 12/5min (coûteux, mais l'utilisateur qui retente ne doit pas être bloqué)
+  { pattern: /^\/api\/paper2code\/generate$/, rule: { windowMs: 60_000, maxRequests: 30, methods: ["DELETE"] } },  // annulation : 30/1min
   { pattern: /^\/api\/paper2code/, rule: { windowMs: 300_000, maxRequests: 5 } },   // 5 req/5min
 
   // AI test endpoint (used during configuration)
@@ -69,11 +79,18 @@ export const RATE_LIMIT_RULES: Array<{ pattern: RegExp; rule: RateLimitRule }> =
 ];
 
 /**
- * Find the matching rate limit rule for a given pathname.
+ * Find the matching rate limit rule for a given pathname + HTTP method.
+ * First match wins. Une règle avec `methods` défini ne matche que si la
+ * méthode de la requête figure dans la liste.
  */
-export function getRateLimitRule(pathname: string): RateLimitRule | null {
+export function getRateLimitRule(pathname: string, method?: string): RateLimitRule | null {
   for (const { pattern, rule } of RATE_LIMIT_RULES) {
-    if (pattern.test(pathname)) return rule;
+    if (!pattern.test(pathname)) continue;
+    if (rule.methods) {
+      if (!method) continue;
+      if (!rule.methods.includes(method.toUpperCase())) continue;
+    }
+    return rule;
   }
   return null;
 }

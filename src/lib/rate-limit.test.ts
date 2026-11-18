@@ -136,6 +136,41 @@ describe('rate-limit', () => {
     })
   })
 
+  describe('method-aware rules (paper2code/generate — job + polling)', () => {
+    it('GET polling benefits from the wide polling rule', () => {
+      const rule = getRateLimitRule('/api/paper2code/generate', 'GET')
+      expect(rule).not.toBeNull()
+      expect(rule!.maxRequests).toBe(120)
+      expect(rule!.windowMs).toBe(60_000)
+    })
+
+    it('POST start keeps its dedicated costly quota', () => {
+      const rule = getRateLimitRule('/api/paper2code/generate', 'POST')
+      expect(rule).not.toBeNull()
+      expect(rule!.maxRequests).toBe(12)
+      expect(rule!.windowMs).toBe(300_000)
+    })
+
+    it('DELETE cancellation has its own quota', () => {
+      const rule = getRateLimitRule('/api/paper2code/generate', 'DELETE')
+      expect(rule).not.toBeNull()
+      expect(rule!.maxRequests).toBe(30)
+    })
+
+    it('falls back to the generic paper2code rule for unknown methods', () => {
+      const rule = getRateLimitRule('/api/paper2code/generate', 'PUT')
+      expect(rule).not.toBeNull()
+      expect(rule!.maxRequests).toBe(5)
+      expect(rule!.windowMs).toBe(300_000)
+    })
+
+    it('rules without methods still match without a method argument', () => {
+      const rule = getRateLimitRule('/api/paper2code/extract-structured')
+      expect(rule).not.toBeNull()
+      expect(rule!.maxRequests).toBe(5)
+    })
+  })
+
   describe('RATE_LIMIT_RULES coverage', () => {
     it('has rules for all expected AI route patterns', () => {
       const expectedPatterns = [
