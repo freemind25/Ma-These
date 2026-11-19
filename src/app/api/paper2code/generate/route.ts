@@ -53,7 +53,7 @@ Return a JSON object with EXACTLY these fields:
 
 5. "task_descriptions" (object): Map each filename to a detailed description of what it should implement, including key algorithms, formulas, and interactions.
 
-6. "config_yaml" (string): A YAML configuration block with ALL hyperparameters and settings explicitly mentioned in the paper (learning rates, batch sizes, epochs, model dimensions, optimizer settings, etc.). Use nested structure. Example:\n  model:\n    hidden_size: 256\n    num_layers: 6\n  training:\n    learning_rate: 0.001\n    batch_size: 32\n    epochs: 100\n    optimizer: adam
+6. "config_yaml" (string): A YAML configuration block with ALL hyperparameters and settings explicitly mentioned in the paper (learning rates, batch sizes, epochs, model dimensions, optimizer settings, etc.), PLUS every input the code needs to run once: data paths, entity lists required by the analysis (e.g. cities, datasets, documents), output paths. Use nested structure. Example:\n  model:\n    hidden_size: 256\n    num_layers: 6\n  training:\n    learning_rate: 0.001\n    batch_size: 32\n    epochs: 100\n    optimizer: adam\n  data:\n    input_path: ./data/input.csv\n    output_dir: ./results\n    cities: [Paris, London, New York]
 
 7. "required_packages" (string[]): pip packages needed, with version pins if specified in the paper (e.g. ["torch>=2.0", "numpy", "transformers>=4.30"]).
 
@@ -62,6 +62,7 @@ IMPORTANT RULES:
 - The classDiagram must be COMPLETE with ALL methods
 - file_list must include config.yaml handling in main.py
 - Be specific about optimizer, scheduler, loss function names
+- config_yaml MUST be runnable as-is: every required field has a plausible, NON-EMPTY example value (no null, no [], no "", no placeholder). The user should be able to run the code right after editing only paths/inputs.
 - Return ONLY valid JSON, no markdown fences, no extra text`;
 }
 
@@ -125,6 +126,7 @@ STRICT RULES:
 6. Use config values from config.yaml via a load_config() helper or argparse defaults.
 7. Include docstrings for all classes and public methods.
 8. Handle device placement (CPU/GPU) properly with torch.
+9. If a required configuration field or input is missing/empty at runtime, raise a ValueError that names the EXACT config.yaml field to edit and gives an example value (e.g. "No cities specified for analysis - add a 'cities:' list of city names to config.yaml, e.g. cities: [Paris, London]").
 
 Output Python code only, no explanation, no markdown fences.`;
 }

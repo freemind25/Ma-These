@@ -627,6 +627,11 @@ function buildReadme(
   lines.push(FENCE);
   lines.push("");
   lines.push(
+    "Si le dossier `venv` existe déjà, sautez la création et passez " +
+      "directement à l'activation.",
+  );
+  lines.push("");
+  lines.push(
     "> **Important** : lancez le programme UNIQUEMENT après que " +
       "`pip install -r requirements.txt` s'est terminé SANS ERREUR. " +
       "La première installation peut durer plusieurs minutes (torch, " +
@@ -669,6 +674,20 @@ function buildReadme(
     "- **`pip install` échoue sur un paquet précis** : vérifiez votre version " +
       "de Python (3.10+ requis) et faites `python -m pip install --upgrade pip` " +
       "avant de relancer.",
+  );
+  lines.push(
+    "- **Erreur métier au lancement (ex. `No cities specified for analysis`)** : " +
+      "bonne nouvelle, le programme s'est lancé — il attend un champ de " +
+      "`config.yaml` encore vide (liste de villes, chemins de données…). " +
+      "Ouvrez `config.yaml` (voir la section Configuration), remplissez les " +
+      "champs requis et relancez. Le message d'erreur indique normalement " +
+      "la clé exacte à compléter.",
+  );
+  lines.push(
+    "- **`Permission denied` pendant `python -m venv venv`** : le dossier " +
+      "`venv` existe déjà (étape à sauter) ou est verrouillé par un " +
+      "antivirus/OneDrive ou un autre terminal ; passez directement à " +
+      "l'activation.",
   );
   lines.push(
     "- **Autre erreur à l'exécution** : code généré par IA — lisez " +

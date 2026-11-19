@@ -876,6 +876,16 @@ python main.py`}
                 <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">python check_env.py</code>.
               </p>
               <p className="mt-2">
+                Une erreur du type{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">No cities specified</code>{" "}
+                au lancement ? <strong>Bonne nouvelle</strong> : le programme s&apos;exécute —
+                il attend un champ encore vide de{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">config.yaml</code>{" "}
+                (liste de villes, chemins de données…). Ouvrez{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">config.yaml</code>,
+                remplissez les champs requis et relancez.
+              </p>
+              <p className="mt-2">
                 Avant le premier lancement, éditez{" "}
                 <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">config.yaml</code>{" "}
                 : chemins des données, hyperparamètres, options d&apos;exécution.
