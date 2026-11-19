@@ -46,7 +46,21 @@ import {
   CheckCircle2,
   X,
   Wand2,
+  FileArchive,
+  HelpCircle,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  buildPaper2CodeZip,
+  downloadBlob,
+  PAPER2CODE_ZIP_NAME,
+} from "./zip-export";
 import { ExtractStructuredDialog } from "./extract-structured-panel";
 import { JatsDialog } from "./jats-panel";
 import { toast } from "sonner";
@@ -165,6 +179,8 @@ export function Paper2CodePage() {
   const pdfFileRef = useRef<File | null>(null);
   const [extractOpen, setExtractOpen] = useState(false);
   const [jatsOpen, setJatsOpen] = useState(false);
+  const [zipping, setZipping] = useState(false);
+  const [noticeOpen, setNoticeOpen] = useState(false);
 
   const availableModels = PROVIDER_MODELS[provider] || [];
 
@@ -363,6 +379,38 @@ export function Paper2CodePage() {
     URL.revokeObjectURL(url);
   };
 
+  /**
+   * Export ZIP réel : fichiers Python séparés + requirements.txt +
+   * config.yaml + README.md pré-rempli + docs (architecture, analyses).
+   * En cas d'échec de construction (aucun code généré, erreur JSZip), un
+   * toast explicite remplace le téléchargement.
+   */
+  const downloadZip = async () => {
+    if (!plan) return;
+    // Avertissement si l'export est demandé pendant la génération :
+    // le ZIP ne contiendra que les fichiers déjà codés.
+    const doneCount = Object.keys(codes).length;
+    if (generating && doneCount < fileList.length) {
+      toast.warning("Export partiel", {
+        description: `La génération est en cours : le ZIP ne contiendra que ${doneCount} fichier(s) sur ${fileList.length}. Relancez « Telecharger ZIP » à la fin pour obtenir le projet complet.`,
+      });
+    }
+    setZipping(true);
+    try {
+      const blob = await buildPaper2CodeZip(plan, codes, analyses);
+      downloadBlob(blob, PAPER2CODE_ZIP_NAME);
+      toast.success("Export ZIP téléchargé", {
+        description: "Décompressez le dossier puis suivez le README.md inclus (pip install -r requirements.txt).",
+      });
+    } catch (e) {
+      toast.error("Échec de l'export ZIP", {
+        description: e instanceof Error ? e.message : String(e),
+      });
+    } finally {
+      setZipping(false);
+    }
+  };
+
   const fileList = plan?.file_list.filter((f) => f.endsWith(".py")) || [];
   const progressPct = progress.total > 0 ? (progress.step / progress.total) * 100 : 0;
 
@@ -540,10 +588,26 @@ export function Paper2CodePage() {
               </Button>
             )}
             {Object.keys(codes).length > 0 && (
-              <Button variant="outline" onClick={downloadAll} className="gap-2">
-                <Download className="h-4 w-4" /> Telecharger
-              </Button>
+              <>
+                <Button variant="outline" onClick={downloadZip} disabled={zipping} className="gap-2">
+                  {zipping ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileArchive className="h-4 w-4" />}
+                  {zipping ? "Preparation..." : "Telecharger ZIP"}
+                </Button>
+                <Button variant="ghost" onClick={downloadAll} className="gap-2">
+                  <Download className="h-4 w-4" /> TXT
+                </Button>
+              </>
             )}
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Notice d'utilisation du module Article vers Code"
+              title="Notice d'utilisation"
+              onClick={() => setNoticeOpen(true)}
+              className="text-muted-foreground"
+            >
+              <HelpCircle className="h-4 w-4" />
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -649,7 +713,14 @@ export function Paper2CodePage() {
                   ? <p className="text-sm text-muted-foreground text-center py-8">{generating ? "Analyse en cours..." : "L&apos;analyse apparaitra ici apres la planification."}</p>
                   : Object.entries(analyses).map(([file, content]) => (
                     <div key={file} className="border rounded-lg">
-                      <button className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-muted/50 rounded-t-lg" onClick={() => toggleFile(file)}>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        aria-expanded={expandedFiles.has(file)}
+                        className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-muted/50 rounded-t-lg cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        onClick={() => toggleFile(file)}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleFile(file); } }}
+                      >
                         <span className="flex items-center gap-2">
                           {expandedFiles.has(file) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                           <span className="font-mono text-sm font-medium">{file}</span>
@@ -657,7 +728,7 @@ export function Paper2CodePage() {
                         <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs" onClick={(e) => { e.stopPropagation(); copyToClipboard(content, file); }}>
                           {copiedFile === file ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                         </Button>
-                      </button>
+                      </div>
                       {expandedFiles.has(file) && <div className="border-t px-4 py-3 max-h-60 overflow-y-auto"><pre className="text-xs whitespace-pre-wrap text-muted-foreground">{content}</pre></div>}
                     </div>
                   ))}
@@ -669,7 +740,14 @@ export function Paper2CodePage() {
                   ? <p className="text-sm text-muted-foreground text-center py-8">{generating ? "Generation en cours..." : "Le code apparaitra ici apres l&apos;analyse."}</p>
                   : Object.entries(codes).map(([file, code]) => (
                     <div key={file} className="border rounded-lg">
-                      <button className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-muted/50 rounded-t-lg" onClick={() => toggleFile(file)}>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        aria-expanded={expandedFiles.has(file)}
+                        className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-muted/50 rounded-t-lg cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        onClick={() => toggleFile(file)}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleFile(file); } }}
+                      >
                         <span className="flex items-center gap-2">
                           {expandedFiles.has(file) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                           <Play className="h-3.5 w-3.5 text-emerald-500" />
@@ -679,7 +757,7 @@ export function Paper2CodePage() {
                         <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs" onClick={(e) => { e.stopPropagation(); copyToClipboard(code, file); }}>
                           {copiedFile === file ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />} Copier
                         </Button>
-                      </button>
+                      </div>
                       {expandedFiles.has(file) && (
                         <div className="border-t bg-slate-950 dark:bg-slate-900 rounded-b-lg">
                           <pre className="text-xs p-4 overflow-x-auto max-h-[500px] overflow-y-auto text-slate-200"><code>{code}</code></pre>
@@ -705,6 +783,87 @@ export function Paper2CodePage() {
         onOpenChange={setJatsOpen}
         file={pdfFileRef.current}
       />
+
+      {/* Notice d'utilisation du module (bouton aide) */}
+      <Dialog open={noticeOpen} onOpenChange={setNoticeOpen}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileCode2 className="h-5 w-5 text-primary" />
+              Notice d&apos;utilisation — Article vers Code
+            </DialogTitle>
+            <DialogDescription>
+              De l&apos;article scientifique au projet Python exécutable, en 4 étapes.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="text-sm text-muted-foreground space-y-4">
+            <section>
+              <h4 className="font-semibold text-foreground mb-1">1. Générer</h4>
+              <p>
+                Collez le texte de l&apos;article (ou importez le PDF), choisissez le
+                fournisseur IA puis cliquez sur « Generer le code ». La
+                génération produit trois onglets : <strong>Planification</strong>{" "}
+                (vue d&apos;ensemble, fichiers, dépendances, architecture),{" "}
+                <strong>Analyse</strong> (rôle de chaque fichier) et{" "}
+                <strong>Code</strong> (les fichiers Python complets).
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-semibold text-foreground mb-1">2. Exporter</h4>
+              <p>
+                Cliquez sur « <strong>Telecharger ZIP</strong> » : vous obtenez{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">paper2code.zip</code>{" "}
+                contenant chaque fichier Python séparé,{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">requirements.txt</code>,{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">config.yaml</code>{" "}
+                et un <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">README.md</code>{" "}
+                pré-rempli (description, structure, commandes d&apos;installation).
+                Le sous-dossier <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">docs/</code>{" "}
+                regroupe les diagrammes Mermaid et l&apos;analyse de chaque fichier.
+                Le bouton « TXT » conserve l&apos;ancien export tout-en-un.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-semibold text-foreground mb-1">3. Installer et lancer</h4>
+              <p>Décompressez le ZIP, ouvrez un terminal dans le dossier puis :</p>
+              <pre className="text-xs bg-muted rounded-lg p-3 mt-2 overflow-x-auto">
+{`# Windows
+python -m venv venv
+venv\\Scripts\\activate
+pip install -r requirements.txt
+
+# macOS / Linux
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Lancement (point d'entrée indiqué dans le README)
+python main.py`}
+              </pre>
+              <p className="mt-2">
+                Avant le premier lancement, éditez{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">config.yaml</code>{" "}
+                : chemins des données, hyperparamètres, options d&apos;exécution.
+              </p>
+            </section>
+
+            <section>
+              <h4 className="font-semibold text-foreground mb-1">4. Vérifier</h4>
+              <p>
+                Le code est généré par IA : c&apos;est un point de départ
+                reproductible, pas un code garanti. Comparez hyperparamètres et
+                équations avec l&apos;article source, vérifiez les chemins de
+                données et lisez{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">docs/analyses/</code>{" "}
+                pour comprendre chaque fichier avant de le modifier.
+              </p>
+            </section>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
