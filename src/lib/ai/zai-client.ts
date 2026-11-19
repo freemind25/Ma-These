@@ -55,6 +55,9 @@ interface ProviderCircuit {
   failureCount: number;
   lastFailureTime: number; // epoch ms
   successCount: number;  // in half-open, successes needed to close
+  /** Dernière erreur réelle (cause du déclenchement) — exposée dans le
+   *  message du disjoncteur pour ne pas masquer la cause racine. */
+  lastErrorSummary?: string;
 }
 
 const CIRCUIT_FAILURE_THRESHOLD = 3;
@@ -106,11 +109,12 @@ function recordSuccess(provider: string) {
   }
 }
 
-/** Record a failed request */
-function recordFailure(provider: string) {
+/** Record a failed request (message optionnel : cause racine conservée). */
+function recordFailure(provider: string, errorSummary?: string) {
   const c = getCircuit(provider);
   c.failureCount++;
   c.lastFailureTime = Date.now();
+  if (errorSummary) c.lastErrorSummary = errorSummary.slice(0, 220);
   if (c.state === "half-open") {
     // Failed test → back to open
     c.state = "open";
@@ -143,6 +147,36 @@ async function getClient(): Promise<any> {
     aiClientPromise = SDK.default.create();
   }
   return aiClientPromise;
+}
+
+/**
+ * Réinitialise le client SDK mis en cache. Le token interne du SDK peut
+ * expirer pendant la vie du serveur : tous les appels échouent alors en
+ * rafale avec « API request failed with status 401: missing X-Token
+ * header », sans que la configuration soit en cause. Recréer le client
+ * régénère le token — observé en réel après de longues sessions.
+ */
+function resetSdkClient(): void {
+  aiClientPromise = null;
+}
+
+/**
+ * Erreur d'authentification RÉCUPÉRABLE du chemin SDK : token expiré ou
+ * manquant (401 « missing X-Token header »), 403 transitoire. À distinguer
+ * d'une clé invalide côté API OpenAI-compatible (là, rien à récupérer).
+ */
+function isSdkAuthError(msg: string): boolean {
+  return /status\s*40[13]|missing x-token|forbidden/i.test(msg);
+}
+
+/**
+ * Extrait le slug de remplacement d'un 404 « This model is unavailable
+ * for free … use this slug instead: X » — l'API propose elle-même le
+ * modèle gratuit courant quand un slug est retiré.
+ */
+function extractReplacementSlug(msg: string): string | null {
+  const m = /use this slug instead:\s*([^\s",}]+)/i.exec(msg);
+  return m ? m[1] : null;
 }
 
 export interface AiMessage {
@@ -185,49 +219,84 @@ export interface AiCompletionResult {
 async function generateWithSDK(
   options: AiCompletionOptions
 ): Promise<AiCompletionResult> {
-  const client = await getClient();
-  const formattedMessages = options.messages.map((m) => ({
-    role: m.role,
-    content: m.content,
-  }));
+  // Le slug demandé peut être retiré par le service (404 « use this slug
+  // instead ») : on retente une fois avec le slug de remplacement proposé
+  // par l'API elle-même. Idem pour un token SDK expiré (401/403) : client
+  // frais et relance immédiate. Une seule relance par cause, pas de boucle.
+  const requestedModel = options.model || "default";
+  let model = requestedModel;
+  let authRetried = false;
+  let slugRetried = false;
 
-  const response = await client.chat.completions.create({
-    messages: formattedMessages,
-    model: options.model || "default",
-    temperature: options.temperature ?? 0.7,
-    // maxTokens explicite (pipeline Article→Code : 16384) — sans lui, le
-    // backend applique son défaut et peut tronquer un plan JSON volumineux.
-    ...(options.maxTokens ? { max_tokens: options.maxTokens } : {}),
-  });
+  for (;;) {
+    const client = await getClient();
+    const formattedMessages = options.messages.map((m) => ({
+      role: m.role,
+      content: m.content,
+    }));
 
-  let content = "";
-  if (typeof response === "string") {
-    content = response;
-  } else if (response && typeof response === "object") {
-    const resp = response as Record<string, unknown>;
-    if (typeof resp.content === "string") {
-      content = resp.content;
-    } else if (resp.content != null && typeof resp.content === "object") {
-      content = JSON.stringify(resp.content);
+    let response: unknown;
+    try {
+      response = await client.chat.completions.create({
+        messages: formattedMessages,
+        model,
+        temperature: options.temperature ?? 0.7,
+        // maxTokens explicite (pipeline Article→Code : 16384) — sans lui, le
+        // backend applique son défaut et peut tronquer un plan JSON volumineux.
+        ...(options.maxTokens ? { max_tokens: options.maxTokens } : {}),
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+
+      // Token SDK expiré/manquant → client neuf, une seule relance.
+      if (!authRetried && isSdkAuthError(msg)) {
+        authRetried = true;
+        console.warn(`[zai-client] auth error SDK — client recréé et relance: ${msg.slice(0, 140)}`);
+        resetSdkClient();
+        continue;
+      }
+
+      // Slug retiré par le service → relance avec le slug proposé.
+      const replacement = extractReplacementSlug(msg);
+      if (!slugRetried && replacement && replacement !== model) {
+        slugRetried = true;
+        console.warn(`[zai-client] modèle "${model}" indisponible → relance avec "${replacement}"`);
+        model = replacement;
+        continue;
+      }
+
+      throw err;
     }
-    if (!content && Array.isArray(resp.choices)) {
-      const firstChoice = resp.choices[0] as Record<string, unknown> | undefined;
-      const message = firstChoice?.message as Record<string, unknown> | undefined;
-      if (typeof message?.content === "string") {
-        content = message.content;
+
+    let content = "";
+    if (typeof response === "string") {
+      content = response;
+    } else if (response && typeof response === "object") {
+      const resp = response as Record<string, unknown>;
+      if (typeof resp.content === "string") {
+        content = resp.content;
+      } else if (resp.content != null && typeof resp.content === "object") {
+        content = JSON.stringify(resp.content);
+      }
+      if (!content && Array.isArray(resp.choices)) {
+        const firstChoice = resp.choices[0] as Record<string, unknown> | undefined;
+        const message = firstChoice?.message as Record<string, unknown> | undefined;
+        if (typeof message?.content === "string") {
+          content = message.content;
+        }
+      }
+      if (!content) {
+        console.warn("[zai-client] Unexpected SDK response format:", typeof response);
+        content = "";
       }
     }
-    if (!content) {
-      console.warn("[zai-client] Unexpected SDK response format:", typeof response);
-      content = "";
-    }
-  }
 
-  return {
-    content: content.trim(),
-    model: options.model || "default",
-    provider: "zai",
-  };
+    return {
+      content: content.trim(),
+      model,
+      provider: "zai",
+    };
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -521,8 +590,10 @@ export async function generateCompletion(
     if (!canRequest(pid)) {
       console.warn(`[Circuit] Skipping ${pid} — circuit open (cooldown ${CIRCUIT_RESET_TIMEOUT_MS / 1000}s)`);
       if (i === chain.length - 1) {
+        const c = getCircuit(pid);
         lastError = new Error(
           `Fournisseur IA "${pid}" temporairement indisponible (trop d'échecs consécutifs). ` +
+          (c.lastErrorSummary ? `Cause initiale : ${c.lastErrorSummary} ` : "") +
           `Réessayez dans ${Math.ceil((CIRCUIT_RESET_TIMEOUT_MS - (Date.now() - getCircuit(pid).lastFailureTime)) / 1000)}s ou changez de fournisseur.`
         );
       }
@@ -544,7 +615,7 @@ export async function generateCompletion(
       lastError = error instanceof Error ? error : new Error(String(error));
       const status = (lastError as Error & { status?: number }).status;
 
-      recordFailure(pid);
+      recordFailure(pid, lastError.message);
 
       // Auth errors are terminal — don't try fallbacks
       if (status && isAuthError(status)) throw lastError;
@@ -652,7 +723,7 @@ export async function generateCompletionStream(
       return response;
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
-      recordFailure(pid);
+      recordFailure(pid, err.message);
       const status = (err as Error & { status?: number }).status;
 
       if (status && isAuthError(status)) {

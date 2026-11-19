@@ -234,7 +234,18 @@ async function callLLMResilient(
     const firstMsg = translateAiError(firstErr instanceof Error ? firstErr.message : String(firstErr));
     console.warn(`[paper2code/generate] ${label} échouée, relance:`, firstMsg);
     notify(`⚠️ ${label} : ${firstMsg} — nouvelle tentative...`);
-    await new Promise((r) => setTimeout(r, 3_000));
+
+    // Disjoncteur ouvert (« trop d'échecs consécutifs… Réessayez dans Xs ») :
+    // la relance à +3 s heurterait un circuit encore ouvert et échouerait
+    // instantanément sans même essayer — on attend la fin du cooldown
+    // (le message du disjoncteur donne le temps restant).
+    const waitMatch = /Réessayez dans (\d+)s/.exec(firstErr instanceof Error ? firstErr.message : String(firstErr));
+    const backoffMs = waitMatch ? Math.min((parseInt(waitMatch[1], 10) + 2) * 1000, 35_000) : 3_000;
+    if (waitMatch) {
+      console.warn(`[paper2code/generate] ${label} : circuit ouvert, relance dans ${Math.round(backoffMs / 1000)}s`);
+      notify(`⏳ ${label} : fournisseur temporairement en cooldown — relance automatique dans ${Math.round(backoffMs / 1000)} s...`);
+    }
+    await new Promise((r) => setTimeout(r, backoffMs));
     restoreProgress();
     return await callLLM(systemPrompt, userMessage, provider, model, apiKey);
   }

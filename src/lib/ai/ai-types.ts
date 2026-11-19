@@ -108,7 +108,10 @@ export const PROVIDER_BASE_URLS: Record<AiProviderId, string> = {
  * Known free models per provider
  */
 export const PROVIDER_MODELS: Record<AiProviderId, string[]> = {
-  zai: ["default"],
+  // "default" : slug SDK historique ; "z-ai/glm-5.2" : slug gratuit explicite
+  // (l'API le propose en remplacement quand un slug est retiré — zai-client
+  // retente automatiquement avec le slug suggéré sur 404).
+  zai: ["default", "z-ai/glm-5.2"],
   openai: ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "o1-mini", "o3-mini"],
   anthropic: ["claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022", "claude-3-haiku-20240307"],
   mistral: ["mistral-large-latest", "mistral-medium-latest", "mistral-small-latest", "codestral-latest", "mistral-tiny"],
