@@ -816,10 +816,18 @@ export function Paper2CodePage() {
                 Cliquez sur « <strong>Telecharger ZIP</strong> » : vous obtenez{" "}
                 <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">paper2code.zip</code>{" "}
                 contenant chaque fichier Python séparé,{" "}
-                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">requirements.txt</code>,{" "}
-                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">config.yaml</code>{" "}
-                et un <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">README.md</code>{" "}
-                pré-rempli (description, structure, commandes d&apos;installation).
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">requirements.txt</code>{" "}
+                (complété automatiquement à partir des imports réels du code),{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">config.yaml</code>,{" "}
+                les scripts d&apos;installation automatique{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">run.bat</code>{" "}
+                (Windows) et{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">run.sh</code>{" "}
+                (macOS/Linux),{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">check_env.py</code>{" "}
+                (vérification des dépendances) et un{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">README.md</code>{" "}
+                pré-rempli (description, structure, commandes, dépannage).
                 Le sous-dossier <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">docs/</code>{" "}
                 regroupe les diagrammes Mermaid et l&apos;analyse de chaque fichier.
                 Le bouton « TXT » conserve l&apos;ancien export tout-en-un.
@@ -829,10 +837,20 @@ export function Paper2CodePage() {
             <section>
               <h4 className="font-semibold text-foreground mb-1">3. Installer et lancer</h4>
               <p>Décompressez le ZIP, ouvrez un terminal dans le dossier puis :</p>
+              <p className="mt-2">
+                <strong>Le plus simple sous Windows</strong> : double-cliquez sur{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">run.bat</code>{" "}
+                (il crée l&apos;environnement, installe les dépendances, les vérifie et lance le programme).
+              </p>
               <pre className="text-xs bg-muted rounded-lg p-3 mt-2 overflow-x-auto">
-{`# Windows
+{`# Windows (PowerShell)
 python -m venv venv
 venv\\Scripts\\activate
+pip install -r requirements.txt
+
+# Windows (Git Bash)
+python -m venv venv
+source venv/Scripts/activate
 pip install -r requirements.txt
 
 # macOS / Linux
@@ -840,9 +858,23 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# Lancement (point d'entrée indiqué dans le README)
+# Vérification (affiche la commande pip exacte si un paquet manque)
+python check_env.py
+
+# Lancement — SEULEMENT après la fin de pip install sans erreur
 python main.py`}
               </pre>
+              <p className="mt-2">
+                <strong>Important</strong> : attendez la fin complète de{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">pip install</code>{" "}
+                avant de lancer le programme — la première installation peut durer plusieurs
+                minutes (torch télécharge plusieurs centaines de Mo). Si{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">ModuleNotFoundError</code>{" "}
+                s&apos;affiche : vérifiez que votre prompt affiche{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">(venv)</code>, relancez{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">pip install -r requirements.txt</code>, puis{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">python check_env.py</code>.
+              </p>
               <p className="mt-2">
                 Avant le premier lancement, éditez{" "}
                 <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">config.yaml</code>{" "}
@@ -858,7 +890,10 @@ python main.py`}
                 équations avec l&apos;article source, vérifiez les chemins de
                 données et lisez{" "}
                 <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">docs/analyses/</code>{" "}
-                pour comprendre chaque fichier avant de le modifier.
+                pour comprendre chaque fichier avant de le modifier. En cas de
+                problème à l&apos;exécution, la section « Dépannage » du{" "}
+                <code className="font-mono text-xs bg-muted px-1 py-0.5 rounded">README.md</code>{" "}
+                du ZIP couvre les erreurs courantes.
               </p>
             </section>
           </div>
