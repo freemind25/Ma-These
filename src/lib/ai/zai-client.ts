@@ -19,6 +19,9 @@ import {
 } from "./ai-provider";
 import { getHardcodedKey } from "./hardcoded-keys";
 import { gatewayFetch } from "./gateway-fetch";
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
 
 // ═══════════════════════════════════════════════════════════════
 // Dynamic SDK import — z-ai-web-dev-sdk is in serverExternalPackages,
@@ -139,12 +142,87 @@ export function getCircuitBreakerStatus(): Record<string, { state: CircuitState;
 }
 
 let aiClientPromise: Promise<any> | null = null;
+/** Token de session avec lequel le client en cache a été créé. */
+let aiClientToken: string | null = null;
+
+/** Chemins de config du SDK — même priorité que z-ai-web-dev-sdk. */
+const SDK_CONFIG_PATHS = [
+  path.join(process.cwd(), ".z-ai-config"),
+  path.join(os.homedir(), ".z-ai-config"),
+  "/etc/.z-ai-config",
+];
+
+/**
+ * Lit le token de session courant depuis la config du SDK (lecture directe,
+ * sans dépendre du SDK) : la passerelle sandbox régénère ce fichier à chaque
+ * session — le comparer permet de détecter un token devenu obsolète.
+ */
+function readSdkToken(): string | null {
+  for (const p of SDK_CONFIG_PATHS) {
+    try {
+      const cfg = JSON.parse(fs.readFileSync(p, "utf-8")) as {
+        baseUrl?: string;
+        apiKey?: string;
+        token?: string;
+      };
+      if (cfg.baseUrl && cfg.apiKey && cfg.token) return String(cfg.token);
+    } catch {
+      // fichier absent ou illisible → chemin suivant
+    }
+  }
+  return null;
+}
+
+/** Token de session (JWT) expiré ? — décodage du champ exp sans validation. */
+function sdkTokenExpired(token: string): boolean {
+  try {
+    const payloadPart = token.split(".")[1];
+    if (!payloadPart) return false;
+    const payload = JSON.parse(
+      Buffer.from(payloadPart, "base64").toString("utf-8")
+    ) as { exp?: number };
+    return typeof payload.exp === "number" && payload.exp * 1000 < Date.now();
+  } catch {
+    return false;
+  }
+}
 
 async function getClient(): Promise<any> {
+  // Détection pro-active d'un token obsolète : si le fichier de config
+  // contient désormais un autre token (nouvelle session sandbox) ou un
+  // token expiré, on recrée le client AVANT l'appel — sinon tous les
+  // appels partiraient en rafale de 401 « missing X-Token header ».
+  const currentToken = readSdkToken();
+  if (aiClientPromise) {
+    const stale =
+      (aiClientToken !== null && currentToken !== null && aiClientToken !== currentToken) ||
+      (currentToken !== null && sdkTokenExpired(currentToken)) ||
+      (aiClientToken !== null && currentToken === null);
+    if (stale) {
+      console.warn(
+        "[zai-client] token de session changé ou expiré → client SDK recréé"
+      );
+      resetSdkClient();
+    }
+  }
   if (!aiClientPromise) {
     const SDK = await loadSDK();
     if (!SDK) throw new Error("z.ai SDK non disponible en dehors de l'environnement sandbox");
-    aiClientPromise = SDK.default.create();
+    const created: Promise<any> = SDK.default.create();
+    const chained = created.then(
+      (client: any) => {
+        aiClientToken = readSdkToken();
+        return client;
+      },
+      (err: unknown) => {
+        // Purge du cache si le create échoue (config absente/corrompue) :
+        // sans cela la promesse rejetée resterait en cache et AUCUN appel
+        // ne pourrait plus réussir jusqu'au redémarrage du serveur.
+        if (aiClientPromise === chained) aiClientPromise = null;
+        throw err;
+      }
+    );
+    aiClientPromise = chained;
   }
   return aiClientPromise;
 }
@@ -154,10 +232,11 @@ async function getClient(): Promise<any> {
  * expirer pendant la vie du serveur : tous les appels échouent alors en
  * rafale avec « API request failed with status 401: missing X-Token
  * header », sans que la configuration soit en cause. Recréer le client
- * régénère le token — observé en réel après de longues sessions.
+ * recharge le token courant du fichier de config.
  */
 function resetSdkClient(): void {
   aiClientPromise = null;
+  aiClientToken = null;
 }
 
 /**
@@ -254,6 +333,18 @@ async function generateWithSDK(
         console.warn(`[zai-client] auth error SDK — client recréé et relance: ${msg.slice(0, 140)}`);
         resetSdkClient();
         continue;
+      }
+
+      // La relance sur client neuf a elle-même échoué en auth : ce n'est
+      // plus un incident transitoire — diagnostic final avec remède.
+      if (authRetried && isSdkAuthError(msg)) {
+        const expired = aiClientToken ? sdkTokenExpired(aiClientToken) : false;
+        throw new Error(
+          `Session z.ai refusée même après recréation du client ` +
+          `(${expired ? "token de session expiré, " : ""}${msg.slice(0, 140)}). ` +
+          `Rechargez la page de prévisualisation pour renouveler la session sandbox, ` +
+          `ou choisissez un autre fournisseur.`
+        );
       }
 
       // Slug retiré par le service → relance avec le slug proposé.
@@ -594,7 +685,7 @@ export async function generateCompletion(
         lastError = new Error(
           `Fournisseur IA "${pid}" temporairement indisponible (trop d'échecs consécutifs). ` +
           (c.lastErrorSummary ? `Cause initiale : ${c.lastErrorSummary} ` : "") +
-          `Réessayez dans ${Math.ceil((CIRCUIT_RESET_TIMEOUT_MS - (Date.now() - getCircuit(pid).lastFailureTime)) / 1000)}s ou changez de fournisseur.`
+          `Réessayez dans ${Math.max(1, Math.ceil((CIRCUIT_RESET_TIMEOUT_MS - (Date.now() - getCircuit(pid).lastFailureTime)) / 1000))}s ou changez de fournisseur.`
         );
       }
       continue;
